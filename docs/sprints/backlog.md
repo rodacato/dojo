@@ -8,7 +8,7 @@ The backlog is not a task list — it is a set of prioritized intentions. Items 
 
 _Ideas that arrived and have not been evaluated yet. Candidates for the next triage._
 
-<!-- Add here with: date - brief description -->
+- 2026-03-21 — Kata and prompt quality refinement: research techniques (chain-of-thought rubrics, few-shot examples in ownerContext, role calibration), run A/B comparisons on real sessions, establish a bar for "what makes a kata excellent vs. just good". Includes reviewing the 44 kata drafts (PRDs 006, 008–010) with real usage data once the core loop is live.
 
 ---
 

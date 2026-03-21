@@ -41,15 +41,13 @@ These are settled. Do not reopen unless something breaks in implementation.
 
 ---
 
-## Open questions — owner decision required
+## Open questions — resolved 2026-03-21
 
-These need a call before implementing the affected screens.
-
-| Question | Expert recommendation | Affects |
-|---|---|---|
-| Does mood filter affect difficulty/type (not just duration)? | Yes — otherwise friction without value (Priya) | `GET /exercises` filter logic, `findEligible()` |
-| `avg_score` in Admin: passed only or passed + passed_with_notes? | passed + passed_with_notes (Priya) | Admin Exercise List screen |
-| `topics[]` on Exercise: who defines the vocabulary? | Align with LLM `topicsToReview[]` output — same slugs (Darius) | Seed data + prompt engineering |
+| Question | Decision |
+|---|---|
+| Does mood filter affect difficulty/type (not just duration)? | ✅ Yes — `low_energy` → bias EASY/CHAT, `focused` → allows HARD, `regular` → no bias |
+| `avg_score` in Admin: passed only or passed + passed_with_notes? | ✅ `(passed + passed_with_notes) / total` |
+| `topics[]` on Exercise: who defines the vocabulary? | ✅ Canonical slugs defined in `packages/shared` before seed script runs |
 
 ---
 
