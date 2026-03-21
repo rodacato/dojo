@@ -2,42 +2,24 @@ import { GetExerciseOptions } from '../application/practice/GetExerciseOptions'
 import { StartSession } from '../application/practice/StartSession'
 import { SubmitAttempt } from '../application/practice/SubmitAttempt'
 import { UpsertUser } from '../application/identity/UpsertUser'
+import { db } from './persistence/drizzle/client'
+import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
+import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
+import { PostgresUserRepository } from './persistence/PostgresUserRepository'
 import { InMemoryEventBus } from './events/InMemoryEventBus'
-// Database adapters imported in Phase 3
+// LLM adapter (AnthropicStreamAdapter) added in later phase
+import { MockLLMAdapter } from './llm/MockLLMAdapter'
 
-// Phase 0: stubs for repositories (replaced with real adapters in Phase 3)
-const stubSessionRepo = {
-  save: async () => {},
-  findById: async () => null,
-  findActiveByUserId: async () => null,
-}
-
-const stubExerciseRepo = {
-  findEligible: async () => [],
-  findById: async () => null,
-  save: async () => {},
-}
-
-const stubUserRepo = {
-  findByGithubId: async () => null,
-  save: async () => {},
-}
-
-const stubLlm = {
-  evaluate: async function* () {},
-  generateSessionBody: async () => '',
-}
+const sessionRepo = new PostgresSessionRepository(db)
+const exerciseRepo = new PostgresExerciseRepository(db)
+const userRepo = new PostgresUserRepository(db)
+const llm = new MockLLMAdapter()
 
 export const eventBus = new InMemoryEventBus()
 
 export const useCases = {
-  startSession: new StartSession({
-    exerciseRepo: stubExerciseRepo,
-    sessionRepo: stubSessionRepo,
-    llm: stubLlm,
-    eventBus,
-  }),
-  submitAttempt: new SubmitAttempt({ sessionRepo: stubSessionRepo, llm: stubLlm, eventBus }),
-  getExerciseOptions: new GetExerciseOptions({ exerciseRepo: stubExerciseRepo }),
-  upsertUser: new UpsertUser({ userRepo: stubUserRepo }),
+  startSession: new StartSession({ exerciseRepo, sessionRepo, llm, eventBus }),
+  submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
+  getExerciseOptions: new GetExerciseOptions({ exerciseRepo }),
+  upsertUser: new UpsertUser({ userRepo }),
 }

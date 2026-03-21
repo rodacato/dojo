@@ -26,6 +26,10 @@ if [ ! -f .env ]; then
   echo ".env created from .env.example — fill in your secrets."
 fi
 
+echo "Running database migrations..."
+pnpm --filter=@dojo/api db:migrate
+echo "Migrations complete."
+
 echo ""
 echo "  dojo_ ready."
 echo "  Run: pnpm dev"
