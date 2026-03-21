@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 type Mood = 'focused' | 'regular' | 'low_energy'
-type Duration = 10 | 20 | 30 | 45
+type Duration = 15 | 20 | 30 | 45
 
 const MOODS: Array<{ value: Mood; label: string; emoji: string }> = [
   { value: 'focused', label: 'En racha', emoji: '🔥' },
@@ -10,11 +10,11 @@ const MOODS: Array<{ value: Mood; label: string; emoji: string }> = [
   { value: 'low_energy', label: 'A medias', emoji: '🧠' },
 ]
 
-const DURATIONS: Duration[] = [10, 20, 30, 45]
+const DURATIONS: Duration[] = [15, 20, 30, 45]
 
 export function DayStartPage() {
   const [mood, setMood] = useState<Mood>('regular')
-  const [duration, setDuration] = useState<Duration>(20)
+  const [duration, setDuration] = useState<Duration>(15)
   const navigate = useNavigate()
 
   function handleSubmit() {
