@@ -16,6 +16,11 @@
     "lint": {
       "dependsOn": ["^build"]
     },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**/*.ts", "vitest.config.ts"]
+    },
     "clean": {
       "cache": false
     }
