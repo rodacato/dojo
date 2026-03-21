@@ -10,7 +10,7 @@ Live at [dojo.notdefined.dev](https://dojo.notdefined.dev)
 
 ## What it is
 
-You enter the dojo. You get 3 kata. No skip, no reroll. You pick one and work through it — a code refactor, a system design, a technical discussion. A sensei (an LLM with a specific role and expertise) evaluates your work. Not with praise, not with the answer — with honest feedback on what you did and what you missed.
+You enter the dojo. You get 3 kata. No skip, no reroll. You pick one and work through it — a code refactor, a system design, a technical discussion. A sensei (an LLM with a specific role and expertise) evaluates your work in real time. Not with praise, not with the answer — with honest feedback on what you did and what you missed.
 
 That's it. Daily practice. No shortcuts.
 
@@ -26,7 +26,7 @@ That's it. Daily practice. No shortcuts.
 ## Stack
 
 | Layer | Technology |
-|-------|-----------|
+|---|---|
 | Frontend | React + Vite |
 | Backend | Hono + Node.js |
 | Database | PostgreSQL |
@@ -37,7 +37,7 @@ That's it. Daily practice. No shortcuts.
 
 ### LLM Provider
 
-Dojo works with any OpenAI-compatible API endpoint. Point it at the official Anthropic or OpenAI API, or bring your own proxy:
+Dojo works with any OpenAI-compatible API endpoint:
 
 ```env
 LLM_BASE_URL=https://api.anthropic.com   # or your own endpoint
@@ -67,6 +67,7 @@ dojo/
 ### Prerequisites
 
 - Node.js >= 20
+- pnpm >= 9
 - Docker + Docker Compose
 - A GitHub OAuth App ([create one here](https://github.com/settings/applications/new))
 - An LLM API key (Anthropic, OpenAI, or compatible)
@@ -78,22 +79,28 @@ git clone https://github.com/rodacato/dojo
 cd dojo
 cp .env.example .env
 # fill in your .env values
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 The web app runs at `http://localhost:5173`, the API at `http://localhost:3001`.
 
-### Environment Variables
+### Commands
 
-See `.env.example` for all required variables and descriptions.
+```bash
+pnpm dev                    # Start web + api in watch mode
+pnpm build                  # Build all workspaces
+pnpm lint                   # Lint all workspaces
+pnpm typecheck              # Type-check all workspaces
+pnpm test --filter=api      # Run API unit tests
+```
 
 ---
 
 ## Exercise Types
 
 | Type | Description |
-|------|-------------|
+|---|---|
 | `code` | Refactor, debug, review, or complete code in any language |
 | `chat` | Technical roleplay — respond to a scenario as you would in real life |
 | `whiteboard` | System design and architecture using [Drawhaus](https://drawhaus.notdefined.dev) |
@@ -112,13 +119,30 @@ If you cheat yourself here, you cheat yourself everywhere.
 
 ---
 
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [docs/VISION.md](docs/VISION.md) | Why Dojo exists, philosophy, who it's for |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | What's shipped, what's next, what's out of scope |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Ecosystem, data model, key design decisions |
+| [docs/BRANDING.md](docs/BRANDING.md) | Colors, typography, voice, UI components |
+| [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build cycle, conventions, definition of done |
+| [docs/EXPERTS.md](docs/EXPERTS.md) | Virtual advisory panel |
+| [docs/IDENTITY.md](docs/IDENTITY.md) | Primary build persona |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting |
+| [AGENTS.md](AGENTS.md) | AI agent behavior and working rules |
+
+---
+
 ## Related Projects
 
 - [Drawhaus](https://drawhaus.notdefined.dev) — Excalidraw-based whiteboard with MCP integration, used for whiteboard kata
-- [SheLLM](https://github.com/rodacato/SheLLM) — Turn your LLM CLI subscriptions into a REST API (optional, compatible LLM proxy)
+- [SheLLM](https://github.com/rodacato/SheLLM) — Turn your LLM CLI subscriptions into a REST API (optional LLM proxy)
 
 ---
 
 ## License
 
-MIT
+[MIT](LICENSE.md)
