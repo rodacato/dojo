@@ -1,32 +1,31 @@
-import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
+import { RequireAuth } from './components/RequireAuth'
+import { LoginPage } from './pages/LoginPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { DayStartPage } from './pages/DayStartPage'
+import { KataSelectionPage } from './pages/KataSelectionPage'
+import { KataActivePage } from './pages/KataActivePage'
+import { SenseiEvalPage } from './pages/SenseiEvalPage'
+import { ResultsPage } from './pages/ResultsPage'
 
 export function App() {
-  const [health, setHealth] = useState<string>('checking...')
-
-  useEffect(() => {
-    fetch('/api/health')
-      .then((r) => r.json())
-      .then((d) => setHealth(d.status))
-      .catch(() => setHealth('offline'))
-  }, [])
-
   return (
-    <div
-      style={{
-        background: '#0F172A',
-        color: '#F8FAFC',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: "'JetBrains Mono', monospace",
-      }}
-    >
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>dojo_</h1>
-        <p style={{ color: '#94A3B8', fontSize: '0.875rem' }}>dojo.notdefined.dev</p>
-        <p style={{ color: '#6366F1', fontSize: '0.75rem', marginTop: '2rem' }}>api: {health}</p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<RequireAuth />}>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/start" element={<DayStartPage />} />
+            <Route path="/kata" element={<KataSelectionPage />} />
+            <Route path="/kata/:id" element={<KataActivePage />} />
+            <Route path="/kata/:id/eval" element={<SenseiEvalPage />} />
+            <Route path="/kata/:id/result" element={<ResultsPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }

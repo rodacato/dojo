@@ -25,6 +25,7 @@ export interface UserDTO {
   username: string
   avatarUrl: string
   createdAt: string // ISO string
+  isCreator?: boolean
 }
 
 export interface ExerciseDTO {

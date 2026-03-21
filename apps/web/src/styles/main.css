@@ -1,0 +1,51 @@
+/* Fonts */
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+/* Tailwind 4 */
+@import 'tailwindcss';
+
+/* Design tokens → Tailwind utilities */
+@theme {
+  /* Surfaces */
+  --color-base:     #0F172A;
+  --color-surface:  #1E293B;
+  --color-elevated: #253347;
+  --color-border:   #334155;
+
+  /* Accent */
+  --color-accent:         #6366F1;
+  --color-success:        #10B981;
+  --color-danger:         #EF4444;
+  --color-warning:        #F59E0B;
+
+  /* Text */
+  --color-primary:    #F8FAFC;
+  --color-secondary:  #94A3B8;
+  --color-muted:      #475569;
+
+  /* Type badges */
+  --color-type-code:        #64748B;
+  --color-type-chat:        #7C3AED;
+  --color-type-whiteboard:  #0D9488;
+
+  /* Fonts */
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', monospace;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+}
+
+/* Base */
+html {
+  background-color: #0F172A;
+  color: #F8FAFC;
+  font-family: 'Inter Variable', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
