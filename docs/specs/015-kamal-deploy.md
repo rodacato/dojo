@@ -1,6 +1,6 @@
 # Spec 015: Kamal Deploy
 
-> **Status:** ready-to-implement
+> **Status:** superseded — see `docs/specs/016-production-deploy.md` for the current deploy guide (updated config with ERB env vars, Kamal 2 proxy, gha cache, deploy user)
 > **Depends on:** Full local loop working end-to-end (spec 009–014 implemented)
 > **Priority:** Last — do not start until you can complete a kata locally
 

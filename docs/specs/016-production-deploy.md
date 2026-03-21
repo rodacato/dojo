@@ -3,7 +3,7 @@
 **Sprint:** 003
 **Status:** ready
 
-**Outcome:** The app is running in production on a Hetzner VPS behind Cloudflare Tunnel. The creator can log in, do a kata, and receive sensei feedback.
+**Outcome:** The app is running in production on a Hetzner VPS. The creator can log in, do a kata, and receive sensei feedback.
 
 ---
 
@@ -23,41 +23,48 @@
    - OS: Ubuntu 22.04
    - Location: closest to you (EU or US)
    - Add your SSH public key during creation
-2. Note the VPS IP address
+2. Note the VPS IP address (`HOST_IP`)
 
-3. Initial server setup (run from local machine):
+3. Create a `deploy` user with SSH access (Kamal deploys as this user, not root):
 ```bash
-ssh root@<VPS_IP>
+ssh root@<HOST_IP>
+adduser deploy
+usermod -aG sudo,docker deploy
+mkdir -p /home/deploy/.ssh
+cp /root/.ssh/authorized_keys /home/deploy/.ssh/
+chown -R deploy:deploy /home/deploy/.ssh
+chmod 700 /home/deploy/.ssh
+chmod 600 /home/deploy/.ssh/authorized_keys
+```
+
+4. Install Docker:
+```bash
 apt update && apt upgrade -y
 apt install -y docker.io
 systemctl enable --now docker
-```
-
-4. Create the Docker network Kamal expects:
-```bash
-docker network create dojo
 ```
 
 ---
 
 ## Step 2: Cloudflare Tunnel
 
+Kamal proxy handles HTTP routing on the VPS (port 80). Cloudflare Tunnel sends traffic from the internet to the VPS without opening ports publicly.
+
 1. In Cloudflare dashboard → Zero Trust → Tunnels → Create tunnel
 2. Name: `dojo-prod`
-3. Install connector on the VPS:
+3. Install connector on the VPS as the `deploy` user:
 ```bash
-# On the VPS
+ssh deploy@<HOST_IP>
 curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
   -o /usr/local/bin/cloudflared && chmod +x /usr/local/bin/cloudflared
 cloudflared tunnel login
 cloudflared tunnel create dojo-prod
 ```
 4. Configure the tunnel to route:
-   - `dojo.notdefined.dev` → `http://dojo-web:80` (web container)
-   - `dojo.notdefined.dev/api/*` → `http://dojo-api:3001` (API container)
+   - `dojo.notdefined.dev` → `http://localhost:80` (Kamal proxy handles routing from there)
 5. Install as a systemd service:
 ```bash
-cloudflared tunnel install
+cloudflared service install
 systemctl enable --now cloudflared
 ```
 
@@ -73,60 +80,54 @@ systemctl enable --now cloudflared
 
 ---
 
-## Step 4: Update Kamal config placeholders
+## Step 4: GitHub Actions environment
 
-In `config/deploy.api.yml` and `config/deploy.web.yml`, replace:
-- `<GITHUB_USERNAME>` → your GitHub username
-- `<VPS_IP>` → the VPS IP from Step 1
+In the GitHub repo → Settings → Environments → New environment → `production`
 
----
-
-## Step 5: Configure GitHub Actions secrets
-
-In the GitHub repo → Settings → Secrets and variables → Actions, add:
+Add the following secrets to the `production` environment:
 
 | Secret | Value |
 |---|---|
-| `SSH_PRIVATE_KEY` | Your SSH private key (matches the public key added to VPS) |
-| `VPS_IP` | VPS IP address |
+| `SSH_PRIVATE_KEY` | SSH private key that matches the public key on the VPS `deploy` user |
+| `HOST_IP` | VPS IP address |
 | `DATABASE_URL` | `postgresql://dojo:<POSTGRES_PASSWORD>@localhost:5432/dojo` |
-| `POSTGRES_PASSWORD` | Strong random password |
-| `SESSION_SECRET` | Strong random string (32+ chars) |
-| `GITHUB_CLIENT_ID_PROD` | From Step 3 |
-| `GITHUB_CLIENT_SECRET_PROD` | From Step 3 |
-| `GITHUB_CALLBACK_URL` | `https://dojo.notdefined.dev/api/auth/github/callback` |
-| `ANTHROPIC_API_KEY` | Your Anthropic API key |
-| `CREATOR_GITHUB_ID` | Your GitHub numeric ID (find with `curl https://api.github.com/users/<username>`) |
+| `POSTGRES_PASSWORD` | Strong random password — `openssl rand -hex 16` |
+| `SESSION_SECRET` | Random string 32+ chars — `openssl rand -hex 32` |
+| `OAUTH_CLIENT_ID` | OAuth App Client ID from Step 3 |
+| `OAUTH_CLIENT_SECRET` | OAuth App Client Secret from Step 3 |
+| `OAUTH_CALLBACK_URL` | `https://dojo-api.notdefined.dev/auth/github/callback` |
+| `LLM_API_KEY` | Your Anthropic API key |
+| `CREATOR_GITHUB_ID` | Your GitHub numeric ID — `curl https://api.github.com/users/<username> \| jq .id` |
 
-Also set as an Actions variable (not secret):
-- `WEB_URL` → `https://dojo.notdefined.dev`
+Not needed as secrets (set automatically by the workflow):
+- `KAMAL_REGISTRY_PASSWORD` ← `secrets.GITHUB_TOKEN` (free, auto-provided)
+- `GITHUB_USERNAME` ← `github.repository_owner` (auto-provided)
 
 ---
 
-## Step 6: First deploy
+## Step 5: First deploy
 
-```bash
-# From local machine, with Kamal installed (gem install kamal)
-# Bootstrap the VPS (installs Docker, sets up registry auth)
-kamal setup --config-file config/deploy.api.yml
-kamal setup --config-file config/deploy.web.yml
-```
+Push to `main` — the GitHub Actions workflow runs automatically:
 
-Or push to `main` — the GitHub Actions workflow will run `kamal deploy` automatically.
+1. **build-api** and **build-web** run in parallel — build and push Docker images to GHCR
+2. **deploy-api** runs — detects first run (`kamal app details` fails) → `kamal setup` bootstraps the VPS (installs kamal-proxy, starts postgres accessory, deploys API)
+3. **deploy-web** runs after API — same setup-or-deploy logic
 
-The post-deploy hook runs:
+The post-deploy hook runs automatically:
 1. `node dist/infrastructure/persistence/migrate.js` — applies DB migrations
 2. `node dist/infrastructure/persistence/seed.js` — seeds 16 exercises (idempotent)
 
+Subsequent pushes to `main` run `kamal deploy` (rolling update, no accessory restart).
+
 ---
 
-## Step 7: Self-test checklist
+## Step 6: Self-test checklist
 
 - [ ] `https://dojo.notdefined.dev` loads the landing page
-- [ ] "Sign in" button → GitHub OAuth → redirects back → lands on `/dashboard`
-- [ ] Dashboard shows streak 0, "Day 1. The dojo opens."
-- [ ] `/start` → mood + duration → `/kata` → 3 exercise cards appear
-- [ ] Select exercise → loads (preparing state visible) → kata body renders in markdown
+- [ ] "Sign in" → GitHub OAuth → lands on `/dashboard`
+- [ ] Dashboard shows "Day 1. The dojo opens."
+- [ ] `/start` → `/kata` → 3 exercise cards appear
+- [ ] Select exercise → preparing state → kata body renders in markdown
 - [ ] Write a response → submit → `/eval` → sensei streams evaluation
 - [ ] Verdict appears → `/result` → "Return to dashboard" works
 - [ ] Admin at `/admin` accessible with creator account
@@ -136,12 +137,9 @@ The post-deploy hook runs:
 ## Rollback
 
 ```bash
+# From local, with Kamal installed and SSH access
 kamal rollback --config-file config/deploy.api.yml
 kamal rollback --config-file config/deploy.web.yml
 ```
 
----
-
-## WEB_URL env var
-
-The API uses `config.WEB_URL` to redirect after OAuth. Verify `apps/api/src/config.ts` reads it from the environment and the GitHub Actions workflow sets it correctly.
+Or revert the commit on `main` and push — the workflow redeploys the previous image.
