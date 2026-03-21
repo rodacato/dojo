@@ -13,7 +13,12 @@ interface Deps {
 export class SubmitAttempt {
   constructor(private readonly deps: Deps) {}
 
-  async *execute(params: { sessionId: SessionId; userResponse: string }): AsyncIterable<EvaluationToken> {
+  async *execute(params: {
+    sessionId: SessionId
+    userResponse: string
+    ownerRole: string
+    ownerContext: string
+  }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
     if (!session) throw new SessionNotFoundError(params.sessionId)
 
@@ -27,8 +32,8 @@ export class SubmitAttempt {
     let finalToken: EvaluationToken | null = null
 
     for await (const token of this.deps.llm.evaluate({
-      ownerRole: '',
-      ownerContext: '',
+      ownerRole: params.ownerRole,
+      ownerContext: params.ownerContext,
       sessionBody: session.body,
       history,
     })) {
@@ -43,7 +48,7 @@ export class SubmitAttempt {
         sessionId: params.sessionId,
         userResponse: params.userResponse,
         evaluationResult: finalToken.result,
-        isFinalEvaluation: true,
+        isFinalEvaluation: finalToken.result.followUpQuestion === null,
       })
 
       session.addAttempt(attempt)
