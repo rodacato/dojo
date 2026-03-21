@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true # cancel stale runs on new pushes to the same branch
+
+jobs:
+  ci:
+    name: Lint, Typecheck & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4 # must match packageManager in root package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+        env:
+          # Provide test env vars so config.ts validation passes
+          DATABASE_URL: postgresql://dojo:dojo@localhost:5432/dojo_test
+          SESSION_SECRET: ci-test-secret-minimum-32-characters-long
+          GITHUB_CLIENT_ID: ci-test-client-id
+          GITHUB_CLIENT_SECRET: ci-test-client-secret
+          GITHUB_CALLBACK_URL: http://localhost:3001/auth/github/callback
+          LLM_BASE_URL: http://localhost:11434
+          LLM_API_KEY: ci-test-api-key
+          WEB_URL: http://localhost:5173
+          NODE_ENV: test
