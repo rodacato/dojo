@@ -7,9 +7,9 @@ Documentation is the foundation, not an afterthought. Before writing a line of c
 The build cycle is:
 
 ```
-Idea → Roadmap → Spec (optional) → Implement → Test → Release
-                    ↓
-              ADR (when an architectural decision is involved)
+Idea → Backlog → [Triage] → PRD (optional) → Spec (optional) → Implement → Test → Release
+                                                                     ↓
+                                                           ADR (when an architectural decision is involved)
 ```
 
 ---
@@ -19,13 +19,17 @@ Idea → Roadmap → Spec (optional) → Implement → Test → Release
 | Document | Location | Purpose |
 |---|---|---|
 | `CLAUDE.md` | `/CLAUDE.md` | Agent instructions, commands, project conventions |
-| `AGENTS.md` | `/AGENTS.md` | AI agent behavior, identity, expert panel routing |
+| `AGENTS.md` | `/AGENTS.md` | AI agent behavior, identity, expert panel routing, trigger phrases |
 | `docs/VISION.md` | `docs/VISION.md` | Why Dojo exists, philosophy, who it's for |
 | `docs/IDENTITY.md` | `docs/IDENTITY.md` | Primary build persona — decision style and defaults |
-| `docs/EXPERTS.md` | `docs/EXPERTS.md` | Virtual advisory panel — 10 specialist personas |
-| `docs/ROADMAP.md` | `docs/ROADMAP.md` | What's shipped, what's next, what's out of scope |
+| `docs/EXPERTS.md` | `docs/EXPERTS.md` | Virtual advisory panel — 11 specialist personas (quick reference at top) |
+| `docs/ROADMAP.md` | `docs/ROADMAP.md` | Active phase status — current phase only |
 | `docs/BRANDING.md` | `docs/BRANDING.md` | Colors, typography, tokens, voice, UI components |
 | `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | DDD model, bounded contexts, ports, events, decisions |
+| `docs/prd/` | `docs/prd/` | Exploratory PRDs — pre-spec, multi-perspective, disposable |
+| `docs/sprints/current.md` | `docs/sprints/current.md` | Active work block — committed items and expected outcome |
+| `docs/sprints/backlog.md` | `docs/sprints/backlog.md` | Ideas by triage state — untriaged, next block, later, explore, discarded |
+| `docs/sprints/archive/` | `docs/sprints/archive/` | Closed blocks with retros |
 | `CONTRIBUTING.md` | `/CONTRIBUTING.md` | How to set up, branch, commit, and open a PR |
 | `SECURITY.md` | `/SECURITY.md` | Vulnerability reporting, scope, response timeline |
 | `LICENSE.md` | `/LICENSE.md` | MIT License |
@@ -131,6 +135,142 @@ pnpm lint                     # lint all workspaces
 
 ### 7. Release
 On merge to `main`, update `CHANGELOG.md`. Mark completed Roadmap items as done.
+
+---
+
+## Playbooks
+
+Concrete step-by-step checklists for recurring operations. When the user asks to perform one of these, follow the checklist exactly to keep all documents consistent. New playbooks are added here as new recurring operations are identified.
+
+---
+
+### Playbook: Close a block
+
+Triggered by: "cerremos el bloque" / "cierra el bloque"
+
+1. **Complete the retro** in `docs/sprints/current.md` — fill in all three retro questions
+2. **Archive the block** — copy `current.md` to `docs/sprints/archive/sprint-NNN-name.md` (use the next sequential number)
+3. **Update ROADMAP.md sprint history** — add a row to the "History — Sprints" table with: link to archived file, one-line outcome, ✅ Closed status
+4. **Update ROADMAP.md spec history** — if any specs shipped during this block, add them to the "History — Specs" table
+5. **Update ROADMAP.md PRD history** — if any PRDs changed state during this block, update their row
+6. **Clear `docs/sprints/current.md`** — replace content with an empty block template (name TBD, outcome TBD)
+7. **Confirm** — summarize what was archived and what the ROADMAP now shows
+
+---
+
+### Playbook: Open a new block
+
+Triggered by: "empecemos un bloque" / "abramos el siguiente bloque"
+
+1. **Read `docs/sprints/backlog.md`** section "Triaged — next block" — list the available items
+2. **Propose items** for the new block — ask the user to confirm or adjust
+3. **Define the expected outcome** — one sentence of what "done" looks like for this block
+4. **Write `docs/sprints/current.md`** with: block name, started date, phase, expected outcome, committed items, out-of-scope items
+5. **Update ROADMAP.md sprint history** — add a row for the new block with 🔄 In progress status
+6. **Move confirmed items out of backlog** — remove from "Triaged — next block" section in `docs/sprints/backlog.md`
+7. **Confirm** — show the user the new `current.md`
+
+---
+
+### Playbook: Convert a PRD to spec(s)
+
+Triggered by: "convierte este PRD en spec" / "avancemos a spec"
+
+1. **Read the PRD** — identify the chosen option from the "Provisional conclusion" section
+2. **Determine scope** — decide if this is one spec or multiple (one spec per coherent deliverable)
+3. **Create spec file(s)** at `docs/specs/NNN-title.md` — use the next sequential number(s)
+4. **Write each spec** answering: what is being built and why? what does "done" look like? what is explicitly out of scope?
+5. **Update the PRD** — change status to "advancing to spec" and add a link to the spec(s) in the "Next step" section
+6. **Update ROADMAP.md PRD history** — change the PRD's status in the table
+7. **Update ROADMAP.md spec history** — add a row for the new spec(s)
+8. **Add to `docs/sprints/current.md`** — if the spec work is part of the current block, add it as a committed item
+9. **Confirm** — show links to the new spec(s)
+
+---
+
+### Playbook: Prepare a release
+
+Triggered by: "preparemos un release" / "vamos a hacer un release"
+
+1. **Read `docs/sprints/current.md`** — identify all completed items
+2. **Read `CHANGELOG.md`** — find the current unreleased section
+3. **Write CHANGELOG entry** — group completed items under feat / fix / chore / docs as appropriate
+4. **Update `docs/ROADMAP.md`** — mark the block as closed, update sprint and spec history tables
+5. **Update `docs/sprints/current.md`** if the block is closing — run the "Close a block" playbook first
+6. **Verify the definition of done** — confirm: typecheck passes, lint passes, tests pass, docs updated
+7. **Propose the commit message** — format: `release: [version or milestone name]`
+8. **Confirm** before committing — show the user what will be committed
+
+---
+
+## Keeping ROADMAP.md Updated
+
+`docs/ROADMAP.md` is the project's big-picture document. Update it in the same commit the work lands:
+
+| When | What to do |
+|---|---|
+| A sprint closes | Add a row to the sprint history table |
+| A spec ships | Add a row to the spec history table |
+| A PRD is created or changes state | Update the PRD table |
+| A phase completes | Mark it done in the Phases section |
+| Something is discarded | Move it to `docs/sprints/backlog.md` Discarded section with a reason |
+
+**What does NOT go in ROADMAP:**
+- Implementation details (those go in specs or ADRs)
+- Small bugs or issues (those go in GitHub Issues)
+- Technical decisions (those go in `docs/adr/`)
+- In-progress or WIP work (ROADMAP reflects only done or planned, not in-between)
+
+---
+
+## PRDs — Exploratory Documents
+
+A PRD in this project is a thinking tool, not a formal planning artifact. It lives in `docs/prd/` and uses the template at `docs/prd/000-template.md`.
+
+**What they are for:**
+- Exploring an idea from multiple perspectives before committing to build it
+- Identifying tensions and trade-offs that are not obvious upfront
+- Deciding whether something advances to a spec, needs more exploration, or gets discarded
+
+**When to write a PRD vs. going straight to a spec:**
+- New idea with UX, architecture, or product direction implications → PRD first
+- Small, well-defined feature with no obvious tensions → spec directly
+- Something that seems simple but involves multiple user perspectives → PRD
+
+**Format:** see `docs/prd/000-template.md`. Required sections: idea in one sentence, at least two perspectives, and next step.
+
+**They are disposable.** If something does not advance, archive it without shame. An archived PRD is not a failure — it is evidence that thinking happened before writing code.
+
+---
+
+## Block Cycle
+
+Work is organized into outcome-defined blocks, not fixed-time sprints. The active block always lives in `docs/sprints/current.md`.
+
+### Starting a block
+
+1. Review `docs/sprints/backlog.md` section "Triaged — next block"
+2. Define the **expected outcome** (a clear sentence of what "done" means)
+3. Commit to the items in the block
+4. Explicitly declare what is **out of scope** for this block
+5. If a previous block exists, archive it first: copy to `docs/sprints/archive/sprint-NNN-name.md`
+
+### During the block
+
+- Update item status in `current.md` as work progresses
+- Urgent bugs or emerging work: add directly to `current.md` as a committed item
+- New non-urgent ideas: add to `docs/sprints/backlog.md` section "Untriaged"
+
+### Closing a block
+
+1. Complete the **Retro** section in `current.md` (3 questions: what went well? what slowed us down? what goes to the next block?)
+2. Copy `current.md` to `docs/sprints/archive/sprint-NNN-name.md`
+3. Clear `current.md` for the next block
+4. Move incomplete items to backlog if they are not going into the next block
+
+### Golden rule
+
+**If it is committed in the block and not marked done, it is not done.** `current.md` is the source of truth for the current state of work, not the git log.
 
 ---
 
