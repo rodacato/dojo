@@ -31,3 +31,9 @@ export class NoEligibleExercisesError extends DomainError {
     super('No eligible exercises found for the given filters', 'NO_ELIGIBLE_EXERCISES')
   }
 }
+
+export class SessionExpiredError extends DomainError {
+  constructor(id: string) {
+    super(`Session time limit exceeded: ${id}`, 'SESSION_EXPIRED')
+  }
+}

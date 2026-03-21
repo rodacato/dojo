@@ -6,6 +6,7 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import { config } from '../../config'
 import { healthRoutes } from './routes/health'
 import { authRoutes } from './routes/auth'
+import { practiceRoutes, adminRoutes } from './routes/practice'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 
 export function createRouter() {
@@ -18,7 +19,8 @@ export function createRouter() {
 
   app.route('/', healthRoutes)
   app.route('/', authRoutes)
-  // app.route('/', sessionRoutes)   ← added in later phases
+  app.route('/', practiceRoutes)
+  app.route('/admin', adminRoutes)
 
   app.onError((err, c) => {
     if (err instanceof HTTPException) return err.getResponse()
@@ -42,6 +44,8 @@ function domainErrorToStatus(code?: string): ContentfulStatusCode {
       return 404
     case 'SESSION_ALREADY_COMPLETED':
       return 409
+    case 'SESSION_EXPIRED':
+      return 408
     case 'NO_ELIGIBLE_EXERCISES':
       return 422
     default:
