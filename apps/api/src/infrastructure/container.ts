@@ -3,6 +3,7 @@ import { GetSession } from '../application/practice/GetSession'
 import { StartSession } from '../application/practice/StartSession'
 import { SubmitAttempt } from '../application/practice/SubmitAttempt'
 import { GetExerciseById } from '../application/content/GetExerciseById'
+import { CreateExercise } from '../application/content/CreateExercise'
 import { UpsertUser } from '../application/identity/UpsertUser'
 import { db } from './persistence/drizzle/client'
 import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
@@ -25,6 +26,7 @@ export const useCases = {
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
   getExerciseOptions: new GetExerciseOptions({ exerciseRepo }),
   getExerciseById: new GetExerciseById({ exerciseRepo }),
+  createExercise: new CreateExercise({ exerciseRepo }),
   getSession: new GetSession({ sessionRepo }),
   upsertUser: new UpsertUser({ userRepo }),
 }

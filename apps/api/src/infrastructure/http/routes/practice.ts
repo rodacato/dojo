@@ -9,6 +9,7 @@ import { db } from '../../persistence/drizzle/client'
 import { attempts, exercises, sessions, variations } from '../../persistence/drizzle/schema'
 import { requireAuth, requireCreator } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
+import type { Difficulty, ExerciseType } from '../../../domain/content/values'
 import { pendingAttempts } from './pending-attempts'
 
 export const practiceRoutes = new Hono<AppEnv>()
@@ -295,9 +296,42 @@ adminRoutes.get('/exercises', async (c) => {
   )
 })
 
+const createExerciseSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  duration: z.number().int().positive(),
+  difficulty: z.enum(['easy', 'medium', 'hard']),
+  type: z.enum(['code', 'chat', 'whiteboard']),
+  languages: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]),
+  topics: z.array(z.string()).default([]),
+  variations: z
+    .array(z.object({ ownerRole: z.string().min(1), ownerContext: z.string().min(1) }))
+    .min(1),
+})
+
 adminRoutes.post('/exercises', async (c) => {
-  // TODO: Spec 014 — implement exercise creation
-  return c.json({ error: 'Not implemented' }, 501)
+  const user = c.get('user') as { id: string }
+  const body = await c.req.json()
+  const parsed = createExerciseSchema.safeParse(body)
+  if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
+
+  const { title, description, duration, difficulty, type, languages, tags, topics, variations } =
+    parsed.data
+  const result = await useCases.createExercise.execute({
+    title,
+    description,
+    durationMinutes: duration,
+    difficulty: difficulty as Difficulty,
+    type: type as ExerciseType,
+    languages,
+    tags,
+    topics,
+    createdBy: UserId(user.id),
+    variations,
+  })
+
+  return c.json({ id: result.id }, 201)
 })
 
 // ---------------------------------------------------------------------------

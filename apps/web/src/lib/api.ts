@@ -53,6 +53,19 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
+export interface AdminExerciseDTO {
+  id: string
+  title: string
+  type: string
+  difficulty: string
+  duration: number
+  status: string
+  sessionCount: number
+  avgScore: number | null
+  variationCount: number
+  createdAt: string
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -86,5 +99,23 @@ export const api = {
     request<SubmitAttemptResponse>(`/sessions/${sessionId}/attempts`, {
       method: 'POST',
       body: JSON.stringify({ userResponse }),
+    }),
+
+  getAdminExercises: () => request<AdminExerciseDTO[]>('/admin/exercises'),
+
+  createExercise: (data: {
+    title: string
+    description: string
+    duration: number
+    difficulty: string
+    type: string
+    languages: string[]
+    tags: string[]
+    topics: string[]
+    variations: Array<{ ownerRole: string; ownerContext: string }>
+  }) =>
+    request<{ id: string }>('/admin/exercises', {
+      method: 'POST',
+      body: JSON.stringify(data),
     }),
 }
