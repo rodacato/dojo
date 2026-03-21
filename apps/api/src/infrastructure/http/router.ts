@@ -1,8 +1,11 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { HTTPException } from 'hono/http-exception'
 import { logger } from 'hono/logger'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import { config } from '../../config'
 import { healthRoutes } from './routes/health'
+import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 // other routes imported here as they are created
 
 export function createRouter() {
@@ -10,10 +13,38 @@ export function createRouter() {
 
   app.use('*', logger())
   app.use('*', cors({ origin: config.WEB_URL, credentials: true }))
+  app.use('*', globalLimiter)
+  app.use('/auth/*', authLimiter)
 
   app.route('/', healthRoutes)
   // app.route('/', sessionRoutes)   ← added in later phases
   // app.route('/', authRoutes)      ← added in Phase 6
 
+  app.onError((err, c) => {
+    if (err instanceof HTTPException) return err.getResponse()
+
+    if (err.name === 'DomainError') {
+      const code = (err as { code?: string }).code
+      return c.json({ error: err.message, code }, domainErrorToStatus(code))
+    }
+
+    console.error('Unhandled error:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  })
+
   return app
+}
+
+function domainErrorToStatus(code?: string): ContentfulStatusCode {
+  switch (code) {
+    case 'SESSION_NOT_FOUND':
+    case 'EXERCISE_NOT_FOUND':
+      return 404
+    case 'SESSION_ALREADY_COMPLETED':
+      return 409
+    case 'NO_ELIGIBLE_EXERCISES':
+      return 422
+    default:
+      return 500
+  }
 }
