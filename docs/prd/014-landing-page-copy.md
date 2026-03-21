@@ -1,6 +1,6 @@
 # PRD-014: Landing Page Copy Draft
 
-> **Status:** draft
+> **Status:** confirmed — implementing in Sprint 003 (Spec 018, Phase 0 static form)
 > **Date:** 2026-03-21
 > **Author:** Claude (Amara Diallo + Priya Menon guiding — copy and positioning)
 

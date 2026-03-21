@@ -26,6 +26,7 @@ export function KataActivePage() {
   const [preparingMsg, setPreparingMsg] = useState(PREPARING_MESSAGES[0]!)
   const [userResponse, setUserResponse] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [timedOut, setTimedOut] = useState(false)
   const msgIndex = useRef(0)
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export function KataActivePage() {
         <Timer
           durationMinutes={exercise.duration}
           startedAt={session.startedAt}
-          onExpired={() => handleSubmit()}
+          onExpired={() => { setTimedOut(true); handleSubmit() }}
         />
       </div>
 
@@ -145,10 +146,14 @@ export function KataActivePage() {
           <div className="p-3 border-t border-border shrink-0">
             <button
               onClick={handleSubmit}
-              disabled={!userResponse.trim() || submitting}
-              className="w-full py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors disabled:opacity-40"
+              disabled={submitting}
+              className={`w-full py-2 font-mono text-sm rounded-sm transition-colors disabled:opacity-40 ${
+                timedOut
+                  ? 'bg-danger text-primary hover:bg-danger/90'
+                  : 'bg-accent text-primary hover:bg-accent/90 disabled:opacity-40'
+              } ${!userResponse.trim() && !timedOut ? 'opacity-40 cursor-not-allowed' : ''}`}
             >
-              {submitting ? 'Submitting...' : 'Submit →'}
+              {submitting ? 'Submitting...' : timedOut ? '⏱ Time\'s up — submit now' : 'Submit →'}
             </button>
           </div>
         </Panel>

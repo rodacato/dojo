@@ -46,6 +46,7 @@ export function DashboardPage() {
       <TodayCard
         todayComplete={dashboard.todayComplete}
         activeSessionId={dashboard.activeSessionId}
+        isFirstVisit={dashboard.streak === 0 && dashboard.recentSessions.length === 0}
         onStart={() => navigate('/start')}
         onResume={(id) => navigate(`/kata/${id}`)}
       />
@@ -73,11 +74,13 @@ export function DashboardPage() {
 function TodayCard({
   todayComplete,
   activeSessionId,
+  isFirstVisit,
   onStart,
   onResume,
 }: {
   todayComplete: boolean
   activeSessionId: string | null
+  isFirstVisit: boolean
   onStart: () => void
   onResume: (id: string) => void
 }) {
@@ -106,7 +109,9 @@ function TodayCard({
 
   return (
     <div className="bg-surface border border-border rounded-md p-4">
-      <p className="text-secondary text-sm">The dojo was empty today.</p>
+      <p className="text-secondary text-sm">
+        {isFirstVisit ? 'Day 1. The dojo opens.' : 'The dojo was empty today.'}
+      </p>
       <button
         onClick={onStart}
         className="mt-3 w-full py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"

@@ -2,13 +2,14 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { RequireAuth } from './components/RequireAuth'
 import { RequireCreator } from './components/RequireCreator'
-import { LoginPage } from './pages/LoginPage'
+import { LandingPage } from './pages/LandingPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DayStartPage } from './pages/DayStartPage'
 import { KataSelectionPage } from './pages/KataSelectionPage'
 import { KataActivePage } from './pages/KataActivePage'
 import { SenseiEvalPage } from './pages/SenseiEvalPage'
 import { ResultsPage } from './pages/ResultsPage'
+import { ErrorPage } from './pages/ErrorPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
 import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
@@ -18,9 +19,14 @@ export function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
+          {/* Public */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="/error" element={<ErrorPage />} />
+
+          {/* Protected */}
           <Route element={<RequireAuth />}>
-            <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/start" element={<DayStartPage />} />
             <Route path="/kata" element={<KataSelectionPage />} />
             <Route path="/kata/:id" element={<KataActivePage />} />
@@ -39,6 +45,7 @@ export function App() {
               <Route path="exercises/new" element={<AdminNewExercisePage />} />
             </Route>
           </Route>
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

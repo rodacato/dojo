@@ -1,46 +1,48 @@
-# Active Block: Close Phase 0 — Working Core Loop
+# Active Block: Sprint 003 — First Production Deploy
 
 **Started:** 2026-03-21
 **Phase:** Phase 0
 
-**Expected outcome:** The creator can complete a full kata — from choosing an exercise to receiving the sensei's verdict — without technical friction, in production.
+**Expected outcome:** The creator can log in and complete a real kata in production. The site has a landing page, clear error states, and 16 exercises seeded.
 
 ---
 
 ## Committed
 
-### Pre-implementation (unblock everything else)
-- [x] `scripts/test-llm.ts` — standalone prompt tester, run before wiring WebSocket (see PRD-012)
-- [x] Pick winning sensei prompt (3 variations in PRD-012), commit to `apps/api/src/prompts/sensei.ts`
-- [x] Define canonical `topics[]` vocabulary in `packages/shared` (aligns seed data + LLM output)
+### Code — done before deploy
 
-### Backend
-- [x] Spec 012 — Seed data: 8 kata from PRD-006, deterministic UUIDs, idempotent, seed validation
-- [x] Spec 009 — HTTP routes: `GET /exercises`, `POST /sessions`, `GET /sessions/:id`, `POST /sessions/:id/attempts`, `GET /auth/me`, `GET /dashboard`
-- [x] Spec 011 — Anthropic streaming adapter: `LLMPort` implementation, `<evaluation>` parser, structured output
-- [x] Spec 010 — WebSocket evaluation flow: message protocol, reconnect, timer enforcement, concurrent connection limit
+- [ ] Spec 018 — Landing page: ruta `/`, copy de PRD-014, form "request access" estático (Phase 0)
+- [ ] Spec 017 — UX improvements (HIGH severity from PRD-013):
+  - OAuth error state en `/login`
+  - First-day empty state ("Day 1. The dojo opens.")
+  - Dashboard: resume CTA si hay sesión activa
+  - Timer expired → "Time's up — submit now" en rojo + grace period handling
+  - Generic error page (cross-cutting)
+  - Session expiry (401 global) → redirect a `/login` con mensaje
 
-### Frontend
-- [x] Tailwind 4 setup + design tokens (colors, typography, spacing from style guide)
-- [x] Spec 013 — 8 core screens: Login → Dashboard → Day Start → Kata Selection → Kata Active (CODE + CHAT) → Eval → Results
-- [x] CodeMirror 6 integration in Kata Active CODE (no autocomplete, no spell check)
+### Infrastructure
 
-### Admin + Deploy
-- [x] Spec 014 — Admin UI: Exercise List + New Exercise (Exercise section only, others as disabled skeleton)
-- [x] Spec 015 — Kamal deploy config: Hetzner VPS, GitHub Environment `production`
+- [ ] Spec 016 — Production deploy:
+  - Provisionar VPS Hetzner + configurar Cloudflare Tunnel
+  - Verificar Kamal config (`config/deploy.api.yml`, `config/deploy.web.yml`)
+  - Correr `kamal deploy` (API + web)
+  - Correr seed de 16 ejercicios en producción
+  - Self-test: 3+ katas reales en prod, verificar calidad del sensei
 
 ---
 
 ## Out of this block
 
-- Social features (Phase 1) — profiles, invitations, share cards
-- Badges and leaderboard (Phase 2)
-- User-submitted exercises (Phase 3)
+- Invitaciones a otros usuarios (Phase 1)
+- Badges, leaderboard, share cards (Phase 2)
+- Mobile tab switcher en CODE kata (identificado en PRD-013, diferido)
+- Skeleton loaders (MEDIUM severity en PRD-013, diferido)
+- Accessibility audit completo (diferido)
 
 ---
 
 ## Retro *(on close)*
 
-- What went well?
-- What slowed us down?
-- What goes to the next block?
+- ¿Qué salió bien?
+- ¿Qué frenó?
+- ¿Qué va al siguiente bloque?

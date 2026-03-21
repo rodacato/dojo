@@ -337,6 +337,417 @@ Your PM says "we should clean this up." You have a sprint with 2 other features 
       },
     ],
   },
+
+  // -------------------------------------------------------------------------
+  // Bug Detection
+  // -------------------------------------------------------------------------
+
+  {
+    id: uuidv5('exercise-009-timezone-bug'),
+    title: 'The Timezone Bug',
+    description: `Your 30-day free trial system has a support ticket backlog. Some users are getting cut off after 29 days, others are still active after 31. The relevant code:
+
+\`\`\`typescript
+function hasTrialExpired(signedUpAt: Date): boolean {
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000
+  return Date.now() - signedUpAt.getTime() > thirtyDays
+}
+
+// signedUpAt is parsed from the user's submitted form field:
+function parseSignupDate(rawDate: string): Date {
+  // rawDate is the date string stored in the DB, e.g. "2026-03-01"
+  return new Date(rawDate + 'T00:00:00')
+}
+\`\`\`
+
+The server runs on UTC. Users sign up from all timezones. One server engineer said "the math looks right to me." Find the bug, explain why it produces inconsistent results, and fix it.`,
+    duration: 15,
+    difficulty: 'easy',
+    type: 'code',
+    category: 'backend',
+    languages: ['typescript', 'python', 'javascript'],
+    tags: ['bug', 'timezone', 'date-handling'],
+    topics: ['timezones', 'date-parsing', 'utc', 'javascript-dates', 'ecmascript-spec'],
+    variations: [
+      {
+        ownerRole: 'Senior backend engineer who has fixed timezone-related billing bugs at a SaaS company with users in 80 countries',
+        ownerContext:
+          "The bug is in `parseSignupDate`: `new Date('2026-03-01T00:00:00')` — a datetime string WITHOUT a timezone suffix — is parsed as **local time** per the ECMAScript spec. On a server in UTC+5:30, this parses to 18:30 UTC on Feb 28, which is 5.5 hours earlier than intended. Combined with a 30-day window in milliseconds, some users get cut off hours early (effectively 29 days) and some get extra hours (effectively 31 days in edge cases around DST). The fix: append 'Z' to force UTC parsing — `new Date(rawDate + 'T00:00:00Z')`. Evaluate whether the developer knows the difference between date-only strings (ECMAScript parses as UTC) and date-time strings without 'Z' (parsed as local). Give extra credit if they identify that comparing `Date.now()` to a stored UTC date is fine — the bug is only in the parsing.",
+      },
+      {
+        ownerRole: 'Engineering manager who has triaged 3 separate timezone-related production incidents at previous companies and considers this a fundamental skill gap',
+        ownerContext:
+          "Evaluate whether the developer can reason about the bug without running code. Can they articulate what 'local time parsing' means in a server context? Do they know that Node.js inherits the server's TZ environment variable? The deeper question is whether they understand that date-only strings and date-time strings behave differently in JavaScript — a distinction almost nobody knows until they get burned by it. Give credit for: correctly identifying `parseSignupDate` as the bug location, explaining the parsing ambiguity, and proposing a defensive fix (always use ISO 8601 with explicit 'Z' or use a library like `date-fns` that enforces UTC). Deduct if they rewrite `hasTrialExpired` — that function is correct.",
+      },
+    ],
+  },
+
+  {
+    id: uuidv5('exercise-010-race-condition'),
+    title: 'The Race Condition',
+    description: `Your e-commerce site has a flash sale. The product has 1 unit left. Somehow, 3 customers successfully checked out and all received order confirmations. Your support team is furious. Here is the inventory reservation code:
+
+\`\`\`typescript
+class InventoryService {
+  async reserveItem(itemId: string, userId: string): Promise<boolean> {
+    const item = await db.items.findById(itemId)
+
+    if (item.stock <= 0) {
+      return false
+    }
+
+    await db.items.update(itemId, { stock: item.stock - 1 })
+    await db.reservations.create({ itemId, userId })
+    return true
+  }
+}
+\`\`\`
+
+Explain exactly how 3 users could all succeed. Fix the code. Then explain what you would add to make the fix observable in production.`,
+    duration: 20,
+    difficulty: 'medium',
+    type: 'code',
+    category: 'backend',
+    languages: ['typescript', 'python'],
+    tags: ['bug', 'concurrency', 'database'],
+    topics: ['race-conditions', 'database-transactions', 'optimistic-locking', 'pessimistic-locking', 'concurrency', 'atomicity'],
+    variations: [
+      {
+        ownerRole: 'Staff backend engineer who has designed inventory systems for flash sales with 50k concurrent users',
+        ownerContext:
+          "The bug is a classic TOCTOU (time-of-check to time-of-use) race: three requests all read `stock = 1`, all pass the `<= 0` check, all decrement from 1 to 0. Since `findById` and `update` are separate operations, any number of concurrent requests can slip between them. The fix: use an atomic conditional update with a row lock — e.g., `UPDATE items SET stock = stock - 1 WHERE id = $1 AND stock > 0 RETURNING *` and check whether a row was returned. Or use a database transaction with `SELECT FOR UPDATE`. Give credit for: explaining TOCTOU clearly, proposing an atomic solution (not just wrapping in a JS mutex, which only works on a single server instance), and noting that the fix must be database-level to survive horizontal scaling. Observability: log when the update returns 0 rows (oversell attempt detected), add a metric for reservation failures.",
+      },
+      {
+        ownerRole: 'Principal engineer who has reviewed and rejected multiple "fixed" versions of this bug that still had the race condition',
+        ownerContext:
+          "Evaluate whether the developer's fix actually works under concurrency. Common wrong answers: (1) wrapping in a JS try/catch — doesn't help; (2) using a JavaScript mutex/lock — only works on a single process, breaks with horizontal scaling; (3) adding a transaction without `SELECT FOR UPDATE` — still has the race inside the transaction. The only correct answer for multi-server environments is an atomic database operation. Ask a follow-up if they propose a solution that only works on a single server. Give credit for raising the horizontal scaling concern proactively, and for mentioning that the `reservations.create` should also be inside the same transaction — a reservation should not exist if the stock decrement failed.",
+      },
+    ],
+  },
+
+  // -------------------------------------------------------------------------
+  // Refactoring
+  // -------------------------------------------------------------------------
+
+  {
+    id: uuidv5('exercise-011-function-that-grew'),
+    title: 'The Function That Grew',
+    description: `This function started as 10 lines. It's now 50. Every new requirement added another \`if\`. Nobody has complained — it works. You have been asked to add one more case (handling \`'enterprise'\` plan users with a custom discount rate stored in the DB). Before you add it, refactor the function.
+
+\`\`\`typescript
+async function calculateInvoiceTotal(
+  userId: string,
+  lineItems: Array<{ unitPrice: number; quantity: number }>,
+  couponCode: string | null
+): Promise<number> {
+  const subtotal = lineItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0)
+
+  let discount = 0
+
+  const user = await db.users.findById(userId)
+  if (user.plan === 'free') {
+    discount = 0
+  } else if (user.plan === 'starter') {
+    discount = subtotal * 0.05
+  } else if (user.plan === 'pro') {
+    discount = subtotal * 0.15
+  } else if (user.plan === 'team') {
+    if (user.teamSize >= 10) {
+      discount = subtotal * 0.25
+    } else {
+      discount = subtotal * 0.20
+    }
+  }
+
+  if (couponCode) {
+    const coupon = await db.coupons.findByCode(couponCode)
+    if (coupon && coupon.active) {
+      if (coupon.type === 'percent') {
+        discount += subtotal * (coupon.value / 100)
+      } else if (coupon.type === 'fixed') {
+        discount += coupon.value
+      }
+    }
+  }
+
+  const taxRate = user.country === 'US' ? 0.08 : user.country === 'EU' ? 0.20 : 0
+  const afterDiscount = subtotal - discount
+  const tax = afterDiscount * taxRate
+  return Math.max(0, afterDiscount + tax)
+}
+\`\`\`
+
+Refactor first. Then add the \`enterprise\` case.`,
+    duration: 15,
+    difficulty: 'easy',
+    type: 'code',
+    category: 'backend',
+    languages: ['typescript', 'python'],
+    tags: ['refactoring', 'readability', 'clean-code'],
+    topics: ['refactoring', 'single-responsibility', 'extract-function', 'readability', 'maintainability'],
+    variations: [
+      {
+        ownerRole: 'Senior engineer who reviews PRs for a 6-person team and has a firm rule: every function should do one thing and fit on a screen',
+        ownerContext:
+          "Evaluate the developer's ability to identify the responsibilities and extract them cleanly. The function does three distinct things: (1) calculate subtotal, (2) calculate discount (plan-based + coupon), (3) calculate tax. Each should be a separate function. The plan discount is also a candidate for a lookup table or a strategy pattern. Evaluate whether the refactoring preserves behavior exactly — the existing logic has a specific execution order (plan discount first, then coupon on top of subtotal, not on the discounted amount). Give credit for noticing that `discount` accumulates (plan + coupon), and for extracting `getPlanDiscount`, `getCouponDiscount`, and `getTaxRate` as separate pure functions where possible. Penalize refactors that accidentally change the discount stacking order.",
+      },
+      {
+        ownerRole: 'Staff engineer who treats refactoring as a prerequisite for new features, not an optional cleanup task',
+        ownerContext:
+          "Evaluate whether the developer refactors BEFORE adding the new case — not after. The enterprise case is the forcing function that reveals whether the current structure can absorb change cleanly. A developer who adds enterprise support to the existing `if-else` chain has made the problem worse. The correct move: extract the plan discount logic into something extensible (a map, a small strategy, or a helper) so the enterprise case is just one more entry point. Evaluate also whether they handle the new enterprise requirement correctly — 'custom discount rate stored in the DB' means an async lookup, which changes the function's async surface. Give credit for catching that the enterprise path requires a DB call not present in the existing logic.",
+      },
+    ],
+  },
+
+  {
+    id: uuidv5('exercise-012-nested-conditions'),
+    title: 'The Nested Conditions',
+    description: `This function has been correct since 2023. It has never been wrong. But it has also never been readable. A new developer on the team spent 25 minutes trying to understand it before asking for help. Refactor it for readability without changing any behavior.
+
+\`\`\`typescript
+function getAccessLevel(user: {
+  isActive: boolean
+  role: 'admin' | 'editor' | 'viewer' | 'guest'
+  emailVerified: boolean
+  suspendedAt: Date | null
+}): 'full' | 'limited' | 'readonly' | 'none' {
+  if (user.isActive) {
+    if (!user.suspendedAt) {
+      if (user.emailVerified) {
+        if (user.role === 'admin') {
+          return 'full'
+        } else if (user.role === 'editor') {
+          return 'full'
+        } else if (user.role === 'viewer') {
+          return 'limited'
+        } else {
+          return 'readonly'
+        }
+      } else {
+        if (user.role === 'admin') {
+          return 'limited'
+        } else {
+          return 'readonly'
+        }
+      }
+    } else {
+      return 'none'
+    }
+  } else {
+    return 'none'
+  }
+}
+\`\`\`
+
+Produce a refactored version. Write a short explanation of the main change you made and why.`,
+    duration: 20,
+    difficulty: 'medium',
+    type: 'code',
+    category: 'backend',
+    languages: ['typescript', 'python'],
+    tags: ['refactoring', 'readability', 'clean-code'],
+    topics: ['refactoring', 'guard-clauses', 'early-return', 'readability', 'cyclomatic-complexity'],
+    variations: [
+      {
+        ownerRole: 'Senior engineer with a strong opinion that deeply nested code is a code smell, not a style preference',
+        ownerContext:
+          "Evaluate the developer's refactoring approach. The canonical improvement is guard clauses (early returns for the negative cases): `if (!user.isActive || user.suspendedAt) return 'none'`. This immediately reduces nesting depth and makes the happy path clear. From there, the role/email logic can be expressed more declaratively — a lookup table, a small conditional chain, or a derived 'canWrite' flag. Evaluate whether the refactor is behavior-preserving: admin + editor both return 'full' when email verified (they can be collapsed); guest (unverified or verified) with no email verification gets 'readonly'. Give credit for: applying guard clauses, reducing nesting depth to ≤2 levels, and writing the explanation in terms of the business logic rather than the code structure.",
+      },
+      {
+        ownerRole: 'Principal engineer who has established refactoring conventions across multiple teams and uses code review as the primary teaching mechanism',
+        ownerContext:
+          "Evaluate the quality of the explanation, not just the code. A developer who produces clean code but cannot articulate *why* the nested version is harder to read has learned a pattern without understanding it. The key insight: nested conditions force the reader to hold multiple states in their head simultaneously. Guard clauses let the reader discard cases early and focus on what remains. Ask a follow-up if they refactor without mentioning guard clauses or early returns by name — understanding the pattern name helps them teach it to others. Also evaluate whether their version correctly collapses the `admin | editor → 'full'` case — this is a common behavior-breaking mistake in this exercise.",
+      },
+    ],
+  },
+
+  {
+    id: uuidv5('exercise-013-slow-loop'),
+    title: 'The Slow Loop',
+    description: `A nightly report job is timing out in production. It processes 200k users and takes 4+ hours. The data team is blocked. You've been asked to fix it before the next run tonight.
+
+\`\`\`typescript
+function findUsersWhoNeverPurchased(
+  users: Array<{ id: string; email: string }>,
+  purchases: Array<{ userId: string; amount: number }>
+): Array<{ id: string; email: string }> {
+  return users.filter((user) => {
+    const userPurchases = purchases.filter((p) => p.userId === user.id)
+    return userPurchases.length === 0
+  })
+}
+
+// Called with: findUsersWhoNeverPurchased(allUsers, allPurchases)
+// allUsers: 200,000 records
+// allPurchases: 1,800,000 records
+\`\`\`
+
+Fix the function. State the time complexity before and after. Explain how you would verify the fix is correct before deploying tonight.`,
+    duration: 20,
+    difficulty: 'medium',
+    type: 'code',
+    category: 'backend',
+    languages: ['typescript', 'python'],
+    tags: ['performance', 'algorithms', 'bug'],
+    topics: ['time-complexity', 'big-o', 'set', 'hashmap', 'data-structures', 'performance-optimization'],
+    variations: [
+      {
+        ownerRole: 'Staff engineer who has optimized data pipelines at scale and can estimate runtime complexity without running the code',
+        ownerContext:
+          "The bug is algorithmic: `O(n × m)` where n = 200k users and m = 1.8M purchases = 360 billion operations in the inner loop. The fix: build a `Set<string>` of userId from purchases (one pass, O(m)), then filter users by `!purchasedSet.has(user.id)` (O(n)). Total: O(n + m). Evaluate whether the developer can articulate complexity before and after — not just 'it's faster' but 'it's O(n×m) vs O(n+m).' Also evaluate their verification plan: the output should be identical, so a good test is running both versions on a sample and comparing results. Give extra credit for noting that the real fix for a 200k/1.8M dataset should be a SQL query, not an in-memory operation.",
+      },
+      {
+        ownerRole: 'Engineering manager who has had to explain to a non-technical CTO why a job that ran fine at 10k users takes 4 hours at 200k',
+        ownerContext:
+          "Evaluate the developer's ability to communicate the problem clearly and the fix correctly. Can they explain why O(n×m) is catastrophic at scale without using jargon? Can they explain why a Set lookup is O(1) and why that changes everything? For the verification plan, evaluate whether they think about edge cases: what if the same userId appears multiple times in purchases? The Set-based fix handles this correctly (a user is still in the Set regardless of how many purchases they have). Give credit for: clear complexity analysis, a correct fix, and a practical verification approach (sample test, compare outputs, run on staging first). Ask a follow-up if they don't mention moving this logic to SQL — in-memory joins on millions of records are fragile regardless of the algorithm.",
+      },
+    ],
+  },
+
+  // -------------------------------------------------------------------------
+  // Security
+  // -------------------------------------------------------------------------
+
+  {
+    id: uuidv5('exercise-014-jwt-misconception'),
+    title: 'The JWT Misconception',
+    description: `Your team ships a new feature: the mobile app reads the JWT on login to personalize the experience without an extra API call. The token now contains:
+
+\`\`\`json
+{
+  "sub": "user-abc123",
+  "email": "alex@example.com",
+  "plan": "pro",
+  "stripeCustomerId": "cus_9xyzABC",
+  "paymentMethodLast4": "4242",
+  "internalAdminNotes": "VIP — waived 2 chargebacks",
+  "exp": 1748736000
+}
+\`\`\`
+
+The mobile team lead says "it's signed so it's secure." A security-conscious engineer on your team flags it but isn't sure how to explain the issue clearly. Explain what is wrong. Define exactly what should and should not be in a JWT. Propose a revised approach for the mobile personalization use case.`,
+    duration: 20,
+    difficulty: 'medium',
+    type: 'chat',
+    category: 'security',
+    languages: [],
+    tags: ['security', 'jwt', 'authentication'],
+    topics: ['jwt', 'authentication', 'authorization', 'encryption-vs-signing', 'sensitive-data', 'token-design'],
+    variations: [
+      {
+        ownerRole: 'Security engineer who has reviewed hundreds of JWT implementations and written the company JWT standards document',
+        ownerContext:
+          "The core misconception: JWTs are **signed**, not **encrypted**. Anyone can base64-decode the payload and read its contents — no secret needed. The `stripeCustomerId`, `paymentMethodLast4`, and especially `internalAdminNotes` should never be in a JWT. The correct mental model: treat JWT claims as public data that you trust was issued by you (because of the signature), not data that is hidden. What belongs in a JWT: user identifier, roles/permissions, expiry. What does NOT belong: PII, financial data, internal notes, secrets. The fix for mobile personalization: keep the JWT minimal, make one extra API call on login to fetch profile data (it can be cached). Give credit for: explaining the base64-decodable nature of JWTs, distinguishing signing from encryption, and proposing a correct minimal token.",
+      },
+      {
+        ownerRole: "Mobile team lead who genuinely believed JWTs were encrypted because 'they have a signature'",
+        ownerContext:
+          "Evaluate how well the developer explains the misconception to a non-security audience. Can they show concretely how to decode the JWT in 30 seconds (paste into jwt.io — no tools needed)? The `internalAdminNotes` field is the most egregious issue: any user can see their own admin notes by decoding their token. But the Stripe customer ID is also a real risk — combined with other data, it could facilitate fraud. Evaluate whether the developer addresses the mobile team lead's specific claim ('it's signed so it's secure') with a concrete counterexample, not just an abstract explanation. Give credit for explaining that signing guarantees *authenticity* (you issued it) but not *confidentiality* (nobody can read it). If encryption is needed, the standard is JWE — note whether the developer mentions it.",
+      },
+    ],
+  },
+
+  {
+    id: uuidv5('exercise-015-dependency-audit'),
+    title: 'The Dependency Audit',
+    description: `You are reviewing this PR before it gets merged to main. The developer says "just a small cleanup plus one new feature." Identify every problem you find.
+
+\`\`\`diff
+// package.json
+-  "dependencies": {
+-    "express": "^4.18.2",
+-    "pg": "^8.11.0"
+-  },
+-  "devDependencies": {
+-    "jest": "^29.0.0",
+-    "dotenv": "^16.0.0"
+-  }
++  "dependencies": {
++    "express": "^4.18.2",
++    "pg": "^8.11.0",
++    "dotenv": "^16.0.0",
++    "jest": "^29.0.0",
++    "colors": "1.4.0"
++  }
+\`\`\`
+
+\`\`\`diff
+// src/config.ts
++ const API_KEY = 'sk-prod-a8f3c2e1d7b4f9a2c8e1d7b4f9a2c8e1'
++ const DB_PASSWORD = 'hunter2'
++
+  export const config = {
++   apiKey: API_KEY,
++   dbPassword: DB_PASSWORD,
+    port: process.env['PORT'] ?? 3000,
+  }
+\`\`\`
+
+\`\`\`diff
+// .gitignore
+  node_modules/
+  dist/
+- .env
+\`\`\`
+
+List every issue. Explain the severity and impact of each one.`,
+    duration: 15,
+    difficulty: 'easy',
+    type: 'code',
+    category: 'security',
+    languages: ['typescript', 'javascript'],
+    tags: ['security', 'code-review', 'dependencies'],
+    topics: ['dependency-management', 'secrets-management', 'supply-chain-security', 'gitignore', 'devdependencies'],
+    variations: [
+      {
+        ownerRole: 'Security engineer who does weekly dependency audits and has responded to two supply chain incidents in the past year',
+        ownerContext:
+          "There are four distinct issues. (1) `jest` and `dotenv` moved from devDependencies to dependencies — these will be installed in production, bloating the bundle and increasing attack surface. (2) `colors@1.4.0` is a known supply chain incident: the maintainer intentionally shipped a version with malicious code that entered infinite loops. Pinning to an exact version of a compromised package is actively harmful. (3) `API_KEY` and `DB_PASSWORD` are hardcoded in source — they are now in git history permanently, even if removed in a future commit. The secrets must be rotated immediately after being committed. (4) `.env` was removed from `.gitignore` — any developer who now runs with a local `.env` file will accidentally commit it on the next `git add .`. Evaluate whether the developer identifies all four, rates the severity correctly (hardcoded secrets + .gitignore removal are critical; dependency misclassification is medium; colors is high), and knows that rotating secrets is the only fix once they've been committed.",
+      },
+      {
+        ownerRole: 'Senior developer who reviews 15+ PRs per week and has a checklist for security-sensitive changes',
+        ownerContext:
+          "Evaluate the developer's code review completeness and their ability to explain business impact. Finding the issues is the baseline — explaining severity is the real skill. The hardcoded API_KEY should trigger an immediate conversation: 'This key may already be compromised if this PR was pushed to a shared branch. We need to rotate it now, not after merge.' The `.gitignore` issue is subtle but critical: the developer may not realize that removing `.env` from `.gitignore` affects every team member's local environment on next pull. Give credit for: identifying all four issues, explaining the `colors` supply chain risk specifically (not just 'pinned version is bad'), and recommending concrete next steps for the hardcoded secrets.",
+      },
+    ],
+  },
+
+  // -------------------------------------------------------------------------
+  // Architecture
+  // -------------------------------------------------------------------------
+
+  {
+    id: uuidv5('exercise-016-caching-decision'),
+    title: 'The Caching Decision',
+    description: `Your product analytics dashboard endpoint is getting slow. It aggregates 90 days of event data for the current user and is now taking 3–8 seconds for active users. You have been asked to fix it.
+
+Three engineers on the team each proposed a solution in Slack:
+
+- **Engineer A:** "Add a Redis cache. Cache the result for 5 minutes. Problem solved."
+- **Engineer B:** "The query is the problem. Let's add a materialized view and refresh it hourly."
+- **Engineer C:** "This is a read-heavy, user-specific endpoint. Move it behind a CDN with a short TTL and user-scoped cache keys."
+
+Your tech lead is asking you to decide. Which approach do you recommend, and why? What would make you change your recommendation?`,
+    duration: 30,
+    difficulty: 'hard',
+    type: 'chat',
+    category: 'architecture',
+    languages: [],
+    tags: ['architecture', 'caching', 'performance'],
+    topics: ['caching', 'redis', 'materialized-views', 'cdn', 'cache-invalidation', 'trade-offs', 'performance'],
+    variations: [
+      {
+        ownerRole: 'Staff engineer who has implemented all three caching strategies in production and has strong opinions about when each is appropriate',
+        ownerContext:
+          "Evaluate the developer's ability to reason about trade-offs, not just pick an answer. Each approach has merits and failure modes. Redis: correct, but adds operational complexity, doesn't fix the slow query (it still runs once per cache miss for each user), and 5-minute stale data may be unacceptable for a dashboard. Materialized view: fixes the underlying query, but hourly refresh may produce stale data in a product analytics context where users expect near-real-time numbers. CDN: wrong tool for user-specific authenticated data — CDN caching of user-scoped endpoints is complex and error-prone (cache poisoning risk). The pragmatic answer for most teams: fix the query first (add indexes, move to pre-aggregation), then add Redis caching if needed. Give credit for: identifying stale data risk for each approach, asking about freshness requirements before deciding, and noting that 'caching a slow query' is not the same as 'fixing a slow query.'",
+      },
+      {
+        ownerRole: 'CTO of a 12-person startup who has been burned by adding premature infrastructure complexity and is asking the dev to justify every new moving part',
+        ownerContext:
+          "Evaluate the developer's judgment about organizational complexity. Redis means a new infrastructure dependency, new failure modes (Redis down → dashboard down), and operational knowledge requirements. Materialized view is database-native and operationally simple, but requires understanding PostgreSQL internals. CDN for auth endpoints is a trap — most junior engineers haven't dealt with the cache poisoning risk of user-specific CDN entries. The right question to ask before any of these: 'Have we looked at EXPLAIN ANALYZE on the actual query?' The answer may be that a single index eliminates the problem entirely at zero operational cost. Give credit for: questioning the problem framing (why is it slow?), proposing the simplest intervention first (query optimization), and only recommending infrastructure additions if the query is already optimal.",
+      },
+    ],
+  },
 ]
 
 // ---------------------------------------------------------------------------

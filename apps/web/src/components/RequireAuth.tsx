@@ -9,6 +9,6 @@ export function RequireAuth() {
         loading...
       </div>
     )
-  if (!user) return <Navigate to="/login" replace />
+  if (!user) return <Navigate to="/" replace />
   return <Outlet />
 }

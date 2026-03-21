@@ -1,6 +1,6 @@
 # PRD-013: UX/UI Gap Analysis — Missing States, Mobile, Edge Cases
 
-> **Status:** exploring
+> **Status:** confirmed — HIGH severity items committed to Sprint 003 (Spec 017)
 > **Date:** 2026-03-21
 > **Author:** Claude (Soren Bachmann guiding — UX & design)
 

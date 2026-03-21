@@ -43,7 +43,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
   })
   if (res.status === 401) {
-    window.location.href = '/login'
+    window.location.href = '/?error=session_expired'
     throw new Error('Unauthenticated')
   }
   if (!res.ok) {

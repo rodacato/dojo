@@ -19,13 +19,14 @@ env:
     NODE_ENV: production
     PORT: "3001"
     LLM_ADAPTER: anthropic
+    WEB_URL: https://dojo.notdefined.dev
   secret:
     - DATABASE_URL
     - SESSION_SECRET
     - GITHUB_CLIENT_ID
     - GITHUB_CLIENT_SECRET
     - GITHUB_CALLBACK_URL
-    - ANTHROPIC_API_KEY
+    - LLM_API_KEY
     - CREATOR_GITHUB_ID
 
 healthcheck:
@@ -55,4 +56,6 @@ accessories:
       network: dojo
 
 hooks:
-  post-deploy: kamal app exec --reuse 'node dist/infrastructure/persistence/migrate.js'
+  post-deploy: |
+    kamal app exec --reuse 'node dist/infrastructure/persistence/migrate.js'
+    kamal app exec --reuse 'node dist/infrastructure/persistence/seed.js'

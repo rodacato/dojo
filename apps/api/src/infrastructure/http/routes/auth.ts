@@ -39,7 +39,7 @@ authRoutes.get('/auth/github/callback', async (c) => {
 
   // Validate state — CSRF protection
   if (!state || !storedState || state !== storedState) {
-    return c.json({ error: 'Invalid OAuth state. Please try again.' }, 400)
+    return c.redirect(`${config.WEB_URL}?error=auth`)
   }
 
   // Exchange code for tokens
@@ -47,7 +47,7 @@ authRoutes.get('/auth/github/callback', async (c) => {
   try {
     tokens = await github.validateAuthorizationCode(code ?? '')
   } catch {
-    return c.json({ error: 'Failed to exchange authorization code.' }, 400)
+    return c.redirect(`${config.WEB_URL}?error=auth`)
   }
 
   // Fetch GitHub user profile
@@ -59,7 +59,7 @@ authRoutes.get('/auth/github/callback', async (c) => {
   })
 
   if (!githubUserRes.ok) {
-    return c.json({ error: 'Failed to fetch GitHub user profile.' }, 500)
+    return c.redirect(`${config.WEB_URL}?error=auth`)
   }
 
   const githubUser = (await githubUserRes.json()) as {

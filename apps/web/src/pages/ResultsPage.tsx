@@ -84,7 +84,7 @@ export function ResultsPage() {
       {/* Actions */}
       <div className="flex gap-3 mt-6">
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/dashboard')}
           className="flex-1 py-2 border border-border text-secondary font-mono text-sm rounded-sm hover:border-primary transition-colors"
         >
           ← Dashboard

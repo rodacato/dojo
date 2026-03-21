@@ -5,6 +5,6 @@ import { useAuth } from '../context/AuthContext'
 export function RequireCreator({ children }: { children: ReactNode }) {
   const { user } = useAuth()
   if (!user) return null
-  if (!user.isCreator) return <Navigate to="/" replace />
+  if (!user.isCreator) return <Navigate to="/dashboard" replace />
   return <>{children}</>
 }
