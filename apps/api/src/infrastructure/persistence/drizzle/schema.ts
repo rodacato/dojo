@@ -84,3 +84,16 @@ export const sessionsRelations = relations(sessions, ({ many, one }) => ({
 export const attemptsRelations = relations(attempts, ({ one }) => ({
   session: one(sessions, { fields: [attempts.sessionId], references: [sessions.id] }),
 }))
+
+export const userSessions = pgTable('user_sessions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export const userSessionsRelations = relations(userSessions, ({ one }) => ({
+  user: one(users, { fields: [userSessions.userId], references: [users.id] }),
+}))

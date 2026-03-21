@@ -5,8 +5,8 @@ import { logger } from 'hono/logger'
 import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import { config } from '../../config'
 import { healthRoutes } from './routes/health'
+import { authRoutes } from './routes/auth'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
-// other routes imported here as they are created
 
 export function createRouter() {
   const app = new Hono()
@@ -17,8 +17,8 @@ export function createRouter() {
   app.use('/auth/*', authLimiter)
 
   app.route('/', healthRoutes)
+  app.route('/', authRoutes)
   // app.route('/', sessionRoutes)   ← added in later phases
-  // app.route('/', authRoutes)      ← added in Phase 6
 
   app.onError((err, c) => {
     if (err instanceof HTTPException) return err.getResponse()

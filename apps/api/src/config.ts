@@ -5,6 +5,7 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
+  GITHUB_CALLBACK_URL: z.string().url(),
   LLM_BASE_URL: z.string().url(),
   LLM_API_KEY: z.string().min(1),
   LLM_MODEL: z.string().default('claude-sonnet-4-20250514'),
