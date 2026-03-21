@@ -56,11 +56,68 @@ Alternativas consideradas: `Dojo`, `CodeDojo`, `kata.notdefined.dev`, `debug.not
 **Texto secundario:** `#94A3B8` — Slate 400.
 **Texto muted:** `#475569` — Slate 600.
 
+### Design Tokens
+
+Nombres canónicos para usar en CSS y Tailwind config. Siempre referenciar tokens, nunca valores hex directos en componentes.
+
+```css
+/* Surfaces */
+--color-bg-base:        #0F172A;   /* page background */
+--color-bg-surface:     #1E293B;   /* cards, panels, editors */
+--color-bg-elevated:    #253347;   /* hover states, dropdowns */
+--color-border:         #334155;   /* all borders and dividers */
+
+/* Accent */
+--color-accent-primary:   #6366F1;  /* CTAs, active elements, focus rings */
+--color-accent-success:   #10B981;  /* passed verdict, streaks, completion */
+--color-accent-danger:    #EF4444;  /* failed sessions, errors, expired timer */
+--color-accent-warning:   #F59E0B;  /* timer approaching limit, alerts */
+
+/* Text */
+--color-text-primary:     #F8FAFC;  /* main content */
+--color-text-secondary:   #94A3B8;  /* descriptions, labels */
+--color-text-muted:       #475569;  /* placeholders, disabled, microcopy */
+
+/* Exercise type badges */
+--color-type-code:        #64748B;  /* slate-blue-gray */
+--color-type-chat:        #7C3AED;  /* purple */
+--color-type-whiteboard:  #0D9488;  /* teal */
+```
+
+### Spacing & Grid
+
+Base unit: `4px`. All spacing is a multiple of 4.
+
+| Token | Value | Usage |
+|---|---|---|
+| `space-1` | 4px | Tight internal padding, icon gaps |
+| `space-2` | 8px | Inline element spacing |
+| `space-3` | 12px | Input padding, compact items |
+| `space-4` | 16px | Card padding, section gaps |
+| `space-6` | 24px | Section separation |
+| `space-8` | 32px | Large section gaps |
+| `space-12` | 48px | Page-level vertical rhythm |
+
+Border radius: `4px` for all interactive elements. `6px` for cards. Never `rounded-full` on containers — this is not a consumer app.
+
 ### Tipografía
 
 **Display/Headers:** `JetBrains Mono` — Monospace. Refuerza el contexto técnico. Para títulos grandes y números de dashboard.
 **Body/UI:** `Inter` — Sans-serif. Limpio, legible, moderno. Para todo el texto de interfaz.
 **Código:** `JetBrains Mono` — Consistente con el header font.
+
+```css
+--font-mono: 'JetBrains Mono', monospace;
+--font-sans: 'Inter', system-ui, sans-serif;
+
+--text-xs:   11px / 16px;   /* labels, badges, timestamps */
+--text-sm:   13px / 20px;   /* secondary content, descriptions */
+--text-base: 15px / 24px;   /* body, UI text */
+--text-lg:   18px / 28px;   /* section headers */
+--text-xl:   24px / 32px;   /* page titles (Inter) */
+--text-2xl:  32px / 40px;   /* dashboard numbers (JetBrains Mono) */
+--text-4xl:  48px / 56px;   /* verdict (JetBrains Mono, all caps) */
+```
 
 ### Estilo Visual
 
@@ -159,6 +216,8 @@ Elementos de carácter:
 ---
 
 ## Prompts para Google Stitch
+
+Estos prompts generan mockups de referencia visual — no son specs de implementación. Úsalos para explorar dirección visual y comunicar intención. Los valores exactos de spacing, tokens y tipografía son los definidos en este documento, no los que el modelo interprete.
 
 Usa estos prompts en secuencia para generar las pantallas principales:
 
