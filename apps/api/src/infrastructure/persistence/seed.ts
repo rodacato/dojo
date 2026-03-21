@@ -847,7 +847,7 @@ export async function seed(): Promise<void> {
 }
 
 // Run when invoked directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   seed()
     .then(() => process.exit(0))
     .catch((err) => {

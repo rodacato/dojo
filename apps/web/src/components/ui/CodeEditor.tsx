@@ -58,7 +58,6 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
 
     viewRef.current = view
     return () => view.destroy()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language])
 
   return (

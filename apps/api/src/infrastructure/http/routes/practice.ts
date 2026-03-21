@@ -349,7 +349,7 @@ function calculateStreak(sessionDates: string[]): number {
   const dateSet = new Set(sessionDates)
   const today = new Date().toISOString().slice(0, 10)
   let streak = 0
-  let current = new Date()
+  const current = new Date()
 
   // Start from today; if no session today, start from yesterday
   if (!dateSet.has(today)) {

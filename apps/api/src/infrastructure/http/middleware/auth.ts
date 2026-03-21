@@ -8,7 +8,7 @@ import { userSessions } from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
 
 export async function requireAuth(c: Context<AppEnv>, next: Next): Promise<void> {
-  const sessionId = getCookie(c, 'session')
+  const sessionId = getCookie(c, 'dojo_session')
 
   if (!sessionId) {
     throw new HTTPException(401, { message: 'Authentication required' })

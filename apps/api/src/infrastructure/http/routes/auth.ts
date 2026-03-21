@@ -85,7 +85,7 @@ authRoutes.get('/auth/github/callback', async (c) => {
 
   // Clear state cookie and set session cookie
   deleteCookie(c, 'oauth_state')
-  setCookie(c, 'session', session!.id, {
+  setCookie(c, 'dojo_session', session!.id, {
     httpOnly: true,
     secure: config.NODE_ENV === 'production',
     sameSite: 'Strict',
@@ -98,12 +98,12 @@ authRoutes.get('/auth/github/callback', async (c) => {
 
 // Logout
 authRoutes.delete('/auth/session', async (c) => {
-  const sessionId = getCookie(c, 'session')
+  const sessionId = getCookie(c, 'dojo_session')
 
   if (sessionId) {
     await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
   }
 
-  deleteCookie(c, 'session')
+  deleteCookie(c, 'dojo_session')
   return c.json({ ok: true })
 })

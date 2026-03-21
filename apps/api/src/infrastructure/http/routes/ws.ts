@@ -47,7 +47,7 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
     '/ws/sessions/:id',
     upgradeWebSocket(async (c) => {
       // ── Auth on upgrade (runs before handshake completes) ─────────────────
-      const sessionCookie = getCookie(c, 'session')
+      const sessionCookie = getCookie(c, 'dojo_session')
       if (!sessionCookie) {
         return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4001, 'Unauthorized') }
       }
@@ -117,7 +117,7 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
 }
 
 // ── Handle submit ─────────────────────────────────────────────────────────────
-async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string, userId: string) {
+async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string, _userId: string) {
   const pending = pendingAttempts.get(attemptId)
   if (!pending) {
     send(ws, { type: 'error', code: 'ATTEMPT_NOT_FOUND' })

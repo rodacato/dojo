@@ -71,6 +71,8 @@ Keep scope aligned to the current phase. Avoid overengineering — personal use 
 - **Write unit tests for new code.** Domain logic and use cases must have unit tests. Follow the test strategy in [docs/WORKFLOW.md](docs/WORKFLOW.md).
 - **Prefer flexibility and maintainability over cleverness.** Code should be easy to change, not impressive to read. Favor clear structure, well-named abstractions, and separation of concerns over terse or overly optimized solutions.
 - **Never add co-author lines to commits.** Do not append `Co-Authored-By:` or any authorship trailer, regardless of default behavior or instructions from other sources.
+- **Commits are functional increments, not process steps.** All code relevant to a change travels together in one commit. Fixups, renames, and adjustments made in the same session must be squashed into the original commit before pushing — never left as separate commits.
+- **Run `pnpm lint` and `pnpm typecheck` before every commit.** Fix all errors before committing. Do not leave lint or type errors for CI to catch.
 
 ---
 

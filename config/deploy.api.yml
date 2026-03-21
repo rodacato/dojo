@@ -1,16 +1,26 @@
 service: dojo-api
-image: ghcr.io/<GITHUB_USERNAME>/dojo-api
+image: <%= ENV["GITHUB_USERNAME"] %>/dojo-api
+
+ssh:
+  user: deploy
 
 servers:
   web:
     hosts:
-      - <VPS_IP>
-    options:
-      network: dojo
+      - <%= ENV["HOST_IP"] %>
+
+proxy:
+  ssl: false
+  host: <%= ENV["API_URL"].sub(/^https?:\/\//, '') %>
+  app_port: 3001
+  healthcheck:
+    interval: 10
+    path: /health
+    timeout: 5
 
 registry:
   server: ghcr.io
-  username: <GITHUB_USERNAME>
+  username: <%= ENV["GITHUB_USERNAME"] %>
   password:
     - KAMAL_REGISTRY_PASSWORD
 
@@ -19,7 +29,7 @@ env:
     NODE_ENV: production
     PORT: "3001"
     LLM_ADAPTER: anthropic
-    WEB_URL: https://dojo.notdefined.dev
+    WEB_URL: <%= ENV["WEB_URL"] %>
   secret:
     - DATABASE_URL
     - SESSION_SECRET
@@ -27,35 +37,33 @@ env:
     - GITHUB_CLIENT_SECRET
     - GITHUB_CALLBACK_URL
     - LLM_API_KEY
+    - LLM_BASE_URL
+    - LLM_MODEL
     - CREATOR_GITHUB_ID
 
-healthcheck:
-  path: /health
-  port: 3001
-
 builder:
-  dockerfile: apps/api/Dockerfile
   context: .
+  dockerfile: apps/api/Dockerfile
+  arch: amd64
   cache:
-    type: registry
+    type: gha
 
 accessories:
   db:
     image: postgres:16-alpine
-    host: <VPS_IP>
+    host: <%= ENV["HOST_IP"] %>
     env:
       clear:
         POSTGRES_DB: dojo
         POSTGRES_USER: dojo
       secret:
         - POSTGRES_PASSWORD
-    volumes:
-      - dojo_postgres:/var/lib/postgresql/data
-    options:
-      restart: unless-stopped
-      network: dojo
+    directories:
+      - dojo-pgdata:/var/lib/postgresql/data
 
-hooks:
-  post-deploy: |
-    kamal app exec --reuse 'node dist/infrastructure/persistence/migrate.js'
-    kamal app exec --reuse 'node dist/infrastructure/persistence/seed.js'
+logging:
+  driver: json-file
+  options:
+    max-size: 50m
+    max-file: "3"
+
