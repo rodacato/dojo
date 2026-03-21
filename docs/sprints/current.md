@@ -11,11 +11,11 @@
 
 ### Pre-implementation (unblock everything else)
 - [x] `scripts/test-llm.ts` — standalone prompt tester, run before wiring WebSocket (see PRD-012)
-- [ ] Pick winning sensei prompt (3 variations in PRD-012), commit to `apps/api/src/prompts/sensei.ts`
+- [x] Pick winning sensei prompt (3 variations in PRD-012), commit to `apps/api/src/prompts/sensei.ts`
 - [x] Define canonical `topics[]` vocabulary in `packages/shared` (aligns seed data + LLM output)
 
 ### Backend
-- [ ] Spec 012 — Seed data: 8 kata from PRD-006, deterministic UUIDs, idempotent, seed validation
+- [x] Spec 012 — Seed data: 8 kata from PRD-006, deterministic UUIDs, idempotent, seed validation
 - [x] Spec 009 — HTTP routes: `GET /exercises`, `POST /sessions`, `GET /sessions/:id`, `POST /sessions/:id/attempts`, `GET /auth/me`, `GET /dashboard`
 - [x] Spec 011 — Anthropic streaming adapter: `LLMPort` implementation, `<evaluation>` parser, structured output
 - [x] Spec 010 — WebSocket evaluation flow: message protocol, reconnect, timer enforcement, concurrent connection limit
@@ -23,7 +23,7 @@
 ### Frontend
 - [x] Tailwind 4 setup + design tokens (colors, typography, spacing from style guide)
 - [x] Spec 013 — 8 core screens: Login → Dashboard → Day Start → Kata Selection → Kata Active (CODE + CHAT) → Eval → Results
-- [ ] CodeMirror 6 integration in Kata Active CODE (no autocomplete, no spell check)
+- [x] CodeMirror 6 integration in Kata Active CODE (no autocomplete, no spell check)
 
 ### Admin + Deploy
 - [x] Spec 014 — Admin UI: Exercise List + New Exercise (Exercise section only, others as disabled skeleton)
