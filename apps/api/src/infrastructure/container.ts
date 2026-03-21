@@ -1,5 +1,6 @@
 import { GetExerciseOptions } from '../application/practice/GetExerciseOptions'
 import { GetSession } from '../application/practice/GetSession'
+import { GenerateSessionBody } from '../application/practice/GenerateSessionBody'
 import { StartSession } from '../application/practice/StartSession'
 import { SubmitAttempt } from '../application/practice/SubmitAttempt'
 import { GetExerciseById } from '../application/content/GetExerciseById'
@@ -22,7 +23,8 @@ const llm = config.LLM_ADAPTER === 'anthropic' ? new AnthropicStreamAdapter(conf
 export const eventBus = new InMemoryEventBus()
 
 export const useCases = {
-  startSession: new StartSession({ exerciseRepo, sessionRepo, llm, eventBus }),
+  startSession: new StartSession({ exerciseRepo, sessionRepo, eventBus }),
+  generateSessionBody: new GenerateSessionBody({ exerciseRepo, sessionRepo, llm }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
   getExerciseOptions: new GetExerciseOptions({ exerciseRepo }),
   getExerciseById: new GetExerciseById({ exerciseRepo }),

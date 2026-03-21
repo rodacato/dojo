@@ -54,6 +54,36 @@ export class Session {
     return this._completedAt
   }
 
+  static createPreparing(params: {
+    userId: UserId
+    exerciseId: ExerciseId
+    variationId: VariationId
+  }): Session {
+    const session = new Session({
+      id: SessionId(crypto.randomUUID()),
+      userId: params.userId,
+      exerciseId: params.exerciseId,
+      variationId: params.variationId,
+      body: '',
+      status: 'preparing',
+      attempts: [],
+      startedAt: new Date(),
+      completedAt: null,
+    })
+
+    const event: SessionCreated = {
+      type: 'SessionCreated',
+      aggregateId: session.id,
+      occurredAt: new Date(),
+      userId: params.userId,
+      exerciseId: params.exerciseId,
+      variationId: params.variationId,
+    }
+    session._pendingEvents.push(event)
+
+    return session
+  }
+
   static create(params: {
     userId: UserId
     exerciseId: ExerciseId

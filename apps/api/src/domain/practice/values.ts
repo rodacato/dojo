@@ -1,4 +1,4 @@
-export type SessionStatus = 'active' | 'completed' | 'failed'
+export type SessionStatus = 'preparing' | 'active' | 'completed' | 'failed'
 export type Verdict = 'passed' | 'passed_with_notes' | 'needs_work'
 
 export interface EvaluationResult {

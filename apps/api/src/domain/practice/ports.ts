@@ -26,6 +26,7 @@ export interface LLMPort {
 
 export interface SessionRepositoryPort {
   save(session: Session): Promise<void>
+  updateBody(id: SessionId, body: string): Promise<void>
   findById(id: SessionId): Promise<Session | null>
   findActiveByUserId(userId: UserId): Promise<Session | null>
 }

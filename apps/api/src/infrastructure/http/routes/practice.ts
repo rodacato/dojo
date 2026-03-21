@@ -104,6 +104,11 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
     variationId: variation.id,
   })
 
+  // Generate kata body in background — don't block the response
+  void useCases.generateSessionBody
+    .execute({ sessionId: session.id, exerciseId: session.exerciseId, variationId: session.variationId })
+    .catch((err) => console.error('Failed to generate session body:', err))
+
   return c.json({ sessionId: session.id }, 201)
 })
 

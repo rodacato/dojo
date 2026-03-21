@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError, type SessionWithExercise } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
@@ -7,23 +7,54 @@ import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import type { ExerciseType } from '@dojo/shared'
 
+const PREPARING_MESSAGES = [
+  'The sensei is reading your brief...',
+  'Setting the scene...',
+  'Preparing the kata...',
+  'The dojo is getting ready...',
+  'Sharpening the problem...',
+  'Almost there...',
+]
+
 export function KataActivePage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<SessionWithExercise | null>(null)
+  const [preparing, setPreparing] = useState(false)
+  const [preparingMsg, setPreparingMsg] = useState(PREPARING_MESSAGES[0]!)
   const [userResponse, setUserResponse] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const msgIndex = useRef(0)
 
   useEffect(() => {
     if (!sessionId) return
-    api.getSession(sessionId).then((s) => {
-      if (s.status !== 'active') {
-        navigate(`/kata/${sessionId}/result`, { replace: true })
-      } else {
-        setSession(s)
-      }
-    })
+
+    function poll() {
+      api.getSession(sessionId!).then((s) => {
+        if (s.status === 'preparing') {
+          setPreparing(true)
+        } else if (s.status === 'active') {
+          setPreparing(false)
+          setSession(s)
+        } else {
+          navigate(`/kata/${sessionId}/result`, { replace: true })
+        }
+      })
+    }
+
+    poll()
+    const interval = setInterval(poll, 2000)
+    return () => clearInterval(interval)
   }, [sessionId, navigate])
+
+  useEffect(() => {
+    if (!preparing) return
+    const interval = setInterval(() => {
+      msgIndex.current = (msgIndex.current + 1) % PREPARING_MESSAGES.length
+      setPreparingMsg(PREPARING_MESSAGES[msgIndex.current]!)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [preparing])
 
   async function handleSubmit() {
     if (!session || !sessionId || !userResponse.trim() || submitting) return
@@ -41,7 +72,14 @@ export function KataActivePage() {
     }
   }
 
-  if (!session) return <PageLoader />
+  if (preparing || !session) {
+    return (
+      <div className="h-screen bg-base flex flex-col items-center justify-center gap-4">
+        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+        <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
+      </div>
+    )
+  }
 
   const { exercise } = session
   const isCode = exercise.type === 'code'

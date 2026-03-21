@@ -1,13 +1,12 @@
 import type { ExerciseRepositoryPort } from '../../domain/content/ports'
 import { ExerciseNotFoundError } from '../../domain/shared/errors'
 import type { ExerciseId, UserId, VariationId } from '../../domain/shared/types'
-import type { EventBusPort, LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
+import type { EventBusPort, SessionRepositoryPort } from '../../domain/practice/ports'
 import { Session } from '../../domain/practice/session'
 
 interface Deps {
   exerciseRepo: ExerciseRepositoryPort
   sessionRepo: SessionRepositoryPort
-  llm: LLMPort
   eventBus: EventBusPort
 }
 
@@ -25,17 +24,10 @@ export class StartSession {
     const variation = exercise.variations.find((v) => v.id === params.variationId)
     if (!variation) throw new ExerciseNotFoundError(params.variationId)
 
-    const body = await this.deps.llm.generateSessionBody({
-      ownerRole: variation.ownerRole,
-      ownerContext: variation.ownerContext,
-      exerciseDescription: exercise.description,
-    })
-
-    const session = Session.create({
+    const session = Session.createPreparing({
       userId: params.userId,
       exerciseId: params.exerciseId,
       variationId: params.variationId,
-      body,
     })
 
     await this.deps.sessionRepo.save(session)

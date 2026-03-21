@@ -46,6 +46,13 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     }
   }
 
+  async updateBody(id: SessionId, body: string): Promise<void> {
+    await this.db
+      .update(sessions)
+      .set({ body, status: 'active' })
+      .where(eq(sessions.id, id))
+  }
+
   async findById(id: SessionId): Promise<Session | null> {
     const row = await this.db.query.sessions.findFirst({
       where: eq(sessions.id, id),

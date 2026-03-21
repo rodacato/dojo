@@ -3,7 +3,6 @@ import { Exercise } from '../../domain/content/exercise'
 import { ExerciseNotFoundError } from '../../domain/shared/errors'
 import { ExerciseId, UserId, VariationId } from '../../domain/shared/types'
 import { InMemoryEventBus } from '../../infrastructure/events/InMemoryEventBus'
-import { MockLLMAdapter } from '../../infrastructure/llm/MockLLMAdapter'
 import { StartSession } from './StartSession'
 
 const makeExercise = () =>
@@ -23,6 +22,7 @@ const makeExercise = () =>
 
 const makeStubSessionRepo = () => ({
   save: vi.fn().mockResolvedValue(undefined),
+  updateBody: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn().mockResolvedValue(null),
   findActiveByUserId: vi.fn().mockResolvedValue(null),
 })
@@ -36,14 +36,13 @@ describe('StartSession', () => {
       save: vi.fn(),
     }
     const sessionRepo = makeStubSessionRepo()
-    const llm = new MockLLMAdapter()
     const eventBus = new InMemoryEventBus()
     const published: string[] = []
     eventBus.subscribe('SessionCreated', async (e) => {
       published.push(e.type)
     })
 
-    const useCase = new StartSession({ exerciseRepo, sessionRepo, llm, eventBus })
+    const useCase = new StartSession({ exerciseRepo, sessionRepo, eventBus })
     const variation = exercise.variations[0]!
 
     const session = await useCase.execute({
@@ -52,7 +51,7 @@ describe('StartSession', () => {
       variationId: variation.id,
     })
 
-    expect(session.status).toBe('active')
+    expect(session.status).toBe('preparing')
     expect(sessionRepo.save).toHaveBeenCalledWith(session)
     expect(published).toContain('SessionCreated')
   })
@@ -66,7 +65,6 @@ describe('StartSession', () => {
     const useCase = new StartSession({
       exerciseRepo,
       sessionRepo: makeStubSessionRepo(),
-      llm: new MockLLMAdapter(),
       eventBus: new InMemoryEventBus(),
     })
 
