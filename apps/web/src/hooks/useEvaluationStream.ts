@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { WS_URL } from '../lib/config'
 
 export interface EvaluationResult {
   verdict: 'passed' | 'passed_with_notes' | 'needs_work'
@@ -35,8 +36,7 @@ export function useEvaluationStream(sessionId: string) {
   const connect = useCallback(() => {
     setState({ status: 'connecting' })
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const ws = new WebSocket(`${protocol}//${window.location.host}/ws/sessions/${sessionId}`)
+    const ws = new WebSocket(`${WS_URL}/ws/sessions/${sessionId}`)
     wsRef.current = ws
 
     ws.onmessage = (event) => {
@@ -86,7 +86,7 @@ export function useEvaluationStream(sessionId: string) {
     ws.onerror = () => setState({ status: 'error', code: 'WS_ERROR', message: 'Connection error' })
     ws.onclose = (e) => {
       if (e.code === 4001) {
-        window.location.href = '/login'
+        window.location.href = '/'
       }
     }
   }, [sessionId, navigate])

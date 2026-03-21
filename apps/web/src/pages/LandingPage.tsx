@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
+import { API_URL } from '../lib/config'
 
 export function LandingPage() {
   const { user, loading } = useAuth()
@@ -40,7 +41,7 @@ export function LandingPage() {
           dojo<span className="text-accent animate-pulse">_</span>
         </span>
         <a
-          href="/api/auth/github"
+          href={`${API_URL}/auth/github`}
           className="flex items-center gap-2 text-sm font-mono text-secondary hover:text-primary transition-colors"
         >
           <GitHubIcon className="w-4 h-4" />

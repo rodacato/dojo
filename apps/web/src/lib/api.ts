@@ -1,4 +1,5 @@
 import type { UserDTO, ExerciseDTO, AttemptDTO } from '@dojo/shared'
+import { API_URL } from './config'
 
 export interface DashboardData {
   streak: number
@@ -37,13 +38,13 @@ export interface SubmitAttemptResponse {
 export { type AttemptDTO }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`/api${path}`, {
+  const res = await fetch(`${API_URL}${path}`, {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...init?.headers },
     ...init,
   })
   if (res.status === 401) {
-    window.location.href = '/?error=session_expired'
+    window.location.href = `${window.location.origin}/?error=session_expired`
     throw new Error('Unauthenticated')
   }
   if (!res.ok) {

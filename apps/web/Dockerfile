@@ -9,6 +9,8 @@ RUN pnpm install --frozen-lockfile
 COPY tsconfig.base.json ./
 COPY apps/web/ ./apps/web/
 COPY packages/shared/ ./packages/shared/
+ARG VITE_API_URL=https://dojo-api.notdefined.dev
+ENV VITE_API_URL=$VITE_API_URL
 RUN pnpm --filter=@dojo/web build
 
 # Stage 2: serve with Nginx

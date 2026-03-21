@@ -29,23 +29,21 @@ describe('GET /auth/github', () => {
 })
 
 describe('GET /auth/github/callback', () => {
-  it('returns 400 when state is missing', async () => {
+  it('redirects to /?error=auth when state is missing', async () => {
     const app = createRouter()
     const res = await app.request('/auth/github/callback?code=abc')
 
-    expect(res.status).toBe(400)
-    const body = await res.json() as { error: string }
-    expect(body.error).toContain('Invalid OAuth state')
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toContain('error=auth')
   })
 
-  it('returns 400 when state does not match stored cookie', async () => {
+  it('redirects to /?error=auth when state does not match stored cookie', async () => {
     const app = createRouter()
     const res = await app.request('/auth/github/callback?code=abc&state=wrong-state', {
       headers: { cookie: 'oauth_state=correct-state' },
     })
 
-    expect(res.status).toBe(400)
-    const body = await res.json() as { error: string }
-    expect(body.error).toContain('Invalid OAuth state')
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toContain('error=auth')
   })
 })
