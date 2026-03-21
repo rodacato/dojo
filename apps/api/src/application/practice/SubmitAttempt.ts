@@ -35,6 +35,7 @@ export class SubmitAttempt {
       ownerRole: params.ownerRole,
       ownerContext: params.ownerContext,
       sessionBody: session.body,
+      userResponse: params.userResponse,
       history,
     })) {
       yield token
@@ -48,7 +49,7 @@ export class SubmitAttempt {
         sessionId: params.sessionId,
         userResponse: params.userResponse,
         evaluationResult: finalToken.result,
-        isFinalEvaluation: finalToken.result.followUpQuestion === null,
+        isFinalEvaluation: finalToken.result.isFinalEvaluation,
       })
 
       session.addAttempt(attempt)

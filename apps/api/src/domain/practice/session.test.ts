@@ -10,6 +10,7 @@ const makeEvalResult = (verdict: EvaluationResult['verdict']): EvaluationResult 
   analysis: 'Test analysis',
   topicsToReview: ['topic-a'],
   followUpQuestion: null,
+  isFinalEvaluation: true,
 })
 
 const makeAttempt = (isFinal: boolean, verdict: EvaluationResult['verdict'] = 'passed') =>

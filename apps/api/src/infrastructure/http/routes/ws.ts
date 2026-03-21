@@ -160,7 +160,7 @@ async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string
       if (token.isFinal && token.result) {
         cache.result = token.result
         cache.complete = true
-        cache.isFinal = token.result.followUpQuestion === null
+        cache.isFinal = token.result.isFinalEvaluation
 
         send(ws, { type: 'evaluation', result: token.result })
         send(ws, { type: 'complete', isFinal: cache.isFinal })

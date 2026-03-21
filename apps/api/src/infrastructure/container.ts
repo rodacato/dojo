@@ -10,11 +10,13 @@ import { PostgresSessionRepository } from './persistence/PostgresSessionReposito
 import { PostgresUserRepository } from './persistence/PostgresUserRepository'
 import { InMemoryEventBus } from './events/InMemoryEventBus'
 import { MockLLMAdapter } from './llm/MockLLMAdapter'
+import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
+import { config } from '../config'
 
 const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
 const userRepo = new PostgresUserRepository(db)
-const llm = new MockLLMAdapter()
+const llm = config.LLM_ADAPTER === 'anthropic' ? new AnthropicStreamAdapter(config.LLM_API_KEY) : new MockLLMAdapter()
 
 export const eventBus = new InMemoryEventBus()
 

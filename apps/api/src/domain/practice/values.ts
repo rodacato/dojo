@@ -6,6 +6,7 @@ export interface EvaluationResult {
   readonly analysis: string
   readonly topicsToReview: string[]
   readonly followUpQuestion: string | null // null on final evaluation
+  readonly isFinalEvaluation: boolean
 }
 
 export interface EvaluationToken {

@@ -13,6 +13,7 @@ export interface LLMPort {
     ownerRole: string
     ownerContext: string
     sessionBody: string
+    userResponse: string
     history: ConversationTurn[]
   }): AsyncIterable<EvaluationToken>
 

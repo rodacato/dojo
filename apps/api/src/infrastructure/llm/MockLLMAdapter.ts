@@ -33,6 +33,7 @@ export class MockLLMAdapter implements LLMPort {
         analysis: 'Mock analysis: demonstrated core understanding with some gaps in edge case handling.',
         topicsToReview: verdict === 'needs_work' ? ['error handling', 'edge cases'] : [],
         followUpQuestion: withFollowUp ? 'Can you explain how you would handle the error case?' : null,
+        isFinalEvaluation: !withFollowUp,
       },
     }
   }
