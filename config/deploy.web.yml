@@ -1,0 +1,27 @@
+service: dojo-web
+image: ghcr.io/<GITHUB_USERNAME>/dojo-web
+
+servers:
+  web:
+    hosts:
+      - <VPS_IP>
+    options:
+      network: dojo
+
+registry:
+  server: ghcr.io
+  username: <GITHUB_USERNAME>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    NGINX_PORT: "80"
+
+healthcheck:
+  path: /health
+  port: 80
+
+builder:
+  dockerfile: apps/web/Dockerfile
+  context: .

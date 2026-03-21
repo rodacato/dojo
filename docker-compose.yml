@@ -1,5 +1,5 @@
 services:
-  api:
+  dojo-api:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -23,7 +23,7 @@ services:
       dockerfile: apps/web/Dockerfile
     restart: unless-stopped
     depends_on:
-      - api
+      - dojo-api
     ports:
       - "80:80"
     healthcheck:

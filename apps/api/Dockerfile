@@ -22,6 +22,7 @@ RUN pnpm --filter=@dojo/api build
 FROM base AS runner
 ENV NODE_ENV=production
 COPY --from=builder /app/apps/api/dist ./dist
+COPY --from=builder /app/apps/api/src/infrastructure/persistence/drizzle/migrations ./migrations
 COPY --from=builder /app/apps/api/node_modules ./node_modules
 COPY --from=builder /app/node_modules ./root_node_modules
 EXPOSE 3001

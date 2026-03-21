@@ -1,0 +1,58 @@
+service: dojo-api
+image: ghcr.io/<GITHUB_USERNAME>/dojo-api
+
+servers:
+  web:
+    hosts:
+      - <VPS_IP>
+    options:
+      network: dojo
+
+registry:
+  server: ghcr.io
+  username: <GITHUB_USERNAME>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  clear:
+    NODE_ENV: production
+    PORT: "3001"
+    LLM_ADAPTER: anthropic
+  secret:
+    - DATABASE_URL
+    - SESSION_SECRET
+    - GITHUB_CLIENT_ID
+    - GITHUB_CLIENT_SECRET
+    - GITHUB_CALLBACK_URL
+    - ANTHROPIC_API_KEY
+    - CREATOR_GITHUB_ID
+
+healthcheck:
+  path: /health
+  port: 3001
+
+builder:
+  dockerfile: apps/api/Dockerfile
+  context: .
+  cache:
+    type: registry
+
+accessories:
+  db:
+    image: postgres:16-alpine
+    host: <VPS_IP>
+    env:
+      clear:
+        POSTGRES_DB: dojo
+        POSTGRES_USER: dojo
+      secret:
+        - POSTGRES_PASSWORD
+    volumes:
+      - dojo_postgres:/var/lib/postgresql/data
+    options:
+      restart: unless-stopped
+      network: dojo
+
+hooks:
+  post-deploy: kamal app exec --reuse 'node dist/infrastructure/persistence/migrate.js'
