@@ -40,6 +40,8 @@ env:
     - LLM_BASE_URL
     - LLM_MODEL
     - CREATOR_GITHUB_ID
+    - RESEND_API_KEY
+    - RESEND_FROM_EMAIL
 
 builder:
   context: .

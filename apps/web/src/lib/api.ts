@@ -201,5 +201,11 @@ export const api = {
       createdAt: string
     }>>('/admin/invitations'),
 
+  requestAccess: (githubHandle: string, reason?: string) =>
+    request<{ ok: boolean }>('/access-requests', {
+      method: 'POST',
+      body: JSON.stringify({ githubHandle, reason }),
+    }),
+
   logout: () => request<{ ok: boolean }>('/auth/session', { method: 'DELETE' }),
 }

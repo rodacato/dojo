@@ -42,6 +42,47 @@ practiceRoutes.get('/auth/me', requireAuth, (c) => {
 // ---------------------------------------------------------------------------
 // GET /exercises
 // ---------------------------------------------------------------------------
+// POST /access-requests (public — no auth required)
+// ---------------------------------------------------------------------------
+
+const accessRequestSchema = z.object({
+  githubHandle: z.string().min(1).max(100),
+  reason: z.string().max(1000).optional(),
+})
+
+practiceRoutes.post('/access-requests', async (c) => {
+  const body = await c.req.json()
+  const parsed = accessRequestSchema.safeParse(body)
+  if (!parsed.success) return c.json({ error: 'Invalid request' }, 400)
+
+  const { githubHandle, reason } = parsed.data
+
+  // Notify creator via email (no DB storage — privacy first)
+  if (config.RESEND_API_KEY) {
+    try {
+      const { Resend } = await import('resend')
+      const resend = new Resend(config.RESEND_API_KEY)
+      await resend.emails.send({
+        from: config.RESEND_FROM_EMAIL,
+        to: config.RESEND_FROM_EMAIL.replace(/.*<(.+)>/, '$1'), // extract email from "name <email>"
+        subject: `dojo_ access request: ${githubHandle}`,
+        html: `
+          <div style="font-family: monospace; padding: 20px;">
+            <p><strong>GitHub:</strong> ${githubHandle}</p>
+            <p><strong>Why:</strong> ${reason || '(not provided)'}</p>
+            <p><strong>Profile:</strong> <a href="https://github.com/${githubHandle.replace('@', '')}">github.com/${githubHandle.replace('@', '')}</a></p>
+          </div>
+        `,
+      })
+    } catch (err) {
+      console.error('Failed to send access request notification:', err)
+    }
+  }
+
+  return c.json({ ok: true })
+})
+
+// ---------------------------------------------------------------------------
 
 const exerciseFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),

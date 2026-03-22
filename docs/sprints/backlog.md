@@ -27,11 +27,12 @@ _Good ideas, not urgent. Not in the next block._
 ### Phase 1 — Open the Doors
 
 - Public profile page (username, avatar, streak, recent kata, earned badges)
-- Invitation system (creator sends invite links, limited seats)
+- ~~Invitation system (creator sends invite links, limited seats)~~ — done (Sprint 005, Spec 026)
 - Share card generation (OG image with verdict, exercise name, sensei quote)
 - "No repeat within 6 months" rule enforced per user
-- Basic streak tracking (days with at least one kata completed)
+- ~~Basic streak tracking (days with at least one kata completed)~~ — done (Sprint 002)
 - `FIRST KATA` and `5 STREAK` badges
+- OG image PNG conversion (current SVG not rendered by Twitter/Slack)
 
 ### Phase 2 — The Scoreboard
 
@@ -55,7 +56,7 @@ _Good ideas, not urgent. Not in the next block._
 
 _Ideas that need a PRD before deciding whether they advance._
 
-<!-- Add here when an idea arrives but needs exploration before committing -->
+- 2026-03-22 — **Interest-based kata selection (user profile):** Allow users to define their level (junior, mid, senior) and topics of interest (microservices, DDD, architectures, specific languages, specific frameworks). Use this profile to weight kata selection rather than replace randomness — interests act as categories with higher selection probability, not hard filters. Potential UX: a "randomness slider" that controls how much selection favors the user's declared interests vs. full random from the catalog (e.g., 100% focused → only your topics, 50/50 → half relevant half surprise, full random → classic dojo behavior). Needs PRD to explore: onboarding UX for declaring interests, how the weighting algorithm interacts with the existing catalog taxonomy and the "no repeat within 6 months" rule, whether the sensei's evaluation should adapt to declared level, slider UX that feels intentional not gimmicky, and default behavior for users who skip profile setup. *Expert routing: Priya (scope/value), Valentina (taxonomy/progression), Yemi (sensei adaptation), Soren (slider + selection UX).*
 
 ---
 

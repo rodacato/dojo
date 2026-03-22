@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
 import { LogoWordmark, LogoMark } from '../components/Logo'
+import { api } from '../lib/api'
 import { API_URL } from '../lib/config'
 
 export function LandingPage() {
@@ -234,7 +235,10 @@ export function LandingPage() {
 }
 
 function RequestAccessForm() {
+  const [githubHandle, setGithubHandle] = useState('')
+  const [reason, setReason] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   if (submitted) {
     return (
@@ -245,18 +249,29 @@ function RequestAccessForm() {
     )
   }
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!githubHandle.trim() || submitting) return
+    setSubmitting(true)
+    try {
+      await api.requestAccess(githubHandle.trim(), reason.trim() || undefined)
+    } catch {
+      // Show "Received" even if the email fails — graceful degradation
+    }
+    setSubmitted(true)
+  }
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        setSubmitted(true)
-      }}
+      onSubmit={handleSubmit}
       className="bg-surface border border-border/60 rounded-md p-6 space-y-4"
     >
       <div>
         <label className="block text-sm text-secondary mb-1.5 font-mono">GitHub handle</label>
         <input
           type="text"
+          value={githubHandle}
+          onChange={(e) => setGithubHandle(e.target.value)}
           placeholder="@yourhandle"
           className="w-full bg-base border border-border rounded-sm px-3 py-2 text-primary text-sm font-mono placeholder:text-muted focus:outline-none focus:border-accent transition-colors"
         />
@@ -266,6 +281,8 @@ function RequestAccessForm() {
           Why you're here <span className="text-muted">(optional)</span>
         </label>
         <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
           placeholder="Optional. But the honest answers are more interesting."
           rows={3}
           className="w-full bg-base border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted focus:outline-none focus:border-accent transition-colors resize-none"
@@ -273,9 +290,10 @@ function RequestAccessForm() {
       </div>
       <button
         type="submit"
-        className="w-full py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+        disabled={!githubHandle.trim() || submitting}
+        className="w-full py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 disabled:opacity-40 transition-colors"
       >
-        Request access
+        {submitting ? 'Sending...' : 'Request access'}
       </button>
       <p className="text-muted text-xs text-center">No newsletter. No notifications. We'll reach out directly.</p>
     </form>
