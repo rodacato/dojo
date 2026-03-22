@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
 import { LogoWordmark, LogoMark } from '../components/Logo'
@@ -227,7 +227,12 @@ export function LandingPage() {
             <LogoMark size={16} className="text-muted" />
             <span className="text-muted text-xs font-mono">dojo.notdefined.dev</span>
           </div>
-          <span className="text-muted text-xs">Built in public. Invite-only. Not for everyone.</span>
+          <div className="flex items-center gap-4">
+            <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">Open source</Link>
+            <Link to="/changelog" className="text-muted text-xs hover:text-secondary transition-colors">Changelog</Link>
+            <Link to="/terms" className="text-muted text-xs hover:text-secondary transition-colors">Terms</Link>
+            <Link to="/privacy" className="text-muted text-xs hover:text-secondary transition-colors">Privacy</Link>
+          </div>
         </div>
       </footer>
     </div>

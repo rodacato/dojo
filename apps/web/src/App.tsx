@@ -15,6 +15,10 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { InviteRedeemPage } from './pages/InviteRedeemPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
+import { TermsPage } from './pages/TermsPage'
+import { PrivacyPage } from './pages/PrivacyPage'
+import { ChangelogPage } from './pages/ChangelogPage'
+import { OpenSourcePage } from './pages/OpenSourcePage'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
 import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
@@ -32,6 +36,10 @@ export function App() {
           <Route path="/login" element={<Navigate to="/" replace />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/invite/:token" element={<InviteRedeemPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/changelog" element={<ChangelogPage />} />
+          <Route path="/open-source" element={<OpenSourcePage />} />
           <Route path="/error" element={<ErrorPage />} />
 
           {/* Protected */}
