@@ -2,6 +2,7 @@ import { GitHub } from 'arctic'
 import { and, eq, gt } from 'drizzle-orm'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { Hono } from 'hono'
+import { HTTPException } from 'hono/http-exception'
 import { config } from '../../../config'
 import { useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
@@ -83,27 +84,20 @@ authRoutes.get('/auth/github/callback', async (c) => {
     .values({ userId: user.id, expiresAt: sessionExpiresAt })
     .returning()
 
-  // Clear state cookie and set session cookie
+  // Clear state cookie and redirect with token (ADR-007)
   deleteCookie(c, 'oauth_state')
-  setCookie(c, 'dojo_session', session!.id, {
-    httpOnly: true,
-    secure: config.NODE_ENV === 'production',
-    sameSite: 'Lax', // must be Lax — Strict drops cookie on cross-site redirect from GitHub
-    expires: sessionExpiresAt,
-    path: '/',
-  })
-
-  return c.redirect(config.WEB_URL)
+  return c.redirect(`${config.WEB_URL}/auth/callback?token=${session!.id}`)
 })
 
 // Logout
 authRoutes.delete('/auth/session', async (c) => {
-  const sessionId = getCookie(c, 'dojo_session')
+  const authHeader = c.req.header('Authorization')
+  const sessionId = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
 
-  if (sessionId) {
-    await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
+  if (!sessionId) {
+    throw new HTTPException(401, { message: 'Authentication required' })
   }
 
-  deleteCookie(c, 'dojo_session')
+  await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
   return c.json({ ok: true })
 })

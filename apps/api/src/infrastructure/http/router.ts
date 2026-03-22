@@ -13,7 +13,7 @@ export function createRouter() {
   const app = new Hono()
 
   app.use('*', logger())
-  app.use('*', cors({ origin: config.WEB_URL, credentials: true }))
+  app.use('*', cors({ origin: config.WEB_URL }))
   app.use('*', globalLimiter)
   app.use('/auth/*', authLimiter)
 

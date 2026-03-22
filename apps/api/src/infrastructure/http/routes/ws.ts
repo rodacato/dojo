@@ -1,6 +1,5 @@
 import { and, eq, gt } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { getCookie } from 'hono/cookie'
 import { db } from '../../persistence/drizzle/client'
 import { userSessions } from '../../persistence/drizzle/schema'
 import { useCases } from '../../container'
@@ -47,13 +46,14 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
     '/ws/sessions/:id',
     upgradeWebSocket(async (c) => {
       // ── Auth on upgrade (runs before handshake completes) ─────────────────
-      const sessionCookie = getCookie(c, 'dojo_session')
-      if (!sessionCookie) {
+      const url = new URL(c.req.url)
+      const token = url.searchParams.get('token')
+      if (!token) {
         return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4001, 'Unauthorized') }
       }
 
       const userSession = await db.query.userSessions.findFirst({
-        where: and(eq(userSessions.id, sessionCookie), gt(userSessions.expiresAt, new Date())),
+        where: and(eq(userSessions.id, token), gt(userSessions.expiresAt, new Date())),
         with: { user: true },
       })
 

@@ -1,5 +1,6 @@
 import type { UserDTO, ExerciseDTO, AttemptDTO } from '@dojo/shared'
 import { API_URL } from './config'
+import { getToken, clearToken } from './auth-token'
 
 export interface DashboardData {
   streak: number
@@ -38,12 +39,16 @@ export interface SubmitAttemptResponse {
 export { type AttemptDTO }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...init?.headers },
-    ...init,
-  })
+  const token = getToken()
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(init?.headers as Record<string, string>),
+  }
+  if (token) headers['Authorization'] = `Bearer ${token}`
+
+  const res = await fetch(`${API_URL}${path}`, { ...init, headers })
   if (res.status === 401) {
+    clearToken()
     window.location.href = `${window.location.origin}/?error=session_expired`
     throw new Error('Unauthenticated')
   }
@@ -119,4 +124,6 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+
+  logout: () => request<{ ok: boolean }>('/auth/session', { method: 'DELETE' }),
 }

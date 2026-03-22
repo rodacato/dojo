@@ -10,6 +10,7 @@ import { KataActivePage } from './pages/KataActivePage'
 import { SenseiEvalPage } from './pages/SenseiEvalPage'
 import { ResultsPage } from './pages/ResultsPage'
 import { ErrorPage } from './pages/ErrorPage'
+import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
 import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
@@ -22,6 +23,7 @@ export function App() {
           {/* Public */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
           <Route path="/error" element={<ErrorPage />} />
 
           {/* Protected */}

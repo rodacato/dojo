@@ -1,6 +1,5 @@
 import { and, eq, gt } from 'drizzle-orm'
 import type { Context, Next } from 'hono'
-import { getCookie } from 'hono/cookie'
 import { HTTPException } from 'hono/http-exception'
 import { config } from '../../../config'
 import { db } from '../../persistence/drizzle/client'
@@ -8,7 +7,8 @@ import { userSessions } from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
 
 export async function requireAuth(c: Context<AppEnv>, next: Next): Promise<void> {
-  const sessionId = getCookie(c, 'dojo_session')
+  const authHeader = c.req.header('Authorization')
+  const sessionId = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
 
   if (!sessionId) {
     throw new HTTPException(401, { message: 'Authentication required' })

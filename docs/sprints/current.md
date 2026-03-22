@@ -22,7 +22,7 @@
 
 ### Auth
 
-- [ ] Spec 019 — Bearer token auth: reemplazar cookies cross-domain con Authorization Bearer header (PRD-015)
+- [x] Spec 019 — Bearer token auth: reemplazar cookies cross-domain con Authorization Bearer header (PRD-015)
 
 ### Infrastructure
 
