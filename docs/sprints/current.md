@@ -20,6 +20,10 @@
   - Generic error page (cross-cutting)
   - Session expiry (401 global) → redirect a `/login` con mensaje
 
+### Auth
+
+- [ ] Spec 019 — Bearer token auth: reemplazar cookies cross-domain con Authorization Bearer header (PRD-015)
+
 ### Infrastructure
 
 - [ ] Spec 016 — Production deploy:

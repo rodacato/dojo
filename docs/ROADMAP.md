@@ -73,6 +73,7 @@ Does not start until Phase 0 is in real daily use.
 | 016 | [Production deploy](specs/016-production-deploy.md) | VPS + Cloudflare Tunnel + GitHub Actions CI/CD | sprint-003 |
 | 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
 | 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
+| 019 | [Bearer token auth](specs/019-bearer-token-auth.md) | Replace cross-domain cookies with Authorization Bearer header | sprint-003 |
 
 ---
 
@@ -95,6 +96,7 @@ Does not start until Phase 0 is in real daily use.
 | 012 | [Sensei system prompts](prd/012-sensei-system-prompts.md) | 3 prompt variations for testing before wiring WebSocket | 📝 Draft |
 | 013 | [UX/UI gap analysis](prd/013-ux-gap-analysis.md) | Missing states, mobile layouts, edge cases — screen by screen | 🔍 Exploring |
 | 014 | [Landing page copy](prd/014-landing-page-copy.md) | Hero, problem statement, how it works, access section | 📝 Draft |
+| 015 | [Bearer token auth](prd/015-bearer-token-auth.md) | Replace cross-domain cookies with Bearer tokens | ✅ Advancing to spec |
 
 ---
 
@@ -108,6 +110,7 @@ Does not start until Phase 0 is in real daily use.
 | 004 | [CodeMirror 6](adr/004-codemirror-6.md) | CodeMirror 6 over Monaco (too heavy) or plain textarea (too primitive) | ✅ Accepted |
 | 005 | [Creator auth env var](adr/005-creator-auth-env-var.md) | `CREATOR_GITHUB_ID` env var in Phase 0; DB column in Phase 1 | ✅ Accepted |
 | 006 | [Mood/duration not persisted](adr/006-mood-duration-not-persisted.md) | Transient query params only — no mood history tracking | ✅ Accepted |
+| 007 | [Bearer token over cookies](adr/007-bearer-token-over-cookies.md) | Bearer header replaces cross-domain cookies; server-side sessions unchanged | ✅ Accepted |
 
 ---
 

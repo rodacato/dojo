@@ -88,7 +88,7 @@ authRoutes.get('/auth/github/callback', async (c) => {
   setCookie(c, 'dojo_session', session!.id, {
     httpOnly: true,
     secure: config.NODE_ENV === 'production',
-    sameSite: 'Strict',
+    sameSite: 'Lax', // must be Lax — Strict drops cookie on cross-site redirect from GitHub
     expires: sessionExpiresAt,
     path: '/',
   })
