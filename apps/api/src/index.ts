@@ -4,15 +4,25 @@ import { config } from './config'
 import { createRouter } from './infrastructure/http/router'
 import { initWebSocket, injectWebSocket } from './infrastructure/http/ws-adapter'
 import { createWsRoutes } from './infrastructure/http/routes/ws'
+import { runMigrations } from './infrastructure/persistence/migrate'
 
-const app = createRouter()
+async function start() {
+  await runMigrations()
 
-// initWebSocket must run before createWsRoutes so upgradeWebSocket is available
-const upgradeWebSocket = initWebSocket(app)
-app.route('/', createWsRoutes(upgradeWebSocket))
+  const app = createRouter()
 
-const server = serve({ fetch: app.fetch, port: config.API_PORT }, (info) => {
-  console.log(`dojo_ api running on port ${info.port}`)
+  // initWebSocket must run before createWsRoutes so upgradeWebSocket is available
+  const upgradeWebSocket = initWebSocket(app)
+  app.route('/', createWsRoutes(upgradeWebSocket))
+
+  const server = serve({ fetch: app.fetch, port: config.API_PORT }, (info) => {
+    console.log(`dojo_ api running on port ${info.port}`)
+  })
+
+  injectWebSocket(server)
+}
+
+start().catch((err) => {
+  console.error('Startup failed:', err)
+  process.exit(1)
 })
-
-injectWebSocket(server)

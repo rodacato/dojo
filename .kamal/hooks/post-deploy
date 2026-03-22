@@ -1,4 +1,3 @@
 #!/bin/sh
 set -e
-kamal app exec --reuse --config-file config/deploy.api.yml 'node dist/infrastructure/persistence/migrate.js'
 kamal app exec --reuse --config-file config/deploy.api.yml 'node dist/infrastructure/persistence/seed.js'
