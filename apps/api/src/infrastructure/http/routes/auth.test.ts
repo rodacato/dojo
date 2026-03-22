@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, afterEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { createRouter } from '../router'
 
 // Prevent real DB/config imports from breaking tests
