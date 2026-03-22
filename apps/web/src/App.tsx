@@ -11,6 +11,7 @@ import { KataActivePage } from './pages/KataActivePage'
 import { SenseiEvalPage } from './pages/SenseiEvalPage'
 import { ResultsPage } from './pages/ResultsPage'
 import { ErrorPage } from './pages/ErrorPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
@@ -52,7 +53,7 @@ export function App() {
             </Route>
           </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

@@ -49,13 +49,13 @@ export function SenseiEvalPage() {
     <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
       {/* Sensei header */}
       {session && (
-        <div className="flex items-center gap-3 mb-6 p-3 bg-surface border border-border rounded-sm">
-          <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs">
-            S
+        <div className="flex items-center gap-3 mb-6 p-4 bg-surface border-l-2 border-accent rounded-md">
+          <div className="w-9 h-9 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-sm font-bold">
+            {session.ownerRole.split(' ').map(w => w[0]).slice(0, 2).join('')}
           </div>
           <div>
             <div className="text-primary text-sm font-medium">{session.ownerRole}</div>
-            <div className="text-muted text-xs">Evaluating your submission</div>
+            <div className="text-muted text-xs font-mono">{session.exercise.title}</div>
           </div>
         </div>
       )}
@@ -71,10 +71,16 @@ export function SenseiEvalPage() {
         </div>
       )}
 
-      {/* Error state */}
+      {/* Error state with reconnect */}
       {state.status === 'error' && (
-        <div className="p-4 bg-danger/10 border border-danger/30 rounded-sm text-danger text-sm font-mono">
-          {state.message}
+        <div className="p-4 bg-danger/10 border border-danger/30 rounded-md">
+          <p className="text-danger text-sm font-mono mb-3">{state.message}</p>
+          <button
+            onClick={() => connect()}
+            className="px-4 py-2 border border-danger/30 text-danger font-mono text-xs rounded-sm hover:bg-danger/10 transition-colors"
+          >
+            Reconnect →
+          </button>
         </div>
       )}
 
