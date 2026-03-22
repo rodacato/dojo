@@ -129,6 +129,15 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
 
   const variation = exercise.variations.find((v) => v.id === session.variationId)
 
+  // Fetch attempts for this session
+  const sessionAttempts = await db
+    .select()
+    .from(attempts)
+    .where(eq(attempts.sessionId, sessionId))
+    .orderBy(desc(attempts.submittedAt))
+
+  const finalAttempt = sessionAttempts.find((a) => a.isFinalEvaluation) ?? sessionAttempts[0] ?? null
+
   return c.json({
     id: session.id,
     body: session.body,
@@ -147,6 +156,15 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
       language: exercise.languages,
       tags: exercise.tags,
     },
+    finalAttempt: finalAttempt
+      ? {
+          id: finalAttempt.id,
+          userResponse: finalAttempt.userResponse,
+          ...parseLlmResponse(finalAttempt.llmResponse),
+          isFinalEvaluation: finalAttempt.isFinalEvaluation,
+          submittedAt: finalAttempt.submittedAt.toISOString(),
+        }
+      : null,
   })
 })
 
@@ -215,7 +233,7 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
     .where(and(eq(sessions.userId, userId), gte(sessions.startedAt, thirtyDaysAgo)))
     .groupBy(sql`DATE(${sessions.startedAt})`)
 
-  // Recent sessions with exercise info (last 5 completed/failed)
+  // Recent sessions with exercise info + verdict (last 5 completed/failed)
   const recentRows = await db
     .select({
       id: sessions.id,
@@ -224,6 +242,12 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
       exerciseTitle: exercises.title,
       exerciseType: exercises.type,
       difficulty: exercises.difficulty,
+      verdict: sql<string | null>`(
+        SELECT ${attempts.llmResponse}::jsonb->>'verdict'
+        FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+        LIMIT 1
+      )`,
     })
     .from(sessions)
     .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
@@ -250,7 +274,7 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
       exerciseTitle: s.exerciseTitle,
       exerciseType: s.exerciseType,
       difficulty: s.difficulty,
-      verdict: null, // TODO: join with attempts to get final verdict
+      verdict: s.verdict ?? null,
       startedAt: s.startedAt.toISOString(),
     })),
   })
@@ -342,6 +366,19 @@ adminRoutes.post('/exercises', async (c) => {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+function parseLlmResponse(raw: string): { verdict: string | null; analysis: string; topicsToReview: string[] } {
+  try {
+    const parsed = JSON.parse(raw) as { verdict?: string; analysis?: string; topicsToReview?: string[] }
+    return {
+      verdict: parsed.verdict ?? null,
+      analysis: parsed.analysis ?? '',
+      topicsToReview: parsed.topicsToReview ?? [],
+    }
+  } catch {
+    return { verdict: null, analysis: raw, topicsToReview: [] }
+  }
+}
 
 function calculateStreak(sessionDates: string[]): number {
   if (sessionDates.length === 0) return 0

@@ -17,6 +17,16 @@ export interface DashboardData {
   }>
 }
 
+export interface SessionAttempt {
+  id: string
+  userResponse: string
+  verdict: string | null
+  analysis: string
+  topicsToReview: string[]
+  isFinalEvaluation: boolean
+  submittedAt: string
+}
+
 export interface SessionWithExercise {
   id: string
   body: string
@@ -26,6 +36,7 @@ export interface SessionWithExercise {
   exercise: ExerciseDTO
   variationId: string
   ownerRole: string
+  finalAttempt: SessionAttempt | null
 }
 
 export interface StartSessionResponse {

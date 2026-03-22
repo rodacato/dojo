@@ -5,11 +5,11 @@ import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { LogoWordmark } from '../components/Logo'
 import { Heatmap } from '../components/ui/Heatmap'
-import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
-import type { ExerciseType, Difficulty } from '@dojo/shared'
+import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
+import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
 
 export function DashboardPage() {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [dashboard, setDashboard] = useState<DashboardData | null>(null)
 
@@ -19,16 +19,28 @@ export function DashboardPage() {
 
   if (!dashboard) return <PageLoader />
 
+  // Find today's completed session for the today card
+  const today = new Date().toISOString().slice(0, 10)
+  const todaySession = dashboard.recentSessions.find(
+    (s) => s.startedAt.slice(0, 10) === today,
+  )
+
   return (
     <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
       {/* Header */}
       <header className="flex items-center justify-between mb-8">
         <LogoWordmark />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {user?.avatarUrl && (
             <img src={user.avatarUrl} className="w-7 h-7 rounded-sm" alt={user.username} />
           )}
           <span className="text-secondary text-sm font-mono">{user?.username}</span>
+          <button
+            onClick={logout}
+            className="text-muted text-xs font-mono hover:text-secondary transition-colors ml-1"
+          >
+            logout
+          </button>
         </div>
       </header>
 
@@ -44,10 +56,12 @@ export function DashboardPage() {
       {/* Today card */}
       <TodayCard
         todayComplete={dashboard.todayComplete}
+        todaySession={todaySession}
         activeSessionId={dashboard.activeSessionId}
         isFirstVisit={dashboard.streak === 0 && dashboard.recentSessions.length === 0}
         onStart={() => navigate('/start')}
         onResume={(id) => navigate(`/kata/${id}`)}
+        onViewResults={(id) => navigate(`/kata/${id}/result`)}
       />
 
       {/* Recent activity */}
@@ -56,7 +70,11 @@ export function DashboardPage() {
           <h2 className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">Recent</h2>
           <div className="space-y-2">
             {dashboard.recentSessions.map((s) => (
-              <RecentSessionRow key={s.id} session={s} />
+              <RecentSessionRow
+                key={s.id}
+                session={s}
+                onClick={() => navigate(`/kata/${s.id}/result`)}
+              />
             ))}
           </div>
         </section>
@@ -72,16 +90,20 @@ export function DashboardPage() {
 
 function TodayCard({
   todayComplete,
+  todaySession,
   activeSessionId,
   isFirstVisit,
   onStart,
   onResume,
+  onViewResults,
 }: {
   todayComplete: boolean
+  todaySession?: DashboardData['recentSessions'][number]
   activeSessionId: string | null
   isFirstVisit: boolean
   onStart: () => void
   onResume: (id: string) => void
+  onViewResults: (id: string) => void
 }) {
   if (activeSessionId) {
     return (
@@ -92,6 +114,26 @@ function TodayCard({
           className="mt-3 w-full py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
         >
           Resume kata →
+        </button>
+      </div>
+    )
+  }
+
+  if (todayComplete && todaySession) {
+    return (
+      <div className="bg-surface border border-success/20 rounded-md p-4">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-secondary text-sm">Today's kata complete.</p>
+          {todaySession.verdict && (
+            <VerdictBadge verdict={todaySession.verdict as Verdict} />
+          )}
+        </div>
+        <p className="text-primary text-sm font-medium">{todaySession.exerciseTitle}</p>
+        <button
+          onClick={() => onViewResults(todaySession.id)}
+          className="mt-3 w-full py-2 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
+        >
+          View results →
         </button>
       </div>
     )
@@ -123,19 +165,27 @@ function TodayCard({
 
 function RecentSessionRow({
   session,
+  onClick,
 }: {
   session: DashboardData['recentSessions'][number]
+  onClick: () => void
 }) {
   return (
-    <div className="flex items-center justify-between p-3 bg-surface border border-border rounded-sm">
+    <button
+      onClick={onClick}
+      className="w-full flex items-center justify-between p-3 bg-surface border border-border rounded-sm hover:border-accent/40 transition-colors text-left"
+    >
       <div className="flex items-center gap-2">
         <TypeBadge type={session.exerciseType as ExerciseType} />
         <DifficultyBadge difficulty={session.difficulty as Difficulty} />
         <span className="text-secondary text-sm">{session.exerciseTitle}</span>
       </div>
-      <span className="text-muted text-xs font-mono">
-        {new Date(session.startedAt).toLocaleDateString()}
-      </span>
-    </div>
+      <div className="flex items-center gap-2">
+        {session.verdict && <VerdictBadge verdict={session.verdict as Verdict} />}
+        <span className="text-muted text-xs font-mono">
+          {new Date(session.startedAt).toLocaleDateString()}
+        </span>
+      </div>
+    </button>
   )
 }
