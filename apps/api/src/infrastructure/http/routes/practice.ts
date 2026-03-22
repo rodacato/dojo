@@ -6,7 +6,7 @@ import { SessionExpiredError } from '../../../domain/shared/errors'
 import { ExerciseId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, exercises, invitations, sessions, users, variations } from '../../persistence/drizzle/schema'
+import { attempts, exercises, invitations, sessions, userBadges, users, variations } from '../../persistence/drizzle/schema'
 import { requireAuth, requireCreator } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import type { Difficulty, ExerciseType } from '../../../domain/content/values'
@@ -774,6 +774,16 @@ practiceRoutes.get('/u/:username', async (c) => {
 
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
+  // Badges
+  const badgeRows = await db
+    .select({
+      slug: userBadges.badgeSlug,
+      earnedAt: userBadges.earnedAt,
+    })
+    .from(userBadges)
+    .where(eq(userBadges.userId, userId))
+    .orderBy(userBadges.earnedAt)
+
   return c.json({
     username: user.username,
     avatarUrl: user.avatarUrl,
@@ -793,6 +803,10 @@ practiceRoutes.get('/u/:username', async (c) => {
       difficulty: s.difficulty,
       verdict: s.verdict ?? null,
       startedAt: s.startedAt.toISOString(),
+    })),
+    badges: badgeRows.map((b) => ({
+      slug: b.slug,
+      earnedAt: b.earnedAt.toISOString(),
     })),
   })
 })

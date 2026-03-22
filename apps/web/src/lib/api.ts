@@ -234,4 +234,8 @@ export interface PublicProfileData {
     verdict: string | null
     startedAt: string
   }>
+  badges: Array<{
+    slug: string
+    earnedAt: string
+  }>
 }

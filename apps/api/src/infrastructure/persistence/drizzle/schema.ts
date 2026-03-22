@@ -100,6 +100,28 @@ export const invitationsRelations = relations(invitations, ({ one }) => ({
   creator: one(users, { fields: [invitations.createdBy], references: [users.id] }),
 }))
 
+export const badgeDefinitions = pgTable('badge_definitions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: varchar('slug', { length: 100 }).unique().notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  category: varchar('category', { length: 50 }).notNull(), // 'practice' | 'consistency' | 'mastery'
+  isPrestige: boolean('is_prestige').notNull().default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export const userBadges = pgTable('user_badges', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id),
+  badgeSlug: varchar('badge_slug', { length: 100 })
+    .notNull()
+    .references(() => badgeDefinitions.slug),
+  sessionId: uuid('session_id').references(() => sessions.id),
+  earnedAt: timestamp('earned_at').defaultNow().notNull(),
+})
+
 export const userSessions = pgTable('user_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id')

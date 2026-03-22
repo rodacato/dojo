@@ -14,6 +14,7 @@ import { InMemoryEventBus } from './events/InMemoryEventBus'
 import { MockLLMAdapter } from './llm/MockLLMAdapter'
 import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
 import { config } from '../config'
+import { registerBadgeHandlers } from './events/BadgeEventHandler'
 
 const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
@@ -21,6 +22,9 @@ const userRepo = new PostgresUserRepository(db)
 const llm = config.LLM_ADAPTER === 'anthropic' ? new AnthropicStreamAdapter(config.LLM_API_KEY) : new MockLLMAdapter()
 
 export const eventBus = new InMemoryEventBus()
+
+// Register domain event handlers
+registerBadgeHandlers(eventBus, db as unknown as Parameters<typeof registerBadgeHandlers>[1])
 
 export const useCases = {
   startSession: new StartSession({ exerciseRepo, sessionRepo, eventBus }),

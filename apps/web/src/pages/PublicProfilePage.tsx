@@ -15,6 +15,16 @@ const DIFFICULTY_COLORS: Record<string, string> = {
   HARD: 'text-danger',
 }
 
+const BADGE_NAMES: Record<string, string> = {
+  FIRST_KATA: 'First Kata',
+  '5_STREAK': '5 Day Streak',
+}
+
+const BADGE_DESCRIPTIONS: Record<string, string> = {
+  FIRST_KATA: 'Completed your first kata in the dojo.',
+  '5_STREAK': 'Practiced five consecutive days.',
+}
+
 const VERDICT_COLORS: Record<string, string> = {
   PASSED: 'text-success',
   PASSED_WITH_NOTES: 'text-warning',
@@ -106,6 +116,24 @@ export function PublicProfilePage() {
           <h2 className="text-muted text-xs font-mono mb-3">90-day activity</h2>
           <Heatmap data={profile.heatmapData} />
         </section>
+
+        {/* Badges */}
+        {profile.badges.length > 0 && (
+          <section className="mb-10">
+            <h2 className="text-muted text-xs font-mono mb-3">Earned badges</h2>
+            <div className="flex flex-wrap gap-3">
+              {profile.badges.map((badge) => (
+                <div
+                  key={badge.slug}
+                  className="bg-surface border border-accent/30 rounded-md px-4 py-3"
+                >
+                  <p className="font-mono text-sm text-primary">{BADGE_NAMES[badge.slug] ?? badge.slug}</p>
+                  <p className="text-muted text-xs mt-0.5">{BADGE_DESCRIPTIONS[badge.slug] ?? ''}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Recent kata */}
         {profile.recentSessions.length > 0 && (
