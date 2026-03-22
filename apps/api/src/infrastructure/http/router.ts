@@ -8,6 +8,7 @@ import { healthRoutes } from './routes/health'
 import { authRoutes } from './routes/auth'
 import { practiceRoutes, adminRoutes } from './routes/practice'
 import { shareRoutes } from './routes/share'
+import { ogRoutes } from './routes/og'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 
 export function createRouter() {
@@ -22,6 +23,7 @@ export function createRouter() {
   app.route('/', authRoutes)
   app.route('/', practiceRoutes)
   app.route('/', shareRoutes)
+  app.route('/', ogRoutes)
   app.route('/admin', adminRoutes)
 
   app.onError((err, c) => {
