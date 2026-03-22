@@ -37,24 +37,25 @@ export function ResultsPage() {
 
       {/* Verdict */}
       {verdict && (
-        <div className="mb-8">
+        <div className="mb-10">
           <VerdictBadge verdict={verdict} />
-          <h1 className="font-mono text-3xl md:text-4xl uppercase tracking-wider mt-3 text-primary">
-            {verdict === 'needs_work' ? 'Needs work.' : 'Passed.'}
+          <h1 className="font-mono text-4xl md:text-5xl uppercase tracking-wider mt-4 text-primary leading-none">
+            {verdict === 'needs_work' ? 'Needs work.' : verdict === 'passed_with_notes' ? 'Passed.' : 'Passed.'}
           </h1>
         </div>
       )}
 
       {/* Exercise info */}
-      <div className="flex items-center gap-2 mb-1">
+      <div className="flex items-center gap-2 mb-2">
         <TypeBadge type={session.exercise.type} />
         <DifficultyBadge difficulty={session.exercise.difficulty} />
       </div>
-      <h2 className="text-primary font-medium mb-1">{session.exercise.title}</h2>
-      <p className="text-muted text-sm font-mono mb-8">
+      <h2 className="text-primary font-medium text-lg mb-1">{session.exercise.title}</h2>
+      <p className="text-muted text-sm font-mono mb-10">
         {session.completedAt
           ? `Completed ${new Date(session.completedAt).toLocaleDateString()}`
           : `Started ${new Date(session.startedAt).toLocaleDateString()}`}
+        {session.completedAt && ` · ${Math.round((new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)} min`}
       </p>
 
       {/* Analysis */}
@@ -129,7 +130,6 @@ export function ResultsPage() {
 function ShareButton({ sessionId, exerciseTitle, verdict }: { sessionId: string; exerciseTitle: string; verdict: string }) {
   const [copied, setCopied] = useState(false)
   const shareUrl = `${window.location.origin}/kata/${sessionId}/result`
-  const ogImageUrl = `${API_URL}/share/${sessionId}.png`
 
   async function handleShare() {
     const text = `${verdict.replace(/_/g, ' ')} — ${exerciseTitle} | dojo_`

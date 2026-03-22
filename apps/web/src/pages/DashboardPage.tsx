@@ -38,18 +38,18 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {/* Profile + Stats */}
-      <section className="mb-8">
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="bg-surface border border-border rounded-md p-4 text-center">
-            <div className="font-mono text-2xl text-primary">{dashboard.streak}</div>
-            <div className="text-muted text-xs mt-1">day streak</div>
+      {/* Streak + Stats */}
+      <section className="mb-10">
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-surface border border-accent/20 rounded-md p-5 text-center col-span-1">
+            <div className="font-mono text-4xl text-primary">{dashboard.streak}</div>
+            <div className="text-muted text-xs mt-1 font-mono">day streak</div>
           </div>
-          <div className="bg-surface border border-border rounded-md p-4 text-center">
+          <div className="bg-surface border border-border rounded-md p-5 text-center">
             <div className="font-mono text-2xl text-primary">{dashboard.totalCompleted}</div>
             <div className="text-muted text-xs mt-1">kata completed</div>
           </div>
-          <div className="bg-surface border border-border rounded-md p-4 text-center">
+          <div className="bg-surface border border-border rounded-md p-5 text-center">
             <div className="font-mono text-2xl text-primary">
               {user?.createdAt
                 ? Math.max(1, Math.ceil((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)))

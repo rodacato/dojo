@@ -1,4 +1,4 @@
-import { and, count, eq, gte, sql } from 'drizzle-orm'
+import { and, eq, gte, sql } from 'drizzle-orm'
 import type { SessionCompleted } from '../../domain/practice/events'
 import type { InMemoryEventBus } from './InMemoryEventBus'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
