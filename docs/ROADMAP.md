@@ -98,6 +98,7 @@ Does not start until Phase 0 is in real daily use.
 | 013 | [UX/UI gap analysis](prd/013-ux-gap-analysis.md) | Missing states, mobile layouts, edge cases — screen by screen | 🔍 Exploring |
 | 014 | [Landing page copy](prd/014-landing-page-copy.md) | Hero, problem statement, how it works, access section | 📝 Draft |
 | 015 | [Bearer token auth](prd/015-bearer-token-auth.md) | Replace cross-domain cookies with Bearer tokens | ✅ Advancing to spec |
+| 016 | [Sprint 004 planning](prd/016-sprint-004-planning.md) | Polish, branding & dogfooding sprint scope | ✅ Confirmed |
 
 ---
 
