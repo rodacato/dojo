@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
+import { API_URL } from '../lib/config'
 
 export function LoginPage() {
   const { user } = useAuth()
@@ -28,7 +29,7 @@ export function LoginPage() {
 
       {/* GitHub login */}
       <a
-        href="/api/auth/github"
+        href={`${API_URL}/auth/github`}
         className="flex items-center gap-3 px-6 py-3 bg-surface border border-border rounded-sm text-primary hover:border-accent transition-colors duration-150"
       >
         <GitHubIcon className="w-5 h-5" />
