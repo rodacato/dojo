@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
+import { LogoWordmark } from '../components/Logo'
 import { Heatmap } from '../components/ui/Heatmap'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import type { ExerciseType, Difficulty } from '@dojo/shared'
@@ -22,9 +23,7 @@ export function DashboardPage() {
     <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
       {/* Header */}
       <header className="flex items-center justify-between mb-8">
-        <span className="font-mono text-xl text-primary">
-          dojo<span className="text-accent">_</span>
-        </span>
+        <LogoWordmark />
         <div className="flex items-center gap-2">
           {user?.avatarUrl && (
             <img src={user.avatarUrl} className="w-7 h-7 rounded-sm" alt={user.username} />

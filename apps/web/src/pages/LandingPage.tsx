@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
+import { LogoWordmark } from '../components/Logo'
 import { API_URL } from '../lib/config'
 
 export function LandingPage() {
@@ -37,9 +38,7 @@ export function LandingPage() {
 
       {/* Nav */}
       <nav className="flex items-center justify-between px-8 py-5 border-b border-border/40">
-        <span className="font-mono text-lg text-primary">
-          dojo<span className="text-accent animate-pulse">_</span>
-        </span>
+        <LogoWordmark />
         <a
           href={`${API_URL}/auth/github`}
           className="flex items-center gap-2 text-sm font-mono text-secondary hover:text-primary transition-colors"
@@ -169,9 +168,7 @@ export function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border/40 px-8 py-8 mt-8">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <span className="font-mono text-muted text-sm">
-            dojo<span className="text-accent">_</span>
-          </span>
+          <LogoWordmark className="text-sm" />
           <span className="text-muted text-xs">Built in public. Invite-only.</span>
         </div>
       </footer>
