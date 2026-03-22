@@ -64,6 +64,31 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
       LIMIT 3
     `)
 
+    // Fallback: if all exercises exhausted within 6 months, allow repeats
+    if (rows.length === 0) {
+      const fallbackRows = await this.db.execute<{
+        id: string; title: string; description: string; duration: number;
+        difficulty: string; category: string; type: string; status: string;
+        language: string[]; tags: string[]; topics: string[];
+        owner_role: string; owner_context: string; created_by: string; created_at: Date;
+        variation_id: string; v_owner_role: string; v_owner_context: string; v_created_at: Date;
+      }>(sql`
+        SELECT
+          e.id, e.title, e.description, e.duration, e.difficulty,
+          e.category, e.type, e.status, e.language, e.tags, e.topics,
+          e.owner_role, e.owner_context, e.created_by, e.created_at,
+          v.id as variation_id, v.owner_role as v_owner_role,
+          v.owner_context as v_owner_context, v.created_at as v_created_at
+        FROM exercises e
+        JOIN variations v ON v.exercise_id = e.id
+        WHERE e.status = 'published'
+          ${maxDurationClause}
+        ORDER BY RANDOM()
+        LIMIT 3
+      `)
+      return this.groupRowsToExercises(fallbackRows)
+    }
+
     return this.groupRowsToExercises(rows)
   }
 
