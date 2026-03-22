@@ -122,8 +122,13 @@ export function KataActivePage() {
       <PanelGroup orientation={orientation} className="flex-1 overflow-hidden">
         {/* Problem panel */}
         <Panel defaultSize={50} minSize={25}>
-          <div className="h-full overflow-y-auto p-6">
-            <KataBody body={session.body} />
+          <div className="h-full overflow-y-auto p-6 flex flex-col">
+            <div className="flex-1">
+              <KataBody body={session.body} />
+            </div>
+            <p className="text-muted/30 text-[10px] font-mono mt-6 pt-4 border-t border-border/20">
+              Enter the dojo. Leave the AI outside.
+            </p>
           </div>
         </Panel>
 
@@ -147,7 +152,7 @@ export function KataActivePage() {
                 <textarea
                   value={userResponse}
                   onChange={(e) => setUserResponse(e.target.value)}
-                  placeholder="Write your response..."
+                  placeholder="Start writing. Think out loud. The sensei reads everything."
                   spellCheck={false}
                   className="flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
                 />

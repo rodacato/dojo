@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
@@ -63,9 +63,7 @@ export function LandingPage() {
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>
             <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-8">
-              The best developers{' '}
-              <br className="hidden md:block" />
-              are getting worse.
+              <TypewriterText text="The best developers are getting worse." />
             </h1>
             <p className="text-secondary text-[1rem] leading-relaxed mb-4">
               Not from lack of effort. From outsourcing thinking to tools that never push back.
@@ -203,6 +201,24 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Social proof */}
+      <section className="max-w-3xl mx-auto px-8 py-16">
+        <div className="grid grid-cols-3 gap-8 text-center">
+          <div>
+            <AnimatedCounter target={16} suffix="+" />
+            <p className="text-muted text-xs mt-1">kata in the catalog</p>
+          </div>
+          <div>
+            <AnimatedCounter target={10} suffix="" />
+            <p className="text-muted text-xs mt-1">badges to earn</p>
+          </div>
+          <div>
+            <AnimatedCounter target={3} suffix="" />
+            <p className="text-muted text-xs mt-1">exercise types</p>
+          </div>
+        </div>
+      </section>
+
       {/* Access */}
       <section id="access" className="max-w-3xl mx-auto px-8 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-start">
@@ -222,17 +238,20 @@ export function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-border/20 px-8 py-10">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <LogoMark size={16} className="text-muted" />
-            <span className="text-muted text-xs font-mono">dojo.notdefined.dev</span>
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <LogoMark size={16} className="text-muted" />
+              <span className="text-muted text-xs font-mono">dojo.notdefined.dev</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">Open source</Link>
+              <Link to="/changelog" className="text-muted text-xs hover:text-secondary transition-colors">Changelog</Link>
+              <Link to="/terms" className="text-muted text-xs hover:text-secondary transition-colors">Terms</Link>
+              <Link to="/privacy" className="text-muted text-xs hover:text-secondary transition-colors">Privacy</Link>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">Open source</Link>
-            <Link to="/changelog" className="text-muted text-xs hover:text-secondary transition-colors">Changelog</Link>
-            <Link to="/terms" className="text-muted text-xs hover:text-secondary transition-colors">Terms</Link>
-            <Link to="/privacy" className="text-muted text-xs hover:text-secondary transition-colors">Privacy</Link>
-          </div>
+          <p className="text-center text-muted/40 text-xs font-mono">Not for everyone. Exactly as intended.</p>
         </div>
       </footer>
     </div>
@@ -302,5 +321,69 @@ function RequestAccessForm() {
       </button>
       <p className="text-muted text-xs text-center">No newsletter. No notifications. We'll reach out directly.</p>
     </form>
+  )
+}
+
+function TypewriterText({ text }: { text: string }) {
+  const [displayed, setDisplayed] = useState('')
+  const [done, setDone] = useState(false)
+  const prefersReduced = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    if (prefersReduced.current) {
+      setDisplayed(text)
+      setDone(true)
+      return
+    }
+    let i = 0
+    const interval = setInterval(() => {
+      i++
+      setDisplayed(text.slice(0, i))
+      if (i >= text.length) {
+        clearInterval(interval)
+        setDone(true)
+      }
+    }, 45)
+    return () => clearInterval(interval)
+  }, [text])
+
+  return (
+    <>
+      {displayed}
+      {!done && <span className="text-accent animate-pulse">|</span>}
+    </>
+  )
+}
+
+function AnimatedCounter({ target, suffix }: { target: number; suffix: string }) {
+  const [value, setValue] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return
+        observer.disconnect()
+        const duration = 1200
+        const start = performance.now()
+        function tick(now: number) {
+          const progress = Math.min((now - start) / duration, 1)
+          setValue(Math.round(progress * target))
+          if (progress < 1) requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      },
+      { threshold: 0.5 },
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [target])
+
+  return (
+    <div ref={ref} className="font-mono text-3xl text-primary">
+      {value}{suffix}
+    </div>
   )
 }
