@@ -48,6 +48,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-001 — Technical foundation](sprints/archive/sprint-001-fundacion-tecnica.md) | Backend DDD + hexagonal, auth, DB, CI | ✅ Closed |
 | [sprint-002 — Core loop](sprints/archive/sprint-002-core-loop.md) | HTTP routes, WebSocket, frontend screens, seed data | ✅ Closed |
 | [sprint-003 — Production deploy](sprints/archive/sprint-003-production-deploy.md) | First deploy, landing page, UX states, bearer auth | ✅ Closed |
+| [sprint-004 — Polish & branding](sprints/archive/sprint-004-polish-branding.md) | Logo, favicon, OG, landing polish, results permalink, dashboard stats | ✅ Closed |
 
 ---
 
@@ -75,6 +76,10 @@ Does not start until Phase 0 is in real daily use.
 | 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
 | 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
 | 019 | [Bearer token auth](specs/019-bearer-token-auth.md) | Replace cross-domain cookies with Authorization Bearer header | sprint-003 |
+| 020 | Logo, favicon & OG image | SVG logo component, torii gate mark, OG meta tags | sprint-004 |
+| 021 | Landing page visual polish | Two-column hero, terminal demo, section layouts | sprint-004 |
+| 022 | Results permalink & kata history | API returns attempts, history page, dashboard links | sprint-004 |
+| 023 | Profile & dashboard improvements | Stat cards, totalCompleted, logout button | sprint-004 |
 
 ---
 
@@ -98,7 +103,7 @@ Does not start until Phase 0 is in real daily use.
 | 013 | [UX/UI gap analysis](prd/013-ux-gap-analysis.md) | Missing states, mobile layouts, edge cases — screen by screen | 🔍 Exploring |
 | 014 | [Landing page copy](prd/014-landing-page-copy.md) | Hero, problem statement, how it works, access section | 📝 Draft |
 | 015 | [Bearer token auth](prd/015-bearer-token-auth.md) | Replace cross-domain cookies with Bearer tokens | ✅ Advancing to spec |
-| 016 | [Sprint 004 planning](prd/016-sprint-004-planning.md) | Polish, branding & dogfooding sprint scope | ✅ Confirmed |
+| 016 | [Sprint 004 planning](prd/016-sprint-004-planning.md) | Polish, branding & dogfooding sprint scope | ✅ Delivered |
 
 ---
 
