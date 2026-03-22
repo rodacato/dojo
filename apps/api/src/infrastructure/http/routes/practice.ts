@@ -306,16 +306,41 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
   // Streak: count consecutive days with any session going back from today
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
-  // Today complete: any non-active session today
-  const today = new Date().toISOString().slice(0, 10)
-  const todayComplete = heatmapRows.some(
-    (r) => r.date === today && recentRows.some((s) => s.startedAt.toISOString().slice(0, 10) === today),
-  )
+  // Today complete: any completed/failed session started today
+  const today = new Date()
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const todayCompleteRow = await db.query.sessions.findFirst({
+    where: and(
+      eq(sessions.userId, userId),
+      sql`${sessions.status} IN ('completed', 'failed')`,
+      gte(sessions.startedAt, todayStart),
+    ),
+  })
+  const todayComplete = !!todayCompleteRow
+
+  // Today's completed session (for today card)
+  let todaySession: { id: string; exerciseTitle: string; verdict: string | null } | null = null
+  if (todayComplete && todayCompleteRow) {
+    const todayExercise = await db.query.exercises.findFirst({
+      where: eq(exercises.id, todayCompleteRow.exerciseId),
+    })
+    const [todayAttempt] = await db
+      .select({ verdict: sql<string | null>`${attempts.llmResponse}::jsonb->>'verdict'` })
+      .from(attempts)
+      .where(and(eq(attempts.sessionId, todayCompleteRow.id), eq(attempts.isFinalEvaluation, true)))
+      .limit(1)
+    todaySession = {
+      id: todayCompleteRow.id,
+      exerciseTitle: todayExercise?.title ?? '',
+      verdict: todayAttempt?.verdict ?? null,
+    }
+  }
 
   return c.json({
     streak,
     totalCompleted,
     todayComplete,
+    todaySession,
     activeSessionId: activeSession?.id ?? null,
     heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),
     recentSessions: recentRows.map((s) => ({

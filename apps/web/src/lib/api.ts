@@ -6,6 +6,7 @@ export interface DashboardData {
   streak: number
   totalCompleted: number
   todayComplete: boolean
+  todaySession: { id: string; exerciseTitle: string; verdict: string | null } | null
   activeSessionId: string | null
   heatmapData: Array<{ date: string; count: number }>
   recentSessions: Array<{

@@ -19,12 +19,6 @@ export function DashboardPage() {
 
   if (!dashboard) return <PageLoader />
 
-  // Find today's completed session for the today card
-  const today = new Date().toISOString().slice(0, 10)
-  const todaySession = dashboard.recentSessions.find(
-    (s) => s.startedAt.slice(0, 10) === today,
-  )
-
   return (
     <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
       {/* Header */}
@@ -70,7 +64,7 @@ export function DashboardPage() {
       {/* Today card */}
       <TodayCard
         todayComplete={dashboard.todayComplete}
-        todaySession={todaySession}
+        todaySession={dashboard.todaySession}
         activeSessionId={dashboard.activeSessionId}
         isFirstVisit={dashboard.streak === 0 && dashboard.recentSessions.length === 0}
         onStart={() => navigate('/start')}
@@ -120,7 +114,7 @@ function TodayCard({
   onViewResults,
 }: {
   todayComplete: boolean
-  todaySession?: DashboardData['recentSessions'][number]
+  todaySession: DashboardData['todaySession']
   activeSessionId: string | null
   isFirstVisit: boolean
   onStart: () => void
@@ -146,13 +140,13 @@ function TodayCard({
       <div className="bg-surface border border-success/20 rounded-md p-4">
         <div className="flex items-center justify-between mb-2">
           <p className="text-secondary text-sm">Today's kata complete.</p>
-          {todaySession.verdict && (
+          {todaySession?.verdict && (
             <VerdictBadge verdict={todaySession.verdict as Verdict} />
           )}
         </div>
-        <p className="text-primary text-sm font-medium">{todaySession.exerciseTitle}</p>
+        <p className="text-primary text-sm font-medium">{todaySession!.exerciseTitle}</p>
         <button
-          onClick={() => onViewResults(todaySession.id)}
+          onClick={() => onViewResults(todaySession!.id)}
           className="mt-3 w-full py-2 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
         >
           View results →
