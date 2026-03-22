@@ -31,7 +31,11 @@ export function LandingPage() {
           <p className="text-danger text-sm font-mono">
             {errorParam === 'session_expired'
               ? 'Your session expired. Sign in again to continue.'
-              : 'GitHub login failed. Try again or check your GitHub status.'}
+              : errorParam === 'invite_required'
+                ? 'The dojo is invite-only. Request access below or use an invitation link.'
+                : errorParam === 'invite_invalid'
+                  ? 'This invitation is invalid or has already been used.'
+                  : 'GitHub login failed. Try again or check your GitHub status.'}
           </p>
         </div>
       )}

@@ -154,5 +154,20 @@ export const api = {
       totalPages: number
     }>(`/history?page=${page}`),
 
+  createInvitation: () =>
+    request<{ id: string; token: string; url: string; expiresAt: string }>('/admin/invitations', {
+      method: 'POST',
+    }),
+
+  getInvitations: () =>
+    request<Array<{
+      id: string
+      token: string
+      status: 'pending' | 'used' | 'expired'
+      usedBy: string | null
+      expiresAt: string
+      createdAt: string
+    }>>('/admin/invitations'),
+
   logout: () => request<{ ok: boolean }>('/auth/session', { method: 'DELETE' }),
 }

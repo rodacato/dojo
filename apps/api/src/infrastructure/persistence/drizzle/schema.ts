@@ -85,6 +85,21 @@ export const attemptsRelations = relations(attempts, ({ one }) => ({
   session: one(sessions, { fields: [attempts.sessionId], references: [sessions.id] }),
 }))
 
+export const invitations = pgTable('invitations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  token: varchar('token', { length: 255 }).unique().notNull(),
+  createdBy: uuid('created_by')
+    .notNull()
+    .references(() => users.id),
+  usedBy: uuid('used_by').references(() => users.id),
+  expiresAt: timestamp('expires_at').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+
+export const invitationsRelations = relations(invitations, ({ one }) => ({
+  creator: one(users, { fields: [invitations.createdBy], references: [users.id] }),
+}))
+
 export const userSessions = pgTable('user_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id')

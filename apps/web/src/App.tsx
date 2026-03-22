@@ -12,6 +12,7 @@ import { SenseiEvalPage } from './pages/SenseiEvalPage'
 import { ResultsPage } from './pages/ResultsPage'
 import { ErrorPage } from './pages/ErrorPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { InviteRedeemPage } from './pages/InviteRedeemPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
@@ -28,6 +29,7 @@ export function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Navigate to="/" replace />} />
           <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/invite/:token" element={<InviteRedeemPage />} />
           <Route path="/error" element={<ErrorPage />} />
 
           {/* Protected */}

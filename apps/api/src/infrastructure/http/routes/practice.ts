@@ -6,7 +6,7 @@ import { SessionExpiredError } from '../../../domain/shared/errors'
 import { ExerciseId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, exercises, sessions, variations } from '../../persistence/drizzle/schema'
+import { attempts, exercises, invitations, sessions, users, variations } from '../../persistence/drizzle/schema'
 import { requireAuth, requireCreator } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import type { Difficulty, ExerciseType } from '../../../domain/content/values'
@@ -433,6 +433,55 @@ adminRoutes.post('/exercises', async (c) => {
   })
 
   return c.json({ id: result.id }, 201)
+})
+
+// ---------------------------------------------------------------------------
+// Admin: Invitations
+// ---------------------------------------------------------------------------
+
+adminRoutes.post('/invitations', async (c) => {
+  const user = c.get('user') as { id: string }
+
+  const token = crypto.randomUUID().replace(/-/g, '').slice(0, 16)
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
+
+  const [invitation] = await db
+    .insert(invitations)
+    .values({ token, createdBy: user.id, expiresAt })
+    .returning()
+
+  return c.json({
+    id: invitation!.id,
+    token: invitation!.token,
+    url: `${config.WEB_URL}/invite/${invitation!.token}`,
+    expiresAt: invitation!.expiresAt.toISOString(),
+  }, 201)
+})
+
+adminRoutes.get('/invitations', async (c) => {
+  const rows = await db
+    .select({
+      id: invitations.id,
+      token: invitations.token,
+      usedBy: invitations.usedBy,
+      usedByUsername: users.username,
+      expiresAt: invitations.expiresAt,
+      createdAt: invitations.createdAt,
+    })
+    .from(invitations)
+    .leftJoin(users, eq(invitations.usedBy, users.id))
+    .orderBy(desc(invitations.createdAt))
+
+  return c.json(
+    rows.map((r) => ({
+      id: r.id,
+      token: r.token,
+      status: r.usedBy ? 'used' : new Date(r.expiresAt) < new Date() ? 'expired' : 'pending',
+      usedBy: r.usedByUsername ?? null,
+      expiresAt: r.expiresAt.toISOString(),
+      createdAt: r.createdAt.toISOString(),
+    })),
+  )
 })
 
 // ---------------------------------------------------------------------------
