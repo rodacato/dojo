@@ -46,7 +46,8 @@ Does not start until Phase 0 is in real daily use.
 | Sprint | Outcome | Status |
 |---|---|---|
 | [sprint-001 — Technical foundation](sprints/archive/sprint-001-fundacion-tecnica.md) | Backend DDD + hexagonal, auth, DB, CI | ✅ Closed |
-| [sprint-002 — Core loop](sprints/current.md) | Kata end-to-end in production | 🔄 In progress |
+| [sprint-002 — Core loop](sprints/archive/sprint-002-core-loop.md) | HTTP routes, WebSocket, frontend screens, seed data | ✅ Closed |
+| [sprint-003 — Production deploy](sprints/archive/sprint-003-production-deploy.md) | First deploy, landing page, UX states, bearer auth | ✅ Closed |
 
 ---
 
