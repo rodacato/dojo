@@ -31,23 +31,27 @@ export function KataActivePage() {
 
   useEffect(() => {
     if (!sessionId) return
+    let cancelled = false
 
-    function poll() {
-      api.getSession(sessionId!).then((s) => {
-        if (s.status === 'preparing') {
-          setPreparing(true)
-        } else if (s.status === 'active') {
-          setPreparing(false)
-          setSession(s)
-        } else {
-          navigate(`/kata/${sessionId}/result`, { replace: true })
-        }
-      })
+    async function load() {
+      const s = await api.getSession(sessionId!)
+      if (cancelled) return
+
+      if (s.status === 'active') {
+        setSession(s)
+        return
+      }
+      if (s.status === 'preparing') {
+        setPreparing(true)
+        setTimeout(load, 2000)
+        return
+      }
+      // completed or failed
+      navigate(`/kata/${sessionId}/result`, { replace: true })
     }
 
-    poll()
-    const interval = setInterval(poll, 2000)
-    return () => clearInterval(interval)
+    load()
+    return () => { cancelled = true }
   }, [sessionId, navigate])
 
   useEffect(() => {
