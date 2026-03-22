@@ -107,17 +107,30 @@ export function KataActivePage() {
   return (
     <div className="h-screen bg-base flex flex-col overflow-hidden">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface shrink-0">
+      <div className="grid grid-cols-3 items-center px-4 py-2 border-b border-border bg-surface shrink-0">
         <div className="flex items-center gap-3">
           <TypeBadge type={exercise.type as ExerciseType} />
           <DifficultyBadge difficulty={exercise.difficulty} />
-          <span className="text-secondary text-sm">{exercise.title}</span>
+          <span className="text-secondary text-sm hidden sm:inline">{exercise.title}</span>
         </div>
-        <Timer
-          durationMinutes={exercise.duration}
-          startedAt={session.startedAt}
-          onExpired={() => { setTimedOut(true); handleSubmit() }}
-        />
+        <div className="text-center">
+          <Timer
+            durationMinutes={exercise.duration}
+            startedAt={session.startedAt}
+            onExpired={() => { setTimedOut(true); handleSubmit() }}
+          />
+        </div>
+        <div className="text-right">
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || (!userResponse.trim() && !timedOut)}
+            className={`px-4 py-1.5 font-mono text-xs rounded-sm transition-colors disabled:opacity-30 ${
+              timedOut ? 'bg-danger text-primary' : 'bg-accent text-primary hover:bg-accent/90'
+            }`}
+          >
+            {submitting ? '...' : timedOut ? 'Submit now' : 'Submit'}
+          </button>
+        </div>
       </div>
 
       {/* Resizable split */}
@@ -155,19 +168,7 @@ export function KataActivePage() {
               <ChatEditor value={userResponse} onChange={setUserResponse} />
             )}
           </div>
-          <div className="p-3 border-t border-border shrink-0">
-            <button
-              onClick={handleSubmit}
-              disabled={submitting}
-              className={`w-full py-2 font-mono text-sm rounded-sm transition-colors disabled:opacity-40 ${
-                timedOut
-                  ? 'bg-danger text-primary hover:bg-danger/90'
-                  : 'bg-accent text-primary hover:bg-accent/90 disabled:opacity-40'
-              } ${!userResponse.trim() && !timedOut ? 'opacity-40 cursor-not-allowed' : ''}`}
-            >
-              {submitting ? 'Submitting...' : timedOut ? '⏱ Time\'s up — submit now' : 'Submit →'}
-            </button>
-          </div>
+          {/* Submit via top bar button */}
         </Panel>
       </PanelGroup>
     </div>

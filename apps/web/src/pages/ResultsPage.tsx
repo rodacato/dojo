@@ -114,10 +114,10 @@ export function ResultsPage() {
           <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
         )}
         <button
-          onClick={() => navigate('/dashboard', { replace: true })}
+          onClick={() => navigate('/start', { replace: true })}
           className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
         >
-          Return to dashboard
+          Keep Practicing
         </button>
       </div>
 

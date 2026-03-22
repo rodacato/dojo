@@ -46,19 +46,28 @@ export function SenseiEvalPage() {
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
 
   return (
-    <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
-      {/* Sensei header */}
+    <div className="min-h-screen bg-base">
+      {/* Top bar */}
       {session && (
-        <div className="flex items-center gap-3 mb-6 p-4 bg-surface border-l-2 border-accent rounded-md">
-          <div className="w-9 h-9 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-sm font-bold">
-            {session.ownerRole.split(' ').map(w => w[0]).slice(0, 2).join('')}
+        <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 bg-surface/50 sticky top-0 z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold">
+              {session.ownerRole.split(' ').map(w => w[0]).slice(0, 2).join('')}
+            </div>
+            <div>
+              <div className="text-primary text-sm font-medium">{session.exercise.title}</div>
+              <div className="text-muted text-xs font-mono">[{session.ownerRole}]</div>
+            </div>
           </div>
-          <div>
-            <div className="text-primary text-sm font-medium">{session.ownerRole}</div>
-            <div className="text-muted text-xs font-mono">{session.exercise.title}</div>
+          <div className="flex items-center gap-2">
+            {isStreaming && (
+              <span className="text-accent text-xs font-mono animate-pulse">Evaluating...</span>
+            )}
           </div>
         </div>
       )}
+
+      <div className="px-4 py-8 max-w-2xl mx-auto">
 
       {/* Streaming prose */}
       {(tokens || isStreaming) && (
@@ -136,6 +145,7 @@ export function SenseiEvalPage() {
           </button>
         </div>
       )}
+      </div>
     </div>
   )
 }
