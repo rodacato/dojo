@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
+import { API_URL } from '../lib/config'
 import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
 import { LogoWordmark } from '../components/Logo'
@@ -90,8 +91,27 @@ export function ResultsPage() {
         </div>
       )}
 
+      {/* Share preview */}
+      {verdict && sessionId && (
+        <div className="mb-8">
+          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Share</p>
+          <div className="border border-border/40 rounded-md overflow-hidden">
+            <img
+              src={`${API_URL}/share/${sessionId}.png`}
+              alt="Share card preview"
+              className="w-full"
+              loading="lazy"
+            />
+          </div>
+          <p className="text-muted text-xs mt-2 text-center">Own it. The good and the ugly.</p>
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-3 mt-8 pt-6 border-t border-border/40">
+        {verdict && sessionId && (
+          <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
+        )}
         <button
           onClick={() => navigate('/dashboard', { replace: true })}
           className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
@@ -103,5 +123,45 @@ export function ResultsPage() {
       {/* Footer */}
       <p className="text-center text-muted text-xs font-mono mt-8">Consistency compounds.</p>
     </div>
+  )
+}
+
+function ShareButton({ sessionId, exerciseTitle, verdict }: { sessionId: string; exerciseTitle: string; verdict: string }) {
+  const [copied, setCopied] = useState(false)
+  const shareUrl = `${window.location.origin}/kata/${sessionId}/result`
+  const ogImageUrl = `${API_URL}/share/${sessionId}.png`
+
+  async function handleShare() {
+    const text = `${verdict.replace(/_/g, ' ')} — ${exerciseTitle} | dojo_`
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'dojo_ kata result', text, url: shareUrl })
+        return
+      } catch {
+        // Fallback to clipboard
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(`${text}\n${shareUrl}`)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Open Twitter intent as last resort
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
+        '_blank',
+      )
+    }
+  }
+
+  return (
+    <button
+      onClick={handleShare}
+      className="flex-1 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
+    >
+      {copied ? 'Copied!' : 'Share'}
+    </button>
   )
 }
