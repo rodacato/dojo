@@ -10,6 +10,7 @@ import { KataActivePage } from './pages/KataActivePage'
 import { SenseiEvalPage } from './pages/SenseiEvalPage'
 import { ResultsPage } from './pages/ResultsPage'
 import { ErrorPage } from './pages/ErrorPage'
+import { HistoryPage } from './pages/HistoryPage'
 import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
@@ -29,6 +30,7 @@ export function App() {
           {/* Protected */}
           <Route element={<RequireAuth />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/history" element={<HistoryPage />} />
             <Route path="/start" element={<DayStartPage />} />
             <Route path="/kata" element={<KataSelectionPage />} />
             <Route path="/kata/:id" element={<KataActivePage />} />

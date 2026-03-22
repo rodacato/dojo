@@ -81,7 +81,15 @@ export function DashboardPage() {
       {/* Recent activity */}
       {dashboard.recentSessions.length > 0 && (
         <section className="mt-8">
-          <h2 className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">Recent</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-secondary text-xs font-mono uppercase tracking-wider">Recent</h2>
+            <button
+              onClick={() => navigate('/history')}
+              className="text-muted text-xs font-mono hover:text-secondary transition-colors"
+            >
+              View all →
+            </button>
+          </div>
           <div className="space-y-2">
             {dashboard.recentSessions.map((s) => (
               <RecentSessionRow

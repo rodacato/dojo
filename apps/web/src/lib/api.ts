@@ -137,5 +137,22 @@ export const api = {
       body: JSON.stringify(data),
     }),
 
+  getHistory: (page = 1) =>
+    request<{
+      sessions: Array<{
+        id: string
+        status: string
+        exerciseTitle: string
+        exerciseType: string
+        difficulty: string
+        verdict: string | null
+        startedAt: string
+        completedAt: string | null
+      }>
+      total: number
+      page: number
+      totalPages: number
+    }>(`/history?page=${page}`),
+
   logout: () => request<{ ok: boolean }>('/auth/session', { method: 'DELETE' }),
 }

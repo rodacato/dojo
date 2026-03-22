@@ -289,6 +289,70 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
 })
 
 // ---------------------------------------------------------------------------
+// GET /history
+// ---------------------------------------------------------------------------
+
+const historySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+})
+
+practiceRoutes.get('/history', requireAuth, async (c) => {
+  const user = c.get('user') as { id: string }
+  const query = c.req.query()
+  const { page, limit: pageSize } = historySchema.parse({
+    page: query['page'],
+    limit: query['limit'],
+  })
+  const offset = (page - 1) * pageSize
+
+  const [totalRow] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .where(and(eq(sessions.userId, user.id), sql`${sessions.status} != 'active'`))
+  const total = Number(totalRow?.count ?? 0)
+
+  const rows = await db
+    .select({
+      id: sessions.id,
+      status: sessions.status,
+      startedAt: sessions.startedAt,
+      completedAt: sessions.completedAt,
+      exerciseTitle: exercises.title,
+      exerciseType: exercises.type,
+      difficulty: exercises.difficulty,
+      verdict: sql<string | null>`(
+        SELECT ${attempts.llmResponse}::jsonb->>'verdict'
+        FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+        LIMIT 1
+      )`,
+    })
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .where(and(eq(sessions.userId, user.id), sql`${sessions.status} != 'active'`))
+    .orderBy(desc(sessions.startedAt))
+    .limit(pageSize)
+    .offset(offset)
+
+  return c.json({
+    sessions: rows.map((s) => ({
+      id: s.id,
+      status: s.status,
+      exerciseTitle: s.exerciseTitle,
+      exerciseType: s.exerciseType,
+      difficulty: s.difficulty,
+      verdict: s.verdict ?? null,
+      startedAt: s.startedAt.toISOString(),
+      completedAt: s.completedAt?.toISOString() ?? null,
+    })),
+    total,
+    page,
+    totalPages: Math.ceil(total / pageSize),
+  })
+})
+
+// ---------------------------------------------------------------------------
 // Admin routes (skeleton — Exercise section only in Phase 0)
 // ---------------------------------------------------------------------------
 
