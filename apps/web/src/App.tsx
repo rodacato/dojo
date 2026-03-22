@@ -24,6 +24,7 @@ import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
 import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
 import { AdminEditExercisePage } from './pages/admin/AdminEditExercisePage'
 import { AdminInvitationsPage } from './pages/admin/AdminInvitationsPage'
+import { PublicProfilePage } from './pages/PublicProfilePage'
 
 export function App() {
   return (
@@ -40,6 +41,7 @@ export function App() {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/changelog" element={<ChangelogPage />} />
           <Route path="/open-source" element={<OpenSourcePage />} />
+          <Route path="/u/:username" element={<PublicProfilePage />} />
           <Route path="/error" element={<ErrorPage />} />
 
           {/* Protected */}

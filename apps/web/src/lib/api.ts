@@ -209,4 +209,29 @@ export const api = {
     }),
 
   logout: () => request<{ ok: boolean }>('/auth/session', { method: 'DELETE' }),
+
+  getPublicProfile: (username: string) =>
+    request<PublicProfileData>(`/u/${username}`),
+}
+
+export interface PublicProfileData {
+  username: string
+  avatarUrl: string
+  memberSince: string
+  stats: {
+    totalKata: number
+    passRate: number
+    avgTimeMinutes: number
+    languages: string[]
+  }
+  streak: number
+  heatmapData: Array<{ date: string; count: number }>
+  recentSessions: Array<{
+    id: string
+    exerciseTitle: string
+    exerciseType: string
+    difficulty: string
+    verdict: string | null
+    startedAt: string
+  }>
 }

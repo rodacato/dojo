@@ -684,6 +684,123 @@ function parseLlmResponse(raw: string): { verdict: string | null; analysis: stri
   }
 }
 
+// ---------------------------------------------------------------------------
+// GET /u/:username — Public profile (no auth required)
+// ---------------------------------------------------------------------------
+
+practiceRoutes.get('/u/:username', async (c) => {
+  const { username } = c.req.param()
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, username),
+  })
+
+  if (!user) return c.json({ error: 'User not found' }, 404)
+
+  const userId = user.id
+  const ninetyDaysAgo = new Date()
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
+
+  // Heatmap (90 days for profile)
+  const heatmapRows = await db
+    .select({
+      date: sql<string>`DATE(${sessions.startedAt})::text`,
+      count: count(),
+    })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), gte(sessions.startedAt, ninetyDaysAgo)))
+    .groupBy(sql`DATE(${sessions.startedAt})`)
+
+  // Total completed
+  const [totalRow] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+  const totalCompleted = Number(totalRow?.count ?? 0)
+
+  // Pass rate
+  const [passedRow] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .innerJoin(attempts, and(eq(attempts.sessionId, sessions.id), eq(attempts.isFinalEvaluation, true)))
+    .where(
+      and(
+        eq(sessions.userId, userId),
+        eq(sessions.status, 'completed'),
+        sql`${attempts.llmResponse}::jsonb->>'verdict' IN ('PASSED', 'PASSED_WITH_NOTES')`,
+      ),
+    )
+  const passed = Number(passedRow?.count ?? 0)
+  const passRate = totalCompleted > 0 ? Math.round((passed / totalCompleted) * 100) : 0
+
+  // Languages used (distinct)
+  const langRows = await db
+    .selectDistinct({ lang: sql<string>`unnest(${exercises.language})` })
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+
+  // Avg time (completed sessions)
+  const [avgRow] = await db
+    .select({
+      avg: sql<number>`ROUND(AVG(EXTRACT(EPOCH FROM (${sessions.completedAt} - ${sessions.startedAt})) / 60))`,
+    })
+    .from(sessions)
+    .where(
+      and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), sql`${sessions.completedAt} IS NOT NULL`),
+    )
+
+  // Recent sessions (last 10, public)
+  const recentRows = await db
+    .select({
+      id: sessions.id,
+      status: sessions.status,
+      startedAt: sessions.startedAt,
+      exerciseTitle: exercises.title,
+      exerciseType: exercises.type,
+      difficulty: exercises.difficulty,
+      verdict: sql<string | null>`(
+        SELECT ${attempts.llmResponse}::jsonb->>'verdict'
+        FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+        LIMIT 1
+      )`,
+    })
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .orderBy(desc(sessions.startedAt))
+    .limit(10)
+
+  const streak = calculateStreak(heatmapRows.map((r) => r.date))
+
+  return c.json({
+    username: user.username,
+    avatarUrl: user.avatarUrl,
+    memberSince: user.createdAt.toISOString(),
+    stats: {
+      totalKata: totalCompleted,
+      passRate,
+      avgTimeMinutes: Number(avgRow?.avg ?? 0),
+      languages: langRows.map((r) => r.lang),
+    },
+    streak,
+    heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),
+    recentSessions: recentRows.map((s) => ({
+      id: s.id,
+      exerciseTitle: s.exerciseTitle,
+      exerciseType: s.exerciseType,
+      difficulty: s.difficulty,
+      verdict: s.verdict ?? null,
+      startedAt: s.startedAt.toISOString(),
+    })),
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 function calculateStreak(sessionDates: string[]): number {
   if (sessionDates.length === 0) return 0
 
