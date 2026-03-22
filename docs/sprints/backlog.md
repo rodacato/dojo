@@ -8,9 +8,11 @@ The backlog is not a task list — it is a set of prioritized intentions. Items 
 
 _Ideas that arrived and have not been evaluated yet. Candidates for the next triage._
 
-- 2026-03-21 — Kata and prompt quality refinement: research techniques (chain-of-thought rubrics, few-shot examples in ownerContext, role calibration), run A/B comparisons on real sessions, establish a bar for "what makes a kata excellent vs. just good". Includes reviewing the 44 kata drafts (PRDs 006, 008–010) with real usage data once the core loop is live.
-- 2026-03-22 — Daily kata reminder emails via Resend: opt-in notification if user hasn't completed today's kata by a configurable hour. Needs domain verification on Resend before sending real emails.
+- 2026-03-22 — Daily kata reminder emails via Resend: opt-in notification if user hasn't completed today's kata by a configurable hour. Resend domain verified.
 - 2026-03-22 — Mobile responsive pass: test and fix all screens on mobile breakpoints. The product works on mobile browser but hasn't been audited for small screens.
+- 2026-03-22 — OG meta tags for share cards need server-side rendering (SPA can't set og:image for crawlers). Options: pre-render route, Cloudflare Worker, or small SSR middleware.
+- 2026-03-22 — Sidebar navigation (Stitch design has persistent sidebar on desktop + bottom nav on mobile). Architectural change — deferred until the screen count justifies it.
+- 2026-03-22 — Login card-centered design (Stitch `dojo_login_landing/` shows a separate login card, not the full landing page). Could be useful when users land directly on `/login`.
 
 ---
 
@@ -18,13 +20,7 @@ _Ideas that arrived and have not been evaluated yet. Candidates for the next tri
 
 _Confirmed for the next work block. Moved here after triage._
 
-### Sprint 007 — Phase 1 completion + Phase 2 start
-
-- "No repeat within 6 months" rule enforced per user — query-level filter on exercise selection
-- Full badge system: `POLYGLOT`, `ARCHITECT`, `BRUTAL TRUTH`, `CONSISTENT`, `UNDEFINED NO MORE`, `SENSEI APPROVED`, `SQL SURVIVOR`, `RUBBER DUCK` — trigger rules + badge collection page (`/badges`, design: `badges_collection/`)
-- Extended dashboard (Phase 2): "Where you struggle" topic chips, "How you practice" stats, "Sensei suggests" review topics — cross-session LLM analysis (design: `dojo_extended_dashboard_phase_2/`)
-- Verify `notdefined.dev` domain in Resend for production emails
-- Kata quality refinement pass: review sensei evaluations from dogfooding, tune prompts
+<!-- Sprint 007 items moved to current.md -->
 
 ---
 
@@ -34,19 +30,19 @@ _Good ideas, not urgent. Not in the next block._
 
 ### Phase 1 — Open the Doors
 
-- ~~Public profile page (username, avatar, streak, recent kata, earned badges)~~ — Sprint 006, Spec 029
-- ~~Invitation system (creator sends invite links, limited seats)~~ — done (Sprint 005, Spec 026)
-- ~~Share card generation (OG image with verdict, exercise name, sensei quote)~~ — Sprint 006, Spec 031
-- ~~"No repeat within 6 months" rule enforced per user~~ — triaged for Sprint 007
-- ~~Basic streak tracking (days with at least one kata completed)~~ — done (Sprint 002)
-- ~~`FIRST KATA` and `5 STREAK` badges~~ — Sprint 006, Spec 030
-- ~~OG image PNG conversion (current SVG not rendered by Twitter/Slack)~~ — Sprint 006, Spec 031
+- ~~Public profile page~~ — done (Sprint 006, Spec 029)
+- ~~Invitation system~~ — done (Sprint 005, Spec 026)
+- ~~Share card generation~~ — done (Sprint 006, Spec 031)
+- ~~"No repeat within 6 months" rule~~ — Sprint 007, Spec 035
+- ~~Basic streak tracking~~ — done (Sprint 002)
+- ~~`FIRST KATA` and `5 STREAK` badges~~ — done (Sprint 006, Spec 030)
+- ~~OG image PNG conversion~~ — done (Sprint 006, Spec 031)
 
 ### Phase 2 — The Scoreboard
 
-- ~~Leaderboard among invited users (based on consistency, not score)~~ — Sprint 006, Spec 032
-- ~~Full badge system~~ — triaged for Sprint 007
-- ~~Dashboard: weak areas identified by the LLM over time~~ — triaged for Sprint 007
+- ~~Leaderboard~~ — done (Sprint 006, Spec 032)
+- ~~Full badge system~~ — Sprint 007, Spec 037
+- ~~Dashboard: weak areas~~ — Sprint 007, Spec 038
 - Psychological analysis view: patterns in how you respond (do you rush? do you avoid certain types?)
 - Drawhaus diagram saved per session (whiteboard kata history)
 
