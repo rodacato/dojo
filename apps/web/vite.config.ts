@@ -11,6 +11,7 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             if (id.includes('react-dom') || id.includes('react-router')) return 'vendor-react'
             if (id.includes('@codemirror') || id.includes('@lezer')) return 'vendor-codemirror'
+            if (id.includes('mermaid') || id.includes('dagre') || id.includes('d3') || id.includes('elkjs')) return 'vendor-mermaid'
           }
         },
       },

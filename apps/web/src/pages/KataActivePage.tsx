@@ -7,6 +7,7 @@ import { api, ApiError, type SessionWithExercise } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
+import { MermaidEditor } from '../components/ui/MermaidEditor'
 import type { ExerciseType } from '@dojo/shared'
 
 const PREPARING_MESSAGES = [
@@ -100,7 +101,8 @@ export function KataActivePage() {
 
   const { exercise } = session
   const isCode = exercise.type === 'code'
-  const orientation = isCode ? 'horizontal' : 'vertical'
+  const isWhiteboard = exercise.type === 'whiteboard'
+  const orientation = isCode || isWhiteboard ? 'horizontal' : 'vertical'
 
   return (
     <div className="h-screen bg-base flex flex-col overflow-hidden">
@@ -147,19 +149,10 @@ export function KataActivePage() {
                 language={resolveLanguage(exercise.language)}
                 placeholder="Write your solution..."
               />
+            ) : isWhiteboard ? (
+              <MermaidEditor value={userResponse} onChange={setUserResponse} />
             ) : (
-              <div className="flex flex-col h-full p-4 gap-2">
-                <textarea
-                  value={userResponse}
-                  onChange={(e) => setUserResponse(e.target.value)}
-                  placeholder="Start writing. Think out loud. The sensei reads everything."
-                  spellCheck={false}
-                  className="flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
-                />
-                <div className="text-muted text-xs font-mono text-right">
-                  {userResponse.split(/\s+/).filter(Boolean).length} words
-                </div>
-              </div>
+              <ChatEditor value={userResponse} onChange={setUserResponse} />
             )}
           </div>
           <div className="p-3 border-t border-border shrink-0">
@@ -234,6 +227,34 @@ function KataBody({ body }: { body: string }) {
     >
       {body}
     </ReactMarkdown>
+  )
+}
+
+function ChatEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [mono, setMono] = useState(false)
+  const wordCount = value.split(/\s+/).filter(Boolean).length
+
+  return (
+    <div className="flex flex-col h-full p-4 gap-2">
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Start writing. Think out loud. The sensei reads everything."
+        spellCheck={false}
+        className={`flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm resize-none focus:outline-none focus:border-accent transition-colors ${
+          mono ? 'font-mono' : 'font-sans'
+        }`}
+      />
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => setMono(!mono)}
+          className="text-muted text-[10px] font-mono hover:text-secondary transition-colors"
+        >
+          {mono ? 'sans' : 'mono'}
+        </button>
+        <span className="text-muted text-xs font-mono">{wordCount} words</span>
+      </div>
+    </div>
   )
 }
 
