@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { AuthProvider } from './context/AuthContext'
 import { RequireAuth } from './components/RequireAuth'
 import { RequireCreator } from './components/RequireCreator'
@@ -18,6 +19,7 @@ import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
 
 export function App() {
   return (
+    <ErrorBoundary>
     <BrowserRouter>
       <AuthProvider>
         <Routes>
@@ -54,5 +56,6 @@ export function App() {
         </Routes>
       </AuthProvider>
     </BrowserRouter>
+    </ErrorBoundary>
   )
 }

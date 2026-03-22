@@ -54,6 +54,16 @@ export function KataActivePage() {
     return () => { cancelled = true }
   }, [sessionId, navigate])
 
+  // Warn before closing tab during active kata
+  useEffect(() => {
+    if (!session) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [session])
+
   useEffect(() => {
     if (!preparing) return
     const interval = setInterval(() => {
