@@ -11,28 +11,31 @@
 
 ### Security Hardening
 
-- [ ] Spec 024 — Security headers & error boundaries:
+- [x] Spec 024 — Security headers & error boundaries:
   - CSP, HSTS, Permissions-Policy in nginx.conf
   - beforeunload prompt on active kata
   - React error boundary at app level (fallback to ErrorPage)
 
 ### UX Polish
 
-- [ ] Spec 025 — 404 page, sensei persona, reconnect UI:
-  - Custom 404 page (design in `docs/screens/dojo_404_path_not_found/`)
-  - Sensei role badge visible during evaluation streaming
-  - WebSocket reconnect banner in eval page
+- [x] Spec 025 — 404 page, sensei persona, reconnect UI:
+  - Custom 404 page (design from `docs/screens/dojo_404_path_not_found/`)
+  - Sensei role badge with initials avatar + exercise title during eval
+  - WebSocket reconnect button in eval error state
 
 ### Phase 1 Prep
 
-- [ ] Spec 026 — Invitation system:
-  - `invitations` table (token, createdBy, usedBy, expiresAt)
-  - Creator can generate invite links from admin
-  - Invite redeem flow: `/invite?token=xxx` → GitHub OAuth → account created
-  - Non-invited users blocked at OAuth callback
-- [ ] Spec 027 — Admin: edit exercise:
-  - Edit existing exercise (pre-fill form, update in DB)
-  - Exercise detail view from admin table
+- [x] Spec 026 — Invitation system:
+  - `invitations` table with migration 0002 (token, createdBy, usedBy, expiresAt)
+  - GET /auth/invite/:token — validates and starts OAuth with invite cookie
+  - OAuth callback gates new users: must be creator or have valid invite
+  - Admin POST/GET /admin/invitations for creating and listing
+  - /invite/:token redeem page with GitHub CTA
+  - Landing shows invite_required and invite_invalid error states
+- [x] Spec 027 — Admin: edit exercise:
+  - GET/PUT /admin/exercises/:id endpoints
+  - Edit page pre-fills form from API
+  - Table rows clickable to navigate to edit
 
 ---
 
