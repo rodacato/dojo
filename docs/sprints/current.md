@@ -11,8 +11,8 @@
 
 ### Code — done before deploy
 
-- [ ] Spec 018 — Landing page: ruta `/`, copy de PRD-014, form "request access" estático (Phase 0)
-- [ ] Spec 017 — UX improvements (HIGH severity from PRD-013):
+- [x] Spec 018 — Landing page: ruta `/`, copy de PRD-014, form "request access" estático (Phase 0)
+- [x] Spec 017 — UX improvements (HIGH severity from PRD-013):
   - OAuth error state en `/login`
   - First-day empty state ("Day 1. The dojo opens.")
   - Dashboard: resume CTA si hay sesión activa

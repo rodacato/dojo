@@ -63,6 +63,16 @@ Does not start until Phase 0 is in real daily use.
 | 006 | [GitHub OAuth](specs/006-github-oauth.md) | arctic@2, server-side sessions, user_sessions in DB, requireAuth middleware | sprint-001 |
 | 007 | [CI](specs/007-ci.md) | GitHub Actions — lint → typecheck → test on every PR to main | sprint-001 |
 | 008 | [Shared package](specs/008-shared-package.md) | Annotated DTOs, Zod schemas, boundary rules documented | sprint-001 |
+| 009 | [HTTP routes](specs/009-http-routes.md) | REST endpoints — sessions, exercises, dashboard, admin CRUD | sprint-002 |
+| 010 | [WebSocket evaluation](specs/010-websocket-evaluation.md) | WS protocol for sensei streaming evaluation | sprint-002 |
+| 011 | [Anthropic streaming adapter](specs/011-anthropic-streaming-adapter.md) | Claude integration — streaming, prompt templates, token limits | sprint-002 |
+| 012 | [Seed data](specs/012-seed-data.md) | 16 hand-crafted kata with variations, seed script | sprint-002 |
+| 013 | [Frontend core screens](specs/013-frontend-core-screens.md) | 8 user-facing screens + Tailwind 4 + CodeMirror | sprint-002 |
+| 014 | [Admin UI](specs/014-admin-ui.md) | Exercise list, new exercise form, creator-only guard | sprint-002 |
+| 015 | [Kamal deploy](specs/015-kamal-deploy.md) | Kamal 2 config for API + web containers | sprint-003 |
+| 016 | [Production deploy](specs/016-production-deploy.md) | VPS + Cloudflare Tunnel + GitHub Actions CI/CD | sprint-003 |
+| 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
+| 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
 
 ---
 
