@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { Hono } from 'hono'
+import type { AppEnv } from '../app-env'
 
 // Mock DB before importing auth middleware
 const mockFindFirst = vi.fn()
@@ -68,7 +69,7 @@ describe('requireAuth middleware', () => {
     const fakeUser = { id: 'user-1', username: 'testuser', githubId: '12345' }
     mockFindFirst.mockResolvedValue({ user: fakeUser })
 
-    const app = new Hono()
+    const app = new Hono<AppEnv>()
     app.use('/protected/*', requireAuth)
     app.get('/protected/resource', (c) => {
       const user = c.get('user')

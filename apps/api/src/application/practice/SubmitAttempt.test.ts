@@ -77,8 +77,8 @@ describe('SubmitAttempt', () => {
     const sessionRepo = makeStubSessionRepo(session)
     const eventBus = new InMemoryEventBus()
     const published: string[] = []
-    eventBus.subscribe('AttemptSubmitted', async (e) => published.push(e.type))
-    eventBus.subscribe('SessionCompleted', async (e) => published.push(e.type))
+    eventBus.subscribe('AttemptSubmitted', async (e) => { published.push(e.type) })
+    eventBus.subscribe('SessionCompleted', async (e) => { published.push(e.type) })
 
     const streamTokens: EvaluationToken[] = [
       {
