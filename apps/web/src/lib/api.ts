@@ -208,10 +208,30 @@ export const api = {
       body: JSON.stringify({ githubHandle, reason }),
     }),
 
+  getLeaderboard: (period: 'month' | 'all-time' = 'month') =>
+    request<LeaderboardData>(`/leaderboard?period=${period}`),
+
   logout: () => request<{ ok: boolean }>('/auth/session', { method: 'DELETE' }),
 
   getPublicProfile: (username: string) =>
     request<PublicProfileData>(`/u/${username}`),
+}
+
+export interface LeaderboardEntry {
+  rank: number
+  userId: string
+  username: string
+  avatarUrl: string
+  streak: number
+  kataCount: number
+  passRate: number
+  lastActive: string
+  isCurrentUser: boolean
+}
+
+export interface LeaderboardData {
+  entries: LeaderboardEntry[]
+  period: 'month' | 'all-time'
 }
 
 export interface PublicProfileData {

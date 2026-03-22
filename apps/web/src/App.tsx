@@ -25,6 +25,7 @@ import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
 import { AdminEditExercisePage } from './pages/admin/AdminEditExercisePage'
 import { AdminInvitationsPage } from './pages/admin/AdminInvitationsPage'
 import { PublicProfilePage } from './pages/PublicProfilePage'
+import { LeaderboardPage } from './pages/LeaderboardPage'
 
 export function App() {
   return (
@@ -48,6 +49,7 @@ export function App() {
           <Route element={<RequireAuth />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/history" element={<HistoryPage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/start" element={<DayStartPage />} />
             <Route path="/kata" element={<KataSelectionPage />} />
             <Route path="/kata/:id" element={<KataActivePage />} />

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
@@ -97,8 +97,21 @@ export function DashboardPage() {
       )}
 
       {/* Footer */}
-      <footer className="mt-12 text-center">
-        <p className="text-muted text-xs font-mono">Consistency compounds.</p>
+      <footer className="mt-12 flex items-center justify-center gap-4">
+        <Link
+          to="/leaderboard"
+          className="text-muted text-xs font-mono hover:text-secondary transition-colors"
+        >
+          Leaderboard →
+        </Link>
+        {user?.username && (
+          <Link
+            to={`/u/${user.username}`}
+            className="text-muted text-xs font-mono hover:text-secondary transition-colors"
+          >
+            Profile →
+          </Link>
+        )}
       </footer>
     </div>
   )

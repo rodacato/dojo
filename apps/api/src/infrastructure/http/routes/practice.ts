@@ -685,6 +685,86 @@ function parseLlmResponse(raw: string): { verdict: string | null; analysis: stri
 }
 
 // ---------------------------------------------------------------------------
+// GET /leaderboard — Consistency-ranked practitioners
+// ---------------------------------------------------------------------------
+
+const leaderboardSchema = z.object({
+  period: z.enum(['month', 'all-time']).default('month'),
+})
+
+practiceRoutes.get('/leaderboard', requireAuth, async (c) => {
+  const currentUser = c.get('user') as { id: string }
+  const query = c.req.query()
+  const { period } = leaderboardSchema.parse(query)
+
+  const periodFilter =
+    period === 'month'
+      ? gte(sessions.startedAt, sql`DATE_TRUNC('month', CURRENT_DATE)`)
+      : sql`TRUE`
+
+  const rows = await db
+    .select({
+      userId: users.id,
+      username: users.username,
+      avatarUrl: users.avatarUrl,
+      kataCount: count(sessions.id),
+      lastActive: sql<string>`MAX(${sessions.startedAt})::text`,
+    })
+    .from(sessions)
+    .innerJoin(users, eq(sessions.userId, users.id))
+    .where(and(eq(sessions.status, 'completed'), periodFilter))
+    .groupBy(users.id, users.username, users.avatarUrl)
+    .orderBy(desc(count(sessions.id)))
+    .limit(50)
+
+  // Compute pass rate and streak for each user
+  const entries = await Promise.all(
+    rows.map(async (row, index) => {
+      // Pass rate
+      const [passedRow] = await db
+        .select({ count: count() })
+        .from(sessions)
+        .innerJoin(attempts, and(eq(attempts.sessionId, sessions.id), eq(attempts.isFinalEvaluation, true)))
+        .where(
+          and(
+            eq(sessions.userId, row.userId),
+            eq(sessions.status, 'completed'),
+            periodFilter,
+            sql`${attempts.llmResponse}::jsonb->>'verdict' IN ('PASSED', 'PASSED_WITH_NOTES')`,
+          ),
+        )
+      const passed = Number(passedRow?.count ?? 0)
+      const total = Number(row.kataCount)
+      const passRate = total > 0 ? Math.round((passed / total) * 100) : 0
+
+      // Streak (all-time, not period-filtered)
+      const thirtyDaysAgo = new Date()
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+      const heatmapRows = await db
+        .select({ date: sql<string>`DATE(${sessions.startedAt})::text` })
+        .from(sessions)
+        .where(and(eq(sessions.userId, row.userId), gte(sessions.startedAt, thirtyDaysAgo)))
+        .groupBy(sql`DATE(${sessions.startedAt})`)
+      const streak = calculateStreak(heatmapRows.map((r) => r.date))
+
+      return {
+        rank: index + 1,
+        userId: row.userId,
+        username: row.username,
+        avatarUrl: row.avatarUrl,
+        streak,
+        kataCount: total,
+        passRate,
+        lastActive: row.lastActive,
+        isCurrentUser: row.userId === currentUser.id,
+      }
+    }),
+  )
+
+  return c.json({ entries, period })
+})
+
+// ---------------------------------------------------------------------------
 // GET /u/:username — Public profile (no auth required)
 // ---------------------------------------------------------------------------
 
