@@ -15,6 +15,8 @@ const envSchema = z.object({
   MOCK_LLM_RESPONSE_TOKENS: z.coerce.number().int().min(1).default(20),
   MOCK_LLM_FOLLOW_UP: z.coerce.boolean().default(false),
   DRAWHAUS_URL: z.string().url().optional(),
+  RESEND_API_KEY: z.string().default(''),
+  RESEND_FROM_EMAIL: z.string().default('dojo <noreply@notdefined.dev>'),
   CREATOR_GITHUB_ID: z.string().default(''),
   API_PORT: z.coerce.number().default(3001),
   WEB_URL: z.string().url(),

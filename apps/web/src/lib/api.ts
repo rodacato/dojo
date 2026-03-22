@@ -185,9 +185,10 @@ export const api = {
       totalPages: number
     }>(`/history?page=${page}`),
 
-  createInvitation: () =>
-    request<{ id: string; token: string; url: string; expiresAt: string }>('/admin/invitations', {
+  createInvitation: (email?: string) =>
+    request<{ id: string; token: string; url: string; expiresAt: string; emailSent: boolean }>('/admin/invitations', {
       method: 'POST',
+      body: JSON.stringify({ email }),
     }),
 
   getInvitations: () =>

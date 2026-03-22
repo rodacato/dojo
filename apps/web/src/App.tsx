@@ -19,6 +19,7 @@ import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
 import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
 import { AdminEditExercisePage } from './pages/admin/AdminEditExercisePage'
+import { AdminInvitationsPage } from './pages/admin/AdminInvitationsPage'
 
 export function App() {
   return (
@@ -54,6 +55,7 @@ export function App() {
               <Route path="exercises" element={<AdminExercisesPage />} />
               <Route path="exercises/new" element={<AdminNewExercisePage />} />
               <Route path="exercises/:id/edit" element={<AdminEditExercisePage />} />
+              <Route path="invitations" element={<AdminInvitationsPage />} />
             </Route>
           </Route>
 

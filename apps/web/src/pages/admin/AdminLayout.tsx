@@ -2,9 +2,9 @@ import { NavLink, Outlet } from 'react-router-dom'
 
 const NAV_ITEMS = [
   { path: '/admin/exercises', label: 'Exercises', active: true },
+  { path: '/admin/invitations', label: 'Invitations', active: true },
   { path: '/admin/users', label: 'Users', active: false },
   { path: '/admin/sessions', label: 'Sessions', active: false },
-  { path: '/admin/analytics', label: 'Analytics', active: false },
 ]
 
 export function AdminLayout() {

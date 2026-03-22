@@ -514,22 +514,64 @@ adminRoutes.post('/exercises', async (c) => {
 // Admin: Invitations
 // ---------------------------------------------------------------------------
 
+const createInvitationSchema = z.object({
+  email: z.string().email().optional(),
+})
+
 adminRoutes.post('/invitations', async (c) => {
   const user = c.get('user') as { id: string }
+  const body = await c.req.json().catch(() => ({}))
+  const parsed = createInvitationSchema.safeParse(body)
+  const email = parsed.success ? parsed.data.email : undefined
 
   const token = crypto.randomUUID().replace(/-/g, '').slice(0, 16)
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
+  const inviteUrl = `${config.WEB_URL}/invite/${token}`
 
   const [invitation] = await db
     .insert(invitations)
     .values({ token, createdBy: user.id, expiresAt })
     .returning()
 
+  // Send invite email if Resend is configured and email provided
+  let emailSent = false
+  if (email && config.RESEND_API_KEY) {
+    try {
+      const { Resend } = await import('resend')
+      const resend = new Resend(config.RESEND_API_KEY)
+      await resend.emails.send({
+        from: config.RESEND_FROM_EMAIL,
+        to: email,
+        subject: 'You\'ve been invited to the dojo',
+        html: `
+          <div style="font-family: 'JetBrains Mono', monospace; background: #0F172A; color: #F8FAFC; padding: 40px; max-width: 500px;">
+            <p style="color: #94A3B8; font-size: 14px;">dojo_</p>
+            <h1 style="font-size: 20px; margin: 24px 0;">Someone opened the doors for you.</h1>
+            <p style="color: #94A3B8; font-size: 14px; line-height: 1.6;">
+              You've been invited to the dojo — a daily kata for software engineers
+              who want to keep the skill, not just the output.
+            </p>
+            <a href="${inviteUrl}" style="display: inline-block; margin-top: 24px; padding: 12px 24px; background: #6366F1; color: #F8FAFC; text-decoration: none; font-size: 14px; border-radius: 2px;">
+              Enter the dojo →
+            </a>
+            <p style="color: #475569; font-size: 12px; margin-top: 32px;">
+              This invitation expires in 7 days. No newsletter. No notifications.
+            </p>
+          </div>
+        `,
+      })
+      emailSent = true
+    } catch (err) {
+      console.error('Failed to send invite email:', err)
+    }
+  }
+
   return c.json({
     id: invitation!.id,
     token: invitation!.token,
-    url: `${config.WEB_URL}/invite/${invitation!.token}`,
+    url: inviteUrl,
     expiresAt: invitation!.expiresAt.toISOString(),
+    emailSent,
   }, 201)
 })
 
