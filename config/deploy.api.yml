@@ -27,7 +27,7 @@ registry:
 env:
   clear:
     NODE_ENV: production
-    PORT: "3001"
+    PORT: '3001'
     LLM_ADAPTER: anthropic
     WEB_URL: <%= ENV["WEB_URL"] %>
   secret:
@@ -67,5 +67,4 @@ logging:
   driver: json-file
   options:
     max-size: 50m
-    max-file: "3"
-
+    max-file: '3'
