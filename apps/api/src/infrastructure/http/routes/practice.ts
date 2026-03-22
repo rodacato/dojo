@@ -255,6 +255,13 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
     .orderBy(desc(sessions.startedAt))
     .limit(5)
 
+  // Total completed sessions (all time)
+  const [totalRow] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+  const totalCompleted = Number(totalRow?.count ?? 0)
+
   // Streak: count consecutive days with any session going back from today
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
@@ -266,6 +273,7 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
 
   return c.json({
     streak,
+    totalCompleted,
     todayComplete,
     activeSessionId: activeSession?.id ?? null,
     heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),

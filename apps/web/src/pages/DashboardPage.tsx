@@ -44,13 +44,27 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {/* Streak */}
-      <section className="mb-6">
-        <div className="font-mono text-2xl text-primary">{dashboard.streak}</div>
-        <div className="text-muted text-sm">day streak</div>
-        <div className="mt-3">
-          <Heatmap data={dashboard.heatmapData} />
+      {/* Profile + Stats */}
+      <section className="mb-8">
+        <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="bg-surface border border-border rounded-md p-4 text-center">
+            <div className="font-mono text-2xl text-primary">{dashboard.streak}</div>
+            <div className="text-muted text-xs mt-1">day streak</div>
+          </div>
+          <div className="bg-surface border border-border rounded-md p-4 text-center">
+            <div className="font-mono text-2xl text-primary">{dashboard.totalCompleted}</div>
+            <div className="text-muted text-xs mt-1">kata completed</div>
+          </div>
+          <div className="bg-surface border border-border rounded-md p-4 text-center">
+            <div className="font-mono text-2xl text-primary">
+              {user?.createdAt
+                ? Math.max(1, Math.ceil((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)))
+                : '—'}
+            </div>
+            <div className="text-muted text-xs mt-1">days in dojo</div>
+          </div>
         </div>
+        <Heatmap data={dashboard.heatmapData} />
       </section>
 
       {/* Today card */}

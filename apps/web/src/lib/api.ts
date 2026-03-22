@@ -4,6 +4,7 @@ import { getToken, clearToken } from './auth-token'
 
 export interface DashboardData {
   streak: number
+  totalCompleted: number
   todayComplete: boolean
   activeSessionId: string | null
   heatmapData: Array<{ date: string; count: number }>
