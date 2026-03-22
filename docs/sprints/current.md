@@ -11,26 +11,24 @@
 
 ### Branding & Visual Identity
 
-- [ ] Spec 020 — Logo, favicon & OG image:
-  - SVG logo component (`dojo_` with animated cursor)
-  - Favicon: `▌` cursor in indigo, all sizes
+- [x] Spec 020 — Logo, favicon & OG image:
+  - SVG logo component (`dojo_` with animated cursor + torii gate mark)
+  - Favicon: torii gate in indigo on dark bg
   - OG meta tags + static OG image (1200x630)
-- [ ] Spec 021 — Landing page visual polish:
-  - Typography hierarchy per BRANDING.md
-  - Spacing and section transitions refinement
+- [x] Spec 021 — Landing page visual polish:
+  - Two-column hero with terminal demo
+  - Alternating section backgrounds, 3-column grid, card layouts
   - Logo component integrated in nav and footer
-
-### Dashboard & Results
-
-- [ ] Spec 022 — Results permalink & kata history:
-  - Recent sessions link to `/kata/:id/result`
-  - Today card post-completion: verdict badge + exercise title + link
-  - `/history` page: paginated list of all completed katas
-  - Results page loads from API (works as permalink, not just redirect)
-- [ ] Spec 023 — Profile & dashboard improvements:
-  - Profile section: avatar, username, total katas, member since
+- [x] Spec 022 — Results permalink & kata history:
+  - GET /sessions/:id returns finalAttempt with verdict/analysis
+  - Dashboard recentSessions includes verdict from attempts table
+  - Recent sessions clickable — link to /kata/:id/result
+  - Today card shows verdict + exercise title + "View results" CTA
+  - Results page loads from API (works as permalink)
   - Logout button in dashboard header
-  - Dashboard shows richer activity data
+- [x] Spec 023 — Profile & dashboard improvements:
+  - 3 stat cards: day streak, kata completed, days in dojo
+  - totalCompleted added to dashboard API endpoint
 
 ---
 
