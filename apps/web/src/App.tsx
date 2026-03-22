@@ -27,6 +27,7 @@ const ChangelogPage = lazy(() => import('./pages/ChangelogPage').then(m => ({ de
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })))
 const PublicProfilePage = lazy(() => import('./pages/PublicProfilePage').then(m => ({ default: m.PublicProfilePage })))
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage').then(m => ({ default: m.LeaderboardPage })))
+const BadgesPage = lazy(() => import('./pages/BadgesPage').then(m => ({ default: m.BadgesPage })))
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout').then(m => ({ default: m.AdminLayout })))
 const AdminExercisesPage = lazy(() => import('./pages/admin/AdminExercisesPage').then(m => ({ default: m.AdminExercisesPage })))
 const AdminNewExercisePage = lazy(() => import('./pages/admin/AdminNewExercisePage').then(m => ({ default: m.AdminNewExercisePage })))
@@ -69,6 +70,7 @@ export function App() {
             {/* Protected — lazy */}
             <Route path="/history" element={<LazyRoute><HistoryPage /></LazyRoute>} />
             <Route path="/leaderboard" element={<LazyRoute><LeaderboardPage /></LazyRoute>} />
+            <Route path="/badges" element={<LazyRoute><BadgesPage /></LazyRoute>} />
             <Route
               path="/admin"
               element={
