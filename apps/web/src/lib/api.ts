@@ -17,6 +17,14 @@ export interface DashboardData {
     verdict: string | null
     startedAt: string
   }>
+  // Extended dashboard (Phase 2)
+  weakAreas: Array<{ topic: string; frequency: number }>
+  practicePatterns: {
+    avgTimeMinutes: number
+    mostAvoidedType: string | null
+    sessionsTimedOut: number
+  }
+  senseiSuggests: string[]
 }
 
 export interface SessionAttempt {

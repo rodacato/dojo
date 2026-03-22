@@ -96,6 +96,68 @@ export function DashboardPage() {
         </section>
       )}
 
+      {/* Extended dashboard — Phase 2 */}
+      {dashboard.totalCompleted >= 3 && (
+        <section className="mt-10 space-y-6">
+          {/* Where you struggle */}
+          {dashboard.weakAreas.length > 0 && (
+            <div>
+              <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Where you struggle</h2>
+              <div className="flex flex-wrap gap-2">
+                {dashboard.weakAreas.map((a) => (
+                  <span
+                    key={a.topic}
+                    className="text-danger text-xs font-mono px-2.5 py-1 border border-danger/30 rounded-sm"
+                  >
+                    {a.topic} <span className="text-muted ml-1">×{a.frequency}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* How you practice */}
+          <div>
+            <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">How you practice</h2>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-secondary">Avg time per kata</span>
+                <span className="font-mono text-primary">{dashboard.practicePatterns.avgTimeMinutes}min</span>
+              </div>
+              {dashboard.practicePatterns.mostAvoidedType && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-secondary">Most avoided type</span>
+                  <span className="font-mono text-primary">{dashboard.practicePatterns.mostAvoidedType}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-secondary">Sessions timed out</span>
+                <span className={`font-mono ${dashboard.practicePatterns.sessionsTimedOut > 0 ? 'text-danger' : 'text-primary'}`}>
+                  {dashboard.practicePatterns.sessionsTimedOut}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Sensei suggests */}
+          {dashboard.senseiSuggests.length > 0 && (
+            <div>
+              <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Sensei suggests revisiting</h2>
+              <div className="flex flex-wrap gap-2">
+                {dashboard.senseiSuggests.map((topic) => (
+                  <span
+                    key={topic}
+                    className="text-warning text-xs font-mono px-2.5 py-1 border border-warning/30 rounded-sm"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Footer */}
       <footer className="mt-12 flex items-center justify-center gap-4">
         <Link
@@ -103,6 +165,12 @@ export function DashboardPage() {
           className="text-muted text-xs font-mono hover:text-secondary transition-colors"
         >
           Leaderboard →
+        </Link>
+        <Link
+          to="/badges"
+          className="text-muted text-xs font-mono hover:text-secondary transition-colors"
+        >
+          Badges →
         </Link>
         {user?.username && (
           <Link

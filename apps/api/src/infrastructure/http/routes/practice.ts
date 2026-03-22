@@ -336,6 +336,55 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
     }
   }
 
+  // --- Extended dashboard data ---
+
+  // "Where you struggle": aggregate topicsToReview across all sessions
+  const topicRows = await db
+    .select({
+      topic: sql<string>`jsonb_array_elements_text(${attempts.llmResponse}::jsonb->'topicsToReview')`,
+    })
+    .from(attempts)
+    .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
+    .where(and(eq(sessions.userId, userId), eq(attempts.isFinalEvaluation, true)))
+
+  const topicCounts = new Map<string, number>()
+  for (const row of topicRows) {
+    if (row.topic) topicCounts.set(row.topic, (topicCounts.get(row.topic) ?? 0) + 1)
+  }
+  const weakAreas = Array.from(topicCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([topic, frequency]) => ({ topic, frequency }))
+
+  // "How you practice": avg time, most avoided type, timed out
+  const [avgTimeRow] = await db
+    .select({
+      avg: sql<number>`ROUND(AVG(EXTRACT(EPOCH FROM (${sessions.completedAt} - ${sessions.startedAt})) / 60))`,
+    })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), sql`${sessions.completedAt} IS NOT NULL`))
+  const avgTimeMinutes = Number(avgTimeRow?.avg ?? 0)
+
+  // Most avoided type: type with fewest completions
+  const typeCountRows = await db
+    .select({ type: exercises.type, count: count() })
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .groupBy(exercises.type)
+  const allTypes = ['CODE', 'CHAT', 'WHITEBOARD']
+  const typeCounts = new Map(typeCountRows.map((r) => [r.type, Number(r.count)]))
+  const mostAvoided = allTypes
+    .map((t) => ({ type: t, count: typeCounts.get(t) ?? 0 }))
+    .sort((a, b) => a.count - b.count)[0]
+
+  // Sessions timed out (failed)
+  const [timedOutRow] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'failed')))
+  const sessionsTimedOut = Number(timedOutRow?.count ?? 0)
+
   return c.json({
     streak,
     totalCompleted,
@@ -351,6 +400,14 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
       verdict: s.verdict ?? null,
       startedAt: s.startedAt.toISOString(),
     })),
+    // Extended
+    weakAreas,
+    practicePatterns: {
+      avgTimeMinutes,
+      mostAvoidedType: mostAvoided?.type ?? null,
+      sessionsTimedOut,
+    },
+    senseiSuggests: weakAreas.slice(0, 3).map((a) => a.topic),
   })
 })
 
