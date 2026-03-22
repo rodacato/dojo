@@ -216,6 +216,15 @@ export const api = {
       body: JSON.stringify({ githubHandle, reason }),
     }),
 
+  getPreferences: () =>
+    request<{ reminderEnabled: boolean; reminderHour: number; email: string | null }>('/preferences'),
+
+  updatePreferences: (prefs: { reminderEnabled: boolean; reminderHour: number; email?: string | null }) =>
+    request<{ ok: boolean }>('/preferences', {
+      method: 'PUT',
+      body: JSON.stringify(prefs),
+    }),
+
   getLeaderboard: (period: 'month' | 'all-time' = 'month') =>
     request<LeaderboardData>(`/leaderboard?period=${period}`),
 

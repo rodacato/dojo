@@ -6,6 +6,9 @@ export const users = pgTable('users', {
   githubId: varchar('github_id', { length: 255 }).unique().notNull(),
   username: varchar('username', { length: 255 }).notNull(),
   avatarUrl: text('avatar_url').notNull(),
+  email: varchar('email', { length: 255 }),
+  reminderEnabled: boolean('reminder_enabled').notNull().default(false),
+  reminderHour: integer('reminder_hour').notNull().default(9),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 

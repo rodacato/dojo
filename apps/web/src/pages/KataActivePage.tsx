@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -7,8 +7,8 @@ import { api, ApiError, type SessionWithExercise } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
-import { MermaidEditor } from '../components/ui/MermaidEditor'
 import type { ExerciseType } from '@dojo/shared'
+const MermaidEditor = lazy(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
 
 const PREPARING_MESSAGES = [
   'The sensei is reading your brief...',
@@ -163,7 +163,9 @@ export function KataActivePage() {
                 placeholder="Write your solution..."
               />
             ) : isWhiteboard ? (
-              <MermaidEditor value={userResponse} onChange={setUserResponse} />
+              <Suspense fallback={<div className="p-4 text-muted font-mono text-sm">Loading editor...</div>}>
+                <MermaidEditor value={userResponse} onChange={setUserResponse} />
+              </Suspense>
             ) : (
               <ChatEditor value={userResponse} onChange={setUserResponse} />
             )}

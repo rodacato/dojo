@@ -17,6 +17,7 @@ const envSchema = z.object({
   DRAWHAUS_URL: z.string().url().optional(),
   RESEND_API_KEY: z.string().default(''),
   RESEND_FROM_EMAIL: z.string().default('dojo <noreply@notdefined.dev>'),
+  CRON_SECRET: z.string().default(''),
   CREATOR_GITHUB_ID: z.string().default(''),
   API_PORT: z.coerce.number().default(3001),
   WEB_URL: z.string().url(),

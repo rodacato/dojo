@@ -249,6 +249,126 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
 })
 
 // ---------------------------------------------------------------------------
+// GET /preferences — User reminder preferences
+// ---------------------------------------------------------------------------
+
+practiceRoutes.get('/preferences', requireAuth, async (c) => {
+  const user = c.get('user') as { id: string }
+  const row = await db.query.users.findFirst({ where: eq(users.id, user.id) })
+  if (!row) return c.json({ error: 'User not found' }, 404)
+  return c.json({
+    reminderEnabled: row.reminderEnabled,
+    reminderHour: row.reminderHour,
+    email: row.email,
+  })
+})
+
+// ---------------------------------------------------------------------------
+// PUT /preferences — Update reminder preferences
+// ---------------------------------------------------------------------------
+
+const preferencesSchema = z.object({
+  reminderEnabled: z.boolean(),
+  reminderHour: z.number().int().min(0).max(23),
+  email: z.string().email().optional().nullable(),
+})
+
+practiceRoutes.put('/preferences', requireAuth, async (c) => {
+  const user = c.get('user') as { id: string }
+  const body = await c.req.json()
+  const parsed = preferencesSchema.safeParse(body)
+  if (!parsed.success) return c.json({ error: 'Invalid preferences' }, 400)
+
+  await db
+    .update(users)
+    .set({
+      reminderEnabled: parsed.data.reminderEnabled,
+      reminderHour: parsed.data.reminderHour,
+      email: parsed.data.email ?? null,
+    })
+    .where(eq(users.id, user.id))
+
+  return c.json({ ok: true })
+})
+
+// ---------------------------------------------------------------------------
+// POST /cron/reminders — Send daily kata reminders (called by cron)
+// ---------------------------------------------------------------------------
+
+practiceRoutes.post('/cron/reminders', async (c) => {
+  const authHeader = c.req.header('Authorization')
+  if (authHeader !== `Bearer ${config.CRON_SECRET}`) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const currentHour = new Date().getUTCHours()
+
+  // Find users who have reminders enabled for this hour and haven't completed today
+  const todayStart = new Date()
+  todayStart.setUTCHours(0, 0, 0, 0)
+
+  const eligibleUsers = await db
+    .select({
+      id: users.id,
+      username: users.username,
+      email: users.email,
+    })
+    .from(users)
+    .where(
+      and(
+        eq(users.reminderEnabled, true),
+        eq(users.reminderHour, currentHour),
+        sql`${users.email} IS NOT NULL`,
+        sql`${users.id} NOT IN (
+          SELECT user_id FROM sessions
+          WHERE started_at >= ${todayStart}
+        )`,
+      ),
+    )
+
+  if (!config.RESEND_API_KEY || eligibleUsers.length === 0) {
+    return c.json({ sent: 0 })
+  }
+
+  const { Resend } = await import('resend')
+  const resend = new Resend(config.RESEND_API_KEY)
+  let sent = 0
+
+  for (const user of eligibleUsers) {
+    if (!user.email) continue
+    try {
+      await resend.emails.send({
+        from: config.RESEND_FROM_EMAIL,
+        to: user.email,
+        subject: 'The dojo is waiting.',
+        html: `
+          <div style="font-family: 'JetBrains Mono', monospace; background: #0F172A; color: #F8FAFC; padding: 40px; max-width: 480px;">
+            <p style="color: #6366F1; font-size: 18px; margin-bottom: 24px;">dojo_</p>
+            <p style="color: #94A3B8; font-size: 14px; line-height: 1.6;">
+              Hey @${user.username}, you haven't done today's kata yet.
+            </p>
+            <p style="color: #94A3B8; font-size: 14px; line-height: 1.6;">
+              The streak doesn't build itself.
+            </p>
+            <a href="${config.WEB_URL}/start" style="display: inline-block; background: #6366F1; color: #F8FAFC; padding: 10px 24px; text-decoration: none; font-size: 14px; margin-top: 16px; border-radius: 2px;">
+              Enter the dojo →
+            </a>
+            <p style="color: #475569; font-size: 11px; margin-top: 32px;">
+              <a href="${config.WEB_URL}/dashboard" style="color: #475569;">Unsubscribe from reminders</a>
+            </p>
+          </div>
+        `,
+      })
+      sent++
+    } catch {
+      // Silently skip failed sends
+    }
+  }
+
+  return c.json({ sent })
+})
+
+// ---------------------------------------------------------------------------
 // GET /dashboard
 // ---------------------------------------------------------------------------
 
