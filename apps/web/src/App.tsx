@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext'
 import { RequireAuth } from './components/RequireAuth'
 import { RequireCreator } from './components/RequireCreator'
 import { PageLoader } from './components/PageLoader'
+import { ToastContainer } from './components/ui/Toast'
 
 // Critical path — eager loaded
 import { LandingPage } from './pages/LandingPage'
@@ -43,6 +44,7 @@ export function App() {
     <ErrorBoundary>
     <BrowserRouter>
       <AuthProvider>
+        <ToastContainer />
         <Routes>
           {/* Public — eager */}
           <Route path="/" element={<LandingPage />} />
