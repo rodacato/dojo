@@ -57,7 +57,11 @@ export function AdminExercisesPage() {
             </thead>
             <tbody className="divide-y divide-border">
               {exercises.map((ex) => (
-                <tr key={ex.id} className="hover:bg-surface transition-colors">
+                <tr
+                  key={ex.id}
+                  onClick={() => navigate(`/admin/exercises/${ex.id}/edit`)}
+                  className="hover:bg-surface transition-colors cursor-pointer"
+                >
                   <td className="px-4 py-3 text-primary">{ex.title}</td>
                   <td className="px-4 py-3">
                     <TypeBadge type={ex.type as ExerciseType} />

@@ -121,6 +121,37 @@ export const api = {
 
   getAdminExercises: () => request<AdminExerciseDTO[]>('/admin/exercises'),
 
+  getAdminExercise: (id: string) =>
+    request<{
+      id: string
+      title: string
+      description: string
+      duration: number
+      difficulty: string
+      type: string
+      languages: string[]
+      tags: string[]
+      topics: string[]
+      status: string
+      variations: Array<{ id: string; ownerRole: string; ownerContext: string }>
+    }>(`/admin/exercises/${id}`),
+
+  updateExercise: (id: string, data: {
+    title: string
+    description: string
+    duration: number
+    difficulty: string
+    type: string
+    languages: string[]
+    tags: string[]
+    topics: string[]
+    variations: Array<{ ownerRole: string; ownerContext: string }>
+  }) =>
+    request<{ ok: boolean }>(`/admin/exercises/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
   createExercise: (data: {
     title: string
     description: string

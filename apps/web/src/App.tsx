@@ -18,6 +18,7 @@ import { AuthCallbackPage } from './pages/AuthCallbackPage'
 import { AdminLayout } from './pages/admin/AdminLayout'
 import { AdminExercisesPage } from './pages/admin/AdminExercisesPage'
 import { AdminNewExercisePage } from './pages/admin/AdminNewExercisePage'
+import { AdminEditExercisePage } from './pages/admin/AdminEditExercisePage'
 
 export function App() {
   return (
@@ -52,6 +53,7 @@ export function App() {
               <Route index element={<Navigate to="/admin/exercises" replace />} />
               <Route path="exercises" element={<AdminExercisesPage />} />
               <Route path="exercises/new" element={<AdminNewExercisePage />} />
+              <Route path="exercises/:id/edit" element={<AdminEditExercisePage />} />
             </Route>
           </Route>
 

@@ -397,6 +397,81 @@ adminRoutes.get('/exercises', async (c) => {
   )
 })
 
+adminRoutes.get('/exercises/:id', async (c) => {
+  const exerciseId = c.req.param('id')!
+  const exercise = await useCases.getExerciseById.execute(ExerciseId(exerciseId))
+  if (!exercise) return c.json({ error: 'Exercise not found' }, 404)
+
+  return c.json({
+    id: exercise.id,
+    title: exercise.title,
+    description: exercise.description,
+    duration: exercise.durationMinutes,
+    difficulty: exercise.difficulty,
+    type: exercise.type,
+    languages: exercise.languages,
+    tags: exercise.tags,
+    topics: exercise.topics,
+    status: exercise.status,
+    variations: exercise.variations.map((v) => ({
+      id: v.id,
+      ownerRole: v.ownerRole,
+      ownerContext: v.ownerContext,
+    })),
+  })
+})
+
+const updateExerciseSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  duration: z.number().int().positive(),
+  difficulty: z.enum(['easy', 'medium', 'hard']),
+  type: z.enum(['code', 'chat', 'whiteboard']),
+  languages: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]),
+  topics: z.array(z.string()).default([]),
+  variations: z
+    .array(z.object({ ownerRole: z.string().min(1), ownerContext: z.string().min(1) }))
+    .min(1),
+})
+
+adminRoutes.put('/exercises/:id', async (c) => {
+  const exerciseId = c.req.param('id')!
+  const body = await c.req.json()
+  const parsed = updateExerciseSchema.safeParse(body)
+  if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
+
+  const { title, description, duration, difficulty, type, languages, tags, topics } = parsed.data
+
+  // Update exercise fields
+  await db
+    .update(exercises)
+    .set({
+      title,
+      description,
+      duration,
+      difficulty,
+      type,
+      language: JSON.stringify(languages),
+      tags: JSON.stringify(tags),
+      topics: JSON.stringify(topics),
+    })
+    .where(eq(exercises.id, exerciseId))
+
+  // Replace variations: delete old, insert new
+  await db.delete(variations).where(eq(variations.exerciseId, exerciseId))
+  for (const v of parsed.data.variations) {
+    await db.insert(variations).values({
+      id: crypto.randomUUID(),
+      exerciseId,
+      ownerRole: v.ownerRole,
+      ownerContext: v.ownerContext,
+    })
+  }
+
+  return c.json({ ok: true })
+})
+
 const createExerciseSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
