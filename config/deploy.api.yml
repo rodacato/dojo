@@ -28,7 +28,6 @@ env:
   clear:
     NODE_ENV: production
     PORT: '3001'
-    LLM_ADAPTER_FORMAT: anthropic
     WEB_URL: <%= ENV["WEB_URL"] %>
   secret:
     - DATABASE_URL
@@ -36,6 +35,7 @@ env:
     - GITHUB_CLIENT_ID
     - GITHUB_CLIENT_SECRET
     - GITHUB_CALLBACK_URL
+    - LLM_ADAPTER_FORMAT
     - LLM_API_KEY
     - LLM_BASE_URL
     - LLM_MODEL
