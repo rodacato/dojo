@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { and, eq, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import { db } from '../../persistence/drizzle/client'

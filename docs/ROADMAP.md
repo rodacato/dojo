@@ -50,6 +50,9 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-003 — Production deploy](sprints/archive/sprint-003-production-deploy.md) | First deploy, landing page, UX states, bearer auth | ✅ Closed |
 | [sprint-004 — Polish & branding](sprints/archive/sprint-004-polish-branding.md) | Logo, favicon, OG, landing polish, results permalink, dashboard stats | ✅ Closed |
 | [sprint-005 — Hardening + Phase 1](sprints/archive/sprint-005-hardening-phase1.md) | CSP, 404, invitations, admin edit, Resend, request access | ✅ Closed |
+| [sprint-006 — Phase 1 social](sprints/archive/sprint-006-phase1-social.md) | Profiles, invitations, share cards, badges | ✅ Closed |
+| [sprint-007 — Phase 2 scoreboard](sprints/archive/sprint-007-phase2-scoreboard.md) | Leaderboard, badge system, weak areas dashboard | ✅ Closed |
+| [sprint-008 — Production ready](sprints/archive/sprint-008-production-ready.md) | OG tags, reminders, components, Mermaid, LLM adapter layer, error recovery | ✅ Closed |
 
 ---
 

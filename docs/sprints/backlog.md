@@ -10,6 +10,8 @@ _Ideas that arrived and have not been evaluated yet. Candidates for the next tri
 
 - 2026-03-22 — Sidebar navigation: persistent left nav on desktop + bottom nav on mobile (Stitch design pattern). Architectural change — needs mobile nav design review first.
 - 2026-03-22 — Login card-centered design (`dojo_login_landing/`). Separate login screen from landing page for direct `/login` visitors.
+- 2026-03-24 — Spec 043 — Mobile responsive audit + fixes (carried from Sprint 008)
+- 2026-03-24 — Spec 036 — Kata quality refinement (carried from Sprint 007 → 008)
 
 ---
 
