@@ -6,6 +6,7 @@ import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
 import { LogoWordmark } from '../components/Logo'
 import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
+import { KataBody } from '../components/ui/KataBody'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -57,6 +58,30 @@ export function ResultsPage() {
           : `Started ${new Date(session.startedAt).toLocaleDateString()}`}
         {session.completedAt && ` · ${Math.round((new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)} min`}
       </p>
+
+      {/* Kata body — collapsible */}
+      {session.body && (
+        <details className="mb-4 group">
+          <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
+            The kata <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
+          </summary>
+          <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md">
+            <KataBody body={session.body} />
+          </div>
+        </details>
+      )}
+
+      {/* User response — collapsible */}
+      {attempt?.userResponse && (
+        <details className="mb-8 group">
+          <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
+            Your response <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
+          </summary>
+          <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
+            {attempt.userResponse}
+          </div>
+        </details>
+      )}
 
       {/* Analysis */}
       {attempt?.analysis && (
