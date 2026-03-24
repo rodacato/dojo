@@ -431,10 +431,17 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
       const limitMs = exercise.duration * 60 * 1000 * 1.1
       const elapsedMs = Date.now() - activeSessionCandidate.startedAt.getTime()
       if (elapsedMs > limitMs) {
-        // Mark expired session as failed
+        // Check if session has a final evaluation before marking as failed
+        const finalAttempt = await db.query.attempts.findFirst({
+          where: and(
+            eq(attempts.sessionId, activeSessionCandidate.id),
+            eq(attempts.isFinalEvaluation, true),
+          ),
+        })
+        const hasEvaluation = finalAttempt && finalAttempt.llmResponse !== ''
         await db
           .update(sessions)
-          .set({ status: 'failed', completedAt: new Date() })
+          .set({ status: hasEvaluation ? 'completed' : 'failed', completedAt: new Date() })
           .where(eq(sessions.id, activeSessionCandidate.id))
         activeSession = undefined
       }

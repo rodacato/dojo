@@ -58,20 +58,23 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
     .from(sessions)
     .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
     .innerJoin(users, eq(sessions.userId, users.id))
-    .where(and(eq(sessions.id, sessionId), eq(sessions.status, 'completed')))
+    .where(eq(sessions.id, sessionId))
     .limit(1)
 
   if (!row) return c.json({ error: 'Session not found' }, 404)
 
-  const verdict = row.verdict ?? 'NEEDS_WORK'
+  const verdict = (row.verdict ?? 'needs_work').toLowerCase()
+  const verdictLabel = verdict.replace(/_/g, ' ').toUpperCase()
   const verdictColor =
-    verdict === 'PASSED' ? '#10B981' : verdict === 'PASSED_WITH_NOTES' ? '#F59E0B' : '#EF4444'
+    verdict === 'passed' ? '#10B981' : verdict === 'passed_with_notes' ? '#F59E0B' : '#EF4444'
 
+  const exType = row.exerciseType.toLowerCase()
   const typeColor =
-    row.exerciseType === 'CODE' ? '#6366F1' : row.exerciseType === 'CHAT' ? '#7C3AED' : '#0D9488'
+    exType === 'code' ? '#6366F1' : exType === 'chat' ? '#7C3AED' : '#0D9488'
 
+  const diff = row.difficulty.toLowerCase()
   const diffColor =
-    row.difficulty === 'EASY' ? '#10B981' : row.difficulty === 'MEDIUM' ? '#F59E0B' : '#EF4444'
+    diff === 'easy' ? '#10B981' : diff === 'medium' ? '#F59E0B' : '#EF4444'
 
   const pullQuote = extractPullQuote(row.analysis ?? '')
   const completionTime = row.completedAt
@@ -82,15 +85,15 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
 
   const middleChildren = [
     h('div', { display: 'flex', gap: '12px', alignItems: 'center' },
-      h('span', { fontSize: '14px', color: typeColor, padding: '3px 10px', backgroundColor: 'rgba(99,102,241,0.15)', borderRadius: '3px' }, row.exerciseType),
-      h('span', { fontSize: '14px', color: diffColor }, row.difficulty),
+      h('span', { fontSize: '14px', color: typeColor, padding: '3px 10px', backgroundColor: 'rgba(99,102,241,0.15)', borderRadius: '3px' }, row.exerciseType.toUpperCase()),
+      h('span', { fontSize: '14px', color: diffColor }, row.difficulty.toUpperCase()),
     ),
     h('span', { fontSize: '32px', color: '#F8FAFC', lineHeight: '1.3' }, row.exerciseTitle),
   ]
 
   if (pullQuote) {
     middleChildren.push(
-      h('div', { borderLeft: '3px solid #334155', paddingLeft: '16px', marginTop: '8px' },
+      h('div', { display: 'flex', borderLeft: '3px solid #334155', paddingLeft: '16px', marginTop: '8px' },
         h('span', { fontSize: '16px', color: '#94A3B8', fontStyle: 'italic', lineHeight: '1.5' }, `"${pullQuote}"`),
       ),
     )
@@ -117,7 +120,7 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
     // Top
     h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
       h('span', { fontSize: '28px', color: '#6366F1', letterSpacing: '-0.05em' }, 'dojo_'),
-      h('span', { fontSize: '18px', color: verdictColor, padding: '6px 16px', border: `2px solid ${verdictColor}`, borderRadius: '4px' }, verdict.replace(/_/g, ' ')),
+      h('span', { fontSize: '18px', color: verdictColor, padding: '6px 16px', border: `2px solid ${verdictColor}`, borderRadius: '4px' }, verdictLabel),
     ),
     // Middle
     h('div', { display: 'flex', flexDirection: 'column', gap: '16px', flex: '1', justifyContent: 'center' }, ...middleChildren),
