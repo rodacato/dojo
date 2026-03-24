@@ -4,7 +4,7 @@ import { db } from './drizzle/client'
 
 export async function runMigrations() {
   await migrate(db, {
-    migrationsFolder: join(__dirname, '../../../migrations'),
+    migrationsFolder: join(__dirname, 'drizzle/migrations'),
   })
   console.log('Migrations complete.')
 }
