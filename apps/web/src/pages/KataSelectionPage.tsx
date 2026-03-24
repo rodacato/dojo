@@ -62,21 +62,44 @@ export function KataSelectionPage() {
       </div>
 
       {/* Exercise cards — 3 column grid */}
-      <div className="grid md:grid-cols-3 gap-5">
-        {exercises.map((ex) => (
-          <ExerciseCard
-            key={ex.id}
-            exercise={ex}
-            onSelect={() => handleSelect(ex.id)}
-            loading={starting === ex.id}
-          />
-        ))}
-      </div>
+      {exercises.length > 0 ? (
+        <div className="grid md:grid-cols-3 gap-5">
+          {exercises.map((ex) => (
+            <ExerciseCard
+              key={ex.id}
+              exercise={ex}
+              onSelect={() => handleSelect(ex.id)}
+              loading={starting === ex.id}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16">
+          <p className="text-secondary font-mono text-sm mb-2">No kata match your current filters.</p>
+          <p className="text-muted text-xs mb-6">Try different preferences or a longer duration.</p>
+          <button
+            onClick={() => navigate('/start')}
+            className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+          >
+            Change preferences
+          </button>
+        </div>
+      )}
 
       {/* Footer microcopy */}
       <p className="text-muted/50 text-xs text-center font-mono mt-10">
         These are your kata. No skip. No reroll.
       </p>
+
+      {/* Subtle escape hatch */}
+      <div className="text-center mt-4">
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="text-muted/30 text-[10px] font-mono hover:text-muted/60 transition-colors"
+        >
+          skip to dashboard
+        </button>
+      </div>
     </div>
   )
 }

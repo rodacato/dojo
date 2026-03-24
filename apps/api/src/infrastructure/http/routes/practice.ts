@@ -379,10 +379,29 @@ practiceRoutes.get('/dashboard', requireAuth, async (c) => {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  // Active session
-  const activeSession = await db.query.sessions.findFirst({
+  // Active session — exclude expired ones (duration + 10% grace exceeded)
+  const activeSessionCandidate = await db.query.sessions.findFirst({
     where: and(eq(sessions.userId, userId), eq(sessions.status, 'active')),
   })
+
+  let activeSession = activeSessionCandidate
+  if (activeSessionCandidate) {
+    const exercise = await db.query.exercises.findFirst({
+      where: eq(exercises.id, activeSessionCandidate.exerciseId),
+    })
+    if (exercise) {
+      const limitMs = exercise.duration * 60 * 1000 * 1.1
+      const elapsedMs = Date.now() - activeSessionCandidate.startedAt.getTime()
+      if (elapsedMs > limitMs) {
+        // Mark expired session as failed
+        await db
+          .update(sessions)
+          .set({ status: 'failed', completedAt: new Date() })
+          .where(eq(sessions.id, activeSessionCandidate.id))
+        activeSession = undefined
+      }
+    }
+  }
 
   // Heatmap: sessions per day (last 30 days, any status)
   const heatmapRows = await db
