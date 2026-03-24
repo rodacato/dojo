@@ -249,6 +249,44 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
 })
 
 // ---------------------------------------------------------------------------
+// POST /sessions/:id/retry-evaluation — Re-evaluate when LLM failed
+// ---------------------------------------------------------------------------
+
+practiceRoutes.post('/sessions/:id/retry-evaluation', requireAuth, async (c) => {
+  const user = c.get('user') as { id: string }
+  const sessionId = c.req.param('id')!
+
+  const session = await useCases.getSession.execute(SessionId(sessionId))
+  if (!session) return c.json({ error: 'Session not found' }, 404)
+  if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
+
+  // Only allow retry on sessions with unevaluated attempts
+  const lastAttempt = session.attempts[session.attempts.length - 1]
+  if (!lastAttempt) return c.json({ error: 'No attempt to retry' }, 400)
+
+  const hasEvaluation = lastAttempt.evaluationResult !== null
+  if (hasEvaluation) return c.json({ error: 'Session already has evaluation' }, 409)
+
+  // Delete the failed attempt so the WS handler doesn't count it
+  await db.delete(attempts).where(eq(attempts.id, lastAttempt.id))
+
+  // Re-queue the attempt for WebSocket evaluation
+  const attemptId = crypto.randomUUID()
+  pendingAttempts.set(attemptId, { sessionId, userResponse: lastAttempt.userResponse })
+  setTimeout(() => pendingAttempts.delete(attemptId), 5 * 60 * 1000)
+
+  // Reset session to active so the WS handler can process it
+  if (session.status === 'failed' || session.status === 'completed') {
+    await db
+      .update(sessions)
+      .set({ status: 'active', completedAt: null })
+      .where(eq(sessions.id, sessionId))
+  }
+
+  return c.json({ attemptId }, 202)
+})
+
+// ---------------------------------------------------------------------------
 // GET /preferences — User reminder preferences
 // ---------------------------------------------------------------------------
 

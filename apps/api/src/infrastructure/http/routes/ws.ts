@@ -1,7 +1,7 @@
 import { and, eq, gt } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { db } from '../../persistence/drizzle/client'
-import { userSessions } from '../../persistence/drizzle/schema'
+import { attempts as attemptsTable, userSessions } from '../../persistence/drizzle/schema'
 import { useCases } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
@@ -169,6 +169,15 @@ async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string
       }
     }
   } catch {
+    // Persist the attempt without evaluation so retry can find it
+    await db.insert(attemptsTable).values({
+      id: attemptId,
+      sessionId: pending.sessionId,
+      userResponse: pending.userResponse,
+      llmResponse: '',
+      isFinalEvaluation: false,
+      submittedAt: new Date(),
+    }).onConflictDoNothing()
     send(ws, { type: 'error', code: 'LLM_STREAM_ERROR' })
     cache.complete = true
   } finally {

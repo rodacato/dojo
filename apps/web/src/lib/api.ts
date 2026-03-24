@@ -128,6 +128,11 @@ export const api = {
       body: JSON.stringify({ userResponse }),
     }),
 
+  retryEvaluation: (sessionId: string) =>
+    request<SubmitAttemptResponse>(`/sessions/${sessionId}/retry-evaluation`, {
+      method: 'POST',
+    }),
+
   getAdminExercises: () => request<AdminExerciseDTO[]>('/admin/exercises'),
 
   getAdminExercise: (id: string) =>

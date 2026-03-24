@@ -82,14 +82,23 @@ export function SenseiEvalPage() {
 
       {/* Error state with reconnect */}
       {state.status === 'error' && (
-        <div className="p-4 bg-danger/10 border border-danger/30 rounded-md">
-          <p className="text-danger text-sm font-mono mb-3">{state.message}</p>
-          <button
-            onClick={() => connect()}
-            className="px-4 py-2 border border-danger/30 text-danger font-mono text-xs rounded-sm hover:bg-danger/10 transition-colors"
-          >
-            Reconnect →
-          </button>
+        <div className="flex flex-col items-center justify-center py-20">
+          <p className="text-secondary font-mono text-sm mb-2">The sensei couldn't evaluate your response.</p>
+          <p className="text-muted text-xs mb-6">{state.message}</p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => connect()}
+              className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+            >
+              Try again
+            </button>
+            <button
+              onClick={() => window.location.href = `/kata/${sessionId}`}
+              className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:text-primary transition-colors"
+            >
+              Back to kata
+            </button>
+          </div>
         </div>
       )}
 

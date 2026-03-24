@@ -32,6 +32,7 @@ interface WsMessage {
 export function useEvaluationStream(sessionId: string) {
   const [state, setState] = useState<EvalStreamState>({ status: 'idle' })
   const wsRef = useRef<WebSocket | null>(null)
+  const latestResult = useRef<EvaluationResult | null>(null)
   const navigate = useNavigate()
 
   const connect = useCallback(() => {
@@ -57,22 +58,25 @@ export function useEvaluationStream(sessionId: string) {
           break
 
         case 'evaluation':
+          // Store result for complete handler — React may batch these updates
+          latestResult.current = msg.result!
           setState((prev) => ({
             status: 'evaluation',
             result: msg.result!,
-            tokens: prev.status === 'streaming' ? prev.tokens : '',
+            tokens: 'tokens' in prev ? prev.tokens : '',
           }))
           break
 
         case 'complete':
           setState((prev) => {
-            if (prev.status !== 'evaluation') return prev
+            const result = prev.status === 'evaluation' ? prev.result : latestResult.current
+            if (!result) return prev
             const next: EvalStreamState = {
               status: 'complete',
-              result: prev.result,
-              tokens: prev.tokens,
+              result,
+              tokens: 'tokens' in prev ? prev.tokens : '',
             }
-            if (prev.result.isFinalEvaluation) {
+            if (result.isFinalEvaluation) {
               setTimeout(() => navigate(`/kata/${sessionId}/result`), 1500)
             }
             return next

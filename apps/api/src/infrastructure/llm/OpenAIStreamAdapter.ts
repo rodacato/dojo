@@ -29,32 +29,59 @@ export class OpenAIStreamAdapter implements LLMPort {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
 
-    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: config.LLM_MODEL,
-        max_tokens: 2048,
-        stream: true,
-        messages,
-      }),
-    })
+    if (config.LLM_STREAM) {
+      const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: config.LLM_MODEL,
+          max_tokens: 2048,
+          stream: true,
+          messages,
+        }),
+      })
 
-    if (!response.ok) {
-      const body = await response.text()
-      throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-    }
+      if (!response.ok) {
+        const body = await response.text()
+        throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
+      }
 
-    for await (const chunk of parseSSEStream(response)) {
-      const content = chunk.choices?.[0]?.delta?.content
-      if (content) {
-        const prose = parser.push(content)
-        if (prose) {
-          yield { chunk: prose, isFinal: false, result: null }
+      for await (const chunk of parseSSEStream(response)) {
+        const content = chunk.choices?.[0]?.delta?.content
+        if (content) {
+          const prose = parser.push(content)
+          if (prose) {
+            yield { chunk: prose, isFinal: false, result: null }
+          }
         }
+      }
+    } else {
+      const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: config.LLM_MODEL,
+          max_tokens: 2048,
+          messages,
+        }),
+      })
+
+      if (!response.ok) {
+        const body = await response.text()
+        throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
+      }
+
+      const data = (await response.json()) as OpenAIResponse
+      const text = data.choices?.[0]?.message?.content ?? ''
+      const prose = parser.push(text)
+      if (prose) {
+        yield { chunk: prose, isFinal: false, result: null }
       }
     }
 

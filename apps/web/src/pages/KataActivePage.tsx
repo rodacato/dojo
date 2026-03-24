@@ -28,27 +28,45 @@ export function KataActivePage() {
   const [userResponse, setUserResponse] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
+  const [prepareError, setPrepareError] = useState(false)
   const msgIndex = useRef(0)
+  const pollCount = useRef(0)
 
   useEffect(() => {
     if (!sessionId) return
     let cancelled = false
 
     async function load() {
-      const s = await api.getSession(sessionId!)
-      if (cancelled) return
+      try {
+        const s = await api.getSession(sessionId!)
+        if (cancelled) return
 
-      if (s.status === 'active') {
-        setSession(s)
-        return
+        if (s.status === 'active') {
+          setPreparing(false)
+          setSession(s)
+          return
+        }
+        if (s.status === 'preparing') {
+          pollCount.current++
+          if (pollCount.current > 30) { // ~60s timeout
+            setPrepareError(true)
+            return
+          }
+          setPreparing(true)
+          setTimeout(load, 2000)
+          return
+        }
+        // completed or failed
+        navigate(`/kata/${sessionId}/result`, { replace: true })
+      } catch {
+        // Retry on transient errors instead of giving up immediately
+        pollCount.current++
+        if (!cancelled && pollCount.current > 30) {
+          setPrepareError(true)
+        } else if (!cancelled) {
+          setTimeout(load, 2000)
+        }
       }
-      if (s.status === 'preparing') {
-        setPreparing(true)
-        setTimeout(load, 2000)
-        return
-      }
-      // completed or failed
-      navigate(`/kata/${sessionId}/result`, { replace: true })
     }
 
     load()
@@ -88,6 +106,28 @@ export function KataActivePage() {
         setSubmitting(false)
       }
     }
+  }
+
+  if (prepareError) {
+    return (
+      <div className="h-screen bg-base flex flex-col items-center justify-center gap-4">
+        <p className="font-mono text-secondary text-sm">Something went wrong preparing your kata.</p>
+        <div className="flex gap-3">
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+          >
+            Try again
+          </button>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:text-primary transition-colors"
+          >
+            Back to dashboard
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (preparing || !session) {

@@ -85,11 +85,17 @@ export function ResultsPage() {
         </div>
       )}
 
-      {/* No attempt data */}
+      {/* No attempt at all — nothing to retry */}
       {!attempt && session.status !== 'active' && (
-        <div className="p-5 bg-surface border border-border rounded-md mb-5">
-          <p className="text-muted text-sm">No evaluation data available for this session.</p>
+        <div className="p-5 bg-surface border border-border rounded-md mb-5 text-center">
+          <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
+          <p className="text-muted text-xs">Start a new one to keep practicing.</p>
         </div>
+      )}
+
+      {/* Attempt exists but evaluation failed — offer retry */}
+      {attempt && !verdict && !attempt.analysis && (
+        <NoEvaluationCard sessionId={sessionId!} />
       )}
 
       {/* Share preview */}
@@ -123,6 +129,36 @@ export function ResultsPage() {
 
       {/* Footer */}
       <p className="text-center text-muted text-xs font-mono mt-8">Consistency compounds.</p>
+    </div>
+  )
+}
+
+function NoEvaluationCard({ sessionId }: { sessionId: string }) {
+  const navigate = useNavigate()
+  const [retrying, setRetrying] = useState(false)
+
+  async function handleRetry() {
+    setRetrying(true)
+    try {
+      const { attemptId } = await api.retryEvaluation(sessionId)
+      sessionStorage.setItem(`dojo-attempt-${sessionId}`, attemptId)
+      navigate(`/kata/${sessionId}/eval`)
+    } catch {
+      setRetrying(false)
+    }
+  }
+
+  return (
+    <div className="p-5 bg-surface border border-border rounded-md mb-5 text-center">
+      <p className="text-secondary text-sm mb-1">The sensei couldn't finish evaluating this kata.</p>
+      <p className="text-muted text-xs mb-4">This usually means the LLM timed out or hit a rate limit.</p>
+      <button
+        onClick={handleRetry}
+        disabled={retrying}
+        className="px-5 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors disabled:opacity-50"
+      >
+        {retrying ? 'Requesting...' : 'Request re-evaluation'}
+      </button>
     </div>
   )
 }

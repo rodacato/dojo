@@ -25,18 +25,32 @@ export class AnthropicStreamAdapter implements LLMPort {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
 
-    const stream = this.client.messages.stream({
-      model: config.LLM_MODEL,
-      max_tokens: 2048,
-      messages,
-    })
+    if (config.LLM_STREAM) {
+      const stream = this.client.messages.stream({
+        model: config.LLM_MODEL,
+        max_tokens: 2048,
+        messages,
+      })
 
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-        const prose = parser.push(event.delta.text)
-        if (prose) {
-          yield { chunk: prose, isFinal: false, result: null }
+      for await (const event of stream) {
+        if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+          const prose = parser.push(event.delta.text)
+          if (prose) {
+            yield { chunk: prose, isFinal: false, result: null }
+          }
         }
+      }
+    } else {
+      const response = await this.client.messages.create({
+        model: config.LLM_MODEL,
+        max_tokens: 2048,
+        messages,
+      })
+
+      const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
+      const prose = parser.push(text)
+      if (prose) {
+        yield { chunk: prose, isFinal: false, result: null }
       }
     }
 
