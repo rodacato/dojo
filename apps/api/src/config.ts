@@ -9,7 +9,7 @@ const envSchema = z.object({
   LLM_BASE_URL: z.string().url().optional(),
   LLM_API_KEY: z.string().default(''),
   LLM_MODEL: z.string().default('claude-opus-4-6'),
-  LLM_ADAPTER: z.enum(['mock', 'anthropic']).default('mock'),
+  LLM_ADAPTER_FORMAT: z.enum(['mock', 'anthropic', 'openai']).default('mock'),
   MOCK_LLM_STREAM_DELAY_MS: z.coerce.number().int().min(0).default(50),
   MOCK_LLM_VERDICT: z.enum(['passed', 'passed_with_notes', 'needs_work']).default('needs_work'),
   MOCK_LLM_RESPONSE_TOKENS: z.coerce.number().int().min(1).default(20),

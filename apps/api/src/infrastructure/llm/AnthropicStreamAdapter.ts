@@ -9,7 +9,10 @@ export class AnthropicStreamAdapter implements LLMPort {
   private client: Anthropic
 
   constructor(apiKey: string) {
-    this.client = new Anthropic({ apiKey })
+    this.client = new Anthropic({
+      apiKey,
+      ...(config.LLM_BASE_URL ? { baseURL: config.LLM_BASE_URL } : {}),
+    })
   }
 
   async *evaluate(params: {

@@ -13,13 +13,27 @@ import { PostgresUserRepository } from './persistence/PostgresUserRepository'
 import { InMemoryEventBus } from './events/InMemoryEventBus'
 import { MockLLMAdapter } from './llm/MockLLMAdapter'
 import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
+import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
 import { registerBadgeHandlers } from './events/BadgeEventHandler'
+import type { LLMPort } from '../domain/practice/ports'
 
 const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
 const userRepo = new PostgresUserRepository(db)
-const llm = config.LLM_ADAPTER === 'anthropic' ? new AnthropicStreamAdapter(config.LLM_API_KEY) : new MockLLMAdapter()
+
+function createLLMAdapter(): LLMPort {
+  switch (config.LLM_ADAPTER_FORMAT) {
+    case 'anthropic':
+      return new AnthropicStreamAdapter(config.LLM_API_KEY)
+    case 'openai':
+      return new OpenAIStreamAdapter(config.LLM_API_KEY, config.LLM_BASE_URL ?? 'https://api.openai.com')
+    default:
+      return new MockLLMAdapter()
+  }
+}
+
+const llm = createLLMAdapter()
 
 export const eventBus = new InMemoryEventBus()
 

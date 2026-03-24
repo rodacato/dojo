@@ -28,7 +28,7 @@ env:
   clear:
     NODE_ENV: production
     PORT: '3001'
-    LLM_ADAPTER: anthropic
+    LLM_ADAPTER_FORMAT: anthropic
     WEB_URL: <%= ENV["WEB_URL"] %>
   secret:
     - DATABASE_URL
