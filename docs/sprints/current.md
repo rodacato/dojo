@@ -12,11 +12,11 @@
 ## Pre-work (Global)
 
 ### Fonts & Tokens
-- [ ] Add Inter font for body text (global change, immediate quality lift)
-- [ ] Audit and align Tailwind theme tokens with BRANDING.md
+- [x] Add Inter font for body text *(already configured — fontsource + Tailwind theme)*
+- [x] Audit and align Tailwind theme tokens with BRANDING.md *(already aligned)*
 
 ### Layout Shell
-- [ ] Establish `AppShell` layout component (consistent max-width, padding, header)
+- [x] Establish `AppShell` layout component with Sidebar + BottomNav
 
 ### Component Library (Spec 044 — carried from Sprint 008)
 Extract reusable components that multiple screens will need:

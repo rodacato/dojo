@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogoWordmark } from '../components/Logo'
-
 type Mood = 'focused' | 'regular' | 'low_energy'
 type Duration = 10 | 20 | 30 | 45
 
@@ -33,11 +31,6 @@ export function DayStartPage() {
 
   return (
     <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4">
-      {/* Logo */}
-      <div className="absolute top-5 left-8">
-        <LogoWordmark />
-      </div>
-
       <div className="w-full max-w-md space-y-10">
         {/* Date */}
         <div className="text-center">

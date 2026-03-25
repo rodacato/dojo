@@ -4,6 +4,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { AuthProvider } from './context/AuthContext'
 import { RequireAuth } from './components/RequireAuth'
 import { RequireCreator } from './components/RequireCreator'
+import { AppShell } from './components/layout/AppShell'
 import { PageLoader } from './components/PageLoader'
 import { ToastContainer } from './components/ui/Toast'
 
@@ -60,34 +61,37 @@ export function App() {
           <Route path="/open-source" element={<LazyRoute><OpenSourcePage /></LazyRoute>} />
           <Route path="/u/:username" element={<LazyRoute><PublicProfilePage /></LazyRoute>} />
 
-          {/* Protected — eager (critical path) */}
+          {/* Protected — AppShell wraps all auth routes */}
           <Route element={<RequireAuth />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/start" element={<DayStartPage />} />
-            <Route path="/kata" element={<KataSelectionPage />} />
-            <Route path="/kata/:id" element={<KataActivePage />} />
-            <Route path="/kata/:id/eval" element={<SenseiEvalPage />} />
-            <Route path="/kata/:id/result" element={<ResultsPage />} />
+            <Route element={<AppShell />}>
+              {/* Eager (critical path) */}
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/start" element={<DayStartPage />} />
+              <Route path="/kata" element={<KataSelectionPage />} />
+              <Route path="/kata/:id" element={<KataActivePage />} />
+              <Route path="/kata/:id/eval" element={<SenseiEvalPage />} />
+              <Route path="/kata/:id/result" element={<ResultsPage />} />
 
-            {/* Protected — lazy */}
-            <Route path="/history" element={<LazyRoute><HistoryPage /></LazyRoute>} />
-            <Route path="/leaderboard" element={<LazyRoute><LeaderboardPage /></LazyRoute>} />
-            <Route path="/badges" element={<LazyRoute><BadgesPage /></LazyRoute>} />
-            <Route
-              path="/admin"
-              element={
-                <LazyRoute>
-                  <RequireCreator>
-                    <AdminLayout />
-                  </RequireCreator>
-                </LazyRoute>
-              }
-            >
-              <Route index element={<Navigate to="/admin/exercises" replace />} />
-              <Route path="exercises" element={<LazyRoute><AdminExercisesPage /></LazyRoute>} />
-              <Route path="exercises/new" element={<LazyRoute><AdminNewExercisePage /></LazyRoute>} />
-              <Route path="exercises/:id/edit" element={<LazyRoute><AdminEditExercisePage /></LazyRoute>} />
-              <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
+              {/* Lazy */}
+              <Route path="/history" element={<LazyRoute><HistoryPage /></LazyRoute>} />
+              <Route path="/leaderboard" element={<LazyRoute><LeaderboardPage /></LazyRoute>} />
+              <Route path="/badges" element={<LazyRoute><BadgesPage /></LazyRoute>} />
+              <Route
+                path="/admin"
+                element={
+                  <LazyRoute>
+                    <RequireCreator>
+                      <AdminLayout />
+                    </RequireCreator>
+                  </LazyRoute>
+                }
+              >
+                <Route index element={<Navigate to="/admin/exercises" replace />} />
+                <Route path="exercises" element={<LazyRoute><AdminExercisesPage /></LazyRoute>} />
+                <Route path="exercises/new" element={<LazyRoute><AdminNewExercisePage /></LazyRoute>} />
+                <Route path="exercises/:id/edit" element={<LazyRoute><AdminEditExercisePage /></LazyRoute>} />
+                <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
+              </Route>
             </Route>
           </Route>
 
