@@ -19,7 +19,7 @@ export function DashboardPage() {
   if (!dashboard) return <PageLoader />
 
   return (
-    <div className="px-4 py-8 max-w-5xl mx-auto">
+    <div className="px-6 py-8 max-w-4xl mx-auto">
       {/* Header — user info (logo is in sidebar) */}
       <header className="flex items-center justify-end mb-8">
         <div className="flex items-center gap-3">
@@ -37,7 +37,7 @@ export function DashboardPage() {
       </header>
 
       {/* Main grid — 2 col on desktop */}
-      <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+      <div className="grid lg:grid-cols-[3fr_2fr] gap-10">
         {/* Left column */}
         <div>
           {/* Streak */}
