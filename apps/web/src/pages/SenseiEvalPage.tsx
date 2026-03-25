@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
-import { StreamingText } from '../components/ui/StreamingText'
 import { VerdictBadge } from '../components/ui/Badge'
 
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [session, setSession] = useState<SessionWithExercise | null>(null)
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
   const { state, connect, submit } = useEvaluationStream(sessionId!)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!sessionId) return
@@ -31,6 +32,11 @@ export function SenseiEvalPage() {
     }
   }, [state.status, sessionId, submit])
 
+  // Auto-scroll on new content
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+  }, [state])
+
   async function handleFollowUp() {
     if (!sessionId || !followUpText.trim() || followUpSubmitting) return
     setFollowUpSubmitting(true)
@@ -44,116 +50,164 @@ export function SenseiEvalPage() {
   const hasResult = state.status === 'evaluation' || state.status === 'complete'
   const tokens = 'tokens' in state ? (state.tokens as string) : ''
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
+  const senseiInitials = session?.ownerRole?.split(' ').map(w => w[0]).slice(0, 2).join('') ?? 'S'
 
   return (
-    <div className="min-h-screen bg-base">
+    <div className="h-screen bg-base flex flex-col">
       {/* Top bar */}
       {session && (
-        <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 bg-surface/50 sticky top-0 z-10">
+        <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold">
-              {session.ownerRole.split(' ').map(w => w[0]).slice(0, 2).join('')}
-            </div>
-            <div>
-              <div className="text-primary text-sm font-medium">{session.exercise.title}</div>
-              <div className="text-muted text-xs font-mono">[{session.ownerRole}]</div>
-            </div>
+            <span className="font-mono text-sm text-accent">terminal_kata</span>
+            <span className="text-muted text-xs font-mono hidden sm:inline">{session.exercise.title}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {isStreaming && (
-              <span className="text-accent text-xs font-mono animate-pulse">Evaluating...</span>
+              <span className="text-accent text-xs font-mono">
+                Evaluating<span className="animate-pulse">...</span>
+              </span>
+            )}
+            {result && (
+              <span className="text-success text-xs font-mono">evaluation_complete</span>
             )}
           </div>
         </div>
       )}
 
-      <div className="px-4 py-8 max-w-2xl mx-auto">
+      {/* Chat area */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full">
 
-      {/* Streaming prose */}
-      {(tokens || isStreaming) && (
-        <div className="mb-6">
-          <StreamingText
-            text={tokens}
-            done={!isStreaming}
-            className="text-secondary text-sm leading-relaxed"
-          />
-        </div>
-      )}
-
-      {/* Error state with reconnect */}
-      {state.status === 'error' && (
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="text-secondary font-mono text-sm mb-2">The sensei couldn't evaluate your response.</p>
-          <p className="text-muted text-xs mb-6">{state.message}</p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => connect()}
-              className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-            >
-              Try again
-            </button>
-            <button
-              onClick={() => window.location.href = `/kata/${sessionId}`}
-              className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:text-primary transition-colors"
-            >
-              Back to kata
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Connecting/waiting */}
-      {(state.status === 'idle' || state.status === 'connecting') && (
-        <div className="text-muted font-mono text-sm animate-pulse">
-          Connecting to sensei<span className="animate-pulse">...</span>
-        </div>
-      )}
-
-      {/* Verdict card */}
-      {result && (
-        <div className="mt-6 p-4 bg-surface border border-border rounded-md">
-          <div className="flex items-center justify-between mb-3">
-            <VerdictBadge verdict={result.verdict} />
-          </div>
-          {result.topicsToReview.length > 0 && (
-            <div className="mt-3">
-              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">Review</p>
-              <div className="flex flex-wrap gap-1">
-                {result.topicsToReview.map((t) => (
-                  <span
-                    key={t}
-                    className="text-secondary text-xs font-mono px-2 py-0.5 bg-elevated rounded-sm"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
+        {/* Sensei identity */}
+        {session && (
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0">
+              {senseiInitials}
             </div>
+            <div>
+              <span className="text-muted text-xs font-mono">[{session.ownerRole}]</span>
+            </div>
+          </div>
+        )}
+
+        {/* Connecting */}
+        {(state.status === 'idle' || state.status === 'connecting') && (
+          <div className="flex items-center gap-2 text-muted font-mono text-sm">
+            <span className="w-2 h-4 bg-accent animate-pulse" />
+            Connecting to sensei...
+          </div>
+        )}
+
+        {/* Sensei streaming message */}
+        {(tokens || isStreaming) && (
+          <div className="flex gap-3 mb-6">
+            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
+              {senseiInitials}
+            </div>
+            <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
+              <p className="text-secondary text-sm font-sans leading-relaxed whitespace-pre-wrap">
+                {tokens}
+                {isStreaming && <span className="inline-block w-1.5 h-4 bg-accent ml-0.5 animate-pulse" />}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Verdict card */}
+        {result && (
+          <div className="flex gap-3 mb-6">
+            <div className="w-8 shrink-0" /> {/* spacer to align with avatar */}
+            <div className="flex-1 min-w-0 p-4 bg-surface border border-border rounded-md">
+              <div className="flex items-center justify-between mb-3">
+                <VerdictBadge verdict={result.verdict} />
+              </div>
+              {result.topicsToReview.length > 0 && (
+                <div className="mt-3">
+                  <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">Review</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {result.topicsToReview.map((t) => (
+                      <span
+                        key={t}
+                        className="text-warning text-xs font-mono px-2 py-0.5 border border-warning/30 rounded-sm"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {result.isFinalEvaluation && (
+                <button
+                  onClick={() => navigate(`/kata/${sessionId}/result`)}
+                  className="mt-4 text-accent text-xs font-mono hover:text-accent/80 transition-colors"
+                >
+                  View full analysis →
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Follow-up question from sensei */}
+        {result && !result.isFinalEvaluation && result.followUpQuestion && (
+          <div className="flex gap-3 mb-6">
+            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
+              {senseiInitials}
+            </div>
+            <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent/40 rounded-md">
+              <p className="text-secondary text-sm font-sans">{result.followUpQuestion}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error */}
+        {state.status === 'error' && (
+          <div className="flex flex-col items-center justify-center py-16">
+            <p className="text-secondary font-mono text-sm mb-2">The sensei couldn't evaluate your response.</p>
+            <p className="text-muted text-xs mb-6">{state.message}</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => connect()}
+                className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+              >
+                Try again
+              </button>
+              <button
+                onClick={() => navigate(`/kata/${sessionId}`)}
+                className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:text-primary transition-colors"
+              >
+                Back to kata
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Bottom input */}
+      <div className="shrink-0 border-t border-border/40 bg-surface/50 px-4 py-3">
+        <div className="max-w-3xl mx-auto">
+          {result && !result.isFinalEvaluation && result.followUpQuestion ? (
+            <div className="flex gap-2">
+              <textarea
+                value={followUpText}
+                onChange={(e) => setFollowUpText(e.target.value)}
+                placeholder="Your answer..."
+                rows={2}
+                className="flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
+              />
+              <button
+                onClick={handleFollowUp}
+                disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
+                className="px-4 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 disabled:opacity-40 transition-colors shrink-0"
+              >
+                {followUpSubmitting ? '...' : 'Send →'}
+              </button>
+            </div>
+          ) : (
+            <p className="text-muted/50 text-xs font-mono text-center py-2">
+              {result?.isFinalEvaluation ? 'The sensei has spoken.' : isStreaming ? 'The sensei is evaluating...' : 'Waiting for evaluation...'}
+            </p>
           )}
         </div>
-      )}
-
-      {/* Follow-up question */}
-      {result && !result.isFinalEvaluation && result.followUpQuestion && (
-        <div className="mt-6">
-          <div className="p-3 bg-surface border border-accent/30 rounded-sm mb-3">
-            <p className="text-secondary text-sm">{result.followUpQuestion}</p>
-          </div>
-          <textarea
-            value={followUpText}
-            onChange={(e) => setFollowUpText(e.target.value)}
-            placeholder="Your answer..."
-            className="w-full bg-surface border border-border rounded-sm p-3 text-primary text-sm font-sans resize-none h-28 focus:outline-none focus:border-accent transition-colors"
-          />
-          <button
-            onClick={handleFollowUp}
-            disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
-            className="mt-2 w-full py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 disabled:opacity-40"
-          >
-            {followUpSubmitting ? 'Sending...' : 'Send follow-up →'}
-          </button>
-        </div>
-      )}
       </div>
     </div>
   )
