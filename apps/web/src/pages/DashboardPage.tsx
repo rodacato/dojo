@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
-import { LogoWordmark } from '../components/Logo'
 import { Heatmap } from '../components/ui/Heatmap'
-import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
-import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
+import { TypeBadge, VerdictBadge } from '../components/ui/Badge'
+import type { ExerciseType, Verdict } from '@dojo/shared'
 
 export function DashboardPage() {
   const { user, logout } = useAuth()
@@ -20,10 +19,9 @@ export function DashboardPage() {
   if (!dashboard) return <PageLoader />
 
   return (
-    <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
-      {/* Header */}
-      <header className="flex items-center justify-between mb-8">
-        <LogoWordmark />
+    <div className="px-4 py-8 max-w-5xl mx-auto">
+      {/* Header — user info (logo is in sidebar) */}
+      <header className="flex items-center justify-end mb-8">
         <div className="flex items-center gap-3">
           {user?.avatarUrl && (
             <img src={user.avatarUrl} className="w-7 h-7 rounded-sm" alt={user.username} />
@@ -38,149 +36,132 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {/* Streak + Stats */}
-      <section className="mb-10">
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-surface border border-accent/20 rounded-md p-5 text-center col-span-1">
-            <div className="font-mono text-4xl text-primary">{dashboard.streak}</div>
-            <div className="text-muted text-xs mt-1 font-mono">day streak</div>
-          </div>
-          <div className="bg-surface border border-border rounded-md p-5 text-center">
-            <div className="font-mono text-2xl text-primary">{dashboard.totalCompleted}</div>
-            <div className="text-muted text-xs mt-1">kata completed</div>
-          </div>
-          <div className="bg-surface border border-border rounded-md p-5 text-center">
-            <div className="font-mono text-2xl text-primary">
-              {user?.createdAt
-                ? Math.max(1, Math.ceil((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24)))
-                : '—'}
+      {/* Main grid — 2 col on desktop */}
+      <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+        {/* Left column */}
+        <div>
+          {/* Streak */}
+          <section className="mb-8">
+            <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">practice_streak</p>
+            <div className="flex items-baseline gap-3 mb-1">
+              <span className="font-mono text-5xl text-primary">{dashboard.streak}</span>
+              <span className="text-secondary text-sm font-mono">day streak</span>
             </div>
-            <div className="text-muted text-xs mt-1">days in dojo</div>
-          </div>
-        </div>
-        <Heatmap data={dashboard.heatmapData} />
-      </section>
+            <p className="text-muted text-xs font-mono mb-4">
+              {dashboard.totalCompleted > 0
+                ? `${dashboard.totalCompleted} kata completed · ${dashboard.streak > 0 ? 'Last practiced: today' : 'Last practiced: yesterday'}`
+                : 'No kata completed yet'}
+            </p>
+            <Heatmap data={dashboard.heatmapData} />
+          </section>
 
-      {/* Today card */}
-      <TodayCard
-        todayComplete={dashboard.todayComplete}
-        todaySession={dashboard.todaySession}
-        activeSessionId={dashboard.activeSessionId}
-        isFirstVisit={dashboard.streak === 0 && dashboard.recentSessions.length === 0}
-        onStart={() => navigate('/start')}
-        onResume={(id) => navigate(`/kata/${id}`)}
-        onViewResults={(id) => navigate(`/kata/${id}/result`)}
-      />
+          {/* Today card */}
+          <section className="mb-8">
+            <TodayCard
+              todayComplete={dashboard.todayComplete}
+              todaySession={dashboard.todaySession}
+              activeSessionId={dashboard.activeSessionId}
+              isFirstVisit={dashboard.streak === 0 && dashboard.recentSessions.length === 0}
+              onStart={() => navigate('/start')}
+              onResume={(id) => navigate(`/kata/${id}`)}
+              onViewResults={(id) => navigate(`/kata/${id}/result`)}
+            />
+          </section>
 
-      {/* Recent activity */}
-      {dashboard.recentSessions.length > 0 && (
-        <section className="mt-8">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-secondary text-xs font-mono uppercase tracking-wider">Recent</h2>
-            <button
-              onClick={() => navigate('/history')}
-              className="text-muted text-xs font-mono hover:text-secondary transition-colors"
-            >
-              View all →
-            </button>
-          </div>
-          <div className="space-y-2">
-            {dashboard.recentSessions.map((s) => (
-              <RecentSessionRow
-                key={s.id}
-                session={s}
-                onClick={() => navigate(`/kata/${s.id}/result`)}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Extended dashboard — Phase 2 */}
-      {dashboard.totalCompleted >= 3 && (
-        <section className="mt-10 space-y-6">
-          {/* Where you struggle */}
-          {dashboard.weakAreas.length > 0 && (
-            <div>
-              <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Where you struggle</h2>
-              <div className="flex flex-wrap gap-2">
-                {dashboard.weakAreas.map((a) => (
-                  <span
-                    key={a.topic}
-                    className="text-danger text-xs font-mono px-2.5 py-1 border border-danger/30 rounded-sm"
-                  >
-                    {a.topic} <span className="text-muted ml-1">×{a.frequency}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* How you practice */}
-          <div>
-            <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">How you practice</h2>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-secondary">Avg time per kata</span>
-                <span className="font-mono text-primary">{dashboard.practicePatterns.avgTimeMinutes}min</span>
-              </div>
-              {dashboard.practicePatterns.mostAvoidedType && (
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-secondary">Most avoided type</span>
-                  <span className="font-mono text-primary">{dashboard.practicePatterns.mostAvoidedType}</span>
+          {/* Extended dashboard — Phase 2 */}
+          {dashboard.totalCompleted >= 3 && (
+            <section className="space-y-6">
+              {/* Where you struggle */}
+              {dashboard.weakAreas.length > 0 && (
+                <div>
+                  <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Where you struggle</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {dashboard.weakAreas.map((a) => (
+                      <span
+                        key={a.topic}
+                        className="text-danger text-xs font-mono px-2.5 py-1 border border-danger/30 rounded-sm"
+                      >
+                        {a.topic} <span className="text-muted ml-1">×{a.frequency}</span>
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-secondary">Sessions timed out</span>
-                <span className={`font-mono ${dashboard.practicePatterns.sessionsTimedOut > 0 ? 'text-danger' : 'text-primary'}`}>
-                  {dashboard.practicePatterns.sessionsTimedOut}
-                </span>
-              </div>
-            </div>
-          </div>
 
-          {/* Sensei suggests */}
-          {dashboard.senseiSuggests.length > 0 && (
+              {/* How you practice */}
+              <div>
+                <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">How you practice</h2>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-secondary">Avg time per kata</span>
+                    <span className="font-mono text-primary">{dashboard.practicePatterns.avgTimeMinutes}min</span>
+                  </div>
+                  {dashboard.practicePatterns.mostAvoidedType && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-secondary">Most avoided type</span>
+                      <span className="font-mono text-primary">{dashboard.practicePatterns.mostAvoidedType}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-secondary">Sessions timed out</span>
+                    <span className={`font-mono ${dashboard.practicePatterns.sessionsTimedOut > 0 ? 'text-danger' : 'text-primary'}`}>
+                      {dashboard.practicePatterns.sessionsTimedOut}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sensei suggests */}
+              {dashboard.senseiSuggests.length > 0 && (
+                <div>
+                  <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Sensei suggests revisiting</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {dashboard.senseiSuggests.map((topic) => (
+                      <span
+                        key={topic}
+                        className="text-warning text-xs font-mono px-2.5 py-1 border border-warning/30 rounded-sm"
+                      >
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+          )}
+        </div>
+
+        {/* Right column — recent activity */}
+        <div>
+          {dashboard.recentSessions.length > 0 && (
             <div>
-              <h2 className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Sensei suggests revisiting</h2>
-              <div className="flex flex-wrap gap-2">
-                {dashboard.senseiSuggests.map((topic) => (
-                  <span
-                    key={topic}
-                    className="text-warning text-xs font-mono px-2.5 py-1 border border-warning/30 rounded-sm"
-                  >
-                    {topic}
-                  </span>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-muted text-xs font-mono uppercase tracking-wider">Recent activity</h2>
+                <button
+                  onClick={() => navigate('/history')}
+                  className="text-muted text-xs font-mono hover:text-secondary transition-colors"
+                >
+                  View all →
+                </button>
+              </div>
+              <div className="space-y-0 divide-y divide-border/30">
+                {dashboard.recentSessions.map((s) => (
+                  <RecentSessionRow
+                    key={s.id}
+                    session={s}
+                    onClick={() => navigate(`/kata/${s.id}/result`)}
+                  />
                 ))}
               </div>
             </div>
           )}
-        </section>
-      )}
+        </div>
+      </div>
 
-      {/* Footer */}
-      <footer className="mt-12 flex items-center justify-center gap-4">
-        <Link
-          to="/leaderboard"
-          className="text-muted text-xs font-mono hover:text-secondary transition-colors"
-        >
-          Leaderboard →
-        </Link>
-        <Link
-          to="/badges"
-          className="text-muted text-xs font-mono hover:text-secondary transition-colors"
-        >
-          Badges →
-        </Link>
-        {user?.username && (
-          <Link
-            to={`/u/${user.username}`}
-            className="text-muted text-xs font-mono hover:text-secondary transition-colors"
-          >
-            Profile →
-          </Link>
-        )}
-      </footer>
+      {/* System status */}
+      <p className="text-muted/30 text-[10px] font-mono mt-12 text-center">
+        system_status: online
+      </p>
     </div>
   )
 }
@@ -204,11 +185,11 @@ function TodayCard({
 }) {
   if (activeSessionId) {
     return (
-      <div className="bg-surface border border-accent/30 rounded-md p-4">
+      <div className="bg-surface border border-accent/30 rounded-md p-5">
         <p className="text-secondary text-sm">You have an active kata.</p>
         <button
           onClick={() => onResume(activeSessionId)}
-          className="mt-3 w-full py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+          className="mt-3 w-full py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
         >
           Resume kata →
         </button>
@@ -218,17 +199,15 @@ function TodayCard({
 
   if (todayComplete && todaySession) {
     return (
-      <div className="bg-surface border border-success/20 rounded-md p-4">
+      <div className="bg-surface border border-success/20 rounded-md p-5">
         <div className="flex items-center justify-between mb-2">
           <p className="text-secondary text-sm">Today's kata complete.</p>
-          {todaySession?.verdict && (
-            <VerdictBadge verdict={todaySession.verdict as Verdict} />
-          )}
+          {todaySession.verdict && <VerdictBadge verdict={todaySession.verdict as Verdict} />}
         </div>
-        <p className="text-primary text-sm font-medium">{todaySession!.exerciseTitle}</p>
+        <p className="text-primary text-sm font-medium">{todaySession.exerciseTitle}</p>
         <button
-          onClick={() => onViewResults(todaySession!.id)}
-          className="mt-3 w-full py-2 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
+          onClick={() => onViewResults(todaySession.id)}
+          className="mt-3 w-full py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
         >
           View results →
         </button>
@@ -236,23 +215,19 @@ function TodayCard({
     )
   }
 
-  if (todayComplete) {
-    return (
-      <div className="bg-surface border border-border rounded-md p-4">
-        <p className="text-secondary text-sm">Today's kata complete.</p>
-        <p className="text-muted text-xs mt-1">Come back tomorrow. The dojo will be here.</p>
-      </div>
-    )
-  }
-
   return (
-    <div className="bg-surface border border-border rounded-md p-4">
-      <p className="text-secondary text-sm">
-        {isFirstVisit ? 'Day 1. The dojo opens.' : 'The dojo was empty today.'}
+    <div className="bg-surface border border-border rounded-md p-5 text-center">
+      <p className="text-primary font-mono text-sm mb-2">
+        {isFirstVisit ? 'Day 1. The dojo opens.' : 'the dojo was empty today.'}
+      </p>
+      <p className="text-muted text-xs mb-4">
+        {isFirstVisit
+          ? 'Your first kata awaits.'
+          : 'Maintain your momentum and hone your muscle memory with today\'s algorithmic challenge.'}
       </p>
       <button
         onClick={onStart}
-        className="mt-3 w-full py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+        className="px-8 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
       >
         Enter the dojo →
       </button>
@@ -270,14 +245,13 @@ function RecentSessionRow({
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-between p-3 bg-surface border border-border rounded-sm hover:border-accent/40 transition-colors text-left"
+      className="w-full flex items-center justify-between py-3 hover:bg-surface/50 transition-colors text-left"
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
         <TypeBadge type={session.exerciseType as ExerciseType} />
-        <DifficultyBadge difficulty={session.difficulty as Difficulty} />
-        <span className="text-secondary text-sm">{session.exerciseTitle}</span>
+        <span className="text-secondary text-sm truncate">{session.exerciseTitle}</span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0 ml-2">
         {session.verdict && <VerdictBadge verdict={session.verdict as Verdict} />}
         <span className="text-muted text-xs font-mono">
           {new Date(session.startedAt).toLocaleDateString()}
