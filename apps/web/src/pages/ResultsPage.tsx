@@ -4,7 +4,6 @@ import { api, type SessionWithExercise } from '../lib/api'
 import { API_URL } from '../lib/config'
 import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
-import { LogoWordmark } from '../components/Logo'
 import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
 import { KataBody } from '../components/ui/KataBody'
 
@@ -22,125 +21,139 @@ export function ResultsPage() {
 
   const attempt = session.finalAttempt
   const verdict = attempt?.verdict as Verdict | undefined
+  const completionMinutes = session.completedAt
+    ? Math.round((new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)
+    : null
 
   return (
-    <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
-      {/* Header */}
-      <header className="flex items-center justify-between mb-10">
-        <LogoWordmark />
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="text-secondary text-sm font-mono hover:text-primary transition-colors"
-        >
-          ← Dashboard
-        </button>
-      </header>
+    <div className="px-4 py-8 max-w-5xl mx-auto">
+      {/* Exercise title + badges */}
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-muted text-xs font-mono uppercase tracking-wider">
+          {session.exercise.title}
+        </span>
+        <TypeBadge type={session.exercise.type} />
+        <DifficultyBadge difficulty={session.exercise.difficulty} />
+      </div>
 
       {/* Verdict */}
-      {verdict && (
-        <div className="mb-10">
-          <VerdictBadge verdict={verdict} />
-          <h1 className="font-mono text-4xl md:text-5xl uppercase tracking-wider mt-4 text-primary leading-none">
-            {verdict === 'needs_work' ? 'Needs work.' : verdict === 'passed_with_notes' ? 'Passed.' : 'Passed.'}
+      {verdict ? (
+        <div className="mb-2">
+          <h1 className="font-mono text-4xl md:text-5xl uppercase tracking-wider text-primary leading-none">
+            {verdict.replace(/_/g, ' ')}
+            <span className="text-accent animate-pulse">|</span>
+          </h1>
+        </div>
+      ) : (
+        <div className="mb-2">
+          <h1 className="font-mono text-3xl md:text-4xl uppercase tracking-wider text-muted leading-none">
+            {session.status === 'failed' ? 'Incomplete' : 'Pending'}
           </h1>
         </div>
       )}
 
-      {/* Exercise info */}
-      <div className="flex items-center gap-2 mb-2">
-        <TypeBadge type={session.exercise.type} />
-        <DifficultyBadge difficulty={session.exercise.difficulty} />
-      </div>
-      <h2 className="text-primary font-medium text-lg mb-1">{session.exercise.title}</h2>
-      <p className="text-muted text-sm font-mono mb-10">
+      {/* Completion info */}
+      <p className="text-muted text-sm font-mono mb-8">
         {session.completedAt
           ? `Completed ${new Date(session.completedAt).toLocaleDateString()}`
           : `Started ${new Date(session.startedAt).toLocaleDateString()}`}
-        {session.completedAt && ` · ${Math.round((new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)} min`}
+        {completionMinutes != null && ` · ${completionMinutes} min`}
       </p>
 
-      {/* Kata body — collapsible */}
-      {session.body && (
-        <details className="mb-4 group">
-          <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
-            The kata <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
-          </summary>
-          <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md">
-            <KataBody body={session.body} />
-          </div>
-        </details>
-      )}
+      {/* Main content — 2-col on desktop */}
+      <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+        {/* Left column — analysis + collapsibles */}
+        <div className="min-w-0">
+          {/* Sensei analysis */}
+          {attempt?.analysis && (
+            <div className="p-5 bg-surface border-l-2 border-accent rounded-md mb-6">
+              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">
+                {session.ownerRole ? `Sensei — ${session.ownerRole}` : "Sensei's Analysis"}
+              </p>
+              {verdict && (
+                <div className="mb-4">
+                  <VerdictBadge verdict={verdict} />
+                </div>
+              )}
+              <div className="text-secondary text-sm font-sans leading-relaxed whitespace-pre-wrap">
+                {attempt.analysis}
+              </div>
+            </div>
+          )}
 
-      {/* User response — collapsible */}
-      {attempt?.userResponse && (
-        <details className="mb-8 group">
-          <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
-            Your response <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
-          </summary>
-          <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
-            {attempt.userResponse}
-          </div>
-        </details>
-      )}
+          {/* Topics to review */}
+          {attempt?.topicsToReview && attempt.topicsToReview.length > 0 && (
+            <div className="mb-6">
+              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Topics to review</p>
+              <div className="flex flex-wrap gap-2">
+                {attempt.topicsToReview.map((t) => (
+                  <span
+                    key={t}
+                    className="text-warning text-xs font-mono px-2.5 py-1 border border-warning/30 rounded-sm"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* Analysis */}
-      {attempt?.analysis && (
-        <div className="p-5 bg-surface border-l-2 border-accent rounded-md mb-5">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
-            {session.ownerRole ? `Sensei — ${session.ownerRole}` : 'Analysis'}
-          </p>
-          <p className="text-secondary text-sm leading-relaxed whitespace-pre-wrap">{attempt.analysis}</p>
+          {/* Kata body — collapsible */}
+          {session.body && (
+            <details className="mb-4 group">
+              <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
+                The kata <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
+              </summary>
+              <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md">
+                <KataBody body={session.body} />
+              </div>
+            </details>
+          )}
+
+          {/* User response — collapsible */}
+          {attempt?.userResponse && (
+            <details className="mb-6 group">
+              <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
+                Your response <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
+              </summary>
+              <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
+                {attempt.userResponse}
+              </div>
+            </details>
+          )}
+
+          {/* No attempt at all */}
+          {!attempt && session.status !== 'active' && (
+            <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
+              <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
+              <p className="text-muted text-xs">Start a new one to keep practicing.</p>
+            </div>
+          )}
+
+          {/* Attempt exists but evaluation failed */}
+          {attempt && !verdict && !attempt.analysis && (
+            <NoEvaluationCard sessionId={sessionId!} />
+          )}
         </div>
-      )}
 
-      {/* Topics to review */}
-      {attempt?.topicsToReview && attempt.topicsToReview.length > 0 && (
-        <div className="mb-8">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Topics to review</p>
-          <div className="flex flex-wrap gap-2">
-            {attempt.topicsToReview.map((t) => (
-              <span
-                key={t}
-                className="text-warning text-xs font-mono px-2.5 py-1 border border-warning/30 rounded-sm"
-              >
-                {t}
-              </span>
-            ))}
+        {/* Right column — share card */}
+        {verdict && sessionId && (
+          <div className="lg:sticky lg:top-8 self-start">
+            <div className="border border-border/40 rounded-md overflow-hidden bg-surface">
+              <img
+                src={`${API_URL}/share/${sessionId}.png`}
+                alt="Share card preview"
+                className="w-full"
+                loading="lazy"
+              />
+            </div>
+            <p className="text-muted text-xs mt-2 text-center">Own it. The good and the ugly.</p>
           </div>
-        </div>
-      )}
-
-      {/* No attempt at all — nothing to retry */}
-      {!attempt && session.status !== 'active' && (
-        <div className="p-5 bg-surface border border-border rounded-md mb-5 text-center">
-          <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
-          <p className="text-muted text-xs">Start a new one to keep practicing.</p>
-        </div>
-      )}
-
-      {/* Attempt exists but evaluation failed — offer retry */}
-      {attempt && !verdict && !attempt.analysis && (
-        <NoEvaluationCard sessionId={sessionId!} />
-      )}
-
-      {/* Share preview */}
-      {verdict && sessionId && (
-        <div className="mb-8">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Share</p>
-          <div className="border border-border/40 rounded-md overflow-hidden">
-            <img
-              src={`${API_URL}/share/${sessionId}.png`}
-              alt="Share card preview"
-              className="w-full"
-              loading="lazy"
-            />
-          </div>
-          <p className="text-muted text-xs mt-2 text-center">Own it. The good and the ugly.</p>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Actions */}
-      <div className="flex gap-3 mt-8 pt-6 border-t border-border/40">
+      <div className="flex gap-3 mt-10 pt-6 border-t border-border/40 max-w-md mx-auto">
         {verdict && sessionId && (
           <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
         )}
@@ -153,7 +166,7 @@ export function ResultsPage() {
       </div>
 
       {/* Footer */}
-      <p className="text-center text-muted text-xs font-mono mt-8">Consistency compounds.</p>
+      <p className="text-center text-muted/50 text-xs font-mono mt-6">Consistency compounds.</p>
     </div>
   )
 }
@@ -174,7 +187,7 @@ function NoEvaluationCard({ sessionId }: { sessionId: string }) {
   }
 
   return (
-    <div className="p-5 bg-surface border border-border rounded-md mb-5 text-center">
+    <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
       <p className="text-secondary text-sm mb-1">The sensei couldn't finish evaluating this kata.</p>
       <p className="text-muted text-xs mb-4">This usually means the LLM timed out or hit a rate limit.</p>
       <button
@@ -209,7 +222,6 @@ function ShareButton({ sessionId, exerciseTitle, verdict }: { sessionId: string;
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      // Open Twitter intent as last resort
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
         '_blank',
