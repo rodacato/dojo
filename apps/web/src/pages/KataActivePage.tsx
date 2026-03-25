@@ -21,6 +21,7 @@ const PREPARING_MESSAGES = [
 export function KataActivePage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
   const [session, setSession] = useState<SessionWithExercise | null>(null)
   const [preparing, setPreparing] = useState(false)
   const [preparingMsg, setPreparingMsg] = useState(PREPARING_MESSAGES[0]!)
@@ -141,7 +142,6 @@ export function KataActivePage() {
   const { exercise } = session
   const isCode = exercise.type === 'code'
   const isWhiteboard = exercise.type === 'whiteboard'
-  const isMobile = useIsMobile()
   const orientation = isMobile || (!isCode && !isWhiteboard) ? 'vertical' : 'horizontal'
 
   return (

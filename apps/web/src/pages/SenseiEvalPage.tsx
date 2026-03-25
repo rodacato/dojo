@@ -1,10 +1,32 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
 import { useTypingReveal } from '../hooks/useTypingReveal'
 import { VerdictBadge } from '../components/ui/Badge'
 import { StreamingText } from '../components/ui/StreamingText'
+
+const EVAL_MESSAGES = [
+  'The sensei is reviewing your work...',
+  'Examining your approach...',
+  'Considering edge cases...',
+  'Weighing the trade-offs...',
+  'Reflecting on your choices...',
+  'Almost ready with feedback...',
+]
+
+function useRotatingMessage(messages: string[], intervalMs = 3500) {
+  const [msg, setMsg] = useState(messages[0]!)
+  const idx = useRef(0)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      idx.current = (idx.current + 1) % messages.length
+      setMsg(messages[idx.current]!)
+    }, intervalMs)
+    return () => clearInterval(interval)
+  }, [messages, intervalMs])
+  return msg
+}
 
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -14,6 +36,7 @@ export function SenseiEvalPage() {
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
   const { state, connect, submit } = useEvaluationStream(sessionId!)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const evalMessage = useRotatingMessage(EVAL_MESSAGES)
 
   useEffect(() => {
     if (!sessionId) return
@@ -54,11 +77,12 @@ export function SenseiEvalPage() {
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
   const senseiInitials = session?.ownerRole?.split(' ').map(w => w[0]).slice(0, 2).join('') ?? 'S'
   const revealedTokens = useTypingReveal(tokens, !isStreaming)
+  const isWaiting = state.status === 'idle' || state.status === 'connecting' || state.status === 'ready' || (isStreaming && !tokens)
 
   return (
     <div className="h-screen bg-base flex flex-col">
-      {/* Top bar */}
-      {session && (
+      {/* Top bar — hidden during loading */}
+      {session && !isWaiting && (
         <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">
           <div className="flex items-center gap-3">
             <span className="font-mono text-sm text-accent">terminal_kata</span>
@@ -80,8 +104,16 @@ export function SenseiEvalPage() {
       {/* Chat area */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full">
 
+        {/* Evaluating loader — full center */}
+        {isWaiting && (
+          <div className="flex flex-col items-center justify-center h-full gap-5">
+            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            <p className="font-mono text-secondary text-sm animate-pulse">{evalMessage}</p>
+          </div>
+        )}
+
         {/* Sensei identity */}
-        {session && (
+        {session && !isWaiting && (
           <div className="flex items-center gap-2 mb-6">
             <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0">
               {senseiInitials}
@@ -89,14 +121,6 @@ export function SenseiEvalPage() {
             <div>
               <span className="text-muted text-xs font-mono">[{session.ownerRole}]</span>
             </div>
-          </div>
-        )}
-
-        {/* Connecting */}
-        {(state.status === 'idle' || state.status === 'connecting') && (
-          <div className="flex items-center gap-2 text-muted font-mono text-sm">
-            <span className="w-2 h-4 bg-accent animate-pulse" />
-            Connecting to sensei...
           </div>
         )}
 
@@ -186,8 +210,8 @@ export function SenseiEvalPage() {
         )}
       </div>
 
-      {/* Bottom input */}
-      <div className="shrink-0 border-t border-border/40 bg-surface/50 px-4 py-3">
+      {/* Bottom input — hidden during loading */}
+      {!isWaiting && <div className="shrink-0 border-t border-border/40 bg-surface/50 px-4 py-3">
         <div className="max-w-3xl mx-auto">
           {result && !result.isFinalEvaluation && result.followUpQuestion ? (
             <div className="flex flex-col sm:flex-row gap-2">
@@ -212,7 +236,7 @@ export function SenseiEvalPage() {
             </p>
           )}
         </div>
-      </div>
+      </div>}
     </div>
   )
 }

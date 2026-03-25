@@ -136,18 +136,15 @@ export function ResultsPage() {
           )}
         </div>
 
-        {/* Right column — share card */}
+        {/* Right column — share card preview */}
         {verdict && sessionId && (
           <div className="lg:sticky lg:top-8 self-start">
-            <div className="border border-border/40 rounded-md overflow-hidden bg-surface">
-              <img
-                src={`${API_URL}/share/${sessionId}.png`}
-                alt="Share card preview"
-                className="w-full"
-                loading="lazy"
-              />
-            </div>
-            <p className="text-muted text-xs mt-2 text-center">Own it. The good and the ugly.</p>
+            <ShareCardPreview
+              exerciseTitle={session.exercise.title}
+              verdict={verdict}
+              analysis={attempt?.analysis}
+              ownerRole={session.ownerRole}
+            />
           </div>
         )}
       </div>
@@ -161,6 +158,12 @@ export function ResultsPage() {
 
       {/* Actions */}
       <div className="flex gap-3 mt-4 pt-6 border-t border-border/40 max-w-md mx-auto">
+        <button
+          onClick={() => navigate('/dashboard', { replace: true })}
+          className="flex-1 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
+        >
+          Dashboard
+        </button>
         <button
           onClick={() => navigate('/start', { replace: true })}
           className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
@@ -243,5 +246,50 @@ function ShareButton({ sessionId, exerciseTitle, verdict }: { sessionId: string;
     >
       {copied ? 'Copied!' : 'Share'}
     </button>
+  )
+}
+
+function ShareCardPreview({
+  exerciseTitle,
+  verdict,
+  analysis,
+  ownerRole,
+}: {
+  exerciseTitle: string
+  verdict: string
+  analysis?: string
+  ownerRole?: string
+}) {
+  const verdictLabel = verdict.replace(/_/g, ' ')
+  const verdictColor =
+    verdict === 'solid' || verdict === 'exceptional'
+      ? 'text-success border-success/40'
+      : verdict === 'needs_work'
+        ? 'text-danger border-danger/40'
+        : 'text-warning border-warning/40'
+  const snippet = analysis
+    ? analysis.length > 120 ? `"${analysis.slice(0, 117)}..."` : `"${analysis}"`
+    : null
+
+  return (
+    <div className="border border-border/40 rounded-md bg-surface p-5 flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-accent text-xs">dojo_</span>
+        <span className={`font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border rounded-sm ${verdictColor}`}>
+          {verdictLabel}
+        </span>
+      </div>
+      <div>
+        <p className="font-mono text-primary text-sm font-bold">{exerciseTitle}</p>
+        {snippet && (
+          <p className="text-muted text-xs mt-2 leading-relaxed italic">{snippet}</p>
+        )}
+      </div>
+      {ownerRole && (
+        <p className="text-muted/50 text-[10px] font-mono border-t border-border/30 pt-3">
+          sensei — {ownerRole.toLowerCase()}
+        </p>
+      )}
+    </div>
   )
 }

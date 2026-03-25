@@ -1,12 +1,8 @@
-import { useNavigate } from 'react-router-dom'
-
 interface ErrorPageProps {
   message?: string
 }
 
 export function ErrorPage({ message }: ErrorPageProps) {
-  const navigate = useNavigate()
-
   return (
     <div className="min-h-screen bg-base flex flex-col items-center justify-center gap-6 px-4">
       <p className="font-mono text-muted text-sm">something went wrong</p>
@@ -21,7 +17,7 @@ export function ErrorPage({ message }: ErrorPageProps) {
           Retry
         </button>
         <button
-          onClick={() => navigate('/dashboard', { replace: true })}
+          onClick={() => { window.location.href = '/dashboard' }}
           className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
         >
           Return to dashboard
