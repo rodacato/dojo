@@ -71,15 +71,15 @@ export function PublicProfilePage() {
 
   return (
     <div className="min-h-screen bg-base text-primary">
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
+      <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
         <Link to="/">
           <LogoWordmark />
         </Link>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-8 py-12">
+      <div className="max-w-3xl mx-auto px-4 md:px-8 py-12">
         {/* Header */}
-        <div className="flex items-start justify-between mb-10">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-10">
           <div className="flex items-center gap-4">
             <img
               src={profile.avatarUrl}

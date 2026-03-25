@@ -39,7 +39,7 @@ export function DashboardPage() {
               active_streak
             </span>
             <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-6xl font-mono text-accent tracking-tighter">
+              <span className="text-4xl sm:text-5xl md:text-6xl font-mono text-accent tracking-tighter">
                 {dashboard.streak}
               </span>
               <span className="text-lg font-mono text-muted lowercase">day streak</span>
@@ -183,6 +183,11 @@ export function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* System status */}
+      <p className="text-muted/20 text-[10px] font-mono mt-12 text-center">
+        system_status: online
+      </p>
     </div>
   )
 }

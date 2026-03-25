@@ -94,7 +94,7 @@ export function DayStartPage() {
           <h2 className="font-mono text-sm text-secondary mb-4">
             how much time do you have?
           </h2>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {DURATIONS.map(({ value, label }) => (
               <button
                 key={value}

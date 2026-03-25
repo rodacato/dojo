@@ -65,23 +65,23 @@ export function LeaderboardPage() {
 
           <div className="space-y-0">
             {/* Header */}
-            <div className="grid grid-cols-12 gap-2 px-3 py-2 text-muted text-[10px] font-mono uppercase tracking-wider">
-              <div className="col-span-1">#</div>
-              <div className="col-span-4">Practitioner</div>
-              <div className="col-span-2 text-right">Streak</div>
-              <div className="col-span-2 text-right">Kata</div>
-              <div className="col-span-1 text-right hidden sm:block">Pass</div>
-              <div className="col-span-2 text-right hidden sm:block">Last active</div>
+            <div className="grid grid-cols-[2rem_1fr_3rem_3rem] sm:grid-cols-[2rem_1fr_3.5rem_3.5rem_3rem_5rem] gap-2 px-3 py-2 text-muted text-[10px] font-mono uppercase tracking-wider">
+              <div>#</div>
+              <div>Practitioner</div>
+              <div className="text-right">Streak</div>
+              <div className="text-right">Kata</div>
+              <div className="text-right hidden sm:block">Pass</div>
+              <div className="text-right hidden sm:block">Last</div>
             </div>
 
             {entries.map((entry) => (
               <div
                 key={entry.userId}
-                className={`grid grid-cols-12 gap-2 px-3 py-3 items-center rounded-sm ${
+                className={`grid grid-cols-[2rem_1fr_3rem_3rem] sm:grid-cols-[2rem_1fr_3.5rem_3.5rem_3rem_5rem] gap-2 px-3 py-3 items-center rounded-sm ${
                   entry.isCurrentUser ? 'bg-accent/10 border border-accent/20' : 'hover:bg-surface/50'
                 }`}
               >
-                <div className="col-span-1">
+                <div>
                   <span
                     className={`font-mono text-sm ${
                       entry.rank <= 3 ? 'text-accent' : 'text-muted'
@@ -90,7 +90,7 @@ export function LeaderboardPage() {
                     {entry.rank}
                   </span>
                 </div>
-                <div className="col-span-4 flex items-center gap-2 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
                   <img
                     src={entry.avatarUrl}
                     alt={entry.username}
@@ -103,13 +103,13 @@ export function LeaderboardPage() {
                     {entry.username}
                   </Link>
                 </div>
-                <div className="col-span-2 text-right font-mono text-sm text-primary">
+                <div className="text-right font-mono text-sm text-primary">
                   {entry.streak}d
                 </div>
-                <div className="col-span-2 text-right font-mono text-sm text-secondary">
+                <div className="text-right font-mono text-sm text-secondary">
                   {entry.kataCount}
                 </div>
-                <div className="col-span-1 text-right hidden sm:block">
+                <div className="text-right hidden sm:block">
                   <span
                     className={`font-mono text-xs ${
                       entry.passRate >= 70
@@ -122,7 +122,7 @@ export function LeaderboardPage() {
                     {entry.passRate}%
                   </span>
                 </div>
-                <div className="col-span-2 text-right hidden sm:block text-muted text-xs font-mono">
+                <div className="text-right hidden sm:block text-muted text-xs font-mono">
                   {formatLastActive(entry.lastActive)}
                 </div>
               </div>

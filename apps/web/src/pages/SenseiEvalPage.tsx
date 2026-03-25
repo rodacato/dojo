@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
+import { useTypingReveal } from '../hooks/useTypingReveal'
 import { VerdictBadge } from '../components/ui/Badge'
+import { StreamingText } from '../components/ui/StreamingText'
 
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -51,12 +53,13 @@ export function SenseiEvalPage() {
   const tokens = 'tokens' in state ? (state.tokens as string) : ''
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
   const senseiInitials = session?.ownerRole?.split(' ').map(w => w[0]).slice(0, 2).join('') ?? 'S'
+  const revealedTokens = useTypingReveal(tokens, !isStreaming)
 
   return (
     <div className="h-screen bg-base flex flex-col">
       {/* Top bar */}
       {session && (
-        <div className="flex items-center justify-between px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">
+        <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">
           <div className="flex items-center gap-3">
             <span className="font-mono text-sm text-accent">terminal_kata</span>
             <span className="text-muted text-xs font-mono hidden sm:inline">{session.exercise.title}</span>
@@ -98,16 +101,17 @@ export function SenseiEvalPage() {
         )}
 
         {/* Sensei streaming message */}
-        {(tokens || isStreaming) && (
+        {(revealedTokens || isStreaming) && (
           <div className="flex gap-3 mb-6">
             <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
               {senseiInitials}
             </div>
             <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
-              <p className="text-secondary text-sm font-sans leading-relaxed whitespace-pre-wrap">
-                {tokens}
-                {isStreaming && <span className="inline-block w-1.5 h-4 bg-accent ml-0.5 animate-pulse" />}
-              </p>
+              <StreamingText
+                text={revealedTokens}
+                done={!isStreaming && revealedTokens === tokens}
+                className="text-secondary text-sm font-sans leading-relaxed"
+              />
             </div>
           </div>
         )}
@@ -186,7 +190,7 @@ export function SenseiEvalPage() {
       <div className="shrink-0 border-t border-border/40 bg-surface/50 px-4 py-3">
         <div className="max-w-3xl mx-auto">
           {result && !result.isFinalEvaluation && result.followUpQuestion ? (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <textarea
                 value={followUpText}
                 onChange={(e) => setFollowUpText(e.target.value)}

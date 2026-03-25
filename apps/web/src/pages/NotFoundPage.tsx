@@ -8,7 +8,7 @@ export function NotFoundPage() {
     <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Background 404 */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-        <span className="font-mono text-[20rem] text-surface/80 leading-none">404</span>
+        <span className="font-mono text-[10rem] sm:text-[16rem] md:text-[20rem] text-surface/80 leading-none">404</span>
       </div>
 
       {/* Content */}
@@ -25,7 +25,7 @@ export function NotFoundPage() {
           Which, honestly, is a perfectly valid state for a developer to be in.
         </p>
 
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={() => navigate('/dashboard')}
             className="px-5 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"

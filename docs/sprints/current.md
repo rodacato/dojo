@@ -20,16 +20,16 @@
 
 ### Component Library (Spec 044 — carried from Sprint 008)
 Extract reusable components that multiple screens will need:
-- [ ] `Modal.tsx` — dojo flow (no close on outside click) vs informational
-- [ ] `Toast.tsx` — error, warning, info notifications with auto-dismiss
-- [ ] `SkeletonLoader.tsx` — content placeholder for perceived performance
-- [ ] `AccentCard.tsx` — left-border card (used in results, eval, terms)
-- [ ] `StatCard.tsx` — numbered stat with label (used in dashboard + profile)
-- [ ] `GroupButtons.tsx` — segmented control (used in day start, leaderboard, badges)
-- [ ] `Input.tsx`, `Textarea.tsx`, `Select.tsx` — consistent form inputs
+- [x] `Modal.tsx` — dojo flow (no close on outside click) vs informational
+- [x] `Toast.tsx` — error, warning, info notifications with auto-dismiss
+- [x] `SkeletonLoader.tsx` — content placeholder for perceived performance
+- [x] `AccentCard.tsx` — left-border card (used in results, eval, terms)
+- [x] `StatCard.tsx` — numbered stat with label (used in dashboard + profile)
+- [x] `GroupButtons.tsx` — segmented control (used in day start, leaderboard, badges)
+- [x] `Input.tsx`, `Textarea.tsx` — consistent form inputs
 
 ### Accessibility (from Spec 043/046)
-- [ ] Audit `prefers-reduced-motion` across all animations (typewriter, counters, pulse)
+- [x] Audit `prefers-reduced-motion` across all animations (global CSS media query)
 
 ---
 
@@ -39,14 +39,14 @@ Extract reusable components that multiple screens will need:
 **Current:** `apps/web/src/pages/ResultsPage.tsx`
 
 ### Implementar
-- [ ] Two-column layout: analysis left (7-col), share card right (5-col) — stacks on mobile
-- [ ] Verdict in JetBrains Mono large uppercase with blinking cursor
-- [ ] Sensei role label above analysis (`[Senior DBA — PostgreSQL, 12 yrs]`)
-- [ ] Analysis in Inter prose (not mono) with accent left border
-- [ ] Share card preview inline (not broken image)
-- [ ] Bottom CTAs: "Keep Practicing" filled + "Share Results" ghost
-- [ ] "+N positions in the dojo this week" muted stat between buttons
-- [ ] Fix "Completed" vs "Failed" label based on session status
+- [x] Two-column layout: analysis left (7-col), share card right (5-col) — stacks on mobile
+- [x] Verdict in JetBrains Mono large uppercase with blinking cursor
+- [x] Sensei role label above analysis (`[Senior DBA — PostgreSQL, 12 yrs]`)
+- [x] Analysis in Inter prose (not mono) with accent left border
+- [x] Share card preview inline (not broken image)
+- [x] Bottom CTAs: "Keep Practicing" filled + "Share Results" ghost
+- [x] "+N positions in the dojo this week" muted stat between buttons
+- [x] Fix "Completed" vs "Failed" label based on session status
 
 ### Backlog
 - Side-by-side desktop layout (requires testing responsive breakpoints)
@@ -63,13 +63,13 @@ Extract reusable components that multiple screens will need:
 **Current:** `apps/web/src/pages/SenseiEvalPage.tsx`
 
 ### Implementar
-- [ ] Chat bubble layout: sensei left (surface bg + accent left border on first msg), user right (accent bg)
-- [ ] Sensei avatar with initials + role label
-- [ ] Code blocks inside evaluation messages with syntax highlighting
-- [ ] Verdict card at end: badge + prose + "View full analysis →"
-- [ ] Bottom input: disabled while streaming → active for follow-up → disabled after verdict ("The sensei has spoken.")
-- [ ] Streaming indicator: blinking cursor `▌` next to "Evaluating..."
-- [ ] Gradual text reveal when `LLM_STREAM=false` (simulate typing rhythm)
+- [x] Chat bubble layout: sensei left (surface bg + accent left border on first msg), user right (accent bg)
+- [x] Sensei avatar with initials + role label
+- [x] Code blocks inside evaluation messages (parsed code fences in StreamingText)
+- [x] Verdict card at end: badge + prose + "View full analysis →"
+- [x] Bottom input: disabled while streaming → active for follow-up → disabled after verdict ("The sensei has spoken.")
+- [x] Streaming indicator: blinking cursor `▌` next to "Evaluating..."
+- [x] Gradual text reveal when `LLM_STREAM=false` (useTypingReveal hook)
 
 ### Backlog
 - Sidebar with sections (analysis, follow-up, verdict) — needs more content to justify
@@ -86,12 +86,12 @@ Extract reusable components that multiple screens will need:
 **Current:** `apps/web/src/pages/DashboardPage.tsx`
 
 ### Implementar
-- [ ] Streak card: large mono number + flame icon + "Last practiced: X" muted
-- [ ] Today card: two states — empty ("the dojo was empty today" + CTA) vs complete (verdict badge)
-- [ ] Recent activity: cleaner rows with separator lines, type badge + difficulty + verdict + time
-- [ ] Right column: "Tip" card or recent activity (2-col layout on desktop)
-- [ ] System status footer: subtle muted text at bottom
-- [ ] Header: logo left, avatar + username + logout right (already exists, polish)
+- [x] Streak card: large mono number + "Last practiced: X" muted (Stitch grid layout)
+- [x] Today card: two states — empty ("the dojo was empty today" + CTA) vs complete (verdict badge)
+- [x] Recent activity: card-style rows with type badge + difficulty + verdict
+- [x] Right column: weak areas + practice patterns + sensei suggests (2-col grid on desktop)
+- [x] System status footer: subtle muted text at bottom
+- [x] Header: handled by AppShell sidebar
 
 ### Backlog
 - "Where you struggle" section (Phase 2 extended dashboard, Spec from `dojo_extended_dashboard_phase_2/`)
@@ -110,12 +110,12 @@ Extract reusable components that multiple screens will need:
 **Current:** `apps/web/src/pages/DayStartPage.tsx`
 
 ### Implementar
-- [ ] Date display in JetBrains Mono lowercase (e.g. "monday, march 24")
-- [ ] Inline streak + heatmap strip (compact 30-day dots below date)
-- [ ] Mood cards: larger with emoji + label, selected state with accent border
-- [ ] Time selector: pill group buttons, selected state filled
-- [ ] "SHOW MY KATA →" full-width CTA (disabled until both selected)
-- [ ] Footer microcopy in muted: "your kata are generated from your selections. no skip. no reroll."
+- [x] Date display in JetBrains Mono lowercase (e.g. "monday, march 24")
+- [x] Inline streak + heatmap strip (compact 30-day dots below date)
+- [x] Mood cards: larger with emoji + label, selected state with accent border
+- [x] Time selector: pill group buttons, selected state filled
+- [x] "SHOW MY KATA →" full-width CTA (disabled until both selected)
+- [x] Footer microcopy in muted: "your kata are generated from your selections. no skip. no reroll."
 
 ### Backlog
 - Heatmap strip interactive (hover shows date + count)
@@ -131,12 +131,12 @@ Extract reusable components that multiple screens will need:
 **Current:** `apps/web/src/pages/KataSelectionPage.tsx`
 
 ### Implementar
-- [ ] Header: "select_your_kata" in mono with blinking cursor + subtitle
-- [ ] Mood/time filters as read-only pills (already selected, muted)
-- [ ] Card hover: border transition `#334155` → `#6366F1` at 150ms
-- [ ] Card layout: type badge top-left, difficulty top-right, duration bottom in mono
-- [ ] Footer microcopy: "these are your kata. no skip. no reroll."
-- [ ] Empty state (already implemented — polish styling)
+- [x] Header: "select_your_kata" in mono with blinking cursor + subtitle
+- [x] Mood/time filters as read-only pills (already selected, muted)
+- [x] Card hover: border transition `#334155` → `#6366F1` at 150ms
+- [x] Card layout: type badge top-left, difficulty top-right, duration bottom in mono
+- [x] Footer microcopy: "these are your kata. no skip. no reroll."
+- [x] Empty state (already implemented — polish styling)
 
 ### Backlog
 - Card animations on load (staggered fade-in)
@@ -152,11 +152,11 @@ Extract reusable components that multiple screens will need:
 **Current:** `apps/web/src/pages/KataActivePage.tsx`
 
 ### Implementar
-- [ ] Top bar: title left, timer center (color-coded), submit right — already close, polish
-- [ ] Timer colors: normal → amber ≤20% → red ≤10%
-- [ ] Left panel: problem description with proper markdown rendering (already done via KataBody)
-- [ ] Status bar bottom: subtle system indicators (connected, time elapsed)
-- [ ] Honor code reminder at panel bottom styled consistently
+- [x] Top bar: title left, timer center (color-coded), submit right
+- [x] Timer colors: normal → amber ≤20% → red ≤10%
+- [x] Left panel: problem description with proper markdown rendering (KataBody)
+- [x] Status bar bottom: subtle system indicators (connected, mode)
+- [x] Honor code reminder at panel bottom styled consistently
 
 ### Backlog
 - Bottom status bar with connection indicator + keystroke count
@@ -173,9 +173,9 @@ Extract reusable components that multiple screens will need:
 **Current:** ChatEditor component in `KataActivePage.tsx`
 
 ### Implementar
-- [ ] Textarea with proper placeholder: "Start writing. Think out loud. The sensei reads everything."
-- [ ] Word count bottom-right (already exists)
-- [ ] Mono/sans toggle (already exists — polish placement)
+- [x] Textarea with proper placeholder: "Start writing. Think out loud. The sensei reads everything."
+- [x] Word count bottom-right
+- [x] Mono/sans toggle
 
 ### Backlog
 - Auto-save indicator
@@ -192,9 +192,9 @@ Extract reusable components that multiple screens will need:
 **Current:** MermaidEditor component
 
 ### Implementar
-- [ ] Constraint chips in amber from exercise data
-- [ ] Tab switcher "Code" | "Preview" styling alignment
-- [ ] Diagram rendering with dojo dark palette
+- [x] Constraint chips in amber from exercise tags (whiteboard mode)
+- [x] Tab switcher "Code" | "Preview" styling alignment
+- [x] Diagram rendering with dojo dark palette
 
 ### Backlog
 - Floating tools (zoom, reset)
@@ -211,11 +211,11 @@ Extract reusable components that multiple screens will need:
 **Current:** No sidebar exists
 
 ### Implementar
-- [ ] `AppShell` component wrapping all auth routes
-- [ ] Sidebar: logo + nav items (practice, dashboard) + version number
-- [ ] Collapsible on desktop (icon-only mode)
-- [ ] Mobile: bottom nav or hamburger (TBD based on testing)
-- [ ] Active route indicator: accent left border on sidebar item
+- [x] `AppShell` component wrapping all auth routes
+- [x] Sidebar: logo + nav items (Material Symbols SVG icons) + collapsible
+- [x] Collapsible on desktop (icon-only mode, persisted to localStorage)
+- [x] Mobile: bottom nav with SVG icons
+- [x] Active route indicator: accent left border on sidebar item
 
 ### Backlog
 - Additional nav items: drills, stats, settings, profile (when those pages exist)

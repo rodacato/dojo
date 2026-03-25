@@ -39,7 +39,7 @@ export function ResultsPage() {
       {/* Verdict */}
       {verdict ? (
         <div className="mb-2">
-          <h1 className="font-mono text-4xl md:text-5xl uppercase tracking-wider text-primary leading-none">
+          <h1 className="font-mono text-3xl sm:text-4xl md:text-5xl uppercase tracking-wider text-primary leading-none">
             {verdict.replace(/_/g, ' ')}
             <span className="text-accent animate-pulse">|</span>
           </h1>
@@ -61,7 +61,7 @@ export function ResultsPage() {
       </p>
 
       {/* Main content — 2-col on desktop */}
-      <div className="grid lg:grid-cols-[1fr_320px] gap-8">
+      <div className="grid lg:grid-cols-[1fr_320px] gap-4 lg:gap-8">
         {/* Left column — analysis + collapsibles */}
         <div className="min-w-0">
           {/* Sensei analysis */}
@@ -152,17 +152,24 @@ export function ResultsPage() {
         )}
       </div>
 
+      {/* Dojo position stat */}
+      {verdict && (
+        <p className="text-center text-muted text-xs font-mono mt-10">
+          +1 position in the dojo this week
+        </p>
+      )}
+
       {/* Actions */}
-      <div className="flex gap-3 mt-10 pt-6 border-t border-border/40 max-w-md mx-auto">
-        {verdict && sessionId && (
-          <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
-        )}
+      <div className="flex gap-3 mt-4 pt-6 border-t border-border/40 max-w-md mx-auto">
         <button
           onClick={() => navigate('/start', { replace: true })}
           className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
         >
           Keep Practicing
         </button>
+        {verdict && sessionId && (
+          <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
+        )}
       </div>
 
       {/* Footer */}

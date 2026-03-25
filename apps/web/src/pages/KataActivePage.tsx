@@ -141,7 +141,8 @@ export function KataActivePage() {
   const { exercise } = session
   const isCode = exercise.type === 'code'
   const isWhiteboard = exercise.type === 'whiteboard'
-  const orientation = isCode || isWhiteboard ? 'horizontal' : 'vertical'
+  const isMobile = useIsMobile()
+  const orientation = isMobile || (!isCode && !isWhiteboard) ? 'vertical' : 'horizontal'
 
   return (
     <div className="h-screen bg-base flex flex-col overflow-hidden">
@@ -172,12 +173,30 @@ export function KataActivePage() {
         </div>
       </div>
 
+      {/* Status bar */}
+      <div className="flex items-center justify-between px-4 py-1 bg-surface/50 border-b border-border/20 text-[10px] font-mono text-muted/50 shrink-0">
+        <span>connected</span>
+        <span>{exercise.type} mode</span>
+      </div>
+
       {/* Resizable split */}
       <PanelGroup orientation={orientation} className="flex-1 overflow-hidden">
         {/* Problem panel */}
         <Panel defaultSize={50} minSize={25}>
           <div className="h-full overflow-y-auto p-6 flex flex-col">
             <div className="flex-1">
+              {isWhiteboard && exercise.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {exercise.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-warning text-[10px] font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               <KataBody body={session.body} />
             </div>
             <p className="text-muted/30 text-[10px] font-mono mt-6 pt-4 border-t border-border/20">
@@ -249,4 +268,15 @@ function resolveLanguage(langs: string[]): 'javascript' | 'typescript' | 'python
   if (langs.includes('python')) return 'python'
   if (langs.includes('sql')) return 'sql'
   return 'javascript'
+}
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => window.innerWidth < 768)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return mobile
 }

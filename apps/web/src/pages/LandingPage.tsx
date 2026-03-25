@@ -28,7 +28,7 @@ export function LandingPage() {
     <div className="min-h-screen bg-base text-primary">
       {/* Auth error banner */}
       {errorParam && (
-        <div className="bg-danger/10 border-b border-danger/30 px-8 py-3 text-center">
+        <div className="bg-danger/10 border-b border-danger/30 px-4 md:px-8 py-3 text-center">
           <p className="text-danger text-sm font-mono">
             {errorParam === 'session_expired'
               ? 'Your session expired. Sign in again to continue.'
@@ -42,7 +42,7 @@ export function LandingPage() {
       )}
 
       {/* Nav */}
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
+      <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
         <LogoWordmark />
         <div className="flex items-center gap-6">
           <a href="#access" className="text-sm font-mono text-muted hover:text-secondary transition-colors hidden sm:block">
@@ -59,7 +59,7 @@ export function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-8 pt-24 pb-20">
+      <section className="max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-20">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>
             <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-8">
@@ -109,7 +109,7 @@ export function LandingPage() {
 
       {/* Problem section */}
       <section className="bg-surface/30 border-y border-border/20">
-        <div className="max-w-3xl mx-auto px-8 py-20">
+        <div className="max-w-3xl mx-auto px-4 md:px-8 py-20">
           <h2 className="font-mono text-xl md:text-2xl text-primary mb-8">
             You can still write code. Can you still think it?
           </h2>
@@ -132,7 +132,7 @@ export function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="max-w-3xl mx-auto px-8 py-20">
+      <section className="max-w-3xl mx-auto px-4 md:px-8 py-20">
         <h2 className="font-mono text-xl md:text-2xl text-primary mb-4">One kata. One sensei. Every day.</h2>
         <p className="text-muted text-sm mb-12">The entire loop in five steps.</p>
         <div className="space-y-6">
@@ -176,7 +176,7 @@ export function LandingPage() {
 
       {/* What it's not */}
       <section className="bg-surface/30 border-y border-border/20">
-        <div className="max-w-3xl mx-auto px-8 py-20">
+        <div className="max-w-3xl mx-auto px-4 md:px-8 py-20">
           <div className="grid sm:grid-cols-3 gap-8">
             {[
               {
@@ -202,7 +202,7 @@ export function LandingPage() {
       </section>
 
       {/* Social proof */}
-      <section className="max-w-3xl mx-auto px-8 py-16">
+      <section className="max-w-3xl mx-auto px-4 md:px-8 py-16">
         <div className="grid grid-cols-3 gap-8 text-center">
           <div>
             <AnimatedCounter target={16} suffix="+" />
@@ -220,7 +220,7 @@ export function LandingPage() {
       </section>
 
       {/* Access */}
-      <section id="access" className="max-w-3xl mx-auto px-8 py-20">
+      <section id="access" className="max-w-3xl mx-auto px-4 md:px-8 py-20">
         <div className="grid md:grid-cols-2 gap-12 items-start">
           <div>
             <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">The dojo is invite-only.</h2>
@@ -237,7 +237,7 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/20 px-8 py-10">
+      <footer className="border-t border-border/20 px-4 md:px-8 py-10">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
