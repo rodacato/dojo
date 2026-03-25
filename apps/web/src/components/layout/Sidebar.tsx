@@ -2,10 +2,10 @@ import { NavLink } from 'react-router-dom'
 import { LogoMark } from '../Logo'
 
 const NAV_ITEMS = [
-  { to: '/start', label: 'Practice', icon: PracticeIcon },
-  { to: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
-  { to: '/leaderboard', label: 'Leaderboard', icon: LeaderboardIcon },
-  { to: '/badges', label: 'Badges', icon: BadgesIcon },
+  { to: '/dashboard', label: 'dashboard', icon: DashboardIcon },
+  { to: '/start', label: 'practice', icon: CodeIcon },
+  { to: '/leaderboard', label: 'leaderboard', icon: AnalyticsIcon },
+  { to: '/badges', label: 'badges', icon: BadgesIcon },
 ]
 
 interface SidebarProps {
@@ -44,7 +44,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               } ${collapsed ? 'justify-center px-2' : ''}`
             }
           >
-            <item.icon className="w-4 h-4 shrink-0" />
+            <item.icon className="w-4.5 h-4.5 shrink-0" />
             {!collapsed && <span>{item.label}</span>}
           </NavLink>
         ))}
@@ -61,37 +61,36 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   )
 }
 
-function PracticeIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M4 3l8 5-8 5V3z" />
-    </svg>
-  )
-}
+/* ── Material Symbols–style SVG icons ── */
 
 function DashboardIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <rect x="2" y="2" width="5" height="5" rx="1" />
-      <rect x="9" y="2" width="5" height="5" rx="1" />
-      <rect x="2" y="9" width="5" height="5" rx="1" />
-      <rect x="9" y="9" width="5" height="5" rx="1" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
     </svg>
   )
 }
 
-function LeaderboardIcon({ className }: { className?: string }) {
+function CodeIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-      <path d="M4 10v4M8 6v8M12 8v6" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+    </svg>
+  )
+}
+
+function AnalyticsIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
     </svg>
   )
 }
 
 function BadgesIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5 6.5 5z" />
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17 10.43V2H7v8.43c0 .35.18.68.49.86l4.18 2.51-.99 2.34-3.41.29 2.59 2.24L9.07 22 12 20.23 14.93 22l-.79-3.33 2.59-2.24-3.41-.29-.99-2.34 4.18-2.51c.31-.18.49-.51.49-.86zM13 12.12l-1 .6-1-.6V4h2v8.12z" />
     </svg>
   )
 }
