@@ -562,8 +562,8 @@ Extract reusable components that multiple screens will need:
 
 ## Carried from previous sprints
 
-- [ ] Spec 043 — Mobile responsive audit + fixes
-- [ ] Spec 036 — Kata quality refinement
+- [x] Spec 043 — Mobile responsive audit + fixes (critical/high/medium issues fixed across all pages)
+- [x] Spec 036 — Kata quality refinement (expanded from 15 to 60+ exercises, 10 categories, balanced types)
 
 ---
 
