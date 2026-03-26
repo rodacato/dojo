@@ -49,6 +49,7 @@ jobs:
           GITHUB_CLIENT_ID: ci-test-client-id
           GITHUB_CLIENT_SECRET: ci-test-client-secret
           GITHUB_CALLBACK_URL: http://localhost:3001/auth/github/callback
+          LLM_ADAPTER_FORMAT: mock
           LLM_BASE_URL: http://localhost:11434
           LLM_API_KEY: ci-test-api-key
           WEB_URL: http://localhost:5173

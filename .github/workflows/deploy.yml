@@ -28,15 +28,19 @@ jobs:
       OAUTH_CLIENT_ID: ${{ vars.OAUTH_CLIENT_ID }}
       OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
       OAUTH_CALLBACK_URL: ${{ vars.OAUTH_CALLBACK_URL }}
+      LLM_ADAPTER_FORMAT: ${{ vars.LLM_ADAPTER_FORMAT }}
       LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
       LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
       LLM_MODEL: ${{ vars.LLM_MODEL }}
+      LLM_STREAM: ${{ vars.LLM_STREAM }}
       WEB_URL: ${{ vars.WEB_URL }}
       API_URL: ${{ vars.API_URL }}
       CREATOR_GITHUB_ID: ${{ secrets.CREATOR_GITHUB_ID }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      CODE_EXECUTION_ENABLED: ${{ vars.CODE_EXECUTION_ENABLED }}
+      PISTON_URL: ${{ vars.PISTON_URL }}
     steps:
       - uses: actions/checkout@v4
 

@@ -39,9 +39,12 @@ env:
     - LLM_API_KEY
     - LLM_BASE_URL
     - LLM_MODEL
+    - LLM_STREAM
     - CREATOR_GITHUB_ID
     - RESEND_API_KEY
     - RESEND_FROM_EMAIL
+    - CODE_EXECUTION_ENABLED
+    - PISTON_URL
 
 builder:
   context: .
