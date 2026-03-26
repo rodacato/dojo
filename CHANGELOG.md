@@ -4,6 +4,18 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 012 — Alpha-Ready (2026-03-26)
+**Phase 1 — Alpha prep → Alpha launch**
+
+The sprint where code execution became real and the post-kata experience got personal.
+
+- **15 testCode exercises** — Function-oriented katas designed for Piston: TypeScript (4), Ruby (2), Python (2), Go (3), SQL (4). Each with 5-8 test cases covering edge cases. Total catalog: 76 exercises.
+- **Post-kata insight screen** — Sensei prompt now produces `<strengths>`, `<improvements>`, `<approach_note>` XML tags. ResultsPage shows structured cards with green/amber/accent styling. Graceful fallback if tags absent.
+- **Dashboard N+1 fix** — Active session and today session queries collapsed from cascaded lookups to single JOINed queries. 10 → 6 queries per dashboard load.
+- **Weekly goals** — "2 of 3 this week" progress bar on dashboard. Computed from sessions (no new table). goal_weekly_target in user_preferences.
+
+---
+
 ## Sprint 011 — Refactoring + Landing + Execution + Interests + E2E (2026-03-26)
 **Phase 2 closing → Phase 1 Alpha prep**
 

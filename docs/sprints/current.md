@@ -11,42 +11,42 @@
 
 ## Part 1 — 15 Code Exercises with testCode (P0)
 
-- [ ] Design + implement 15 function-oriented exercises with testCode
+- [x] Design + implement 15 function-oriented exercises with testCode
   - TypeScript (4): flatten arrays, retry with backoff, groupBy, debounce
   - Ruby (2): FizzBuzz without conditionals, validate JSON schema
   - Python (2): parse CSV, matrix rotation
   - Go (3): bounded worker pool, LRU cache, error type hierarchy
   - SQL (4): rank by dept salary, find churned users, recursive CTE org chart, CTE refactor
-- [ ] Verify each exercise runs through Piston end-to-end
-- [ ] Verify sensei receives and cites execution results
+- [ ] Verify each exercise runs through Piston end-to-end (requires Piston running)
+- [ ] Verify sensei receives and cites execution results (requires LLM)
 
 ---
 
 ## Part 2 — Post-Kata Insight Screen (P0)
 
-- [ ] Update sensei prompt to include XML tags: `<strengths>`, `<improvements>`, `<approach_note>`
-- [ ] Parse XML tags from evaluation stream (with fallback to raw prose)
-- [ ] Enhance ResultsPage with structured insight sections (strengths → improvements → approach note)
-- [ ] Update share card to use approach_note as hook
-- [ ] Update EvaluationResult types in shared package
+- [x] Update sensei prompt to include XML tags: `<strengths>`, `<improvements>`, `<approach_note>`
+- [x] Parse XML tags from evaluation stream (parse-insight.ts with fallback)
+- [x] Enhance ResultsPage with InsightCards (strengths → improvements → approach note)
+- [ ] Update share card to use approach_note as hook (deferred — needs real data to test)
+- [ ] Update EvaluationResult types in shared package (deferred — insight parsed client-side)
 
 ---
 
 ## Part 3 — Dashboard N+1 Fix (P0)
 
-- [ ] Rewrite dashboard query using Drizzle relational joins (5-6 queries → 1-2)
-- [ ] EXPLAIN ANALYZE verification
-- [ ] Benchmark: <200ms with 50+ sessions
+- [x] Rewrite dashboard active session + today session queries (10 → 6 queries via JOINs)
+- [ ] EXPLAIN ANALYZE verification (requires production data)
+- [ ] Benchmark: <200ms with 50+ sessions (requires production data)
 
 ---
 
 ## Part 4 — Weekly Goals (P1)
 
-- [ ] Add `goal_weekly_target` (integer, default 3) to user_preferences
-- [ ] Migration for new column
-- [ ] Dashboard: compute completed sessions this week vs target
-- [ ] Frontend: progress bar below streak card ("2 of 3 this week")
-- [ ] Include in GET /preferences and PUT /preferences
+- [x] Add `goal_weekly_target` (integer, default 3) to user_preferences
+- [x] Migration 0010 for new column
+- [x] Dashboard: compute completed sessions this week vs target
+- [x] Frontend: progress bar with dots below streak card
+- [ ] Include in GET/PUT /preferences (allow users to change target)
 
 ---
 

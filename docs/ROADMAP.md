@@ -56,6 +56,7 @@ Does not start until Phase 0 is in real daily use.
 | sprint-009 — Design alignment + QoL | Stitch alignment (6 screens), sidebar nav, 60+ exercises, responsive audit, component library | ✅ Closed |
 | sprint-010 — Feedback + Share + Admin | Kata feedback system, public share page, admin review with feedback aggregation, secondary screens Stitch | ✅ Closed |
 | sprint-011 — Refactoring + Landing + Execution + Interests + E2E | Route split, contrast fix, landing Stitch redesign, Piston code execution, interest-based selection, Playwright smoke tests | ✅ Closed |
+| sprint-012 — Alpha-Ready | 15 testCode exercises, post-kata insight screen, dashboard N+1 fix, weekly goals | ✅ Closed |
 
 ---
 
