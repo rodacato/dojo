@@ -82,32 +82,33 @@
 ## Part 3 — Interest-Based Kata Selection
 
 ### DB + Domain
-- [ ] Migration: user_preferences table (user_id, level, interests, randomness)
-- [ ] UserPreferences value object in domain/identity/
-- [ ] Extend ExerciseFilters with userLevel, interests, randomness
+- [x] Migration 0008: user_preferences table (level, interests[], randomness)
+- [x] Drizzle schema + relations
+- [x] ExerciseFilters extended with userLevel, interests, randomness
 
 ### API + Repository
-- [ ] PostgresPreferencesRepository
-- [ ] Extend GET/PUT /preferences endpoints
-- [ ] Modify findEligible with weighted ordering query
+- [x] findEligible with weighted ORDER BY (interest + level preference, controlled by randomness)
+- [x] GET/PUT /preferences extended with level, interests, randomness
+- [x] GetExerciseOptions fetches preferences before querying
 
 ### Frontend
-- [ ] DayStart: optional "Customize" step (level + interests + randomness) per Soren
-- [ ] API client methods
+- [x] DayStart: expandable "Customize your practice" (level, interest chips, randomness slider)
+- [x] API client updated
 
 ### Tests
-- [ ] Update GetExerciseOptions.test.ts
+- [x] GetExerciseOptions.test.ts updated with DB mock
 
 ---
 
 ## Part 6 — E2E Smoke Tests + CI
 
-- [ ] Playwright setup in apps/e2e/
-- [ ] landing.spec.ts — hero visible, nav, access form
-- [ ] auth-redirect.spec.ts — /dashboard without auth → redirect
-- [ ] dashboard.spec.ts — with mocked auth
-- [ ] kata-flow.spec.ts — mood/duration → /kata navigation
-- [ ] CI: add e2e job in parallel
+- [x] Playwright setup in apps/e2e/ (workspace, tsconfig, playwright.config with webServer)
+- [x] landing.spec.ts — hero headline, request access link, footer
+- [x] auth-redirect.spec.ts — /dashboard without auth → redirect to /
+- [x] dashboard.spec.ts — mocked auth + dashboard data, verifies streak
+- [x] kata-flow.spec.ts — mocked auth, mood/duration selection, submit enabled
+- [x] CI: e2e job in parallel with existing ci job
+- [x] turbo.json: @dojo/e2e#test task (cache: false)
 
 ---
 

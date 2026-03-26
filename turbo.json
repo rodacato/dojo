@@ -21,6 +21,11 @@
       "outputs": ["coverage/**"],
       "inputs": ["src/**/*.ts", "vitest.config.ts"]
     },
+    "@dojo/e2e#test": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "inputs": ["tests/**/*.ts", "playwright.config.ts"]
+    },
     "clean": {
       "cache": false
     }
