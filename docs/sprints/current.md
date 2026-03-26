@@ -112,14 +112,43 @@
 
 ---
 
+---
+
+## Part 7 — Pre-Launch Hardening (per expert audit)
+
+### Domain purity
+- [x] Refactor GetExerciseOptions — UserPreferencesPort + PostgresPreferencesRepository, zero infra imports
+- [ ] Move timer enforcement to Session.isExpired() domain method (deferred — low risk)
+
+### Database performance
+- [ ] Fix dashboard N+1 queries (deferred — needs Drizzle relational rewrite, medium effort)
+- [x] Add DB indexes: sessions(user_id, status), attempts(session_id, submitted_at), exercises(status), kata_feedback(exercise_id)
+- [x] Configure connection pool (max: 20, idle: 20s, max_lifetime: 30min)
+
+### Test coverage (critical paths)
+- [x] ExecutionQueue tests: concurrency limit, FIFO order, queue timeout, depth reporting (5 tests)
+- [x] PistonAdapter tests: unsupported lang, success, compile error, SIGKILL timeout, HTTP error, network failure, SQL (7 tests)
+- [ ] WebSocket handler tests (deferred — requires WS test harness, highest effort)
+- [x] GetExerciseOptions.test.ts: proper port mocks, preference merging, override behavior (4 tests)
+
+### Error handling
+- [x] WS onError: log user ID + session ID + event before closing
+- [x] LLM stream error: persist partial tokens from cache (not empty string), log error context
+- [x] Error message to client stays generic (no detail leak per Marta)
+
+---
+
 ## Deferred to Sprint 012
 
 - Part 4: Exercise Proposals (Phase 3) — needs users generating feedback first
 - Frontend execution (iframe/Sandpack for HTML/CSS/React katas)
 - Guided courses mode
+- API client split into modules
+- Route file further split (feedback.ts, preferences.ts)
 
 ---
 
 ## Carried
 
 - Landing page terminal demo with real kata evaluation (per Amara)
+- Seed testCode for existing exercises (needs new test-friendly exercise design)

@@ -108,7 +108,8 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
           activeConnections.delete(user.id)
         },
 
-        onError(_evt: unknown, ws: WSInstance) {
+        onError(evt: unknown, ws: WSInstance) {
+          console.error('WebSocket error for user', user.id, 'session', session.id, evt)
           activeConnections.delete(user.id)
           ws.close(1011, 'Internal error')
         },
@@ -200,13 +201,17 @@ async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string
         if (cache.isFinal) ws.close(1000, 'Evaluation complete')
       }
     }
-  } catch {
-    // Persist the attempt without evaluation so retry can find it
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : 'Unknown LLM error'
+    const partialTokens = cache.tokens.join('')
+    console.error('LLM stream error for session', pending.sessionId, ':', errorMsg)
+
+    // Persist the attempt with partial stream so retry can find it
     await db.insert(attemptsTable).values({
       id: attemptId,
       sessionId: pending.sessionId,
       userResponse: pending.userResponse,
-      llmResponse: '',
+      llmResponse: partialTokens || JSON.stringify({ error: errorMsg }),
       isFinalEvaluation: false,
       submittedAt: new Date(),
     }).onConflictDoNothing()

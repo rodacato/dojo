@@ -16,6 +16,7 @@ import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
 import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
 import { registerBadgeHandlers } from './events/BadgeEventHandler'
+import { PostgresPreferencesRepository } from './persistence/PostgresPreferencesRepository'
 import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
 import { ExecutionQueue } from './execution/ExecutionQueue'
@@ -24,6 +25,7 @@ import type { CodeExecutionPort, LLMPort } from '../domain/practice/ports'
 const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
 const userRepo = new PostgresUserRepository(db)
+const preferencesRepo = new PostgresPreferencesRepository(db)
 
 function createLLMAdapter(): LLMPort {
   switch (config.LLM_ADAPTER_FORMAT) {
@@ -57,7 +59,7 @@ export const useCases = {
   startSession: new StartSession({ exerciseRepo, sessionRepo, eventBus }),
   generateSessionBody: new GenerateSessionBody({ exerciseRepo, sessionRepo, llm }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
-  getExerciseOptions: new GetExerciseOptions({ exerciseRepo }),
+  getExerciseOptions: new GetExerciseOptions({ exerciseRepo, preferencesRepo }),
   getExerciseById: new GetExerciseById({ exerciseRepo }),
   createExercise: new CreateExercise({ exerciseRepo }),
   getSession: new GetSession({ sessionRepo }),

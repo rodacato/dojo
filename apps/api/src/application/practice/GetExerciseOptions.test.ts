@@ -1,18 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Exercise } from '../../domain/content/exercise'
 import { UserId } from '../../domain/shared/types'
-
-// Mock the db module before importing GetExerciseOptions
-vi.mock('../../infrastructure/persistence/drizzle/client', () => ({
-  db: {
-    query: {
-      userPreferences: {
-        findFirst: vi.fn().mockResolvedValue(null),
-      },
-    },
-  },
-}))
-
 import { GetExerciseOptions } from './GetExerciseOptions'
 
 const makeExercise = (title: string) =>
@@ -30,36 +18,74 @@ const makeExercise = (title: string) =>
     variations: [{ ownerRole: 'Tech Lead', ownerContext: 'Startup context' }],
   })
 
+function makeDeps(overrides?: { prefs?: { level: 'junior' | 'mid' | 'senior'; interests: string[]; randomness: number } | null }) {
+  const exerciseRepo = {
+    findEligible: vi.fn().mockResolvedValue([makeExercise('Ex 1'), makeExercise('Ex 2')]),
+    findById: vi.fn(),
+    save: vi.fn(),
+  }
+  const preferencesRepo = {
+    findByUserId: vi.fn().mockResolvedValue(overrides?.prefs ?? null),
+  }
+  return { exerciseRepo, preferencesRepo }
+}
+
 describe('GetExerciseOptions', () => {
   it('returns exercises from repository', async () => {
-    const exercises = [makeExercise('Ex 1'), makeExercise('Ex 2')]
-    const exerciseRepo = {
-      findEligible: vi.fn().mockResolvedValue(exercises),
-      findById: vi.fn(),
-      save: vi.fn(),
-    }
-
-    const useCase = new GetExerciseOptions({ exerciseRepo })
+    const deps = makeDeps()
+    const useCase = new GetExerciseOptions(deps)
     const result = await useCase.execute({
       userId: UserId('user-1'),
       filters: { mood: 'focused', maxDuration: 30 },
     })
 
     expect(result).toHaveLength(2)
-    expect(exerciseRepo.findEligible).toHaveBeenCalledWith(UserId('user-1'), {
+    expect(deps.preferencesRepo.findByUserId).toHaveBeenCalledWith(UserId('user-1'))
+    expect(deps.exerciseRepo.findEligible).toHaveBeenCalledWith(UserId('user-1'), {
       mood: 'focused',
       maxDuration: 30,
     })
   })
 
-  it('returns empty array when no exercises match', async () => {
-    const exerciseRepo = {
-      findEligible: vi.fn().mockResolvedValue([]),
-      findById: vi.fn(),
-      save: vi.fn(),
-    }
+  it('merges user preferences into filters', async () => {
+    const deps = makeDeps({
+      prefs: { level: 'senior', interests: ['backend', 'security'], randomness: 0.2 },
+    })
+    const useCase = new GetExerciseOptions(deps)
+    await useCase.execute({
+      userId: UserId('user-1'),
+      filters: { mood: 'focused' },
+    })
 
-    const useCase = new GetExerciseOptions({ exerciseRepo })
+    expect(deps.exerciseRepo.findEligible).toHaveBeenCalledWith(UserId('user-1'), {
+      mood: 'focused',
+      userLevel: 'senior',
+      interests: ['backend', 'security'],
+      randomness: 0.2,
+    })
+  })
+
+  it('filter params override preferences', async () => {
+    const deps = makeDeps({
+      prefs: { level: 'junior', interests: ['frontend'], randomness: 0.5 },
+    })
+    const useCase = new GetExerciseOptions(deps)
+    await useCase.execute({
+      userId: UserId('user-1'),
+      filters: { userLevel: 'senior', interests: ['backend'], randomness: 0.1 },
+    })
+
+    expect(deps.exerciseRepo.findEligible).toHaveBeenCalledWith(UserId('user-1'), {
+      userLevel: 'senior',
+      interests: ['backend'],
+      randomness: 0.1,
+    })
+  })
+
+  it('returns empty array when no exercises match', async () => {
+    const deps = makeDeps()
+    deps.exerciseRepo.findEligible.mockResolvedValue([])
+    const useCase = new GetExerciseOptions(deps)
     const result = await useCase.execute({
       userId: UserId('user-1'),
       filters: {},
