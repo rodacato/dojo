@@ -28,12 +28,19 @@ function useRotatingMessage(messages: string[], intervalMs = 3500) {
   return msg
 }
 
+interface Exchange {
+  tokens: string
+  result: EvaluationResult
+  userAnswer: string
+}
+
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<SessionWithExercise | null>(null)
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
+  const [history, setHistory] = useState<Exchange[]>([])
   const { state, connect, submit } = useEvaluationStream(sessionId!)
   const scrollRef = useRef<HTMLDivElement>(null)
   const evalMessage = useRotatingMessage(EVAL_MESSAGES)
@@ -64,8 +71,13 @@ export function SenseiEvalPage() {
 
   async function handleFollowUp() {
     if (!sessionId || !followUpText.trim() || followUpSubmitting) return
+    const answer = followUpText.trim()
     setFollowUpSubmitting(true)
-    const { attemptId } = await api.submitAttempt(sessionId, followUpText)
+    // Preserve current exchange in history before resetting stream state
+    if (result) {
+      setHistory((prev) => [...prev, { tokens, result, userAnswer: answer }])
+    }
+    const { attemptId } = await api.submitAttempt(sessionId, answer)
     setFollowUpText('')
     setFollowUpSubmitting(false)
     submit(attemptId)
@@ -77,11 +89,12 @@ export function SenseiEvalPage() {
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
   const senseiInitials = session?.ownerRole?.split(' ').map(w => w[0]).slice(0, 2).join('') ?? 'S'
   const revealedTokens = useTypingReveal(tokens, !isStreaming)
-  const isWaiting = state.status === 'idle' || state.status === 'connecting' || state.status === 'ready' || (isStreaming && !tokens)
+  const isLoadingStream = state.status === 'idle' || state.status === 'connecting' || state.status === 'ready' || (isStreaming && !tokens)
+  const isWaiting = isLoadingStream && history.length === 0
 
   return (
     <div className="h-screen bg-base flex flex-col">
-      {/* Top bar — hidden during loading */}
+      {/* Top bar — hidden during initial loading */}
       {session && !isWaiting && (
         <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">
           <div className="flex items-center gap-3">
@@ -124,8 +137,72 @@ export function SenseiEvalPage() {
           </div>
         )}
 
+        {/* Previous exchanges */}
+        {history.map((exchange, i) => (
+          <div key={i}>
+            {/* Sensei message */}
+            <div className="flex gap-3 mb-6">
+              <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
+                {senseiInitials}
+              </div>
+              <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
+                <StreamingText text={exchange.tokens} done className="text-secondary text-sm font-sans leading-relaxed" />
+              </div>
+            </div>
+            {/* Verdict */}
+            <div className="flex gap-3 mb-6">
+              <div className="w-8 shrink-0" />
+              <div className="flex-1 min-w-0 p-4 bg-surface border border-border rounded-md">
+                <VerdictBadge verdict={exchange.result.verdict} />
+                {exchange.result.topicsToReview.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">Review</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {exchange.result.topicsToReview.map((t) => (
+                        <span key={t} className="text-warning text-xs font-mono px-2 py-0.5 border border-warning/30 rounded-sm">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Follow-up question */}
+            {exchange.result.followUpQuestion && (
+              <div className="flex gap-3 mb-6">
+                <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
+                  {senseiInitials}
+                </div>
+                <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent/40 rounded-md">
+                  <p className="text-secondary text-sm font-sans">{exchange.result.followUpQuestion}</p>
+                </div>
+              </div>
+            )}
+            {/* User answer */}
+            <div className="flex gap-3 mb-6 justify-end">
+              <div className="max-w-[80%] p-4 bg-accent/10 border border-accent/20 rounded-md">
+                <p className="text-secondary text-sm font-sans">{exchange.userAnswer}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Inline loading for follow-up */}
+        {isLoadingStream && history.length > 0 && (
+          <div className="flex gap-3 mb-6">
+            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
+              {senseiInitials}
+            </div>
+            <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
+              <div className="flex items-center gap-3">
+                <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                <p className="font-mono text-secondary text-xs animate-pulse">{evalMessage}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Sensei streaming message */}
-        {(revealedTokens || isStreaming) && (
+        {!isWaiting && !isLoadingStream && (revealedTokens || isStreaming) && (
           <div className="flex gap-3 mb-6">
             <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
               {senseiInitials}
@@ -210,7 +287,7 @@ export function SenseiEvalPage() {
         )}
       </div>
 
-      {/* Bottom input — hidden during loading */}
+      {/* Bottom input — hidden during initial loading */}
       {!isWaiting && <div className="shrink-0 border-t border-border/40 bg-surface/50 px-4 py-3">
         <div className="max-w-3xl mx-auto">
           {result && !result.isFinalEvaluation && result.followUpQuestion ? (
