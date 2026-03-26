@@ -73,29 +73,31 @@
 ## Part 4 — Secondary Screens Stitch Alignment
 
 ### Login Page (`/login`)
-- [ ] Card-centered layout with `dojo_` logo + blinking cursor
-- [ ] Tagline: "The dojo for developers who still have something to prove. To themselves."
-- [ ] Single GitHub OAuth CTA: "Enter the dojo."
-- [ ] Footer: "No account needed. Login with GitHub." muted
+- [x] Card-centered layout with `dojo_` logo + blinking cursor + watermark bg
+- [x] Tagline: "The dojo for developers who still have something to prove. To themselves."
+- [x] Single GitHub OAuth CTA: "Enter the dojo." accent style
+- [x] Footer: "No account needed. Login with GitHub." muted
 
 ### Badges Page (`/badges`)
-- [ ] 3-column grid (2 on mobile): earned (full color + glow) vs locked (muted)
-- [ ] Filter: "All" | "Earned" | "Locked" group buttons
-- [ ] Prestige badge: full-width card with accent glow
-- [ ] Category labels: Practice / Consistency / Mastery
-- [ ] Header count: "4 of 10 earned"
+- [x] 2-col mobile / 3-col desktop grid: earned (glow) vs locked (muted)
+- [x] Filter: "All" | "Earned" | "Locked" group buttons
+- [x] Prestige badges: full-width card with accent glow
+- [x] Category section labels: Practice / Consistency / Mastery
+- [x] Header count: "4 of 10 earned"
+- [x] Removed redundant nav header (AppShell handles navigation)
 
 ### Leaderboard (`/leaderboard`)
-- [ ] Top 3 ranks with accent color
-- [ ] Current user row highlighted
-- [ ] Footer: "Ranking resets on the 1st. Consistency compounds."
+- [x] Top 3 ranks with accent color
+- [x] Current user row highlighted
+- [x] Footer: "Ranking resets on the 1st. Consistency compounds."
+- [x] Removed redundant nav header (AppShell handles navigation)
 
 ### Public Profile (`/u/:username`)
-- [ ] Avatar (rounded-md, not circular) + username + member since
-- [ ] Streak badge top-right
-- [ ] 4 stat cards
-- [ ] 90-day heatmap
-- [ ] Earned badges section
+- [x] Avatar (rounded-md) + username + member since
+- [x] Streak in accent-bordered card
+- [x] 4 stat cards
+- [x] 90-day heatmap
+- [x] Earned badges section
 
 ---
 

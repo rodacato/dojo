@@ -93,8 +93,8 @@ export function PublicProfilePage() {
               </p>
             </div>
           </div>
-          <div className="text-right">
-            <span className="font-mono text-3xl text-primary">{profile.streak}</span>
+          <div className="bg-surface border border-accent/30 rounded-md px-5 py-3 text-right">
+            <span className="font-mono text-3xl text-accent">{profile.streak}</span>
             <p className="text-muted text-xs font-mono">day streak</p>
           </div>
         </div>

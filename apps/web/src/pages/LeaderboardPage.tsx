@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, type LeaderboardEntry } from '../lib/api'
-import { LogoWordmark } from '../components/Logo'
 import { PageLoader } from '../components/PageLoader'
 
 export function LeaderboardPage() {
@@ -19,16 +18,6 @@ export function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-base px-4 py-8 max-w-3xl mx-auto">
-      <header className="flex items-center justify-between mb-10">
-        <LogoWordmark />
-        <Link
-          to="/dashboard"
-          className="text-secondary text-sm font-mono hover:text-primary transition-colors"
-        >
-          ← Dashboard
-        </Link>
-      </header>
-
       <div className="mb-8">
         <h1 className="font-mono text-2xl text-primary mb-1">Leaderboard</h1>
         <p className="text-muted text-sm">Ranked by consistency, not score.</p>

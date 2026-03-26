@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
-import { LogoWordmark } from '../components/Logo'
 import { PageLoader } from '../components/PageLoader'
 import { useAuth } from '../context/AuthContext'
 
@@ -65,21 +63,8 @@ export function BadgesPage() {
         ? badges.filter((b) => !b.earned)
         : badges
 
-  const regular = filtered.filter((b) => !b.isPrestige)
-  const prestige = filtered.filter((b) => b.isPrestige)
-
   return (
     <div className="min-h-screen bg-base px-4 py-8 max-w-3xl mx-auto">
-      <header className="flex items-center justify-between mb-10">
-        <LogoWordmark />
-        <Link
-          to="/dashboard"
-          className="text-secondary text-sm font-mono hover:text-primary transition-colors"
-        >
-          ← Dashboard
-        </Link>
-      </header>
-
       <div className="flex items-start justify-between mb-8">
         <div>
           <h1 className="font-mono text-2xl text-primary mb-1">Badges</h1>
@@ -104,21 +89,32 @@ export function BadgesPage() {
         </div>
       </div>
 
-      {/* Regular badges */}
-      <div className="grid sm:grid-cols-3 gap-4 mb-8">
-        {regular.map((badge) => (
-          <BadgeCard key={badge.slug} badge={badge} />
-        ))}
-      </div>
-
-      {/* Prestige badges */}
-      {prestige.length > 0 && (
-        <div className="space-y-4">
-          {prestige.map((badge) => (
-            <PrestigeBadgeCard key={badge.slug} badge={badge} />
-          ))}
-        </div>
-      )}
+      {/* Badges grouped by category */}
+      {(['practice', 'consistency', 'mastery'] as const).map((cat) => {
+        const catBadges = filtered.filter((b) => b.category === cat)
+        if (catBadges.length === 0) return null
+        const catRegular = catBadges.filter((b) => !b.isPrestige)
+        const catPrestige = catBadges.filter((b) => b.isPrestige)
+        return (
+          <div key={cat} className="mb-8">
+            <h2 className="text-muted text-[10px] font-mono uppercase tracking-widest mb-3">{cat}</h2>
+            {catRegular.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
+                {catRegular.map((badge) => (
+                  <BadgeCard key={badge.slug} badge={badge} />
+                ))}
+              </div>
+            )}
+            {catPrestige.length > 0 && (
+              <div className="space-y-4">
+                {catPrestige.map((badge) => (
+                  <PrestigeBadgeCard key={badge.slug} badge={badge} />
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
 
       <p className="text-center text-muted/40 text-xs font-mono mt-12">
         Badges are earned in the dojo. There are no shortcuts.
