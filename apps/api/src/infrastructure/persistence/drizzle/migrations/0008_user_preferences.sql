@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS user_preferences (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  level VARCHAR(20) NOT NULL DEFAULT 'mid',
+  interests TEXT[] NOT NULL DEFAULT '{}',
+  randomness REAL NOT NULL DEFAULT 0.3,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

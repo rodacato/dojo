@@ -24,6 +24,32 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
       ? sql`AND e.duration <= ${filters.maxDuration}`
       : sql``
 
+    // Interest-based ordering: weight exercises matching user interests
+    const randomness = filters.randomness ?? 1.0
+    const focusWeight = 1 - randomness
+
+    const interestClause = filters.interests && filters.interests.length > 0
+      ? sql`CASE WHEN e.category = ANY(${filters.interests}) THEN ${focusWeight} ELSE 0 END`
+      : sql`0`
+
+    // Level-based ordering: prefer matching difficulty
+    const levelClause = filters.userLevel
+      ? (() => {
+          switch (filters.userLevel) {
+            case 'junior':
+              return sql`CASE WHEN e.difficulty IN ('easy', 'medium') THEN ${focusWeight} ELSE 0 END`
+            case 'mid':
+              return sql`CASE WHEN e.difficulty IN ('medium', 'hard') THEN ${focusWeight} ELSE 0 END`
+            case 'senior':
+              return sql`CASE WHEN e.difficulty = 'hard' THEN ${focusWeight} ELSE 0 END`
+            default:
+              return sql`0`
+          }
+        })()
+      : sql`0`
+
+    const orderClause = sql`(${interestClause} + ${levelClause}) DESC, RANDOM()`
+
     const rows = await this.db.execute<{
       id: string
       title: string
@@ -60,7 +86,7 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
             AND started_at > NOW() - INTERVAL '6 months'
         )
         ${maxDurationClause}
-      ORDER BY RANDOM()
+      ORDER BY ${orderClause}
       LIMIT 3
     `)
 
@@ -83,7 +109,7 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
         JOIN variations v ON v.exercise_id = e.id
         WHERE e.status = 'published'
           ${maxDurationClause}
-        ORDER BY RANDOM()
+        ORDER BY ${orderClause}
         LIMIT 3
       `)
       return this.groupRowsToExercises(fallbackRows)

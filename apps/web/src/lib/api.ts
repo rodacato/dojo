@@ -251,9 +251,23 @@ export const api = {
     }),
 
   getPreferences: () =>
-    request<{ reminderEnabled: boolean; reminderHour: number; email: string | null }>('/preferences'),
+    request<{
+      reminderEnabled: boolean
+      reminderHour: number
+      email: string | null
+      level: string
+      interests: string[]
+      randomness: number
+    }>('/preferences'),
 
-  updatePreferences: (prefs: { reminderEnabled: boolean; reminderHour: number; email?: string | null }) =>
+  updatePreferences: (prefs: {
+    reminderEnabled: boolean
+    reminderHour: number
+    email?: string | null
+    level?: string
+    interests?: string[]
+    randomness?: number
+  }) =>
     request<{ ok: boolean }>('/preferences', {
       method: 'PUT',
       body: JSON.stringify(prefs),

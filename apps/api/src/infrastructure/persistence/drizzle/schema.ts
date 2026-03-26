@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { boolean, integer, jsonb, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, integer, jsonb, pgTable, real, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -157,6 +157,19 @@ export const kataFeedbackRelations = relations(kataFeedback, ({ one }) => ({
   exercise: one(exercises, { fields: [kataFeedback.exerciseId], references: [exercises.id] }),
   variation: one(variations, { fields: [kataFeedback.variationId], references: [variations.id] }),
   user: one(users, { fields: [kataFeedback.userId], references: [users.id] }),
+}))
+
+export const userPreferences = pgTable('user_preferences', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().unique().references(() => users.id, { onDelete: 'cascade' }),
+  level: varchar('level', { length: 20 }).notNull().default('mid'),
+  interests: text('interests').array().notNull().default([]),
+  randomness: real('randomness').notNull().default(0.3),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
+
+export const userPreferencesRelations = relations(userPreferences, ({ one }) => ({
+  user: one(users, { fields: [userPreferences.userId], references: [users.id] }),
 }))
 
 export const userSessions = pgTable('user_sessions', {

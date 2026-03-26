@@ -75,6 +75,8 @@ export const feedbackSubmitSchema = z.object({
   note: z.string().max(280).nullable().default(null),
 })
 
+export const userLevelSchema = z.enum(['junior', 'mid', 'senior'])
+
 // Shared filter schema — used by both API (query param parsing) and frontend (form state)
 export const exerciseFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),

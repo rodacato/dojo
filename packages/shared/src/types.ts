@@ -19,6 +19,7 @@ export type ExerciseType = 'code' | 'chat' | 'whiteboard'
 export type ExerciseStatus = 'draft' | 'published' | 'archived'
 export type SessionStatus = 'active' | 'completed' | 'failed'
 export type Verdict = 'passed' | 'passed_with_notes' | 'needs_work'
+export type UserLevel = 'junior' | 'mid' | 'senior'
 
 export type ClaritySignal = 'clear' | 'somewhat_unclear' | 'confusing'
 export type TimingSignal = 'too_short' | 'about_right' | 'too_long'

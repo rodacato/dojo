@@ -1,6 +1,18 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Exercise } from '../../domain/content/exercise'
 import { UserId } from '../../domain/shared/types'
+
+// Mock the db module before importing GetExerciseOptions
+vi.mock('../../infrastructure/persistence/drizzle/client', () => ({
+  db: {
+    query: {
+      userPreferences: {
+        findFirst: vi.fn().mockResolvedValue(null),
+      },
+    },
+  },
+}))
+
 import { GetExerciseOptions } from './GetExerciseOptions'
 
 const makeExercise = (title: string) =>
