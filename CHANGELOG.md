@@ -15,6 +15,7 @@ The sprint where the codebase got cleaned up, the landing page got rewritten for
 - **Sandboxed code execution (Piston)** — ADR 014. CodeExecutionPort with PistonAdapter + MockExecutionAdapter. ExecutionQueue with concurrency limit. WS messages `executing` and `execution_result`. Sensei receives test results as factual evidence (4 prompt variants). Frontend shows results before sensei streaming.
 - **Interest-based kata selection** — user_preferences table (level, interests, randomness). Weighted exercise ordering: interests affect category preference, level affects difficulty, randomness controls the mix. DayStart "Customize your practice" panel.
 - **E2E smoke tests** — Playwright setup with 4 tests (landing, auth redirect, dashboard, kata flow). API mocked with page.route(). CI job runs in parallel.
+- **Pre-launch hardening** — GetExerciseOptions domain violation fixed (UserPreferencesPort), 5 DB performance indexes, connection pool (max 20), 14 new tests (ExecutionQueue, PistonAdapter, GetExerciseOptions), WS error logging + partial stream persistence.
 
 ---
 
