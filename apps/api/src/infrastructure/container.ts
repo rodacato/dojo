@@ -16,7 +16,10 @@ import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
 import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
 import { registerBadgeHandlers } from './events/BadgeEventHandler'
-import type { LLMPort } from '../domain/practice/ports'
+import { PistonAdapter } from './execution/PistonAdapter'
+import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
+import { ExecutionQueue } from './execution/ExecutionQueue'
+import type { CodeExecutionPort, LLMPort } from '../domain/practice/ports'
 
 const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
@@ -34,6 +37,16 @@ function createLLMAdapter(): LLMPort {
 }
 
 const llm = createLLMAdapter()
+
+function createExecutionAdapter(): CodeExecutionPort {
+  if (config.CODE_EXECUTION_ENABLED) return new PistonAdapter()
+  return new MockExecutionAdapter()
+}
+
+export const executionQueue = new ExecutionQueue(
+  createExecutionAdapter(),
+  config.PISTON_MAX_CONCURRENT,
+)
 
 export const eventBus = new InMemoryEventBus()
 

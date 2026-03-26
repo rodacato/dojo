@@ -5,7 +5,8 @@
   "workspaceFolder": "/workspaces/dojo",
   "runServices": [
     "workspace",
-    "db"
+    "db",
+    "piston"
   ],
   "features": {
     "ghcr.io/devcontainers/features/node:1": {

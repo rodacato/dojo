@@ -2,10 +2,11 @@ import { and, eq, gt } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { db } from '../../persistence/drizzle/client'
 import { attempts as attemptsTable, userSessions } from '../../persistence/drizzle/schema'
-import { useCases } from '../../container'
+import { useCases, executionQueue } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
 import type { EvaluationResult } from '../../../domain/practice/values'
+import type { ExecutionResult } from '../../../domain/practice/ports'
 import type { UpgradeWebSocket } from '../ws-adapter'
 
 // ── Concurrent connection limit ───────────────────────────────────────────────
@@ -33,6 +34,8 @@ type ClientMessage = { type: 'submit'; attemptId: string } | { type: 'reconnect'
 
 type ServerMessage =
   | { type: 'ready' }
+  | { type: 'executing' }
+  | { type: 'execution_result'; result: ExecutionResult }
   | { type: 'token'; content: string }
   | { type: 'evaluation'; result: EvaluationResult }
   | { type: 'complete'; isFinal: boolean }
@@ -145,12 +148,41 @@ async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string
 
   pendingAttempts.delete(attemptId)
 
+  // ── Code execution (if exercise has testCode) ──────────────────────────────
+  let executionContext: string | undefined
+  const testCode = exercise?.testCode
+  if (testCode && pending.userResponse.trim()) {
+    send(ws, { type: 'executing' })
+    try {
+      const execResult = await executionQueue.enqueue({
+        language: exercise?.languages?.[0] ?? 'javascript',
+        code: pending.userResponse,
+        testCode,
+      })
+      send(ws, { type: 'execution_result', result: execResult })
+
+      // Build context string for the sensei
+      if (execResult.exitCode === 0) {
+        executionContext = `## Test Results\nAll tests passed.\nExit code: 0 | Execution time: ${execResult.executionTimeMs}ms\n\nFocus your evaluation on code quality, not correctness.`
+      } else if (execResult.timedOut) {
+        executionContext = `## Test Results\nExecution timed out.\n\nEvaluate the attempt and consider why it might hang or loop infinitely.`
+      } else if (execResult.stderr && !execResult.stdout) {
+        executionContext = `## Test Results\nCode did not compile or crashed.\nError: ${execResult.stderr.slice(0, 500)}\n\nEvaluate the attempt and the error.`
+      } else {
+        executionContext = `## Test Results\nSome tests failed.\nstdout: ${execResult.stdout.slice(0, 500)}\nstderr: ${execResult.stderr.slice(0, 300)}\nExit code: ${execResult.exitCode} | Execution time: ${execResult.executionTimeMs}ms\n\nFocus on WHY the failing tests fail.`
+      }
+    } catch (err) {
+      console.warn('Code execution failed, continuing without results:', err)
+    }
+  }
+
   try {
     for await (const token of useCases.submitAttempt.execute({
       sessionId: SessionId(pending.sessionId),
       userResponse: pending.userResponse,
       ownerRole: variation?.ownerRole ?? '',
       ownerContext: variation?.ownerContext ?? '',
+      executionContext,
     })) {
       if (token.chunk) {
         send(ws, { type: 'token', content: token.chunk })

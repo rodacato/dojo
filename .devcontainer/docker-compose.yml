@@ -19,5 +19,13 @@ services:
     ports:
       - "5432:5432"
 
+  piston:
+    image: ghcr.io/engineer-man/piston
+    restart: unless-stopped
+    tmpfs:
+      - /piston/jobs:exec,size=256m
+    ports:
+      - "2000:2000"
+
 volumes:
   postgres-data:

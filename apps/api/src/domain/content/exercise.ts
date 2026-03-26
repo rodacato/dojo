@@ -24,6 +24,7 @@ export interface ExerciseProps {
   languages: string[]
   tags: string[]
   topics: string[]
+  testCode: string | null
   variations: Variation[]
   version: number
   adminNotes: string | null
@@ -43,6 +44,7 @@ export class Exercise {
   readonly languages: string[]
   readonly tags: string[]
   readonly topics: string[]
+  readonly testCode: string | null
   readonly variations: Variation[]
   readonly version: number
   readonly adminNotes: string | null
@@ -64,6 +66,7 @@ export class Exercise {
     this.languages = props.languages
     this.tags = props.tags
     this.topics = props.topics
+    this.testCode = props.testCode
     this.variations = props.variations
     this.version = props.version
     this.adminNotes = props.adminNotes
@@ -110,6 +113,7 @@ export class Exercise {
       languages: params.languages,
       tags: params.tags,
       topics: params.topics,
+      testCode: null,
       variations,
       version: 1,
       adminNotes: null,

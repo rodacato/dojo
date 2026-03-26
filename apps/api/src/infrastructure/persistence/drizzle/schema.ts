@@ -26,6 +26,7 @@ export const exercises = pgTable('exercises', {
   topics: jsonb('topics').notNull().default('[]'), // string[]
   ownerRole: text('owner_role').notNull(),
   ownerContext: text('owner_context').notNull(),
+  testCode: text('test_code'), // predefined tests for code execution
   version: integer('version').notNull().default(1),
   adminNotes: text('admin_notes'),
   createdBy: uuid('created_by')
@@ -69,6 +70,7 @@ export const attempts = pgTable('attempts', {
     .references(() => sessions.id),
   userResponse: text('user_response').notNull(),
   llmResponse: text('llm_response').notNull(), // full EvaluationResult as JSON string
+  executionResult: jsonb('execution_result'), // ExecutionResult JSON when code was executed
   isFinalEvaluation: boolean('is_final_evaluation').notNull().default(false),
   submittedAt: timestamp('submitted_at').defaultNow().notNull(),
 })

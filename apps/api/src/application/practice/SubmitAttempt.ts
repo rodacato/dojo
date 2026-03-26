@@ -18,6 +18,7 @@ export class SubmitAttempt {
     userResponse: string
     ownerRole: string
     ownerContext: string
+    executionContext?: string // test results injected before LLM evaluation
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
     if (!session) throw new SessionNotFoundError(params.sessionId)
@@ -31,11 +32,16 @@ export class SubmitAttempt {
 
     let finalToken: EvaluationToken | null = null
 
+    // Append execution results to user response so the sensei sees them
+    const userResponseWithContext = params.executionContext
+      ? `${params.userResponse}\n\n${params.executionContext}`
+      : params.userResponse
+
     for await (const token of this.deps.llm.evaluate({
       ownerRole: params.ownerRole,
       ownerContext: params.ownerContext,
       sessionBody: session.body,
-      userResponse: params.userResponse,
+      userResponse: userResponseWithContext,
       history,
     })) {
       yield token

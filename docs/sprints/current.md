@@ -53,23 +53,24 @@
 ## Part 5 — Sandboxed Code Execution (Piston)
 
 ### Infra
-- [ ] Add Piston to docker-compose.yml with healthcheck
-- [ ] Add env vars: CODE_EXECUTION_ENABLED, PISTON_URL, PISTON_MAX_CONCURRENT
-- [ ] Update .env.example
+- [x] Add Piston to devcontainer docker-compose + production docker-compose (with healthcheck)
+- [x] Add env vars: CODE_EXECUTION_ENABLED, PISTON_URL, PISTON_MAX_CONCURRENT, PISTON_RUN_TIMEOUT, PISTON_COMPILE_TIMEOUT
+- [x] Update .env.example and config.ts
 
 ### Domain + Adapters
-- [ ] CodeExecutionPort in domain/practice/ports.ts
-- [ ] ExecutionResult, TestResult value objects
-- [ ] PistonAdapter + MockExecutionAdapter
-- [ ] ExecutionQueue with concurrency limit
+- [x] CodeExecutionPort + ExecutionResult in domain/practice/ports.ts
+- [x] PistonAdapter (maps to Piston REST API, handles compile errors, timeouts)
+- [x] MockExecutionAdapter (simple heuristic mock)
+- [x] ExecutionQueue with concurrency limit + queue timeout
+- [x] Exercise domain model gains testCode field
 
 ### Schema
-- [ ] Migration: exercises.test_code TEXT, attempts.execution_result JSONB
+- [x] Migration 0007: exercises.test_code TEXT, attempts.execution_result JSONB
 
 ### Integration
-- [ ] Modify SubmitAttempt to run execution before LLM
-- [ ] WS messages: {type: 'executing'}, {type: 'execution_result'}
-- [ ] Sensei prompt: conditional ## Test Results section (3 variants per Yemi)
+- [x] SubmitAttempt: accepts executionContext param, injects into LLM prompt
+- [x] WS handler: runs code via queue before LLM, sends {executing} + {execution_result}
+- [x] Sensei prompt context: 4 variants (all pass, some fail, compile error, timeout)
 - [ ] Frontend: show test results before sensei streaming in SenseiEvalPage
 
 ### Seed

@@ -31,6 +31,23 @@ export interface SessionRepositoryPort {
   findActiveByUserId(userId: UserId): Promise<Session | null>
 }
 
+export interface ExecutionResult {
+  readonly stdout: string
+  readonly stderr: string
+  readonly exitCode: number
+  readonly timedOut: boolean
+  readonly executionTimeMs: number
+}
+
+export interface CodeExecutionPort {
+  execute(params: {
+    language: string
+    code: string
+    testCode: string
+    timeoutMs?: number
+  }): Promise<ExecutionResult>
+}
+
 export interface EventBusPort {
   publish(event: DomainEvent): Promise<void>
   subscribe<T extends DomainEvent>(eventType: string, handler: (event: T) => Promise<void>): void
