@@ -55,6 +55,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-008 — Production ready](sprints/archive/sprint-008-production-ready.md) | OG tags, reminders, components, Mermaid, LLM adapter layer, error recovery | ✅ Closed |
 | sprint-009 — Design alignment + QoL | Stitch alignment (6 screens), sidebar nav, 60+ exercises, responsive audit, component library | ✅ Closed |
 | sprint-010 — Feedback + Share + Admin | Kata feedback system, public share page, admin review with feedback aggregation, secondary screens Stitch | ✅ Closed |
+| sprint-011 — Refactoring + Landing + Execution + Interests + E2E | Route split, contrast fix, landing Stitch redesign, Piston code execution, interest-based selection, Playwright smoke tests | ✅ Closed |
 
 ---
 
@@ -69,7 +70,7 @@ Does not start until Phase 0 is in real daily use.
 | 004 | [Docker production](specs/004-docker-production.md) | Multi-stage Dockerfiles, Nginx, production docker-compose.yml | sprint-001 |
 | 005 | [Security middleware](specs/005-security-middleware.md) | Rate limiting (hono-rate-limiter), Zod validation helper, error handler | sprint-001 |
 | 006 | [GitHub OAuth](specs/006-github-oauth.md) | arctic@2, server-side sessions, user_sessions in DB, requireAuth middleware | sprint-001 |
-| 007 | [CI](specs/007-ci.md) | GitHub Actions — lint → typecheck → test on every PR to main | sprint-001 |
+| 007 | [CI](specs/007-ci.md) | GitHub Actions — lint → typecheck → test + E2E on every PR to main | sprint-001 |
 | 008 | [Shared package](specs/008-shared-package.md) | Annotated DTOs, Zod schemas, boundary rules documented | sprint-001 |
 | 009 | [HTTP routes](specs/009-http-routes.md) | REST endpoints — sessions, exercises, dashboard, admin CRUD | sprint-002 |
 | 010 | [WebSocket evaluation](specs/010-websocket-evaluation.md) | WS protocol for sensei streaming evaluation | sprint-002 |

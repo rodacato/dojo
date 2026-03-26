@@ -4,6 +4,20 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 011 — Refactoring + Landing + Execution + Interests + E2E (2026-03-26)
+**Phase 2 closing → Phase 1 Alpha prep**
+
+The sprint where the codebase got cleaned up, the landing page got rewritten for real visitors, code execution became real, and kata selection got personal.
+
+- **Code health refactoring** — practice.ts split from 1,312 to 492 lines across 4 route files (ADR 013). Verdict/streak query helpers extracted. Frontend components (TodayCard, RecentSessionRow, useRotatingMessage) extracted. Error handling and type safety fixes across the codebase.
+- **Contrast fix** — `--color-muted` brightened from #475569 to #64748B to pass WCAG AA (4.5:1 minimum) on all surface backgrounds.
+- **Landing page redesign** — Full Stitch rewrite: sticky navbar, dot grid background with mouse proximity effect, typewriter hero, 4-step "How It Works" flow, social proof with practitioner quotes, new "Open Source" section with live GitHub stats, scroll fade-in animations. "What It's Not" section removed per Soren.
+- **Sandboxed code execution (Piston)** — ADR 014. CodeExecutionPort with PistonAdapter + MockExecutionAdapter. ExecutionQueue with concurrency limit. WS messages `executing` and `execution_result`. Sensei receives test results as factual evidence (4 prompt variants). Frontend shows results before sensei streaming.
+- **Interest-based kata selection** — user_preferences table (level, interests, randomness). Weighted exercise ordering: interests affect category preference, level affects difficulty, randomness controls the mix. DayStart "Customize your practice" panel.
+- **E2E smoke tests** — Playwright setup with 4 tests (landing, auth redirect, dashboard, kata flow). API mocked with page.route(). CI job runs in parallel.
+
+---
+
 ## Sprint 010 — Feedback Loop + Share + Admin Review (2026-03-26)
 **Phase 2 — Pre-invite polish (closing)**
 

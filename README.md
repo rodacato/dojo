@@ -43,7 +43,9 @@ Full analysis + topics to review
 | Auth | GitHub OAuth |
 | Architecture | DDD + Hexagonal (Ports & Adapters) + Event-Driven |
 | LLM | Any compatible streaming endpoint |
+| Code Execution | Piston (sandboxed, nsjail) |
 | Infra | Docker + Kamal on Hetzner VPS |
+| E2E Tests | Playwright |
 
 ### LLM Provider
 
@@ -123,6 +125,8 @@ pnpm test --filter=api      # Run API unit + integration tests
 
 | Feature | Description |
 |---|---|
+| **Code execution** | Code kata are executed in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
+| **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
 | **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into exercise quality |
 | **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, exercise info, and OG image for social previews |
 | **Admin review** | Aggregated feedback per exercise and variation, admin notes, exercise versioning, archive lifecycle |
