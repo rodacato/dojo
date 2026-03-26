@@ -20,6 +20,10 @@ export type ExerciseStatus = 'draft' | 'published' | 'archived'
 export type SessionStatus = 'active' | 'completed' | 'failed'
 export type Verdict = 'passed' | 'passed_with_notes' | 'needs_work'
 
+export type ClaritySignal = 'clear' | 'somewhat_unclear' | 'confusing'
+export type TimingSignal = 'too_short' | 'about_right' | 'too_long'
+export type EvaluationSignal = 'fair_and_relevant' | 'too_generic' | 'missed_the_point'
+
 export interface UserDTO {
   id: string
   username: string
@@ -65,4 +69,11 @@ export interface AttemptDTO {
   topicsToReview: string[]
   isFinalEvaluation: boolean
   submittedAt: string // ISO string
+}
+
+export interface FeedbackDTO {
+  clarity: ClaritySignal | null
+  timing: TimingSignal | null
+  evaluation: EvaluationSignal | null
+  note: string | null
 }

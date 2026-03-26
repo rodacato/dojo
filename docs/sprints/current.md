@@ -14,19 +14,20 @@
 **Ref:** [`docs/prd/011-kata-feedback-system.md`](../prd/011-kata-feedback-system.md)
 
 ### Database
-- [ ] Migration: `kata_feedback` table (session_id, exercise_id, variation_id, user_id, clarity, timing, evaluation, note, submitted_at)
-- [ ] Migration: Add `version` (integer default 1) and `admin_notes` (text nullable) columns to exercises table
+- [x] Migration: `kata_feedback` table (session_id, exercise_id, variation_id, user_id, clarity, timing, evaluation, note, submitted_at)
+- [x] Migration: Add `version` (integer default 1), `admin_notes` (text nullable), `updated_at` columns to exercises table
 
 ### API
-- [ ] `POST /sessions/:id/feedback` — submit feedback (validated: session owned by user, session completed, one per session)
-- [ ] `GET /admin/exercises/:id/feedback` — aggregated feedback + individual notes, filterable by variation
+- [x] `POST /sessions/:id/feedback` — submit feedback (validated: session owned by user, session completed, one per session)
+- [x] `GET /sessions/:id/feedback` — check if feedback already submitted
+- [x] `GET /admin/exercises/:id/feedback` — aggregated feedback + individual notes, by variation
 
 ### Frontend — Feedback UI
-- [ ] Feedback section on Results page — collapsed by default, "How was this kata? (optional)"
-- [ ] 3 segmented controls: clarity, timing, evaluation (using GroupButtons component)
-- [ ] Optional note textarea (max 280 chars)
-- [ ] Submit + dismiss states
-- [ ] Prevent double submission (one per session)
+- [x] FeedbackSection component — collapsed by default, "How was this kata? (optional)"
+- [x] 3 segmented controls: clarity, timing, evaluation (using GroupButtons component)
+- [x] Optional note textarea (max 280 chars)
+- [x] Submit + dismiss states
+- [x] Prevent double submission (checks existing feedback on load)
 
 ---
 

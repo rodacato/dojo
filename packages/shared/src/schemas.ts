@@ -63,6 +63,18 @@ export const attemptDTOSchema = z.object({
   submittedAt: z.string().datetime(),
 })
 
+// Feedback
+export const claritySignalSchema = z.enum(['clear', 'somewhat_unclear', 'confusing'])
+export const timingSignalSchema = z.enum(['too_short', 'about_right', 'too_long'])
+export const evaluationSignalSchema = z.enum(['fair_and_relevant', 'too_generic', 'missed_the_point'])
+
+export const feedbackSubmitSchema = z.object({
+  clarity: claritySignalSchema.nullable().default(null),
+  timing: timingSignalSchema.nullable().default(null),
+  evaluation: evaluationSignalSchema.nullable().default(null),
+  note: z.string().max(280).nullable().default(null),
+})
+
 // Shared filter schema — used by both API (query param parsing) and frontend (form state)
 export const exerciseFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),

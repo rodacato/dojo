@@ -133,6 +133,20 @@ export const api = {
       method: 'POST',
     }),
 
+  submitFeedback: (sessionId: string, feedback: {
+    clarity: string | null
+    timing: string | null
+    evaluation: string | null
+    note: string | null
+  }) =>
+    request<{ ok: boolean }>(`/sessions/${sessionId}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify(feedback),
+    }),
+
+  getFeedback: (sessionId: string) =>
+    request<{ submitted: boolean }>(`/sessions/${sessionId}/feedback`),
+
   getAdminExercises: () => request<AdminExerciseDTO[]>('/admin/exercises'),
 
   getAdminExercise: (id: string) =>

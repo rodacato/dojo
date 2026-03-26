@@ -157,8 +157,11 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
       tags: row.tags as string[],
       topics: row.topics as string[],
       variations: domainVariations,
+      version: row.version ?? 1,
+      adminNotes: row.adminNotes ?? null,
       createdBy: UserId(row.createdBy),
       createdAt: row.createdAt,
+      updatedAt: row.updatedAt ?? null,
     })
   }
 
@@ -217,8 +220,11 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
         tags: row.tags,
         topics: row.topics,
         variations: domainVariations,
+        version: (row as Record<string, unknown>).version as number ?? 1,
+        adminNotes: (row as Record<string, unknown>).admin_notes as string | null ?? null,
         createdBy: UserId(row.created_by),
         createdAt: row.created_at,
+        updatedAt: (row as Record<string, unknown>).updated_at as Date | null ?? null,
       }),
     )
   }

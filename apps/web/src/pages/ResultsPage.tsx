@@ -6,15 +6,18 @@ import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
 import { KataBody } from '../components/ui/KataBody'
+import { FeedbackSection } from '../components/ui/FeedbackSection'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<SessionWithExercise | null>(null)
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
 
   useEffect(() => {
     if (!sessionId) return
     api.getSession(sessionId).then(setSession)
+    api.getFeedback(sessionId).then((r) => setFeedbackSubmitted(r.submitted)).catch(() => {})
   }, [sessionId])
 
   if (!session) return <PageLoader />
@@ -174,6 +177,11 @@ export function ResultsPage() {
           <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
         )}
       </div>
+
+      {/* Feedback */}
+      {sessionId && (session.status === 'completed' || session.status === 'failed') && (
+        <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
+      )}
 
       {/* Footer */}
       <p className="text-center text-muted/50 text-xs font-mono mt-6">Consistency compounds.</p>

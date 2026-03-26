@@ -26,10 +26,13 @@ export const exercises = pgTable('exercises', {
   topics: jsonb('topics').notNull().default('[]'), // string[]
   ownerRole: text('owner_role').notNull(),
   ownerContext: text('owner_context').notNull(),
+  version: integer('version').notNull().default(1),
+  adminNotes: text('admin_notes'),
   createdBy: uuid('created_by')
     .notNull()
     .references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at'),
 })
 
 export const variations = pgTable('variations', {
@@ -124,6 +127,35 @@ export const userBadges = pgTable('user_badges', {
   sessionId: uuid('session_id').references(() => sessions.id),
   earnedAt: timestamp('earned_at').defaultNow().notNull(),
 })
+
+export const kataFeedback = pgTable('kata_feedback', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  sessionId: uuid('session_id')
+    .notNull()
+    .unique()
+    .references(() => sessions.id),
+  exerciseId: uuid('exercise_id')
+    .notNull()
+    .references(() => exercises.id),
+  variationId: uuid('variation_id')
+    .notNull()
+    .references(() => variations.id),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id),
+  clarity: varchar('clarity', { length: 20 }),    // 'clear' | 'somewhat_unclear' | 'confusing' | null
+  timing: varchar('timing', { length: 20 }),      // 'too_short' | 'about_right' | 'too_long' | null
+  evaluation: varchar('evaluation', { length: 30 }), // 'fair_and_relevant' | 'too_generic' | 'missed_the_point' | null
+  note: text('note'),                              // max 280 chars, nullable
+  submittedAt: timestamp('submitted_at').defaultNow().notNull(),
+})
+
+export const kataFeedbackRelations = relations(kataFeedback, ({ one }) => ({
+  session: one(sessions, { fields: [kataFeedback.sessionId], references: [sessions.id] }),
+  exercise: one(exercises, { fields: [kataFeedback.exerciseId], references: [exercises.id] }),
+  variation: one(variations, { fields: [kataFeedback.variationId], references: [variations.id] }),
+  user: one(users, { fields: [kataFeedback.userId], references: [users.id] }),
+}))
 
 export const userSessions = pgTable('user_sessions', {
   id: uuid('id').primaryKey().defaultRandom(),

@@ -25,8 +25,11 @@ export interface ExerciseProps {
   tags: string[]
   topics: string[]
   variations: Variation[]
+  version: number
+  adminNotes: string | null
   createdBy: UserId
   createdAt: Date
+  updatedAt: Date | null
 }
 
 export class Exercise {
@@ -41,8 +44,11 @@ export class Exercise {
   readonly tags: string[]
   readonly topics: string[]
   readonly variations: Variation[]
+  readonly version: number
+  readonly adminNotes: string | null
   readonly createdBy: UserId
   readonly createdAt: Date
+  readonly updatedAt: Date | null
   private _status: ExerciseStatus
   private _pendingEvents: DomainEvent[] = []
 
@@ -59,8 +65,11 @@ export class Exercise {
     this.tags = props.tags
     this.topics = props.topics
     this.variations = props.variations
+    this.version = props.version
+    this.adminNotes = props.adminNotes
     this.createdBy = props.createdBy
     this.createdAt = props.createdAt
+    this.updatedAt = props.updatedAt
   }
 
   get status(): ExerciseStatus {
@@ -102,8 +111,11 @@ export class Exercise {
       tags: params.tags,
       topics: params.topics,
       variations,
+      version: 1,
+      adminNotes: null,
       createdBy: params.createdBy,
       createdAt: new Date(),
+      updatedAt: null,
     })
   }
 
