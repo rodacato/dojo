@@ -20,34 +20,35 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-  // Active session — exclude expired ones (duration + 10% grace exceeded)
-  const activeSessionCandidate = await db.query.sessions.findFirst({
-    where: and(eq(sessions.userId, userId), eq(sessions.status, 'active')),
-  })
-
-  let activeSession = activeSessionCandidate
-  if (activeSessionCandidate) {
-    const exercise = await db.query.exercises.findFirst({
-      where: eq(exercises.id, activeSessionCandidate.exerciseId),
+  // Active session — single joined query instead of 3 cascaded queries
+  const [activeRow] = await db
+    .select({
+      sessionId: sessions.id,
+      exerciseDuration: exercises.duration,
+      startedAt: sessions.startedAt,
+      hasFinalEval: sql<boolean>`EXISTS(
+        SELECT 1 FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id}
+          AND ${attempts.isFinalEvaluation} = true
+          AND ${attempts.llmResponse} != ''
+      )`,
     })
-    if (exercise) {
-      const limitMs = exercise.duration * 60 * 1000 * 1.1
-      const elapsedMs = Date.now() - activeSessionCandidate.startedAt.getTime()
-      if (elapsedMs > limitMs) {
-        // Check if session has a final evaluation before marking as failed
-        const finalAttempt = await db.query.attempts.findFirst({
-          where: and(
-            eq(attempts.sessionId, activeSessionCandidate.id),
-            eq(attempts.isFinalEvaluation, true),
-          ),
-        })
-        const hasEvaluation = finalAttempt && finalAttempt.llmResponse !== ''
-        await db
-          .update(sessions)
-          .set({ status: hasEvaluation ? 'completed' : 'failed', completedAt: new Date() })
-          .where(eq(sessions.id, activeSessionCandidate.id))
-        activeSession = undefined
-      }
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'active')))
+    .limit(1)
+
+  let activeSessionId: string | null = null
+  if (activeRow) {
+    const limitMs = activeRow.exerciseDuration * 60 * 1000 * 1.1
+    const elapsedMs = Date.now() - activeRow.startedAt.getTime()
+    if (elapsedMs > limitMs) {
+      await db
+        .update(sessions)
+        .set({ status: activeRow.hasFinalEval ? 'completed' : 'failed', completedAt: new Date() })
+        .where(eq(sessions.id, activeRow.sessionId))
+    } else {
+      activeSessionId = activeRow.sessionId
     }
   }
 
@@ -88,35 +89,34 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   // Streak: count consecutive days with any session going back from today
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
-  // Today complete: any completed/failed session started today
+  // Today session — single joined query instead of 3 cascaded queries
   const today = new Date()
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-  const todayCompleteRow = await db.query.sessions.findFirst({
-    where: and(
+  const [todayRow] = await db
+    .select({
+      id: sessions.id,
+      exerciseTitle: exercises.title,
+      verdict: sql<string | null>`(
+        SELECT ${attempts.llmResponse}::jsonb->>'verdict'
+        FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+        LIMIT 1
+      )`,
+    })
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .where(and(
       eq(sessions.userId, userId),
       sql`${sessions.status} IN ('completed', 'failed')`,
       gte(sessions.startedAt, todayStart),
-    ),
-  })
-  const todayComplete = !!todayCompleteRow
+    ))
+    .orderBy(desc(sessions.startedAt))
+    .limit(1)
 
-  // Today's completed session (for today card)
-  let todaySession: { id: string; exerciseTitle: string; verdict: string | null } | null = null
-  if (todayComplete && todayCompleteRow) {
-    const todayExercise = await db.query.exercises.findFirst({
-      where: eq(exercises.id, todayCompleteRow.exerciseId),
-    })
-    const [todayAttempt] = await db
-      .select({ verdict: sql<string | null>`${attempts.llmResponse}::jsonb->>'verdict'` })
-      .from(attempts)
-      .where(and(eq(attempts.sessionId, todayCompleteRow.id), eq(attempts.isFinalEvaluation, true)))
-      .limit(1)
-    todaySession = {
-      id: todayCompleteRow.id,
-      exerciseTitle: todayExercise?.title ?? '',
-      verdict: todayAttempt?.verdict ?? null,
-    }
-  }
+  const todayComplete = !!todayRow
+  const todaySession = todayRow
+    ? { id: todayRow.id, exerciseTitle: todayRow.exerciseTitle, verdict: todayRow.verdict }
+    : null
 
   // --- Extended dashboard data ---
 
@@ -172,7 +172,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     totalCompleted,
     todayComplete,
     todaySession,
-    activeSessionId: activeSession?.id ?? null,
+    activeSessionId,
     heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),
     recentSessions: recentRows.map((s) => ({
       id: s.id,
