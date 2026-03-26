@@ -6,7 +6,10 @@ import type { ContentfulStatusCode } from 'hono/utils/http-status'
 import { config } from '../../config'
 import { healthRoutes } from './routes/health'
 import { authRoutes } from './routes/auth'
-import { practiceRoutes, adminRoutes } from './routes/practice'
+import { practiceRoutes } from './routes/practice'
+import { dashboardRoutes } from './routes/dashboard'
+import { profileRoutes } from './routes/profile'
+import { adminRoutes } from './routes/admin-exercises'
 import { shareRoutes } from './routes/share'
 import { ogRoutes } from './routes/og'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
@@ -22,6 +25,8 @@ export function createRouter() {
   app.route('/', healthRoutes)
   app.route('/', authRoutes)
   app.route('/', practiceRoutes)
+  app.route('/', dashboardRoutes)
+  app.route('/', profileRoutes)
   app.route('/', shareRoutes)
   app.route('/', ogRoutes)
   app.route('/admin', adminRoutes)
