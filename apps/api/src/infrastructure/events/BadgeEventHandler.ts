@@ -1,10 +1,10 @@
 import { and, count, eq, gte, sql } from 'drizzle-orm'
 import type { SessionCompleted } from '../../domain/practice/events'
 import type { InMemoryEventBus } from './InMemoryEventBus'
-import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import { attempts, exercises, sessions, userBadges } from '../persistence/drizzle/schema'
+import type { DB } from '../persistence/drizzle/client'
 
-export function registerBadgeHandlers(eventBus: InMemoryEventBus, db: PostgresJsDatabase) {
+export function registerBadgeHandlers(eventBus: InMemoryEventBus, db: DB) {
   eventBus.subscribe<SessionCompleted>('SessionCompleted', async (event) => {
     const { userId, aggregateId: sessionId } = event
 
@@ -116,7 +116,7 @@ export function registerBadgeHandlers(eventBus: InMemoryEventBus, db: PostgresJs
   })
 }
 
-async function getEarnedSlugs(db: PostgresJsDatabase, userId: string): Promise<Set<string>> {
+async function getEarnedSlugs(db: DB, userId: string): Promise<Set<string>> {
   const rows = await db
     .select({ slug: userBadges.badgeSlug })
     .from(userBadges)
@@ -124,11 +124,11 @@ async function getEarnedSlugs(db: PostgresJsDatabase, userId: string): Promise<S
   return new Set(rows.map((r) => r.slug))
 }
 
-async function award(db: PostgresJsDatabase, userId: string, slug: string, sessionId: string) {
+async function award(db: DB, userId: string, slug: string, sessionId: string) {
   await db.insert(userBadges).values({ userId, badgeSlug: slug, sessionId })
 }
 
-async function getCurrentStreak(db: PostgresJsDatabase, userId: string): Promise<number> {
+async function getCurrentStreak(db: DB, userId: string): Promise<number> {
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 

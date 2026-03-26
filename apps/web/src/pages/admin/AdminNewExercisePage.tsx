@@ -153,7 +153,7 @@ export function AdminNewExercisePage() {
 
         <Field label="Topics">
           <ChipSelect
-            options={TOPICS as unknown as string[]}
+            options={TOPICS}
             selected={form.topics}
             onChange={(topics) => update('topics', topics)}
             placeholder="Select topics..."

@@ -16,7 +16,7 @@ export function ResultsPage() {
   useEffect(() => {
     if (!sessionId) return
     api.getSession(sessionId).then(setSession)
-    api.getFeedback(sessionId).then((r) => setFeedbackSubmitted(r.submitted)).catch(() => {})
+    api.getFeedback(sessionId).then((r) => setFeedbackSubmitted(r.submitted)).catch((err) => { console.error('Failed to fetch feedback status:', err) })
   }, [sessionId])
 
   if (!session) return <PageLoader />

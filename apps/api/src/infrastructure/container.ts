@@ -38,7 +38,7 @@ const llm = createLLMAdapter()
 export const eventBus = new InMemoryEventBus()
 
 // Register domain event handlers
-registerBadgeHandlers(eventBus, db as unknown as Parameters<typeof registerBadgeHandlers>[1])
+registerBadgeHandlers(eventBus, db)
 
 export const useCases = {
   startSession: new StartSession({ exerciseRepo, sessionRepo, eventBus }),

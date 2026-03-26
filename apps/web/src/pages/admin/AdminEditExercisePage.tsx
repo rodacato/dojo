@@ -68,7 +68,7 @@ export function AdminEditExercisePage() {
       ex.variations.forEach((v, i) => { vMap[v.id] = `Variation ${i + 1}` })
       setVariationMap(vMap)
     })
-    api.getExerciseFeedback(id).then(setFeedback).catch(() => {})
+    api.getExerciseFeedback(id).then(setFeedback).catch((err) => { console.error('Failed to fetch exercise feedback:', err) })
   }, [id])
 
   if (!form) return <PageLoader />
@@ -197,7 +197,7 @@ export function AdminEditExercisePage() {
 
         <Field label="Topics">
           <ChipSelect
-            options={TOPICS as unknown as string[]}
+            options={TOPICS}
             selected={form.topics}
             onChange={(topics) => update('topics', topics)}
             placeholder="Select topics..."

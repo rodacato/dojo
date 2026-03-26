@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
 import { useTypingReveal } from '../hooks/useTypingReveal'
+import { useRotatingMessage } from '../hooks/useRotatingMessage'
 import { VerdictBadge } from '../components/ui/Badge'
 import { StreamingText } from '../components/ui/StreamingText'
 
@@ -14,19 +15,6 @@ const EVAL_MESSAGES = [
   'Reflecting on your choices...',
   'Almost ready with feedback...',
 ]
-
-function useRotatingMessage(messages: string[], intervalMs = 3500) {
-  const [msg, setMsg] = useState(messages[0]!)
-  const idx = useRef(0)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      idx.current = (idx.current + 1) % messages.length
-      setMsg(messages[idx.current]!)
-    }, intervalMs)
-    return () => clearInterval(interval)
-  }, [messages, intervalMs])
-  return msg
-}
 
 interface Exchange {
   tokens: string

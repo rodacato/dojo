@@ -466,8 +466,8 @@ practiceRoutes.post('/cron/reminders', async (c) => {
         `,
       })
       sent++
-    } catch {
-      // Silently skip failed sends
+    } catch (err) {
+      console.warn(`Failed to send reminder email to user ${user.id}:`, err)
     }
   }
 

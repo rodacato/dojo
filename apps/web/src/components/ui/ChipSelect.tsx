@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 interface ChipSelectProps {
-  options: string[]
+  options: readonly string[]
   selected: string[]
   onChange: (selected: string[]) => void
   placeholder?: string
