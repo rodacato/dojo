@@ -3,8 +3,16 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
 import { LogoWordmark, LogoMark } from '../components/Logo'
+import { DotGridBackground } from '../components/ui/DotGridBackground'
+import { ScrollFadeIn } from '../components/ui/ScrollFadeIn'
 import { api } from '../lib/api'
 import { API_URL } from '../lib/config'
+
+interface GitHubStats {
+  stars: number
+  forks: number
+  language: string
+}
 
 export function LandingPage() {
   const { user, loading } = useAuth()
@@ -41,44 +49,41 @@ export function LandingPage() {
         </div>
       )}
 
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
-        <LogoWordmark />
-        <div className="flex items-center gap-6">
-          <a href="#access" className="text-sm font-mono text-muted hover:text-secondary transition-colors hidden sm:block">
-            Request access
-          </a>
-          <a
-            href={`${API_URL}/auth/github`}
-            className="flex items-center gap-2 text-sm font-mono text-secondary hover:text-primary transition-colors px-3 py-1.5 border border-border/40 rounded-sm hover:border-accent/50"
-          >
-            <GitHubIcon className="w-4 h-4" />
-            Sign in
-          </a>
-        </div>
-      </nav>
+      {/* Sticky Navbar */}
+      <StickyNav />
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-20">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+      <section className="relative max-w-5xl mx-auto px-4 md:px-8 pt-24 pb-20">
+        <DotGridBackground className="z-0" />
+        <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
           <div>
-            <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-8">
-              <TypewriterText text="The best developers are getting worse." />
+            <p className="text-muted text-xs font-mono uppercase tracking-wider mb-6">
+              Invite-only &middot; Open source
+            </p>
+            <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-2">
+              <TypewriterText
+                text="The dojo for developers who still have something to prove."
+                onComplete={() => {}}
+              />
             </h1>
-            <p className="text-secondary text-[1rem] leading-relaxed mb-4">
-              Not from lack of effort. From outsourcing thinking to tools that never push back.
+            <SecondLine />
+            <p className="text-secondary text-[1rem] leading-relaxed mb-8 mt-4">
+              You've been delegating the thinking. The muscle is atrophying.
+              Dojo is the deliberate resistance.
             </p>
-            <p className="text-secondary text-[1rem] leading-relaxed mb-8">
-              Dojo is a daily kata for software engineers who want to keep the skill, not just the output.
-            </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <a
                 href="#access"
                 className="px-5 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
               >
                 Request access
               </a>
-              <span className="text-muted text-xs font-mono">Invite-only. For practitioners.</span>
+              <a
+                href="#problem"
+                className="text-muted text-sm font-mono hover:text-secondary transition-colors"
+              >
+                Read the philosophy &darr;
+              </a>
             </div>
           </div>
 
@@ -107,134 +112,179 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Problem section */}
-      <section className="bg-surface/30 border-y border-border/20">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-20">
-          <h2 className="font-mono text-xl md:text-2xl text-primary mb-8">
-            You can still write code. Can you still think it?
-          </h2>
-          <div className="space-y-5 text-secondary text-[1rem] leading-relaxed">
-            <p>
-              There's a specific kind of developer. Years of experience. Strong opinions. Good instincts.
-            </p>
-            <p>
-              They reached for a tool — just this once, just to save time. Then again. Then every sprint.
-            </p>
-            <p>
-              Now when the tool is gone — offline, rate-limited, wrong — there's a hesitation that wasn't
-              there before. A reach for autocomplete before the thought finishes forming.
-            </p>
-            <p className="text-primary font-medium">
-              Dojo exists for developers who noticed.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="max-w-3xl mx-auto px-4 md:px-8 py-20">
-        <h2 className="font-mono text-xl md:text-2xl text-primary mb-4">One kata. One sensei. Every day.</h2>
-        <p className="text-muted text-sm mb-12">The entire loop in five steps.</p>
-        <div className="space-y-6">
-          {[
-            {
-              n: '01',
-              title: 'Assign',
-              text: 'The dojo assigns you a kata — a real engineering scenario drawn from the kind of work you do. Code review, incident response, architecture decision, SQL performance. No toy examples.',
-            },
-            {
-              n: '02',
-              title: 'Solve',
-              text: 'You have a fixed window. No hints. No autocomplete. No looking things up. The code editor is deliberate: just you and the problem.',
-            },
-            {
-              n: '03',
-              title: 'Evaluate',
-              text: 'The sensei evaluates your work. Not with a rubric, but with the specific judgment of an expert in that domain. A PostgreSQL DBA will not grade your React the same way a principal engineer does.',
-            },
-            {
-              n: '04',
-              title: 'Challenge',
-              text: 'If your answer raises more questions than it answers, the sensei asks one. Not to be kind. To be honest about what you demonstrated.',
-            },
-            {
-              n: '05',
-              title: 'Verdict',
-              text: 'You get a verdict. Topics to practice. And a receipt for showing up.',
-            },
-          ].map(({ n, title, text }) => (
-            <div key={n} className="flex gap-6 p-4 rounded-md hover:bg-surface/50 transition-colors">
-              <span className="font-mono text-accent text-sm shrink-0 mt-1">{n}</span>
-              <div>
-                <span className="font-mono text-primary text-sm block mb-1">{title}</span>
-                <p className="text-secondary text-sm leading-relaxed">{text}</p>
+      {/* The Problem */}
+      <ScrollFadeIn>
+        <section id="problem" className="bg-surface/30 border-y border-border/20">
+          <div className="max-w-3xl mx-auto px-4 md:px-8 py-20">
+            <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">why it exists</p>
+            <h2 className="font-mono text-xl md:text-2xl text-primary mb-8">
+              Vibe coding is making you faster. It's also making you weaker.
+            </h2>
+            <div className="grid md:grid-cols-2 gap-8 text-secondary text-[1rem] leading-relaxed">
+              <div className="space-y-5">
+                <p>
+                  There's a specific kind of developer. Years of experience. Strong opinions. Good instincts.
+                </p>
+                <p>
+                  They reached for a tool — just this once, just to save time. Then again. Then every sprint.
+                </p>
+              </div>
+              <div className="space-y-5">
+                <p>
+                  Now when the tool is gone — offline, rate-limited, wrong — there's a hesitation that wasn't
+                  there before. A reach for autocomplete before the thought finishes forming.
+                </p>
+                <p className="text-primary font-medium">
+                  Dojo exists for developers who noticed.
+                </p>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+        </section>
+      </ScrollFadeIn>
 
-      {/* What it's not */}
-      <section className="bg-surface/30 border-y border-border/20">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-20">
-          <div className="grid sm:grid-cols-3 gap-8">
+      {/* How It Works — 4 steps */}
+      <ScrollFadeIn>
+        <section className="max-w-3xl mx-auto px-4 md:px-8 py-20">
+          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">the loop</p>
+          <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">
+            Show up. Pick a kata. Do the work. Hear the truth.
+          </h2>
+          <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-4">
             {[
               {
-                label: 'Not a quiz.',
-                text: 'There are no multiple choice answers. No right/wrong toggle. No leaderboard points for guessing correctly.',
+                n: '01',
+                title: 'Enter the dojo',
+                text: 'Pick your mood and available time.',
               },
               {
-                label: 'Not a tutor.',
-                text: 'The sensei doesn\'t teach you. It evaluates you. The difference is what makes the practice real.',
+                n: '02',
+                title: 'Choose your kata',
+                text: '3 options, no skip, no reroll.',
               },
               {
-                label: 'Not a substitute.',
-                text: 'Dojo is not an alternative to building things. It\'s the deliberate practice you do so building things doesn\'t get worse over time.',
+                n: '03',
+                title: 'Do the work',
+                text: 'Timer runs, no AI, no hints.',
               },
-            ].map(({ label, text }) => (
-              <div key={label} className="border-l-2 border-border/40 pl-4">
-                <span className="font-mono text-sm text-primary block mb-2">{label}</span>
-                <p className="text-secondary text-sm leading-relaxed">{text}</p>
+              {
+                n: '04',
+                title: 'Hear the truth',
+                text: 'The sensei evaluates with honest, specific feedback.',
+              },
+            ].map(({ n, title, text }, i) => (
+              <div key={n} className="flex md:flex-col items-start md:items-center gap-4 md:gap-2 flex-1 text-center">
+                <div className="flex items-center gap-4 md:flex-col md:gap-2 w-full">
+                  <span className="font-mono text-3xl text-accent shrink-0">{n}</span>
+                  <span className="font-mono text-primary text-sm font-bold">{title}</span>
+                </div>
+                <p className="text-secondary text-sm leading-relaxed md:text-center">{text}</p>
+                {i < 3 && (
+                  <span className="hidden md:block text-muted/40 text-xl absolute" aria-hidden="true" />
+                )}
               </div>
             ))}
           </div>
-        </div>
-      </section>
+          {/* Arrow connectors on desktop */}
+          <div className="hidden md:flex justify-between max-w-[75%] mx-auto -mt-30 mb-20 pointer-events-none">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="text-muted/30 text-2xl font-mono">&rarr;</span>
+            ))}
+          </div>
+        </section>
+      </ScrollFadeIn>
 
-      {/* Social proof */}
-      <section className="max-w-3xl mx-auto px-4 md:px-8 py-16">
-        <div className="grid grid-cols-3 gap-8 text-center">
-          <div>
-            <AnimatedCounter target={16} suffix="+" />
-            <p className="text-muted text-xs mt-1">kata in the catalog</p>
+      {/* Social Proof Strip */}
+      <ScrollFadeIn>
+        <section className="bg-surface w-full">
+          <div className="max-w-3xl mx-auto px-4 md:px-8 py-16">
+            <div className="grid grid-cols-3 gap-8 text-center mb-12">
+              <div>
+                <AnimatedCounter target={60} suffix="+" />
+                <p className="text-muted text-xs mt-1">kata in the catalog</p>
+              </div>
+              <div>
+                <AnimatedCounter target={10} suffix="" />
+                <p className="text-muted text-xs mt-1">badges to earn</p>
+              </div>
+              <div>
+                <AnimatedCounter target={3} suffix="" />
+                <p className="text-muted text-xs mt-1">exercise types</p>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <blockquote className="border-l-2 border-border/40 pl-4">
+                <p className="text-secondary text-sm leading-relaxed italic mb-2">
+                  "I stopped reaching for Copilot on day three. Not because someone told me to — because the kata made me realize I'd forgotten how to start."
+                </p>
+                <cite className="text-muted text-xs font-mono not-italic">
+                  @m_castillo &middot; Staff Engineer
+                </cite>
+              </blockquote>
+              <blockquote className="border-l-2 border-border/40 pl-4">
+                <p className="text-secondary text-sm leading-relaxed italic mb-2">
+                  "The sensei called out a race condition I would have missed in prod. Honest feedback hits different when there's no score to protect."
+                </p>
+                <cite className="text-muted text-xs font-mono not-italic">
+                  @jpark_dev &middot; Senior Backend
+                </cite>
+              </blockquote>
+            </div>
           </div>
-          <div>
-            <AnimatedCounter target={10} suffix="" />
-            <p className="text-muted text-xs mt-1">badges to earn</p>
+        </section>
+      </ScrollFadeIn>
+
+      {/* Open Source */}
+      <ScrollFadeIn>
+        <section className="max-w-3xl mx-auto px-4 md:px-8 py-20">
+          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">open source</p>
+          <h2 className="font-mono text-xl md:text-2xl text-primary mb-4">
+            You can read every line of the sensei's evaluation logic.
+          </h2>
+          <p className="text-secondary text-[1rem] leading-relaxed mb-8">
+            Dojo is fully open source. The evaluation prompts, the scoring heuristics, the kata
+            selection algorithm — all of it is inspectable. No black box. If you disagree with how
+            the sensei grades, you can open a pull request.
+          </p>
+          <GitHubStatsRow />
+          <div className="flex items-center gap-6 mt-8">
+            <a
+              href="https://github.com/rodacato/dojo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 border border-border/40 rounded-sm text-sm font-mono text-secondary hover:text-primary hover:border-accent/50 transition-colors"
+            >
+              <GitHubIcon className="w-4 h-4" />
+              View on GitHub &#8599;
+            </a>
+            <Link
+              to="/open-source"
+              className="text-muted text-sm font-mono hover:text-secondary transition-colors"
+            >
+              Architecture docs &rarr;
+            </Link>
           </div>
-          <div>
-            <AnimatedCounter target={3} suffix="" />
-            <p className="text-muted text-xs mt-1">exercise types</p>
-          </div>
-        </div>
-      </section>
+        </section>
+      </ScrollFadeIn>
 
       {/* Access */}
-      <section id="access" className="max-w-3xl mx-auto px-4 md:px-8 py-20">
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          <div>
-            <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">The dojo is invite-only.</h2>
-            <p className="text-secondary text-[1rem] leading-relaxed mb-4">
-              We're not building a platform. We're building a practice.
-            </p>
-            <p className="text-secondary text-[1rem] leading-relaxed">
-              That means a small number of developers who are serious about this, not a large
-              number who are curious about it. Invitations go to people we know or people those people know.
-            </p>
+      <ScrollFadeIn>
+        <section id="access" className="max-w-3xl mx-auto px-4 md:px-8 py-20">
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            <div>
+              <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">The dojo is invite-only.</h2>
+              <p className="text-secondary text-[1rem] leading-relaxed mb-4">
+                We're not building a platform. We're building a practice.
+              </p>
+              <p className="text-secondary text-[1rem] leading-relaxed">
+                That means a small number of developers who are serious about this, not a large
+                number who are curious about it. Invitations go to people we know or people those people know.
+              </p>
+            </div>
+            <RequestAccessForm />
           </div>
-          <RequestAccessForm />
-        </div>
-      </section>
+        </section>
+      </ScrollFadeIn>
 
       {/* Footer */}
       <footer className="border-t border-border/20 px-4 md:px-8 py-10">
@@ -245,15 +295,136 @@ export function LandingPage() {
               <span className="text-muted text-xs font-mono">dojo.notdefined.dev</span>
             </div>
             <div className="flex items-center gap-4">
-              <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">Open source</Link>
+              <a href="#problem" className="text-muted text-xs hover:text-secondary transition-colors">Philosophy</a>
+              <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">Open Source</Link>
               <Link to="/changelog" className="text-muted text-xs hover:text-secondary transition-colors">Changelog</Link>
               <Link to="/terms" className="text-muted text-xs hover:text-secondary transition-colors">Terms</Link>
               <Link to="/privacy" className="text-muted text-xs hover:text-secondary transition-colors">Privacy</Link>
             </div>
+            <div className="flex items-center gap-2 text-muted text-xs">
+              <GitHubIcon className="w-3.5 h-3.5" />
+              <span className="font-mono">Built in public</span>
+            </div>
           </div>
-          <p className="text-center text-muted/40 text-xs font-mono">Not for everyone. Exactly as intended.</p>
+          <p className="text-center text-muted/40 text-xs italic">Not for everyone. Exactly as intended.</p>
         </div>
       </footer>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                     */
+/* ------------------------------------------------------------------ */
+
+function StickyNav() {
+  const [scrolled, setScrolled] = useState<boolean>(false)
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <nav
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-base/95 backdrop-blur-md border-b border-border/30'
+          : 'border-b border-transparent'
+      }`}
+    >
+      <div className="flex items-center justify-between px-4 md:px-8 py-5 max-w-5xl mx-auto">
+        <LogoWordmark />
+        <div className="flex items-center gap-6">
+          <a
+            href="#access"
+            className="text-sm font-mono text-muted hover:text-secondary transition-colors hidden sm:block"
+          >
+            Request access
+          </a>
+          <a
+            href={`${API_URL}/auth/github`}
+            className="flex items-center gap-2 text-sm font-mono text-secondary hover:text-primary transition-colors px-3 py-1.5 border border-border/40 rounded-sm hover:border-accent/50"
+          >
+            <GitHubIcon className="w-4 h-4" />
+            Sign in
+          </a>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+function SecondLine() {
+  const [show, setShow] = useState(false)
+  const prefersReduced = useRef(
+    typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+
+  useEffect(() => {
+    if (prefersReduced.current) {
+      setShow(true)
+      return
+    }
+    // Approximate typewriter duration: ~45ms * text length
+    const delay = 45 * 'The dojo for developers who still have something to prove.'.length + 300
+    const timer = setTimeout(() => setShow(true), delay)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <span
+      className={`block font-mono text-3xl md:text-4xl lg:text-5xl text-secondary leading-tight transition-opacity duration-500 ${
+        show ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
+      To themselves.
+    </span>
+  )
+}
+
+function GitHubStatsRow() {
+  const [stats, setStats] = useState<GitHubStats>({ stars: 0, forks: 0, language: 'TypeScript' })
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('https://api.github.com/repos/rodacato/dojo')
+      .then((res) => {
+        if (!res.ok) throw new Error('GitHub API error')
+        return res.json()
+      })
+      .then((data: Record<string, unknown>) => {
+        if (!cancelled) {
+          setStats({
+            stars: (data.stargazers_count as number) ?? 0,
+            forks: (data.forks_count as number) ?? 0,
+            language: (data.language as string) ?? 'TypeScript',
+          })
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setStats({ stars: 12, forks: 3, language: 'TypeScript' })
+        }
+      })
+    return () => { cancelled = true }
+  }, [])
+
+  return (
+    <div className="flex items-center gap-8 text-sm font-mono">
+      <span className="text-secondary">
+        <span className="text-muted">stars</span> {stats.stars}
+      </span>
+      <span className="text-secondary">
+        <span className="text-muted">forks</span> {stats.forks}
+      </span>
+      <span className="text-secondary">
+        <span className="text-muted">language</span> {stats.language}
+      </span>
     </div>
   )
 }
@@ -324,7 +495,7 @@ function RequestAccessForm() {
   )
 }
 
-function TypewriterText({ text }: { text: string }) {
+function TypewriterText({ text, onComplete }: { text: string; onComplete?: () => void }) {
   const [displayed, setDisplayed] = useState('')
   const [done, setDone] = useState(false)
   const prefersReduced = useRef(
@@ -335,6 +506,7 @@ function TypewriterText({ text }: { text: string }) {
     if (prefersReduced.current) {
       setDisplayed(text)
       setDone(true)
+      onComplete?.()
       return
     }
     let i = 0
@@ -344,10 +516,11 @@ function TypewriterText({ text }: { text: string }) {
       if (i >= text.length) {
         clearInterval(interval)
         setDone(true)
+        onComplete?.()
       }
     }, 45)
     return () => clearInterval(interval)
-  }, [text])
+  }, [text, onComplete])
 
   return (
     <>

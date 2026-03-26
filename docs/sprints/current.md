@@ -37,15 +37,16 @@
 
 ## Part 2 — Landing Page Redesign (Stitch)
 
-- [ ] Navbar: transparent → solid on scroll
-- [ ] Hero: eyebrow + typewriter headline + terminal demo + dot grid background
-- [ ] "The Problem": 2-col prose
-- [ ] "How It Works": 4-step horizontal flow
-- [ ] Social proof: counters + practitioner quotes
-- [ ] "Open Source": GitHub stats + CTAs
-- [ ] Access: refined form + copy
-- [ ] Footer: redesign
-- [ ] Components: DotGridBackground.tsx, ScrollFadeIn.tsx
+- [x] Navbar: sticky, transparent → solid on scroll
+- [x] Hero: eyebrow + typewriter headline + "To themselves." fade-in + terminal demo + DotGridBackground
+- [x] "The Problem": 2-col prose with eyebrow "why it exists"
+- [x] "How It Works": 4-step horizontal flow with arrow connectors
+- [x] Social proof: 60+ kata counters + practitioner quotes
+- [x] "Open Source": GitHub stats (live fetch + fallback) + CTAs
+- [x] Access: 2-col with RequestAccessForm
+- [x] Footer: redesign with Philosophy link + GitHub "Built in public"
+- [x] Components: DotGridBackground.tsx (90 lines), ScrollFadeIn.tsx (54 lines)
+- [x] Removed "What It's Not" section (per Soren)
 
 ---
 
