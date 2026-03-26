@@ -115,6 +115,21 @@ pnpm test --filter=api      # Run API unit + integration tests
 | `chat` | Technical roleplay — respond to a scenario as you would in real life |
 | `whiteboard` | System design and architecture using [Drawhaus](https://drawhaus.notdefined.dev) |
 
+**60+ exercises** across 10 categories: backend, frontend, architecture, security, DevOps, SQL, design patterns, algorithms, testing, and process. Each exercise has 2 sensei variations with distinct evaluation perspectives.
+
+---
+
+## Features
+
+| Feature | Description |
+|---|---|
+| **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into exercise quality |
+| **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, exercise info, and OG image for social previews |
+| **Admin review** | Aggregated feedback per exercise and variation, admin notes, exercise versioning, archive lifecycle |
+| **Leaderboard** | Monthly and all-time rankings by consistency |
+| **Badges** | 10 achievement badges across practice, consistency, and mastery categories |
+| **Responsive** | Mobile-first with sidebar (desktop) and bottom nav (mobile) |
+
 ---
 
 ## Why self-host?

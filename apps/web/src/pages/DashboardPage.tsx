@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge } from '../components/ui/Badge'
-import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
+import type { ExerciseType } from '@dojo/shared'
 
 const VERDICT_ICON: Record<string, { icon: string; color: string; label: string }> = {
   passed: { icon: '●', color: 'text-success', label: 'Passed' },
@@ -19,7 +18,6 @@ const DIFFICULTY_LABEL: Record<string, string> = {
 }
 
 export function DashboardPage() {
-  const { user } = useAuth()
   const navigate = useNavigate()
   const [dashboard, setDashboard] = useState<DashboardData | null>(null)
 

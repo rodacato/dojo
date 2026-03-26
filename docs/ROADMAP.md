@@ -54,6 +54,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-007 — Phase 2 scoreboard](sprints/archive/sprint-007-phase2-scoreboard.md) | Leaderboard, badge system, weak areas dashboard | ✅ Closed |
 | [sprint-008 — Production ready](sprints/archive/sprint-008-production-ready.md) | OG tags, reminders, components, Mermaid, LLM adapter layer, error recovery | ✅ Closed |
 | sprint-009 — Design alignment + QoL | Stitch alignment (6 screens), sidebar nav, 60+ exercises, responsive audit, component library | ✅ Closed |
+| sprint-010 — Feedback + Share + Admin | Kata feedback system, public share page, admin review with feedback aggregation, secondary screens Stitch | ✅ Closed |
 
 ---
 

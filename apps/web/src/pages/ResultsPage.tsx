@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
-import { API_URL } from '../lib/config'
 import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'

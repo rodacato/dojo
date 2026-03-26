@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
