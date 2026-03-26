@@ -34,15 +34,16 @@
 ## Part 2 — Share System Redesign
 
 ### Investigation (before code)
-- [ ] Define share flow: what happens when someone clicks a share link?
-- [ ] Design public results page (`/share/:sessionId`) — verdict, sensei quote, exercise title, CTA
+- [x] Define share flow: public page at `/share/:sessionId` with verdict, quote, CTA
+- [x] Design public results page — centered card with verdict badge, exercise info, sensei quote, user, CTA
 
 ### Implementation
-- [ ] Public route `/share/:sessionId` — no auth required, shows verdict + sensei pull quote + exercise info
-- [ ] OG meta tags on public share page (title, description, image from existing satori endpoint)
-- [ ] CTA for visitors: "Enter the dojo" → login/landing
-- [ ] Update ShareButton to copy public share URL instead of internal results URL
-- [ ] Redesign share card preview on Results page to match new share experience
+- [x] API: `GET /share/:sessionId` — public JSON endpoint with verdict, pullQuote, exercise info, user
+- [x] Frontend: `SharePage` — public route, no auth, verdict + sensei quote + exercise + CTA
+- [x] OG meta tags on public share page (title, description, og:image from satori endpoint)
+- [x] CTA for visitors: "Enter the dojo →" → landing
+- [x] ShareButton URL changed from `/kata/:id/result` to `/share/:id`
+- [x] Fixed ShareCardPreview verdict color mapping (was using old verdict names)
 
 ### Backlog
 - Share analytics (click tracking, conversion)

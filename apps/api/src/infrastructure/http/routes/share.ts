@@ -147,6 +147,72 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
   })
 })
 
+// ---------------------------------------------------------------------------
+// GET /share/:sessionId — Public share data (JSON)
+// ---------------------------------------------------------------------------
+
+shareRoutes.get('/share/:sessionId', async (c) => {
+  const sessionId = c.req.param('sessionId')
+
+  // Don't match .png requests
+  if (sessionId.endsWith('.png')) return c.notFound()
+
+  const [row] = await db
+    .select({
+      sessionId: sessions.id,
+      status: sessions.status,
+      startedAt: sessions.startedAt,
+      completedAt: sessions.completedAt,
+      exerciseTitle: exercises.title,
+      exerciseType: exercises.type,
+      difficulty: exercises.difficulty,
+      username: users.username,
+      avatarUrl: users.avatarUrl,
+      verdict: sql<string | null>`(
+        SELECT ${attempts.llmResponse}::jsonb->>'verdict'
+        FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+        LIMIT 1
+      )`,
+      analysis: sql<string | null>`(
+        SELECT ${attempts.llmResponse}::jsonb->>'analysis'
+        FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+        LIMIT 1
+      )`,
+      ownerRole: sql<string | null>`(
+        SELECT v.owner_role FROM variations v WHERE v.id = ${sessions.variationId} LIMIT 1
+      )`,
+    })
+    .from(sessions)
+    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(users, eq(sessions.userId, users.id))
+    .where(eq(sessions.id, sessionId))
+    .limit(1)
+
+  if (!row || (row.status !== 'completed' && row.status !== 'failed')) {
+    return c.json({ error: 'Not found' }, 404)
+  }
+
+  const pullQuote = extractPullQuote(row.analysis ?? '')
+  const completionMinutes = row.completedAt
+    ? Math.round((new Date(row.completedAt).getTime() - new Date(row.startedAt).getTime()) / 60000)
+    : null
+
+  return c.json({
+    sessionId: row.sessionId,
+    exerciseTitle: row.exerciseTitle,
+    exerciseType: row.exerciseType,
+    difficulty: row.difficulty,
+    verdict: row.verdict ?? 'needs_work',
+    pullQuote,
+    completionMinutes,
+    username: row.username,
+    avatarUrl: row.avatarUrl,
+    ownerRole: row.ownerRole,
+  })
+})
+
 function extractPullQuote(analysis: string): string | null {
   if (!analysis || analysis.length < 20) return null
   const sentences = analysis.split(/(?<=[.!?])\s+/).filter((s) => s.length > 20)

@@ -221,7 +221,7 @@ function NoEvaluationCard({ sessionId }: { sessionId: string }) {
 
 function ShareButton({ sessionId, exerciseTitle, verdict }: { sessionId: string; exerciseTitle: string; verdict: string }) {
   const [copied, setCopied] = useState(false)
-  const shareUrl = `${window.location.origin}/kata/${sessionId}/result`
+  const shareUrl = `${window.location.origin}/share/${sessionId}`
 
   async function handleShare() {
     const text = `${verdict.replace(/_/g, ' ')} — ${exerciseTitle} | dojo_`
@@ -270,7 +270,7 @@ function ShareCardPreview({
 }) {
   const verdictLabel = verdict.replace(/_/g, ' ')
   const verdictColor =
-    verdict === 'solid' || verdict === 'exceptional'
+    verdict === 'passed'
       ? 'text-success border-success/40'
       : verdict === 'needs_work'
         ? 'text-danger border-danger/40'
