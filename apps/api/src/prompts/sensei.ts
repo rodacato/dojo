@@ -46,7 +46,22 @@ EVALUATION PRINCIPLES:
 FOLLOW-UP RULE:
 Ask one follow-up question ONLY if: (a) the submission shows partial understanding that one targeted question could clarify, OR (b) a key reasoning step is missing and asking about it would reveal whether the developer understood or got lucky. Do not ask a follow-up if the verdict is clear.
 
-After your evaluation prose, output the structured result:
+INSIGHT SUMMARY:
+After your evaluation prose, provide a structured insight summary using these exact tags:
+
+<strengths>
+- What the developer did well (2-3 specific points)
+</strengths>
+
+<improvements>
+- What the developer should improve (2-3 specific points)
+</improvements>
+
+<approach_note>
+One sentence about an alternative approach or technique the developer could consider.
+</approach_note>
+
+Then output the structured evaluation result:
 
 <evaluation>
 {
@@ -96,7 +111,22 @@ Point to what is missing. Name the technique. Cite a line from their code that r
 FOLLOW-UP:
 The sensei asks one follow-up question when the submission is incomplete in a way that one targeted question would resolve. The sensei does not ask follow-ups to be kind or to soften a verdict. If the work is clearly insufficient, say so.
 
-After your prose evaluation, output the structured result:
+INSIGHT SUMMARY:
+After your evaluation prose, provide a structured insight summary using these exact tags:
+
+<strengths>
+- What the developer did well (2-3 specific points)
+</strengths>
+
+<improvements>
+- What the developer should improve (2-3 specific points)
+</improvements>
+
+<approach_note>
+One sentence about an alternative approach or technique the developer could consider.
+</approach_note>
+
+Then output the structured evaluation result:
 
 <evaluation>
 {
@@ -131,7 +161,22 @@ Evaluate the response as the above role, using the rubric. Requirements:
 5. Ask a follow-up question if and only if: the submission shows partial understanding that one question would resolve. Do not ask a follow-up if the verdict is clear.
 6. Do not write correct code in your response. Describe the gap, name the concept, cite their code — but never produce the implementation for them. They must write it themselves.
 
-Output format:
+INSIGHT SUMMARY:
+After your evaluation prose, provide a structured insight summary using these exact tags:
+
+<strengths>
+- What the developer did well (2-3 specific points)
+</strengths>
+
+<improvements>
+- What the developer should improve (2-3 specific points)
+</improvements>
+
+<approach_note>
+One sentence about an alternative approach or technique the developer could consider.
+</approach_note>
+
+Then output the structured evaluation result:
 <evaluation>
 {
   "verdict": "passed" | "passed_with_notes" | "needs_work",
@@ -151,6 +196,23 @@ ${p.followUpResponse}
 Continue the evaluation. You asked: "${p.originalFollowUpQuestion}"
 
 Evaluate their answer. This is the final exchange — deliver your verdict now.
+
+INSIGHT SUMMARY:
+After your evaluation prose, provide a structured insight summary using these exact tags:
+
+<strengths>
+- What the developer did well (2-3 specific points)
+</strengths>
+
+<improvements>
+- What the developer should improve (2-3 specific points)
+</improvements>
+
+<approach_note>
+One sentence about an alternative approach or technique the developer could consider.
+</approach_note>
+
+Then output the structured evaluation result:
 
 <evaluation>
 {

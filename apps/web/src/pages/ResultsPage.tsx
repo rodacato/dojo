@@ -6,6 +6,7 @@ import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
+import { parseInsight } from '../lib/parse-insight'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -82,6 +83,9 @@ export function ResultsPage() {
               </div>
             </div>
           )}
+
+          {/* Insight cards */}
+          <InsightCards analysis={attempt?.analysis} />
 
           {/* Topics to review */}
           {attempt?.topicsToReview && attempt.topicsToReview.length > 0 && (
@@ -184,6 +188,44 @@ export function ResultsPage() {
 
       {/* Footer */}
       <p className="text-center text-muted/50 text-xs font-mono mt-6">Consistency compounds.</p>
+    </div>
+  )
+}
+
+function InsightCards({ analysis }: { analysis?: string }) {
+  if (!analysis) return null
+  const insight = parseInsight(analysis)
+  const hasAny = insight.strengths || insight.improvements || insight.approachNote
+  if (!hasAny) return null
+
+  return (
+    <div className="flex flex-col gap-4 mb-6">
+      {insight.strengths && (
+        <div className="p-4 bg-surface border-l-2 border-success rounded-md">
+          <p className="text-success text-xs font-mono uppercase tracking-wider mb-2">Strengths</p>
+          <ul className="list-disc list-inside text-secondary text-sm leading-relaxed space-y-1">
+            {insight.strengths.map((s, i) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {insight.improvements && (
+        <div className="p-4 bg-surface border-l-2 border-warning rounded-md">
+          <p className="text-warning text-xs font-mono uppercase tracking-wider mb-2">Improvements</p>
+          <ul className="list-disc list-inside text-secondary text-sm leading-relaxed space-y-1">
+            {insight.improvements.map((s, i) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {insight.approachNote && (
+        <div className="p-4 bg-surface border-l-2 border-accent rounded-md">
+          <p className="text-accent text-xs font-mono uppercase tracking-wider mb-2">Alternative Approach</p>
+          <p className="text-secondary text-sm italic leading-relaxed">{insight.approachNote}</p>
+        </div>
+      )}
     </div>
   )
 }
