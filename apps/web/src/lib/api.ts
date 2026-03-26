@@ -25,6 +25,7 @@ export interface DashboardData {
     sessionsTimedOut: number
   }
   senseiSuggests: string[]
+  weeklyGoal: { target: number; completed: number }
 }
 
 export interface SessionAttempt {

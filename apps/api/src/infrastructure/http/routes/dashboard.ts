@@ -2,7 +2,7 @@ import { and, count, desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, exercises, sessions } from '../../persistence/drizzle/schema'
+import { attempts, exercises, sessions, userPreferences } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { verdictSubquery, calculateStreak } from './query-helpers'
@@ -167,6 +167,21 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     .where(and(eq(sessions.userId, userId), eq(sessions.status, 'failed')))
   const sessionsTimedOut = Number(timedOutRow?.count ?? 0)
 
+  // Weekly goal: completed sessions this week vs target
+  const weekStart = new Date(today)
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay()) // Sunday
+  weekStart.setHours(0, 0, 0, 0)
+  const [weeklyRow] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.startedAt, weekStart)))
+  const weeklyCompleted = Number(weeklyRow?.count ?? 0)
+
+  const prefs = await db.query.userPreferences.findFirst({
+    where: eq(userPreferences.userId, userId),
+  })
+  const weeklyTarget = prefs?.goalWeeklyTarget ?? 3
+
   return c.json({
     streak,
     totalCompleted,
@@ -190,6 +205,10 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       sessionsTimedOut,
     },
     senseiSuggests: weakAreas.slice(0, 3).map((a) => a.topic),
+    weeklyGoal: {
+      target: weeklyTarget,
+      completed: weeklyCompleted,
+    },
   })
 })
 

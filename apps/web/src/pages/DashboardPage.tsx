@@ -38,6 +38,27 @@ export function DashboardPage() {
                 : 'no sessions yet'}
             </p>
           </div>
+          {/* Weekly goal */}
+          {dashboard.weeklyGoal && (
+            <div className="mt-3 pt-3 border-t border-border/30">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] text-muted font-mono lowercase">this week</span>
+                <span className="text-[10px] text-muted font-mono">
+                  {dashboard.weeklyGoal.completed}/{dashboard.weeklyGoal.target}
+                </span>
+              </div>
+              <div className="flex gap-1">
+                {Array.from({ length: dashboard.weeklyGoal.target }, (_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 flex-1 rounded-full ${
+                      i < dashboard.weeklyGoal.completed ? 'bg-accent' : 'bg-border/40'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* ── Today's kata ── */}

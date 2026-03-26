@@ -165,6 +165,7 @@ export const userPreferences = pgTable('user_preferences', {
   level: varchar('level', { length: 20 }).notNull().default('mid'),
   interests: text('interests').array().notNull().default([]),
   randomness: real('randomness').notNull().default(0.3),
+  goalWeeklyTarget: integer('goal_weekly_target').notNull().default(3),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
