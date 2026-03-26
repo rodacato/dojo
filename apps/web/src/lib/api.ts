@@ -170,15 +170,30 @@ export const api = {
     duration: number
     difficulty: string
     type: string
+    status?: string
     languages: string[]
     tags: string[]
     topics: string[]
+    adminNotes?: string | null
     variations: Array<{ ownerRole: string; ownerContext: string }>
   }) =>
     request<{ ok: boolean }>(`/admin/exercises/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+
+  archiveExercise: (id: string) =>
+    request<{ ok: boolean }>(`/admin/exercises/${id}/archive`, { method: 'POST' }),
+
+  getExerciseFeedback: (id: string) =>
+    request<{
+      total: number
+      clarity: Record<string, number>
+      timing: Record<string, number>
+      evaluation: Record<string, number>
+      notes: Array<{ note: string; variationId: string; submittedAt: string }>
+      byVariation: Record<string, { total: number; clarity: Record<string, number>; timing: Record<string, number>; evaluation: Record<string, number> }>
+    }>(`/admin/exercises/${id}/feedback`),
 
   createExercise: (data: {
     title: string

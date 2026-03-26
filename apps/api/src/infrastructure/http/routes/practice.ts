@@ -867,9 +867,11 @@ const updateExerciseSchema = z.object({
   duration: z.number().int().positive(),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   type: z.enum(['code', 'chat', 'whiteboard']),
+  status: z.enum(['draft', 'published', 'archived']).optional(),
   languages: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
   topics: z.array(z.string()).default([]),
+  adminNotes: z.string().nullable().optional(),
   variations: z
     .array(z.object({ ownerRole: z.string().min(1), ownerContext: z.string().min(1) }))
     .min(1),
@@ -881,9 +883,9 @@ adminRoutes.put('/exercises/:id', async (c) => {
   const parsed = updateExerciseSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
 
-  const { title, description, duration, difficulty, type, languages, tags, topics } = parsed.data
+  const { title, description, duration, difficulty, type, languages, tags, topics, status, adminNotes } = parsed.data
 
-  // Update exercise fields
+  // Update exercise fields + increment version
   await db
     .update(exercises)
     .set({
@@ -895,6 +897,10 @@ adminRoutes.put('/exercises/:id', async (c) => {
       language: JSON.stringify(languages),
       tags: JSON.stringify(tags),
       topics: JSON.stringify(topics),
+      ...(status ? { status } : {}),
+      ...(adminNotes !== undefined ? { adminNotes } : {}),
+      version: sql`${exercises.version} + 1`,
+      updatedAt: new Date(),
     })
     .where(eq(exercises.id, exerciseId))
 
@@ -909,6 +915,19 @@ adminRoutes.put('/exercises/:id', async (c) => {
     })
   }
 
+  return c.json({ ok: true })
+})
+
+// ---------------------------------------------------------------------------
+// POST /admin/exercises/:id/archive — Archive an exercise
+// ---------------------------------------------------------------------------
+
+adminRoutes.post('/exercises/:id/archive', async (c) => {
+  const exerciseId = c.req.param('id')!
+  await db
+    .update(exercises)
+    .set({ status: 'archived', updatedAt: new Date() })
+    .where(eq(exercises.id, exerciseId))
   return c.json({ ok: true })
 })
 

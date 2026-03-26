@@ -54,15 +54,15 @@
 ## Part 3 — Admin Review + Exercise Lifecycle
 
 ### Feedback Review
-- [ ] Admin Edit Exercise page: aggregated feedback section (clarity/timing/evaluation distributions)
-- [ ] Feedback breakdown by variation (which sensei persona gets "missed the point"?)
-- [ ] Individual notes list with dates
-- [ ] Admin notes field — creator can leave internal notes about edit decisions
+- [x] Admin Edit Exercise page: aggregated feedback section (clarity/timing/evaluation distributions)
+- [x] Feedback breakdown by variation (which sensei persona gets "missed the point"?)
+- [x] Individual notes list with dates
+- [x] Admin notes field — creator can leave internal notes about edit decisions
 
 ### Exercise Lifecycle
-- [ ] Archive exercise action (status → 'archived', removed from catalog, historical sessions preserved)
-- [ ] Version increment on edit (display version number in admin)
-- [ ] Exercise status indicator in admin list (published / draft / archived)
+- [x] Archive exercise action (POST /admin/exercises/:id/archive, confirm dialog)
+- [x] Version increment on edit (sql`version + 1` + updated_at on every PUT)
+- [x] Exercise status indicator in admin list (already had StatusBadge component)
 
 ### Backlog
 - Full version history / diff view

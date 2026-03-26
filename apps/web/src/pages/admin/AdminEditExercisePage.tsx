@@ -18,17 +18,31 @@ interface FormState {
   duration: number
   difficulty: Difficulty
   type: ExerciseType
+  status: string
   languages: string[]
   tags: string[]
   topics: string[]
+  adminNotes: string
   variations: VariationDraft[]
+}
+
+interface FeedbackData {
+  total: number
+  clarity: Record<string, number>
+  timing: Record<string, number>
+  evaluation: Record<string, number>
+  notes: Array<{ note: string; variationId: string; submittedAt: string }>
+  byVariation: Record<string, { total: number; clarity: Record<string, number>; timing: Record<string, number>; evaluation: Record<string, number> }>
 }
 
 export function AdminEditExercisePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [form, setForm] = useState<FormState | null>(null)
+  const [feedback, setFeedback] = useState<FeedbackData | null>(null)
+  const [variationMap, setVariationMap] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
+  const [archiving, setArchiving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -40,15 +54,21 @@ export function AdminEditExercisePage() {
         duration: ex.duration,
         difficulty: ex.difficulty as Difficulty,
         type: ex.type as ExerciseType,
+        status: ex.status,
         languages: ex.languages,
         tags: ex.tags,
         topics: ex.topics,
+        adminNotes: (ex as Record<string, unknown>).adminNotes as string ?? '',
         variations: ex.variations.map((v) => ({
           ownerRole: v.ownerRole,
           ownerContext: v.ownerContext,
         })),
       })
+      const vMap: Record<string, string> = {}
+      ex.variations.forEach((v, i) => { vMap[v.id] = `Variation ${i + 1}` })
+      setVariationMap(vMap)
     })
+    api.getExerciseFeedback(id).then(setFeedback).catch(() => {})
   }, [id])
 
   if (!form) return <PageLoader />
@@ -79,15 +99,28 @@ export function AdminEditExercisePage() {
         duration: form.duration,
         difficulty: form.difficulty,
         type: form.type,
+        status: form.status,
         languages: form.languages,
         tags: form.tags,
         topics: form.topics,
+        adminNotes: form.adminNotes || null,
         variations: form.variations,
       })
       navigate('/admin/exercises')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
+    }
+  }
+
+  async function handleArchive() {
+    if (!id || !confirm('Archive this exercise? It will be removed from the catalog.')) return
+    setArchiving(true)
+    try {
+      await api.archiveExercise(id)
+      navigate('/admin/exercises')
+    } catch {
+      setArchiving(false)
     }
   }
 
@@ -224,13 +257,82 @@ export function AdminEditExercisePage() {
           </div>
         </div>
 
-        <button
-          onClick={handleSave}
-          disabled={saving || !form.title || !form.description || form.variations.length === 0}
-          className="w-full py-3 bg-accent text-primary font-mono rounded-sm hover:bg-accent/90 disabled:opacity-40"
-        >
-          {saving ? 'Saving...' : 'Update exercise'}
-        </button>
+        {/* Admin Notes */}
+        <Field label="Admin Notes (internal)">
+          <textarea
+            value={form.adminNotes}
+            onChange={(e) => update('adminNotes', e.target.value)}
+            placeholder="Internal notes about edit decisions, feedback responses..."
+            className="admin-input h-24"
+          />
+        </Field>
+
+        {/* Feedback Section */}
+        {feedback && feedback.total > 0 && (
+          <div className="border border-border/40 rounded-sm p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-muted text-xs font-mono uppercase tracking-wider">
+                Kata Feedback ({feedback.total} sessions)
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <SignalBar label="Description clarity" data={feedback.clarity} labels={{ clear: 'Clear', somewhat_unclear: 'Unclear', confusing: 'Confusing' }} colors={{ clear: 'text-success', somewhat_unclear: 'text-warning', confusing: 'text-danger' }} />
+              <SignalBar label="Time limit" data={feedback.timing} labels={{ about_right: 'Right', too_short: 'Too short', too_long: 'Too long' }} colors={{ about_right: 'text-success', too_short: 'text-danger', too_long: 'text-warning' }} />
+              <SignalBar label="Evaluation" data={feedback.evaluation} labels={{ fair_and_relevant: 'Fair', too_generic: 'Generic', missed_the_point: 'Missed' }} colors={{ fair_and_relevant: 'text-success', too_generic: 'text-warning', missed_the_point: 'text-danger' }} />
+            </div>
+
+            {/* By variation */}
+            {Object.keys(feedback.byVariation).length > 1 && (
+              <div className="border-t border-border/30 pt-3">
+                <p className="text-muted text-[10px] font-mono uppercase tracking-wider mb-2">by variation</p>
+                {Object.entries(feedback.byVariation).map(([vId, vData]) => (
+                  <div key={vId} className="flex items-center justify-between text-xs py-1">
+                    <span className="text-secondary font-mono">{variationMap[vId] ?? vId.slice(0, 8)}</span>
+                    <span className="text-muted font-mono">
+                      {vData.total} sessions
+                      {vData.evaluation?.['missed_the_point'] ? ` · ${vData.evaluation['missed_the_point']} missed` : ''}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Notes */}
+            {feedback.notes.length > 0 && (
+              <div className="border-t border-border/30 pt-3 space-y-2">
+                <p className="text-muted text-[10px] font-mono uppercase tracking-wider">notes</p>
+                {feedback.notes.map((n, i) => (
+                  <div key={i} className="text-xs text-secondary bg-base p-2 rounded-sm">
+                    <span className="text-muted/50 font-mono text-[10px] mr-2">
+                      {new Date(n.submittedAt).toLocaleDateString()}
+                    </span>
+                    {n.note}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-3">
+          <button
+            onClick={handleSave}
+            disabled={saving || !form.title || !form.description || form.variations.length === 0}
+            className="flex-1 py-3 bg-accent text-primary font-mono rounded-sm hover:bg-accent/90 disabled:opacity-40"
+          >
+            {saving ? 'Saving...' : 'Update exercise'}
+          </button>
+          {form.status !== 'archived' && (
+            <button
+              onClick={handleArchive}
+              disabled={archiving}
+              className="px-4 py-3 border border-danger/40 text-danger font-mono text-sm rounded-sm hover:bg-danger/10 disabled:opacity-40"
+            >
+              {archiving ? '...' : 'Archive'}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -243,6 +345,35 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
         {label}
       </label>
       {children}
+    </div>
+  )
+}
+
+function SignalBar({
+  label,
+  data,
+  labels,
+  colors,
+}: {
+  label: string
+  data: Record<string, number>
+  labels: Record<string, string>
+  colors: Record<string, string>
+}) {
+  const entries = Object.entries(data).sort((a, b) => b[1] - a[1])
+  if (entries.length === 0) return null
+
+  return (
+    <div>
+      <p className="text-muted text-[10px] font-mono uppercase mb-1.5">{label}</p>
+      <div className="space-y-1">
+        {entries.map(([key, count]) => (
+          <div key={key} className="flex items-center justify-between text-xs">
+            <span className={colors[key] ?? 'text-secondary'}>{labels[key] ?? key}</span>
+            <span className="font-mono text-muted">{count}</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
