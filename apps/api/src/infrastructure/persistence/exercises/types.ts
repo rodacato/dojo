@@ -33,5 +33,6 @@ export interface SeedExercise {
   languages: string[]
   tags: string[]
   topics: string[]
+  testCode?: string // predefined tests for code execution (Piston)
   variations: Array<{ ownerRole: string; ownerContext: string }>
 }

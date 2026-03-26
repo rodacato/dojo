@@ -78,6 +78,7 @@ export async function seed(): Promise<void> {
           topics: exercise.topics,
           ownerRole: exercise.variations[0]!.ownerRole,
           ownerContext: exercise.variations[0]!.ownerContext,
+          testCode: exercise.testCode ?? null,
           createdBy: SYSTEM_USER_ID,
           createdAt: new Date('2026-01-01T00:00:00Z'),
         })
@@ -86,6 +87,7 @@ export async function seed(): Promise<void> {
           set: {
             title: exercise.title,
             description: exercise.description,
+            testCode: exercise.testCode ?? null,
             status: 'published',
           },
         })

@@ -6,6 +6,7 @@ import { useTypingReveal } from '../hooks/useTypingReveal'
 import { useRotatingMessage } from '../hooks/useRotatingMessage'
 import { VerdictBadge } from '../components/ui/Badge'
 import { StreamingText } from '../components/ui/StreamingText'
+import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -71,14 +72,16 @@ export function SenseiEvalPage() {
     submit(attemptId)
   }
 
+  const isExecuting = state.status === 'executing'
   const isStreaming = state.status === 'streaming'
   const hasResult = state.status === 'evaluation' || state.status === 'complete'
   const tokens = 'tokens' in state ? (state.tokens as string) : ''
+  const executionResult = 'executionResult' in state ? state.executionResult : undefined
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
   const senseiInitials = session?.ownerRole?.split(' ').map(w => w[0]).slice(0, 2).join('') ?? 'S'
   const revealedTokens = useTypingReveal(tokens, !isStreaming)
   const isLoadingStream = state.status === 'idle' || state.status === 'connecting' || state.status === 'ready' || (isStreaming && !tokens)
-  const isWaiting = isLoadingStream && history.length === 0
+  const isWaiting = (isLoadingStream || isExecuting || state.status === 'execution_done') && !tokens
 
   return (
     <div className="h-screen bg-base flex flex-col">
@@ -108,8 +111,34 @@ export function SenseiEvalPage() {
         {/* Evaluating loader — full center */}
         {isWaiting && (
           <div className="flex flex-col items-center justify-center h-full gap-5">
-            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-            <p className="font-mono text-secondary text-sm animate-pulse">{evalMessage}</p>
+            {isExecuting && (
+              <>
+                <div className="w-8 h-8 border-2 border-warning border-t-transparent rounded-full animate-spin" />
+                <p className="font-mono text-warning text-sm">Running tests...</p>
+              </>
+            )}
+            {state.status === 'execution_done' && (
+              <div className="w-full max-w-md">
+                <ExecutionResultCard result={state.executionResult} />
+                <div className="flex flex-col items-center gap-3 mt-4">
+                  <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                  <p className="font-mono text-secondary text-sm animate-pulse">{evalMessage}</p>
+                </div>
+              </div>
+            )}
+            {!isExecuting && state.status !== 'execution_done' && (
+              <>
+                <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                <p className="font-mono text-secondary text-sm animate-pulse">{evalMessage}</p>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Execution result card (shown above sensei when streaming starts) */}
+        {!isWaiting && executionResult && (
+          <div className="mb-4">
+            <ExecutionResultCard result={executionResult} />
           </div>
         )}
 

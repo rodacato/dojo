@@ -71,10 +71,11 @@
 - [x] SubmitAttempt: accepts executionContext param, injects into LLM prompt
 - [x] WS handler: runs code via queue before LLM, sends {executing} + {execution_result}
 - [x] Sensei prompt context: 4 variants (all pass, some fail, compile error, timeout)
-- [ ] Frontend: show test results before sensei streaming in SenseiEvalPage
+- [x] Frontend: ExecutionResultCard component + SenseiEvalPage integration (shows during wait + above sensei stream)
+- [x] useEvaluationStream: executing + execution_done + executionResult states
 
 ### Seed
-- [ ] Add testCode to 5-10 existing code exercises
+- [ ] Add testCode to 5-10 existing code exercises (deferred — current exercises are prose/refactoring, new test-friendly exercises needed)
 
 ---
 

@@ -11,19 +11,29 @@ export interface EvaluationResult {
   isFinalEvaluation: boolean
 }
 
+export interface ExecutionResult {
+  stdout: string
+  stderr: string
+  exitCode: number
+  timedOut: boolean
+  executionTimeMs: number
+}
+
 export type EvalStreamState =
   | { status: 'idle' }
   | { status: 'connecting' }
   | { status: 'ready' }
-  | { status: 'streaming'; tokens: string }
-  | { status: 'evaluation'; result: EvaluationResult; tokens: string }
-  | { status: 'complete'; result: EvaluationResult; tokens: string }
+  | { status: 'executing' }
+  | { status: 'execution_done'; executionResult: ExecutionResult }
+  | { status: 'streaming'; tokens: string; executionResult?: ExecutionResult }
+  | { status: 'evaluation'; result: EvaluationResult; tokens: string; executionResult?: ExecutionResult }
+  | { status: 'complete'; result: EvaluationResult; tokens: string; executionResult?: ExecutionResult }
   | { status: 'error'; code: string; message: string }
 
 interface WsMessage {
-  type: 'ready' | 'token' | 'evaluation' | 'complete' | 'error'
+  type: 'ready' | 'executing' | 'execution_result' | 'token' | 'evaluation' | 'complete' | 'error'
   chunk?: string
-  result?: EvaluationResult
+  result?: EvaluationResult | ExecutionResult
   code?: string
   message?: string
   isFinal?: boolean
@@ -33,6 +43,7 @@ export function useEvaluationStream(sessionId: string) {
   const [state, setState] = useState<EvalStreamState>({ status: 'idle' })
   const wsRef = useRef<WebSocket | null>(null)
   const latestResult = useRef<EvaluationResult | null>(null)
+  const latestExecResult = useRef<ExecutionResult | undefined>(undefined)
   const navigate = useNavigate()
 
   const connect = useCallback(() => {
@@ -50,20 +61,31 @@ export function useEvaluationStream(sessionId: string) {
           setState({ status: 'ready' })
           break
 
+        case 'executing':
+          setState({ status: 'executing' })
+          break
+
+        case 'execution_result':
+          latestExecResult.current = msg.result as ExecutionResult
+          setState({ status: 'execution_done', executionResult: msg.result as ExecutionResult })
+          break
+
         case 'token':
           setState((prev) => ({
             status: 'streaming',
             tokens: (prev.status === 'streaming' ? prev.tokens : '') + (msg.chunk ?? ''),
+            executionResult: latestExecResult.current,
           }))
           break
 
         case 'evaluation':
           // Store result for complete handler — React may batch these updates
-          latestResult.current = msg.result!
+          latestResult.current = msg.result as EvaluationResult
           setState((prev) => ({
             status: 'evaluation',
-            result: msg.result!,
+            result: msg.result as EvaluationResult,
             tokens: 'tokens' in prev ? prev.tokens : '',
+            executionResult: latestExecResult.current,
           }))
           break
 
@@ -75,6 +97,7 @@ export function useEvaluationStream(sessionId: string) {
               status: 'complete',
               result,
               tokens: 'tokens' in prev ? prev.tokens : '',
+              executionResult: latestExecResult.current,
             }
             if (result.isFinalEvaluation) {
               setTimeout(() => navigate(`/kata/${sessionId}/result`), 1500)
@@ -100,6 +123,7 @@ export function useEvaluationStream(sessionId: string) {
 
   const submit = useCallback((attemptId: string) => {
     wsRef.current?.send(JSON.stringify({ type: 'submit', attemptId }))
+    latestExecResult.current = undefined
     setState({ status: 'streaming', tokens: '' })
   }, [])
 
