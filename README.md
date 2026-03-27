@@ -100,11 +100,12 @@ Web app: `http://localhost:5173` — API: `http://localhost:3001`
 ### Commands
 
 ```bash
-pnpm dev                    # Start web + api in watch mode
-pnpm build                  # Build all workspaces
-pnpm lint                   # Lint all workspaces
-pnpm typecheck              # Type-check all workspaces
-pnpm test --filter=api      # Run API unit + integration tests
+pnpm dev                              # Start web + api in watch mode
+pnpm build                            # Build all workspaces
+pnpm lint                             # Lint all workspaces
+pnpm typecheck                        # Type-check all workspaces
+pnpm test --filter=api                # Run API unit + integration tests
+pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript + JS DOM)
 ```
 
 ---
@@ -125,7 +126,8 @@ pnpm test --filter=api      # Run API unit + integration tests
 
 | Feature | Description |
 |---|---|
-| **Code execution** | Code kata are executed in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
+| **Courses** | Public learning paths at `/learn` — step-by-step exercises with instant feedback, no login required. TypeScript runs via Piston; JavaScript DOM exercises run in a browser iframe sandbox (zero server cost) |
+| **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
 | **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
 | **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into exercise quality |
 | **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, exercise info, and OG image for social previews |
