@@ -1,111 +1,127 @@
-# Active Block: Sprint 013 — Hardening + Courses Pre-work
+# Active Block: Sprint 014 — Courses MVP
 
 **Started:** 2026-03-27
-**Phase:** Phase 1 Alpha hardening
+**Phase:** Phase 1 Alpha
+**PRD:** [019 — Sprint 014 Courses MVP](../prd/019-sprint-014-courses-mvp.md)
+**Spec:** [020 — Courses MVP](../specs/020-courses-mvp.md)
+**ADR:** [015 — Courses bounded context](../adr/015-courses-bounded-context.md)
 
-**Expected outcome:** All Sprint 012 deferred items resolved. WS handler tested. Piston verified in production. Courses DB schema ready for Sprint 014. Anonymous rate limiting in place.
+**Expected outcome:** One playable course ("TypeScript Fundamentals") live at `/learn`. Anonymous users can browse, code, and run tests. Authenticated users get persistent progress. The anonymous experience has something valuable beyond the landing page.
 
-**Strategy:** Resolve deferred tech debt first, then pre-work for courses that doesn't depend on content or UX.
-
----
-
-## Part 0 — Piston Production Verification
-
-- [ ] Confirm Piston accessory boots via Kamal (GitHub vars: PISTON_URL, CODE_EXECUTION_ENABLED)
-- [ ] Verify testCode exercises run end-to-end in prod
-- [ ] Verify sensei receives and cites execution results
+**Strategy:** Backend first (repos → use cases → routes → seed), then frontend (catalog → player → progress). Carry-forward items from Sprint 013 resolved when deploy happens.
 
 ---
 
-## Part 1 — Domain Cleanup
+## Part 1 — Shared Schemas
 
-- [x] Session.isExpired(durationMinutes) domain method — encapsulate 10% grace window
-- [x] Move timer check from practice.ts route handler to domain method
-- [x] EvaluationResult types — insight parsed client-side from analysis text (by design, no type change needed)
-
----
-
-## Part 2 — Route + API Client Split
-
-### Routes
-- [x] Extract feedback.ts (POST/GET /sessions/:id/feedback)
-- [x] Extract preferences.ts (GET/PUT /preferences)
-- [x] Update router.ts — 7 route files mounted
-
-### API Client
-- [x] Split api.ts into modules: client.ts, types.ts, auth.ts, practice.ts, admin.ts, profile.ts
-- [x] Barrel export from api/index.ts — api.ts is thin re-export shim
+- [x] `packages/shared/src/schemas.ts` — executeStepSchema, trackProgressSchema, courseSlugSchema, courseDTOSchema, stepDTOSchema, lessonDTOSchema
+- [x] `packages/shared/src/types.ts` — CourseDTO, CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepRequest/Response, CourseProgressDTO
+- [x] Export from shared package barrel
 
 ---
 
-## Part 3 — WebSocket Handler Tests
+## Part 2 — Repository Adapters
 
-- [x] Extract handleSubmit/handleReconnect into ws-handlers.ts
-- [x] Tests: ATTEMPT_NOT_FOUND for unknown attemptId
-- [x] Tests: SESSION_NOT_FOUND when session missing
-- [x] Tests: ATTEMPT_LIMIT_REACHED (max 2)
-- [x] Tests: reconnect cache miss, token replay, complete+close
+- [x] `PostgresCourseRepository` — findAllPublished(), findBySlug() with lesson/step joins
+- [x] `PostgresCourseProgressRepository` — findByUserAndCourse(), save() with upsert
+- [x] Registered in container.ts
 
 ---
 
-## Part 4 — UX Polish
+## Part 3 — Application Use Cases
 
-- [x] Share card: approach_note as pull quote (fallback to truncated analysis)
-- [x] Weekly goal target: GET/PUT /preferences includes goalWeeklyTarget (1-7)
-- [x] WCAG audit: replaced old #475569 in email templates + OG image, no bypass classes found
-
----
-
-## Part 5 — Performance Verification
-
-- [ ] EXPLAIN ANALYZE on dashboard queries in production (requires next deploy)
-- [ ] Benchmark dashboard <200ms with existing session data
-- [ ] Verify indexes (migration 0009) are active
+- [x] `GetCourseList` — returns CourseSummary[] (no step content)
+- [x] `GetCourseBySlug` — returns full Course or null
+- [x] `ExecuteStep` — delegates to CodeExecutionPort, structured result with test parsing
+- [x] `TrackProgress` — append step to completedSteps, idempotent
+- [x] `GetCourseProgress` — returns completedSteps for user+course
 
 ---
 
-## Part 6 — Courses Pre-work (ADR 015)
+## Part 4 — Route Handlers
 
-### DB Schema
-- [x] Migration 0011: courses, lessons, steps, course_progress tables + indexes
-- [x] Drizzle schema + relations
-
-### Domain skeleton
-- [x] domain/learning/course.ts — Course, Lesson, Step interfaces
-- [x] domain/learning/ports.ts — CourseRepositoryPort, CourseProgressPort
-- [x] domain/learning/values.ts — StepType, CourseStatus
-
-### Public route middleware
-- [x] /learn/* routes public (no auth), mounted in router.ts
+- [x] `GET /learn/courses` — list published courses
+- [x] `GET /learn/courses/:slug` — full course with lessons/steps
+- [x] `POST /learn/execute` — run code via Piston (rate limited)
+- [x] `POST /learn/progress` — save step completion (auth required)
+- [x] `GET /learn/progress/:courseId` — get progress (auth required)
+- [x] Zod validation on all inputs
 
 ---
 
-## Part 7 — Anonymous Rate Limiting
+## Part 5 — Seed Data
 
-- [x] executionLimiter: 10/min per IP (anonymous Piston)
-- [x] authExecutionLimiter: 60/min per IP (authenticated)
-- [x] Applied to POST /learn/execute stub
-- [ ] Test: 11th anonymous execution returns 429 (requires integration test)
+- [x] "TypeScript Fundamentals" course — 3 lessons, 9 steps
+- [x] Lesson 1: Variables & Types (explanation + 2 exercises)
+- [x] Lesson 2: Arrays & Objects (explanation + 2 exercises)
+- [x] Lesson 3: Control Flow (explanation + exercise + challenge)
+- [x] Seed script: `pnpm --filter=api db:seed:courses`
 
 ---
 
-## Backlog Cleanup
+## Part 6 — Backend Tests
 
-- [x] Interest-based selection marked as completed in backlog
-- [ ] Archive Sprint 012 to sprints/archive/
+- [x] GetCourseList — published only, summary counts
+- [x] GetCourseBySlug — found and not-found
+- [x] ExecuteStep — pass, fail, timeout scenarios
+- [x] TrackProgress — create, append, idempotent
+- [x] 10 new tests, 72 total across 19 files
+
+---
+
+## Part 7 — Frontend: Course Catalog
+
+- [x] `/learn` page — grid of course cards
+- [x] Course card: title, description, language badge, lesson count, accent color
+- [x] Empty state
+- [x] Route registered as public (no auth), lazy loaded
+
+---
+
+## Part 8 — Frontend: Course Player
+
+- [x] `/learn/:slug` page — sidebar + main content area
+- [x] LessonNav — collapsible sidebar with lesson/step navigation
+- [x] StepContent — markdown instruction renderer
+- [x] StepEditor — CodeMirror + "Run" button + test results panel
+- [x] TestResults — pass/fail per test case with output
+- [x] Auto-advance on all tests passing
+
+---
+
+## Part 9 — Progress Tracking
+
+- [x] localStorage: `dojo_course_progress_{courseId}` → string[] of step IDs
+- [x] Authenticated: POST /learn/progress on step completion
+- [x] On page load (auth): merge localStorage ∪ server progress
+- [x] Completed steps show checkmark in LessonNav
+
+---
+
+## Part 10 — Navigation
+
+- [x] "Learn" link in Sidebar (authenticated AppShell) with graduation cap icon
+- [x] "Learn" link in BottomNav (mobile)
+- [ ] Landing page: "Try a free course" CTA → `/learn` (deferred — needs design review)
+
+---
+
+## Carry-forward from Sprint 013
+
+- [ ] Piston production verification (Part 0) — on next deploy
+- [ ] Dashboard EXPLAIN ANALYZE (Part 5) — on next deploy
+- [ ] Rate limiter integration test (Part 7)
+- [ ] Archive Sprint 012
 
 ---
 
 ## Verification
 
-1. ~~Piston runs testCode exercises in production~~ (Part 0 — pending deploy)
-2. ✅ Session.isExpired() used in route handler
-3. ✅ practice.ts at 374 lines (was 1,312 → 492 → 374)
-4. ✅ API client split into 7 modules
-5. ✅ WS handler has 6 new tests (62 total)
-6. ✅ Share card shows approach_note
-7. ✅ WCAG AA: old color replaced in 3 files
-8. ~~Dashboard <200ms in production~~ (Part 5 — pending deploy)
-9. ✅ Courses tables in schema (4 tables + indexes)
-10. ✅ Rate limiter configured (10/min anon, 60/min auth)
-11. ✅ All tests pass: 62/62 across 15 files
+1. [x] Typecheck passes (`pnpm typecheck`)
+2. [x] Lint passes (`pnpm lint`)
+3. [x] All tests pass: 72/72 across 19 files
+4. [ ] Anonymous user can browse `/learn` and see course catalog — requires running app
+5. [ ] Anonymous user can open a course and complete a step — requires running app
+6. [ ] Code execution works via Piston — requires Piston running
+7. [ ] Progress persists in localStorage (anonymous) — requires running app
+8. [ ] Authenticated user progress persists server-side — requires running app

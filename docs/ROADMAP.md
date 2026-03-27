@@ -58,6 +58,7 @@ Does not start until Phase 0 is in real daily use.
 | sprint-011 — Refactoring + Landing + Execution + Interests + E2E | Route split, contrast fix, landing Stitch redesign, Piston code execution, interest-based selection, Playwright smoke tests | ✅ Closed |
 | sprint-012 — Alpha-Ready | 15 testCode exercises, post-kata insight screen, dashboard N+1 fix, weekly goals | ✅ Closed |
 | sprint-013 — Hardening + Courses Pre-work | Route/API split, WS tests, UX polish, courses DB schema, rate limiting, Piston Kamal | ✅ Closed |
+| sprint-014 — Courses MVP | Full vertical slice: repos, use cases, routes, seed course, frontend catalog + player, progress tracking | 🔄 Active |
 
 ---
 
@@ -93,6 +94,7 @@ Does not start until Phase 0 is in real daily use.
 | 025 | 404 page, sensei persona, reconnect UI | Custom 404, sensei initials badge, WS reconnect button | sprint-005 |
 | 026 | Invitation system | DB table, OAuth gate, redeem flow, admin UI, Resend emails | sprint-005 |
 | 027 | Admin edit exercise | GET/PUT endpoints, edit page, clickable table rows | sprint-005 |
+| 020 | [Courses MVP](specs/020-courses-mvp.md) | Repos, use cases, routes, seed data, frontend catalog + player | sprint-014 |
 
 ---
 
@@ -119,6 +121,7 @@ Does not start until Phase 0 is in real daily use.
 | 016 | [Sprint 004 planning](prd/016-sprint-004-planning.md) | Polish, branding & dogfooding sprint scope | ✅ Delivered |
 | 017 | [Sprint 005 planning](prd/017-sprint-005-planning.md) | Hardening + Phase 1 prep scope | ✅ Delivered |
 | 018 | [Sprint 005 addendum](prd/018-sprint-005-addendum.md) | Deploy config, request access form, backlog cleanup | ✅ Delivered |
+| 019 | [Sprint 014 Courses MVP](prd/019-sprint-014-courses-mvp.md) | Courses MVP scope — one course, full vertical slice | ✅ Advancing to spec |
 
 ---
 
@@ -133,6 +136,14 @@ Does not start until Phase 0 is in real daily use.
 | 005 | [Creator auth env var](adr/005-creator-auth-env-var.md) | `CREATOR_GITHUB_ID` env var in Phase 0; DB column in Phase 1 | ✅ Accepted |
 | 006 | [Mood/duration not persisted](adr/006-mood-duration-not-persisted.md) | Transient query params only — no mood history tracking | ✅ Accepted |
 | 007 | [Bearer token over cookies](adr/007-bearer-token-over-cookies.md) | Bearer header replaces cross-domain cookies; server-side sessions unchanged | ✅ Accepted |
+| 008 | [Pending attempts memory bridge](adr/008-pending-attempts-memory-bridge.md) | In-memory bridge for pending attempts during WS evaluation | ✅ Accepted |
+| 009 | [WebSocket stream cache reconnect](adr/009-websocket-stream-cache-reconnect.md) | Cache partial streams for WS reconnection | ✅ Accepted |
+| 010 | [No API versioning Phase 0](adr/010-no-api-versioning-phase0.md) | Skip API versioning until public opening | ✅ Accepted |
+| 011 | [Cloudflare Tunnel HTTPS](adr/011-cloudflare-tunnel-https.md) | Cloudflare Tunnel for HTTPS termination | ✅ Accepted |
+| 012 | [AppShell sidebar navigation](adr/012-appshell-sidebar-navigation.md) | Sidebar nav with AppShell layout | ✅ Accepted |
+| 013 | [Route file split](adr/013-route-file-split.md) | Split monolithic practice.ts into multiple route files | ✅ Accepted |
+| 014 | [Piston code execution](adr/014-piston-code-execution.md) | Piston sandbox for testCode exercises | ✅ Accepted |
+| 015 | [Courses bounded context](adr/015-courses-bounded-context.md) | Learning as separate bounded context from Practice | ✅ Accepted |
 
 ---
 
