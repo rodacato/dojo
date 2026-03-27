@@ -71,13 +71,19 @@ export function LandingPage() {
               You've been delegating the thinking. The muscle is atrophying.
               Dojo is the deliberate resistance.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-4">
               <a
                 href="#access"
                 className="px-5 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
               >
                 Request access
               </a>
+              <Link
+                to="/learn"
+                className="px-5 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent/60 hover:text-primary transition-colors"
+              >
+                Try a free course →
+              </Link>
               <a
                 href="#problem"
                 className="text-muted text-sm font-mono hover:text-secondary transition-colors"
