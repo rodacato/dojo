@@ -6,6 +6,7 @@ services:
     command: sleep infinity
     depends_on:
       - db
+      - piston
 
   db:
     image: postgres:16-alpine
@@ -21,7 +22,9 @@ services:
 
   piston:
     image: ghcr.io/engineer-man/piston
+    platform: linux/amd64
     restart: unless-stopped
+    privileged: true
     tmpfs:
       - /piston/jobs:exec,size=256m
     ports:
