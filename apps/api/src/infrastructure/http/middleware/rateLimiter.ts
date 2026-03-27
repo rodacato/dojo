@@ -32,3 +32,20 @@ export const sessionLimiter = rateLimiter({
   keyGenerator,
   message: { error: 'Session limit reached. You can start up to 5 kata per hour.' },
 })
+
+// 10 requests per minute per IP — for anonymous Piston code execution (courses)
+// Authenticated users get 60/min. Per Marta: anonymous is the biggest attack surface.
+export const executionLimiter = rateLimiter({
+  windowMs: 60 * 1000,
+  limit: 10,
+  keyGenerator,
+  message: { error: 'Execution limit reached. Sign in for higher limits.' },
+})
+
+// 60 requests per minute per IP — for authenticated Piston code execution
+export const authExecutionLimiter = rateLimiter({
+  windowMs: 60 * 1000,
+  limit: 60,
+  keyGenerator,
+  message: { error: 'Execution limit reached. Try again in a minute.' },
+})
