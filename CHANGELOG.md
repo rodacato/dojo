@@ -4,6 +4,22 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 015 — iframe Sandbox + JavaScript DOM Course (2026-03-27)
+**Phase 1 — Alpha**
+
+The sprint where the course catalog got a second language and the browser became the execution engine.
+
+- **iframe sandbox runner** — `IframeSandboxRunner` executes `javascript-dom` course steps in `<iframe sandbox="allow-scripts">`. No server call, no Piston — the browser is the runtime. Results communicated via `postMessage`. Same `ExecuteStepResponse` contract as the Piston path. (ADR 016)
+- **StepEditor routing** — `CoursePlayerPage` now routes by `course.language`: `javascript-dom` → iframe runner, everything else → `POST /learn/execute`. Badge "Runs in browser" shown when iframe is active.
+- **JavaScript DOM Fundamentals course** — 3 lessons, 9 steps: Selecting Elements (`querySelector`, `querySelectorAll`), Modifying Elements (`textContent`, `classList`, `setAttribute`), Events (`addEventListener`, event delegation). Step 3.3 is a pre-filled bug challenge — `e.target` vs `e.target.closest("li")` in event delegation.
+- **Seed runner refactored** — `seedOneCourse()` helper supports N courses. `db:seed:courses` now seeds both TypeScript Fundamentals and JavaScript DOM Fundamentals.
+- **Landing page CTA** — "Try a free course →" button added to hero alongside "Request access".
+- **Rate limiter integration test** — Verifies 10th request succeeds and 11th returns 429 for anonymous Piston execution. Also tests per-IP isolation.
+- **Coverage** — `application/learning` layer: 100% across all metrics. `GetCourseProgress` (was 0%), `ExecuteStep` fallback branches added. 79 tests / 21 files.
+- **Docs + env** — README updated with Courses feature and `db:seed:courses` command. `.env.example` PISTON_RUN_TIMEOUT corrected 15000→3000.
+
+---
+
 ## Sprint 014 — Courses MVP (2026-03-27)
 **Phase 1 — Alpha**
 

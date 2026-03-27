@@ -59,7 +59,7 @@ Does not start until Phase 0 is in real daily use.
 | sprint-012 — Alpha-Ready | 15 testCode exercises, post-kata insight screen, dashboard N+1 fix, weekly goals | ✅ Closed |
 | sprint-013 — Hardening + Courses Pre-work | Route/API split, WS tests, UX polish, courses DB schema, rate limiting, Piston Kamal | ✅ Closed |
 | [sprint-014 — Courses MVP](sprints/archive/sprint-014-courses-mvp.md) | Full vertical slice: repos, use cases, routes, seed course, frontend catalog + player, progress tracking | ✅ Closed |
-| sprint-015 — iframe Sandbox + JS DOM Course | iframe runner para ejercicios frontend, segundo curso JavaScript DOM Fundamentals, carry-forwards | 🔄 Active |
+| [sprint-015 — iframe Sandbox + JS DOM Course](sprints/archive/sprint-015-iframe-dom-course.md) | iframe runner para ejercicios frontend, segundo curso JavaScript DOM Fundamentals, carry-forwards | ✅ Closed |
 
 ---
 
