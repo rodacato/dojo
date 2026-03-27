@@ -113,25 +113,30 @@ greet("TypeScript") // "Hello, TypeScript!"
     starterCode: `function greet(name: string): string {
   // Your code here
 }`,
-    testCode: `import { describe, it, expect } from 'vitest'
+    testCode: `// mini test runner
+let _fail = false
+const _log: string[] = []
+function test(name: string, fn: () => void) {
+  try { fn(); _log.push('✓ ' + name) }
+  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+  }
+}
 
-describe('greet', () => {
-  it('✓ greets by name', () => {
-    expect(greet("World")).toBe("Hello, World!")
-  })
-  it('✓ handles empty string', () => {
-    expect(greet("")).toBe("Hello, !")
-  })
-  it('✓ handles special characters', () => {
-    expect(greet("O'Brien")).toBe("Hello, O'Brien!")
-  })
-  it('✓ handles spaces', () => {
-    expect(greet("Jane Doe")).toBe("Hello, Jane Doe!")
-  })
-  it('✓ returns a string', () => {
-    expect(typeof greet("test")).toBe("string")
-  })
-})`,
+test('greets by name', () => { expect(greet('World')).toBe('Hello, World!') })
+test('handles empty string', () => { expect(greet('')).toBe('Hello, !') })
+test("handles special characters", () => { expect(greet("O'Brien")).toBe("Hello, O'Brien!") })
+test('handles spaces in name', () => { expect(greet('Jane Doe')).toBe('Hello, Jane Doe!') })
+test('returns a string', () => { expect(typeof greet('test')).toBe('string') })
+
+for (const r of _log) console.log(r)
+if (_fail) throw new Error('Tests failed')`,
     hint: 'Use a template literal: `Hello, ${name}!`',
   },
   {
@@ -151,25 +156,34 @@ add(-1, 1) // 0
     starterCode: `function add(a: number, b: number): number {
   // Your code here
 }`,
-    testCode: `import { describe, it, expect } from 'vitest'
+    testCode: `// mini test runner
+let _fail = false
+const _log: string[] = []
+function test(name: string, fn: () => void) {
+  try { fn(); _log.push('✓ ' + name) }
+  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+    toBeCloseTo: (expected: number, d = 2) => {
+      if (Math.abs((actual as number) - expected) >= 5 * Math.pow(10, -(d + 1)))
+        throw new Error('expected ~' + expected + ' but got ' + actual)
+    },
+  }
+}
 
-describe('add', () => {
-  it('✓ adds positive numbers', () => {
-    expect(add(2, 3)).toBe(5)
-  })
-  it('✓ adds negative numbers', () => {
-    expect(add(-1, -2)).toBe(-3)
-  })
-  it('✓ adds zero', () => {
-    expect(add(0, 5)).toBe(5)
-  })
-  it('✓ handles large numbers', () => {
-    expect(add(1000000, 2000000)).toBe(3000000)
-  })
-  it('✓ handles decimals', () => {
-    expect(add(0.1, 0.2)).toBeCloseTo(0.3)
-  })
-})`,
+test('adds positive numbers', () => { expect(add(2, 3)).toBe(5) })
+test('adds negative numbers', () => { expect(add(-1, -2)).toBe(-3) })
+test('adds zero', () => { expect(add(0, 5)).toBe(5) })
+test('handles large numbers', () => { expect(add(1000000, 2000000)).toBe(3000000) })
+test('handles decimals', () => { expect(add(0.1, 0.2)).toBeCloseTo(0.3) })
+
+for (const r of _log) console.log(r)
+if (_fail) throw new Error('Tests failed')`,
     hint: 'Simply return `a + b`.',
   },
 
@@ -230,25 +244,30 @@ sum([])        // 0
     starterCode: `function sum(numbers: number[]): number {
   // Your code here
 }`,
-    testCode: `import { describe, it, expect } from 'vitest'
+    testCode: `// mini test runner
+let _fail = false
+const _log: string[] = []
+function test(name: string, fn: () => void) {
+  try { fn(); _log.push('✓ ' + name) }
+  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+  }
+}
 
-describe('sum', () => {
-  it('✓ sums positive numbers', () => {
-    expect(sum([1, 2, 3])).toBe(6)
-  })
-  it('✓ returns 0 for empty array', () => {
-    expect(sum([])).toBe(0)
-  })
-  it('✓ handles single element', () => {
-    expect(sum([42])).toBe(42)
-  })
-  it('✓ handles negative numbers', () => {
-    expect(sum([-1, 1, -2, 2])).toBe(0)
-  })
-  it('✓ handles large arrays', () => {
-    expect(sum(Array.from({ length: 100 }, (_, i) => i + 1))).toBe(5050)
-  })
-})`,
+test('sums positive numbers', () => { expect(sum([1, 2, 3])).toBe(6) })
+test('returns 0 for empty array', () => { expect(sum([])).toBe(0) })
+test('handles single element', () => { expect(sum([42])).toBe(42) })
+test('handles negative numbers', () => { expect(sum([-1, 1, -2, 2])).toBe(0) })
+test('handles large arrays', () => { expect(sum(Array.from({ length: 100 }, (_, i) => i + 1))).toBe(5050) })
+
+for (const r of _log) console.log(r)
+if (_fail) throw new Error('Tests failed')`,
     hint: 'Use `.reduce((sum, n) => sum + n, 0)` or a simple for loop.',
   },
   {
@@ -267,25 +286,30 @@ getFullName({ first: "Jane", last: "Doe" }) // "Jane Doe"
     starterCode: `function getFullName(person: { first: string; last: string }): string {
   // Your code here
 }`,
-    testCode: `import { describe, it, expect } from 'vitest'
+    testCode: `// mini test runner
+let _fail = false
+const _log: string[] = []
+function test(name: string, fn: () => void) {
+  try { fn(); _log.push('✓ ' + name) }
+  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+  }
+}
 
-describe('getFullName', () => {
-  it('✓ combines first and last', () => {
-    expect(getFullName({ first: "Jane", last: "Doe" })).toBe("Jane Doe")
-  })
-  it('✓ handles single character names', () => {
-    expect(getFullName({ first: "J", last: "D" })).toBe("J D")
-  })
-  it('✓ handles hyphenated names', () => {
-    expect(getFullName({ first: "Mary-Jane", last: "Watson-Parker" })).toBe("Mary-Jane Watson-Parker")
-  })
-  it('✓ preserves casing', () => {
-    expect(getFullName({ first: "mcdonald", last: "DUCK" })).toBe("mcdonald DUCK")
-  })
-  it('✓ returns a string', () => {
-    expect(typeof getFullName({ first: "a", last: "b" })).toBe("string")
-  })
-})`,
+test('combines first and last', () => { expect(getFullName({ first: 'Jane', last: 'Doe' })).toBe('Jane Doe') })
+test('handles single character names', () => { expect(getFullName({ first: 'J', last: 'D' })).toBe('J D') })
+test('handles hyphenated names', () => { expect(getFullName({ first: 'Mary-Jane', last: 'Watson-Parker' })).toBe('Mary-Jane Watson-Parker') })
+test('preserves casing', () => { expect(getFullName({ first: 'mcdonald', last: 'DUCK' })).toBe('mcdonald DUCK') })
+test('returns a string', () => { expect(typeof getFullName({ first: 'a', last: 'b' })).toBe('string') })
+
+for (const r of _log) console.log(r)
+if (_fail) throw new Error('Tests failed')`,
     hint: 'Return `${person.first} ${person.last}` using a template literal.',
   },
 
@@ -360,31 +384,32 @@ fizzBuzz(7)  // "7"
     starterCode: `function fizzBuzz(n: number): string {
   // Your code here
 }`,
-    testCode: `import { describe, it, expect } from 'vitest'
+    testCode: `// mini test runner
+let _fail = false
+const _log: string[] = []
+function test(name: string, fn: () => void) {
+  try { fn(); _log.push('✓ ' + name) }
+  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+  }
+}
 
-describe('fizzBuzz', () => {
-  it('✓ returns FizzBuzz for 15', () => {
-    expect(fizzBuzz(15)).toBe("FizzBuzz")
-  })
-  it('✓ returns Fizz for 3', () => {
-    expect(fizzBuzz(3)).toBe("Fizz")
-  })
-  it('✓ returns Buzz for 5', () => {
-    expect(fizzBuzz(5)).toBe("Buzz")
-  })
-  it('✓ returns number as string for 7', () => {
-    expect(fizzBuzz(7)).toBe("7")
-  })
-  it('✓ returns Fizz for 9', () => {
-    expect(fizzBuzz(9)).toBe("Fizz")
-  })
-  it('✓ returns FizzBuzz for 30', () => {
-    expect(fizzBuzz(30)).toBe("FizzBuzz")
-  })
-  it('✓ returns 1 for 1', () => {
-    expect(fizzBuzz(1)).toBe("1")
-  })
-})`,
+test('returns FizzBuzz for 15', () => { expect(fizzBuzz(15)).toBe('FizzBuzz') })
+test('returns Fizz for 3', () => { expect(fizzBuzz(3)).toBe('Fizz') })
+test('returns Buzz for 5', () => { expect(fizzBuzz(5)).toBe('Buzz') })
+test('returns number as string for 7', () => { expect(fizzBuzz(7)).toBe('7') })
+test('returns Fizz for 9', () => { expect(fizzBuzz(9)).toBe('Fizz') })
+test('returns FizzBuzz for 30', () => { expect(fizzBuzz(30)).toBe('FizzBuzz') })
+test('returns 1 for 1', () => { expect(fizzBuzz(1)).toBe('1') })
+
+for (const r of _log) console.log(r)
+if (_fail) throw new Error('Tests failed')`,
     hint: 'Check divisibility by 15 first (both 3 and 5), then by 3, then by 5. Use `n % 3 === 0`.',
   },
   {
@@ -405,31 +430,32 @@ isPalindrome("hello")             // false
     starterCode: `function isPalindrome(s: string): boolean {
   // Your code here
 }`,
-    testCode: `import { describe, it, expect } from 'vitest'
+    testCode: `// mini test runner
+let _fail = false
+const _log: string[] = []
+function test(name: string, fn: () => void) {
+  try { fn(); _log.push('✓ ' + name) }
+  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+  }
+}
 
-describe('isPalindrome', () => {
-  it('✓ detects simple palindrome', () => {
-    expect(isPalindrome("racecar")).toBe(true)
-  })
-  it('✓ ignores case', () => {
-    expect(isPalindrome("RaceCar")).toBe(true)
-  })
-  it('✓ ignores non-alphanumeric', () => {
-    expect(isPalindrome("A man, a plan, a canal: Panama")).toBe(true)
-  })
-  it('✓ rejects non-palindromes', () => {
-    expect(isPalindrome("hello")).toBe(false)
-  })
-  it('✓ handles empty string', () => {
-    expect(isPalindrome("")).toBe(true)
-  })
-  it('✓ handles single character', () => {
-    expect(isPalindrome("a")).toBe(true)
-  })
-  it('✓ handles numbers in string', () => {
-    expect(isPalindrome("12321")).toBe(true)
-  })
-})`,
+test('detects simple palindrome', () => { expect(isPalindrome('racecar')).toBe(true) })
+test('ignores case', () => { expect(isPalindrome('RaceCar')).toBe(true) })
+test('ignores non-alphanumeric', () => { expect(isPalindrome('A man, a plan, a canal: Panama')).toBe(true) })
+test('rejects non-palindromes', () => { expect(isPalindrome('hello')).toBe(false) })
+test('handles empty string', () => { expect(isPalindrome('')).toBe(true) })
+test('handles single character', () => { expect(isPalindrome('a')).toBe(true) })
+test('handles numbers in string', () => { expect(isPalindrome('12321')).toBe(true) })
+
+for (const r of _log) console.log(r)
+if (_fail) throw new Error('Tests failed')`,
     hint: 'Strip non-alphanumeric chars with `.replace(/[^a-zA-Z0-9]/g, "")`, lowercase, then compare with its reverse.',
   },
 ]
@@ -470,12 +496,20 @@ async function seedCourses() {
   }
   console.log(`  ✓ Lessons: ${LESSONS_DATA.length}`)
 
-  // Upsert steps
+  // Upsert steps (update testCode/instruction in case seed changes)
   for (const step of STEPS_DATA) {
     await db
       .insert(steps)
       .values(step)
-      .onConflictDoNothing()
+      .onConflictDoUpdate({
+        target: steps.id,
+        set: {
+          instruction: step.instruction,
+          starterCode: step.starterCode,
+          testCode: step.testCode,
+          hint: step.hint,
+        },
+      })
   }
   console.log(`  ✓ Steps: ${STEPS_DATA.length}`)
 

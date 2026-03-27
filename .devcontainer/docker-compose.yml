@@ -25,6 +25,30 @@ services:
     platform: linux/amd64
     restart: unless-stopped
     privileged: true
+    cgroup: host
+    environment:
+      PISTON_RUN_TIMEOUT: 15000
+      PISTON_COMPILE_TIMEOUT: 30000
+      PISTON_LIMIT_OVERRIDES: '{"typescript":{"run_timeout":15000},"python":{"run_timeout":15000},"ruby":{"run_timeout":15000},"go":{"run_timeout":15000}}'
+    # Override entrypoint to use mkdir -p so container restarts don't fail
+    # when /sys/fs/cgroup/isolate/ already exists from a previous run.
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cd /sys/fs/cgroup
+        rmdir isolate/init 2>/dev/null || true
+        rmdir isolate/ 2>/dev/null || true
+        mkdir isolate/
+        echo 1 > isolate/cgroup.procs
+        echo '+cpuset +cpu +io +memory +pids' > cgroup.subtree_control
+        cd isolate
+        mkdir init
+        echo 1 > init/cgroup.procs
+        echo '+cpuset +memory' > cgroup.subtree_control
+        echo "Initialized cgroup"
+        chown -R piston:piston /piston
+        exec su -- piston -c 'ulimit -n 65536 && node /piston_api/src'
     tmpfs:
       - /piston/jobs:exec,size=256m
     ports:

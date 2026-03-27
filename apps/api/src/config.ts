@@ -18,7 +18,7 @@ const envSchema = z.object({
   CODE_EXECUTION_ENABLED: z.coerce.boolean().default(false),
   PISTON_URL: z.string().url().default('http://piston:2000'),
   PISTON_MAX_CONCURRENT: z.coerce.number().int().min(1).default(3),
-  PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(15000),
+  PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(3000),
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
   DRAWHAUS_URL: z.string().url().optional(),
   RESEND_API_KEY: z.string().default(''),

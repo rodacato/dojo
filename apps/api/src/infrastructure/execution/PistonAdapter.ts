@@ -30,14 +30,13 @@ export class PistonAdapter implements CodeExecutionPort {
     }
 
     const isSql = params.language.toLowerCase() === 'sql'
+    // Combine solution + test into one file so all symbols are in scope.
+    // Two-file mode loses stdout in Piston's TypeScript runtime.
+    const combined = `${params.code}\n\n${params.testCode}`
+    const runFile = isSql ? 'query.sql' : `test.${ext(params.language)}`
     const files = isSql
       ? [{ name: 'query.sql', content: `${params.testCode}\n${params.code}` }]
-      : [
-          { name: `solution.${ext(params.language)}`, content: params.code },
-          { name: `test.${ext(params.language)}`, content: params.testCode },
-        ]
-
-    const runFile = isSql ? 'query.sql' : `test.${ext(params.language)}`
+      : [{ name: runFile, content: combined }]
     const timeout = params.timeoutMs ?? config.PISTON_RUN_TIMEOUT
 
     const start = Date.now()
@@ -50,7 +49,7 @@ export class PistonAdapter implements CodeExecutionPort {
           language: langConfig.language,
           version: langConfig.version,
           files,
-          run_timeout: timeout,
+          run_timeout: config.PISTON_RUN_TIMEOUT,
           compile_timeout: config.PISTON_COMPILE_TIMEOUT,
           compile_memory_limit: 256_000_000,
           run_memory_limit: 256_000_000,

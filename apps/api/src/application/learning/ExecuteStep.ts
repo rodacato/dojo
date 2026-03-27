@@ -49,13 +49,19 @@ export class ExecuteStep {
       if (passMatch) {
         results.push({ name: passMatch[1].trim(), passed: true })
       } else if (failMatch) {
-        results.push({ name: failMatch[1].trim(), passed: false, message: line.trim() })
+        // Support "✗ test name: error message" — split on first ": "
+        const full = failMatch[1].trim()
+        const colonIdx = full.indexOf(': ')
+        const name = colonIdx > -1 ? full.slice(0, colonIdx) : full
+        const message = colonIdx > -1 ? full.slice(colonIdx + 2) : undefined
+        results.push({ name, passed: false, message })
       }
     }
 
     // If no structured output detected, return a single result based on exit code
     if (results.length === 0) {
-      const passed = !output.includes('Error') && !output.includes('FAIL')
+      const lower = output.toLowerCase()
+      const passed = !lower.includes('error') && !lower.includes('fail')
       results.push({ name: 'Test execution', passed, message: passed ? undefined : output.trim().slice(0, 500) })
     }
 
