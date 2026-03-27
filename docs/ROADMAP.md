@@ -58,7 +58,8 @@ Does not start until Phase 0 is in real daily use.
 | sprint-011 — Refactoring + Landing + Execution + Interests + E2E | Route split, contrast fix, landing Stitch redesign, Piston code execution, interest-based selection, Playwright smoke tests | ✅ Closed |
 | sprint-012 — Alpha-Ready | 15 testCode exercises, post-kata insight screen, dashboard N+1 fix, weekly goals | ✅ Closed |
 | sprint-013 — Hardening + Courses Pre-work | Route/API split, WS tests, UX polish, courses DB schema, rate limiting, Piston Kamal | ✅ Closed |
-| sprint-014 — Courses MVP | Full vertical slice: repos, use cases, routes, seed course, frontend catalog + player, progress tracking | 🔄 Active |
+| [sprint-014 — Courses MVP](sprints/archive/sprint-014-courses-mvp.md) | Full vertical slice: repos, use cases, routes, seed course, frontend catalog + player, progress tracking | ✅ Closed |
+| sprint-015 — iframe Sandbox + JS DOM Course | iframe runner para ejercicios frontend, segundo curso JavaScript DOM Fundamentals, carry-forwards | 🔄 Active |
 
 ---
 
@@ -82,6 +83,7 @@ Does not start until Phase 0 is in real daily use.
 | 013 | [Frontend core screens](specs/013-frontend-core-screens.md) | 8 user-facing screens + Tailwind 4 + CodeMirror | sprint-002 |
 | 014 | [Admin UI](specs/014-admin-ui.md) | Exercise list, new exercise form, creator-only guard | sprint-002 |
 | 015 | [Kamal deploy](specs/015-kamal-deploy.md) | Kamal 2 config for API + web containers | sprint-003 |
+| 021 | [Sprint 015: iframe sandbox + JS DOM course](specs/021-sprint-015-iframe-dom-course.md) | IframeSandboxRunner, StepEditor routing, seed JS DOM course | sprint-015 |
 | 016 | [Production deploy](specs/016-production-deploy.md) | VPS + Cloudflare Tunnel + GitHub Actions CI/CD | sprint-003 |
 | 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
 | 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
@@ -144,6 +146,7 @@ Does not start until Phase 0 is in real daily use.
 | 013 | [Route file split](adr/013-route-file-split.md) | Split monolithic practice.ts into multiple route files | ✅ Accepted |
 | 014 | [Piston code execution](adr/014-piston-code-execution.md) | Piston sandbox for testCode exercises | ✅ Accepted |
 | 015 | [Courses bounded context](adr/015-courses-bounded-context.md) | Learning as separate bounded context from Practice | ✅ Accepted |
+| 016 | [iframe sandbox browser execution](adr/016-iframe-sandbox-browser-execution.md) | Browser-side execution for javascript-dom courses via iframe sandbox | ✅ Accepted |
 
 ---
 

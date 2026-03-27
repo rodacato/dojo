@@ -24,6 +24,15 @@ _Confirmed for the next work block. Moved here after triage._
 
 _Good ideas, not urgent. Not in the next block._
 
+### Sprint 016 candidates (panel-approved 2026-03-27)
+
+From `docs/wip/EXERCISE-VARIETY-ANALYSIS.md` review:
+
+- **SQL advanced kata** — 2-3 new exercises: window functions, CTEs, recursive CTEs. Piston + SQLite already works. Fills a gap no platform covers well (Tomás)
+- **"Fix the bug" kata type** — new exercises in the Practice loop where user gets broken code + failing tests. High differentiator vs LeetCode (Priya, Valentina)
+- **"Surprise me" / random kata button** — zero decision fatigue entry point to the kata loop. Partially built (interest-based selection exists). Frontend-only ~2 days (Tomás)
+- **"After solving: approaches" in course player** — collapsible note after step completion showing alternative approaches. Content-only addition to Step schema, no new backend (Soren)
+
 ### Phase 2 — The Scoreboard
 
 - Psychological analysis view: patterns in how you respond (do you rush? do you avoid certain types?)
