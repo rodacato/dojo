@@ -10,7 +10,7 @@ import { sql } from '@codemirror/lang-sql'
 interface CodeEditorProps {
   value: string
   onChange: (value: string) => void
-  language?: 'javascript' | 'typescript' | 'python' | 'sql'
+  language?: 'javascript' | 'typescript' | 'python' | 'sql' | 'javascript-dom'
   placeholder?: string
 }
 
@@ -23,6 +23,7 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
 
     const langExtension = {
       javascript: javascript({ typescript: false }),
+      'javascript-dom': javascript({ typescript: false }),
       typescript: javascript({ typescript: true }),
       python: python(),
       sql: sql(),

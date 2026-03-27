@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../lib/api'
+import { runInIframe } from '../lib/iframeSandboxRunner'
 import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse } from '@dojo/shared'
@@ -155,7 +156,7 @@ export function CoursePlayerPage() {
         {activeStep ? (
           <StepContent
             step={activeStep}
-            language={course.language as 'typescript' | 'javascript' | 'python'}
+            language={course.language}
             isCompleted={completedSteps.includes(activeStep.id)}
             onComplete={() => {
               markStepComplete(activeStep.id)
@@ -235,7 +236,7 @@ function StepContent({
   onComplete,
 }: {
   step: StepDTO
-  language: 'typescript' | 'javascript' | 'python'
+  language: string
   isCompleted: boolean
   onComplete: () => void
 }) {
@@ -274,13 +275,15 @@ function StepEditor({
   onComplete,
 }: {
   step: StepDTO
-  language: 'typescript' | 'javascript' | 'python'
+  language: string
   isCompleted: boolean
   onComplete: () => void
 }) {
   const [code, setCode] = useState(step.starterCode ?? '')
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState<ExecuteStepResponse | null>(null)
+
+  const isIframeLang = language === 'javascript-dom'
 
   // Reset code when step changes
   useEffect(() => {
@@ -293,11 +296,9 @@ function StepEditor({
     setRunning(true)
     setResult(null)
     try {
-      const res = await api.executeStep({
-        code,
-        testCode: step.testCode,
-        language,
-      })
+      const res = isIframeLang
+        ? await runInIframe({ starterCode: code, testCode: step.testCode })
+        : await api.executeStep({ code, testCode: step.testCode, language })
       setResult(res)
       if (res.passed && !isCompleted) {
         onComplete()
@@ -308,6 +309,9 @@ function StepEditor({
       setRunning(false)
     }
   }
+
+  const editorLanguage = (isIframeLang ? 'javascript-dom' : language) as
+    'javascript' | 'typescript' | 'python' | 'sql' | 'javascript-dom'
 
   return (
     <div className="flex flex-col h-[calc(100vh-48px)]">
@@ -322,7 +326,7 @@ function StepEditor({
           <CodeEditor
             value={code}
             onChange={setCode}
-            language={language}
+            language={editorLanguage}
           />
         </div>
 
@@ -339,6 +343,9 @@ function StepEditor({
           >
             {running ? 'Running...' : '▶ Run'}
           </button>
+          {isIframeLang && (
+            <span className="text-xs text-muted font-mono">Runs in browser</span>
+          )}
           {result && (
             <span className={`text-sm font-mono ${result.passed ? 'text-green-400' : 'text-red-400'}`}>
               {result.passed ? '✓ All tests passed' : '✗ Tests failed'}
