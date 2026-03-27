@@ -17,6 +17,7 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx --env-file=../../.env src/infrastructure/persistence/seed.ts",
+    "db:seed:courses": "tsx --env-file=../../.env src/infrastructure/persistence/seed-courses.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {

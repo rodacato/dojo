@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'dash', icon: DashboardIcon },
   { to: '/start', label: 'practice', icon: CodeIcon },
+  { to: '/learn', label: 'learn', icon: LearnIcon },
   { to: '/leaderboard', label: 'board', icon: AnalyticsIcon },
   { to: '/badges', label: 'badges', icon: BadgesIcon },
 ]
@@ -52,6 +53,14 @@ function AnalyticsIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+    </svg>
+  )
+}
+
+function LearnIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
     </svg>
   )
 }

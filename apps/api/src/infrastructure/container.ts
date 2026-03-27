@@ -6,6 +6,11 @@ import { SubmitAttempt } from '../application/practice/SubmitAttempt'
 import { GetExerciseById } from '../application/content/GetExerciseById'
 import { CreateExercise } from '../application/content/CreateExercise'
 import { UpsertUser } from '../application/identity/UpsertUser'
+import { GetCourseList } from '../application/learning/GetCourseList'
+import { GetCourseBySlug } from '../application/learning/GetCourseBySlug'
+import { ExecuteStep } from '../application/learning/ExecuteStep'
+import { TrackProgress } from '../application/learning/TrackProgress'
+import { GetCourseProgress } from '../application/learning/GetCourseProgress'
 import { db } from './persistence/drizzle/client'
 import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
@@ -17,6 +22,8 @@ import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
 import { registerBadgeHandlers } from './events/BadgeEventHandler'
 import { PostgresPreferencesRepository } from './persistence/PostgresPreferencesRepository'
+import { PostgresCourseRepository } from './persistence/PostgresCourseRepository'
+import { PostgresCourseProgressRepository } from './persistence/PostgresCourseProgressRepository'
 import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
 import { ExecutionQueue } from './execution/ExecutionQueue'
@@ -26,6 +33,8 @@ const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
 const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
+const courseRepo = new PostgresCourseRepository(db)
+const courseProgressRepo = new PostgresCourseProgressRepository(db)
 
 function createLLMAdapter(): LLMPort {
   switch (config.LLM_ADAPTER_FORMAT) {
@@ -64,4 +73,9 @@ export const useCases = {
   createExercise: new CreateExercise({ exerciseRepo }),
   getSession: new GetSession({ sessionRepo }),
   upsertUser: new UpsertUser({ userRepo }),
+  getCourseList: new GetCourseList({ courseRepo }),
+  getCourseBySlug: new GetCourseBySlug({ courseRepo }),
+  executeStep: new ExecuteStep({ executionPort: createExecutionAdapter() }),
+  trackProgress: new TrackProgress({ progressRepo: courseProgressRepo }),
+  getCourseProgress: new GetCourseProgress({ progressRepo: courseProgressRepo }),
 }

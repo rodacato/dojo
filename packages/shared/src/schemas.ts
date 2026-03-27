@@ -82,3 +82,56 @@ export const exerciseFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),
   maxDuration: z.number().int().positive().optional(),
 })
+
+// ── Learning (Courses) ──────────────────────────────────────────────
+
+export const stepTypeSchema = z.enum(['explanation', 'exercise', 'challenge'])
+export const courseStatusSchema = z.enum(['draft', 'published'])
+
+export const courseSlugSchema = z.object({
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
+})
+
+export const executeStepSchema = z.object({
+  code: z.string().min(1).max(50_000),
+  testCode: z.string().min(1).max(50_000),
+  language: z.string().min(1).max(30),
+})
+
+export const trackProgressSchema = z.object({
+  courseId: z.string().uuid(),
+  stepId: z.string().uuid(),
+})
+
+export const stepDTOSchema = z.object({
+  id: z.string().uuid(),
+  order: z.number().int(),
+  type: stepTypeSchema,
+  instruction: z.string(),
+  starterCode: z.string().nullable(),
+  testCode: z.string().nullable(),
+  hint: z.string().nullable(),
+})
+
+export const lessonDTOSchema = z.object({
+  id: z.string().uuid(),
+  order: z.number().int(),
+  title: z.string(),
+  steps: z.array(stepDTOSchema),
+})
+
+export const courseDTOSchema = z.object({
+  id: z.string().uuid(),
+  slug: z.string(),
+  title: z.string(),
+  description: z.string(),
+  language: z.string(),
+  accentColor: z.string(),
+  status: courseStatusSchema,
+  lessonCount: z.number().int(),
+  stepCount: z.number().int(),
+})
+
+export const courseDetailDTOSchema = courseDTOSchema.extend({
+  lessons: z.array(lessonDTOSchema),
+})

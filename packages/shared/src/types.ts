@@ -78,3 +78,63 @@ export interface FeedbackDTO {
   evaluation: EvaluationSignal | null
   note: string | null
 }
+
+// ── Learning (Courses) ──────────────────────────────────────────────
+
+export type StepType = 'explanation' | 'exercise' | 'challenge'
+export type CourseStatus = 'draft' | 'published'
+
+export interface StepDTO {
+  id: string
+  order: number
+  type: StepType
+  instruction: string
+  starterCode: string | null
+  testCode: string | null
+  hint: string | null
+}
+
+export interface LessonDTO {
+  id: string
+  order: number
+  title: string
+  steps: StepDTO[]
+}
+
+export interface CourseDTO {
+  id: string
+  slug: string
+  title: string
+  description: string
+  language: string
+  accentColor: string
+  status: CourseStatus
+  lessonCount: number
+  stepCount: number
+}
+
+export interface CourseDetailDTO extends CourseDTO {
+  lessons: LessonDTO[]
+}
+
+export interface ExecuteStepRequest {
+  code: string
+  testCode: string
+  language: string
+}
+
+export interface TestResultDTO {
+  name: string
+  passed: boolean
+  message?: string
+}
+
+export interface ExecuteStepResponse {
+  passed: boolean
+  output: string
+  testResults: TestResultDTO[]
+}
+
+export interface CourseProgressDTO {
+  completedSteps: string[]
+}

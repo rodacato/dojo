@@ -4,6 +4,23 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 014 — Courses MVP (2026-03-27)
+**Phase 1 — Alpha**
+
+The sprint where the dojo opened to the public. Anyone can now learn TypeScript without an account.
+
+- **Learning bounded context** — New `PostgresCourseRepository` and `PostgresCourseProgressRepository` with full Drizzle ORM queries (joins across courses → lessons → steps).
+- **5 use cases** — GetCourseList, GetCourseBySlug, ExecuteStep (reuses CodeExecutionPort/Piston), TrackProgress (idempotent), GetCourseProgress.
+- **5 API endpoints** — `GET /learn/courses`, `GET /learn/courses/:slug`, `POST /learn/execute`, `POST /learn/progress`, `GET /learn/progress/:courseId`. All with Zod validation.
+- **Seed course** — "TypeScript Fundamentals": 3 lessons (Variables & Types, Arrays & Objects, Control Flow), 9 steps with testCode for each exercise.
+- **Course catalog** (`/learn`) — Public page, grid layout with course cards showing language badge, lesson count, accent color.
+- **Course player** (`/learn/:slug`) — Collapsible sidebar with lesson/step nav, markdown instruction renderer, CodeMirror editor with "Run" button, test results panel. Auto-advances on success.
+- **Progress tracking** — localStorage for anonymous users, API sync for authenticated. Merge on auth (union).
+- **Navigation** — "Learn" added to sidebar and bottom nav with graduation cap icon.
+- **10 new tests** — 72 total across 19 files.
+
+---
+
 ## Sprint 013 — Hardening + Courses Pre-work (2026-03-27)
 **Phase 1 — Alpha hardening**
 
