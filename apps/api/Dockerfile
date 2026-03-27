@@ -22,7 +22,7 @@ RUN pnpm --filter=@dojo/api build
 FROM base AS runner
 ENV NODE_ENV=production
 COPY --from=builder /app/apps/api/dist ./dist
-COPY --from=builder /app/apps/api/src/infrastructure/persistence/drizzle/migrations ./migrations
+COPY --from=builder /app/apps/api/src/infrastructure/persistence/drizzle/migrations ./dist/infrastructure/persistence/drizzle/migrations
 COPY --from=builder /app/node_modules ./node_modules
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
