@@ -225,13 +225,11 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
   if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
   if (session.status !== 'active') return c.json({ error: 'Session is no longer active' }, 409)
 
-  // Timer enforcement — 10% grace window
+  // Timer enforcement — domain method encapsulates 10% grace window
   const exercise = await useCases.getExerciseById.execute(session.exerciseId)
   if (!exercise) return c.json({ error: 'Exercise not found' }, 404)
 
-  const limitMs = exercise.durationMinutes * 60 * 1000 * 1.1
-  const elapsedMs = Date.now() - session.startedAt.getTime()
-  if (elapsedMs > limitMs) {
+  if (session.isExpired(exercise.durationMinutes)) {
     throw new SessionExpiredError(sessionId)
   }
 

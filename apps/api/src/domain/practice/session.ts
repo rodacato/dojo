@@ -54,6 +54,13 @@ export class Session {
     return this._completedAt
   }
 
+  /** Check if session has exceeded its time limit (with 10% grace window) */
+  isExpired(durationMinutes: number): boolean {
+    const limitMs = durationMinutes * 60 * 1000 * 1.1
+    const elapsedMs = Date.now() - this.startedAt.getTime()
+    return elapsedMs > limitMs
+  }
+
   static createPreparing(params: {
     userId: UserId
     exerciseId: ExerciseId
