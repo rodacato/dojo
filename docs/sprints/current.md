@@ -1,81 +1,114 @@
-# Active Block: Sprint 012 — Alpha-Ready: Code Execution + Insight + Retention
+# Active Block: Sprint 013 — Hardening + Courses Pre-work
 
-**Started:** 2026-03-26
-**Phase:** Phase 1 Alpha prep → Alpha launch
+**Started:** 2026-03-27
+**Phase:** Phase 1 Alpha hardening
 
-**Expected outcome:** 5 invited users can complete katas with real code execution, see structured post-kata insights, and have weekly goals that bring them back. Dashboard handles concurrent users without N+1 queries.
+**Expected outcome:** All Sprint 012 deferred items resolved. WS handler tested. Piston verified in production. Courses DB schema ready for Sprint 014. Anonymous rate limiting in place.
 
-**Strategy:** testCode exercises first (unlocks Piston value), then N+1 fix (unblocks multi-user), then Insight Screen (biggest UX impact), then weekly goals (retention), then tech debt.
-
----
-
-## Part 1 — 15 Code Exercises with testCode (P0)
-
-- [x] Design + implement 15 function-oriented exercises with testCode
-  - TypeScript (4): flatten arrays, retry with backoff, groupBy, debounce
-  - Ruby (2): FizzBuzz without conditionals, validate JSON schema
-  - Python (2): parse CSV, matrix rotation
-  - Go (3): bounded worker pool, LRU cache, error type hierarchy
-  - SQL (4): rank by dept salary, find churned users, recursive CTE org chart, CTE refactor
-- [ ] Verify each exercise runs through Piston end-to-end (requires Piston running)
-- [ ] Verify sensei receives and cites execution results (requires LLM)
+**Strategy:** Resolve deferred tech debt first, then pre-work for courses that doesn't depend on content or UX.
 
 ---
 
-## Part 2 — Post-Kata Insight Screen (P0)
+## Part 0 — Piston Production Verification
 
-- [x] Update sensei prompt to include XML tags: `<strengths>`, `<improvements>`, `<approach_note>`
-- [x] Parse XML tags from evaluation stream (parse-insight.ts with fallback)
-- [x] Enhance ResultsPage with InsightCards (strengths → improvements → approach note)
-- [ ] Update share card to use approach_note as hook (deferred — needs real data to test)
-- [ ] Update EvaluationResult types in shared package (deferred — insight parsed client-side)
+- [ ] Confirm Piston accessory boots via Kamal (GitHub vars: PISTON_URL, CODE_EXECUTION_ENABLED)
+- [ ] Verify testCode exercises run end-to-end in prod
+- [ ] Verify sensei receives and cites execution results
 
 ---
 
-## Part 3 — Dashboard N+1 Fix (P0)
+## Part 1 — Domain Cleanup
 
-- [x] Rewrite dashboard active session + today session queries (10 → 6 queries via JOINs)
-- [ ] EXPLAIN ANALYZE verification (requires production data)
-- [ ] Benchmark: <200ms with 50+ sessions (requires production data)
-
----
-
-## Part 4 — Weekly Goals (P1)
-
-- [x] Add `goal_weekly_target` (integer, default 3) to user_preferences
-- [x] Migration 0010 for new column
-- [x] Dashboard: compute completed sessions this week vs target
-- [x] Frontend: progress bar with dots below streak card
-- [ ] Include in GET/PUT /preferences (allow users to change target)
+- [ ] Session.isExpired(durationMinutes) domain method — encapsulate 10% grace window
+- [ ] Move timer check from practice.ts route handler to domain method
+- [ ] Update EvaluationResult types in shared package (add strengths, improvements, approachNote)
 
 ---
 
-## Part 5 — Deferred Tech Debt (P1-P2)
+## Part 2 — Route + API Client Split
 
-### P1
-- [ ] WCAG visual audit: verify text-muted on all surface backgrounds
-- [ ] WebSocket handler tests (extract handleSubmit/handleReconnect, test with mock ws)
-- [ ] Session.isExpired() domain method
+### Routes
+- [ ] Extract feedback.ts (POST/GET /sessions/:id/feedback)
+- [ ] Extract preferences.ts (GET/PUT /preferences)
+- [ ] Update router.ts
 
-### P2
-- [ ] API client split into modules
-- [ ] Route file further split (feedback.ts, preferences.ts)
+### API Client
+- [ ] Split api.ts into modules: auth.ts, practice.ts, admin.ts, profile.ts, client.ts
+- [ ] Barrel export from api/index.ts
 
 ---
 
-## Deferred to Sprint 013+
+## Part 3 — WebSocket Handler Tests
 
-- Exercise Proposals (Phase 3)
-- Frontend execution (Sandpack)
-- Guided courses mode
+- [ ] Extract handleSubmit() and handleReconnect() into testable functions
+- [ ] Tests: submit with valid/invalid attemptId
+- [ ] Tests: attempt limit enforcement (max 2)
+- [ ] Tests: reconnect from cache, cache expiry
+- [ ] Tests: execution context injection (Piston results)
+
+---
+
+## Part 4 — UX Polish
+
+- [ ] Share card: use approach_note from insight as pull quote hook
+- [ ] Weekly goal target: include in GET/PUT /preferences (allow users to change 1-7)
+- [ ] WCAG visual audit: verify text-muted contrast on all surface backgrounds
+
+---
+
+## Part 5 — Performance Verification
+
+- [ ] EXPLAIN ANALYZE on dashboard queries in production
+- [ ] Benchmark dashboard <200ms with existing session data
+- [ ] Verify indexes (migration 0009) are active
+
+---
+
+## Part 6 — Courses Pre-work (ADR 015)
+
+### DB Schema
+- [ ] Migration: courses table (id, slug, title, description, language, status, accent_color, created_at)
+- [ ] Migration: lessons table (id, course_id, order, title)
+- [ ] Migration: steps table (id, lesson_id, order, type, instruction, starter_code, test_code, hint)
+- [ ] Migration: course_progress table (id, user_id nullable, course_id, completed_steps jsonb, last_accessed_at)
+- [ ] Drizzle schema + relations
+
+### Domain skeleton
+- [ ] domain/learning/course.ts — Course aggregate, Lesson entity, Step value object
+- [ ] domain/learning/ports.ts — CourseRepositoryPort, CourseProgressPort
+- [ ] domain/learning/values.ts — StepType, CourseStatus
+
+### Public route middleware
+- [ ] Configure /learn/* routes to skip requireAuth
+
+---
+
+## Part 7 — Anonymous Rate Limiting
+
+- [ ] IP-based rate limiter for Piston executions (10/min without auth, 60/min with auth)
+- [ ] Apply to POST /execute or wherever Piston is triggered from public routes
+- [ ] Test: 11th anonymous execution returns 429
+
+---
+
+## Backlog Cleanup
+
+- [ ] Remove "interest-based selection" from Explore (implemented in Sprint 011)
+- [ ] Update backlog with courses reference
+- [ ] Archive Sprint 012
 
 ---
 
 ## Verification
 
-1. 15 exercises with testCode run through Piston end-to-end
-2. Insight screen shows structured strengths/improvements/approach after every kata
-3. Dashboard <200ms with 50+ sessions
-4. Weekly goal progress visible on dashboard
-5. All tests pass (56+ existing + new)
-6. Lint + typecheck clean
+1. Piston runs testCode exercises in production
+2. Session.isExpired() used in route handler, tested
+3. practice.ts < 350 lines after split
+4. API client split into 4+ modules
+5. WS handler has 5+ new tests
+6. Share card shows approach_note
+7. WCAG AA passes on all text-muted elements
+8. Dashboard <200ms in production
+9. Courses tables exist in schema (empty, ready for content)
+10. Anonymous rate limit: 429 after 10 Piston calls/min
+11. All existing tests pass (56+) + new WS tests
