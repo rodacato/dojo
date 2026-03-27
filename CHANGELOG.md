@@ -4,6 +4,22 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 013 — Hardening + Courses Pre-work (2026-03-27)
+**Phase 1 — Alpha hardening**
+
+The cleanup sprint before courses. Everything deferred from Sprint 012, resolved.
+
+- **Domain cleanup** — `Session.isExpired()` encapsulates timer enforcement with 10% grace.
+- **Route split** — feedback.ts and preferences.ts extracted. practice.ts: 1,312 → 374 lines. 7 route files.
+- **API client modules** — Split into 7 files. Old api.ts is a thin re-export shim.
+- **WebSocket handler tests** — 6 new tests (62 total). handleSubmit/handleReconnect extracted to ws-handlers.ts.
+- **UX polish** — Share card approach_note, weekly goal target (1-7) in preferences, WCAG color audit.
+- **Courses pre-work (ADR 015)** — 4 tables + indexes + domain skeleton + public routes.
+- **Rate limiting** — Anonymous Piston: 10/min per IP. Authenticated: 60/min.
+- **Piston Kamal accessory** — Boots automatically on deploy.
+
+---
+
 ## Sprint 012 — Alpha-Ready (2026-03-26)
 **Phase 1 — Alpha prep → Alpha launch**
 

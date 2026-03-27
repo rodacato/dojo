@@ -8,7 +8,7 @@ The backlog is not a task list — it is a set of prioritized intentions. Items 
 
 _Ideas that arrived and have not been evaluated yet. Candidates for the next triage._
 
-_(cleared — items either completed in Sprint 009 or moved to Sprint 010)_
+_(cleared 2026-03-27)_
 
 ---
 
@@ -43,7 +43,7 @@ _Good ideas, not urgent. Not in the next block._
 
 _Ideas that need a PRD before deciding whether they advance._
 
-- 2026-03-22 — **Interest-based kata selection (user profile):** Allow users to define their level (junior, mid, senior) and topics of interest. Randomness slider UX. *Expert routing: Priya, Valentina, Yemi, Soren.*
+- ~~Interest-based kata selection~~ — **Completed in Sprint 011** (user_preferences, weighted ordering, DayStart customization)
 
 ---
 
