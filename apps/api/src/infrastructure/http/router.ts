@@ -13,6 +13,7 @@ import { dashboardRoutes } from './routes/dashboard'
 import { profileRoutes } from './routes/profile'
 import { adminRoutes } from './routes/admin-exercises'
 import { shareRoutes } from './routes/share'
+import { learnRoutes } from './routes/learn'
 import { ogRoutes } from './routes/og'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 
@@ -32,6 +33,7 @@ export function createRouter() {
   app.route('/', dashboardRoutes)
   app.route('/', profileRoutes)
   app.route('/', shareRoutes)
+  app.route('/', learnRoutes)
   app.route('/', ogRoutes)
   app.route('/admin', adminRoutes)
 

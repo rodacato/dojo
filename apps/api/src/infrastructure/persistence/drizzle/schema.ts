@@ -185,3 +185,60 @@ export const userSessions = pgTable('user_sessions', {
 export const userSessionsRelations = relations(userSessions, ({ one }) => ({
   user: one(users, { fields: [userSessions.userId], references: [users.id] }),
 }))
+
+// ── Learning (Courses) ──────────────────────────────────────────────
+
+export const courses = pgTable('courses', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  slug: varchar('slug', { length: 255 }).unique().notNull(),
+  title: varchar('title', { length: 500 }).notNull(),
+  description: text('description').notNull(),
+  language: varchar('language', { length: 50 }).notNull(),
+  accentColor: varchar('accent_color', { length: 20 }).notNull().default('#6366F1'),
+  status: varchar('status', { length: 50 }).notNull().default('draft'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export const lessons = pgTable('lessons', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  courseId: uuid('course_id').notNull().references(() => courses.id),
+  order: integer('order').notNull(),
+  title: varchar('title', { length: 500 }).notNull(),
+})
+
+export const steps = pgTable('steps', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  lessonId: uuid('lesson_id').notNull().references(() => lessons.id),
+  order: integer('order').notNull(),
+  type: varchar('type', { length: 20 }).notNull().default('exercise'),
+  instruction: text('instruction').notNull(),
+  starterCode: text('starter_code'),
+  testCode: text('test_code'),
+  hint: text('hint'),
+})
+
+export const courseProgress = pgTable('course_progress', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id),
+  courseId: uuid('course_id').notNull().references(() => courses.id),
+  completedSteps: jsonb('completed_steps').notNull().default([]),
+  lastAccessedAt: timestamp('last_accessed_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export const coursesRelations = relations(courses, ({ many }) => ({
+  lessons: many(lessons),
+}))
+
+export const lessonsRelations = relations(lessons, ({ one, many }) => ({
+  course: one(courses, { fields: [lessons.courseId], references: [courses.id] }),
+  steps: many(steps),
+}))
+
+export const stepsRelations = relations(steps, ({ one }) => ({
+  lesson: one(lessons, { fields: [steps.lessonId], references: [lessons.id] }),
+}))
+
+export const courseProgressRelations = relations(courseProgress, ({ one }) => ({
+  course: one(courses, { fields: [courseProgress.courseId], references: [courses.id] }),
+  user: one(users, { fields: [courseProgress.userId], references: [users.id] }),
+}))
