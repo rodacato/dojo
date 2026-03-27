@@ -7,6 +7,8 @@ import { config } from '../../config'
 import { healthRoutes } from './routes/health'
 import { authRoutes } from './routes/auth'
 import { practiceRoutes } from './routes/practice'
+import { feedbackRoutes } from './routes/feedback'
+import { preferencesRoutes } from './routes/preferences'
 import { dashboardRoutes } from './routes/dashboard'
 import { profileRoutes } from './routes/profile'
 import { adminRoutes } from './routes/admin-exercises'
@@ -25,6 +27,8 @@ export function createRouter() {
   app.route('/', healthRoutes)
   app.route('/', authRoutes)
   app.route('/', practiceRoutes)
+  app.route('/', feedbackRoutes)
+  app.route('/', preferencesRoutes)
   app.route('/', dashboardRoutes)
   app.route('/', profileRoutes)
   app.route('/', shareRoutes)
