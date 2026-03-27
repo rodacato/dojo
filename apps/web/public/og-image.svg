@@ -14,7 +14,7 @@
   <text x="320" y="340" font-family="'Inter', sans-serif" font-size="22" fill="#94A3B8">A daily kata for software engineers who want to keep the skill.</text>
 
   <!-- Domain -->
-  <text x="320" y="400" font-family="'JetBrains Mono', monospace" font-size="16" fill="#475569">dojo.notdefined.dev</text>
+  <text x="320" y="400" font-family="'JetBrains Mono', monospace" font-size="16" fill="#64748B">dojo.notdefined.dev</text>
 
   <!-- Accent line -->
   <rect x="100" y="520" width="120" height="3" rx="1.5" fill="#6366F1"/>

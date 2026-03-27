@@ -38,6 +38,7 @@ export function DayStartPage() {
   const [level, setLevel] = useState<UserLevel>('mid')
   const [interests, setInterests] = useState<string[]>([])
   const [randomness, setRandomness] = useState(0.3)
+  const [goalWeeklyTarget, setGoalWeeklyTarget] = useState(3)
   const [prefsLoaded, setPrefsLoaded] = useState(false)
   const navigate = useNavigate()
 
@@ -47,6 +48,7 @@ export function DayStartPage() {
       setLevel((prefs.level as UserLevel) || 'mid')
       setInterests(prefs.interests || [])
       setRandomness(prefs.randomness ?? 0.3)
+      setGoalWeeklyTarget(prefs.goalWeeklyTarget ?? 3)
       setPrefsLoaded(true)
     })
   }, [])
@@ -58,14 +60,16 @@ export function DayStartPage() {
     day: 'numeric',
   }).toLowerCase()
 
-  function savePreferences(updates: { level?: UserLevel; interests?: string[]; randomness?: number }) {
+  function savePreferences(updates: { level?: UserLevel; interests?: string[]; randomness?: number; goalWeeklyTarget?: number }) {
     const newLevel = updates.level ?? level
     const newInterests = updates.interests ?? interests
     const newRandomness = updates.randomness ?? randomness
+    const newGoalWeeklyTarget = updates.goalWeeklyTarget ?? goalWeeklyTarget
 
     if (updates.level !== undefined) setLevel(newLevel)
     if (updates.interests !== undefined) setInterests(newInterests)
     if (updates.randomness !== undefined) setRandomness(newRandomness)
+    if (updates.goalWeeklyTarget !== undefined) setGoalWeeklyTarget(newGoalWeeklyTarget)
 
     // Fire-and-forget save
     api.getPreferences().then((current) => {
@@ -76,6 +80,7 @@ export function DayStartPage() {
         level: newLevel,
         interests: newInterests,
         randomness: newRandomness,
+        goalWeeklyTarget: newGoalWeeklyTarget,
       })
     })
   }
@@ -237,6 +242,29 @@ export function DayStartPage() {
                 <div className="flex justify-between font-mono text-xs text-muted/60 mt-1">
                   <span>focused</span>
                   <span>random</span>
+                </div>
+              </div>
+
+              {/* Weekly goal */}
+              <div>
+                <h3 className="font-mono text-xs text-secondary mb-3">
+                  weekly goal: {goalWeeklyTarget} {goalWeeklyTarget === 1 ? 'day' : 'days'}
+                </h3>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => savePreferences({ goalWeeklyTarget: n })}
+                      className={`py-2 rounded-sm border-2 font-mono text-xs transition-all duration-150 ${
+                        goalWeeklyTarget === n
+                          ? 'border-accent text-primary bg-accent/10'
+                          : 'border-border/60 text-secondary hover:border-secondary'
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

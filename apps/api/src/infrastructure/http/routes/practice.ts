@@ -341,8 +341,8 @@ practiceRoutes.post('/cron/reminders', async (c) => {
             <a href="${config.WEB_URL}/start" style="display: inline-block; background: #6366F1; color: #F8FAFC; padding: 10px 24px; text-decoration: none; font-size: 14px; margin-top: 16px; border-radius: 2px;">
               Enter the dojo →
             </a>
-            <p style="color: #475569; font-size: 11px; margin-top: 32px;">
-              <a href="${config.WEB_URL}/dashboard" style="color: #475569;">Unsubscribe from reminders</a>
+            <p style="color: #64748B; font-size: 11px; margin-top: 32px;">
+              <a href="${config.WEB_URL}/dashboard" style="color: #64748B;">Unsubscribe from reminders</a>
             </p>
           </div>
         `,

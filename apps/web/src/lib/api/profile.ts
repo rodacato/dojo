@@ -16,6 +16,7 @@ export const profile = {
       level: string
       interests: string[]
       randomness: number
+      goalWeeklyTarget: number
     }>('/preferences'),
 
   updatePreferences: (prefs: {
@@ -25,6 +26,7 @@ export const profile = {
     level?: string
     interests?: string[]
     randomness?: number
+    goalWeeklyTarget?: number
   }) =>
     request<{ ok: boolean }>('/preferences', {
       method: 'PUT',

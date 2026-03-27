@@ -149,6 +149,7 @@ export function ResultsPage() {
               exerciseTitle={session.exercise.title}
               verdict={verdict}
               analysis={attempt?.analysis}
+              approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
               ownerRole={session.ownerRole}
             />
           </div>
@@ -177,7 +178,12 @@ export function ResultsPage() {
           Keep Practicing
         </button>
         {verdict && sessionId && (
-          <ShareButton sessionId={sessionId} exerciseTitle={session.exercise.title} verdict={verdict} />
+          <ShareButton
+            sessionId={sessionId}
+            exerciseTitle={session.exercise.title}
+            verdict={verdict}
+            approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
+          />
         )}
       </div>
 
@@ -260,12 +266,13 @@ function NoEvaluationCard({ sessionId }: { sessionId: string }) {
   )
 }
 
-function ShareButton({ sessionId, exerciseTitle, verdict }: { sessionId: string; exerciseTitle: string; verdict: string }) {
+function ShareButton({ sessionId, exerciseTitle, verdict, approachNote }: { sessionId: string; exerciseTitle: string; verdict: string; approachNote?: string | null }) {
   const [copied, setCopied] = useState(false)
   const shareUrl = `${window.location.origin}/share/${sessionId}`
 
   async function handleShare() {
-    const text = `${verdict.replace(/_/g, ' ')} — ${exerciseTitle} | dojo_`
+    const base = `${verdict.replace(/_/g, ' ')} — ${exerciseTitle} | dojo_`
+    const text = approachNote ? `${base}\n\n"${approachNote}"` : base
 
     if (navigator.share) {
       try {
@@ -302,11 +309,13 @@ function ShareCardPreview({
   exerciseTitle,
   verdict,
   analysis,
+  approachNote,
   ownerRole,
 }: {
   exerciseTitle: string
   verdict: string
   analysis?: string
+  approachNote?: string | null
   ownerRole?: string
 }) {
   const verdictLabel = verdict.replace(/_/g, ' ')
@@ -316,9 +325,10 @@ function ShareCardPreview({
       : verdict === 'needs_work'
         ? 'text-danger border-danger/40'
         : 'text-warning border-warning/40'
-  const snippet = analysis
-    ? analysis.length > 120 ? `"${analysis.slice(0, 117)}..."` : `"${analysis}"`
-    : null
+  const pullQuote = approachNote ?? (analysis
+    ? analysis.length > 120 ? analysis.slice(0, 117) + '...' : analysis
+    : null)
+  const snippet = pullQuote ? `"${pullQuote}"` : null
 
   return (
     <div className="border border-border/40 rounded-md bg-surface p-5 flex flex-col gap-4">

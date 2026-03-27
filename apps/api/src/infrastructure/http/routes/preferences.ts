@@ -28,6 +28,7 @@ preferencesRoutes.get('/preferences', requireAuth, async (c) => {
     level: prefs?.level ?? 'mid',
     interests: prefs?.interests ?? [],
     randomness: prefs?.randomness ?? 0.3,
+    goalWeeklyTarget: prefs?.goalWeeklyTarget ?? 3,
   })
 })
 
@@ -42,6 +43,7 @@ const preferencesSchema = z.object({
   level: z.enum(['junior', 'mid', 'senior']).optional(),
   interests: z.array(z.string()).optional(),
   randomness: z.number().min(0).max(1).optional(),
+  goalWeeklyTarget: z.number().int().min(1).max(7).optional(),
 })
 
 preferencesRoutes.put('/preferences', requireAuth, async (c) => {
@@ -59,12 +61,13 @@ preferencesRoutes.put('/preferences', requireAuth, async (c) => {
     })
     .where(eq(users.id, user.id))
 
-  // Upsert user preferences (level, interests, randomness)
-  if (parsed.data.level !== undefined || parsed.data.interests !== undefined || parsed.data.randomness !== undefined) {
+  // Upsert user preferences (level, interests, randomness, goalWeeklyTarget)
+  if (parsed.data.level !== undefined || parsed.data.interests !== undefined || parsed.data.randomness !== undefined || parsed.data.goalWeeklyTarget !== undefined) {
     const prefValues: Record<string, unknown> = { userId: user.id }
     if (parsed.data.level !== undefined) prefValues.level = parsed.data.level
     if (parsed.data.interests !== undefined) prefValues.interests = parsed.data.interests
     if (parsed.data.randomness !== undefined) prefValues.randomness = parsed.data.randomness
+    if (parsed.data.goalWeeklyTarget !== undefined) prefValues.goalWeeklyTarget = parsed.data.goalWeeklyTarget
 
     await db
       .insert(userPreferences)
@@ -75,6 +78,7 @@ preferencesRoutes.put('/preferences', requireAuth, async (c) => {
           ...(parsed.data.level !== undefined && { level: parsed.data.level }),
           ...(parsed.data.interests !== undefined && { interests: parsed.data.interests }),
           ...(parsed.data.randomness !== undefined && { randomness: parsed.data.randomness }),
+          ...(parsed.data.goalWeeklyTarget !== undefined && { goalWeeklyTarget: parsed.data.goalWeeklyTarget }),
           updatedAt: sql`NOW()`,
         },
       })

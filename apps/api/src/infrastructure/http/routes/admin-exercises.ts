@@ -308,7 +308,7 @@ adminRoutes.post('/invitations', async (c) => {
             <a href="${inviteUrl}" style="display: inline-block; margin-top: 24px; padding: 12px 24px; background: #6366F1; color: #F8FAFC; text-decoration: none; font-size: 14px; border-radius: 2px;">
               Enter the dojo →
             </a>
-            <p style="color: #475569; font-size: 12px; margin-top: 32px;">
+            <p style="color: #64748B; font-size: 12px; margin-top: 32px;">
               This invitation expires in 7 days. No newsletter. No notifications.
             </p>
           </div>
