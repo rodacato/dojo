@@ -24,14 +24,14 @@ _Confirmed for the next work block. Moved here after triage._
 
 _Good ideas, not urgent. Not in the next block._
 
-### Sprint 016 candidates (panel-approved 2026-03-27)
+### Sprint 017 candidates
 
-From `docs/wip/EXERCISE-VARIETY-ANALYSIS.md` review:
+From `MARKET_RESEARCH.md` review + panel discussion Sprint 016:
 
-- **SQL advanced kata** — 2-3 new exercises: window functions, CTEs, recursive CTEs. Piston + SQLite already works. Fills a gap no platform covers well (Tomás)
-- **"Fix the bug" kata type** — new exercises in the Practice loop where user gets broken code + failing tests. High differentiator vs LeetCode (Priya, Valentina)
-- **"Surprise me" / random kata button** — zero decision fatigue entry point to the kata loop. Partially built (interest-based selection exists). Frontend-only ~2 days (Tomás)
-- **"After solving: approaches" in course player** — collapsible note after step completion showing alternative approaches. Content-only addition to Step schema, no new backend (Soren)
+- **SQL Deep Cuts course** — implementar el curso diseñado en Sprint 016. `slug: sql-deep-cuts`, 3 lecciones, 9 steps con window functions + CTEs + análisis real. Seed data draft ya existe en Sprint 016 (Sofia, Dr. Emeka)
+- **Python course** — "Python for the Practiced". Tier 2 en market research. Defer hasta después de SQL Deep Cuts (Dr. Emeka)
+- **"Code Review" kata format** — diff de PR con bugs intencionales, usuario identifica problemas, sensei evalúa completitud y calidad del review. Diferenciador único, ningún competidor lo tiene (Priya, Marcus)
+- **"After solving: approaches" in course player** — collapsible note after step completion showing alternative approaches. Content-only addition to Step schema (Soren — deferred desde Sprint 015)
 
 ### Phase 2 — The Scoreboard
 
