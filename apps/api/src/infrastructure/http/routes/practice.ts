@@ -191,6 +191,7 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
       type: exercise.type,
       language: exercise.languages,
       tags: exercise.tags,
+      starterCode: exercise.starterCode ?? null,
     },
     finalAttempt: finalAttempt
       ? {

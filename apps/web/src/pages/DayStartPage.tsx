@@ -40,6 +40,7 @@ export function DayStartPage() {
   const [randomness, setRandomness] = useState(0.3)
   const [goalWeeklyTarget, setGoalWeeklyTarget] = useState(3)
   const [prefsLoaded, setPrefsLoaded] = useState(false)
+  const [surpriseLoading, setSurpriseLoading] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -96,6 +97,24 @@ export function DayStartPage() {
     if (!mood || !duration) return
     sessionStorage.setItem('dojo-start', JSON.stringify({ mood, maxDuration: duration }))
     navigate('/kata')
+  }
+
+  async function handleSurpriseMe() {
+    setSurpriseLoading(true)
+    try {
+      const params = {
+        ...(mood ? { mood } : {}),
+        ...(duration ? { maxDuration: duration } : {}),
+      }
+      sessionStorage.setItem('dojo-start', JSON.stringify({ mood: mood ?? 'regular', maxDuration: duration ?? 20 }))
+      const exercises = await api.getExercises(params)
+      if (exercises.length === 0) return
+      const picked = exercises[Math.floor(Math.random() * exercises.length)]!
+      const { sessionId } = await api.startSession(picked.id)
+      navigate(`/kata/${sessionId}`)
+    } catch {
+      setSurpriseLoading(false)
+    }
   }
 
   return (
@@ -272,13 +291,22 @@ export function DayStartPage() {
         </section>
 
         {/* Submit */}
-        <button
-          onClick={handleSubmit}
-          disabled={!mood || !duration}
-          className="w-full py-3.5 bg-accent text-primary font-mono text-sm uppercase tracking-wider rounded-sm hover:bg-accent/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-        >
-          Show my kata →
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={handleSubmit}
+            disabled={!mood || !duration}
+            className="w-full py-3.5 bg-accent text-primary font-mono text-sm uppercase tracking-wider rounded-sm hover:bg-accent/90 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            Show my kata →
+          </button>
+          <button
+            onClick={handleSurpriseMe}
+            disabled={surpriseLoading}
+            className="w-full py-2.5 border border-border/60 text-secondary font-mono text-sm rounded-sm hover:border-secondary hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            {surpriseLoading ? 'picking...' : 'surprise me →'}
+          </button>
+        </div>
 
         {/* Footer */}
         <p className="text-muted/50 text-xs text-center font-mono">

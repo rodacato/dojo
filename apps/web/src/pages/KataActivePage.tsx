@@ -44,6 +44,9 @@ export function KataActivePage() {
         if (s.status === 'active') {
           setPreparing(false)
           setSession(s)
+          if (s.exercise.starterCode) {
+            setUserResponse(s.exercise.starterCode)
+          }
           return
         }
         if (s.status === 'preparing') {

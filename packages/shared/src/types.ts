@@ -42,6 +42,7 @@ export interface ExerciseDTO {
   type: ExerciseType
   language: string[]
   tags: string[]
+  starterCode?: string | null
 }
 
 export interface VariationDTO {

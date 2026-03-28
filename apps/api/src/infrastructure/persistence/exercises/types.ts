@@ -34,5 +34,6 @@ export interface SeedExercise {
   tags: string[]
   topics: string[]
   testCode?: string // predefined tests for code execution (Piston)
+  starterCode?: string // pre-filled code for fix-the-bug / scaffold exercises
   variations: Array<{ ownerRole: string; ownerContext: string }>
 }
