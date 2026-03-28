@@ -1,0 +1,29 @@
+# .notdefined.yml — metadata for rodacato/projects
+# Spec: https://github.com/rodacato/rodacato/blob/master/docs/guides/notdefined-yml-spec.md
+
+tagline: "Daily practice for developers who want to stay sharp without AI"
+description: >
+  Pick a kata, work through it under a timer with no AI help,
+  and get honest feedback from an LLM sensei. Built with React,
+  Hono, and PostgreSQL. I built it because vibe coding is making
+  us faster but our instincts weaker.
+version: "early dev"
+background_color: "#1a1a2e"
+category: product
+status: active
+lang: TypeScript
+stack:
+  - React
+  - Vite
+  - Hono
+  - PostgreSQL
+  - WebSockets
+  - Zod
+  - Turborepo
+tags:
+  - react
+  - hono
+  - education
+  - llm
+repo: https://github.com/rodacato/dojo
+url: https://dojo.notdefined.dev
