@@ -2,25 +2,15 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { runInIframe } from '../lib/iframeSandboxRunner'
+import {
+  clearAnonymousId,
+  getAnonymousId,
+  getOrCreateAnonymousId,
+} from '../lib/anonymousId'
 import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
-
-// ── localStorage progress helpers ────────────────────────────────
-
-function getLocalProgress(courseId: string): string[] {
-  try {
-    const raw = localStorage.getItem(`dojo_course_progress_${courseId}`)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
-
-function saveLocalProgress(courseId: string, steps: string[]) {
-  localStorage.setItem(`dojo_course_progress_${courseId}`, JSON.stringify(steps))
-}
 
 // ── Main component ──────────────────────────────────────────────
 
@@ -40,7 +30,6 @@ export function CoursePlayerPage() {
     api.getCourse(slug)
       .then((c) => {
         setCourse(c)
-        // Set first step as active
         const firstLesson = c.lessons[0]
         const firstStep = firstLesson?.steps[0]
         if (firstStep) {
@@ -50,21 +39,32 @@ export function CoursePlayerPage() {
       .catch(() => setError('Course not found'))
   }, [slug])
 
-  // Load progress (merge localStorage + server)
+  // When the user logs in and there's leftover anonymous progress, merge it.
+  useEffect(() => {
+    if (!user) return
+    const anonId = getAnonymousId()
+    if (!anonId) return
+    api.mergeAnonymousProgress(anonId)
+      .catch(() => {})
+      .finally(() => clearAnonymousId())
+  }, [user])
+
+  // Load progress from server — source of truth for both authenticated and
+  // anonymous owners. We only create an anonymous id when we actually need
+  // to track progress on a public course without auth.
   useEffect(() => {
     if (!course) return
-    const local = getLocalProgress(course.id)
-
     if (user) {
       api.getProgress(course.id)
-        .then((serverProgress) => {
-          const merged = [...new Set([...local, ...serverProgress.completedSteps])]
-          setCompletedSteps(merged)
-          saveLocalProgress(course.id, merged)
-        })
-        .catch(() => setCompletedSteps(local))
+        .then((r) => setCompletedSteps(r.completedSteps))
+        .catch(() => setCompletedSteps([]))
+    } else if (course.isPublic) {
+      const anonId = getOrCreateAnonymousId()
+      api.getProgress(course.id, anonId)
+        .then((r) => setCompletedSteps(r.completedSteps))
+        .catch(() => setCompletedSteps([]))
     } else {
-      setCompletedSteps(local)
+      setCompletedSteps([])
     }
   }, [course, user])
 
@@ -72,14 +72,10 @@ export function CoursePlayerPage() {
     if (!course) return
     setCompletedSteps((prev) => {
       if (prev.includes(stepId)) return prev
-      const updated = [...prev, stepId]
-      saveLocalProgress(course.id, updated)
-      // Persist server-side if authenticated
-      if (user) {
-        api.trackProgress(course.id, stepId).catch(() => {})
-      }
-      return updated
+      return [...prev, stepId]
     })
+    const anonId = !user && course.isPublic ? getAnonymousId() : undefined
+    api.trackProgress(course.id, stepId, anonId ?? undefined).catch(() => {})
   }, [course, user])
 
   const advanceToNextStep = useCallback(() => {
@@ -285,11 +281,10 @@ function StepEditor({
 
   const isIframeLang = language === 'javascript-dom'
 
-  // Reset code when step changes
   useEffect(() => {
     setCode(step.starterCode ?? '')
     setResult(null)
-  }, [step.id])
+  }, [step.id, step.starterCode])
 
   const runCode = async () => {
     if (!step.testCode || running) return
@@ -390,7 +385,6 @@ function StepEditor({
 // ── Simple markdown renderer ────────────────────────────────────
 
 function MarkdownContent({ content }: { content: string }) {
-  // Convert markdown to HTML (basic: headers, code blocks, bold, paragraphs)
   const html = content
     .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-bg/50 rounded p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-secondary">$2</code></pre>')
     .replace(/`([^`]+)`/g, '<code class="bg-bg/50 px-1.5 py-0.5 rounded text-accent text-xs font-mono">$1</code>')

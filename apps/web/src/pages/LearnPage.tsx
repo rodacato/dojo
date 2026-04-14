@@ -63,6 +63,11 @@ function CourseCard({ course }: { course: CourseDTO }) {
         >
           {course.language}
         </span>
+        {course.isPublic && (
+          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">
+            public
+          </span>
+        )}
       </div>
       <h2 className="text-lg font-mono text-primary group-hover:text-accent transition-colors">
         {course.title}
