@@ -105,6 +105,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       ownerRole: variation?.ownerRole ?? '',
       ownerContext: variation?.ownerContext ?? '',
       executionContext,
+      category: exercise?.category,
     })) {
       if (token.chunk) {
         send(ws, { type: 'token', content: token.chunk })

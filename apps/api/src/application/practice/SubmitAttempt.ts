@@ -19,6 +19,7 @@ export class SubmitAttempt {
     ownerRole: string
     ownerContext: string
     executionContext?: string // test results injected before LLM evaluation
+    category?: string // exercise.category — shapes sensei prompt (e.g. debugging)
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
     if (!session) throw new SessionNotFoundError(params.sessionId)
@@ -43,6 +44,7 @@ export class SubmitAttempt {
       sessionBody: session.body,
       userResponse: userResponseWithContext,
       history,
+      category: params.category,
     })) {
       yield token
       if (token.isFinal) {

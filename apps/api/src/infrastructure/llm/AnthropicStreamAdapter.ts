@@ -21,6 +21,7 @@ export class AnthropicStreamAdapter implements LLMPort {
     sessionBody: string
     userResponse: string
     history: ConversationTurn[]
+    category?: string
   }): AsyncIterable<EvaluationToken> {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
@@ -98,6 +99,7 @@ function buildMessages(params: {
   sessionBody: string
   userResponse: string
   history: ConversationTurn[]
+  category?: string
 }): Anthropic.Messages.MessageParam[] {
   const messages: Anthropic.Messages.MessageParam[] = []
 
@@ -111,6 +113,7 @@ function buildMessages(params: {
         exerciseTitle: '', // TODO: pass exerciseTitle through params in Phase 1
         exerciseDescription: params.sessionBody,
         userResponse: params.userResponse,
+        category: params.category,
       }),
     })
   } else {
@@ -124,6 +127,7 @@ function buildMessages(params: {
         exerciseTitle: '',
         exerciseDescription: params.sessionBody,
         userResponse: firstTurn.userResponse,
+        category: params.category,
       }),
     })
     messages.push({ role: 'assistant', content: firstTurn.llmResponse })

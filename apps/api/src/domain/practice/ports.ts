@@ -15,6 +15,7 @@ export interface LLMPort {
     sessionBody: string
     userResponse: string
     history: ConversationTurn[]
+    category?: string
   }): AsyncIterable<EvaluationToken>
 
   generateSessionBody(params: {

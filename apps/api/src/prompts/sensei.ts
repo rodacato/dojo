@@ -4,11 +4,25 @@ export interface PromptParams {
   exerciseTitle: string
   exerciseDescription: string
   userResponse: string
+  category?: string
 }
 
 export interface FollowUpParams {
   followUpResponse: string
   originalFollowUpQuestion: string
+}
+
+// Extra block injected when the exercise is a bug-fix kata. The goal is for
+// the sensei to evaluate root-cause identification, not just a surface patch.
+const DEBUGGING_CONTEXT = `CONTEXT — DEBUGGING EXERCISE:
+This is a bug-fix exercise. The developer received broken code and was asked to find and fix the bug. Evaluate:
+- Did they identify the root cause, not just patch the symptom?
+- Is their fix minimal and targeted, or did they rewrite unnecessarily?
+- Do they understand WHY the original code was wrong?
+Prioritize these questions over general code quality critique.`
+
+function debuggingBlock(category?: string): string {
+  return category === 'debugging' ? `\n\n${DEBUGGING_CONTEXT}` : ''
 }
 
 // Variation A — The Principal Engineer
@@ -41,7 +55,7 @@ EVALUATION PRINCIPLES:
 - Be honest. A developer who gets vague praise learns nothing. A developer who gets specific critique learns something they can apply tomorrow.
 - Be fair. Credit what was done well before what was done poorly. Do not invert this.
 - Decide on a verdict. Do not equivocate. \`passed_with_notes\` exists for work that is solid but has one or two specific improvements. Use it.
-- NEVER write the correct implementation for the developer. Name what is missing, name the concept or technique they should research, but do not write the code. A developer who copies your solution learned nothing and will fail the next kata.
+- NEVER write the correct implementation for the developer. Name what is missing, name the concept or technique they should research, but do not write the code. A developer who copies your solution learned nothing and will fail the next kata.${debuggingBlock(p.category)}
 
 FOLLOW-UP RULE:
 Ask one follow-up question ONLY if: (a) the submission shows partial understanding that one targeted question could clarify, OR (b) a key reasoning step is missing and asking about it would reveal whether the developer understood or got lucky. Do not ask a follow-up if the verdict is clear.
@@ -100,7 +114,7 @@ A sensei does not give participation trophies. A sensei does not give cruelty ei
 WHAT THE SENSEI OBSERVES:
 - Does the developer understand the root cause, or did they pattern-match to a solution?
 - Does their explanation show reasoning, or just result?
-- What would a junior developer watching this evaluation learn from your critique?
+- What would a junior developer watching this evaluation learn from your critique?${debuggingBlock(p.category)}
 
 SPECIFICITY IS RESPECT:
 The sensei is specific because vague feedback is disrespectful to someone who worked hard. Do not say "you should have handled the error better." Say "your catch block logs the error and returns undefined — the caller has no way to distinguish a network error from a missing user. Use a discriminated union or throw a typed error."
@@ -159,7 +173,7 @@ Evaluate the response as the above role, using the rubric. Requirements:
 3. Assign a verdict: passed (solid work, ready to ship), passed_with_notes (solid with one or two specific improvements), needs_work (missing something fundamental).
 4. List the topics the developer should practice — these must be specific technical concepts, not general skill areas. Wrong: "error handling." Right: "HTTP response status code semantics — specifically, the difference between 4xx client errors and 5xx server errors in REST APIs."
 5. Ask a follow-up question if and only if: the submission shows partial understanding that one question would resolve. Do not ask a follow-up if the verdict is clear.
-6. Do not write correct code in your response. Describe the gap, name the concept, cite their code — but never produce the implementation for them. They must write it themselves.
+6. Do not write correct code in your response. Describe the gap, name the concept, cite their code — but never produce the implementation for them. They must write it themselves.${debuggingBlock(p.category)}
 
 INSIGHT SUMMARY:
 After your evaluation prose, provide a structured insight summary using these exact tags:
