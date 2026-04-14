@@ -24,14 +24,19 @@ _Confirmed for the next work block. Moved here after triage._
 
 _Good ideas, not urgent. Not in the next block._
 
-### Sprint 017 candidates
+### Sprint 018 candidates
 
-From `MARKET_RESEARCH.md` review + panel discussion Sprint 016:
+Deferred desde Sprint 017 (scope-trimmed por panel):
 
-- **SQL Deep Cuts course** — implementar el curso diseñado en Sprint 016. `slug: sql-deep-cuts`, 3 lecciones, 9 steps con window functions + CTEs + análisis real. Seed data draft ya existe en Sprint 016 (Sofia, Dr. Emeka)
-- **Python course** — "Python for the Practiced". Tier 2 en market research. Defer hasta después de SQL Deep Cuts (Dr. Emeka)
-- **"Code Review" kata format** — diff de PR con bugs intencionales, usuario identifica problemas, sensei evalúa completitud y calidad del review. Diferenciador único, ningún competidor lo tiene (Priya, Marcus)
-- **"After solving: approaches" in course player** — collapsible note after step completion showing alternative approaches. Content-only addition to Step schema (Soren — deferred desde Sprint 015)
+- **Share card de completación de curso** — al terminar un curso, share card con "Completé [curso] en dojo_" + badge. Clave para el acquisition funnel (Amara)
+- **"After solving: approaches" in course player** — collapsible note after step completion showing alternative approaches. Content-only addition to Step schema (Soren — deferido desde Sprint 015 y Sprint 017)
+- **Badge específico por curso completado** — Recognition context ya existe, falta su iteración (panel)
+- **Migrar TS Fundamentals + JS DOM a público** — solo si SQL Deep Cuts valida el modelo público (Priya)
+
+Del backlog original:
+
+- **Python course** — "Python for the Practiced". Tier 2 en market research. Defer hasta después de SQL Deep Cuts validado (Dr. Emeka)
+- **"Code Review" kata format** — diff de PR con bugs intencionales, usuario identifica problemas, sensei evalúa completitud y calidad del review. Diferenciador único, ningún competidor lo tiene. PRD propio antes de sprint (Priya, Marcus)
 
 ### Phase 2 — The Scoreboard
 
