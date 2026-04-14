@@ -4,6 +4,20 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 016 — Surprise me + Fix-the-bug + SQL Advanced (2026-03-28)
+**Phase 1 — Alpha**
+
+The sprint where picking a kata got one click shorter and the exercise library grew a debugging track.
+
+- **Surprise me →** — Second CTA on `DayStartPage`. Calls `getExercises` with current mood/duration, picks one at random, starts the session, navigates straight to `/kata/:id`. Independent `surpriseLoading` state so the primary "Show my kata" button keeps working. Uses the same sessionStorage hand-off as the manual flow.
+- **Fix-the-bug kata (5 exercises)** — New `category: 'debugging'` seed file. Each exercise ships with `starterCode` containing a pre-filled buggy implementation the learner has to fix: off-by-one pagination (TS), Python mutable default argument, Go race condition without mutex, `parseInt` without radix (TS), Go nil-check on the wrong receiver. Tests assert corrected behavior via Piston.
+- **SQL advanced kata (5 exercises)** — New seed file targeting window functions and recursive CTEs: department rankings (`RANK() OVER PARTITION BY`), running monthly totals (cumulative `SUM`), org-chart recursive CTE, flatten nested subquery into readable CTEs, churn analysis. Piston-verified against seeded fixtures.
+- **`starterCode` on Exercise** — New nullable column (`migration 0012_starter_code.sql`) + domain field + DTO. `KataActivePage` pre-fills the editor with `exercise.starterCode` when present, so debugging katas open ready to edit instead of blank.
+- **SQL Deep Cuts course (draft)** — `seed-courses-draft-sql.ts` scaffolded and kept out of the runner. 3 lessons, 9 steps, testCode pattern in place for Sprint 017 wiring.
+- **Verification** — typecheck ✓, lint ✓, 79/79 API tests pass.
+
+---
+
 ## Sprint 015 — iframe Sandbox + JavaScript DOM Course (2026-03-27)
 **Phase 1 — Alpha**
 
