@@ -213,10 +213,10 @@ function LessonNav({
                 }`}
               >
                 <span className="text-xs shrink-0">
-                  {isComplete ? '✓' : step.type === 'explanation' ? '📖' : step.type === 'challenge' ? '⚡' : '💻'}
+                  {isComplete ? '✓' : step.type === 'read' ? '📖' : step.type === 'challenge' ? '⚡' : '💻'}
                 </span>
                 <span className="truncate text-xs">
-                  {step.type === 'explanation' ? 'Read' : `Step ${step.order}`}
+                  {step.type === 'read' ? 'Read' : `Step ${step.order}`}
                 </span>
               </button>
             )
@@ -240,7 +240,7 @@ function StepContent({
   isCompleted: boolean
   onComplete: () => void
 }) {
-  if (step.type === 'explanation') {
+  if (step.type === 'read') {
     return (
       <div className="max-w-3xl mx-auto px-6 py-8">
         <MarkdownContent content={step.instruction} />

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import type { Course, Lesson, Step } from '../../domain/learning/course'
 import type { CourseStatus, StepType } from '../../domain/learning/values'
 import type { CourseRepositoryPort } from '../../domain/learning/ports'
@@ -29,9 +29,36 @@ export class PostgresCourseRepository implements CourseRepositoryPort {
     return rows.map((r) => this.toCourse(r as CourseWithRelations))
   }
 
+  async findAllPublic(): Promise<Course[]> {
+    const rows = await this.db.query.courses.findMany({
+      where: and(eq(courses.status, 'published'), eq(courses.isPublic, true)),
+      with: {
+        lessons: {
+          with: { steps: true },
+          orderBy: (l, { asc }) => [asc(l.order)],
+        },
+      },
+    })
+    return rows.map((r) => this.toCourse(r as CourseWithRelations))
+  }
+
   async findBySlug(slug: string): Promise<Course | null> {
     const row = await this.db.query.courses.findFirst({
       where: eq(courses.slug, slug),
+      with: {
+        lessons: {
+          with: { steps: true },
+          orderBy: (l, { asc }) => [asc(l.order)],
+        },
+      },
+    })
+    if (!row) return null
+    return this.toCourse(row as CourseWithRelations)
+  }
+
+  async findById(id: string): Promise<Course | null> {
+    const row = await this.db.query.courses.findFirst({
+      where: eq(courses.id, id),
       with: {
         lessons: {
           with: { steps: true },
@@ -52,6 +79,7 @@ export class PostgresCourseRepository implements CourseRepositoryPort {
       language: row.language,
       accentColor: row.accentColor,
       status: row.status as CourseStatus,
+      isPublic: row.isPublic,
       lessons: row.lessons
         .sort((a, b) => a.order - b.order)
         .map((l) => this.toLesson(l)),

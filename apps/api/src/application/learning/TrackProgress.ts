@@ -1,4 +1,4 @@
-import type { CourseProgressPort } from '../../domain/learning/ports'
+import type { CourseProgressPort, ProgressOwner } from '../../domain/learning/ports'
 
 interface Deps {
   progressRepo: CourseProgressPort
@@ -7,9 +7,13 @@ interface Deps {
 export class TrackProgress {
   constructor(private readonly deps: Deps) {}
 
-  async execute(params: { userId: string; courseId: string; stepId: string }): Promise<void> {
-    const existing = await this.deps.progressRepo.findByUserAndCourse(
-      params.userId,
+  async execute(params: {
+    owner: ProgressOwner
+    courseId: string
+    stepId: string
+  }): Promise<void> {
+    const existing = await this.deps.progressRepo.findByOwnerAndCourse(
+      params.owner,
       params.courseId,
     )
 
@@ -21,7 +25,7 @@ export class TrackProgress {
     }
 
     await this.deps.progressRepo.save({
-      userId: params.userId,
+      owner: params.owner,
       courseId: params.courseId,
       completedSteps: [...completedSteps, params.stepId],
       lastAccessedAt: new Date(),

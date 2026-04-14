@@ -197,6 +197,7 @@ export const courses = pgTable('courses', {
   language: varchar('language', { length: 50 }).notNull(),
   accentColor: varchar('accent_color', { length: 20 }).notNull().default('#6366F1'),
   status: varchar('status', { length: 50 }).notNull().default('draft'),
+  isPublic: boolean('is_public').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
@@ -211,7 +212,7 @@ export const steps = pgTable('steps', {
   id: uuid('id').primaryKey().defaultRandom(),
   lessonId: uuid('lesson_id').notNull().references(() => lessons.id),
   order: integer('order').notNull(),
-  type: varchar('type', { length: 20 }).notNull().default('exercise'),
+  type: varchar('type', { length: 20 }).notNull().default('challenge'),
   instruction: text('instruction').notNull(),
   starterCode: text('starter_code'),
   testCode: text('test_code'),
@@ -221,6 +222,7 @@ export const steps = pgTable('steps', {
 export const courseProgress = pgTable('course_progress', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id').references(() => users.id),
+  anonymousSessionId: text('anonymous_session_id'),
   courseId: uuid('course_id').notNull().references(() => courses.id),
   completedSteps: jsonb('completed_steps').notNull().default([]),
   lastAccessedAt: timestamp('last_accessed_at', { withTimezone: true }).defaultNow().notNull(),

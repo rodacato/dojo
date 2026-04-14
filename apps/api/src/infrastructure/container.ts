@@ -11,6 +11,7 @@ import { GetCourseBySlug } from '../application/learning/GetCourseBySlug'
 import { ExecuteStep } from '../application/learning/ExecuteStep'
 import { TrackProgress } from '../application/learning/TrackProgress'
 import { GetCourseProgress } from '../application/learning/GetCourseProgress'
+import { MergeAnonymousProgress } from '../application/learning/MergeAnonymousProgress'
 import { db } from './persistence/drizzle/client'
 import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
@@ -33,7 +34,7 @@ const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
 const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
-const courseRepo = new PostgresCourseRepository(db)
+export const courseRepo = new PostgresCourseRepository(db)
 const courseProgressRepo = new PostgresCourseProgressRepository(db)
 
 function createLLMAdapter(): LLMPort {
@@ -78,4 +79,5 @@ export const useCases = {
   executeStep: new ExecuteStep({ executionPort: createExecutionAdapter() }),
   trackProgress: new TrackProgress({ progressRepo: courseProgressRepo }),
   getCourseProgress: new GetCourseProgress({ progressRepo: courseProgressRepo }),
+  mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: courseProgressRepo }),
 }

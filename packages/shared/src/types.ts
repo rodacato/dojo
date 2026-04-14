@@ -82,7 +82,7 @@ export interface FeedbackDTO {
 
 // ── Learning (Courses) ──────────────────────────────────────────────
 
-export type StepType = 'explanation' | 'exercise' | 'challenge'
+export type StepType = 'read' | 'code' | 'challenge'
 export type CourseStatus = 'draft' | 'published'
 
 export interface StepDTO {
@@ -110,6 +110,7 @@ export interface CourseDTO {
   language: string
   accentColor: string
   status: CourseStatus
+  isPublic: boolean
   lessonCount: number
   stepCount: number
 }

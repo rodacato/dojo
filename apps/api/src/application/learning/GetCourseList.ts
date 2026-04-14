@@ -7,6 +7,7 @@ export interface CourseSummary {
   description: string
   language: string
   accentColor: string
+  isPublic: boolean
   lessonCount: number
   stepCount: number
 }
@@ -18,8 +19,10 @@ interface Deps {
 export class GetCourseList {
   constructor(private readonly deps: Deps) {}
 
-  async execute(): Promise<CourseSummary[]> {
-    const courses = await this.deps.courseRepo.findAllPublished()
+  async execute(options?: { publicOnly?: boolean }): Promise<CourseSummary[]> {
+    const courses = options?.publicOnly
+      ? await this.deps.courseRepo.findAllPublic()
+      : await this.deps.courseRepo.findAllPublished()
     return courses.map((c) => ({
       id: c.id,
       slug: c.slug,
@@ -27,6 +30,7 @@ export class GetCourseList {
       description: c.description,
       language: c.language,
       accentColor: c.accentColor,
+      isPublic: c.isPublic,
       lessonCount: c.lessons.length,
       stepCount: c.lessons.reduce((sum, l) => sum + l.steps.length, 0),
     }))

@@ -63,7 +63,7 @@ const STEPS_DATA = [
     id: STEP_1_1_ID,
     lessonId: LESSON_1_ID,
     order: 1,
-    type: 'explanation' as const,
+    type: 'read' as const,
     instruction: `# Variables & Types in TypeScript
 
 TypeScript adds **type annotations** to JavaScript, catching bugs before your code runs.
@@ -100,7 +100,7 @@ Ready to try it? Move to the next step.`,
     id: STEP_1_2_ID,
     lessonId: LESSON_1_ID,
     order: 2,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Write a greet function
 
 Write a function \`greet\` that takes a \`name\` (string) and returns \`"Hello, <name>!"\`.
@@ -143,7 +143,7 @@ if (_fail) throw new Error('Tests failed')`,
     id: STEP_1_3_ID,
     lessonId: LESSON_1_ID,
     order: 3,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Write an add function
 
 Write a function \`add\` that takes two numbers and returns their sum.
@@ -192,7 +192,7 @@ if (_fail) throw new Error('Tests failed')`,
     id: STEP_2_1_ID,
     lessonId: LESSON_2_ID,
     order: 1,
-    type: 'explanation' as const,
+    type: 'read' as const,
     instruction: `# Arrays & Objects
 
 ## Typed arrays
@@ -231,7 +231,7 @@ The \`?\` makes a property **optional** — it can be present or absent.`,
     id: STEP_2_2_ID,
     lessonId: LESSON_2_ID,
     order: 2,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Sum an array
 
 Write a function \`sum\` that takes an array of numbers and returns their total.
@@ -274,7 +274,7 @@ if (_fail) throw new Error('Tests failed')`,
     id: STEP_2_3_ID,
     lessonId: LESSON_2_ID,
     order: 3,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Get full name
 
 Write a function \`getFullName\` that takes a person object with \`first\` and \`last\` properties and returns their full name.
@@ -318,7 +318,7 @@ if (_fail) throw new Error('Tests failed')`,
     id: STEP_3_1_ID,
     lessonId: LESSON_3_ID,
     order: 1,
-    type: 'explanation' as const,
+    type: 'read' as const,
     instruction: `# Control Flow
 
 ## if/else
@@ -365,7 +365,7 @@ The \`%\` operator returns the remainder of division:
     id: STEP_3_2_ID,
     lessonId: LESSON_3_ID,
     order: 2,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: FizzBuzz
 
 Write a function \`fizzBuzz\` that takes a number and returns:
@@ -529,7 +529,7 @@ const DOM_STEPS_DATA = [
     id: DOM_STEP_1_1_ID,
     lessonId: DOM_LESSON_1_ID,
     order: 1,
-    type: 'explanation' as const,
+    type: 'read' as const,
     instruction: `# Selecting Elements
 
 The browser gives you several ways to find elements on the page:
@@ -556,7 +556,7 @@ The CSS selector syntax is the same you use in stylesheets: class (\`.card\`), I
     id: DOM_STEP_1_2_ID,
     lessonId: DOM_LESSON_1_ID,
     order: 2,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Read an element's text
 
 Write a function \`getTitle\` that finds the \`<h1>\` element on the page and returns its text content.
@@ -593,7 +593,7 @@ ${DOM_RUNNER_END}`,
     id: DOM_STEP_1_3_ID,
     lessonId: DOM_LESSON_1_ID,
     order: 3,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Count list items
 
 Write a function \`countItems\` that counts how many \`<li>\` elements are inside \`#todo-list\`.
@@ -643,7 +643,7 @@ ${DOM_RUNNER_END}`,
     id: DOM_STEP_2_1_ID,
     lessonId: DOM_LESSON_2_ID,
     order: 1,
-    type: 'explanation' as const,
+    type: 'read' as const,
     instruction: `# Modifying Elements
 
 Once you have an element, you can change almost anything about it:
@@ -674,7 +674,7 @@ el.getAttribute('data-id') // → '42'
     id: DOM_STEP_2_2_ID,
     lessonId: DOM_LESSON_2_ID,
     order: 2,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Update a message
 
 Write a function \`updateMessage\` that changes the text inside \`#message\` to \`"Updated"\`.
@@ -707,7 +707,7 @@ ${DOM_RUNNER_END}`,
     id: DOM_STEP_2_3_ID,
     lessonId: DOM_LESSON_2_ID,
     order: 3,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Activate a card
 
 Write a function \`activateCard\` that adds the class \`active\` to \`#card\`.
@@ -746,7 +746,7 @@ ${DOM_RUNNER_END}`,
     id: DOM_STEP_3_1_ID,
     lessonId: DOM_LESSON_3_ID,
     order: 1,
-    type: 'explanation' as const,
+    type: 'read' as const,
     instruction: `# Events
 
 User interactions fire events. You listen for them with \`addEventListener\`:
@@ -787,7 +787,7 @@ If your \`<li>\` contains a \`<strong>\`, clicking on the text fires \`e.target 
     id: DOM_STEP_3_2_ID,
     lessonId: DOM_LESSON_3_ID,
     order: 2,
-    type: 'exercise' as const,
+    type: 'challenge' as const,
     instruction: `# Exercise: Click counter
 
 Write a function \`setupCounter\` that attaches a click listener to \`#btn\`. Each click should increment the number shown in \`#counter\`.

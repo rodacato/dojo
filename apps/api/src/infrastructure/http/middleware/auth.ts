@@ -27,6 +27,23 @@ export async function requireAuth(c: Context<AppEnv>, next: Next): Promise<void>
   await next()
 }
 
+export async function optionalAuth(c: Context<AppEnv>, next: Next): Promise<void> {
+  const authHeader = c.req.header('Authorization')
+  const sessionId = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+
+  if (sessionId) {
+    const session = await db.query.userSessions.findFirst({
+      where: and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())),
+      with: { user: true },
+    })
+    if (session) {
+      c.set('user', session.user)
+    }
+  }
+
+  await next()
+}
+
 export async function requireCreator(c: Context<AppEnv>, next: Next): Promise<void> {
   const user = c.get('user') as { githubId: string } | undefined
   if (!user) {

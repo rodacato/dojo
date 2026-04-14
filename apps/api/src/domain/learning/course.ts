@@ -26,5 +26,6 @@ export interface Course {
   language: string
   accentColor: string
   status: CourseStatus
+  isPublic: boolean
   lessons: Lesson[]
 }
