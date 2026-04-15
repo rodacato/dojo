@@ -30,7 +30,11 @@ export function runInIframe(params: {
       resolve({
         passed: false,
         output: 'Execution timed out',
-        testResults: [{ name: 'Execution', passed: false, message: `Timed out after ${timeoutMs}ms` }],
+        stdout: '',
+        stderr: `Timed out after ${timeoutMs}ms`,
+        testResults: [],
+        errorKind: 'timeout',
+        errorMessage: `Execution timed out after ${timeoutMs}ms — check for infinite loops or long-running work.`,
       })
     }, timeoutMs)
 
@@ -42,8 +46,15 @@ export function runInIframe(params: {
       clearTimeout(timer)
       cleanup()
 
-      const { log, failed } = event.data as { log: string[]; failed: boolean }
-      const testResults: TestResultDTO[] = log.map((line: string) => {
+      const data = event.data as {
+        log: string[]
+        failed: boolean
+        stdout?: string[]
+        stderr?: string[]
+        errorKind?: 'runtime'
+      }
+
+      const testResults: TestResultDTO[] = data.log.map((line: string) => {
         if (line.startsWith('✓ ')) return { name: line.slice(2), passed: true }
         if (line.startsWith('✗ ')) {
           const rest = line.slice(2)
@@ -55,10 +66,17 @@ export function runInIframe(params: {
         return { name: line, passed: true }
       })
 
+      const stdout = (data.stdout ?? []).join('\n')
+      const stderr = (data.stderr ?? []).join('\n')
+      const combined = [stdout, stderr].filter(Boolean).join('\n') || data.log.join('\n')
+
       resolve({
-        passed: !failed,
-        output: log.join('\n'),
+        passed: !data.failed,
+        output: combined,
+        stdout,
+        stderr,
         testResults,
+        ...(data.errorKind ? { errorKind: data.errorKind, errorMessage: stderr || 'Your code crashed before tests could finish.' } : {}),
       })
     }
 
@@ -78,16 +96,40 @@ function buildSrcdoc(starterCode: string, testCode: string): string {
   const safeStarter = starterCode.replace(/<\/script>/gi, '<\\/script>')
   const safeTest = testCode.replace(/<\/script>/gi, '<\\/script>')
 
+  // stdout/stderr capture: override console.log + console.error so the user's
+  // own prints show up in the Output panel, separate from the test log.
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"></head>
 <body>
 <script>
+const __stdout = []
+const __stderr = []
+const __origLog = console.log.bind(console)
+const __origErr = console.error.bind(console)
+function __stringify(a) {
+  try {
+    if (typeof a === 'string') return a
+    return JSON.stringify(a)
+  } catch { return String(a) }
+}
+console.log = function (...args) {
+  __stdout.push(args.map(__stringify).join(' '))
+  __origLog(...args)
+}
+console.error = function (...args) {
+  __stderr.push(args.map(__stringify).join(' '))
+  __origErr(...args)
+}
+
 window.onerror = function(msg) {
   window.parent.postMessage({
     type: 'test-results',
     log: ['\u2717 Runtime error: ' + msg],
-    failed: true
+    failed: true,
+    stdout: __stdout,
+    stderr: __stderr.concat(['Runtime error: ' + msg]),
+    errorKind: 'runtime'
   }, '*')
   return true
 }
@@ -96,10 +138,14 @@ ${safeStarter}
 
 ${safeTest}
 } catch(e) {
+  const msg = e instanceof Error ? e.message : String(e)
   window.parent.postMessage({
     type: 'test-results',
-    log: ['\u2717 Uncaught error: ' + (e instanceof Error ? e.message : String(e))],
-    failed: true
+    log: ['\u2717 Uncaught error: ' + msg],
+    failed: true,
+    stdout: __stdout,
+    stderr: __stderr.concat(['Uncaught error: ' + msg]),
+    errorKind: 'runtime'
   }, '*')
 }
 <\/script>

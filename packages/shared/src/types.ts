@@ -133,10 +133,31 @@ export interface TestResultDTO {
   message?: string
 }
 
+/**
+ * Why execution failed — distinguishes infra errors from failing tests.
+ * Lets the UI render a dedicated error card ("Couldn't reach the sandbox")
+ * instead of mixing a fetch failure into the tests panel.
+ */
+export type ExecuteErrorKind =
+  | 'runtime'   // user code crashed before tests finished (ReferenceError, etc.)
+  | 'compile'   // TS/compiled language failed to compile
+  | 'timeout'   // hit sandbox timeout
+  | 'sandbox'   // infra failed (Piston unreachable, network, etc.)
+
 export interface ExecuteStepResponse {
   passed: boolean
+  /** Raw combined output (kept for backwards compat with legacy parsers). */
   output: string
+  /** stdout captured by the sandbox, separate from stderr. */
+  stdout: string
+  /** stderr captured by the sandbox. */
+  stderr: string
+  /** Structured per-test outcomes. Empty when the run never reached tests. */
   testResults: TestResultDTO[]
+  /** Populated only when !passed AND the failure is not "some tests failed". */
+  errorKind?: ExecuteErrorKind
+  /** Human-readable summary of the failure when errorKind is set. */
+  errorMessage?: string
 }
 
 export interface CourseProgressDTO {
