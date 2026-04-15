@@ -932,17 +932,30 @@ async function seedOneCourse(
       set: {
         title: courseData.title,
         description: courseData.description,
+        language: courseData.language,
+        accentColor: courseData.accentColor,
         status: courseData.status,
         isPublic: courseData.isPublic ?? false,
       },
     })
   console.log(`  ✓ Course: ${courseData.title}`)
 
+  // Lessons: upsert by id so title/order edits propagate. Deletions still
+  // require a wipe (see POST /admin/courses/:id/wipe) because re-seeding
+  // never removes orphan lessons.
   for (const lesson of lessonsData) {
-    await db.insert(lessons).values(lesson).onConflictDoNothing()
+    await db
+      .insert(lessons)
+      .values(lesson)
+      .onConflictDoUpdate({
+        target: lessons.id,
+        set: { title: lesson.title, order: lesson.order },
+      })
   }
   console.log(`  ✓ Lessons: ${lessonsData.length}`)
 
+  // Steps: upsert by id. type and order propagate too so read<->challenge
+  // and reordering edits are covered without a wipe.
   for (const step of stepsData) {
     await db
       .insert(steps)
@@ -950,6 +963,8 @@ async function seedOneCourse(
       .onConflictDoUpdate({
         target: steps.id,
         set: {
+          type: step.type,
+          order: step.order,
           instruction: step.instruction,
           starterCode: step.starterCode,
           testCode: step.testCode,
