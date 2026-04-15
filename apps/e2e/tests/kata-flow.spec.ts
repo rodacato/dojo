@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 
+const API_BASE = 'http://localhost:3001'
+
 const MOCK_USER = {
   id: 'user-1',
   username: 'testdev',
@@ -24,6 +26,7 @@ const MOCK_DASHBOARD = {
     sessionsTimedOut: 0,
   },
   senseiSuggests: [],
+  weeklyGoal: { target: 3, completed: 1 },
 }
 
 const MOCK_PREFERENCES = {
@@ -37,14 +40,13 @@ const MOCK_PREFERENCES = {
 
 test.describe('Kata flow (Day Start page)', () => {
   test('select mood and duration, then "Show my kata" becomes enabled', async ({ page }) => {
-    // Mock API responses
-    await page.route('**/auth/me', (route) =>
+    await page.route(`${API_BASE}/auth/me`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
     )
-    await page.route('**/dashboard', (route) =>
+    await page.route(`${API_BASE}/dashboard`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_DASHBOARD) }),
     )
-    await page.route('**/preferences', (route) =>
+    await page.route(`${API_BASE}/preferences`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_PREFERENCES) }),
     )
 

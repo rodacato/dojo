@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test'
 
+const API_BASE = 'http://localhost:3001'
+
 const MOCK_USER = {
   id: 'user-1',
   username: 'testdev',
@@ -24,15 +26,17 @@ const MOCK_DASHBOARD = {
     sessionsTimedOut: 0,
   },
   senseiSuggests: [],
+  weeklyGoal: { target: 3, completed: 1 },
 }
 
 test.describe('Dashboard', () => {
   test('shows streak and today kata section for authenticated user', async ({ page }) => {
-    // Mock API responses
-    await page.route('**/auth/me', (route) =>
+    // Scope mocks to the API host so they don't intercept the app's own
+    // /dashboard frontend route (which shares the same path).
+    await page.route(`${API_BASE}/auth/me`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
     )
-    await page.route('**/dashboard', (route) =>
+    await page.route(`${API_BASE}/dashboard`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_DASHBOARD) }),
     )
 

@@ -53,6 +53,13 @@ echo "Migrations complete."
 echo "Seeding course data..."
 pnpm --filter=@dojo/api db:seed:courses 2>/dev/null || echo "Course seed skipped (may already exist)."
 
+# Playwright browsers for E2E smoke tests — skipped silently in hosts where
+# the browser cache is already warm. System deps (libnss3, libasound2, etc.)
+# must be installed by the container image or manually via
+# `sudo pnpm exec playwright install-deps`.
+echo "Installing Playwright browser (chromium)..."
+pnpm exec playwright install chromium 2>/dev/null || echo "Playwright install skipped."
+
 echo ""
 echo "  dojo_ ready."
 echo "  Run: pnpm dev"
