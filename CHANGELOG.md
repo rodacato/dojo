@@ -4,6 +4,22 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 017 — SQL Deep Cuts + Public Courses + Debugging Sensei (2026-04-15)
+**Phase 1 — Alpha**
+
+The sprint where the dojo got its first truly public course and the sensei learned to evaluate bug-fix exercises differently.
+
+- **SQL Deep Cuts course (public)** — The draft from Sprint 016 is now a live course at `/learn/sql-deep-cuts`. 3 lessons, 9 steps (3 read + 6 challenge): window functions (RANK, running totals), CTEs (refactor + chained budget ratio), real-world analysis (cohort sizes + a final "rewrite this slow churn report" challenge). Marked `isPublic: true` — no login required to try it.
+- **SQL testCode harness (SQLite, finally real)** — Sprint 016's SQL katas shipped with PostgreSQL syntax (`DO $$ BEGIN ... RAISE EXCEPTION`, `to_char`) that never executed — Piston runs SQLite (ADR 014). Fixed with a new convention: `PistonAdapter.buildSqlScript()` substitutes `-- @SOLUTION_FILE` with `CREATE VIEW solution AS <user code>;`, and assertions use `SELECT CASE WHEN cond THEN '✓ name' ELSE '✗ name: reason' END` + a final `CREATE TABLE _ok (ok INT CHECK(ok=1))` gate that forces exit 1 on any miss. All 3 `sql-advanced.ts` katas rewritten and verified. All 6 SQL Deep Cuts challenges verified (correct answer → exit 0, known-wrong → exit 1).
+- **Public courses + anonymous progress** (migration 0013) — `courses.is_public` flag + `course_progress.anonymous_session_id` (nullable, partial unique index). `CourseProgress` port rebuilt around a `ProgressOwner` union: `{ kind: 'user', userId } | { kind: 'anonymous', sessionId }`. New `MergeAnonymousProgress` use case: when a user logs in, anonymous progress unioned into their account (max `lastAccessedAt`), then the anonymous row is deleted. `POST /learn/progress/merge` endpoint. Frontend `dojo-anon-id` in localStorage + `optionalAuth` middleware + language whitelist on the anonymous `/learn/execute` path (Marta: shrink attack surface).
+- **Step type `read | code | challenge`** — Normalized from legacy `explanation | exercise` via the same migration. `CoursePlayerPage` already renders `read` as markdown-only (no editor) since Sprint 014 — the rename closed the loop.
+- **"Public" badge** on course cards in the catalog, accent-colored border, visible to all visitors.
+- **Sensei prompt — debugging context** — When `exercise.category === 'debugging'`, all three prompt variants inject a 5-line block focused on root-cause identification vs. symptom patching, fix minimality, and understanding WHY the code was wrong. Relevant for the 5 fix-the-bug katas from Sprint 016. `category` threaded through `LLMPort.evaluate` + adapters (Anthropic, OpenAI).
+- **Journal recovery** — `_journal.json` was missing entries for migrations 0012 and 0013, so neither was applying. Fixed; migrations run clean from scratch.
+- **Verification** — typecheck ✓, lint ✓, 97/97 API tests (+12 from Sprint 016: merge use case, debugging prompt variants, SQL adapter).
+
+---
+
 ## Sprint 016 — Surprise me + Fix-the-bug + SQL Advanced (2026-03-28)
 **Phase 1 — Alpha**
 

@@ -105,7 +105,7 @@ pnpm build                            # Build all workspaces
 pnpm lint                             # Lint all workspaces
 pnpm typecheck                        # Type-check all workspaces
 pnpm test --filter=api                # Run API unit + integration tests
-pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript + JS DOM)
+pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript, JS DOM, SQL Deep Cuts)
 ```
 
 ---
@@ -126,7 +126,7 @@ pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript + JS DOM
 
 | Feature | Description |
 |---|---|
-| **Courses** | Public learning paths at `/learn` — step-by-step exercises with instant feedback, no login required. TypeScript runs via Piston; JavaScript DOM exercises run in a browser iframe sandbox (zero server cost) |
+| **Courses** | Public learning paths at `/learn` — step-by-step exercises with instant feedback. TypeScript and SQL Deep Cuts run via Piston; JavaScript DOM exercises run in a browser iframe sandbox. Public courses (e.g. SQL Deep Cuts) can be followed without an account — progress persists in `localStorage` and merges into your account if you later sign in |
 | **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
 | **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
 | **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into exercise quality |
