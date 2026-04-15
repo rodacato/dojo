@@ -12,6 +12,7 @@ import { preferencesRoutes } from './routes/preferences'
 import { dashboardRoutes } from './routes/dashboard'
 import { profileRoutes } from './routes/profile'
 import { adminRoutes } from './routes/admin-exercises'
+import { adminCoursesRoutes } from './routes/admin-courses'
 import { shareRoutes } from './routes/share'
 import { learnRoutes } from './routes/learn'
 import { ogRoutes } from './routes/og'
@@ -36,6 +37,7 @@ export function createRouter() {
   app.route('/', learnRoutes)
   app.route('/', ogRoutes)
   app.route('/admin', adminRoutes)
+  app.route('/admin/courses', adminCoursesRoutes)
 
   app.onError((err, c) => {
     if (err instanceof HTTPException) return err.getResponse()

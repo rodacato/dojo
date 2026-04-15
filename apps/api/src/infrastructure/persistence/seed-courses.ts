@@ -960,7 +960,39 @@ async function seedOneCourse(
   console.log(`  ✓ Steps: ${stepsData.length}`)
 }
 
-async function seedCourses() {
+export interface SeedReport {
+  seeded: Array<{ slug: string; title: string; lessonCount: number; stepCount: number }>
+}
+
+/**
+ * Seed every known course into the provided drizzle instance.
+ * Idempotent — reuses onConflictDoUpdate on (slug) and (step.id).
+ */
+export async function seedAllCourses(db: ReturnType<typeof drizzle>): Promise<SeedReport> {
+  const configs: CourseConfig[] = [
+    { courseData: COURSE_DATA, lessonsData: LESSONS_DATA, stepsData: STEPS_DATA },
+    { courseData: DOM_COURSE_DATA, lessonsData: DOM_LESSONS_DATA, stepsData: DOM_STEPS_DATA },
+    {
+      courseData: SQL_DEEP_CUTS_COURSE,
+      lessonsData: SQL_DEEP_CUTS_LESSONS,
+      stepsData: SQL_DEEP_CUTS_STEPS,
+    },
+  ]
+
+  const report: SeedReport = { seeded: [] }
+  for (const c of configs) {
+    await seedOneCourse(db, c)
+    report.seeded.push({
+      slug: c.courseData.slug,
+      title: c.courseData.title,
+      lessonCount: c.lessonsData.length,
+      stepCount: c.stepsData.length,
+    })
+  }
+  return report
+}
+
+async function seedCoursesCli() {
   const connectionString = process.env.DATABASE_URL
   if (!connectionString) throw new Error('DATABASE_URL not set')
 
@@ -968,30 +1000,15 @@ async function seedCourses() {
   const db = drizzle(sql, { schema })
 
   console.log('Seeding courses...')
-
-  await seedOneCourse(db, {
-    courseData: COURSE_DATA,
-    lessonsData: LESSONS_DATA,
-    stepsData: STEPS_DATA,
-  })
-
-  await seedOneCourse(db, {
-    courseData: DOM_COURSE_DATA,
-    lessonsData: DOM_LESSONS_DATA,
-    stepsData: DOM_STEPS_DATA,
-  })
-
-  await seedOneCourse(db, {
-    courseData: SQL_DEEP_CUTS_COURSE,
-    lessonsData: SQL_DEEP_CUTS_LESSONS,
-    stepsData: SQL_DEEP_CUTS_STEPS,
-  })
-
+  await seedAllCourses(db)
   console.log('Done.')
   await sql.end()
 }
 
-seedCourses().catch((err) => {
-  console.error('Seed failed:', err)
-  process.exit(1)
-})
+// Only run when invoked directly (tsx src/.../seed-courses.ts), not when imported.
+if (require.main === module) {
+  seedCoursesCli().catch((err) => {
+    console.error('Seed failed:', err)
+    process.exit(1)
+  })
+}
