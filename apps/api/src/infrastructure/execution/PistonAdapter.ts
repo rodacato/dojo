@@ -35,7 +35,7 @@ export class PistonAdapter implements CodeExecutionPort {
     const combined = `${params.code}\n\n${params.testCode}`
     const runFile = isSql ? 'query.sql' : `test.${ext(params.language)}`
     const files = isSql
-      ? [{ name: 'query.sql', content: `${params.testCode}\n${params.code}` }]
+      ? [{ name: 'query.sql', content: buildSqlScript(params.code, params.testCode) }]
       : [{ name: runFile, content: combined }]
     const timeout = params.timeoutMs ?? config.PISTON_RUN_TIMEOUT
 
@@ -113,4 +113,21 @@ function ext(language: string): string {
     case 'rust': return 'rs'
     default: return 'txt'
   }
+}
+
+// SQL testCode convention:
+// - testCode defines the schema, seed, and validation assertions
+// - A `-- @SOLUTION_FILE` marker is the placeholder for the learner's query
+// - The adapter wraps the learner's code as `CREATE VIEW solution AS <code>;`
+//   so assertions can reference `solution` uniformly.
+// If the marker is absent, fall back to appending the learner's code after
+// the testCode (the legacy behavior, used by ad-hoc SQL harnesses).
+export function buildSqlScript(userCode: string, testCode: string): string {
+  const MARKER = '-- @SOLUTION_FILE'
+  if (!testCode.includes(MARKER)) {
+    return `${testCode}\n${userCode}`
+  }
+  const userBody = userCode.trim().replace(/;+\s*$/, '')
+  const wrapped = `DROP VIEW IF EXISTS solution;\nCREATE VIEW solution AS\n${userBody};`
+  return testCode.replace(MARKER, wrapped)
 }

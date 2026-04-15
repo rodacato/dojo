@@ -85,6 +85,20 @@
       "when": 1775222400000,
       "tag": "0011_courses",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1775308800000,
+      "tag": "0012_starter_code",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1775395200000,
+      "tag": "0013_public_courses_anonymous_progress",
+      "breakpoints": true
     }
   ]
 }

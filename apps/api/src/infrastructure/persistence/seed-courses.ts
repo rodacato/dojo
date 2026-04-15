@@ -2,6 +2,11 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from './drizzle/schema'
 import { courses, lessons, steps } from './drizzle/schema'
+import {
+  SQL_DEEP_CUTS_COURSE,
+  SQL_DEEP_CUTS_LESSONS,
+  SQL_DEEP_CUTS_STEPS,
+} from './seed-courses-sql-deep-cuts'
 
 // ---------------------------------------------------------------------------
 // Deterministic UUIDs for seed data
@@ -886,10 +891,33 @@ ${DOM_RUNNER_END}`,
 // Seed runner
 // ---------------------------------------------------------------------------
 
+type CourseSeed = {
+  id: string
+  slug: string
+  title: string
+  description: string
+  language: string
+  accentColor: string
+  status: 'draft' | 'published'
+  isPublic?: boolean
+}
+
+type LessonSeed = { id: string; courseId: string; order: number; title: string }
+type StepSeed = {
+  id: string
+  lessonId: string
+  order: number
+  type: 'read' | 'code' | 'challenge'
+  instruction: string
+  starterCode: string | null
+  testCode: string | null
+  hint: string | null
+}
+
 type CourseConfig = {
-  courseData: typeof COURSE_DATA
-  lessonsData: typeof LESSONS_DATA
-  stepsData: typeof STEPS_DATA
+  courseData: CourseSeed
+  lessonsData: LessonSeed[]
+  stepsData: StepSeed[]
 }
 
 async function seedOneCourse(
@@ -898,13 +926,14 @@ async function seedOneCourse(
 ) {
   await db
     .insert(courses)
-    .values(courseData)
+    .values({ ...courseData, isPublic: courseData.isPublic ?? false })
     .onConflictDoUpdate({
       target: courses.slug,
       set: {
         title: courseData.title,
         description: courseData.description,
         status: courseData.status,
+        isPublic: courseData.isPublic ?? false,
       },
     })
   console.log(`  ✓ Course: ${courseData.title}`)
@@ -950,6 +979,12 @@ async function seedCourses() {
     courseData: DOM_COURSE_DATA,
     lessonsData: DOM_LESSONS_DATA,
     stepsData: DOM_STEPS_DATA,
+  })
+
+  await seedOneCourse(db, {
+    courseData: SQL_DEEP_CUTS_COURSE,
+    lessonsData: SQL_DEEP_CUTS_LESSONS,
+    stepsData: SQL_DEEP_CUTS_STEPS,
   })
 
   console.log('Done.')

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { PistonAdapter } from './PistonAdapter'
+import { PistonAdapter, buildSqlScript } from './PistonAdapter'
 
 // Mock global fetch
 const mockFetch = vi.fn()
@@ -128,5 +128,29 @@ describe('PistonAdapter', () => {
     expect(body.language).toBe('sqlite3')
     expect(body.files[0].content).toContain('CREATE TABLE')
     expect(body.files[0].content).toContain('SELECT * FROM users')
+  })
+})
+
+describe('buildSqlScript', () => {
+  it('substitutes @SOLUTION_FILE marker with a wrapped CREATE VIEW', () => {
+    const testCode = `CREATE TABLE t (x INT);
+-- @SOLUTION_FILE
+SELECT * FROM solution;`
+    const script = buildSqlScript('SELECT x FROM t;', testCode)
+
+    expect(script).toContain('DROP VIEW IF EXISTS solution')
+    expect(script).toContain('CREATE VIEW solution AS\nSELECT x FROM t')
+    expect(script).not.toContain('@SOLUTION_FILE')
+  })
+
+  it('strips trailing semicolons from user code before wrapping', () => {
+    const script = buildSqlScript('SELECT 1;;;  \n', '-- @SOLUTION_FILE')
+    expect(script).toContain('CREATE VIEW solution AS\nSELECT 1;')
+    expect(script).not.toContain('SELECT 1;;')
+  })
+
+  it('falls back to concat when marker is missing', () => {
+    const script = buildSqlScript('SELECT 1;', 'CREATE TABLE t(x INT);')
+    expect(script).toBe('CREATE TABLE t(x INT);\nSELECT 1;')
   })
 })
