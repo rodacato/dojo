@@ -41,7 +41,9 @@ jobs:
         run: pnpm lint
 
       - name: Test
-        run: pnpm test
+        # Only run unit/integration tests here; E2E runs in its own job
+        # because it requires Playwright browsers.
+        run: pnpm test --filter=@dojo/api
         env:
           # Provide test env vars so config.ts validation passes
           DATABASE_URL: postgresql://dojo:dojo@localhost:5432/dojo_test
@@ -79,10 +81,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Build web app
-        run: pnpm build --filter=web
+        # Use the workspace's installed playwright so the binary + browser
+        # versions match apps/e2e/package.json.
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Run E2E tests
-        run: pnpm test --filter=e2e
+        # playwright.config.ts starts its own web dev server via
+        # `pnpm --filter=@dojo/web dev`, so no separate build step.
+        run: pnpm test --filter=@dojo/e2e
