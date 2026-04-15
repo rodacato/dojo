@@ -11,6 +11,10 @@ COPY apps/web/ ./apps/web/
 COPY packages/shared/ ./packages/shared/
 ARG VITE_API_URL=https://dojo-api.notdefined.dev
 ENV VITE_API_URL=$VITE_API_URL
+# Build @dojo/shared first so vite's production resolution of the
+# "default" export condition (./dist/index.js) succeeds. Without this
+# the build fails with 'Failed to resolve entry for package "@dojo/shared"'.
+RUN pnpm --filter=@dojo/shared build
 RUN pnpm --filter=@dojo/web build
 
 # Stage 2: serve with Nginx
