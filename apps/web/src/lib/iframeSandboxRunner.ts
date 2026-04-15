@@ -52,19 +52,29 @@ export function runInIframe(params: {
         stdout?: string[]
         stderr?: string[]
         errorKind?: 'runtime'
+        tests?: Array<{ name: string; passed: boolean; message?: string }>
       }
 
-      const testResults: TestResultDTO[] = data.log.map((line: string) => {
-        if (line.startsWith('✓ ')) return { name: line.slice(2), passed: true }
-        if (line.startsWith('✗ ')) {
-          const rest = line.slice(2)
-          const colonIdx = rest.indexOf(': ')
-          return colonIdx > -1
-            ? { name: rest.slice(0, colonIdx), passed: false, message: rest.slice(colonIdx + 2) }
-            : { name: rest, passed: false }
-        }
-        return { name: line, passed: true }
-      })
+      // Prefer the structured tests[] array from DOM_RUNNER_END — it preserves
+      // per-test name/passed/message. Fall back to parsing the legacy log
+      // lines for harnesses that haven't migrated yet.
+      const testResults: TestResultDTO[] = Array.isArray(data.tests) && data.tests.length > 0
+        ? data.tests.map((t) => ({
+            name: t.name,
+            passed: t.passed,
+            ...(t.message ? { message: t.message } : {}),
+          }))
+        : data.log.map((line: string) => {
+            if (line.startsWith('✓ ')) return { name: line.slice(2), passed: true }
+            if (line.startsWith('✗ ')) {
+              const rest = line.slice(2)
+              const colonIdx = rest.indexOf(': ')
+              return colonIdx > -1
+                ? { name: rest.slice(0, colonIdx), passed: false, message: rest.slice(colonIdx + 2) }
+                : { name: rest, passed: false }
+            }
+            return { name: line, passed: true }
+          })
 
       const stdout = (data.stdout ?? []).join('\n')
       const stderr = (data.stderr ?? []).join('\n')

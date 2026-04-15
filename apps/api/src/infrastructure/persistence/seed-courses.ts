@@ -62,6 +62,47 @@ const LESSONS_DATA = [
   { id: LESSON_3_ID, courseId: COURSE_ID, order: 3, title: 'Control Flow' },
 ]
 
+// ---------------------------------------------------------------------------
+// Shared mini test harness for Piston-executed TypeScript/JavaScript steps.
+//
+// Accumulates results into _tests and emits two channels at the end:
+//   - legacy: ✓/✗ lines on stdout (kept so older UI still parses something)
+//   - new:    `__DOJO_RESULT__ <json>` line the CoursePlayerPage parser trusts
+// The harness never throws — the final line is the single source of truth.
+// expect() helpers are intentionally tiny; each step concatenates its own
+// `test(...)` calls between TS_HARNESS_HEADER and TS_HARNESS_FOOTER.
+// ---------------------------------------------------------------------------
+const TS_HARNESS_HEADER = `// mini test runner
+const _tests: Array<{ name: string; passed: boolean; message?: string }> = []
+function test(name: string, fn: () => void) {
+  try { fn(); _tests.push({ name, passed: true }) }
+  catch (e) { _tests.push({ name, passed: false, message: e instanceof Error ? e.message : String(e) }) }
+}
+function expect(actual: unknown) {
+  return {
+    toBe: (expected: unknown) => {
+      if (actual !== expected)
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+    toBeCloseTo: (expected: number, digits: number = 2) => {
+      const a = Number(actual)
+      if (Math.abs(a - expected) > Math.pow(10, -digits) / 2)
+        throw new Error('expected ' + expected + ' (±' + digits + ' digits) but got ' + a)
+    },
+    toEqual: (expected: unknown) => {
+      if (JSON.stringify(actual) !== JSON.stringify(expected))
+        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
+    },
+  }
+}
+`
+
+const TS_HARNESS_FOOTER = `
+for (const r of _tests) console.log(r.passed ? '✓ ' + r.name : '✗ ' + r.name + (r.message ? ': ' + r.message : ''))
+const _ok = _tests.every(r => r.passed)
+console.log('__DOJO_RESULT__ ' + JSON.stringify({ ok: _ok, tests: _tests }))
+`
+
 const STEPS_DATA = [
   // ── Lesson 1: Variables & Types ─────────────────────────────────
   {
@@ -118,30 +159,13 @@ greet("TypeScript") // "Hello, TypeScript!"
     starterCode: `function greet(name: string): string {
   // Your code here
 }`,
-    testCode: `// mini test runner
-let _fail = false
-const _log: string[] = []
-function test(name: string, fn: () => void) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
-}
-function expect(actual: unknown) {
-  return {
-    toBe: (expected: unknown) => {
-      if (actual !== expected)
-        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
-    },
-  }
-}
-
+    testCode: `${TS_HARNESS_HEADER}
 test('greets by name', () => { expect(greet('World')).toBe('Hello, World!') })
 test('handles empty string', () => { expect(greet('')).toBe('Hello, !') })
 test("handles special characters", () => { expect(greet("O'Brien")).toBe("Hello, O'Brien!") })
 test('handles spaces in name', () => { expect(greet('Jane Doe')).toBe('Hello, Jane Doe!') })
 test('returns a string', () => { expect(typeof greet('test')).toBe('string') })
-
-for (const r of _log) console.log(r)
-if (_fail) throw new Error('Tests failed')`,
+${TS_HARNESS_FOOTER}`,
     hint: 'Use a template literal: `Hello, ${name}!`',
   },
   {
@@ -161,34 +185,13 @@ add(-1, 1) // 0
     starterCode: `function add(a: number, b: number): number {
   // Your code here
 }`,
-    testCode: `// mini test runner
-let _fail = false
-const _log: string[] = []
-function test(name: string, fn: () => void) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
-}
-function expect(actual: unknown) {
-  return {
-    toBe: (expected: unknown) => {
-      if (actual !== expected)
-        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
-    },
-    toBeCloseTo: (expected: number, d = 2) => {
-      if (Math.abs((actual as number) - expected) >= 5 * Math.pow(10, -(d + 1)))
-        throw new Error('expected ~' + expected + ' but got ' + actual)
-    },
-  }
-}
-
+    testCode: `${TS_HARNESS_HEADER}
 test('adds positive numbers', () => { expect(add(2, 3)).toBe(5) })
 test('adds negative numbers', () => { expect(add(-1, -2)).toBe(-3) })
 test('adds zero', () => { expect(add(0, 5)).toBe(5) })
 test('handles large numbers', () => { expect(add(1000000, 2000000)).toBe(3000000) })
 test('handles decimals', () => { expect(add(0.1, 0.2)).toBeCloseTo(0.3) })
-
-for (const r of _log) console.log(r)
-if (_fail) throw new Error('Tests failed')`,
+${TS_HARNESS_FOOTER}`,
     hint: 'Simply return `a + b`.',
   },
 
@@ -249,30 +252,13 @@ sum([])        // 0
     starterCode: `function sum(numbers: number[]): number {
   // Your code here
 }`,
-    testCode: `// mini test runner
-let _fail = false
-const _log: string[] = []
-function test(name: string, fn: () => void) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
-}
-function expect(actual: unknown) {
-  return {
-    toBe: (expected: unknown) => {
-      if (actual !== expected)
-        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
-    },
-  }
-}
-
+    testCode: `${TS_HARNESS_HEADER}
 test('sums positive numbers', () => { expect(sum([1, 2, 3])).toBe(6) })
 test('returns 0 for empty array', () => { expect(sum([])).toBe(0) })
 test('handles single element', () => { expect(sum([42])).toBe(42) })
 test('handles negative numbers', () => { expect(sum([-1, 1, -2, 2])).toBe(0) })
 test('handles large arrays', () => { expect(sum(Array.from({ length: 100 }, (_, i) => i + 1))).toBe(5050) })
-
-for (const r of _log) console.log(r)
-if (_fail) throw new Error('Tests failed')`,
+${TS_HARNESS_FOOTER}`,
     hint: 'Use `.reduce((sum, n) => sum + n, 0)` or a simple for loop.',
   },
   {
@@ -291,30 +277,13 @@ getFullName({ first: "Jane", last: "Doe" }) // "Jane Doe"
     starterCode: `function getFullName(person: { first: string; last: string }): string {
   // Your code here
 }`,
-    testCode: `// mini test runner
-let _fail = false
-const _log: string[] = []
-function test(name: string, fn: () => void) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
-}
-function expect(actual: unknown) {
-  return {
-    toBe: (expected: unknown) => {
-      if (actual !== expected)
-        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
-    },
-  }
-}
-
+    testCode: `${TS_HARNESS_HEADER}
 test('combines first and last', () => { expect(getFullName({ first: 'Jane', last: 'Doe' })).toBe('Jane Doe') })
 test('handles single character names', () => { expect(getFullName({ first: 'J', last: 'D' })).toBe('J D') })
 test('handles hyphenated names', () => { expect(getFullName({ first: 'Mary-Jane', last: 'Watson-Parker' })).toBe('Mary-Jane Watson-Parker') })
 test('preserves casing', () => { expect(getFullName({ first: 'mcdonald', last: 'DUCK' })).toBe('mcdonald DUCK') })
 test('returns a string', () => { expect(typeof getFullName({ first: 'a', last: 'b' })).toBe('string') })
-
-for (const r of _log) console.log(r)
-if (_fail) throw new Error('Tests failed')`,
+${TS_HARNESS_FOOTER}`,
     hint: 'Return `${person.first} ${person.last}` using a template literal.',
   },
 
@@ -389,22 +358,7 @@ fizzBuzz(7)  // "7"
     starterCode: `function fizzBuzz(n: number): string {
   // Your code here
 }`,
-    testCode: `// mini test runner
-let _fail = false
-const _log: string[] = []
-function test(name: string, fn: () => void) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
-}
-function expect(actual: unknown) {
-  return {
-    toBe: (expected: unknown) => {
-      if (actual !== expected)
-        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
-    },
-  }
-}
-
+    testCode: `${TS_HARNESS_HEADER}
 test('returns FizzBuzz for 15', () => { expect(fizzBuzz(15)).toBe('FizzBuzz') })
 test('returns Fizz for 3', () => { expect(fizzBuzz(3)).toBe('Fizz') })
 test('returns Buzz for 5', () => { expect(fizzBuzz(5)).toBe('Buzz') })
@@ -412,9 +366,7 @@ test('returns number as string for 7', () => { expect(fizzBuzz(7)).toBe('7') })
 test('returns Fizz for 9', () => { expect(fizzBuzz(9)).toBe('Fizz') })
 test('returns FizzBuzz for 30', () => { expect(fizzBuzz(30)).toBe('FizzBuzz') })
 test('returns 1 for 1', () => { expect(fizzBuzz(1)).toBe('1') })
-
-for (const r of _log) console.log(r)
-if (_fail) throw new Error('Tests failed')`,
+${TS_HARNESS_FOOTER}`,
     hint: 'Check divisibility by 15 first (both 3 and 5), then by 3, then by 5. Use `n % 3 === 0`.',
   },
   {
@@ -435,22 +387,7 @@ isPalindrome("hello")             // false
     starterCode: `function isPalindrome(s: string): boolean {
   // Your code here
 }`,
-    testCode: `// mini test runner
-let _fail = false
-const _log: string[] = []
-function test(name: string, fn: () => void) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
-}
-function expect(actual: unknown) {
-  return {
-    toBe: (expected: unknown) => {
-      if (actual !== expected)
-        throw new Error('expected ' + JSON.stringify(expected) + ' but got ' + JSON.stringify(actual))
-    },
-  }
-}
-
+    testCode: `${TS_HARNESS_HEADER}
 test('detects simple palindrome', () => { expect(isPalindrome('racecar')).toBe(true) })
 test('ignores case', () => { expect(isPalindrome('RaceCar')).toBe(true) })
 test('ignores non-alphanumeric', () => { expect(isPalindrome('A man, a plan, a canal: Panama')).toBe(true) })
@@ -458,9 +395,7 @@ test('rejects non-palindromes', () => { expect(isPalindrome('hello')).toBe(false
 test('handles empty string', () => { expect(isPalindrome('')).toBe(true) })
 test('handles single character', () => { expect(isPalindrome('a')).toBe(true) })
 test('handles numbers in string', () => { expect(isPalindrome('12321')).toBe(true) })
-
-for (const r of _log) console.log(r)
-if (_fail) throw new Error('Tests failed')`,
+${TS_HARNESS_FOOTER}`,
     hint: 'Strip non-alphanumeric chars with `.replace(/[^a-zA-Z0-9]/g, "")`, lowercase, then compare with its reverse.',
   },
 ]
@@ -487,13 +422,20 @@ const DOM_STEP_3_1_ID = seedUuid('dom-step-3-1-intro')
 const DOM_STEP_3_2_ID = seedUuid('dom-step-3-2-counter')
 const DOM_STEP_3_3_ID = seedUuid('dom-step-3-3-delegation')
 
-// DOM testCode mini runner (plain JS, no TypeScript — runs in iframe)
-// Results sent via window.parent.postMessage, not console.log
-const DOM_RUNNER = `let _fail = false
-const _log = []
+// DOM testCode mini runner (plain JS, no TypeScript — runs in iframe).
+// Accumulates structured per-test results in _tests and relays them through
+// postMessage so the iframeSandboxRunner can surface stdout/stderr +
+// ExecuteStepResponse with per-test messages (same contract as Piston runs).
+const DOM_RUNNER = `const _tests = []
 function test(name, fn) {
-  try { fn(); _log.push('✓ ' + name) }
-  catch (e) { _log.push('✗ ' + name + ': ' + (e instanceof Error ? e.message : String(e))); _fail = true }
+  try { fn(); _tests.push({ name: name, passed: true }) }
+  catch (e) {
+    _tests.push({
+      name: name,
+      passed: false,
+      message: e instanceof Error ? e.message : String(e),
+    })
+  }
 }
 function expect(actual) {
   return {
@@ -510,7 +452,9 @@ function expect(actual) {
   }
 }`
 
-const DOM_RUNNER_END = `window.parent.postMessage({ type: 'test-results', log: _log, failed: _fail }, '*')`
+const DOM_RUNNER_END = `const _log = _tests.map(t => t.passed ? '\u2713 ' + t.name : '\u2717 ' + t.name + (t.message ? ': ' + t.message : ''))
+const _failed = _tests.some(t => !t.passed)
+window.parent.postMessage({ type: 'test-results', log: _log, failed: _failed, tests: _tests }, '*')`
 
 const DOM_COURSE_DATA = {
   id: DOM_COURSE_ID,
