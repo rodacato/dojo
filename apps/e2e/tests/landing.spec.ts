@@ -19,4 +19,18 @@ test.describe('Landing page', () => {
       page.getByText('Not for everyone. Exactly as intended.'),
     ).toBeVisible()
   })
+
+  test('"Try a free course" CTA navigates to /learn (Sprint 015)', async ({ page }) => {
+    await page.route('http://localhost:3001/learn/courses', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ courses: [] }),
+      }),
+    )
+
+    await page.goto('/')
+    await page.getByRole('link', { name: /try a free course/i }).first().click()
+    await expect(page).toHaveURL('/learn')
+  })
 })

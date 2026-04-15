@@ -73,5 +73,8 @@ test.describe('Kata flow (Day Start page)', () => {
 
     // "Show my kata" button should now be enabled
     await expect(submitButton).toBeEnabled()
+
+    // Sprint 016: "Surprise me →" alternative CTA is also present
+    await expect(page.getByRole('button', { name: /surprise me/i })).toBeVisible()
   })
 })

@@ -98,6 +98,22 @@ test.describe('Public courses (anonymous)', () => {
     await expect(page.getByRole('button', { name: /^\s*▶\s*run\s*$/i })).toHaveCount(0)
   })
 
+  test('private course returns 404 for anonymous visitor (Sprint 017 invariant)', async ({ page }) => {
+    await page.route(`${API_BASE}/learn/courses/typescript-fundamentals`, (route) =>
+      route.fulfill({
+        status: 404,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Course not found' }),
+      }),
+    )
+
+    await page.goto('/learn/typescript-fundamentals')
+
+    // CoursePlayerPage surfaces a "Course not found" state with a back link
+    await expect(page.getByText(/course not found/i)).toBeVisible()
+    await expect(page.getByRole('link', { name: /back to courses/i })).toBeVisible()
+  })
+
   test('anonymous session id is persisted to localStorage on public course', async ({ page }) => {
     await page.route(`${API_BASE}/learn/courses/sql-deep-cuts`, (route) =>
       route.fulfill({
