@@ -55,7 +55,7 @@ const SQL_COURSE_DETAIL = {
 }
 
 test.describe('Public courses (anonymous)', () => {
-  test('anonymous visitor sees SQL Deep Cuts in the catalog with Public badge', async ({ page }) => {
+  test('anonymous visitor sees SQL Deep Cuts card (no visibility badges)', async ({ page }) => {
     await page.route(`${API_BASE}/learn/courses`, (route) =>
       route.fulfill({
         status: 200,
@@ -67,8 +67,10 @@ test.describe('Public courses (anonymous)', () => {
     await page.goto('/learn')
 
     await expect(page.getByRole('heading', { level: 2, name: 'SQL Deep Cuts' })).toBeVisible()
-    await expect(page.getByText(/public/i).first()).toBeVisible()
     await expect(page.getByText(/3 lessons/)).toBeVisible()
+    // Visibility hints (draft / private) are only shown to signed-in users.
+    await expect(page.getByText(/^draft$/i)).toHaveCount(0)
+    await expect(page.getByText(/^private$/i)).toHaveCount(0)
   })
 
   test('course player renders a read step without the code editor', async ({ page }) => {

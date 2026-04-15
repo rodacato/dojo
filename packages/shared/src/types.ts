@@ -109,7 +109,9 @@ export interface CourseDTO {
   description: string
   language: string
   accentColor: string
-  status: CourseStatus
+  // Optional because /learn/courses (summary list) omits it when not needed;
+  // /admin/courses and /learn/courses/:slug both include it.
+  status?: CourseStatus
   isPublic: boolean
   lessonCount: number
   stepCount: number

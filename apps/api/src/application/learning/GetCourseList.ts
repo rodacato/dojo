@@ -1,4 +1,5 @@
 import type { CourseRepositoryPort } from '../../domain/learning/ports'
+import type { CourseStatus } from '../../domain/learning/values'
 
 export interface CourseSummary {
   id: string
@@ -7,6 +8,7 @@ export interface CourseSummary {
   description: string
   language: string
   accentColor: string
+  status: CourseStatus
   isPublic: boolean
   lessonCount: number
   stepCount: number
@@ -30,6 +32,7 @@ export class GetCourseList {
       description: c.description,
       language: c.language,
       accentColor: c.accentColor,
+      status: c.status,
       isPublic: c.isPublic,
       lessonCount: c.lessons.length,
       stepCount: c.lessons.reduce((sum, l) => sum + l.steps.length, 0),

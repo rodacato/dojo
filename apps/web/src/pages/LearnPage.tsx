@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
+import { useAuth } from '../context/AuthContext'
 import type { CourseDTO } from '@dojo/shared'
 
 export function LearnPage() {
+  const { user } = useAuth()
   const [courses, setCourses] = useState<CourseDTO[] | null>(null)
 
   useEffect(() => {
@@ -12,6 +14,10 @@ export function LearnPage() {
   }, [])
 
   if (!courses) return <PageLoader />
+
+  const subtitle = user
+    ? 'All courses — drafts and private ones visible to you as a signed-in user.'
+    : 'Free courses — no account required'
 
   return (
     <div className="min-h-screen bg-bg">
@@ -25,7 +31,7 @@ export function LearnPage() {
             <h1 className="text-2xl font-mono text-primary mt-1">
               learn<span className="text-accent">_</span>
             </h1>
-            <p className="text-sm text-muted mt-1">Free courses — no account required</p>
+            <p className="text-sm text-muted mt-1">{subtitle}</p>
           </div>
         </div>
       </header>
@@ -40,7 +46,7 @@ export function LearnPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard key={course.id} course={course} showVisibilityBadges={!!user} />
             ))}
           </div>
         )}
@@ -49,23 +55,40 @@ export function LearnPage() {
   )
 }
 
-function CourseCard({ course }: { course: CourseDTO }) {
+function CourseCard({
+  course,
+  showVisibilityBadges,
+}: {
+  course: CourseDTO
+  showVisibilityBadges: boolean
+}) {
+  // Visibility hints only matter for signed-in users, who see the full catalog
+  // (drafts, private). Anonymous visitors see only public + published courses
+  // by backend filter, so badges would be noise.
+  const isDraft = showVisibilityBadges && course.status === 'draft'
+  const isPrivate = showVisibilityBadges && !course.isPublic
+
   return (
     <Link
       to={`/learn/${course.slug}`}
       className="group bg-surface rounded-md border border-border/40 hover:border-accent/40 transition-all p-5 flex flex-col"
       style={{ borderTopColor: course.accentColor, borderTopWidth: '3px' }}
     >
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
         <span
           className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded"
           style={{ backgroundColor: course.accentColor + '20', color: course.accentColor }}
         >
           {course.language}
         </span>
-        {course.isPublic && (
-          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-accent/10 text-accent border border-accent/20">
-            public
+        {isDraft && (
+          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-warning/10 text-warning border border-warning/30">
+            draft
+          </span>
+        )}
+        {isPrivate && !isDraft && (
+          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-muted/10 text-muted border border-muted/30">
+            private
           </span>
         )}
       </div>
