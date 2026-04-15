@@ -82,22 +82,25 @@ export function App() {
               <Route path="/history" element={<LazyRoute><HistoryPage /></LazyRoute>} />
               <Route path="/leaderboard" element={<LazyRoute><LeaderboardPage /></LazyRoute>} />
               <Route path="/badges" element={<LazyRoute><BadgesPage /></LazyRoute>} />
-              <Route
-                path="/admin"
-                element={
-                  <LazyRoute>
-                    <RequireCreator>
-                      <AdminLayout />
-                    </RequireCreator>
-                  </LazyRoute>
-                }
-              >
-                <Route index element={<Navigate to="/admin/exercises" replace />} />
-                <Route path="exercises" element={<LazyRoute><AdminExercisesPage /></LazyRoute>} />
-                <Route path="exercises/new" element={<LazyRoute><AdminNewExercisePage /></LazyRoute>} />
-                <Route path="exercises/:id/edit" element={<LazyRoute><AdminEditExercisePage /></LazyRoute>} />
-                <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
-              </Route>
+            </Route>
+
+            {/* Admin — own layout (AdminLayout has its own sidebar, so it
+                 should not be wrapped by AppShell's Sidebar/BottomNav). */}
+            <Route
+              path="/admin"
+              element={
+                <LazyRoute>
+                  <RequireCreator>
+                    <AdminLayout />
+                  </RequireCreator>
+                </LazyRoute>
+              }
+            >
+              <Route index element={<Navigate to="/admin/exercises" replace />} />
+              <Route path="exercises" element={<LazyRoute><AdminExercisesPage /></LazyRoute>} />
+              <Route path="exercises/new" element={<LazyRoute><AdminNewExercisePage /></LazyRoute>} />
+              <Route path="exercises/:id/edit" element={<LazyRoute><AdminEditExercisePage /></LazyRoute>} />
+              <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
             </Route>
           </Route>
 
