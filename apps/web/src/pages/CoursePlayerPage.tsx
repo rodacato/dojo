@@ -211,8 +211,8 @@ function LessonNav({
                 <span className="text-xs shrink-0">
                   {isComplete ? '✓' : step.type === 'read' ? '📖' : step.type === 'challenge' ? '⚡' : '💻'}
                 </span>
-                <span className="truncate text-xs">
-                  {step.type === 'read' ? 'Read' : `Step ${step.order}`}
+                <span className="truncate text-xs" title={extractStepTitle(step)}>
+                  {extractStepTitle(step)}
                 </span>
               </button>
             )
@@ -221,6 +221,19 @@ function LessonNav({
       )}
     </div>
   )
+}
+
+// Pull the first H1 out of the step instruction so the sidebar shows the
+// actual lesson name ("Write a greet function") instead of "Step 2".
+// Falls back to the step ordinal if no heading is present.
+function extractStepTitle(step: StepDTO): string {
+  const match = step.instruction.match(/^#\s+(.+)$/m)
+  if (match && match[1]) {
+    // Strip common prefixes like "Exercise:" or "Challenge:" for density.
+    return match[1].replace(/^(exercise|challenge|read):\s*/i, '').trim()
+  }
+  if (step.type === 'read') return 'Read'
+  return `Step ${step.order}`
 }
 
 // ── StepContent ─────────────────────────────────────────────────
@@ -264,6 +277,8 @@ function StepContent({
 
 // ── StepEditor ──────────────────────────────────────────────────
 
+type OutputTab = 'tests' | 'output'
+
 function StepEditor({
   step,
   language,
@@ -278,12 +293,19 @@ function StepEditor({
   const [code, setCode] = useState(step.starterCode ?? '')
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState<ExecuteStepResponse | null>(null)
+  const [tab, setTab] = useState<OutputTab>('tests')
+  const [showHint, setShowHint] = useState(false)
 
   const isIframeLang = language === 'javascript-dom'
+  const stepTitle = extractStepTitle(step)
+  // The markdown still contains the H1; strip it so it isn't rendered twice.
+  const instructionBody = stripLeadingH1(step.instruction)
 
   useEffect(() => {
     setCode(step.starterCode ?? '')
     setResult(null)
+    setShowHint(false)
+    setTab('tests')
   }, [step.id, step.starterCode])
 
   const runCode = async () => {
@@ -295,11 +317,21 @@ function StepEditor({
         ? await runInIframe({ starterCode: code, testCode: step.testCode })
         : await api.executeStep({ code, testCode: step.testCode, language })
       setResult(res)
+      setTab(res.errorKind ? 'output' : 'tests')
       if (res.passed && !isCompleted) {
         onComplete()
       }
     } catch {
-      setResult({ passed: false, output: 'Execution failed', testResults: [] })
+      setResult({
+        passed: false,
+        output: 'Execution failed — could not reach the sandbox.',
+        stdout: '',
+        stderr: 'Network or server error while running your code.',
+        testResults: [],
+        errorKind: 'sandbox',
+        errorMessage: "Couldn't reach the code sandbox. Try again in a moment.",
+      })
+      setTab('output')
     } finally {
       setRunning(false)
     }
@@ -312,7 +344,10 @@ function StepEditor({
     <div className="flex flex-col h-[calc(100vh-48px)]">
       {/* Instruction */}
       <div className="px-6 py-4 border-b border-border/40 overflow-y-auto max-h-[35vh]">
-        <MarkdownContent content={step.instruction} />
+        <h1 className="text-lg md:text-xl font-mono text-primary mb-3">
+          {stepTitle}
+        </h1>
+        <MarkdownContent content={instructionBody} />
       </div>
 
       {/* Editor + Results */}
@@ -325,8 +360,8 @@ function StepEditor({
           />
         </div>
 
-        {/* Run button */}
-        <div className="px-4 py-2 border-t border-border/40 bg-surface flex items-center gap-3">
+        {/* Run button + status */}
+        <div className="px-4 py-2 border-t border-border/40 bg-surface flex items-center gap-3 flex-wrap">
           <button
             onClick={runCode}
             disabled={running}
@@ -341,45 +376,223 @@ function StepEditor({
           {isIframeLang && (
             <span className="text-xs text-muted font-mono">Runs in browser</span>
           )}
-          {result && (
-            <span className={`text-sm font-mono ${result.passed ? 'text-green-400' : 'text-red-400'}`}>
-              {result.passed ? '✓ All tests passed' : '✗ Tests failed'}
-            </span>
+          {result && <StatusChip result={result} />}
+          {step.hint && (
+            <button
+              onClick={() => setShowHint((v) => !v)}
+              className="ml-auto text-xs font-mono text-muted hover:text-secondary transition-colors"
+            >
+              {showHint ? '× Hide hint' : '💡 Show hint'}
+            </button>
           )}
         </div>
 
-        {/* Test results */}
-        {result && (
-          <div className="border-t border-border/40 bg-surface/50 max-h-[30vh] overflow-y-auto">
-            <div className="px-4 py-3">
-              {result.testResults.length > 0 ? (
-                <div className="space-y-1">
-                  {result.testResults.map((tr, i) => (
-                    <div
-                      key={i}
-                      className={`text-xs font-mono flex items-start gap-2 ${
-                        tr.passed ? 'text-green-400' : 'text-red-400'
-                      }`}
-                    >
-                      <span className="shrink-0">{tr.passed ? '✓' : '✗'}</span>
-                      <span>{tr.name}</span>
-                      {tr.message && !tr.passed && (
-                        <span className="text-muted/60 ml-2">{tr.message}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <pre className="text-xs font-mono text-muted whitespace-pre-wrap">
-                  {result.output}
-                </pre>
-              )}
-            </div>
+        {/* Hint panel */}
+        {showHint && step.hint && (
+          <div className="px-4 py-3 border-t border-border/40 bg-surface/40">
+            <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">hint</p>
+            <p className="text-sm text-secondary leading-relaxed">{step.hint}</p>
           </div>
+        )}
+
+        {/* Output panel */}
+        <OutputPanel result={result} tab={tab} onTabChange={setTab} />
+      </div>
+    </div>
+  )
+}
+
+function StatusChip({ result }: { result: ExecuteStepResponse }) {
+  if (result.errorKind) {
+    return (
+      <span className="text-sm font-mono text-warning">
+        ⚠ {labelForErrorKind(result.errorKind)}
+      </span>
+    )
+  }
+  if (result.passed) {
+    return <span className="text-sm font-mono text-success">✓ All tests passed</span>
+  }
+  const failed = result.testResults.filter((t) => !t.passed).length
+  const total = result.testResults.length
+  return (
+    <span className="text-sm font-mono text-danger">
+      ✗ {failed} of {total} test{total === 1 ? '' : 's'} failed
+    </span>
+  )
+}
+
+function labelForErrorKind(kind: NonNullable<ExecuteStepResponse['errorKind']>): string {
+  switch (kind) {
+    case 'sandbox': return 'Sandbox unavailable'
+    case 'timeout': return 'Timed out'
+    case 'compile': return 'Compile error'
+    case 'runtime': return 'Runtime error'
+  }
+}
+
+function OutputPanel({
+  result,
+  tab,
+  onTabChange,
+}: {
+  result: ExecuteStepResponse | null
+  tab: OutputTab
+  onTabChange: (t: OutputTab) => void
+}) {
+  return (
+    <div className="border-t border-border/40 bg-surface/50 flex flex-col min-h-[12rem] max-h-[34vh]">
+      <div className="flex items-center gap-1 px-3 pt-2 border-b border-border/30">
+        <TabButton active={tab === 'tests'} onClick={() => onTabChange('tests')}>
+          Tests
+          {result && result.testResults.length > 0 && (
+            <span className="ml-1.5 text-muted">
+              ({result.testResults.filter((t) => t.passed).length}/{result.testResults.length})
+            </span>
+          )}
+        </TabButton>
+        <TabButton active={tab === 'output'} onClick={() => onTabChange('output')}>
+          Output
+          {result && result.errorKind && <span className="ml-1.5 text-warning">●</span>}
+        </TabButton>
+      </div>
+      <div className="flex-1 overflow-y-auto px-4 py-3">
+        {!result ? (
+          <p className="text-xs font-mono text-muted/60">
+            Run your code to see test results and output.
+          </p>
+        ) : tab === 'tests' ? (
+          <TestsTab result={result} />
+        ) : (
+          <OutputTab result={result} />
         )}
       </div>
     </div>
   )
+}
+
+function TabButton({
+  active,
+  children,
+  onClick,
+}: {
+  active: boolean
+  children: React.ReactNode
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 py-1.5 text-xs font-mono transition-colors border-b-2 -mb-px ${
+        active
+          ? 'text-accent border-accent'
+          : 'text-muted border-transparent hover:text-secondary'
+      }`}
+    >
+      {children}
+    </button>
+  )
+}
+
+function TestsTab({ result }: { result: ExecuteStepResponse }) {
+  if (result.errorKind) {
+    return (
+      <ErrorCard
+        kind={result.errorKind}
+        message={result.errorMessage ?? labelForErrorKind(result.errorKind)}
+        detail={result.stderr || result.output}
+      />
+    )
+  }
+  if (result.testResults.length === 0) {
+    return (
+      <p className="text-xs font-mono text-muted">
+        No tests recorded. Check the Output tab for any console messages.
+      </p>
+    )
+  }
+  return (
+    <div className="space-y-1.5">
+      {result.testResults.map((tr, i) => (
+        <div
+          key={i}
+          className={`text-xs font-mono flex items-start gap-2 ${
+            tr.passed ? 'text-success' : 'text-danger'
+          }`}
+        >
+          <span className="shrink-0">{tr.passed ? '✓' : '✗'}</span>
+          <div className="min-w-0 flex-1">
+            <div className="break-words">{tr.name}</div>
+            {tr.message && !tr.passed && (
+              <div className="text-muted text-[11px] mt-0.5 break-words">{tr.message}</div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function OutputTab({ result }: { result: ExecuteStepResponse }) {
+  const hasStdout = result.stdout.trim().length > 0
+  const hasStderr = result.stderr.trim().length > 0
+  if (!hasStdout && !hasStderr) {
+    return (
+      <p className="text-xs font-mono text-muted/60">
+        No output. Add <code className="text-accent">console.log(...)</code> calls to inspect values.
+      </p>
+    )
+  }
+  return (
+    <div className="space-y-3">
+      {hasStdout && (
+        <div>
+          <p className="text-[10px] font-mono text-muted uppercase tracking-widest mb-1">stdout</p>
+          <pre className="text-xs font-mono text-secondary whitespace-pre-wrap break-words">
+            {result.stdout}
+          </pre>
+        </div>
+      )}
+      {hasStderr && (
+        <div>
+          <p className="text-[10px] font-mono text-danger/80 uppercase tracking-widest mb-1">stderr</p>
+          <pre className="text-xs font-mono text-danger/90 whitespace-pre-wrap break-words">
+            {result.stderr}
+          </pre>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ErrorCard({
+  kind,
+  message,
+  detail,
+}: {
+  kind: NonNullable<ExecuteStepResponse['errorKind']>
+  message: string
+  detail: string
+}) {
+  const trimmed = detail.trim()
+  return (
+    <div className="p-3 border border-warning/40 bg-warning/5 rounded-sm">
+      <p className="text-xs font-mono uppercase tracking-widest text-warning mb-1.5">
+        ⚠ {labelForErrorKind(kind)}
+      </p>
+      <p className="text-sm text-secondary mb-2">{message}</p>
+      {trimmed && (
+        <pre className="text-[11px] font-mono text-muted/80 whitespace-pre-wrap break-words border-t border-warning/20 pt-2 mt-2 max-h-32 overflow-y-auto">
+          {trimmed}
+        </pre>
+      )}
+    </div>
+  )
+}
+
+function stripLeadingH1(md: string): string {
+  // Drops the first line if it's an H1, plus one trailing blank line.
+  return md.replace(/^#\s+.+(\r?\n(\r?\n)?)?/, '').trimStart()
 }
 
 // ── Simple markdown renderer ────────────────────────────────────
