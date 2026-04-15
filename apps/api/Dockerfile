@@ -15,7 +15,7 @@ FROM deps AS builder
 COPY tsconfig.base.json ./
 COPY apps/api/ ./apps/api/
 COPY packages/shared/ ./packages/shared/
-RUN pnpm --filter=@dojo/shared build 2>/dev/null || true
+RUN pnpm --filter=@dojo/shared build
 RUN pnpm --filter=@dojo/api build
 
 # Stage 4: production runtime (no source, no dev tools)
@@ -24,6 +24,11 @@ ENV NODE_ENV=production
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/src/infrastructure/persistence/drizzle/migrations ./dist/infrastructure/persistence/drizzle/migrations
 COPY --from=builder /app/node_modules ./node_modules
+# Replace the pnpm symlink with the built shared package so `require('@dojo/shared')`
+# resolves at runtime (runner stage does not preserve the monorepo layout).
+RUN rm -rf ./node_modules/@dojo/shared
+COPY --from=builder /app/packages/shared/package.json ./node_modules/@dojo/shared/package.json
+COPY --from=builder /app/packages/shared/dist ./node_modules/@dojo/shared/dist
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://localhost:3001/health || exit 1
