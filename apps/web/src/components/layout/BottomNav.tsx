@@ -16,7 +16,7 @@ export function BottomNav() {
   const items: NavItem[] = [
     ...BASE_NAV,
     user
-      ? { to: `/u/${user.username}`, label: 'profile', icon: CogIcon }
+      ? { to: '/settings', label: 'settings', icon: CogIcon }
       : { to: '/badges', label: 'badges', icon: BadgesIcon },
   ]
 

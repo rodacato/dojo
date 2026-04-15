@@ -17,7 +17,6 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth()
-  const profileHref = user ? `/u/${user.username}` : '/'
 
   return (
     <aside
@@ -55,11 +54,11 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         ))}
       </nav>
 
-      {/* Account — profile + logout */}
+      {/* Account — settings + logout */}
       <div className="border-t border-border/20">
         <NavLink
-          to={profileHref}
-          title={user ? `${user.username} profile` : 'profile'}
+          to="/settings"
+          title="settings"
           className={({ isActive }) =>
             `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
               isActive
@@ -69,7 +68,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           }
         >
           <CogIcon className="w-4.5 h-4.5 shrink-0" />
-          {!collapsed && <span className="truncate">{user?.username ?? 'account'}</span>}
+          {!collapsed && <span className="truncate">{user?.username ?? 'settings'}</span>}
         </NavLink>
         <button
           onClick={() => { void logout() }}

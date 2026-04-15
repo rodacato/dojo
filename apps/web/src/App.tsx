@@ -39,6 +39,7 @@ const AdminNewExercisePage = lazy(() => import('./pages/admin/AdminNewExercisePa
 const AdminEditExercisePage = lazy(() => import('./pages/admin/AdminEditExercisePage').then(m => ({ default: m.AdminEditExercisePage })))
 const AdminInvitationsPage = lazy(() => import('./pages/admin/AdminInvitationsPage').then(m => ({ default: m.AdminInvitationsPage })))
 const AdminCoursesPage = lazy(() => import('./pages/admin/AdminCoursesPage').then(m => ({ default: m.AdminCoursesPage })))
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })))
 
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>
@@ -83,6 +84,7 @@ export function App() {
               <Route path="/history" element={<LazyRoute><HistoryPage /></LazyRoute>} />
               <Route path="/leaderboard" element={<LazyRoute><LeaderboardPage /></LazyRoute>} />
               <Route path="/badges" element={<LazyRoute><BadgesPage /></LazyRoute>} />
+              <Route path="/settings" element={<LazyRoute><SettingsPage /></LazyRoute>} />
             </Route>
 
             {/* Admin — own layout (AdminLayout has its own sidebar, so it
