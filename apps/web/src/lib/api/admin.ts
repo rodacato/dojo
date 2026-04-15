@@ -81,4 +81,36 @@ export const admin = {
       expiresAt: string
       createdAt: string
     }>>('/admin/invitations'),
+
+  getAdminCourses: () =>
+    request<Array<{
+      id: string
+      slug: string
+      title: string
+      description: string
+      language: string
+      accentColor: string
+      status: 'draft' | 'published'
+      isPublic: boolean
+      lessonCount: number
+      stepCount: number
+      createdAt: string
+    }>>('/admin/courses'),
+
+  updateCourse: (
+    id: string,
+    patch: { isPublic?: boolean; status?: 'draft' | 'published' },
+  ) =>
+    request<{ id: string; isPublic: boolean; status: 'draft' | 'published' }>(
+      `/admin/courses/${id}`,
+      { method: 'PATCH', body: JSON.stringify(patch) },
+    ),
+
+  seedCourses: () =>
+    request<{
+      seeded: Array<{ slug: string; title: string; lessonCount: number; stepCount: number }>
+    }>('/admin/courses/seed', { method: 'POST' }),
+
+  wipeCourseContent: (id: string) =>
+    request<{ ok: boolean }>(`/admin/courses/${id}/wipe`, { method: 'POST' }),
 }

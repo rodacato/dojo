@@ -38,6 +38,7 @@ const AdminExercisesPage = lazy(() => import('./pages/admin/AdminExercisesPage')
 const AdminNewExercisePage = lazy(() => import('./pages/admin/AdminNewExercisePage').then(m => ({ default: m.AdminNewExercisePage })))
 const AdminEditExercisePage = lazy(() => import('./pages/admin/AdminEditExercisePage').then(m => ({ default: m.AdminEditExercisePage })))
 const AdminInvitationsPage = lazy(() => import('./pages/admin/AdminInvitationsPage').then(m => ({ default: m.AdminInvitationsPage })))
+const AdminCoursesPage = lazy(() => import('./pages/admin/AdminCoursesPage').then(m => ({ default: m.AdminCoursesPage })))
 
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>
@@ -101,6 +102,7 @@ export function App() {
               <Route path="exercises/new" element={<LazyRoute><AdminNewExercisePage /></LazyRoute>} />
               <Route path="exercises/:id/edit" element={<LazyRoute><AdminEditExercisePage /></LazyRoute>} />
               <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
+              <Route path="courses" element={<LazyRoute><AdminCoursesPage /></LazyRoute>} />
             </Route>
           </Route>
 
