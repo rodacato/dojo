@@ -1,10 +1,29 @@
 import { defineConfig } from 'vite'
+import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+
+// Bundle @dojo/shared from its TypeScript source.
+//
+// The package publishes a CJS dist/ for the API runtime (commit 2f363bc).
+// In production builds (NODE_ENV=production) Vite skips the `development`
+// export condition and resolves to `dist/index.js`, which uses tsc's
+// `__exportStar` runtime helper. Rollup cannot statically analyze that
+// pattern, so `import { TOPICS } from '@dojo/shared'` fails with
+// "TOPICS is not exported".
+//
+// In dev (`pnpm dev`) the `development` condition is honored and Vite
+// reads the source, which is why the bug was production-only.
+const sharedSrc = fileURLToPath(
+  new URL('../../packages/shared/src/index.ts', import.meta.url),
+)
 
 export default defineConfig({
   envDir: '../..',
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: { '@dojo/shared': sharedSrc },
+  },
   build: {
     rollupOptions: {
       output: {
