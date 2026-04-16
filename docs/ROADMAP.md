@@ -90,6 +90,7 @@ Does not start until Phase 0 is in real daily use.
 | 022 | [Sprint 016: Surprise me + Fix-the-bug + SQL Advanced](specs/022-sprint-016.md) | Surprise me button, fix-the-bug kata, SQL advanced kata, SQL Deep Cuts draft | sprint-016 |
 | 023 | [Sprint 017: SQL Deep Cuts + public courses](specs/023-sprint-017-sql-deep-cuts.md) | Wire-up SQL Deep Cuts, cursos públicos + anonymous progress, step type `read`, sensei debugging prompt | sprint-017 |
 | 024 | [Sprint 018: Course content quality v1](specs/024-sprint-018-course-content-quality.md) | Step type `exercise`, `step.title` + `step.solution`, reclassify 27 steps, per-course audits, solution reveal + CI gate | sprint-018 |
+| 025 | [Sprint 019: Course content quality v2](specs/025-sprint-019-course-quality-v2.md) | Semantic slots renderer, external references per course, alternative approach post-pass, SQL LAG/LEAD intro | sprint-019 |
 | 016 | [Production deploy](specs/016-production-deploy.md) | VPS + Cloudflare Tunnel + GitHub Actions CI/CD | sprint-003 |
 | 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
 | 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
@@ -133,6 +134,7 @@ Does not start until Phase 0 is in real daily use.
 | 020 | [Sprint 016 planning](prd/020-sprint-016-planning.md) | Surprise me + Fix-the-bug + SQL Advanced + SQL Deep Cuts outline | ✅ Advancing to spec |
 | 021 | [Sprint 017 planning](prd/021-sprint-017-planning.md) | SQL Deep Cuts + cursos públicos + step type `read` + debugging sensei | ✅ Advancing to spec |
 | 022 | [Sprint 018 planning](prd/022-sprint-018-planning.md) | Course content quality — schema fix, reclassify, audits, solution reveal | ✅ Advancing to spec |
+| 023 | [Sprint 019 planning](prd/023-sprint-019-planning.md) | Pedagogy v2 — slots renderer, external references, alternative approach, LAG/LEAD | ✅ Advancing to spec |
 
 ---
 

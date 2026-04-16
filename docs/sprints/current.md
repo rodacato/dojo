@@ -4,7 +4,7 @@
 **Phase:** Phase 1 Alpha
 
 **PRD:** [docs/prd/023-sprint-019-planning.md](../prd/023-sprint-019-planning.md)
-**Spec:** [docs/specs/025-sprint-019-course-quality-v2.md](../specs/025-sprint-019-course-quality-v2.md) _(TBD)_
+**Spec:** [docs/specs/025-sprint-019-course-quality-v2.md](../specs/025-sprint-019-course-quality-v2.md)
 
 ---
 

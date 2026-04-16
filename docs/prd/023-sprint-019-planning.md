@@ -1,6 +1,6 @@
 # PRD-023: Sprint 019 — Course content quality v2 (pedagogy)
 
-> **Status:** draft
+> **Status:** advancing to spec
 > **Date:** 2026-04-16
 > **Author:** Lucía Navarro (S4) — input del panel curricular: Dr. Elif Yıldız (S5), Valentina Cruz (S2), Soren Bachmann (C6), Dr. Emeka Obi (S6), Bruno Tanaka (JS), Sofia Marchetti (SQL), Priya Menon (C1)
 
@@ -178,6 +178,6 @@ Slots + pedagogía profunda (Dr. Elif). Sprint grande, cambio cross-curso.
 
 ## Next step
 
-- [ ] Crear spec: `docs/specs/025-sprint-019-course-quality-v2.md`
-- [ ] Activar `docs/sprints/current.md` con las 4 parts
-- [ ] Mover items movidos a Sprint 019 fuera de `docs/sprints/backlog.md` "Sprint 019 candidates"
+- [x] Crear spec: `docs/specs/025-sprint-019-course-quality-v2.md`
+- [x] Activar `docs/sprints/current.md` con las 4 parts
+- [x] Mover items movidos a Sprint 019 fuera de `docs/sprints/backlog.md` "Sprint 019 candidates"
