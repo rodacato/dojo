@@ -1,8 +1,11 @@
+import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
 import type { AppEnv } from '../app-env'
 import { executionLimiter } from '../middleware/rateLimiter'
 import { optionalAuth, requireAuth } from '../middleware/auth'
 import { courseRepo, useCases } from '../../container'
+import { db } from '../../persistence/drizzle/client'
+import { steps as stepsTable } from '../../persistence/drizzle/schema'
 import {
   executeStepSchema,
   mergeAnonymousProgressSchema,
@@ -173,4 +176,51 @@ learnRoutes.post('/learn/progress/merge', requireAuth, async (c) => {
     anonymousSessionId: parsed.data.anonymousSessionId,
   })
   return c.json({ ok: true })
+})
+
+// ── Reference solution (post-pass) ──────────────────────────────────
+//
+// GET /learn/courses/:slug/steps/:stepId/solution
+//   ?anonymousSessionId=<uuid>   (only used when no Bearer is present)
+//
+// Returns 403 until the caller has the step in their completedSteps for
+// this course. Never returns the solution to a learner who hasn't passed.
+// Reads from the steps table directly to avoid leaking solution into the
+// course-list DTO surface (where it must NEVER appear).
+learnRoutes.get('/learn/courses/:slug/steps/:stepId/solution', optionalAuth, async (c) => {
+  const slug = c.req.param('slug') as string
+  const stepId = c.req.param('stepId') as string
+  const anonymousSessionId = c.req.query('anonymousSessionId')
+
+  const slugCheck = courseSlugSchema.safeParse({ slug })
+  if (!slugCheck.success) return c.json({ error: 'Invalid slug' }, 422)
+
+  const course = await useCases.getCourseBySlug.execute(slug)
+  if (!course) return c.json({ error: 'Course not found' }, 404)
+
+  const user = c.get('user')
+  if (!course.isPublic && !user) {
+    return c.json({ error: 'Course not found' }, 404)
+  }
+
+  // Make sure the step is actually part of this course before authorising.
+  const stepBelongsToCourse = course.lessons.some((l) =>
+    l.steps.some((s) => s.id === stepId),
+  )
+  if (!stepBelongsToCourse) {
+    return c.json({ error: 'Step not found' }, 404)
+  }
+
+  const owner = await resolveProgressOwner(user?.id ?? null, anonymousSessionId, course.id)
+  if ('error' in owner) {
+    return c.json({ error: owner.error }, owner.status)
+  }
+
+  const completed = await useCases.getCourseProgress.execute(owner, course.id)
+  if (!completed.includes(stepId)) {
+    return c.json({ error: 'Solution available after passing this step' }, 403)
+  }
+
+  const row = await db.query.steps.findFirst({ where: eq(stepsTable.id, stepId) })
+  return c.json({ solution: row?.solution ?? null })
 })
