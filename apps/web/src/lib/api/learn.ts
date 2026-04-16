@@ -50,4 +50,14 @@ export const learn = {
       method: 'POST',
       body: JSON.stringify({ anonymousSessionId }),
     }),
+
+  getStepSolution: (slug: string, stepId: string, anonymousSessionId?: string) => {
+    const query = anonymousSessionId
+      ? `?anonymousSessionId=${encodeURIComponent(anonymousSessionId)}`
+      : ''
+    return request<{ solution: string | null }>(
+      `/learn/courses/${slug}/steps/${stepId}/solution${query}`,
+      { redirectOnAuth: false },
+    )
+  },
 }

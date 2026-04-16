@@ -152,6 +152,7 @@ export function CoursePlayerPage() {
         {activeStep ? (
           <StepContent
             step={activeStep}
+            courseSlug={course.slug}
             language={course.language}
             isCompleted={completedSteps.includes(activeStep.id)}
             onComplete={() => {
@@ -249,11 +250,13 @@ function extractStepTitle(step: StepDTO): string {
 
 function StepContent({
   step,
+  courseSlug,
   language,
   isCompleted,
   onComplete,
 }: {
   step: StepDTO
+  courseSlug: string
   language: string
   isCompleted: boolean
   onComplete: () => void
@@ -277,6 +280,7 @@ function StepContent({
   return (
     <StepEditor
       step={step}
+      courseSlug={courseSlug}
       language={language}
       isCompleted={isCompleted}
       onComplete={onComplete}
@@ -286,15 +290,17 @@ function StepContent({
 
 // ── StepEditor ──────────────────────────────────────────────────
 
-type OutputTab = 'tests' | 'output'
+type OutputTab = 'tests' | 'output' | 'solution'
 
 function StepEditor({
   step,
+  courseSlug,
   language,
   isCompleted,
   onComplete,
 }: {
   step: StepDTO
+  courseSlug: string
   language: string
   isCompleted: boolean
   onComplete: () => void
@@ -304,6 +310,11 @@ function StepEditor({
   const [result, setResult] = useState<ExecuteStepResponse | null>(null)
   const [tab, setTab] = useState<OutputTab>('tests')
   const [showHint, setShowHint] = useState(false)
+  // Reference solution — fetched lazily once the learner passes the step.
+  // Server returns 403 until then, so there's no risk of leaking it early
+  // even if a curious learner inspects the network panel.
+  const [solutionCode, setSolutionCode] = useState<string | null>(null)
+  const [solutionError, setSolutionError] = useState<string | null>(null)
 
   const isIframeLang = language === 'javascript-dom'
   const stepTitle = extractStepTitle(step)
@@ -315,7 +326,25 @@ function StepEditor({
     setResult(null)
     setShowHint(false)
     setTab('tests')
+    setSolutionCode(null)
+    setSolutionError(null)
   }, [step.id, step.starterCode])
+
+  // Fetch the reference solution the first time the learner opens the
+  // Solution tab after passing. We fetch on demand (not on pass) to keep
+  // bandwidth zero for learners who never look.
+  useEffect(() => {
+    if (tab !== 'solution') return
+    if (!isCompleted) return
+    if (solutionCode !== null || solutionError !== null) return
+    const anonId = !isIframeLang ? getAnonymousId() ?? undefined : undefined
+    api
+      .getStepSolution(courseSlug, step.id, anonId)
+      .then((r) => setSolutionCode(r.solution ?? ''))
+      .catch((e) => {
+        setSolutionError(e instanceof Error ? e.message : 'Could not load solution')
+      })
+  }, [tab, isCompleted, solutionCode, solutionError, courseSlug, step.id, isIframeLang])
 
   const runCode = async () => {
     if (!step.testCode || running) return
@@ -405,7 +434,15 @@ function StepEditor({
         )}
 
         {/* Output panel */}
-        <OutputPanel result={result} tab={tab} onTabChange={setTab} />
+        <OutputPanel
+          result={result}
+          tab={tab}
+          onTabChange={setTab}
+          isCompleted={isCompleted}
+          solutionCode={solutionCode}
+          solutionError={solutionError}
+          editorLanguage={editorLanguage}
+        />
       </div>
     </div>
   )
@@ -444,10 +481,18 @@ function OutputPanel({
   result,
   tab,
   onTabChange,
+  isCompleted,
+  solutionCode,
+  solutionError,
+  editorLanguage,
 }: {
   result: ExecuteStepResponse | null
   tab: OutputTab
   onTabChange: (t: OutputTab) => void
+  isCompleted: boolean
+  solutionCode: string | null
+  solutionError: string | null
+  editorLanguage: string
 }) {
   return (
     <div className="border-t border-border/40 bg-surface/50 flex flex-col min-h-[12rem] max-h-[34vh]">
@@ -464,9 +509,24 @@ function OutputPanel({
           Output
           {result && result.errorKind && <span className="ml-1.5 text-warning">●</span>}
         </TabButton>
+        <TabButton
+          active={tab === 'solution'}
+          disabled={!isCompleted}
+          title={isCompleted ? undefined : 'Pass the step to unlock the reference solution'}
+          onClick={() => onTabChange('solution')}
+        >
+          Solution {!isCompleted && <span className="ml-1 text-muted/60">🔒</span>}
+        </TabButton>
       </div>
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        {!result ? (
+        {tab === 'solution' ? (
+          <SolutionTab
+            isCompleted={isCompleted}
+            solutionCode={solutionCode}
+            solutionError={solutionError}
+            language={editorLanguage}
+          />
+        ) : !result ? (
           <p className="text-xs font-mono text-muted/60">
             Run your code to see test results and output.
           </p>
@@ -480,21 +540,76 @@ function OutputPanel({
   )
 }
 
+function SolutionTab({
+  isCompleted,
+  solutionCode,
+  solutionError,
+  language,
+}: {
+  isCompleted: boolean
+  solutionCode: string | null
+  solutionError: string | null
+  language: string
+}) {
+  if (!isCompleted) {
+    return (
+      <p className="text-xs font-mono text-muted/60">
+        Pass the step to see one reference solution.
+      </p>
+    )
+  }
+  if (solutionError) {
+    return (
+      <p className="text-xs font-mono text-danger/80">
+        Couldn&apos;t load the solution: {solutionError}
+      </p>
+    )
+  }
+  if (solutionCode === null) {
+    return <p className="text-xs font-mono text-muted/60">Loading solution...</p>
+  }
+  if (solutionCode.trim() === '') {
+    return (
+      <p className="text-xs font-mono text-muted/60">
+        No reference solution recorded for this step.
+      </p>
+    )
+  }
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-mono text-muted">
+        One way to write this. Yours might be different — both can be right.
+      </p>
+      <pre className="text-xs font-mono text-secondary whitespace-pre overflow-x-auto bg-bg/40 rounded p-3 border border-border/30">
+        <code className={`language-${language}`}>{solutionCode}</code>
+      </pre>
+    </div>
+  )
+}
+
 function TabButton({
   active,
   children,
   onClick,
+  disabled,
+  title,
 }: {
   active: boolean
   children: React.ReactNode
   onClick: () => void
+  disabled?: boolean
+  title?: string
 }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
+      title={title}
       className={`px-3 py-1.5 text-xs font-mono transition-colors border-b-2 -mb-px ${
         active
           ? 'text-accent border-accent'
+          : disabled
+          ? 'text-muted/40 border-transparent cursor-not-allowed'
           : 'text-muted border-transparent hover:text-secondary'
       }`}
     >
