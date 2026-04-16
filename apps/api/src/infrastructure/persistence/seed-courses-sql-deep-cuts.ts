@@ -70,9 +70,9 @@ const STEP_1_1 = {
   lessonId: LESSON_1_ID,
   order: 1,
   type: 'read' as const,
-  instruction: `# Beyond GROUP BY — window functions
-
-A window function computes a value across a set of rows **without collapsing them**.
+  title: 'Beyond GROUP BY — window functions',
+  solution: null,
+  instruction: `A window function computes a value across a set of rows **without collapsing them**.
 
 \`\`\`sql
 -- GROUP BY collapses rows — you lose the individual employee rows
@@ -101,10 +101,16 @@ const STEP_1_2 = {
   id: STEP_1_2_ID,
   lessonId: LESSON_1_ID,
   order: 2,
-  type: 'challenge' as const,
-  instruction: `# Rank employees by salary within their department
-
-Return every employee with their salary rank **within their department**.
+  type: 'exercise' as const,
+  title: 'Rank employees by salary within their department',
+  solution: `SELECT
+  employee_name,
+  department,
+  salary,
+  RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS dept_rank
+FROM employees
+ORDER BY department ASC, dept_rank ASC`,
+  instruction: `Return every employee with their salary rank **within their department**.
 
 **Columns to return** (in order):
 - \`employee_name\`
@@ -159,10 +165,22 @@ const STEP_1_3 = {
   id: STEP_1_3_ID,
   lessonId: LESSON_1_ID,
   order: 3,
-  type: 'challenge' as const,
-  instruction: `# Running totals
-
-Show each month's sales **and** the cumulative total up to that month.
+  type: 'exercise' as const,
+  title: 'Running totals',
+  solution: `WITH monthly AS (
+  SELECT
+    strftime('%Y-%m', sale_date) AS month,
+    SUM(amount) AS monthly_sales
+  FROM sales
+  GROUP BY strftime('%Y-%m', sale_date)
+)
+SELECT
+  month,
+  monthly_sales,
+  SUM(monthly_sales) OVER (ORDER BY month ROWS UNBOUNDED PRECEDING) AS running_total
+FROM monthly
+ORDER BY month ASC`,
+  instruction: `Show each month's sales **and** the cumulative total up to that month.
 
 **Columns to return** (in order):
 - \`month\` — \`YYYY-MM\` format
@@ -220,9 +238,9 @@ const STEP_2_1 = {
   lessonId: LESSON_2_ID,
   order: 1,
   type: 'read' as const,
-  instruction: `# CTEs — Common Table Expressions
-
-A CTE (\`WITH\` clause) gives a name to a subquery so you can reference it multiple times and keep your query readable.
+  title: 'CTEs — Common Table Expressions',
+  solution: null,
+  instruction: `A CTE (\`WITH\` clause) gives a name to a subquery so you can reference it multiple times and keep your query readable.
 
 \`\`\`sql
 -- Hard to read nested subquery
@@ -262,38 +280,55 @@ const STEP_2_2 = {
   id: STEP_2_2_ID,
   lessonId: LESSON_2_ID,
   order: 2,
-  type: 'challenge' as const,
-  instruction: `# Refactor nested subqueries into CTEs
-
-The query below works but is unreadable. Rewrite it using CTEs that produce the **same result**.
+  type: 'exercise' as const,
+  title: 'Refactor nested subqueries into CTEs',
+  solution: `WITH well_paid AS (
+  SELECT * FROM employees WHERE salary > 50000
+),
+head AS (
+  SELECT department, COUNT(*) AS headcount
+  FROM well_paid
+  GROUP BY department
+),
+ranked AS (
+  SELECT *, RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+  FROM well_paid
+),
+tops AS (
+  SELECT department, employee_name AS top_earner, salary AS top_salary
+  FROM ranked
+  WHERE rnk = 1
+)
+SELECT h.department, h.headcount, t.top_earner, t.top_salary
+FROM head h
+JOIN tops t ON h.department = t.department
+ORDER BY h.headcount DESC`,
+  instruction: `The query below filters employees with salary > 50000, then for each department shows the headcount and the top earner. It works, but the nested subqueries hurt to read.
 
 \`\`\`sql
 SELECT d.department, d.headcount, s.top_earner, s.top_salary
 FROM (
   SELECT department, COUNT(*) AS headcount
-  FROM (SELECT * FROM employees WHERE salary > 50000) AS well_paid
+  FROM employees WHERE salary > 50000
   GROUP BY department
 ) d
 JOIN (
-  SELECT department, employee_name AS top_earner, salary AS top_salary
-  FROM (
-    SELECT *, RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
-    FROM employees WHERE salary > 50000
-  ) ranked
-  WHERE rnk = 1
-) s ON d.department = s.department
+  SELECT department, employee_name AS top_earner, salary AS top_salary,
+    RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+  FROM employees WHERE salary > 50000
+) s ON d.department = s.department AND s.rnk = 1
 ORDER BY d.headcount DESC;
 \`\`\`
 
-**Columns to return** (in order): \`department\`, \`headcount\`, \`top_earner\`, \`top_salary\`.
+Rewrite it as a chain of CTEs that produces the **same result**. One CTE per intermediate concept (filtered employees, headcounts, ranked employees, top earners), then one final \`SELECT\` that joins them.
 
-Order by \`headcount\` DESC.`,
+**Columns to return** (in order): \`department\`, \`headcount\`, \`top_earner\`, \`top_salary\`. Order by \`headcount\` DESC.`,
   starterCode: `WITH well_paid AS (
-  -- filter employees with salary > 50000
+  -- employees with salary > 50000
 ),
--- add more CTEs
+-- more CTEs: headcount per department, ranked employees, top earner per department
 SELECT
-  -- select department, headcount, top_earner, top_salary
+  -- department, headcount, top_earner, top_salary from the joined CTEs
 ORDER BY headcount DESC`,
   testCode: `CREATE TABLE employees (id INT, employee_name TEXT, department TEXT, salary INT);
 INSERT INTO employees VALUES
@@ -326,10 +361,25 @@ const STEP_2_3 = {
   id: STEP_2_3_ID,
   lessonId: LESSON_2_ID,
   order: 3,
-  type: 'challenge' as const,
-  instruction: `# Chain CTEs — department budget ratio
-
-For each department, compute:
+  type: 'exercise' as const,
+  title: 'Chain CTEs — department budget ratio',
+  solution: `WITH dept_budgets AS (
+  SELECT department, SUM(salary) AS dept_budget
+  FROM employees
+  GROUP BY department
+),
+company_total AS (
+  SELECT SUM(salary) AS total_budget FROM employees
+)
+SELECT
+  d.department,
+  d.dept_budget,
+  c.total_budget,
+  ROUND(d.dept_budget * 100.0 / c.total_budget, 1) AS budget_pct
+FROM dept_budgets d
+CROSS JOIN company_total c
+ORDER BY budget_pct DESC`,
+  instruction: `For each department, compute:
 - \`dept_budget\` — total salary for that department
 - \`total_budget\` — total salary for the whole company
 - \`budget_pct\` — \`dept_budget\` as a percentage of \`total_budget\`, rounded to 1 decimal
@@ -383,9 +433,9 @@ const STEP_3_1 = {
   lessonId: LESSON_3_ID,
   order: 1,
   type: 'read' as const,
-  instruction: `# Retention, cohorts, churn — patterns behind analytics reports
-
-Three patterns that show up in every production analytics query:
+  title: 'Retention, cohorts, churn — patterns behind analytics reports',
+  solution: null,
+  instruction: `Three patterns that show up in every production analytics query:
 
 ### 1. Cohort analysis
 Group users by when they first appeared (signup month, first order, etc.) and track behavior over time.
@@ -426,10 +476,15 @@ const STEP_3_2 = {
   id: STEP_3_2_ID,
   lessonId: LESSON_3_ID,
   order: 2,
-  type: 'challenge' as const,
-  instruction: `# Signup cohort sizes
-
-Group users by signup month and count how many signed up each month.
+  type: 'exercise' as const,
+  title: 'Signup cohort sizes',
+  solution: `SELECT
+  strftime('%Y-%m', signup_date) AS cohort_month,
+  COUNT(*) AS cohort_size
+FROM users
+GROUP BY strftime('%Y-%m', signup_date)
+ORDER BY cohort_month ASC`,
+  instruction: `Group users by signup month and count how many signed up each month.
 
 **Columns to return** (in order):
 - \`cohort_month\` — \`YYYY-MM\` format
@@ -473,9 +528,28 @@ const STEP_3_3 = {
   lessonId: LESSON_3_ID,
   order: 3,
   type: 'challenge' as const,
-  instruction: `# Challenge: Rewrite the slow churn report
-
-This query finds churned users (active in Q1 but not in Q2). It works but runs in 8 seconds on a 1M-row table.
+  title: 'Rewrite the slow churn report',
+  solution: `WITH q1_users AS (
+  SELECT DISTINCT user_id FROM orders
+  WHERE order_date BETWEEN '2024-01-01' AND '2024-03-31'
+),
+q2_users AS (
+  SELECT DISTINCT user_id FROM orders
+  WHERE order_date >= '2024-04-01'
+),
+last_orders AS (
+  SELECT user_id, MAX(order_date) AS last_order
+  FROM orders
+  GROUP BY user_id
+)
+SELECT u.user_id, u.name, lo.last_order
+FROM users u
+JOIN q1_users q1 ON q1.user_id = u.user_id
+LEFT JOIN q2_users q2 ON q2.user_id = u.user_id
+LEFT JOIN last_orders lo ON lo.user_id = u.user_id
+WHERE q2.user_id IS NULL
+ORDER BY lo.last_order DESC`,
+  instruction: `This query finds churned users (active in Q1 but not in Q2). It works but runs in 8 seconds on a 1M-row table.
 
 \`\`\`sql
 SELECT u.user_id, u.name,

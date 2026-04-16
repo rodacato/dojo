@@ -35,8 +35,14 @@ const LESSON_2_ID = seedUuid('ts-lesson-2-arrays')
 const LESSON_3_ID = seedUuid('ts-lesson-3-control')
 
 const STEP_1_1_ID = seedUuid('ts-step-1-1-types-intro')
-const STEP_1_2_ID = seedUuid('ts-step-1-2-greet')
-const STEP_1_3_ID = seedUuid('ts-step-1-3-add')
+// Sprint 018: new read step inserted as 1.2 to teach template literals
+// before the greet exercise that uses them. UUID is brand new — no
+// historical progress to preserve.
+const STEP_1_2_ID = seedUuid('ts-step-1-2-template-literals')
+// Existing UUIDs preserved so anonymous/user progress on these exercises
+// survives the renumber. Only `order` changes.
+const STEP_1_3_ID = seedUuid('ts-step-1-2-greet')
+const STEP_1_4_ID = seedUuid('ts-step-1-3-add')
 
 const STEP_2_1_ID = seedUuid('ts-step-2-1-arrays-intro')
 const STEP_2_2_ID = seedUuid('ts-step-2-2-sum')
@@ -45,6 +51,10 @@ const STEP_2_3_ID = seedUuid('ts-step-2-3-fullname')
 const STEP_3_1_ID = seedUuid('ts-step-3-1-control-intro')
 const STEP_3_2_ID = seedUuid('ts-step-3-2-fizzbuzz')
 const STEP_3_3_ID = seedUuid('ts-step-3-3-palindrome')
+// Sprint 018: every sub-course needs at least one challenge per §4.3 of
+// docs/courses/README.md. Palindrome is bumped to challenge and a real
+// async-flavored challenge is added for L3.4.
+const STEP_3_4_ID = seedUuid('ts-step-3-4-debounce')
 
 const COURSE_DATA = {
   id: COURSE_ID,
@@ -110,9 +120,8 @@ const STEPS_DATA = [
     lessonId: LESSON_1_ID,
     order: 1,
     type: 'read' as const,
-    instruction: `# Variables & Types in TypeScript
-
-TypeScript adds **type annotations** to JavaScript, catching bugs before your code runs.
+    title: 'Variables & Types in TypeScript',
+    instruction: `TypeScript adds **type annotations** to JavaScript, catching bugs before your code runs.
 
 ## Basic types
 
@@ -131,29 +140,58 @@ const active: boolean = true
 
 \`\`\`typescript
 function greet(name: string): string {
-  return \`Hello, \${name}!\`
+  return "Hello, " + name + "!"
 }
 \`\`\`
 
 The \`: string\` after the parameter is the **parameter type**. The \`: string\` after the parentheses is the **return type**.
 
-Ready to try it? Move to the next step.`,
+The next step covers template literals — a cleaner way to build strings — before you write your first function.`,
     starterCode: null,
     testCode: null,
     hint: null,
+    solution: null,
   },
   {
     id: STEP_1_2_ID,
     lessonId: LESSON_1_ID,
     order: 2,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Write a greet function
+    type: 'read' as const,
+    title: 'Template literals',
+    instruction: `Concatenating strings with \`+\` works but gets hard to read. Backtick-delimited **template literals** let you embed expressions inline:
 
-Write a function \`greet\` that takes a \`name\` (string) and returns \`"Hello, <name>!"\`.
-
-**Example:**
 \`\`\`typescript
-greet("World") // "Hello, World!"
+const name = "World"
+const greeting = \`Hello, \${name}!\`
+// "Hello, World!"
+\`\`\`
+
+The \`\${...}\` syntax accepts any expression — a variable, a function call, an arithmetic expression — and converts the result to a string.
+
+\`\`\`typescript
+const a = 7, b = 3
+\`\${a} + \${b} = \${a + b}\` // "7 + 3 = 10"
+\`\`\`
+
+Template literals also preserve newlines, so multi-line strings stop needing \`\\n\` escapes.
+
+You'll use \`\${...}\` in the next step to assemble the greeting.`,
+    starterCode: null,
+    testCode: null,
+    hint: null,
+    solution: null,
+  },
+  {
+    id: STEP_1_3_ID,
+    lessonId: LESSON_1_ID,
+    order: 3,
+    type: 'exercise' as const,
+    title: 'Write a greet function',
+    instruction: `Write a function \`greet\` that takes a \`name\` (string) and returns \`"Hello, <name>!"\`.
+
+**Examples:**
+\`\`\`typescript
+greet("World")      // "Hello, World!"
 greet("TypeScript") // "Hello, TypeScript!"
 \`\`\``,
     starterCode: `function greet(name: string): string {
@@ -167,19 +205,21 @@ test('handles spaces in name', () => { expect(greet('Jane Doe')).toBe('Hello, Ja
 test('returns a string', () => { expect(typeof greet('test')).toBe('string') })
 ${TS_HARNESS_FOOTER}`,
     hint: 'Use a template literal: `Hello, ${name}!`',
+    solution: `function greet(name: string): string {
+  return \`Hello, \${name}!\`
+}`,
   },
   {
-    id: STEP_1_3_ID,
+    id: STEP_1_4_ID,
     lessonId: LESSON_1_ID,
-    order: 3,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Write an add function
+    order: 4,
+    type: 'exercise' as const,
+    title: 'Write an add function',
+    instruction: `Write a function \`add\` that takes two numbers and returns their sum.
 
-Write a function \`add\` that takes two numbers and returns their sum.
-
-**Example:**
+**Examples:**
 \`\`\`typescript
-add(2, 3) // 5
+add(2, 3)  // 5
 add(-1, 1) // 0
 \`\`\``,
     starterCode: `function add(a: number, b: number): number {
@@ -192,7 +232,10 @@ test('adds zero', () => { expect(add(0, 5)).toBe(5) })
 test('handles large numbers', () => { expect(add(1000000, 2000000)).toBe(3000000) })
 test('handles decimals', () => { expect(add(0.1, 0.2)).toBeCloseTo(0.3) })
 ${TS_HARNESS_FOOTER}`,
-    hint: 'Simply return `a + b`.',
+    hint: 'Return `a + b`.',
+    solution: `function add(a: number, b: number): number {
+  return a + b
+}`,
   },
 
   // ── Lesson 2: Arrays & Objects ──────────────────────────────────
@@ -201,9 +244,8 @@ ${TS_HARNESS_FOOTER}`,
     lessonId: LESSON_2_ID,
     order: 1,
     type: 'read' as const,
-    instruction: `# Arrays & Objects
-
-## Typed arrays
+    title: 'Arrays & Objects',
+    instruction: `## Typed arrays
 
 \`\`\`typescript
 const numbers: number[] = [1, 2, 3]
@@ -234,17 +276,17 @@ The \`?\` makes a property **optional** — it can be present or absent.`,
     starterCode: null,
     testCode: null,
     hint: null,
+    solution: null,
   },
   {
     id: STEP_2_2_ID,
     lessonId: LESSON_2_ID,
     order: 2,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Sum an array
+    type: 'exercise' as const,
+    title: 'Sum an array',
+    instruction: `Write a function \`sum\` that takes an array of numbers and returns their total.
 
-Write a function \`sum\` that takes an array of numbers and returns their total.
-
-**Example:**
+**Examples:**
 \`\`\`typescript
 sum([1, 2, 3]) // 6
 sum([])        // 0
@@ -259,16 +301,18 @@ test('handles single element', () => { expect(sum([42])).toBe(42) })
 test('handles negative numbers', () => { expect(sum([-1, 1, -2, 2])).toBe(0) })
 test('handles large arrays', () => { expect(sum(Array.from({ length: 100 }, (_, i) => i + 1))).toBe(5050) })
 ${TS_HARNESS_FOOTER}`,
-    hint: 'Use `.reduce((sum, n) => sum + n, 0)` or a simple for loop.',
+    hint: 'Use `.reduce((acc, n) => acc + n, 0)` or a simple for loop.',
+    solution: `function sum(numbers: number[]): number {
+  return numbers.reduce((acc, n) => acc + n, 0)
+}`,
   },
   {
     id: STEP_2_3_ID,
     lessonId: LESSON_2_ID,
     order: 3,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Get full name
-
-Write a function \`getFullName\` that takes a person object with \`first\` and \`last\` properties and returns their full name.
+    type: 'exercise' as const,
+    title: 'Get full name',
+    instruction: `Write a function \`getFullName\` that takes a person object with \`first\` and \`last\` properties and returns their full name.
 
 **Example:**
 \`\`\`typescript
@@ -284,7 +328,10 @@ test('handles hyphenated names', () => { expect(getFullName({ first: 'Mary-Jane'
 test('preserves casing', () => { expect(getFullName({ first: 'mcdonald', last: 'DUCK' })).toBe('mcdonald DUCK') })
 test('returns a string', () => { expect(typeof getFullName({ first: 'a', last: 'b' })).toBe('string') })
 ${TS_HARNESS_FOOTER}`,
-    hint: 'Return `${person.first} ${person.last}` using a template literal.',
+    hint: 'Use a template literal: `${person.first} ${person.last}`.',
+    solution: `function getFullName(person: { first: string; last: string }): string {
+  return \`\${person.first} \${person.last}\`
+}`,
   },
 
   // ── Lesson 3: Control Flow ──────────────────────────────────────
@@ -293,9 +340,8 @@ ${TS_HARNESS_FOOTER}`,
     lessonId: LESSON_3_ID,
     order: 1,
     type: 'read' as const,
-    instruction: `# Control Flow
-
-## if/else
+    title: 'Control Flow',
+    instruction: `## if/else
 
 \`\`\`typescript
 function describe(n: number): string {
@@ -334,21 +380,21 @@ The \`%\` operator returns the remainder of division:
     starterCode: null,
     testCode: null,
     hint: null,
+    solution: null,
   },
   {
     id: STEP_3_2_ID,
     lessonId: LESSON_3_ID,
     order: 2,
-    type: 'challenge' as const,
-    instruction: `# Exercise: FizzBuzz
-
-Write a function \`fizzBuzz\` that takes a number and returns:
+    type: 'exercise' as const,
+    title: 'FizzBuzz',
+    instruction: `Write a function \`fizzBuzz\` that takes a number and returns:
 - \`"FizzBuzz"\` if divisible by both 3 and 5
 - \`"Fizz"\` if divisible by 3
 - \`"Buzz"\` if divisible by 5
 - The number as a string otherwise
 
-**Example:**
+**Examples:**
 \`\`\`typescript
 fizzBuzz(15) // "FizzBuzz"
 fizzBuzz(3)  // "Fizz"
@@ -368,21 +414,26 @@ test('returns FizzBuzz for 30', () => { expect(fizzBuzz(30)).toBe('FizzBuzz') })
 test('returns 1 for 1', () => { expect(fizzBuzz(1)).toBe('1') })
 ${TS_HARNESS_FOOTER}`,
     hint: 'Check divisibility by 15 first (both 3 and 5), then by 3, then by 5. Use `n % 3 === 0`.',
+    solution: `function fizzBuzz(n: number): string {
+  if (n % 15 === 0) return 'FizzBuzz'
+  if (n % 3 === 0) return 'Fizz'
+  if (n % 5 === 0) return 'Buzz'
+  return String(n)
+}`,
   },
   {
     id: STEP_3_3_ID,
     lessonId: LESSON_3_ID,
     order: 3,
     type: 'challenge' as const,
-    instruction: `# Challenge: Palindrome checker
+    title: 'Palindrome checker',
+    instruction: `Write a function \`isPalindrome\` that checks if a string reads the same forwards and backwards. **Ignore case and non-alphanumeric characters.**
 
-Write a function \`isPalindrome\` that checks if a string reads the same forwards and backwards. Ignore case and non-alphanumeric characters.
-
-**Example:**
+**Examples:**
 \`\`\`typescript
-isPalindrome("racecar")           // true
-isPalindrome("A man, a plan, a canal: Panama") // true
-isPalindrome("hello")             // false
+isPalindrome("racecar")                            // true
+isPalindrome("A man, a plan, a canal: Panama")    // true
+isPalindrome("hello")                              // false
 \`\`\``,
     starterCode: `function isPalindrome(s: string): boolean {
   // Your code here
@@ -396,7 +447,87 @@ test('handles empty string', () => { expect(isPalindrome('')).toBe(true) })
 test('handles single character', () => { expect(isPalindrome('a')).toBe(true) })
 test('handles numbers in string', () => { expect(isPalindrome('12321')).toBe(true) })
 ${TS_HARNESS_FOOTER}`,
-    hint: 'Strip non-alphanumeric chars with `.replace(/[^a-zA-Z0-9]/g, "")`, lowercase, then compare with its reverse.',
+    hint: 'Three steps in order: normalize (lowercase + strip non-alphanumeric), reverse, compare to the normalized original.',
+    solution: `function isPalindrome(s: string): boolean {
+  const normalized = s.toLowerCase().replace(/[^a-z0-9]/g, '')
+  return normalized === normalized.split('').reverse().join('')
+}`,
+  },
+  {
+    id: STEP_3_4_ID,
+    lessonId: LESSON_3_ID,
+    order: 4,
+    type: 'challenge' as const,
+    title: 'Implement debounce',
+    instruction: `Write \`debounce(fn, waitMs)\` that returns a function which delays calling \`fn\` until \`waitMs\` milliseconds have passed since the **last** invocation.
+
+If the returned function is called again before the timer fires, the previous timer is cancelled and a new one starts. Only the last call within a quiet window actually invokes \`fn\`.
+
+**Behavior to verify:**
+- Calls within the wait window collapse into a single trailing call
+- That trailing call uses the **last** arguments
+- After the trailing call fires, the next call starts a fresh timer
+
+Use \`setTimeout\` and \`clearTimeout\`. No external libraries.`,
+    starterCode: `function debounce<A extends unknown[]>(
+  fn: (...args: A) => void,
+  waitMs: number,
+): (...args: A) => void {
+  // Your code here
+}`,
+    testCode: `${TS_HARNESS_HEADER}
+function nextTick(ms: number) {
+  return new Promise<void>(resolve => setTimeout(resolve, ms))
+}
+
+async function run() {
+  let count = 0
+  let lastArg: number | null = null
+  const debounced = debounce((n: number) => { count++; lastArg = n }, 30)
+
+  // 3 quick calls — should collapse into 1
+  debounced(1); debounced(2); debounced(3)
+  await nextTick(10)
+  test('does not fire before wait elapses', () => {
+    expect(count).toBe(0)
+  })
+
+  await nextTick(40)
+  test('fires once after the wait', () => {
+    expect(count).toBe(1)
+  })
+  test('uses the last arguments', () => {
+    expect(lastArg).toBe(3)
+  })
+
+  // Reset timer behavior
+  debounced(10)
+  await nextTick(15)
+  debounced(20)
+  await nextTick(15)
+  test('reset timer: still 1 invocation 30ms after first call', () => {
+    expect(count).toBe(1)
+  })
+  await nextTick(25)
+  test('fires after the second quiet window', () => {
+    expect(count).toBe(2)
+    expect(lastArg).toBe(20)
+  })
+}
+
+await run()
+${TS_HARNESS_FOOTER}`,
+    hint: 'Each invocation should clear the previous pending timer (if any) and schedule a new one with `setTimeout`.',
+    solution: `function debounce<A extends unknown[]>(
+  fn: (...args: A) => void,
+  waitMs: number,
+): (...args: A) => void {
+  let timer: ReturnType<typeof setTimeout> | null = null
+  return (...args: A) => {
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => { fn(...args) }, waitMs)
+  }
+}`,
   },
 ]
 
@@ -479,16 +610,15 @@ const DOM_STEPS_DATA = [
     lessonId: DOM_LESSON_1_ID,
     order: 1,
     type: 'read' as const,
-    instruction: `# Selecting Elements
-
-The browser gives you several ways to find elements on the page:
+    title: 'Selecting Elements',
+    instruction: `The browser gives you a few ways to find elements on the page:
 
 \`\`\`javascript
 // By CSS selector — most versatile
 const btn = document.querySelector('#submit-btn')
 const cards = document.querySelectorAll('.card')
 
-// By ID — fastest, but only one element
+// By ID — slightly faster, returns one element
 const header = document.getElementById('main-header')
 \`\`\`
 
@@ -496,19 +626,21 @@ const header = document.getElementById('main-header')
 
 **\`querySelectorAll\`** returns a \`NodeList\` of all matches — like an array, but you need \`Array.from()\` to use methods like \`.map()\`.
 
+**\`getElementById\`** is the older API, slightly faster, but limited to a single ID lookup. You'll see it everywhere in production code, so it's worth recognising. For new code, prefer \`querySelector('#x')\` so one mental model covers ID, class, attribute, and complex selectors uniformly.
+
 The CSS selector syntax is the same you use in stylesheets: class (\`.card\`), ID (\`#title\`), attribute (\`[data-id]\`), descendant (\`.card h2\`), and more.`,
     starterCode: null,
     testCode: null,
     hint: null,
+    solution: null,
   },
   {
     id: DOM_STEP_1_2_ID,
     lessonId: DOM_LESSON_1_ID,
     order: 2,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Read an element's text
-
-Write a function \`getTitle\` that finds the \`<h1>\` element on the page and returns its text content.
+    type: 'exercise' as const,
+    title: "Read an element's text",
+    instruction: `Write a function \`getTitle\` that finds the \`<h1>\` element on the page and returns its text content.
 
 **Example:**
 \`\`\`javascript
@@ -537,15 +669,17 @@ test('works with different text content', () => {
 
 ${DOM_RUNNER_END}`,
     hint: 'Use `document.querySelector("h1")` or `document.getElementById("page-title")`, then read `.textContent`.',
+    solution: `function getTitle() {
+  return document.querySelector('h1').textContent
+}`,
   },
   {
     id: DOM_STEP_1_3_ID,
     lessonId: DOM_LESSON_1_ID,
     order: 3,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Count list items
-
-Write a function \`countItems\` that counts how many \`<li>\` elements are inside \`#todo-list\`.
+    type: 'exercise' as const,
+    title: 'Count list items',
+    instruction: `Write a function \`countItems\` that counts how many \`<li>\` elements are inside \`#todo-list\`.
 
 **Example:**
 \`\`\`javascript
@@ -585,6 +719,9 @@ test('returns 1 for a single item', () => {
 
 ${DOM_RUNNER_END}`,
     hint: 'Use `document.querySelectorAll("#todo-list li").length`.',
+    solution: `function countItems() {
+  return document.querySelectorAll('#todo-list li').length
+}`,
   },
 
   // ── Lesson 2: Modifying Elements ────────────────────────────────
@@ -593,9 +730,8 @@ ${DOM_RUNNER_END}`,
     lessonId: DOM_LESSON_2_ID,
     order: 1,
     type: 'read' as const,
-    instruction: `# Modifying Elements
-
-Once you have an element, you can change almost anything about it:
+    title: 'Modifying Elements',
+    instruction: `Once you have an element, you can change almost anything about it:
 
 \`\`\`javascript
 const el = document.querySelector('#title')
@@ -618,15 +754,15 @@ el.getAttribute('data-id') // → '42'
     starterCode: null,
     testCode: null,
     hint: null,
+    solution: null,
   },
   {
     id: DOM_STEP_2_2_ID,
     lessonId: DOM_LESSON_2_ID,
     order: 2,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Update a message
-
-Write a function \`updateMessage\` that changes the text inside \`#message\` to \`"Updated"\`.
+    type: 'exercise' as const,
+    title: 'Update a message',
+    instruction: `Write a function \`updateMessage\` that changes the text inside \`#message\` to \`"Updated"\`.
 
 **Example:**
 \`\`\`javascript
@@ -651,15 +787,17 @@ test('element still exists', () => {
 
 ${DOM_RUNNER_END}`,
     hint: 'Get the element with `querySelector("#message")`, then set its `.textContent`.',
+    solution: `function updateMessage() {
+  document.querySelector('#message').textContent = 'Updated'
+}`,
   },
   {
     id: DOM_STEP_2_3_ID,
     lessonId: DOM_LESSON_2_ID,
     order: 3,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Activate a card
-
-Write a function \`activateCard\` that adds the class \`active\` to \`#card\`.
+    type: 'exercise' as const,
+    title: 'Activate a card',
+    instruction: `Write a function \`activateCard\` that adds the class \`active\` to \`#card\`.
 
 If the element already has the class, do nothing (idempotent).
 
@@ -688,6 +826,9 @@ test('calling it twice does not duplicate the class', () => {
 
 ${DOM_RUNNER_END}`,
     hint: 'Use `el.classList.add("active")` — it is already idempotent (adding an existing class does nothing).',
+    solution: `function activateCard() {
+  document.querySelector('#card').classList.add('active')
+}`,
   },
 
   // ── Lesson 3: Events ────────────────────────────────────────────
@@ -696,9 +837,8 @@ ${DOM_RUNNER_END}`,
     lessonId: DOM_LESSON_3_ID,
     order: 1,
     type: 'read' as const,
-    instruction: `# Events
-
-User interactions fire events. You listen for them with \`addEventListener\`:
+    title: 'Events',
+    instruction: `User interactions fire events. You listen for them with \`addEventListener\`:
 
 \`\`\`javascript
 const btn = document.querySelector('#btn')
@@ -731,15 +871,15 @@ If your \`<li>\` contains a \`<strong>\`, clicking on the text fires \`e.target 
     starterCode: null,
     testCode: null,
     hint: null,
+    solution: null,
   },
   {
     id: DOM_STEP_3_2_ID,
     lessonId: DOM_LESSON_3_ID,
     order: 2,
-    type: 'challenge' as const,
-    instruction: `# Exercise: Click counter
-
-Write a function \`setupCounter\` that attaches a click listener to \`#btn\`. Each click should increment the number shown in \`#counter\`.
+    type: 'exercise' as const,
+    title: 'Click counter',
+    instruction: `Write a function \`setupCounter\` that attaches a click listener to \`#btn\`. Each click should increment the number shown in \`#counter\`.
 
 **Example:**
 \`\`\`javascript
@@ -776,21 +916,25 @@ test('counter shows 2 after two clicks', () => {
 
 ${DOM_RUNNER_END}`,
     hint: 'In the listener, read `+counter.textContent` to get the current number, add 1, and write it back.',
+    solution: `function setupCounter() {
+  const btn = document.querySelector('#btn')
+  const counter = document.querySelector('#counter')
+  btn.addEventListener('click', () => {
+    counter.textContent = String(+counter.textContent + 1)
+  })
+}`,
   },
   {
     id: DOM_STEP_3_3_ID,
     lessonId: DOM_LESSON_3_ID,
     order: 3,
     type: 'challenge' as const,
-    instruction: `# Challenge: Fix the event delegation bug
+    title: 'Fix the event delegation bug',
+    instruction: `The \`setupTodoList\` function below uses event delegation — one listener on \`<ul>\` handles clicks on all \`<li>\` items and toggles a \`done\` class.
 
-The \`setupTodoList\` function below uses event delegation — one listener on \`<ul>\` handles clicks on all \`<li>\` items and toggles a \`done\` class.
+**It has a subtle bug.** Click on the bold text inside an \`<li>\` and nothing happens. Click on the empty space around the text and it works.
 
-**It has a subtle bug:** clicking on a child element inside an \`<li>\` (like the \`<strong>\` text) doesn't toggle the class, because \`e.target\` is the \`<strong>\`, not the \`<li>\`.
-
-Fix \`setupTodoList\` so that clicking anywhere inside an \`<li>\` correctly toggles \`done\` on the \`<li>\` itself.
-
-**Hint:** \`e.target.closest("li")\` walks up the DOM tree and finds the nearest \`<li>\` ancestor.`,
+Fix \`setupTodoList\` so that clicking anywhere inside an \`<li>\` correctly toggles \`done\` on the \`<li>\` itself.`,
     starterCode: `function setupTodoList() {
   const list = document.querySelector('#todo-list')
   list.addEventListener('click', (e) => {
@@ -827,7 +971,16 @@ test('clicking again toggles done off', () => {
 })
 
 ${DOM_RUNNER_END}`,
-    hint: 'Replace `e.target` with `e.target.closest("li")` and check it\'s not null before toggling.',
+    hint: 'When the click lands on a descendant of the `<li>`, what does that make `e.target`? Look at the DOM tree above the click — find the right ancestor before toggling.',
+    solution: `function setupTodoList() {
+  const list = document.querySelector('#todo-list')
+  list.addEventListener('click', (e) => {
+    const li = e.target.closest('li')
+    if (li && list.contains(li)) {
+      li.classList.toggle('done')
+    }
+  })
+}`,
   },
 ]
 
