@@ -851,11 +851,15 @@ type StepSeed = {
   id: string
   lessonId: string
   order: number
-  type: 'read' | 'code' | 'challenge'
+  type: 'read' | 'code' | 'exercise' | 'challenge'
+  // Optional in the type because Sprint 018 backfills incrementally —
+  // every new step authored from now on must set it.
+  title?: string | null
   instruction: string
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  solution?: string | null
 }
 
 type CourseConfig = {
@@ -898,21 +902,27 @@ async function seedOneCourse(
   }
   console.log(`  ✓ Lessons: ${lessonsData.length}`)
 
-  // Steps: upsert by id. type and order propagate too so read<->challenge
-  // and reordering edits are covered without a wipe.
+  // Steps: upsert by id. type, order, title and solution propagate too so
+  // edits to those fields land without a wipe.
   for (const step of stepsData) {
     await db
       .insert(steps)
-      .values(step)
+      .values({
+        ...step,
+        title: step.title ?? null,
+        solution: step.solution ?? null,
+      })
       .onConflictDoUpdate({
         target: steps.id,
         set: {
           type: step.type,
           order: step.order,
+          title: step.title ?? null,
           instruction: step.instruction,
           starterCode: step.starterCode,
           testCode: step.testCode,
           hint: step.hint,
+          solution: step.solution ?? null,
         },
       })
   }

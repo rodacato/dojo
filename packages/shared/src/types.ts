@@ -82,17 +82,22 @@ export interface FeedbackDTO {
 
 // ── Learning (Courses) ──────────────────────────────────────────────
 
-export type StepType = 'read' | 'code' | 'challenge'
+export type StepType = 'read' | 'code' | 'exercise' | 'challenge'
 export type CourseStatus = 'draft' | 'published'
 
 export interface StepDTO {
   id: string
   order: number
   type: StepType
+  // Top-level title used for sidebar entry and the StepEditor H1.
+  // Nullable for backwards compat with steps seeded before Sprint 018.
+  title: string | null
   instruction: string
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  // Solution is intentionally NOT in StepDTO — it ships only via
+  // GET /learn/courses/:slug/steps/:id/solution after pass.
 }
 
 export interface LessonDTO {

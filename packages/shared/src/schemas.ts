@@ -85,7 +85,7 @@ export const exerciseFiltersSchema = z.object({
 
 // ── Learning (Courses) ──────────────────────────────────────────────
 
-export const stepTypeSchema = z.enum(['read', 'code', 'challenge'])
+export const stepTypeSchema = z.enum(['read', 'code', 'exercise', 'challenge'])
 export const courseStatusSchema = z.enum(['draft', 'published'])
 
 export const courseSlugSchema = z.object({
@@ -112,6 +112,7 @@ export const stepDTOSchema = z.object({
   id: z.string().uuid(),
   order: z.number().int(),
   type: stepTypeSchema,
+  title: z.string().nullable(),
   instruction: z.string(),
   starterCode: z.string().nullable(),
   testCode: z.string().nullable(),

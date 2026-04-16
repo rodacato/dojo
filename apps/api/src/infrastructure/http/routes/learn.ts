@@ -64,6 +64,7 @@ learnRoutes.get('/learn/courses/:slug', optionalAuth, async (c) => {
           id: s.id,
           order: s.order,
           type: s.type,
+          title: s.title,
           instruction: s.instruction,
           starterCode: s.starterCode,
           testCode: s.testCode,

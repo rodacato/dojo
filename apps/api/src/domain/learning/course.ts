@@ -5,10 +5,12 @@ export interface Step {
   id: string
   order: number
   type: StepType
+  title: string | null
   instruction: string
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  solution: string | null
 }
 
 export interface Lesson {

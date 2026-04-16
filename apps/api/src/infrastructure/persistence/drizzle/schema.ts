@@ -212,11 +212,13 @@ export const steps = pgTable('steps', {
   id: uuid('id').primaryKey().defaultRandom(),
   lessonId: uuid('lesson_id').notNull().references(() => lessons.id),
   order: integer('order').notNull(),
-  type: varchar('type', { length: 20 }).notNull().default('challenge'),
+  type: varchar('type', { length: 20 }).notNull().default('exercise'),
+  title: text('title'),
   instruction: text('instruction').notNull(),
   starterCode: text('starter_code'),
   testCode: text('test_code'),
   hint: text('hint'),
+  solution: text('solution'),
 })
 
 export const courseProgress = pgTable('course_progress', {

@@ -99,6 +99,13 @@
       "when": 1775395200000,
       "tag": "0013_public_courses_anonymous_progress",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1775481600000,
+      "tag": "0014_step_title_solution_exercise",
+      "breakpoints": true
     }
   ]
 }

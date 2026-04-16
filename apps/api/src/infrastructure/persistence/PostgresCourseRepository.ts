@@ -7,7 +7,18 @@ import { courses } from './drizzle/schema'
 
 type CourseRow = typeof courses.$inferSelect
 type LessonRow = { id: string; courseId: string; order: number; title: string }
-type StepRow = { id: string; lessonId: string; order: number; type: string; instruction: string; starterCode: string | null; testCode: string | null; hint: string | null }
+type StepRow = {
+  id: string
+  lessonId: string
+  order: number
+  type: string
+  title: string | null
+  instruction: string
+  starterCode: string | null
+  testCode: string | null
+  hint: string | null
+  solution: string | null
+}
 
 type CourseWithRelations = CourseRow & {
   lessons: (LessonRow & { steps: StepRow[] })[]
@@ -102,10 +113,12 @@ export class PostgresCourseRepository implements CourseRepositoryPort {
       id: row.id,
       order: row.order,
       type: row.type as StepType,
+      title: row.title,
       instruction: row.instruction,
       starterCode: row.starterCode,
       testCode: row.testCode,
       hint: row.hint,
+      solution: row.solution,
     }
   }
 }

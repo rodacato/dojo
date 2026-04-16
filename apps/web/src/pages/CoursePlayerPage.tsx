@@ -209,7 +209,7 @@ function LessonNav({
                 }`}
               >
                 <span className="text-xs shrink-0">
-                  {isComplete ? '✓' : step.type === 'read' ? '📖' : step.type === 'challenge' ? '⚡' : '💻'}
+                  {isComplete ? '✓' : stepIcon(step.type)}
                 </span>
                 <span className="truncate text-xs" title={extractStepTitle(step)}>
                   {extractStepTitle(step)}
@@ -223,13 +223,22 @@ function LessonNav({
   )
 }
 
-// Pull the first H1 out of the step instruction so the sidebar shows the
-// actual lesson name ("Write a greet function") instead of "Step 2".
-// Falls back to the step ordinal if no heading is present.
+function stepIcon(type: StepDTO['type']): string {
+  switch (type) {
+    case 'read': return '📖'
+    case 'challenge': return '⚡'
+    case 'exercise': return '📝'
+    case 'code': return '💻'
+  }
+}
+
+// Prefer the explicit step.title field (Sprint 018 schema). Fall back to
+// pulling the first H1 from the instruction body for legacy steps that
+// haven't been backfilled, and finally the step ordinal.
 function extractStepTitle(step: StepDTO): string {
+  if (step.title && step.title.trim()) return step.title.trim()
   const match = step.instruction.match(/^#\s+(.+)$/m)
   if (match && match[1]) {
-    // Strip common prefixes like "Exercise:" or "Challenge:" for density.
     return match[1].replace(/^(exercise|challenge|read):\s*/i, '').trim()
   }
   if (step.type === 'read') return 'Read'
