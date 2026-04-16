@@ -11,6 +11,7 @@ import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
+import { renderSlots, type SlotHeading } from '../lib/slots'
 
 // ── Main component ──────────────────────────────────────────────
 
@@ -721,7 +722,7 @@ function stripLeadingH1(md: string): string {
 
 // ── Simple markdown renderer ────────────────────────────────────
 
-function MarkdownContent({ content }: { content: string }) {
+function PlainMarkdown({ content }: { content: string }) {
   const html = content
     .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-bg/50 rounded p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-secondary">$2</code></pre>')
     .replace(/`([^`]+)`/g, '<code class="bg-bg/50 px-1.5 py-0.5 rounded text-accent text-xs font-mono">$1</code>')
@@ -738,4 +739,43 @@ function MarkdownContent({ content }: { content: string }) {
       dangerouslySetInnerHTML={{ __html: `<p class="text-sm text-muted mb-3">${html}</p>` }}
     />
   )
+}
+
+const SLOT_STYLES: Record<SlotHeading, string> = {
+  'Why this matters': 'border-accent/40 bg-accent/5',
+  'Your task': 'border-border bg-surface',
+  'Examples': 'border-muted/40 bg-muted/5',
+  'Edge cases': 'border-warning/40 bg-warning/5',
+}
+
+const SLOT_LABEL_COLORS: Record<SlotHeading, string> = {
+  'Why this matters': 'text-accent',
+  'Your task': 'text-muted',
+  'Examples': 'text-muted',
+  'Edge cases': 'text-warning',
+}
+
+function SlotCard({ slot, body }: { slot: SlotHeading; body: string }) {
+  return (
+    <section className={`p-3 border rounded-sm ${SLOT_STYLES[slot]}`}>
+      <p className={`text-xs font-mono uppercase tracking-widest mb-2 ${SLOT_LABEL_COLORS[slot]}`}>
+        {slot}
+      </p>
+      {body && <PlainMarkdown content={body} />}
+    </section>
+  )
+}
+
+function MarkdownContent({ content }: { content: string }) {
+  const slots = renderSlots(content)
+  if (slots) {
+    return (
+      <div className="space-y-3">
+        {slots.map((s) => (
+          <SlotCard key={s.slot} slot={s.slot} body={s.body} />
+        ))}
+      </div>
+    )
+  }
+  return <PlainMarkdown content={content} />
 }
