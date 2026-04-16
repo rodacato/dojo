@@ -1,4 +1,5 @@
 import type { CourseStatus, StepType } from './values'
+import type { ExternalReference } from '@dojo/shared'
 
 // Minimal types for the Course aggregate
 export interface Step {
@@ -11,6 +12,7 @@ export interface Step {
   testCode: string | null
   hint: string | null
   solution: string | null
+  alternativeApproach: string | null
 }
 
 export interface Lesson {
@@ -29,5 +31,6 @@ export interface Course {
   accentColor: string
   status: CourseStatus
   isPublic: boolean
+  externalReferences: ExternalReference[]
   lessons: Lesson[]
 }

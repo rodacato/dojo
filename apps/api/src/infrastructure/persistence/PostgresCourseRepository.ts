@@ -1,6 +1,7 @@
 import { and, eq } from 'drizzle-orm'
 import type { Course, Lesson, Step } from '../../domain/learning/course'
 import type { CourseStatus, StepType } from '../../domain/learning/values'
+import type { ExternalReference } from '@dojo/shared'
 import type { CourseRepositoryPort } from '../../domain/learning/ports'
 import type { DB } from './drizzle/client'
 import { courses } from './drizzle/schema'
@@ -18,6 +19,7 @@ type StepRow = {
   testCode: string | null
   hint: string | null
   solution: string | null
+  alternativeApproach: string | null
 }
 
 type CourseWithRelations = CourseRow & {
@@ -91,6 +93,7 @@ export class PostgresCourseRepository implements CourseRepositoryPort {
       accentColor: row.accentColor,
       status: row.status as CourseStatus,
       isPublic: row.isPublic,
+      externalReferences: (row.externalReferences ?? []) as ExternalReference[],
       lessons: row.lessons
         .sort((a, b) => a.order - b.order)
         .map((l) => this.toLesson(l)),
@@ -119,6 +122,7 @@ export class PostgresCourseRepository implements CourseRepositoryPort {
       testCode: row.testCode,
       hint: row.hint,
       solution: row.solution,
+      alternativeApproach: row.alternativeApproach,
     }
   }
 }

@@ -57,6 +57,7 @@ learnRoutes.get('/learn/courses/:slug', optionalAuth, async (c) => {
       accentColor: course.accentColor,
       status: course.status,
       isPublic: course.isPublic,
+      externalReferences: course.externalReferences,
       lessonCount,
       stepCount,
       lessons: course.lessons.map((l) => ({
@@ -222,5 +223,8 @@ learnRoutes.get('/learn/courses/:slug/steps/:stepId/solution', optionalAuth, asy
   }
 
   const row = await db.query.steps.findFirst({ where: eq(stepsTable.id, stepId) })
-  return c.json({ solution: row?.solution ?? null })
+  return c.json({
+    solution: row?.solution ?? null,
+    alternativeApproach: row?.alternativeApproach ?? null,
+  })
 })

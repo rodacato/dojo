@@ -12,6 +12,7 @@ const makeCourse = (): Course => ({
   accentColor: '#3178C6',
   status: 'published',
   isPublic: false,
+  externalReferences: [],
   lessons: [],
 })
 

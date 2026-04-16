@@ -9,7 +9,7 @@ import {
 } from '../lib/anonymousId'
 import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
-import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse } from '@dojo/shared'
+import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, ExternalReference, ExternalReferenceKind } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
 import { renderSlots, type SlotHeading } from '../lib/slots'
 
@@ -132,6 +132,7 @@ export function CoursePlayerPage() {
               onSelectStep={setActiveStepId}
             />
           ))}
+          <FurtherReading refs={course.externalReferences} />
         </nav>
       </aside>
 
@@ -315,6 +316,7 @@ function StepEditor({
   // Server returns 403 until then, so there's no risk of leaking it early
   // even if a curious learner inspects the network panel.
   const [solutionCode, setSolutionCode] = useState<string | null>(null)
+  const [alternativeApproach, setAlternativeApproach] = useState<string | null>(null)
   const [solutionError, setSolutionError] = useState<string | null>(null)
 
   const isIframeLang = language === 'javascript-dom'
@@ -328,6 +330,7 @@ function StepEditor({
     setShowHint(false)
     setTab('tests')
     setSolutionCode(null)
+    setAlternativeApproach(null)
     setSolutionError(null)
   }, [step.id, step.starterCode])
 
@@ -341,7 +344,10 @@ function StepEditor({
     const anonId = !isIframeLang ? getAnonymousId() ?? undefined : undefined
     api
       .getStepSolution(courseSlug, step.id, anonId)
-      .then((r) => setSolutionCode(r.solution ?? ''))
+      .then((r) => {
+        setSolutionCode(r.solution ?? '')
+        setAlternativeApproach(r.alternativeApproach ?? null)
+      })
       .catch((e) => {
         setSolutionError(e instanceof Error ? e.message : 'Could not load solution')
       })
@@ -441,6 +447,7 @@ function StepEditor({
           onTabChange={setTab}
           isCompleted={isCompleted}
           solutionCode={solutionCode}
+          alternativeApproach={alternativeApproach}
           solutionError={solutionError}
           editorLanguage={editorLanguage}
         />
@@ -484,6 +491,7 @@ function OutputPanel({
   onTabChange,
   isCompleted,
   solutionCode,
+  alternativeApproach,
   solutionError,
   editorLanguage,
 }: {
@@ -492,6 +500,7 @@ function OutputPanel({
   onTabChange: (t: OutputTab) => void
   isCompleted: boolean
   solutionCode: string | null
+  alternativeApproach: string | null
   solutionError: string | null
   editorLanguage: string
 }) {
@@ -524,6 +533,7 @@ function OutputPanel({
           <SolutionTab
             isCompleted={isCompleted}
             solutionCode={solutionCode}
+            alternativeApproach={alternativeApproach}
             solutionError={solutionError}
             language={editorLanguage}
           />
@@ -544,11 +554,13 @@ function OutputPanel({
 function SolutionTab({
   isCompleted,
   solutionCode,
+  alternativeApproach,
   solutionError,
   language,
 }: {
   isCompleted: boolean
   solutionCode: string | null
+  alternativeApproach: string | null
   solutionError: string | null
   language: string
 }) {
@@ -577,13 +589,25 @@ function SolutionTab({
     )
   }
   return (
-    <div className="space-y-2">
-      <p className="text-xs font-mono text-muted">
-        One way to write this. Yours might be different — both can be right.
-      </p>
-      <pre className="text-xs font-mono text-secondary whitespace-pre overflow-x-auto bg-bg/40 rounded p-3 border border-border/30">
-        <code className={`language-${language}`}>{solutionCode}</code>
-      </pre>
+    <div className="space-y-4">
+      <section>
+        <p className="text-xs font-mono text-muted mb-2">
+          One way to write this. Yours might be different — both can be right.
+        </p>
+        <pre className="text-xs font-mono text-secondary whitespace-pre overflow-x-auto bg-bg/40 rounded p-3 border border-border/30">
+          <code className={`language-${language}`}>{solutionCode}</code>
+        </pre>
+      </section>
+      {alternativeApproach && (
+        <details className="border-t border-border/30 pt-3">
+          <summary className="cursor-pointer text-xs font-mono text-muted hover:text-secondary transition-colors">
+            Alternative approach
+          </summary>
+          <div className="mt-2">
+            <PlainMarkdown content={alternativeApproach} />
+          </div>
+        </details>
+      )}
     </div>
   )
 }
@@ -712,6 +736,49 @@ function ErrorCard({
         </pre>
       )}
     </div>
+  )
+}
+
+// ── Further reading ────────────────────────────────────────────
+
+const KIND_ICON: Record<ExternalReferenceKind, string> = {
+  book: '📘',
+  docs: '📄',
+  talk: '🎤',
+  article: '📝',
+}
+
+function FurtherReading({ refs }: { refs: ExternalReference[] }) {
+  const [open, setOpen] = useState(false)
+  if (refs.length === 0) return null
+
+  return (
+    <section className="mt-4 mx-4 border-t border-border/20 pt-3">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full text-left text-xs font-mono text-muted uppercase tracking-wider hover:text-secondary transition-colors flex items-center gap-1"
+      >
+        <span className="text-[10px]">{open ? '▼' : '▶'}</span>
+        Further reading
+      </button>
+      {open && (
+        <ul className="mt-2 space-y-1.5 text-xs">
+          {refs.map((r) => (
+            <li key={r.url} className="flex items-start gap-1.5">
+              <span className="shrink-0">{KIND_ICON[r.kind]}</span>
+              <a
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:underline wrap-break-word"
+              >
+                {r.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   )
 }
 

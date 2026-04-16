@@ -84,6 +84,13 @@ export interface FeedbackDTO {
 
 export type StepType = 'read' | 'code' | 'exercise' | 'challenge'
 export type CourseStatus = 'draft' | 'published'
+export type ExternalReferenceKind = 'book' | 'docs' | 'talk' | 'article'
+
+export interface ExternalReference {
+  title: string
+  url: string
+  kind: ExternalReferenceKind
+}
 
 export interface StepDTO {
   id: string
@@ -120,6 +127,12 @@ export interface CourseDTO {
   isPublic: boolean
   lessonCount: number
   stepCount: number
+  externalReferences: ExternalReference[]
+}
+
+export interface StepSolutionDTO {
+  solution: string | null
+  alternativeApproach: string | null
 }
 
 export interface CourseDetailDTO extends CourseDTO {

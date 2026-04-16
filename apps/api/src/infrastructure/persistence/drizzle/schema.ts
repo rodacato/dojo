@@ -198,6 +198,7 @@ export const courses = pgTable('courses', {
   accentColor: varchar('accent_color', { length: 20 }).notNull().default('#6366F1'),
   status: varchar('status', { length: 50 }).notNull().default('draft'),
   isPublic: boolean('is_public').notNull().default(false),
+  externalReferences: jsonb('external_references').notNull().default([]),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
@@ -219,6 +220,7 @@ export const steps = pgTable('steps', {
   testCode: text('test_code'),
   hint: text('hint'),
   solution: text('solution'),
+  alternativeApproach: text('alternative_approach'),
 })
 
 export const courseProgress = pgTable('course_progress', {

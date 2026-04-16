@@ -1,5 +1,6 @@
 import type { CourseRepositoryPort } from '../../domain/learning/ports'
 import type { CourseStatus } from '../../domain/learning/values'
+import type { ExternalReference } from '@dojo/shared'
 
 export interface CourseSummary {
   id: string
@@ -12,6 +13,7 @@ export interface CourseSummary {
   isPublic: boolean
   lessonCount: number
   stepCount: number
+  externalReferences: ExternalReference[]
 }
 
 interface Deps {
@@ -36,6 +38,7 @@ export class GetCourseList {
       isPublic: c.isPublic,
       lessonCount: c.lessons.length,
       stepCount: c.lessons.reduce((sum, l) => sum + l.steps.length, 0),
+      externalReferences: c.externalReferences,
     }))
   }
 }

@@ -126,6 +126,14 @@ export const lessonDTOSchema = z.object({
   steps: z.array(stepDTOSchema),
 })
 
+export const externalReferenceKindSchema = z.enum(['book', 'docs', 'talk', 'article'])
+
+export const externalReferenceSchema = z.object({
+  title: z.string().min(1).max(200),
+  url: z.string().url(),
+  kind: externalReferenceKindSchema,
+})
+
 export const courseDTOSchema = z.object({
   id: z.string().uuid(),
   slug: z.string(),
@@ -136,6 +144,12 @@ export const courseDTOSchema = z.object({
   status: courseStatusSchema,
   lessonCount: z.number().int(),
   stepCount: z.number().int(),
+  externalReferences: z.array(externalReferenceSchema),
+})
+
+export const stepSolutionDTOSchema = z.object({
+  solution: z.string().nullable(),
+  alternativeApproach: z.string().nullable(),
 })
 
 export const courseDetailDTOSchema = courseDTOSchema.extend({

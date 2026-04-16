@@ -66,6 +66,11 @@ export const COURSE_DATA = {
   language: 'typescript',
   accentColor: '#3178C6',
   status: 'published' as const,
+  externalReferences: [
+    { title: 'TypeScript Handbook', url: 'https://www.typescriptlang.org/docs/handbook/intro.html', kind: 'docs' as const },
+    { title: 'Effective TypeScript (Dan Vanderkam)', url: 'https://effectivetypescript.com/', kind: 'book' as const },
+    { title: 'Total TypeScript Tips (Matt Pocock)', url: 'https://www.totaltypescript.com/tips', kind: 'article' as const },
+  ],
 }
 
 const LESSONS_DATA = [
@@ -585,6 +590,11 @@ export const DOM_COURSE_DATA = {
   language: 'javascript-dom',
   accentColor: '#F7DF1E',
   status: 'published' as const,
+  externalReferences: [
+    { title: 'MDN: Introduction to the DOM', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction', kind: 'docs' as const },
+    { title: 'MDN: Event delegation', url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation', kind: 'docs' as const },
+    { title: "You Don't Know JS Yet: Objects & Classes", url: 'https://github.com/getify/You-Dont-Know-JS/blob/2nd-ed/objects-classes/README.md', kind: 'book' as const },
+  ],
 }
 
 const DOM_LESSONS_DATA = [
@@ -987,6 +997,7 @@ type CourseSeed = {
   accentColor: string
   status: 'draft' | 'published'
   isPublic?: boolean
+  externalReferences?: Array<{ title: string; url: string; kind: 'book' | 'docs' | 'talk' | 'article' }>
 }
 
 type LessonSeed = { id: string; courseId: string; order: number; title: string }
@@ -1003,6 +1014,7 @@ type StepSeed = {
   testCode: string | null
   hint: string | null
   solution?: string | null
+  alternativeApproach?: string | null
 }
 
 type CourseConfig = {
@@ -1027,6 +1039,7 @@ async function seedOneCourse(
         accentColor: courseData.accentColor,
         status: courseData.status,
         isPublic: courseData.isPublic ?? false,
+        externalReferences: courseData.externalReferences ?? [],
       },
     })
   console.log(`  ✓ Course: ${courseData.title}`)
@@ -1054,6 +1067,7 @@ async function seedOneCourse(
         ...step,
         title: step.title ?? null,
         solution: step.solution ?? null,
+        alternativeApproach: step.alternativeApproach ?? null,
       })
       .onConflictDoUpdate({
         target: steps.id,
@@ -1066,6 +1080,7 @@ async function seedOneCourse(
           testCode: step.testCode,
           hint: step.hint,
           solution: step.solution ?? null,
+          alternativeApproach: step.alternativeApproach ?? null,
         },
       })
   }

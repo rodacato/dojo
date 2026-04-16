@@ -4,6 +4,7 @@ import type {
   ExecuteStepRequest,
   ExecuteStepResponse,
   CourseProgressDTO,
+  StepSolutionDTO,
 } from '@dojo/shared'
 import { request } from './client'
 
@@ -55,7 +56,7 @@ export const learn = {
     const query = anonymousSessionId
       ? `?anonymousSessionId=${encodeURIComponent(anonymousSessionId)}`
       : ''
-    return request<{ solution: string | null }>(
+    return request<StepSolutionDTO>(
       `/learn/courses/${slug}/steps/${stepId}/solution${query}`,
       { redirectOnAuth: false },
     )

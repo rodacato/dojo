@@ -53,6 +53,11 @@ export const SQL_DEEP_CUTS_COURSE = {
   accentColor: '#336791',
   status: 'published' as const,
   isPublic: true,
+  externalReferences: [
+    { title: 'Use The Index, Luke!', url: 'https://use-the-index-luke.com/', kind: 'docs' as const },
+    { title: 'SQLite: Window Functions', url: 'https://www.sqlite.org/windowfunctions.html', kind: 'docs' as const },
+    { title: 'Learn SQL the Hard Way (Zed Shaw)', url: 'https://learncodethehardway.org/sql/', kind: 'book' as const },
+  ],
 }
 
 export const SQL_DEEP_CUTS_LESSONS = [

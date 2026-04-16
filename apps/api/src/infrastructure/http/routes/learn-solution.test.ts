@@ -53,7 +53,7 @@ vi.mock('../../persistence/drizzle/client', () => ({
   db: {
     query: {
       steps: {
-        findFirst: vi.fn(async () => ({ solution: 'SELECT 1 AS dept_rank' })),
+        findFirst: vi.fn(async () => ({ solution: 'SELECT 1 AS dept_rank', alternativeApproach: 'Use a CTE instead' })),
       },
     },
   },
@@ -85,13 +85,14 @@ describe('GET /learn/courses/:slug/steps/:stepId/solution', () => {
     expect(body.error).toMatch(/after passing/i)
   })
 
-  it('returns 200 + solution once the step is completed', async () => {
+  it('returns 200 + solution + alternativeApproach once the step is completed', async () => {
     state.userId = 'user-1'
     state.completedSteps = ['step-included']
     const res = await get('step-included')
     expect(res.status).toBe(200)
-    const body = (await res.json()) as { solution: string | null }
+    const body = (await res.json()) as { solution: string | null; alternativeApproach: string | null }
     expect(body.solution).toBe('SELECT 1 AS dept_rank')
+    expect(body.alternativeApproach).toBe('Use a CTE instead')
   })
 
   it('serves an anonymous learner on a public course who passed the step', async () => {
