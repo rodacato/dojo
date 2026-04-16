@@ -3,12 +3,11 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "workspace",
   "workspaceFolder": "/workspaces/dojo",
-  "runServices": [
-    "workspace",
-    "db",
-    "piston"
-  ],
+  "runServices": ["workspace", "db", "piston"],
   "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+    "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22"
     },
@@ -19,11 +18,7 @@
   },
   "remoteUser": "vscode",
   "updateRemoteUserUID": true,
-  "forwardPorts": [
-    3001,
-    5173,
-    5432
-  ],
+  "forwardPorts": [3001, 5173, 5432],
   "postCreateCommand": "bash .devcontainer/post-install.sh",
   "customizations": {
     "vscode": {
