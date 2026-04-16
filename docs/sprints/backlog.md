@@ -24,19 +24,26 @@ _Confirmed for the next work block. Moved here after triage._
 
 _Good ideas, not urgent. Not in the next block._
 
-### Sprint 018 candidates
+### Sprint 019 candidates
 
-Deferred desde Sprint 017 (scope-trimmed por panel):
+Deferred desde Sprint 018 (scope-trimmed por panel curricular):
+
+- **Retrieval interleaving** — Lesson N tests usan identifiers introducidos en Lesson N-1. Aplica §3 del framework de cursos (Dr. Elif Yıldız)
+- **External references por sub-course** — §8 del framework lo exige; hoy 0/3 cursos tienen libros, docs o links que el contenido cita (Dr. Emeka)
+- **Diff visual** entre la solución del learner y la `step.solution` reference. Sprint 018 muestra solo la reference; el diff es polish posterior (Soren)
+- **"After solving: alternative approaches"** — collapsible note después de pass mostrando un segundo approach idiomático. Content-only addition (Soren — deferido desde Sprint 015 / 017 / 018)
+
+Deferred desde Sprint 017 (siguen vigentes):
 
 - **Share card de completación de curso** — al terminar un curso, share card con "Completé [curso] en dojo_" + badge. Clave para el acquisition funnel (Amara)
-- **"After solving: approaches" in course player** — collapsible note after step completion showing alternative approaches. Content-only addition to Step schema (Soren — deferido desde Sprint 015 y Sprint 017)
 - **Badge específico por curso completado** — Recognition context ya existe, falta su iteración (panel)
 - **Migrar TS Fundamentals + JS DOM a público** — solo si SQL Deep Cuts valida el modelo público (Priya)
 
 Del backlog original:
 
-- **Python course** — "Python for the Practiced". Tier 2 en market research. Defer hasta después de SQL Deep Cuts validado (Dr. Emeka)
+- **Python course** — "Python for the Practiced". Tier 2 en market research. Defer hasta cerrar la pasada de calidad de Sprint 018 (Dr. Emeka)
 - **"Code Review" kata format** — diff de PR con bugs intencionales, usuario identifica problemas, sensei evalúa completitud y calidad del review. Diferenciador único, ningún competidor lo tiene. PRD propio antes de sprint (Priya, Marcus)
+- **"Ask the sensei" en course player** — Phase 2 del CODE_SCHOOL_PLAN. LLM como nudge contextual on-demand. Espera a que los hints estáticos estén buenos primero (Yemi)
 
 ### Phase 2 — The Scoreboard
 

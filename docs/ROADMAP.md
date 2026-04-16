@@ -62,6 +62,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-015 — iframe Sandbox + JS DOM Course](sprints/archive/sprint-015-iframe-dom-course.md) | iframe runner para ejercicios frontend, segundo curso JavaScript DOM Fundamentals, carry-forwards | ✅ Closed |
 | [sprint-016 — Surprise me + Fix-the-bug + SQL Advanced](sprints/archive/sprint-016-surprise-fix-sql.md) | Surprise me button, 5 fix-the-bug kata, 5 SQL advanced kata, SQL Deep Cuts course draft | ✅ Closed |
 | [sprint-017 — SQL Deep Cuts + Public Courses + Debugging Sensei](sprints/archive/sprint-017-sql-deep-cuts.md) | SQL Deep Cuts course en vivo (público), progreso anónimo + merge al loguearse, SQL katas reescritos a SQLite, sensei prompt con contexto `debugging` | ✅ Closed |
+| sprint-018 — Course content quality v1 | Step type `exercise` reintroducido, `step.title` + `step.solution` en schema, reclasificación de los 27 steps, audits por curso (TS / JS DOM / SQL), solution reveal post-pass, CI gate de solutions | 🔄 Active |
 
 ---
 
@@ -88,6 +89,7 @@ Does not start until Phase 0 is in real daily use.
 | 021 | [Sprint 015: iframe sandbox + JS DOM course](specs/021-sprint-015-iframe-dom-course.md) | IframeSandboxRunner, StepEditor routing, seed JS DOM course | sprint-015 |
 | 022 | [Sprint 016: Surprise me + Fix-the-bug + SQL Advanced](specs/022-sprint-016.md) | Surprise me button, fix-the-bug kata, SQL advanced kata, SQL Deep Cuts draft | sprint-016 |
 | 023 | [Sprint 017: SQL Deep Cuts + public courses](specs/023-sprint-017-sql-deep-cuts.md) | Wire-up SQL Deep Cuts, cursos públicos + anonymous progress, step type `read`, sensei debugging prompt | sprint-017 |
+| 024 | [Sprint 018: Course content quality v1](specs/024-sprint-018-course-content-quality.md) | Step type `exercise`, `step.title` + `step.solution`, reclassify 27 steps, per-course audits, solution reveal + CI gate | sprint-018 |
 | 016 | [Production deploy](specs/016-production-deploy.md) | VPS + Cloudflare Tunnel + GitHub Actions CI/CD | sprint-003 |
 | 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
 | 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
@@ -130,6 +132,7 @@ Does not start until Phase 0 is in real daily use.
 | 019 | [Sprint 014 Courses MVP](prd/019-sprint-014-courses-mvp.md) | Courses MVP scope — one course, full vertical slice | ✅ Advancing to spec |
 | 020 | [Sprint 016 planning](prd/020-sprint-016-planning.md) | Surprise me + Fix-the-bug + SQL Advanced + SQL Deep Cuts outline | ✅ Advancing to spec |
 | 021 | [Sprint 017 planning](prd/021-sprint-017-planning.md) | SQL Deep Cuts + cursos públicos + step type `read` + debugging sensei | ✅ Advancing to spec |
+| 022 | [Sprint 018 planning](prd/022-sprint-018-planning.md) | Course content quality — schema fix, reclassify, audits, solution reveal | ✅ Advancing to spec |
 
 ---
 
