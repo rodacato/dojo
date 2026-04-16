@@ -52,11 +52,13 @@ const STEP_3_1_ID = seedUuid('ts-step-3-1-control-intro')
 const STEP_3_2_ID = seedUuid('ts-step-3-2-fizzbuzz')
 const STEP_3_3_ID = seedUuid('ts-step-3-3-palindrome')
 // Sprint 018: every sub-course needs at least one challenge per §4.3 of
-// docs/courses/README.md. Palindrome is bumped to challenge and a real
-// async-flavored challenge is added for L3.4.
-const STEP_3_4_ID = seedUuid('ts-step-3-4-debounce')
+// docs/courses/README.md. Palindrome is bumped to challenge and a second
+// synchronous stretch (memoize) is added as L3.4. Originally drafted as
+// debounce but the Piston TS runtime defaults to ES5 without Promise so
+// async challenges hit the runtime, not the learner.
+const STEP_3_4_ID = seedUuid('ts-step-3-4-memoize')
 
-const COURSE_DATA = {
+export const COURSE_DATA = {
   id: COURSE_ID,
   slug: 'typescript-fundamentals',
   title: 'TypeScript Fundamentals',
@@ -113,7 +115,7 @@ const _ok = _tests.every(r => r.passed)
 console.log('__DOJO_RESULT__ ' + JSON.stringify({ ok: _ok, tests: _tests }))
 `
 
-const STEPS_DATA = [
+export const STEPS_DATA = [
   // ── Lesson 1: Variables & Types ─────────────────────────────────
   {
     id: STEP_1_1_ID,
@@ -299,7 +301,11 @@ test('sums positive numbers', () => { expect(sum([1, 2, 3])).toBe(6) })
 test('returns 0 for empty array', () => { expect(sum([])).toBe(0) })
 test('handles single element', () => { expect(sum([42])).toBe(42) })
 test('handles negative numbers', () => { expect(sum([-1, 1, -2, 2])).toBe(0) })
-test('handles large arrays', () => { expect(sum(Array.from({ length: 100 }, (_, i) => i + 1))).toBe(5050) })
+test('handles large arrays', () => {
+  const arr: number[] = []
+  for (let i = 1; i <= 100; i++) arr.push(i)
+  expect(sum(arr)).toBe(5050)
+})
 ${TS_HARNESS_FOOTER}`,
     hint: 'Use `.reduce((acc, n) => acc + n, 0)` or a simple for loop.',
     solution: `function sum(numbers: number[]): number {
@@ -458,74 +464,58 @@ ${TS_HARNESS_FOOTER}`,
     lessonId: LESSON_3_ID,
     order: 4,
     type: 'challenge' as const,
-    title: 'Implement debounce',
-    instruction: `Write \`debounce(fn, waitMs)\` that returns a function which delays calling \`fn\` until \`waitMs\` milliseconds have passed since the **last** invocation.
-
-If the returned function is called again before the timer fires, the previous timer is cancelled and a new one starts. Only the last call within a quiet window actually invokes \`fn\`.
+    title: 'Implement memoize',
+    instruction: `Write \`memoize(fn)\` that returns a function with the **same shape** as \`fn\`, but caches results. Calling the returned function with the same argument again should return the cached value instead of invoking \`fn\` a second time.
 
 **Behavior to verify:**
-- Calls within the wait window collapse into a single trailing call
-- That trailing call uses the **last** arguments
-- After the trailing call fires, the next call starts a fresh timer
+- Same input ⇒ same output, exactly as the underlying \`fn\` would return
+- The underlying \`fn\` is only called once per distinct input
+- Different inputs are cached independently
 
-Use \`setTimeout\` and \`clearTimeout\`. No external libraries.`,
-    starterCode: `function debounce<A extends unknown[]>(
-  fn: (...args: A) => void,
-  waitMs: number,
-): (...args: A) => void {
+For this exercise, treat \`fn\` as a unary function whose argument is JSON-serialisable (use \`JSON.stringify\` to build the cache key).`,
+    starterCode: `function memoize<A, R>(fn: (arg: A) => R): (arg: A) => R {
   // Your code here
 }`,
     testCode: `${TS_HARNESS_HEADER}
-function nextTick(ms: number) {
-  return new Promise<void>(resolve => setTimeout(resolve, ms))
+let calls = 0
+function slowSquare(n: number): number {
+  calls++
+  return n * n
 }
 
-async function run() {
-  let count = 0
-  let lastArg: number | null = null
-  const debounced = debounce((n: number) => { count++; lastArg = n }, 30)
+const fast = memoize(slowSquare)
 
-  // 3 quick calls — should collapse into 1
-  debounced(1); debounced(2); debounced(3)
-  await nextTick(10)
-  test('does not fire before wait elapses', () => {
-    expect(count).toBe(0)
-  })
-
-  await nextTick(40)
-  test('fires once after the wait', () => {
-    expect(count).toBe(1)
-  })
-  test('uses the last arguments', () => {
-    expect(lastArg).toBe(3)
-  })
-
-  // Reset timer behavior
-  debounced(10)
-  await nextTick(15)
-  debounced(20)
-  await nextTick(15)
-  test('reset timer: still 1 invocation 30ms after first call', () => {
-    expect(count).toBe(1)
-  })
-  await nextTick(25)
-  test('fires after the second quiet window', () => {
-    expect(count).toBe(2)
-    expect(lastArg).toBe(20)
-  })
-}
-
-await run()
+test('same input returns the same value', () => {
+  expect(fast(4)).toBe(16)
+  expect(fast(4)).toBe(16)
+})
+test('underlying fn is called only once per distinct input', () => {
+  calls = 0
+  const m = memoize(slowSquare)
+  m(7); m(7); m(7)
+  expect(calls).toBe(1)
+})
+test('different inputs are cached independently', () => {
+  calls = 0
+  const m = memoize(slowSquare)
+  m(2); m(3); m(2); m(3)
+  expect(calls).toBe(2)
+})
+test('works with object arguments via JSON key', () => {
+  const m = memoize((p: { a: number; b: number }) => p.a + p.b)
+  expect(m({ a: 1, b: 2 })).toBe(3)
+  expect(m({ a: 1, b: 2 })).toBe(3)
+})
 ${TS_HARNESS_FOOTER}`,
-    hint: 'Each invocation should clear the previous pending timer (if any) and schedule a new one with `setTimeout`.',
-    solution: `function debounce<A extends unknown[]>(
-  fn: (...args: A) => void,
-  waitMs: number,
-): (...args: A) => void {
-  let timer: ReturnType<typeof setTimeout> | null = null
-  return (...args: A) => {
-    if (timer) clearTimeout(timer)
-    timer = setTimeout(() => { fn(...args) }, waitMs)
+    hint: 'Hold a plain object keyed by the stringified argument. On call: if the key is missing, run `fn` and store the result. Always return the stored value.',
+    solution: `function memoize<A, R>(fn: (arg: A) => R): (arg: A) => R {
+  const cache: Record<string, R> = {}
+  return (arg: A): R => {
+    const key = JSON.stringify(arg)
+    if (!(key in cache)) {
+      cache[key] = fn(arg)
+    }
+    return cache[key]
   }
 }`,
   },
@@ -587,7 +577,7 @@ const DOM_RUNNER_END = `const _log = _tests.map(t => t.passed ? '\u2713 ' + t.na
 const _failed = _tests.some(t => !t.passed)
 window.parent.postMessage({ type: 'test-results', log: _log, failed: _failed, tests: _tests }, '*')`
 
-const DOM_COURSE_DATA = {
+export const DOM_COURSE_DATA = {
   id: DOM_COURSE_ID,
   slug: 'javascript-dom-fundamentals',
   title: 'JavaScript DOM Fundamentals',
@@ -603,7 +593,7 @@ const DOM_LESSONS_DATA = [
   { id: DOM_LESSON_3_ID, courseId: DOM_COURSE_ID, order: 3, title: 'Events' },
 ]
 
-const DOM_STEPS_DATA = [
+export const DOM_STEPS_DATA = [
   // ── Lesson 1: Selecting Elements ────────────────────────────────
   {
     id: DOM_STEP_1_1_ID,
