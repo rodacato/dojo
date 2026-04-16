@@ -62,7 +62,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-015 — iframe Sandbox + JS DOM Course](sprints/archive/sprint-015-iframe-dom-course.md) | iframe runner para ejercicios frontend, segundo curso JavaScript DOM Fundamentals, carry-forwards | ✅ Closed |
 | [sprint-016 — Surprise me + Fix-the-bug + SQL Advanced](sprints/archive/sprint-016-surprise-fix-sql.md) | Surprise me button, 5 fix-the-bug kata, 5 SQL advanced kata, SQL Deep Cuts course draft | ✅ Closed |
 | [sprint-017 — SQL Deep Cuts + Public Courses + Debugging Sensei](sprints/archive/sprint-017-sql-deep-cuts.md) | SQL Deep Cuts course en vivo (público), progreso anónimo + merge al loguearse, SQL katas reescritos a SQLite, sensei prompt con contexto `debugging` | ✅ Closed |
-| sprint-018 — Course content quality v1 | Step type `exercise` reintroducido, `step.title` + `step.solution` en schema, reclasificación de los 27 steps, audits por curso (TS / JS DOM / SQL), solution reveal post-pass, CI gate de solutions | 🔄 Active |
+| [sprint-018 — Course content quality v1](sprints/archive/sprint-018-course-content-quality.md) | Step type `exercise` reintroducido, `step.title` + `step.solution` en schema, reclasificación de los 29 steps, audits por curso (TS / JS DOM / SQL), solution reveal post-pass, validate:courses CI gate | ✅ Closed |
 
 ---
 

@@ -4,6 +4,21 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 018 — Course content quality v1 (2026-04-16)
+**Phase 1 — Alpha**
+
+The sprint where the curriculum framework written in `docs/courses/README.md` finally became executable in the schema and in the catalog.
+
+- **Step type `exercise` reintroduced** (migration 0014) — Sprint 017 collapsed everything that wasn't `read` into `challenge`. The framework distinguishes warmup (`exercise`, ~80% pass on first try) from stretch (`challenge`, ~40%) for a reason. `StepType` is now `'read' | 'code' | 'exercise' | 'challenge'`, the column default flipped to `exercise`, and the sidebar gives each type a distinct icon (📖 read, 📝 exercise, ⚡ challenge).
+- **`step.title` and `step.solution` columns** — Title was being extracted from the H1 of the instruction markdown by regex; now it's a real top-level field. Solution is the reference implementation, intentionally absent from `/learn/courses/:slug` so it can never leak before pass.
+- **27 step rows backfilled and reclassified** — Every step now has an explicit `title` (the H1 was stripped from the body so it isn't rendered twice). 19 non-read steps got a hand-written reference `solution`. Most former `challenge` rows were downgraded to `exercise`; only the genuine stretch ones kept the marker.
+- **Per-course audits:** TS Fundamentals gained a new "Template literals" read step in L1 (the existing greet exercise used `${}` syntax that hadn't been taught yet) and a new "Implement memoize" challenge in L3 (so the sub-course finally satisfies the framework's "every sub-course needs ≥1 challenge" rule). JS DOM L1.1 now mentions `getElementById` alongside `querySelector` with the trade-off, and the L3.3 delegation challenge hint was reworded to point at the DOM-tree concept instead of giving away `closest('li')`. SQL Deep Cuts L2.2 had its starter input shortened from 12 → 8 lines to reduce cognitive load.
+- **Solution reveal panel** — `GET /learn/courses/:slug/steps/:stepId/solution` returns 403 until the caller has the step in their `completedSteps`, then 200 with the reference. New "Solution" tab in the StepEditor next to Tests/Output, locked with 🔒 until pass, lazy-fetched on first open. Body opens with "One way to write this. Yours might be different — both can be right." so it reads as comparison, not as the answer.
+- **`pnpm validate:courses` CI gate** — A standalone script walks every seeded step that has a `solution`, runs it through the same `ExecuteStep` use case the learner triggers, and asserts `passed === true`. On first run it caught two real bugs in our own seeds: the TS Sum-an-array test used `Array.from` (Piston's TS 5.0.3 default lib is ES5, no `Array.from`) and the original debounce challenge needed `Promise` + top-level `await` (also unsupported by the runtime). Sum was rewritten to a for-loop; debounce was replaced with synchronous `memoize`.
+- **Verification** — typecheck ✓, lint ✓, 106/106 API tests (+5 for the solution endpoint), 10/10 E2E. `validate:courses` reports 13/13 OK with 6 iframe steps skipped.
+
+---
+
 ## Sprint 017 — SQL Deep Cuts + Public Courses + Debugging Sensei (2026-04-15)
 **Phase 1 — Alpha**
 
