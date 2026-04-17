@@ -34,6 +34,7 @@ const LESSON_3_ID = seedUuid('sql-lesson-3-realworld')
 const STEP_1_1_ID = seedUuid('sql-step-1-1-window-intro')
 const STEP_1_2_ID = seedUuid('sql-step-1-2-rankings')
 const STEP_1_3_ID = seedUuid('sql-step-1-3-running-total')
+const STEP_1_4_ID = seedUuid('sql-step-1-4-lag-lead')
 
 const STEP_2_1_ID = seedUuid('sql-step-2-1-ctes-intro')
 const STEP_2_2_ID = seedUuid('sql-step-2-2-refactor')
@@ -232,6 +233,65 @@ INSERT INTO _ok VALUES ((SELECT CASE WHEN
   AND (SELECT COUNT(*) FROM solution)=3
   THEN 1 ELSE 0 END));`,
   hint: 'Use `SUM(monthly_sales) OVER (ORDER BY month ROWS UNBOUNDED PRECEDING)` to accumulate.',
+}
+
+const STEP_1_4 = {
+  id: STEP_1_4_ID,
+  lessonId: LESSON_1_ID,
+  order: 4,
+  type: 'exercise' as const,
+  title: 'Compare each row to the previous',
+  solution: `SELECT
+  month,
+  sales,
+  sales - LAG(sales, 1, sales) OVER (ORDER BY month) AS delta
+FROM monthly_sales
+ORDER BY month`,
+  instruction: `Some data is only meaningful compared to its neighbour. \`LAG(expr, offset, default)\` returns the value from \`offset\` rows before the current one.
+
+Given a \`monthly_sales\` table, return each month with its sales total and the **delta** vs the previous month. For the first month (no previous row), the delta should be \`0\`.
+
+**Columns to return** (in order):
+- \`month\`
+- \`sales\`
+- \`delta\` — difference vs the previous month's sales (\`0\` for the first row)
+
+Order by \`month\` ASC.`,
+  starterCode: `SELECT
+  month,
+  sales,
+  -- your LAG expression here
+FROM monthly_sales
+ORDER BY month`,
+  testCode: `CREATE TABLE monthly_sales (month DATE, sales INT);
+INSERT INTO monthly_sales VALUES
+  ('2026-01-01', 1000),
+  ('2026-02-01', 1350),
+  ('2026-03-01', 1200);
+
+-- @SOLUTION_FILE
+
+SELECT CASE WHEN (SELECT delta FROM solution WHERE month='2026-01-01')=0
+  THEN '✓ first month delta is 0'
+  ELSE '✗ first month delta should be 0, got '||COALESCE((SELECT delta FROM solution WHERE month='2026-01-01'),-999) END;
+SELECT CASE WHEN (SELECT delta FROM solution WHERE month='2026-02-01')=350
+  THEN '✓ Feb delta is 350 (1350-1000)'
+  ELSE '✗ Feb delta should be 350, got '||COALESCE((SELECT delta FROM solution WHERE month='2026-02-01'),-999) END;
+SELECT CASE WHEN (SELECT delta FROM solution WHERE month='2026-03-01')=-150
+  THEN '✓ Mar delta is -150 (1200-1350)'
+  ELSE '✗ Mar delta should be -150, got '||COALESCE((SELECT delta FROM solution WHERE month='2026-03-01'),-999) END;
+SELECT CASE WHEN (SELECT COUNT(*) FROM solution)=3
+  THEN '✓ returns all 3 rows'
+  ELSE '✗ expected 3 rows, got '||(SELECT COUNT(*) FROM solution) END;
+
+CREATE TABLE _ok (ok INT CHECK(ok=1));
+INSERT INTO _ok VALUES ((SELECT CASE WHEN
+  (SELECT delta FROM solution WHERE month='2026-01-01')=0
+  AND (SELECT delta FROM solution WHERE month='2026-02-01')=350
+  AND (SELECT delta FROM solution WHERE month='2026-03-01')=-150
+  AND (SELECT COUNT(*) FROM solution)=3
+  THEN 1 ELSE 0 END));`,
+  hint: '`LAG(sales, 1, sales)` returns the previous row\'s sales, or the current row\'s sales when there is no previous — so `sales - LAG(sales, 1, sales)` gives 0 for the first row.',
 }
 
 // ---------------------------------------------------------------------------
@@ -627,7 +687,7 @@ INSERT INTO _ok VALUES ((SELECT CASE WHEN
 }
 
 export const SQL_DEEP_CUTS_STEPS = [
-  STEP_1_1, STEP_1_2, STEP_1_3,
+  STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4,
   STEP_2_1, STEP_2_2, STEP_2_3,
   STEP_3_1, STEP_3_2, STEP_3_3,
 ]
