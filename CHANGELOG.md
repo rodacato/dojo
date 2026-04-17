@@ -4,6 +4,19 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 019 — Course content quality v2: pedagogy (2026-04-17)
+**Phase 1 — Alpha**
+
+The sprint where the courses became pedagogically complete — not just structurally correct.
+
+- **Semantic slots renderer** — `MarkdownContent` now detects `## Why this matters` / `## Your task` / `## Examples` / `## Edge cases` at the start of a step instruction and renders each as a styled card (accent, neutral, muted, warning). Falls back to plain markdown when no slots are found. Pure function `renderSlots()` with 6 unit tests. vitest added to `apps/web` for the first time.
+- **External references per course** (migration 0015, `courses.external_references` JSONB) — Framework §8 required every sub-course to cite books, docs, or talks it draws from; all 3 courses now do. SQL Deep Cuts: *Use The Index, Luke!*, SQLite Window Functions docs, *Learn SQL the Hard Way*. TS Fundamentals: TypeScript Handbook, *Effective TypeScript*, Total TypeScript Tips. JS DOM: MDN DOM intro, MDN Event delegation, *YDKJS Objects & Classes*. Rendered as a "Further reading" collapsible section at the bottom of the course sidebar.
+- **Alternative approach post-pass** (migration 0015, `steps.alternative_approach` TEXT) — The solution endpoint now returns `{ solution, alternativeApproach }`. When present, an "Alternative approach" `<details>` section appears below the reference solution in the Solution tab. Schema and UI wiring complete; editorial content for individual steps will be backfilled incrementally.
+- **SQL L1.4 — "Compare each row to the previous"** — New exercise introducing `LAG(expr, offset, default)` with a month-over-month sales delta. SQL Deep Cuts goes from 9 → 10 steps. `validate:courses` 14/14 green.
+- **Verification** — typecheck ✓, lint ✓, 106/106 API tests, 6/6 web tests, `validate:courses` 14/14 OK + 6 iframe skipped + 10 no-solution skipped.
+
+---
+
 ## Sprint 018 — Course content quality v1 (2026-04-16)
 **Phase 1 — Alpha**
 
