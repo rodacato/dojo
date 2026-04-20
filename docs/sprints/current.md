@@ -16,9 +16,15 @@
 
 ## Part 1 — UX/UI flow gap audit (Soren C6)
 
-- [ ] Walkthrough of key flows: onboarding, kata, course player, dashboard, profile, share
-- [ ] `docs/ux-gaps-2026-04.md` — findings classified (blocker / friction / polish)
-- [ ] Ship 3-5 low-risk fixes in-sprint; rest promoted to backlog triaged
+- [x] Walkthrough of key flows: onboarding, kata, course player, dashboard, profile, share
+- [x] `docs/ux-gaps-2026-04.md` — 13 findings classified (2 blocker / 6 friction / 5 polish)
+- [x] `ErrorState` component (`apps/web/src/components/ui/ErrorState.tsx`) — reusable full-screen / inline error UI with primary + secondary actions
+- [x] **B-1** — Kata prepare: reduced poll ceiling 30→10 (~60s→20s), added "taking longer than usual" notice after ~8s, non-retryable errors surface immediately
+- [x] **B-2** — `ResultsPage` handles `getSession` failure with ErrorState + retry (no more perpetual loader)
+- [x] **F-1** — ErrorState retrofitted into `CoursePlayerPage`, `SharePage` (distinguishes 404 vs network), `PublicProfilePage` (distinguishes notfound vs network)
+- [x] **F-2** — SenseiEvalPage shows "Evaluation complete — opening full analysis..." during the 1.5s auto-redirect window
+- [x] **F-3** — `useEvaluationStream` WS close handler: unexpected close codes now set error state with reconnect affordance; only 1000 (clean) and 4001 (session expired) bypass the error UI
+- [x] Remaining findings (F-4/F-5/F-6 + P-1..P-6) promoted to backlog (`docs/sprints/backlog.md` → Triaged — later)
 
 ---
 

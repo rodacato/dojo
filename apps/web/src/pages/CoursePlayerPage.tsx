@@ -9,6 +9,7 @@ import {
 } from '../lib/anonymousId'
 import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
+import { ErrorState } from '../components/ui/ErrorState'
 import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, ExternalReference, ExternalReferenceKind } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
 import { renderSlots, type SlotHeading } from '../lib/slots'
@@ -21,6 +22,7 @@ export function CoursePlayerPage() {
 
   const [course, setCourse] = useState<CourseDetailDTO | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [retryTick, setRetryTick] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<string[]>([])
   const [activeStepId, setActiveStepId] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -28,8 +30,11 @@ export function CoursePlayerPage() {
   // Load course
   useEffect(() => {
     if (!slug) return
+    let cancelled = false
+    setError(null)
     api.getCourse(slug)
       .then((c) => {
+        if (cancelled) return
         setCourse(c)
         const firstLesson = c.lessons[0]
         const firstStep = firstLesson?.steps[0]
@@ -37,8 +42,9 @@ export function CoursePlayerPage() {
           setActiveStepId(firstStep.id)
         }
       })
-      .catch(() => setError('Course not found'))
-  }, [slug])
+      .catch(() => { if (!cancelled) setError('We couldn\'t load this course.') })
+    return () => { cancelled = true }
+  }, [slug, retryTick])
 
   // When the user logs in and there's leftover anonymous progress, merge it.
   useEffect(() => {
@@ -91,14 +97,11 @@ export function CoursePlayerPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted font-mono text-lg">{error}</p>
-          <Link to="/learn" className="text-accent text-sm font-mono mt-4 inline-block hover:underline">
-            ← back to courses
-          </Link>
-        </div>
-      </div>
+      <ErrorState
+        message={error}
+        primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
+        secondaryAction={{ label: 'Back to courses', to: '/learn' }}
+      />
     )
   }
 

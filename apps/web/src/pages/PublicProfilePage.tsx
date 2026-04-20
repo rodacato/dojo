@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { api, type PublicProfileData } from '../lib/api'
+import { api, ApiError, type PublicProfileData } from '../lib/api'
 import { LogoWordmark } from '../components/Logo'
+import { ErrorState } from '../components/ui/ErrorState'
 
 const TYPE_COLORS: Record<string, string> = {
   CODE: 'bg-accent/20 text-accent',
@@ -34,17 +35,26 @@ const VERDICT_COLORS: Record<string, string> = {
 export function PublicProfilePage() {
   const { username } = useParams<{ username: string }>()
   const [profile, setProfile] = useState<PublicProfileData | null>(null)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<'notfound' | 'network' | null>(null)
   const [loading, setLoading] = useState(true)
+  const [retryTick, setRetryTick] = useState(0)
 
   useEffect(() => {
     if (!username) return
+    let cancelled = false
+    setLoading(true)
+    setError(null)
     api
       .getPublicProfile(username)
-      .then(setProfile)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
-  }, [username])
+      .then((p) => { if (!cancelled) setProfile(p) })
+      .catch((err) => {
+        if (cancelled) return
+        const is404 = err instanceof ApiError && err.status === 404
+        setError(is404 ? 'notfound' : 'network')
+      })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [username, retryTick])
 
   if (loading) {
     return (
@@ -54,18 +64,23 @@ export function PublicProfilePage() {
     )
   }
 
-  if (error || !profile) {
+  if (error === 'notfound') {
     return (
-      <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4">
-        <h1 className="font-mono text-2xl text-primary mb-3">Practitioner not found.</h1>
-        <p className="text-secondary text-sm mb-8">This profile doesn't exist or hasn't joined the dojo yet.</p>
-        <Link
-          to="/"
-          className="px-5 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
-        >
-          Go home
-        </Link>
-      </div>
+      <ErrorState
+        title="Practitioner not found."
+        message="This profile doesn't exist or hasn't joined the dojo yet."
+        primaryAction={{ label: 'Go home', to: '/' }}
+      />
+    )
+  }
+
+  if (error === 'network' || !profile) {
+    return (
+      <ErrorState
+        message="We couldn't load this profile."
+        primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
+        secondaryAction={{ label: 'Go home', to: '/' }}
+      />
     )
   }
 

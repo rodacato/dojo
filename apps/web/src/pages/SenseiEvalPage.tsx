@@ -258,12 +258,19 @@ export function SenseiEvalPage() {
                 </div>
               )}
               {result.isFinalEvaluation && (
-                <button
-                  onClick={() => navigate(`/kata/${sessionId}/result`)}
-                  className="mt-4 text-accent text-xs font-mono hover:text-accent/80 transition-colors"
-                >
-                  View full analysis →
-                </button>
+                <div className="mt-4 flex flex-col gap-2">
+                  {state.status === 'complete' && (
+                    <p className="text-muted text-[11px] font-mono animate-pulse">
+                      Evaluation complete — opening full analysis...
+                    </p>
+                  )}
+                  <button
+                    onClick={() => navigate(`/kata/${sessionId}/result`)}
+                    className="text-accent text-xs font-mono hover:text-accent/80 transition-colors self-start"
+                  >
+                    View full analysis →
+                  </button>
+                </div>
               )}
             </div>
           </div>

@@ -6,6 +6,7 @@ import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { KataBody } from '../components/ui/KataBody'
+import { ErrorState } from '../components/ui/ErrorState'
 import type { ExerciseType } from '@dojo/shared'
 const MermaidEditor = lazy(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
 
@@ -18,6 +19,11 @@ const PREPARING_MESSAGES = [
   'Almost there...',
 ]
 
+// ~2s between polls — 10 polls = 20s ceiling; slow notice kicks in at ~8s.
+const PREPARE_POLL_INTERVAL_MS = 2000
+const PREPARE_MAX_POLLS = 10
+const PREPARE_SLOW_NOTICE_AFTER = 4
+
 export function KataActivePage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -25,6 +31,7 @@ export function KataActivePage() {
   const [session, setSession] = useState<SessionWithExercise | null>(null)
   const [preparing, setPreparing] = useState(false)
   const [preparingMsg, setPreparingMsg] = useState(PREPARING_MESSAGES[0]!)
+  const [prepareSlow, setPrepareSlow] = useState(false)
   const [userResponse, setUserResponse] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
@@ -51,24 +58,35 @@ export function KataActivePage() {
         }
         if (s.status === 'preparing') {
           pollCount.current++
-          if (pollCount.current > 30) { // ~60s timeout
+          if (pollCount.current >= PREPARE_MAX_POLLS) {
             setPrepareError(true)
             return
           }
+          if (pollCount.current >= PREPARE_SLOW_NOTICE_AFTER) {
+            setPrepareSlow(true)
+          }
           setPreparing(true)
-          setTimeout(load, 2000)
+          setTimeout(load, PREPARE_POLL_INTERVAL_MS)
           return
         }
         // completed or failed
         navigate(`/kata/${sessionId}/result`, { replace: true })
-      } catch {
-        // Retry on transient errors instead of giving up immediately
-        pollCount.current++
-        if (!cancelled && pollCount.current > 30) {
+      } catch (err) {
+        if (cancelled) return
+        // Non-retryable API errors: show the error UI immediately instead of polling blindly.
+        if (err instanceof ApiError && err.status !== undefined && err.status !== 0 && err.status < 500) {
           setPrepareError(true)
-        } else if (!cancelled) {
-          setTimeout(load, 2000)
+          return
         }
+        pollCount.current++
+        if (pollCount.current >= PREPARE_MAX_POLLS) {
+          setPrepareError(true)
+          return
+        }
+        if (pollCount.current >= PREPARE_SLOW_NOTICE_AFTER) {
+          setPrepareSlow(true)
+        }
+        setTimeout(load, PREPARE_POLL_INTERVAL_MS)
       }
     }
 
@@ -113,31 +131,24 @@ export function KataActivePage() {
 
   if (prepareError) {
     return (
-      <div className="h-screen bg-base flex flex-col items-center justify-center gap-4">
-        <p className="font-mono text-secondary text-sm">Something went wrong preparing your kata.</p>
-        <div className="flex gap-3">
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-          >
-            Try again
-          </button>
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:text-primary transition-colors"
-          >
-            Back to dashboard
-          </button>
-        </div>
-      </div>
+      <ErrorState
+        message="Something went wrong preparing your kata."
+        primaryAction={{ label: 'Try again', onClick: () => window.location.reload() }}
+        secondaryAction={{ label: 'Back to dashboard', onClick: () => navigate('/dashboard') }}
+      />
     )
   }
 
   if (preparing || !session) {
     return (
-      <div className="h-screen bg-base flex flex-col items-center justify-center gap-4">
+      <div className="h-screen bg-base flex flex-col items-center justify-center gap-4 px-4">
         <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
         <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
+        {prepareSlow && (
+          <p className="font-mono text-muted text-xs text-center max-w-sm">
+            This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can retry.
+          </p>
+        )}
       </div>
     )
   }

@@ -37,6 +37,18 @@ Conditional on Sprint 020 checkpoint:
 - **"Ask the sensei" full chat/quota** — si S020 solo shippea MVP (Opción A), threaded chat y quota-based son S021+ (Yemi)
 - **"Code Review" full format** — schema change + UI + rubric + 3 katas. S020 solo shippea POC de 1 kata (Priya + Hiroshi)
 
+UX gaps promoted from Sprint 020 Part 1 audit (see [docs/ux-gaps-2026-04.md](ux-gaps-2026-04.md)):
+
+- **F-4** — Settings fire-and-forget: add success toast or per-section Save button. Needs design decision (Soren)
+- **F-5** — DayStart "Surprise me" redundant API call when mood + duration already selected
+- **F-6** — Anonymous→auth course progress merge not idempotent-safe (rare race on focus loss)
+- **P-1** — Inconsistent page headers (HistoryPage has LogoWordmark, ResultsPage doesn't)
+- **P-2** — Loading states split between `<PageLoader />` and ad-hoc per page
+- **P-3** — `console.error` in production code (AuthContext, ResultsPage, AdminEditExercisePage)
+- **P-4** — `AdminCoursesPage` refresh() without await on mount
+- **P-5** — Web test coverage: 1 test file for 66 pages/components — needs a dedicated sprint (Hiroshi S1)
+- **P-6** — SharePage uses raw `fetch` instead of the API client
+
 ### Phase 2 — The Scoreboard
 
 - Psychological analysis view: patterns in how you respond (do you rush? do you avoid certain types?)

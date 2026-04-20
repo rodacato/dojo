@@ -117,7 +117,19 @@ export function useEvaluationStream(sessionId: string) {
       if (e.code === 4001) {
         clearToken()
         window.location.href = '/?error=session_expired'
+        return
       }
+      // 1000 is a clean close initiated by either peer after we're done (complete/error).
+      // Anything else while we still expected tokens is an unexpected drop — surface it.
+      if (e.code === 1000) return
+      setState((prev) => {
+        if (prev.status === 'complete' || prev.status === 'error') return prev
+        return {
+          status: 'error',
+          code: `WS_CLOSED_${e.code}`,
+          message: 'Connection lost before the evaluation finished. You can reconnect.',
+        }
+      })
     }
   }, [sessionId, navigate])
 

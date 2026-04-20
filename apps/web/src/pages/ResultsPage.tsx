@@ -6,19 +6,39 @@ import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
+import { ErrorState } from '../components/ui/ErrorState'
 import { parseInsight } from '../lib/parse-insight'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [session, setSession] = useState<SessionWithExercise | null>(null)
+  const [loadError, setLoadError] = useState(false)
+  const [retryTick, setRetryTick] = useState(0)
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
 
   useEffect(() => {
     if (!sessionId) return
-    api.getSession(sessionId).then(setSession)
-    api.getFeedback(sessionId).then((r) => setFeedbackSubmitted(r.submitted)).catch((err) => { console.error('Failed to fetch feedback status:', err) })
-  }, [sessionId])
+    let cancelled = false
+    setLoadError(false)
+    api.getSession(sessionId)
+      .then((s) => { if (!cancelled) setSession(s) })
+      .catch(() => { if (!cancelled) setLoadError(true) })
+    api.getFeedback(sessionId)
+      .then((r) => { if (!cancelled) setFeedbackSubmitted(r.submitted) })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [sessionId, retryTick])
+
+  if (loadError) {
+    return (
+      <ErrorState
+        message="We couldn't load this kata result."
+        primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
+        secondaryAction={{ label: 'Back to dashboard', to: '/dashboard' }}
+      />
+    )
+  }
 
   if (!session) return <PageLoader />
 

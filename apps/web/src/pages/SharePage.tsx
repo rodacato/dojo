@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '../lib/config'
 import { LogoWordmark } from '../components/Logo'
 import { PageLoader } from '../components/PageLoader'
+import { ErrorState } from '../components/ui/ErrorState'
 
 interface ShareData {
   sessionId: string
@@ -32,24 +33,47 @@ const TYPE_COLORS: Record<string, string> = {
 export function SharePage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const [data, setData] = useState<ShareData | null>(null)
-  const [error, setError] = useState(false)
+  const [error, setError] = useState<'notfound' | 'network' | null>(null)
+  const [retryTick, setRetryTick] = useState(0)
 
   useEffect(() => {
     if (!sessionId) return
+    let cancelled = false
+    setError(null)
     fetch(`${API_URL}/share/${sessionId}`)
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then(setData)
-      .catch(() => setError(true))
-  }, [sessionId])
+      .then((r) => {
+        if (cancelled) return
+        if (r.status === 404) {
+          setError('notfound')
+          return null
+        }
+        if (!r.ok) {
+          setError('network')
+          return null
+        }
+        return r.json()
+      })
+      .then((d) => { if (!cancelled && d) setData(d as ShareData) })
+      .catch(() => { if (!cancelled) setError('network') })
+    return () => { cancelled = true }
+  }, [sessionId, retryTick])
 
-  if (error) {
+  if (error === 'notfound') {
     return (
-      <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4">
-        <p className="text-secondary font-mono text-sm mb-4">This kata result doesn't exist or isn't public yet.</p>
-        <Link to="/" className="text-accent font-mono text-sm hover:text-accent/80 transition-colors">
-          ← Go to dojo_
-        </Link>
-      </div>
+      <ErrorState
+        message="This kata result doesn't exist or isn't public yet."
+        primaryAction={{ label: 'Enter the dojo', to: '/' }}
+      />
+    )
+  }
+
+  if (error === 'network') {
+    return (
+      <ErrorState
+        message="We couldn't load this share card."
+        primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
+        secondaryAction={{ label: 'Go home', to: '/' }}
+      />
     )
   }
 
