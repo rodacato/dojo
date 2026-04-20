@@ -135,6 +135,33 @@ pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript, JS DOM,
 | **Leaderboard** | Monthly and all-time rankings by consistency |
 | **Badges** | 10 achievement badges across practice, consistency, and mastery categories |
 | **Responsive** | Mobile-first with sidebar (desktop) and bottom nav (mobile) |
+| **Error reporting** | Every unhandled error fans out to three sinks (console, Postgres, Sentry) via the `ErrorReporterPort` — see [docs/adr/017-error-reporting-port.md](docs/adr/017-error-reporting-port.md). Sentry is opt-in; without a DSN the Postgres + console fallback still captures everything, visible at `/admin/errors` |
+
+---
+
+## Observability
+
+Set the Sentry env vars below to enable the primary sink. Leave them empty and the Console + Postgres fallback captures everything regardless.
+
+```env
+# API (@sentry/node)
+SENTRY_DSN=                  # https://xxx.ingest.sentry.io/yyy
+SENTRY_ENVIRONMENT=production
+SENTRY_TRACES_SAMPLE_RATE=0  # 0..1 — keep at 0 until tracing is used
+SENTRY_RELEASE=              # usually the deploy's git SHA
+
+# Web (@sentry/react)
+VITE_SENTRY_DSN=
+VITE_SENTRY_ENVIRONMENT=production
+VITE_SENTRY_RELEASE=
+
+# Source map upload (build-time only, web)
+SENTRY_AUTH_TOKEN=           # token with project:releases scope
+SENTRY_ORG=
+SENTRY_PROJECT=
+```
+
+All three source-map vars must be set together for upload to activate; missing any one of them is a no-op. Errors logged in Postgres are listed at `/admin/errors` with filters for source (api/web) and HTTP status.
 
 ---
 

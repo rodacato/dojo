@@ -74,14 +74,14 @@
 Surfaced from the Part 1 audit — a `GET /u/rodacato` 500 in prod showed we have zero error management beyond `console.error` to stdout. See [ADR 017](../adr/017-error-reporting-port.md) for design rationale.
 
 - [x] **7.4** — ADR 017: `ErrorReporterPort` + composable adapters (port lives in `infrastructure/observability/`, not domain)
-- [ ] **7.1** — API port + 4 adapters (`Console`, `Postgres`, `Sentry`, `Composite`) + unit test for `CompositeErrorReporter` fault isolation
-- [ ] **7.2** — Migration 0016 `errors` table + `PostgresErrorRepository` + retention policy (30 days)
-- [ ] **7.3** — `router.ts` `onError` uses `errorReporter.report(...)`; middleware captures `requestId` / `userId` / route into context; `POST /errors` endpoint for web reports (rate-limited)
-- [ ] **7.5** — Web `ErrorReporter` + 3 adapters (`Console`, `SentryBrowser`, `Api`) + wiring in `ErrorBoundary.componentDidCatch`, `window.onerror`, `unhandledrejection`
-- [ ] **7.6** — `GET /admin/errors?source=&status=&limit=100` + `/admin/errors` page (reuses `AdminLayout`)
-- [ ] **7.7** — Sentry org setup: `dojo-api` + `dojo-web` projects; `SENTRY_DSN` + `VITE_SENTRY_DSN` as env vars
-- [ ] **7.8** — Source map upload on web build via `@sentry/vite-plugin`; release tag = git SHA
-- [ ] **7.9** — `README.md` + `.env.example` updated with new env vars; `AGENTS.md` docs-sync table unchanged
+- [x] **7.1** — API port + 4 adapters (`Console`, `Postgres`, `Sentry`, `Composite`) + 5 unit tests for `CompositeErrorReporter` fault isolation
+- [x] **7.2** — Migration 0016 `errors` table + schema entry (retention policy script deferred — manual 30-day delete until traffic justifies a cron)
+- [x] **7.3** — `router.ts` `onError` uses `errorReporter.report(...)`; `requestIdMiddleware` captures `requestId` into context; `POST /errors` endpoint for web reports (rate-limited, 30/min/IP)
+- [x] **7.5** — Web `ErrorReporter` + 4 adapters (`Console`, `Api`, `SentryBrowser`, `Composite`) + wiring in `ErrorBoundary.componentDidCatch`, `window.onerror`, `unhandledrejection`
+- [x] **7.6** — `GET /admin/errors?source=&status=&limit=` + `/admin/errors` page (reuses `AdminLayout`), newest-first, expandable rows, pagination
+- [x] **7.7** — Sentry SDKs installed (`@sentry/node`, `@sentry/react`); adapters gated on `SENTRY_DSN` / `VITE_SENTRY_DSN` — **Sentry project provisioning still pending** (ops action, not code)
+- [x] **7.8** — Source map upload on web build via `@sentry/vite-plugin`, activates only when `SENTRY_AUTH_TOKEN` + `SENTRY_ORG` + `SENTRY_PROJECT` are all set; release = `VITE_SENTRY_RELEASE` (typically git SHA)
+- [x] **7.9** — `README.md` + `.env.example` updated; new section "Observability" in README with all env vars
 - [ ] **7.10** — End-to-end verification: trigger an error in prod → appears in all three sinks (Sentry, Postgres `errors` table, container stdout)
 
 **Risks:**
