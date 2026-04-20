@@ -39,11 +39,15 @@
 
 ## Part 3 — PRDs (parallel — gate Part 4)
 
-- [ ] PRD 025 — Python course "Python for the Practiced" (Nadia S7)
-- [ ] PRD 026 — "Ask the sensei" in course player (Yemi C4)
-- [ ] PRD 027 — "Code Review" kata format (Priya C1 + Hiroshi S1)
+- [x] PRD 025 — Python course "Python for the Practiced" (Nadia S7) → **Option A: mini-course, 8-10 steps, ~15-20h authoring**
+- [x] PRD 026 — "Ask the sensei" in course player (Yemi C4) → **Option A: single-shot nudge, no memory, ~1-2 days**
+- [x] PRD 027 — "Code Review" kata format (Priya C1 + Hiroshi S1) → **Option A: 1 POC kata, schema additive, ~3-4 days**
 
-**Checkpoint:** once the 3 PRDs land, re-scope Part 4. If any reveals >1 week of effort, defer to Sprint 021.
+**Checkpoint outcome:** all three PRDs landed on the "ship small and cheap" option. Combined budget is ~10-12 days of author/build time, which fits a sprint *if everything else stays tight*. Panel priority for Part 4 execution (matches Fallback in `current.md` header):
+
+1. **Ask the sensei MVP** — ships first. Highest retention impact, smallest scope.
+2. **Code Review POC (1 kata)** — ships second. Novel format, locally-testable.
+3. **Python mini-course skeleton (L1 only, ~3 steps)** — ships third if time permits; full L1-L3 slides to S021.
 
 ---
 
