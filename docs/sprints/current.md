@@ -30,10 +30,10 @@
 
 ## Part 2 — Acquisition loop (Amara C7 + Priya C1)
 
-- [ ] Share card de completación de curso — dynamic OG image + `/share/course/:slug/:userId`
-- [ ] Badge por curso completado — Recognition context extension
-- [ ] CTA "Share your completion" en pantalla final del curso
-- [ ] Migrar TS Fundamentals + JS DOM a público — flag + copy review
+- [x] Share card de completación de curso — dynamic OG image + `/share/course/:slug/:userId` (satori-based, mirrors kata share)
+- [x] Badge por curso completado — `CourseCompleted` domain event + 3 per-course badges (TS/JS DOM/SQL); migration 0017
+- [x] CTA "Share your completion" en pantalla final del curso — banner in `CoursePlayerPage` with native share + clipboard + Twitter intent fallback
+- [x] Migrar TS Fundamentals + JS DOM a público — `isPublic: true` in seed data; admin `/admin/courses` toggle also works
 
 ---
 
