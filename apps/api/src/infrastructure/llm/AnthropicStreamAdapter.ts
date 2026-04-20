@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt } from '../../prompts/sensei'
 import { config } from '../../config'
 
 export class AnthropicStreamAdapter implements LLMPort {
@@ -83,6 +83,26 @@ export class AnthropicStreamAdapter implements LLMPort {
     }
 
     return block.text
+  }
+
+  async nudge(params: {
+    stepInstruction: string
+    testCode: string | null
+    userCode: string
+    stdout?: string
+    stderr?: string
+  }): Promise<string> {
+    const prompt = buildNudgePrompt(params)
+    const response = await this.client.messages.create({
+      model: config.LLM_MODEL,
+      max_tokens: 256,
+      messages: [{ role: 'user', content: prompt }],
+    })
+    const block = response.content[0]
+    if (!block || block.type !== 'text') {
+      throw new Error('Unexpected response type from Anthropic')
+    }
+    return block.text.trim()
   }
 }
 

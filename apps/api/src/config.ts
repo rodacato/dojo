@@ -32,6 +32,9 @@ const envSchema = z.object({
   SENTRY_ENVIRONMENT: z.string().default(''), // defaults to NODE_ENV after parse
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
   SENTRY_RELEASE: z.string().default(''),
+  // Course-player "Ask the sensei" — PRD 026. Feature-flagged so ops can
+  // turn it off without redeploying if prompt drift surfaces.
+  COURSE_NUDGE_ENABLED: z.coerce.boolean().default(false),
 })
 
 const result = envSchema.safeParse(process.env)

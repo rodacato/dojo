@@ -6,7 +6,7 @@ import type {
   CourseProgressDTO,
   StepSolutionDTO,
 } from '@dojo/shared'
-import { request } from './client'
+import { request, ApiError } from './client'
 
 export const learn = {
   getCourses: () =>
@@ -60,5 +60,28 @@ export const learn = {
       `/learn/courses/${slug}/steps/${stepId}/solution${query}`,
       { redirectOnAuth: false },
     )
+  },
+
+  // "Ask the sensei" nudge (PRD 026). Can return a 404 when the feature flag
+  // is off — the UI interprets that as "disabled" and hides the button.
+  requestNudge: async (params: {
+    courseSlug: string
+    stepId: string
+    userCode: string
+    stdout?: string
+    stderr?: string
+  }) => {
+    try {
+      return await request<{ nudge: string; stepId: string }>('/learn/nudge', {
+        method: 'POST',
+        body: JSON.stringify(params),
+        redirectOnAuth: false,
+      })
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 404) {
+        return { disabled: true as const }
+      }
+      throw err
+    }
   },
 }

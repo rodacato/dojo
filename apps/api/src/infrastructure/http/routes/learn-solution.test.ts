@@ -45,6 +45,7 @@ vi.mock('../middleware/auth', () => ({
 
 vi.mock('../middleware/rateLimiter', () => ({
   executionLimiter: async (_c: unknown, next: () => Promise<void>) => { await next() },
+  nudgeLimiter: async (_c: unknown, next: () => Promise<void>) => { await next() },
 }))
 
 // Drizzle access in the route reads the steps table directly. We stub it

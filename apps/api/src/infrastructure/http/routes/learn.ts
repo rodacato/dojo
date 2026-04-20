@@ -1,9 +1,11 @@
 import { eq } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { z } from 'zod'
 import type { AppEnv } from '../app-env'
-import { executionLimiter } from '../middleware/rateLimiter'
+import { executionLimiter, nudgeLimiter } from '../middleware/rateLimiter'
 import { optionalAuth, requireAuth } from '../middleware/auth'
 import { courseRepo, useCases } from '../../container'
+import { config } from '../../../config'
 import { db } from '../../persistence/drizzle/client'
 import { steps as stepsTable } from '../../persistence/drizzle/schema'
 import {
@@ -13,6 +15,7 @@ import {
   courseSlugSchema,
 } from '@dojo/shared'
 import type { ProgressOwner } from '../../../domain/learning/ports'
+import { StepNotFoundError } from '../../../application/learning/GenerateNudge'
 
 // Languages permitted for anonymous (unauthenticated) code execution.
 // Authenticated users may execute any supported runtime.
@@ -227,4 +230,43 @@ learnRoutes.get('/learn/courses/:slug/steps/:stepId/solution', optionalAuth, asy
     solution: row?.solution ?? null,
     alternativeApproach: row?.alternativeApproach ?? null,
   })
+})
+
+// ── Ask the sensei — course-player nudge ───────────────────────────
+//
+// POST /learn/nudge
+//   { courseSlug, stepId, userCode, stdout?, stderr? }
+//
+// Gated by COURSE_NUDGE_ENABLED so the feature can be killed without a
+// redeploy if prompt quality regresses. Auth-optional — public courses
+// should not punish anonymous learners for asking. Rate-limited by IP.
+
+const nudgeRequestSchema = z.object({
+  courseSlug: z.string().min(1).max(100),
+  stepId: z.string().uuid(),
+  userCode: z.string().max(8_000),
+  stdout: z.string().max(4_000).optional(),
+  stderr: z.string().max(4_000).optional(),
+})
+
+learnRoutes.post('/learn/nudge', nudgeLimiter, optionalAuth, async (c) => {
+  if (!config.COURSE_NUDGE_ENABLED) {
+    return c.json({ error: 'Nudges are not enabled.' }, 404)
+  }
+
+  const body = await c.req.json().catch(() => null)
+  const parsed = nudgeRequestSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+  }
+
+  try {
+    const result = await useCases.generateNudge.execute(parsed.data)
+    return c.json(result)
+  } catch (err) {
+    if (err instanceof StepNotFoundError) {
+      return c.json({ error: err.message }, 404)
+    }
+    throw err
+  }
 })

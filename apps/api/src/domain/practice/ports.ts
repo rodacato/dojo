@@ -23,6 +23,16 @@ export interface LLMPort {
     ownerContext: string
     exerciseDescription: string
   }): Promise<string>
+
+  // Course-player nudge — a single short hint pointing the learner toward
+  // the gap without giving the answer. Returns the full nudge text.
+  nudge(params: {
+    stepInstruction: string
+    testCode: string | null
+    userCode: string
+    stdout?: string
+    stderr?: string
+  }): Promise<string>
 }
 
 export interface SessionRepositoryPort {

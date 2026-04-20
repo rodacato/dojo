@@ -59,3 +59,13 @@ export const errorReportLimiter = rateLimiter({
   keyGenerator,
   message: { error: 'Too many error reports.' },
 })
+
+// Course-player nudge — each call is an LLM request, so the limit is tight.
+// 4/min/IP leaves room for a genuine back-and-forth; past that we would
+// rather the learner wait or look at the solution.
+export const nudgeLimiter = rateLimiter({
+  windowMs: 60 * 1000,
+  limit: 4,
+  keyGenerator,
+  message: { error: 'Too many nudges. Give the code a moment.' },
+})

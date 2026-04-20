@@ -7,6 +7,10 @@ export class MockLLMAdapter implements LLMPort {
     return 'Mock session body for testing purposes.'
   }
 
+  async nudge(_params: unknown): Promise<string> {
+    return 'Take another look at the part of your code that handles the value you return. Compare it to what the step is asking for — there is a small mismatch there worth re-examining.'
+  }
+
   async *evaluate(_params: unknown): AsyncIterable<EvaluationToken> {
     const delayMs = config.MOCK_LLM_STREAM_DELAY_MS
     const verdict = config.MOCK_LLM_VERDICT

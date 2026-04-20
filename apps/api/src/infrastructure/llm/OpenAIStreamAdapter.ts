@@ -1,7 +1,7 @@
 import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt } from '../../prompts/sensei'
 import { config } from '../../config'
 import { LLMParseError } from './AnthropicStreamAdapter'
 
@@ -127,6 +127,38 @@ export class OpenAIStreamAdapter implements LLMPort {
     }
 
     return content
+  }
+
+  async nudge(params: {
+    stepInstruction: string
+    testCode: string | null
+    userCode: string
+    stdout?: string
+    stderr?: string
+  }): Promise<string> {
+    const prompt = buildNudgePrompt(params)
+    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.LLM_MODEL,
+        max_tokens: 256,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    })
+    if (!response.ok) {
+      const body = await response.text()
+      throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
+    }
+    const data = (await response.json()) as OpenAIResponse
+    const content = data.choices?.[0]?.message?.content
+    if (!content) {
+      throw new Error('Unexpected response from OpenAI-compatible API')
+    }
+    return content.trim()
   }
 }
 

@@ -33,6 +33,7 @@ describe('GenerateSessionBody', () => {
     const llm = {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn().mockResolvedValue('You are reviewing a PR that...'),
+      nudge: vi.fn(),
     }
     const exerciseRepo = {
       findEligible: vi.fn(),
@@ -57,7 +58,7 @@ describe('GenerateSessionBody', () => {
 
   it('does nothing when exercise is not found', async () => {
     const sessionRepo = makeStubSessionRepo()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), nudge: vi.fn() }
     const exerciseRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
@@ -78,7 +79,7 @@ describe('GenerateSessionBody', () => {
   it('does nothing when variation is not found', async () => {
     const exercise = makeExercise()
     const sessionRepo = makeStubSessionRepo()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), nudge: vi.fn() }
     const exerciseRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(exercise),

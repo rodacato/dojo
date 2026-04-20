@@ -330,6 +330,12 @@ function StepEditor({
   const [solutionCode, setSolutionCode] = useState<string | null>(null)
   const [alternativeApproach, setAlternativeApproach] = useState<string | null>(null)
   const [solutionError, setSolutionError] = useState<string | null>(null)
+  // "Ask the sensei" nudge state (PRD 026). `nudgeDisabled` latches true when
+  // the API 404s — that signals COURSE_NUDGE_ENABLED=false on the server.
+  const [nudge, setNudge] = useState<string | null>(null)
+  const [nudgeLoading, setNudgeLoading] = useState(false)
+  const [nudgeError, setNudgeError] = useState<string | null>(null)
+  const [nudgeDisabled, setNudgeDisabled] = useState(false)
 
   const isIframeLang = language === 'javascript-dom'
   const stepTitle = extractStepTitle(step)
@@ -344,7 +350,34 @@ function StepEditor({
     setSolutionCode(null)
     setAlternativeApproach(null)
     setSolutionError(null)
+    setNudge(null)
+    setNudgeError(null)
+    setNudgeLoading(false)
   }, [step.id, step.starterCode])
+
+  async function askSensei() {
+    if (nudgeLoading || nudgeDisabled) return
+    setNudgeLoading(true)
+    setNudgeError(null)
+    try {
+      const response = await api.requestNudge({
+        courseSlug,
+        stepId: step.id,
+        userCode: code,
+        stdout: result?.stdout,
+        stderr: result?.stderr,
+      })
+      if ('disabled' in response) {
+        setNudgeDisabled(true)
+        return
+      }
+      setNudge(response.nudge)
+    } catch (err) {
+      setNudgeError(err instanceof Error ? err.message : 'The sensei is unavailable right now.')
+    } finally {
+      setNudgeLoading(false)
+    }
+  }
 
   // Fetch the reference solution the first time the learner opens the
   // Solution tab after passing. We fetch on demand (not on pass) to keep
@@ -434,14 +467,25 @@ function StepEditor({
             <span className="text-xs text-muted font-mono">Runs in browser</span>
           )}
           {result && <StatusChip result={result} />}
-          {step.hint && (
-            <button
-              onClick={() => setShowHint((v) => !v)}
-              className="ml-auto text-xs font-mono text-muted hover:text-secondary transition-colors"
-            >
-              {showHint ? '× Hide hint' : '💡 Show hint'}
-            </button>
-          )}
+          <div className="ml-auto flex items-center gap-3">
+            {result && !nudgeDisabled && (
+              <button
+                onClick={askSensei}
+                disabled={nudgeLoading}
+                className="text-xs font-mono text-accent hover:text-accent/80 transition-colors disabled:opacity-50 disabled:cursor-wait"
+              >
+                {nudgeLoading ? '⌛ Thinking…' : '🥋 Ask the sensei'}
+              </button>
+            )}
+            {step.hint && (
+              <button
+                onClick={() => setShowHint((v) => !v)}
+                className="text-xs font-mono text-muted hover:text-secondary transition-colors"
+              >
+                {showHint ? '× Hide hint' : '💡 Show hint'}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Hint panel */}
@@ -449,6 +493,28 @@ function StepEditor({
           <div className="px-4 py-3 border-t border-border/40 bg-surface/40">
             <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">hint</p>
             <p className="text-sm text-secondary leading-relaxed">{step.hint}</p>
+          </div>
+        )}
+
+        {/* Sensei nudge */}
+        {(nudge || nudgeError) && (
+          <div className="px-4 py-3 border-t border-accent/40 bg-accent/5">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-xs font-mono text-accent uppercase tracking-wider">sensei</p>
+              <button
+                onClick={() => { setNudge(null); setNudgeError(null) }}
+                className="text-xs font-mono text-muted hover:text-secondary transition-colors"
+                aria-label="Dismiss nudge"
+              >
+                ×
+              </button>
+            </div>
+            {nudge && (
+              <p className="text-sm text-secondary leading-relaxed whitespace-pre-wrap">{nudge}</p>
+            )}
+            {nudgeError && (
+              <p className="text-sm text-danger leading-relaxed">{nudgeError}</p>
+            )}
           </div>
         )}
 

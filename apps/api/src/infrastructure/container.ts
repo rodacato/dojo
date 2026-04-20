@@ -12,6 +12,7 @@ import { ExecuteStep } from '../application/learning/ExecuteStep'
 import { TrackProgress } from '../application/learning/TrackProgress'
 import { GetCourseProgress } from '../application/learning/GetCourseProgress'
 import { MergeAnonymousProgress } from '../application/learning/MergeAnonymousProgress'
+import { GenerateNudge } from '../application/learning/GenerateNudge'
 import { db } from './persistence/drizzle/client'
 import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
@@ -118,4 +119,5 @@ export const useCases = {
   trackProgress: new TrackProgress({ progressRepo: courseProgressRepo, courseRepo, eventBus }),
   getCourseProgress: new GetCourseProgress({ progressRepo: courseProgressRepo }),
   mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: courseProgressRepo }),
+  generateNudge: new GenerateNudge({ courseRepo, llm }),
 }
