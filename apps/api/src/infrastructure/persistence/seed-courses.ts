@@ -221,6 +221,15 @@ ${TS_HARNESS_FOOTER}`,
     solution: `function greet(name: string): string {
   return \`Hello, \${name}!\`
 }`,
+    alternativeApproach: `String concatenation with \`+\` is still valid and reads fine when the expression is short:
+
+\`\`\`typescript
+function greet(name: string): string {
+  return 'Hello, ' + name + '!'
+}
+\`\`\`
+
+Template literals win the moment you have more than one interpolation or a newline — concatenation gets noisy fast ("Hello, " + name + ". You have " + count + " messages."). For a single \`\${name}\`, it's a style coin-flip; many codebases pick template literals as the house style for consistency.`,
   },
   {
     id: STEP_1_4_ID,
@@ -249,6 +258,13 @@ ${TS_HARNESS_FOOTER}`,
     solution: `function add(a: number, b: number): number {
   return a + b
 }`,
+    alternativeApproach: `For a function this small, an arrow function is a common idiomatic choice:
+
+\`\`\`typescript
+const add = (a: number, b: number): number => a + b
+\`\`\`
+
+No curly braces, no \`return\` keyword — the single expression is the return value. Arrow functions also bind \`this\` lexically, which matters when passing them as callbacks (e.g. \`[1,2,3].map(add)\`). The \`function\` form wins when you need hoisting (the name is available before the declaration) or named recursion; for trivial transforms, the arrow form is shorter and safer.`,
   },
 
   // ── Lesson 2: Arrays & Objects ──────────────────────────────────
@@ -322,6 +338,17 @@ ${TS_HARNESS_FOOTER}`,
     solution: `function sum(numbers: number[]): number {
   return numbers.reduce((acc, n) => acc + n, 0)
 }`,
+    alternativeApproach: `A \`for...of\` loop with a running total is equally idiomatic and often easier to read for people new to the codebase:
+
+\`\`\`typescript
+function sum(numbers: number[]): number {
+  let total = 0
+  for (const n of numbers) total += n
+  return total
+}
+\`\`\`
+
+\`reduce\` wins when you're already in a pipeline (\`.filter(...).map(...).reduce(...)\`). For a standalone sum, the loop form is shorter once you factor in the mental cost of parsing the reducer. Either is fine — the readability tiebreaker is "which one does the surrounding code already use".`,
   },
   {
     id: STEP_2_3_ID,
@@ -437,6 +464,18 @@ ${TS_HARNESS_FOOTER}`,
   if (n % 5 === 0) return 'Buzz'
   return String(n)
 }`,
+    alternativeApproach: `String concatenation removes the "check 15 first" trick and scales to more rules:
+
+\`\`\`typescript
+function fizzBuzz(n: number): string {
+  let out = ''
+  if (n % 3 === 0) out += 'Fizz'
+  if (n % 5 === 0) out += 'Buzz'
+  return out || String(n)
+}
+\`\`\`
+
+If a fourth rule arrives tomorrow ("Bazz" on 7), the if-chain needs a 4-way check; this form just adds one more line. \`out || String(n)\` uses the empty-string-is-falsy rule to fall back to the number. Slightly harder to parse on first read, but far more flexible.`,
   },
   {
     id: STEP_3_3_ID,
@@ -679,6 +718,18 @@ ${DOM_RUNNER_END}`,
     solution: `function getTitle() {
   return document.querySelector('h1').textContent
 }`,
+    alternativeApproach: `\`innerText\` and \`textContent\` are both valid here, but they behave differently in production code:
+
+\`\`\`javascript
+function getTitle() {
+  return document.querySelector('h1').innerText
+}
+\`\`\`
+
+- **\`textContent\`** returns the raw text of every child node — including hidden elements and collapsed whitespace. Cheap: doesn't trigger layout.
+- **\`innerText\`** returns the text as a human would see it rendered — hidden elements skipped, whitespace collapsed. Triggers layout. Slower, but closer to "what the user sees".
+
+For reading an \`<h1>\` with no hidden content, they return the same string. In a function that reads visible text across complex DOM (e.g. scraping a rendered table), \`innerText\` is what you usually want; in a hot loop, \`textContent\` is the safer default.`,
   },
   {
     id: DOM_STEP_1_3_ID,

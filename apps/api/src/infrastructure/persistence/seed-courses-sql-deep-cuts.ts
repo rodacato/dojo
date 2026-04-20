@@ -165,6 +165,20 @@ INSERT INTO _ok VALUES ((SELECT CASE WHEN
   AND (SELECT COUNT(*) FROM solution)=5
   THEN 1 ELSE 0 END));`,
   hint: "Use `RANK()` in a window with `PARTITION BY department ORDER BY salary DESC`, and alias it as `dept_rank`.",
+  alternativeApproach: `\`DENSE_RANK()\` is a sibling worth knowing — it ranks differently when ties happen:
+
+\`\`\`sql
+SELECT
+  employee_name, department, salary,
+  DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS dept_rank
+FROM employees
+\`\`\`
+
+With salaries 100k, 100k, 90k:
+- \`RANK()\` produces 1, 1, **3** — the tie "consumes" rank 2.
+- \`DENSE_RANK()\` produces 1, 1, **2** — no gap.
+
+Pick \`RANK()\` when you care about the absolute position (e.g. "show the top 3 distinct positions" — ties at 1 still leave room for a 2nd and 3rd). Pick \`DENSE_RANK()\` when you care about the *ordinal tier* (e.g. "gold / silver / bronze medal tiers"). The exercise's assertions happen to not create ties, so either works here — but the choice carries real meaning the moment your data has ties.`,
 }
 
 const STEP_1_3 = {
