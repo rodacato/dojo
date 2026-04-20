@@ -69,6 +69,28 @@
 
 ---
 
+## Part 7 — Observability: error reporting (Tomás C3 + Marta C5)
+
+Surfaced from the Part 1 audit — a `GET /u/rodacato` 500 in prod showed we have zero error management beyond `console.error` to stdout. See [ADR 017](../adr/017-error-reporting-port.md) for design rationale.
+
+- [x] **7.4** — ADR 017: `ErrorReporterPort` + composable adapters (port lives in `infrastructure/observability/`, not domain)
+- [ ] **7.1** — API port + 4 adapters (`Console`, `Postgres`, `Sentry`, `Composite`) + unit test for `CompositeErrorReporter` fault isolation
+- [ ] **7.2** — Migration 0016 `errors` table + `PostgresErrorRepository` + retention policy (30 days)
+- [ ] **7.3** — `router.ts` `onError` uses `errorReporter.report(...)`; middleware captures `requestId` / `userId` / route into context; `POST /errors` endpoint for web reports (rate-limited)
+- [ ] **7.5** — Web `ErrorReporter` + 3 adapters (`Console`, `SentryBrowser`, `Api`) + wiring in `ErrorBoundary.componentDidCatch`, `window.onerror`, `unhandledrejection`
+- [ ] **7.6** — `GET /admin/errors?source=&status=&limit=100` + `/admin/errors` page (reuses `AdminLayout`)
+- [ ] **7.7** — Sentry org setup: `dojo-api` + `dojo-web` projects; `SENTRY_DSN` + `VITE_SENTRY_DSN` as env vars
+- [ ] **7.8** — Source map upload on web build via `@sentry/vite-plugin`; release tag = git SHA
+- [ ] **7.9** — `README.md` + `.env.example` updated with new env vars; `AGENTS.md` docs-sync table unchanged
+- [ ] **7.10** — End-to-end verification: trigger an error in prod → appears in all three sinks (Sentry, Postgres `errors` table, container stdout)
+
+**Risks:**
+- PII in Sentry breadcrumbs — sanitize user code/responses before send (Marta C5 review)
+- Reporting loop — `CompositeErrorReporter` must swallow per-reporter failures; covered by unit test
+- Sentry free quota cliff (5k/mo) — Postgres fallback catches overflow; alert on quota near-full configured in Sentry
+
+---
+
 ## Risks
 
 - **Scope creep** — 6 parts + 3 PRDs. Mitigation: mandatory checkpoint post-Part 3
