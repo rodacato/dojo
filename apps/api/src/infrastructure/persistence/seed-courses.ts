@@ -7,6 +7,11 @@ import {
   SQL_DEEP_CUTS_LESSONS,
   SQL_DEEP_CUTS_STEPS,
 } from './seed-courses-sql-deep-cuts'
+import {
+  PYTHON_COURSE_DATA,
+  PYTHON_LESSONS,
+  PYTHON_STEPS,
+} from './seed-courses-python'
 
 // ---------------------------------------------------------------------------
 // Deterministic UUIDs for seed data
@@ -1105,6 +1110,11 @@ export async function seedAllCourses(db: ReturnType<typeof drizzle>): Promise<Se
       courseData: SQL_DEEP_CUTS_COURSE,
       lessonsData: SQL_DEEP_CUTS_LESSONS,
       stepsData: SQL_DEEP_CUTS_STEPS,
+    },
+    {
+      courseData: PYTHON_COURSE_DATA,
+      lessonsData: PYTHON_LESSONS,
+      stepsData: PYTHON_STEPS,
     },
   ]
 

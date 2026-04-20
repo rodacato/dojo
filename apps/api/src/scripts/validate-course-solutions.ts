@@ -25,6 +25,10 @@ import {
   SQL_DEEP_CUTS_COURSE,
   SQL_DEEP_CUTS_STEPS,
 } from '../infrastructure/persistence/seed-courses-sql-deep-cuts'
+import {
+  PYTHON_COURSE_DATA,
+  PYTHON_STEPS,
+} from '../infrastructure/persistence/seed-courses-python'
 
 type StepLike = {
   id: string
@@ -55,6 +59,13 @@ function collect(): Array<{ courseSlug: string; courseLanguage: string; step: St
     all.push({
       courseSlug: SQL_DEEP_CUTS_COURSE.slug,
       courseLanguage: SQL_DEEP_CUTS_COURSE.language,
+      step,
+    })
+  }
+  for (const step of PYTHON_STEPS) {
+    all.push({
+      courseSlug: PYTHON_COURSE_DATA.slug,
+      courseLanguage: PYTHON_COURSE_DATA.language,
       step,
     })
   }
