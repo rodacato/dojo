@@ -16,7 +16,7 @@ _(cleared 2026-03-27)_
 
 _Confirmed for the next work block. Moved here after triage._
 
-<!-- Sprint 008 items moved to current.md -->
+<!-- Sprint 020 items moved to current.md — 2026-04-20 -->
 
 ---
 
@@ -24,24 +24,18 @@ _Confirmed for the next work block. Moved here after triage._
 
 _Good ideas, not urgent. Not in the next block._
 
-### Sprint 020 candidates
+### Sprint 021+ candidates
 
-Deferred desde Sprint 019 (pedagogía v2 scope-trimmed):
+Deferred desde Sprint 019:
 
 - **Retrieval interleaving** — Lesson N tests usan identifiers introducidos en Lesson N-1. §3 del framework. Necesita PRD propio antes de sprint (Dr. Elif Yıldız)
 - **Diff visual** entre la solución del learner y la `step.solution` reference. Polish posterior al "Alternative approach" ya shippeado en Sprint 019 (Soren)
 
-Deferred desde Sprint 017 (siguen vigentes):
+Conditional on Sprint 020 checkpoint:
 
-- **Share card de completación de curso** — al terminar un curso, share card con "Completé [curso] en dojo_" + badge. Clave para el acquisition funnel (Amara)
-- **Badge específico por curso completado** — Recognition context ya existe, falta su iteración (panel)
-- **Migrar TS Fundamentals + JS DOM a público** — solo si SQL Deep Cuts valida el modelo público (Priya)
-
-Del backlog original:
-
-- **Python course** — "Python for the Practiced". Tier 2 en market research. Defer hasta cerrar la pasada de calidad v2 de Sprint 019 (Dr. Emeka)
-- **"Code Review" kata format** — diff de PR con bugs intencionales, usuario identifica problemas, sensei evalúa completitud y calidad del review. Diferenciador único, ningún competidor lo tiene. PRD propio antes de sprint (Priya, Marcus)
-- **"Ask the sensei" en course player** — Phase 2 del CODE_SCHOOL_PLAN. LLM como nudge contextual on-demand. Espera a que los hints estáticos estén buenos primero (Yemi)
+- **Python course full curriculum** — PRD 025 shippea en S020; el curso completo (2-3 sub-cursos × 8-12 steps) es S021+ (Nadia S7)
+- **"Ask the sensei" full chat/quota** — si S020 solo shippea MVP (Opción A), threaded chat y quota-based son S021+ (Yemi)
+- **"Code Review" full format** — schema change + UI + rubric + 3 katas. S020 solo shippea POC de 1 kata (Priya + Hiroshi)
 
 ### Phase 2 — The Scoreboard
 
