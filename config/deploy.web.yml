@@ -30,6 +30,12 @@ builder:
   arch: amd64
   args:
     VITE_API_URL: <%= ENV["API_URL"] %>
+    VITE_SENTRY_DSN: <%= ENV["VITE_SENTRY_DSN"] %>
+    VITE_SENTRY_ENVIRONMENT: <%= ENV["VITE_SENTRY_ENVIRONMENT"] %>
+    VITE_SENTRY_RELEASE: <%= ENV["VITE_SENTRY_RELEASE"] %>
+    SENTRY_AUTH_TOKEN: <%= ENV["SENTRY_AUTH_TOKEN"] %>
+    SENTRY_ORG: <%= ENV["SENTRY_ORG"] %>
+    SENTRY_PROJECT: <%= ENV["SENTRY_PROJECT"] %>
   cache:
     type: gha
 

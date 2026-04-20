@@ -41,6 +41,10 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       CODE_EXECUTION_ENABLED: ${{ vars.CODE_EXECUTION_ENABLED }}
       PISTON_URL: ${{ vars.PISTON_URL }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
+      SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
+      SENTRY_RELEASE: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -86,6 +90,12 @@ jobs:
       HOST_IP: ${{ vars.HOST_IP }}
       WEB_URL: ${{ vars.WEB_URL }}
       API_URL: ${{ vars.API_URL }}
+      VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+      VITE_SENTRY_ENVIRONMENT: ${{ vars.VITE_SENTRY_ENVIRONMENT || 'production' }}
+      VITE_SENTRY_RELEASE: ${{ github.sha }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT || 'dojo-web' }}
     steps:
       - uses: actions/checkout@v4
 

@@ -11,6 +11,23 @@ COPY apps/web/ ./apps/web/
 COPY packages/shared/ ./packages/shared/
 ARG VITE_API_URL=https://dojo-api.notdefined.dev
 ENV VITE_API_URL=$VITE_API_URL
+
+# Sentry runtime config baked into the bundle.
+ARG VITE_SENTRY_DSN=
+ARG VITE_SENTRY_ENVIRONMENT=
+ARG VITE_SENTRY_RELEASE=
+ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
+ENV VITE_SENTRY_ENVIRONMENT=$VITE_SENTRY_ENVIRONMENT
+ENV VITE_SENTRY_RELEASE=$VITE_SENTRY_RELEASE
+
+# Source map upload (build-time only — @sentry/vite-plugin reads process.env).
+# Skipped silently when any of the three is empty.
+ARG SENTRY_AUTH_TOKEN=
+ARG SENTRY_ORG=
+ARG SENTRY_PROJECT=
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+ENV SENTRY_ORG=$SENTRY_ORG
+ENV SENTRY_PROJECT=$SENTRY_PROJECT
 # Build @dojo/shared first so vite's production resolution of the
 # "default" export condition (./dist/index.js) succeeds. Without this
 # the build fails with 'Failed to resolve entry for package "@dojo/shared"'.

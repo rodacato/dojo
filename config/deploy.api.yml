@@ -29,6 +29,9 @@ env:
     NODE_ENV: production
     PORT: '3001'
     WEB_URL: <%= ENV["WEB_URL"] %>
+    SENTRY_ENVIRONMENT: <%= ENV["SENTRY_ENVIRONMENT"] %>
+    SENTRY_TRACES_SAMPLE_RATE: <%= ENV["SENTRY_TRACES_SAMPLE_RATE"] %>
+    SENTRY_RELEASE: <%= ENV["SENTRY_RELEASE"] %>
   secret:
     - DATABASE_URL
     - SESSION_SECRET
@@ -45,6 +48,7 @@ env:
     - RESEND_FROM_EMAIL
     - CODE_EXECUTION_ENABLED
     - PISTON_URL
+    - SENTRY_DSN
 
 builder:
   context: .
