@@ -1,5 +1,6 @@
-import { Component, type ReactNode } from 'react'
+import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { ErrorPage } from '../pages/ErrorPage'
+import { errorReporter } from '../lib/observability'
 
 interface Props {
   children: ReactNode
@@ -18,6 +19,15 @@ export class ErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    void errorReporter.report({
+      message: error.message,
+      stack: error.stack,
+      route: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      context: { componentStack: info.componentStack },
+    })
   }
 
   render() {
