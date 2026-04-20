@@ -66,6 +66,7 @@ export const COURSE_DATA = {
   language: 'typescript',
   accentColor: '#3178C6',
   status: 'published' as const,
+  isPublic: true,
   externalReferences: [
     { title: 'TypeScript Handbook', url: 'https://www.typescriptlang.org/docs/handbook/intro.html', kind: 'docs' as const },
     { title: 'Effective TypeScript (Dan Vanderkam)', url: 'https://effectivetypescript.com/', kind: 'book' as const },
@@ -590,6 +591,7 @@ export const DOM_COURSE_DATA = {
   language: 'javascript-dom',
   accentColor: '#F7DF1E',
   status: 'published' as const,
+  isPublic: true,
   externalReferences: [
     { title: 'MDN: Introduction to the DOM', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction', kind: 'docs' as const },
     { title: 'MDN: Event delegation', url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation', kind: 'docs' as const },
