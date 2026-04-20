@@ -12,10 +12,20 @@
 import { z } from 'zod'
 
 export const difficultySchema = z.enum(['easy', 'medium', 'hard'])
-export const exerciseTypeSchema = z.enum(['code', 'chat', 'whiteboard'])
+export const exerciseTypeSchema = z.enum(['code', 'chat', 'whiteboard', 'review'])
 export const exerciseStatusSchema = z.enum(['draft', 'published', 'archived'])
 export const sessionStatusSchema = z.enum(['active', 'completed', 'failed'])
 export const verdictSchema = z.enum(['passed', 'passed_with_notes', 'needs_work'])
+export const rubricSeveritySchema = z.enum(['high', 'medium', 'low'])
+export const rubricIssueSchema = z.object({
+  title: z.string().min(1),
+  severity: rubricSeveritySchema,
+  why: z.string().min(1),
+})
+export const rubricSchema = z.object({
+  expectedIssues: z.array(rubricIssueSchema).min(1),
+  contextNotes: z.string().optional(),
+})
 
 export const userDTOSchema = z.object({
   id: z.string().uuid(),

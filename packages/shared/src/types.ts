@@ -15,11 +15,26 @@
  */
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
-export type ExerciseType = 'code' | 'chat' | 'whiteboard'
+export type ExerciseType = 'code' | 'chat' | 'whiteboard' | 'review'
 export type ExerciseStatus = 'draft' | 'published' | 'archived'
 export type SessionStatus = 'active' | 'completed' | 'failed'
 export type Verdict = 'passed' | 'passed_with_notes' | 'needs_work'
 export type UserLevel = 'junior' | 'mid' | 'senior'
+export type RubricSeverity = 'high' | 'medium' | 'low'
+
+// Code-review kata rubric (PRD 027). Each `expectedIssues` entry is what the
+// sensei evaluates the learner's review against; `contextNotes` is extra
+// background the learner never sees but the sensei should consider.
+export interface RubricIssue {
+  title: string
+  severity: RubricSeverity
+  why: string
+}
+
+export interface Rubric {
+  expectedIssues: RubricIssue[]
+  contextNotes?: string
+}
 
 export type ClaritySignal = 'clear' | 'somewhat_unclear' | 'confusing'
 export type TimingSignal = 'too_short' | 'about_right' | 'too_long'

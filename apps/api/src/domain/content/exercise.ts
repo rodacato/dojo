@@ -3,6 +3,7 @@ import { ExerciseId, VariationId } from '../shared/types'
 import type { UserId } from '../shared/types'
 import type { ExercisePublished } from './events'
 import type { Difficulty, ExerciseStatus, ExerciseType } from './values'
+import type { Rubric } from '@dojo/shared'
 
 export interface Variation {
   readonly id: VariationId
@@ -26,6 +27,9 @@ export interface ExerciseProps {
   topics: string[]
   testCode: string | null
   starterCode: string | null
+  // Hidden evaluation rubric for `type: 'review'` kata. Never exposed to
+  // the learner until completion (PRD 027).
+  rubric: Rubric | null
   variations: Variation[]
   version: number
   adminNotes: string | null
@@ -47,6 +51,7 @@ export class Exercise {
   readonly topics: string[]
   readonly testCode: string | null
   readonly starterCode: string | null
+  readonly rubric: Rubric | null
   readonly variations: Variation[]
   readonly version: number
   readonly adminNotes: string | null
@@ -70,6 +75,7 @@ export class Exercise {
     this.topics = props.topics
     this.testCode = props.testCode
     this.starterCode = props.starterCode
+    this.rubric = props.rubric
     this.variations = props.variations
     this.version = props.version
     this.adminNotes = props.adminNotes
@@ -118,6 +124,7 @@ export class Exercise {
       topics: params.topics,
       testCode: null,
       starterCode: null,
+      rubric: null,
       variations,
       version: 1,
       adminNotes: null,

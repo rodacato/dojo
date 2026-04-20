@@ -80,6 +80,7 @@ export async function seed(): Promise<void> {
           ownerContext: exercise.variations[0]!.ownerContext,
           testCode: exercise.testCode ?? null,
           starterCode: exercise.starterCode ?? null,
+          rubric: exercise.rubric ?? null,
           createdBy: SYSTEM_USER_ID,
           createdAt: new Date('2026-01-01T00:00:00Z'),
         })
@@ -90,6 +91,7 @@ export async function seed(): Promise<void> {
             description: exercise.description,
             testCode: exercise.testCode ?? null,
             starterCode: exercise.starterCode ?? null,
+            rubric: exercise.rubric ?? null,
             status: 'published',
           },
         })

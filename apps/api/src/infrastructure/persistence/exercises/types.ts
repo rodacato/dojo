@@ -22,18 +22,23 @@ export function uuidv5(name: string): string {
 // Shared types
 // ---------------------------------------------------------------------------
 
+import type { Rubric } from '@dojo/shared'
+
 export interface SeedExercise {
   id: string
   title: string
   description: string
   duration: number
   difficulty: 'easy' | 'medium' | 'hard'
-  type: 'code' | 'chat' | 'whiteboard'
+  type: 'code' | 'chat' | 'whiteboard' | 'review'
   category: string
   languages: string[]
   tags: string[]
   topics: string[]
   testCode?: string // predefined tests for code execution (Piston)
   starterCode?: string // pre-filled code for fix-the-bug / scaffold exercises
+  // Review-kata rubric (PRD 027). Only set when type === 'review'; hidden
+  // from the learner until they submit.
+  rubric?: Rubric
   variations: Array<{ ownerRole: string; ownerContext: string }>
 }

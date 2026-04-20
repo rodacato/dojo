@@ -28,6 +28,7 @@ export const exercises = pgTable('exercises', {
   ownerContext: text('owner_context').notNull(),
   testCode: text('test_code'), // predefined tests for code execution
   starterCode: text('starter_code'), // pre-filled code for fix-the-bug / scaffold exercises
+  rubric: jsonb('rubric'), // null for everything except type='review'; hidden from the learner until pass
   version: integer('version').notNull().default(1),
   adminNotes: text('admin_notes'),
   createdBy: uuid('created_by')

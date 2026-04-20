@@ -184,6 +184,7 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
       topics: row.topics as string[],
       testCode: row.testCode ?? null,
       starterCode: row.starterCode ?? null,
+      rubric: (row.rubric as import('@dojo/shared').Rubric | null) ?? null,
       variations: domainVariations,
       version: row.version ?? 1,
       adminNotes: row.adminNotes ?? null,
@@ -249,6 +250,9 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
         topics: row.topics,
         testCode: (row as Record<string, unknown>).test_code as string | null ?? null,
         starterCode: (row as Record<string, unknown>).starter_code as string | null ?? null,
+        rubric:
+          ((row as Record<string, unknown>).rubric as import('@dojo/shared').Rubric | null) ??
+          null,
         variations: domainVariations,
         version: (row as Record<string, unknown>).version as number ?? 1,
         adminNotes: (row as Record<string, unknown>).admin_notes as string | null ?? null,
