@@ -49,3 +49,13 @@ export const authExecutionLimiter = rateLimiter({
   keyGenerator,
   message: { error: 'Execution limit reached. Try again in a minute.' },
 })
+
+// 30 reports per minute per IP — for POST /errors from the web client.
+// Spikes during a buggy deploy are expected; we just need a ceiling so a
+// malicious client cannot fill the errors table.
+export const errorReportLimiter = rateLimiter({
+  windowMs: 60 * 1000,
+  limit: 30,
+  keyGenerator,
+  message: { error: 'Too many error reports.' },
+})

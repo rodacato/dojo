@@ -8,7 +8,10 @@ export type UpgradeWebSocket = NodeWebSocket['upgradeWebSocket']
 
 let _inject: NodeWebSocket['injectWebSocket'] | undefined
 
-export function initWebSocket(app: Hono): UpgradeWebSocket {
+// Accept any Hono app regardless of its Env generics — `createNodeWebSocket`
+// only needs the underlying `fetch`/`router` shape, which is the same.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function initWebSocket(app: Hono<any, any, any>): UpgradeWebSocket {
   const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app })
   _inject = injectWebSocket
   return upgradeWebSocket

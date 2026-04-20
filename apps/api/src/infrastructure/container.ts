@@ -29,6 +29,10 @@ import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
 import { ExecutionQueue } from './execution/ExecutionQueue'
 import type { CodeExecutionPort, LLMPort } from '../domain/practice/ports'
+import type { ErrorReporterPort } from './observability/ports'
+import { ConsoleErrorReporter } from './observability/ConsoleErrorReporter'
+import { PostgresErrorReporter } from './observability/PostgresErrorReporter'
+import { CompositeErrorReporter } from './observability/CompositeErrorReporter'
 
 const sessionRepo = new PostgresSessionRepository(db)
 const exerciseRepo = new PostgresExerciseRepository(db)
@@ -59,6 +63,16 @@ export const executionQueue = new ExecutionQueue(
   createExecutionAdapter(),
   config.PISTON_MAX_CONCURRENT,
 )
+
+function createErrorReporter(): ErrorReporterPort {
+  // Order matters only for logs: stdout first so `kamal app logs` keeps
+  // showing errors exactly when they happen.
+  const reporters: ErrorReporterPort[] = [new ConsoleErrorReporter(), new PostgresErrorReporter(db)]
+  // Sentry adapter is opt-in. Wired in Part 7.7 once @sentry/node is added.
+  return new CompositeErrorReporter(reporters)
+}
+
+export const errorReporter = createErrorReporter()
 
 export const eventBus = new InMemoryEventBus()
 

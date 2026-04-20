@@ -249,3 +249,20 @@ export const courseProgressRelations = relations(courseProgress, ({ one }) => ({
   course: one(courses, { fields: [courseProgress.courseId], references: [courses.id] }),
   user: one(users, { fields: [courseProgress.userId], references: [users.id] }),
 }))
+
+// Error reports captured by the ErrorReporterPort Postgres adapter (ADR 017).
+// Not a domain concept — this table exists to give us a durable local
+// fallback when Sentry is down or quota is exhausted.
+export const errors = pgTable('errors', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  source: varchar('source', { length: 10 }).notNull(),
+  status: integer('status'),
+  route: text('route'),
+  method: varchar('method', { length: 10 }),
+  message: text('message').notNull(),
+  stack: text('stack'),
+  requestId: uuid('request_id'),
+  userId: uuid('user_id'),
+  context: jsonb('context'),
+})

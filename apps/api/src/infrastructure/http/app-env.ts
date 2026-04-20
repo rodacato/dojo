@@ -7,5 +7,6 @@ import type { users } from '../persistence/drizzle/schema'
 export type AppEnv = {
   Variables: {
     user: typeof users.$inferSelect
+    requestId: string
   }
 }
