@@ -113,4 +113,31 @@ export const admin = {
 
   wipeCourseContent: (id: string) =>
     request<{ ok: boolean }>(`/admin/courses/${id}/wipe`, { method: 'POST' }),
+
+  getErrors: (params: { source?: 'api' | 'web'; status?: number; limit?: number; offset?: number } = {}) => {
+    const qs = new URLSearchParams()
+    if (params.source) qs.set('source', params.source)
+    if (params.status !== undefined) qs.set('status', String(params.status))
+    if (params.limit !== undefined) qs.set('limit', String(params.limit))
+    if (params.offset !== undefined) qs.set('offset', String(params.offset))
+    const suffix = qs.toString()
+    return request<{
+      total: number
+      limit: number
+      offset: number
+      rows: Array<{
+        id: string
+        createdAt: string
+        source: 'api' | 'web'
+        status: number | null
+        route: string | null
+        method: string | null
+        message: string
+        stack: string | null
+        requestId: string | null
+        userId: string | null
+        context: Record<string, unknown> | null
+      }>
+    }>(`/admin/errors${suffix ? `?${suffix}` : ''}`)
+  },
 }
