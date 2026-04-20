@@ -141,27 +141,29 @@ pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript, JS DOM,
 
 ## Observability
 
-Set the Sentry env vars below to enable the primary sink. Leave them empty and the Console + Postgres fallback captures everything regardless.
+Three sinks run in parallel (Console + Postgres + Sentry) via a `CompositeErrorReporter` — see [ADR 017](docs/adr/017-error-reporting-port.md). Sentry is opt-in; empty DSN leaves it off.
+
+**Environment gating.** Sentry is skipped when the environment is `development` or `test`, even if a DSN is present. This stops a prod `.env` copied to a laptop from spraying dev errors into your prod Sentry project. Override by setting `SENTRY_ENVIRONMENT` / `VITE_SENTRY_ENVIRONMENT` to `staging` or `production`.
 
 ```env
-# API (@sentry/node)
-SENTRY_DSN=                  # https://xxx.ingest.sentry.io/yyy
-SENTRY_ENVIRONMENT=production
-SENTRY_TRACES_SAMPLE_RATE=0  # 0..1 — keep at 0 until tracing is used
-SENTRY_RELEASE=              # usually the deploy's git SHA
+# API (@sentry/node) — empty env defaults to NODE_ENV
+SENTRY_DSN=                     # https://xxx.ingest.sentry.io/yyy
+SENTRY_ENVIRONMENT=             # staging | production (empty → NODE_ENV)
+SENTRY_TRACES_SAMPLE_RATE=0     # 0..1 — keep at 0 until tracing is used
+SENTRY_RELEASE=                 # usually the deploy's git SHA
 
-# Web (@sentry/react)
+# Web (@sentry/react) — empty env defaults to Vite MODE
 VITE_SENTRY_DSN=
-VITE_SENTRY_ENVIRONMENT=production
+VITE_SENTRY_ENVIRONMENT=        # staging | production (empty → Vite MODE)
 VITE_SENTRY_RELEASE=
 
-# Source map upload (build-time only, web)
-SENTRY_AUTH_TOKEN=           # token with project:releases scope
+# Source map upload (build-time only, web). All three required together.
+SENTRY_AUTH_TOKEN=              # org token with org:ci scope
 SENTRY_ORG=
-SENTRY_PROJECT=
+SENTRY_PROJECT=dojo-web
 ```
 
-All three source-map vars must be set together for upload to activate; missing any one of them is a no-op. Errors logged in Postgres are listed at `/admin/errors` with filters for source (api/web) and HTTP status.
+Errors logged in Postgres are listed at `/admin/errors` with filters for source (api/web) and HTTP status — useful even when Sentry is down or over quota.
 
 ---
 

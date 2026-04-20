@@ -65,11 +65,25 @@ export const executionQueue = new ExecutionQueue(
   config.PISTON_MAX_CONCURRENT,
 )
 
+// Environments we never want to emit to Sentry even if a DSN is present.
+// Prevents a copied prod `.env` from pumping dev noise into the Sentry
+// project (or burning through the free-tier quota while debugging).
+const SENTRY_SKIPPED_ENVS = new Set(['development', 'test'])
+
 function createErrorReporter(): ErrorReporterPort {
   // Order matters only for logs: stdout first so `kamal app logs` keeps
   // showing errors exactly when they happen.
   const reporters: ErrorReporterPort[] = [new ConsoleErrorReporter(), new PostgresErrorReporter(db)]
-  if (config.SENTRY_DSN) {
+
+  const sentryGated = config.SENTRY_DSN && SENTRY_SKIPPED_ENVS.has(config.SENTRY_ENVIRONMENT)
+  if (sentryGated) {
+    console.warn(
+      `[observability] SENTRY_DSN is set but SENTRY_ENVIRONMENT=${config.SENTRY_ENVIRONMENT} — skipping Sentry adapter. ` +
+        `Set SENTRY_ENVIRONMENT to production|staging to enable.`,
+    )
+  }
+
+  if (config.SENTRY_DSN && !SENTRY_SKIPPED_ENVS.has(config.SENTRY_ENVIRONMENT)) {
     reporters.push(
       new SentryErrorReporter({
         dsn: config.SENTRY_DSN,

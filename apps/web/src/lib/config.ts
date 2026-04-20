@@ -10,7 +10,12 @@ export const WS_URL = API_URL
   ? API_URL.replace(/^https/, 'wss').replace(/^http/, 'ws')
   : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`
 
-// Sentry (optional) — empty string disables the Sentry browser adapter.
+// Sentry (optional). Empty DSN disables the Sentry browser adapter entirely.
+// The environment tag defaults to Vite's build mode — 'development' during
+// `pnpm dev`, 'production' during `pnpm build` — so events land in the right
+// Sentry environment without extra env vars. Override via
+// VITE_SENTRY_ENVIRONMENT when you want to force e.g. 'staging'.
 export const SENTRY_DSN = import.meta.env['VITE_SENTRY_DSN'] ?? ''
-export const SENTRY_ENVIRONMENT = import.meta.env['VITE_SENTRY_ENVIRONMENT'] ?? 'production'
+export const SENTRY_ENVIRONMENT =
+  import.meta.env['VITE_SENTRY_ENVIRONMENT'] ?? import.meta.env.MODE
 export const SENTRY_RELEASE = import.meta.env['VITE_SENTRY_RELEASE'] ?? ''

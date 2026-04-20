@@ -5,11 +5,22 @@ import { SentryBrowserReporter } from './SentryBrowserReporter'
 import { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_RELEASE } from '../config'
 import type { ErrorReporter, WebErrorReport } from './ports'
 
-// Module-level singleton. Sentry adapter only wires up when DSN is present —
-// no DSN, no Sentry call. Console + Api remain active regardless so we never
-// silently lose an event.
+// Environments that never report to Sentry, even when a DSN is present.
+// Keeps dev / test noise out of the Sentry project and the free-tier quota.
+const SENTRY_SKIPPED_ENVS = new Set(['development', 'test'])
+
+// Module-level singleton. Console + Api remain active regardless so we never
+// silently lose an event; the Sentry adapter is additive.
 const reporters: ErrorReporter[] = [new ConsoleErrorReporter(), new ApiErrorReporter()]
-if (SENTRY_DSN) {
+
+if (SENTRY_DSN && SENTRY_SKIPPED_ENVS.has(SENTRY_ENVIRONMENT)) {
+  console.warn(
+    `[observability] VITE_SENTRY_DSN is set but environment=${SENTRY_ENVIRONMENT} — skipping Sentry adapter. ` +
+      `Override via VITE_SENTRY_ENVIRONMENT to force e.g. 'staging'.`,
+  )
+}
+
+if (SENTRY_DSN && !SENTRY_SKIPPED_ENVS.has(SENTRY_ENVIRONMENT)) {
   reporters.push(
     new SentryBrowserReporter({
       dsn: SENTRY_DSN,

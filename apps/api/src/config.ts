@@ -29,7 +29,7 @@ const envSchema = z.object({
   WEB_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   SENTRY_DSN: z.string().default(''),
-  SENTRY_ENVIRONMENT: z.string().default('production'),
+  SENTRY_ENVIRONMENT: z.string().default(''), // defaults to NODE_ENV after parse
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
   SENTRY_RELEASE: z.string().default(''),
 })
@@ -42,5 +42,13 @@ if (!result.success) {
   process.exit(1)
 }
 
-export const config = result.data
+// Derive SENTRY_ENVIRONMENT from NODE_ENV when the caller didn't set it
+// explicitly. Keeps `.env` minimal while still tagging events with the right
+// env name automatically.
+const resolved = {
+  ...result.data,
+  SENTRY_ENVIRONMENT: result.data.SENTRY_ENVIRONMENT || result.data.NODE_ENV,
+}
+
+export const config = resolved
 export type Config = typeof config

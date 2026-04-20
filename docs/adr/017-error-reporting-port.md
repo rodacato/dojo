@@ -84,13 +84,18 @@ export interface ErrorReporterPort {
 Wiring in `container.ts`:
 
 ```ts
+const SENTRY_SKIPPED_ENVS = new Set(['development', 'test'])
+
 function createErrorReporter(): ErrorReporterPort {
-  const reporters: ErrorReporterPort[] = [new ConsoleErrorReporter()]
-  reporters.push(new PostgresErrorReporter(db))
-  if (config.SENTRY_DSN) reporters.push(new SentryErrorReporter(config.SENTRY_DSN))
+  const reporters: ErrorReporterPort[] = [new ConsoleErrorReporter(), new PostgresErrorReporter(db)]
+  if (config.SENTRY_DSN && !SENTRY_SKIPPED_ENVS.has(config.SENTRY_ENVIRONMENT)) {
+    reporters.push(new SentryErrorReporter({ ... }))
+  }
   return new CompositeErrorReporter(reporters)
 }
 ```
+
+The DSN alone is not enough — the Sentry adapter is also gated on `SENTRY_ENVIRONMENT` (defaulted from `NODE_ENV` when empty). `development` and `test` are hard-skipped. Without this gate, a prod `.env` copied to a laptop would pump dev errors into the Sentry production project and burn through the free-tier quota.
 
 Used in `router.ts`:
 
