@@ -115,7 +115,7 @@ export const useCases = {
   getCourseList: new GetCourseList({ courseRepo }),
   getCourseBySlug: new GetCourseBySlug({ courseRepo }),
   executeStep: new ExecuteStep({ executionPort: createExecutionAdapter() }),
-  trackProgress: new TrackProgress({ progressRepo: courseProgressRepo }),
+  trackProgress: new TrackProgress({ progressRepo: courseProgressRepo, courseRepo, eventBus }),
   getCourseProgress: new GetCourseProgress({ progressRepo: courseProgressRepo }),
   mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: courseProgressRepo }),
 }

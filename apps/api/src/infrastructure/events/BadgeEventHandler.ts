@@ -1,8 +1,19 @@
 import { and, count, eq, gte, sql } from 'drizzle-orm'
 import type { SessionCompleted } from '../../domain/practice/events'
+import type { CourseCompleted } from '../../domain/learning/events'
 import type { InMemoryEventBus } from './InMemoryEventBus'
 import { attempts, exercises, sessions, userBadges } from '../persistence/drizzle/schema'
 import type { DB } from '../persistence/drizzle/client'
+
+// Per-course completion badges. Adding a new course means: create its
+// definition row via migration and extend this map. Keeping the mapping in
+// infrastructure (not domain) because it's awarding policy, not a domain
+// invariant.
+const COURSE_BADGE_BY_SLUG: Record<string, string> = {
+  'typescript-fundamentals': 'COURSE_TYPESCRIPT_FUNDAMENTALS',
+  'javascript-dom-fundamentals': 'COURSE_JAVASCRIPT_DOM_FUNDAMENTALS',
+  'sql-deep-cuts': 'COURSE_SQL_DEEP_CUTS',
+}
 
 export function registerBadgeHandlers(eventBus: InMemoryEventBus, db: DB) {
   eventBus.subscribe<SessionCompleted>('SessionCompleted', async (event) => {
@@ -113,6 +124,17 @@ export function registerBadgeHandlers(eventBus: InMemoryEventBus, db: DB) {
         .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
       if (Number(row?.count ?? 0) >= 50) await award(db, userId, 'UNDEFINED_NO_MORE', sessionId)
     }
+  })
+
+  eventBus.subscribe<CourseCompleted>('CourseCompleted', async (event) => {
+    const badgeSlug = COURSE_BADGE_BY_SLUG[event.courseSlug]
+    if (!badgeSlug) return // unknown course — no badge configured, skip silently
+
+    const earned = await getEarnedSlugs(db, event.userId)
+    if (earned.has(badgeSlug)) return
+
+    // session_id is kata-only — course completion badges leave it null.
+    await db.insert(userBadges).values({ userId: event.userId, badgeSlug })
   })
 }
 

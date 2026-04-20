@@ -24,6 +24,9 @@ const ALL_BADGES: Array<{ slug: string; name: string; description: string; categ
   { slug: 'SQL_SURVIVOR', name: 'SQL Survivor', description: 'Completed three kata involving SQL.', category: 'practice', isPrestige: false },
   { slug: 'CONSISTENT', name: 'Consistent', description: 'Thirty consecutive days of practice.', category: 'consistency', isPrestige: true },
   { slug: 'UNDEFINED_NO_MORE', name: 'Undefined No More', description: 'Completed fifty kata. You are no longer undefined.', category: 'mastery', isPrestige: true },
+  { slug: 'COURSE_TYPESCRIPT_FUNDAMENTALS', name: 'TypeScript Fundamentals', description: 'Completed every step of the TypeScript Fundamentals course.', category: 'mastery', isPrestige: false },
+  { slug: 'COURSE_JAVASCRIPT_DOM_FUNDAMENTALS', name: 'DOM Wrangler', description: 'Completed every step of the JavaScript DOM Fundamentals course.', category: 'mastery', isPrestige: false },
+  { slug: 'COURSE_SQL_DEEP_CUTS', name: 'SQL Deep Cuts', description: 'Completed every step of the SQL Deep Cuts course.', category: 'mastery', isPrestige: false },
 ]
 
 type Filter = 'all' | 'earned' | 'locked'

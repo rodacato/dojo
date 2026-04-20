@@ -19,11 +19,17 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 const BADGE_NAMES: Record<string, string> = {
   FIRST_KATA: 'First Kata',
   '5_STREAK': '5 Day Streak',
+  COURSE_TYPESCRIPT_FUNDAMENTALS: 'TypeScript Fundamentals',
+  COURSE_JAVASCRIPT_DOM_FUNDAMENTALS: 'DOM Wrangler',
+  COURSE_SQL_DEEP_CUTS: 'SQL Deep Cuts',
 }
 
 const BADGE_DESCRIPTIONS: Record<string, string> = {
   FIRST_KATA: 'Completed your first kata in the dojo.',
   '5_STREAK': 'Practiced five consecutive days.',
+  COURSE_TYPESCRIPT_FUNDAMENTALS: 'Completed every step of the TypeScript Fundamentals course.',
+  COURSE_JAVASCRIPT_DOM_FUNDAMENTALS: 'Completed every step of the JavaScript DOM Fundamentals course.',
+  COURSE_SQL_DEEP_CUTS: 'Completed every step of the SQL Deep Cuts course.',
 }
 
 const VERDICT_COLORS: Record<string, string> = {
