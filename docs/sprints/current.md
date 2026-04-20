@@ -53,15 +53,15 @@
 
 ## Part 4 — Implementation (post-PRD)
 
-- [ ] Python course v1 skeleton — first 2-3 steps (L1) to validate format
-- [ ] "Ask the sensei" MVP — contextual button, streaming, single prompt
-- [ ] "Code Review" kata — 1 proof-of-concept kata end-to-end
+- [x] **4.1 Ask the sensei MVP** — LLMPort extension + GenerateNudge use case + POST /learn/nudge + rate limiter + COURSE_NUDGE_ENABLED flag + inline UI. Persistence layer (step_nudges table + 👍👎 feedback) shipped in the same sprint.
+- [x] **4.2 "Code Review" kata POC** — `'review'` exercise type + nullable `rubric JSONB` (migration 0019) + buildReviewPrompt + GenerateSessionBody short-circuit + seeded "Inventory drift bug" kata with 5-issue rubric + TypeBadge REVIEW variant + editor wiring.
+- [x] **4.3 Python course skeleton** — `python-for-the-practiced` (status: draft), L1 with 2 steps (intro read + `@dataclass` exercise). Python test harness in-file. L1.3 (match), L1.4 (Enum), L2+L3 slide to S021 per Part 3 checkpoint.
 
 ---
 
 ## Part 5 — Editorial backfill
 
-- [ ] `alternativeApproach` content for 6-8 key steps across TS / JS DOM / SQL
+- [x] `alternativeApproach` content for 6 key steps: TS L1.3 (template literal vs concatenation), TS L1.4 (arrow vs function), TS L2.2 (for-of vs reduce), TS L3.2 (concatenation form of FizzBuzz), JS DOM L1.2 (innerText vs textContent), SQL L1.2 (DENSE_RANK vs RANK).
 
 ---
 
