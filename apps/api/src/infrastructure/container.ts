@@ -32,6 +32,7 @@ import type { CodeExecutionPort, LLMPort } from '../domain/practice/ports'
 import type { ErrorReporterPort } from './observability/ports'
 import { ConsoleErrorReporter } from './observability/ConsoleErrorReporter'
 import { PostgresErrorReporter } from './observability/PostgresErrorReporter'
+import { SentryErrorReporter } from './observability/SentryErrorReporter'
 import { CompositeErrorReporter } from './observability/CompositeErrorReporter'
 
 const sessionRepo = new PostgresSessionRepository(db)
@@ -68,7 +69,16 @@ function createErrorReporter(): ErrorReporterPort {
   // Order matters only for logs: stdout first so `kamal app logs` keeps
   // showing errors exactly when they happen.
   const reporters: ErrorReporterPort[] = [new ConsoleErrorReporter(), new PostgresErrorReporter(db)]
-  // Sentry adapter is opt-in. Wired in Part 7.7 once @sentry/node is added.
+  if (config.SENTRY_DSN) {
+    reporters.push(
+      new SentryErrorReporter({
+        dsn: config.SENTRY_DSN,
+        environment: config.SENTRY_ENVIRONMENT,
+        tracesSampleRate: config.SENTRY_TRACES_SAMPLE_RATE,
+        release: config.SENTRY_RELEASE || undefined,
+      }),
+    )
+  }
   return new CompositeErrorReporter(reporters)
 }
 

@@ -28,6 +28,10 @@ const envSchema = z.object({
   API_PORT: z.coerce.number().default(3001),
   WEB_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  SENTRY_DSN: z.string().default(''),
+  SENTRY_ENVIRONMENT: z.string().default('production'),
+  SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
+  SENTRY_RELEASE: z.string().default(''),
 })
 
 const result = envSchema.safeParse(process.env)
