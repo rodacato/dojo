@@ -1,9 +1,18 @@
 import { Hono } from 'hono'
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import { db } from '../../persistence/drizzle/client'
-import { sessions, exercises, attempts, users } from '../../persistence/drizzle/schema'
+import {
+  sessions,
+  exercises,
+  attempts,
+  users,
+  courses,
+  lessons,
+  steps,
+  courseProgress,
+} from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
 
 export const shareRoutes = new Hono<AppEnv>()
@@ -223,3 +232,181 @@ function extractPullQuote(analysis: string): string | null {
   if (!quote) return null
   return quote.length > 150 ? quote.slice(0, 147) + '...' : quote
 }
+
+// ---------------------------------------------------------------------------
+// Course completion share
+// ---------------------------------------------------------------------------
+
+interface CourseCompletionRow {
+  courseId: string
+  courseTitle: string
+  courseAccentColor: string
+  courseLanguage: string
+  isPublic: boolean
+  totalSteps: number
+  completedSteps: string[]
+  lastAccessedAt: Date
+  username: string
+  avatarUrl: string
+}
+
+async function loadCourseCompletion(
+  slug: string,
+  userId: string,
+): Promise<CourseCompletionRow | null> {
+  // One round-trip: course + progress + step count + user, joined. We
+  // aggregate step count via a correlated subquery so every step of every
+  // lesson is counted without another N+1 risk.
+  const [row] = await db
+    .select({
+      courseId: courses.id,
+      courseTitle: courses.title,
+      courseAccentColor: courses.accentColor,
+      courseLanguage: courses.language,
+      isPublic: courses.isPublic,
+      totalSteps: sql<number>`(
+        SELECT COUNT(*)::int FROM ${steps}
+        INNER JOIN ${lessons} ON ${lessons.id} = ${steps.lessonId}
+        WHERE ${lessons.courseId} = ${courses.id}
+      )`,
+      completedSteps: courseProgress.completedSteps,
+      lastAccessedAt: courseProgress.lastAccessedAt,
+      username: users.username,
+      avatarUrl: users.avatarUrl,
+    })
+    .from(courses)
+    .innerJoin(
+      courseProgress,
+      and(eq(courseProgress.courseId, courses.id), eq(courseProgress.userId, userId)),
+    )
+    .innerJoin(users, eq(users.id, userId))
+    .where(eq(courses.slug, slug))
+    .limit(1)
+
+  if (!row) return null
+
+  const completedSteps = Array.isArray(row.completedSteps)
+    ? (row.completedSteps as string[])
+    : []
+
+  if (completedSteps.length < row.totalSteps || row.totalSteps === 0) {
+    // The user exists and has progress but hasn't finished — share card
+    // is not applicable.
+    return null
+  }
+
+  return {
+    courseId: row.courseId,
+    courseTitle: row.courseTitle,
+    courseAccentColor: row.courseAccentColor,
+    courseLanguage: row.courseLanguage,
+    isPublic: row.isPublic,
+    totalSteps: row.totalSteps,
+    completedSteps,
+    lastAccessedAt: row.lastAccessedAt,
+    username: row.username,
+    avatarUrl: row.avatarUrl,
+  }
+}
+
+// GET /share/course/:slug/:userId.png — OG image for course completion.
+shareRoutes.get('/share/course/:slug/:userId{.+\\.png$}', async (c) => {
+  const slug = c.req.param('slug')
+  const userIdRaw = c.req.param('userId').replace(/\.png$/, '')
+
+  const completion = await loadCourseCompletion(slug, userIdRaw)
+  if (!completion) return c.json({ error: 'Completion not found' }, 404)
+
+  const font = await getFont()
+  const completedDate = new Date(completion.lastAccessedAt).toLocaleDateString('en-US', {
+    month: 'short',
+    year: 'numeric',
+  })
+
+  const element = h(
+    'div',
+    {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      width: '1200px',
+      height: '630px',
+      backgroundColor: '#0F172A',
+      padding: '60px',
+      fontFamily: 'JetBrains Mono',
+      color: '#F8FAFC',
+    },
+    h(
+      'div',
+      { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+      h('span', { fontSize: '28px', color: '#6366F1', letterSpacing: '-0.05em' }, 'dojo_'),
+      h(
+        'span',
+        {
+          fontSize: '18px',
+          color: completion.courseAccentColor,
+          padding: '6px 16px',
+          border: `2px solid ${completion.courseAccentColor}`,
+          borderRadius: '4px',
+        },
+        'COURSE COMPLETE',
+      ),
+    ),
+    h(
+      'div',
+      { display: 'flex', flexDirection: 'column', gap: '12px', flex: '1', justifyContent: 'center' },
+      h('span', { fontSize: '18px', color: '#94A3B8' }, 'Completed'),
+      h('span', { fontSize: '48px', color: '#F8FAFC', lineHeight: '1.2' }, completion.courseTitle),
+      h(
+        'span',
+        { fontSize: '18px', color: completion.courseAccentColor },
+        `${completion.totalSteps} step${completion.totalSteps === 1 ? '' : 's'} · ${completion.courseLanguage}`,
+      ),
+    ),
+    h(
+      'div',
+      { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' },
+      h('span', { fontSize: '16px', color: '#64748B' }, `@${completion.username}`),
+      h('span', { fontSize: '16px', color: '#64748B' }, completedDate),
+    ),
+  )
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const svg = await satori(element as any, {
+    width: 1200,
+    height: 630,
+    fonts: [{ name: 'JetBrains Mono', data: font, weight: 400, style: 'normal' as const }],
+  })
+
+  const pngBuffer = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng()
+
+  return new Response(pngBuffer, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000, immutable',
+    },
+  })
+})
+
+// GET /share/course/:slug/:userId — JSON payload for the course share page.
+shareRoutes.get('/share/course/:slug/:userId', async (c) => {
+  const slug = c.req.param('slug')
+  const userId = c.req.param('userId')
+
+  if (userId.endsWith('.png')) return c.notFound()
+
+  const completion = await loadCourseCompletion(slug, userId)
+  if (!completion) return c.json({ error: 'Not found' }, 404)
+
+  return c.json({
+    courseSlug: slug,
+    courseTitle: completion.courseTitle,
+    courseLanguage: completion.courseLanguage,
+    courseAccentColor: completion.courseAccentColor,
+    totalSteps: completion.totalSteps,
+    completedAt: completion.lastAccessedAt.toISOString(),
+    username: completion.username,
+    avatarUrl: completion.avatarUrl,
+  })
+})

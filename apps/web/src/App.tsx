@@ -29,6 +29,7 @@ const ChangelogPage = lazy(() => import('./pages/ChangelogPage').then(m => ({ de
 const OpenSourcePage = lazy(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })))
 const PublicProfilePage = lazy(() => import('./pages/PublicProfilePage').then(m => ({ default: m.PublicProfilePage })))
 const SharePage = lazy(() => import('./pages/SharePage').then(m => ({ default: m.SharePage })))
+const CourseSharePage = lazy(() => import('./pages/CourseSharePage').then(m => ({ default: m.CourseSharePage })))
 const LearnPage = lazy(() => import('./pages/LearnPage').then(m => ({ default: m.LearnPage })))
 const CoursePlayerPage = lazy(() => import('./pages/CoursePlayerPage').then(m => ({ default: m.CoursePlayerPage })))
 const LeaderboardPage = lazy(() => import('./pages/LeaderboardPage').then(m => ({ default: m.LeaderboardPage })))
@@ -67,6 +68,7 @@ export function App() {
           <Route path="/open-source" element={<LazyRoute><OpenSourcePage /></LazyRoute>} />
           <Route path="/u/:username" element={<LazyRoute><PublicProfilePage /></LazyRoute>} />
           <Route path="/share/:id" element={<LazyRoute><SharePage /></LazyRoute>} />
+          <Route path="/share/course/:slug/:userId" element={<LazyRoute><CourseSharePage /></LazyRoute>} />
           <Route path="/learn" element={<LazyRoute><LearnPage /></LazyRoute>} />
           <Route path="/learn/:slug" element={<LazyRoute><CoursePlayerPage /></LazyRoute>} />
 
