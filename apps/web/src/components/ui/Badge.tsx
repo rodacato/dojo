@@ -4,6 +4,9 @@ const TYPE_STYLES: Record<ExerciseType, string> = {
   code: 'bg-type-code text-primary',
   chat: 'bg-type-chat text-primary',
   whiteboard: 'bg-type-whiteboard text-primary',
+  // Review kata (PRD 027) — uses the accent colour to distinguish it as a
+  // prose-evaluated format without needing a new design token.
+  review: 'bg-accent/20 text-accent border border-accent/30',
 }
 
 const DIFFICULTY_STYLES: Record<Difficulty, string> = {

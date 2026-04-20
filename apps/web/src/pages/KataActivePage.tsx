@@ -156,7 +156,11 @@ export function KataActivePage() {
   const { exercise } = session
   const isCode = exercise.type === 'code'
   const isWhiteboard = exercise.type === 'whiteboard'
-  const orientation = isMobile || (!isCode && !isWhiteboard) ? 'vertical' : 'horizontal'
+  const isReview = exercise.type === 'review'
+  // Horizontal split for side-by-side formats (diff + review panel works
+  // exactly like code + response). Chat stays vertical — the body is prose.
+  const orientation =
+    isMobile || (!isCode && !isWhiteboard && !isReview) ? 'vertical' : 'horizontal'
 
   return (
     <div className="h-screen bg-base flex flex-col overflow-hidden">
@@ -239,7 +243,15 @@ export function KataActivePage() {
                 <MermaidEditor value={userResponse} onChange={setUserResponse} />
               </Suspense>
             ) : (
-              <ChatEditor value={userResponse} onChange={setUserResponse} />
+              <ChatEditor
+                value={userResponse}
+                onChange={setUserResponse}
+                placeholder={
+                  isReview
+                    ? 'Write your review. Focus on correctness — what would you ask to change before merging?'
+                    : undefined
+                }
+              />
             )}
           </div>
           {/* Submit via top bar button */}
@@ -249,7 +261,15 @@ export function KataActivePage() {
   )
 }
 
-function ChatEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function ChatEditor({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder?: string
+}) {
   const [mono, setMono] = useState(false)
   const wordCount = value.split(/\s+/).filter(Boolean).length
 
@@ -258,7 +278,7 @@ function ChatEditor({ value, onChange }: { value: string; onChange: (v: string) 
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Start writing. Think out loud. The sensei reads everything."
+        placeholder={placeholder ?? 'Start writing. Think out loud. The sensei reads everything.'}
         spellCheck={false}
         className={`flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm resize-none focus:outline-none focus:border-accent transition-colors ${
           mono ? 'font-mono' : 'font-sans'
