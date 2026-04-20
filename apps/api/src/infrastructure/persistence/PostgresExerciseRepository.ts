@@ -6,6 +6,7 @@ import type { Difficulty, ExerciseStatus, ExerciseType } from '../../domain/cont
 import { ExerciseId, UserId, VariationId } from '../../domain/shared/types'
 import type { DB } from './drizzle/client'
 import { exercises, variations } from './drizzle/schema'
+import type { Rubric } from '@dojo/shared'
 
 export class PostgresExerciseRepository implements ExerciseRepositoryPort {
   constructor(private readonly db: DB) {}
@@ -184,7 +185,7 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
       topics: row.topics as string[],
       testCode: row.testCode ?? null,
       starterCode: row.starterCode ?? null,
-      rubric: (row.rubric as import('@dojo/shared').Rubric | null) ?? null,
+      rubric: (row.rubric as Rubric | null) ?? null,
       variations: domainVariations,
       version: row.version ?? 1,
       adminNotes: row.adminNotes ?? null,
@@ -250,9 +251,7 @@ export class PostgresExerciseRepository implements ExerciseRepositoryPort {
         topics: row.topics,
         testCode: (row as Record<string, unknown>).test_code as string | null ?? null,
         starterCode: (row as Record<string, unknown>).starter_code as string | null ?? null,
-        rubric:
-          ((row as Record<string, unknown>).rubric as import('@dojo/shared').Rubric | null) ??
-          null,
+        rubric: ((row as Record<string, unknown>).rubric as Rubric | null) ?? null,
         variations: domainVariations,
         version: (row as Record<string, unknown>).version as number ?? 1,
         adminNotes: (row as Record<string, unknown>).admin_notes as string | null ?? null,

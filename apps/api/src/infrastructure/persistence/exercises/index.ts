@@ -9,6 +9,7 @@ import { processExercises } from './process'
 import { testCodeExercises } from './testcode-exercises'
 import { debuggingExercises } from './debugging'
 import { sqlAdvancedExercises } from './sql-advanced'
+import { reviewExercises } from './review'
 
 export type { SeedExercise } from './types'
 export { uuidv5 } from './types'
@@ -25,4 +26,5 @@ export const EXERCISES = [
   ...testCodeExercises,
   ...debuggingExercises,
   ...sqlAdvancedExercises,
+  ...reviewExercises,
 ]

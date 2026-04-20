@@ -1,7 +1,8 @@
 import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt, buildReviewPrompt } from '../../prompts/sensei'
+import type { Rubric } from '@dojo/shared'
 import { config } from '../../config'
 import { LLMParseError } from './AnthropicStreamAdapter'
 
@@ -26,6 +27,7 @@ export class OpenAIStreamAdapter implements LLMPort {
     userResponse: string
     history: ConversationTurn[]
     category?: string
+    rubric?: Rubric
   }): AsyncIterable<EvaluationToken> {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
@@ -169,8 +171,25 @@ function buildMessages(params: {
   userResponse: string
   history: ConversationTurn[]
   category?: string
+  rubric?: Rubric
 }): ChatMessage[] {
   const messages: ChatMessage[] = []
+
+  // Review kata short-circuit — same rule as the Anthropic adapter.
+  if (params.rubric) {
+    messages.push({
+      role: 'user',
+      content: buildReviewPrompt({
+        ownerRole: params.ownerRole,
+        ownerContext: params.ownerContext,
+        exerciseTitle: '',
+        diff: params.sessionBody,
+        review: params.userResponse,
+        rubric: params.rubric,
+      }),
+    })
+    return messages
+  }
 
   if (params.history.length === 0) {
     messages.push({

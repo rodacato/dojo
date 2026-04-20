@@ -2,6 +2,7 @@ import type { DomainEvent } from '../shared/events'
 import type { SessionId, UserId } from '../shared/types'
 import type { Session } from './session'
 import type { EvaluationToken } from './values'
+import type { Rubric } from '@dojo/shared'
 
 export interface ConversationTurn {
   userResponse: string
@@ -16,6 +17,10 @@ export interface LLMPort {
     userResponse: string
     history: ConversationTurn[]
     category?: string
+    // Review kata context (PRD 027). When present, adapters MUST switch to
+    // the review prompt variant and evaluate the learner's prose against
+    // the rubric rather than running a generic code evaluation.
+    rubric?: Rubric
   }): AsyncIterable<EvaluationToken>
 
   generateSessionBody(params: {

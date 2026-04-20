@@ -2,7 +2,8 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt, buildReviewPrompt } from '../../prompts/sensei'
+import type { Rubric } from '@dojo/shared'
 import { config } from '../../config'
 
 export class AnthropicStreamAdapter implements LLMPort {
@@ -22,6 +23,7 @@ export class AnthropicStreamAdapter implements LLMPort {
     userResponse: string
     history: ConversationTurn[]
     category?: string
+    rubric?: Rubric
   }): AsyncIterable<EvaluationToken> {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
@@ -120,8 +122,26 @@ function buildMessages(params: {
   userResponse: string
   history: ConversationTurn[]
   category?: string
+  rubric?: Rubric
 }): Anthropic.Messages.MessageParam[] {
   const messages: Anthropic.Messages.MessageParam[] = []
+
+  // Review kata: rubric presence switches the whole prompt. No history is
+  // expected — review kata don't have follow-ups.
+  if (params.rubric) {
+    messages.push({
+      role: 'user',
+      content: buildReviewPrompt({
+        ownerRole: params.ownerRole,
+        ownerContext: params.ownerContext,
+        exerciseTitle: '',
+        diff: params.sessionBody,
+        review: params.userResponse,
+        rubric: params.rubric,
+      }),
+    })
+    return messages
+  }
 
   if (params.history.length === 0) {
     // First evaluation — single user message with the full prompt

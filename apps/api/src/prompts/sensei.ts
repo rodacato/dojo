@@ -1,3 +1,5 @@
+import type { Rubric } from '@dojo/shared'
+
 export interface PromptParams {
   ownerRole: string
   ownerContext: string
@@ -262,6 +264,105 @@ Write the kata body that this developer will see — the specific scenario, cont
 
 // Canonical export — the winning variation (update after running scripts/test-llm.ts)
 export const buildPrompt = buildPromptA
+
+// Code Review kata prompt (PRD 027). The diff + context arrive via
+// `sessionBody`; the hidden rubric is injected here for the sensei to grade
+// the learner's review against. Rules baked in:
+// - Credit issues the reviewer caught AND legitimate issues not in the rubric.
+// - Flag missed rubric issues by severity.
+// - Keep the evaluation prose on-voice with the rest of the sensei output.
+export interface ReviewPromptParams {
+  ownerRole: string
+  ownerContext: string
+  exerciseTitle: string
+  diff: string
+  review: string
+  rubric: Rubric
+}
+
+export function buildReviewPrompt(p: ReviewPromptParams): string {
+  const issuesBlock = p.rubric.expectedIssues
+    .map(
+      (it, i) =>
+        `  ${i + 1}. [${it.severity.toUpperCase()}] ${it.title}\n     why: ${it.why}`,
+    )
+    .join('\n')
+
+  const contextNotes = p.rubric.contextNotes
+    ? `\n\nAUTHOR CONTEXT (hidden from the reviewer):\n${p.rubric.contextNotes}`
+    : ''
+
+  return `You are ${p.ownerRole}.
+
+${p.ownerContext}
+
+---
+
+You are evaluating a developer's code review of the following pull-request diff.
+
+PR TITLE:
+${p.exerciseTitle}
+
+DIFF:
+${p.diff}
+
+---
+
+THE DEVELOPER'S REVIEW:
+${p.review}
+
+---
+
+HIDDEN RUBRIC — issues you expected a strong review to catch:
+
+${issuesBlock}${contextNotes}
+
+---
+
+Evaluate the review against the rubric. Follow these rules strictly:
+
+- Credit every rubric issue the reviewer caught. Be explicit about which.
+- Flag every rubric issue the reviewer missed. Weight misses by severity —
+  a missed HIGH dominates a missed LOW.
+- If the reviewer caught a legitimate issue that is NOT in the rubric, credit
+  it as an additional caught issue. Do not penalise the reviewer for exceeding
+  the rubric.
+- Judge the *explanations* as well as the catches. A reviewer who says "race
+  condition on line 34" without a 'why' is weaker than one who says "this is
+  a race condition on line 34 — reads and writes to inventory are interleaved
+  without the lock".
+- No code in the evaluation prose.
+
+Emit your verdict as prose (≤ 250 words) followed by the structured evaluation
+block.
+
+INSIGHT SUMMARY:
+After your prose, emit:
+
+<strengths>
+- 2-3 specific things this review did well
+</strengths>
+
+<improvements>
+- 2-3 specific things this review could have done better
+</improvements>
+
+<approach_note>
+One sentence on what a senior reviewer would have added.
+</approach_note>
+
+Then the structured evaluation:
+
+<evaluation>
+{
+  "verdict": "passed" | "passed_with_notes" | "needs_work",
+  "analysis": "<your full prose, repeated>",
+  "topicsToReview": ["<topic>", ...],
+  "followUpQuestion": null,
+  "isFinalEvaluation": true
+}
+</evaluation>`
+}
 
 // Course-player nudge prompt — see PRD 026.
 //

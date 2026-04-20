@@ -22,6 +22,14 @@ export class GenerateSessionBody {
     const variation = exercise.variations.find((v) => v.id === params.variationId)
     if (!variation) return
 
+    // Review kata (PRD 027) ship with a deterministic diff authored directly
+    // into the exercise description. Running it through the LLM would drift
+    // the diff every session, which defeats the rubric. Skip the call.
+    if (exercise.type === 'review') {
+      await this.deps.sessionRepo.updateBody(params.sessionId, exercise.description)
+      return
+    }
+
     const body = await this.deps.llm.generateSessionBody({
       ownerRole: variation.ownerRole,
       ownerContext: variation.ownerContext,

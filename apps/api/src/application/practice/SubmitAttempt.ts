@@ -3,6 +3,7 @@ import type { SessionId } from '../../domain/shared/types'
 import { Attempt } from '../../domain/practice/attempt'
 import type { ConversationTurn, EventBusPort, LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
+import type { Rubric } from '@dojo/shared'
 
 interface Deps {
   sessionRepo: SessionRepositoryPort
@@ -20,6 +21,7 @@ export class SubmitAttempt {
     ownerContext: string
     executionContext?: string // test results injected before LLM evaluation
     category?: string // exercise.category — shapes sensei prompt (e.g. debugging)
+    rubric?: Rubric // review kata rubric — switches the adapter to the review prompt
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
     if (!session) throw new SessionNotFoundError(params.sessionId)
@@ -45,6 +47,7 @@ export class SubmitAttempt {
       userResponse: userResponseWithContext,
       history,
       category: params.category,
+      rubric: params.rubric,
     })) {
       yield token
       if (token.isFinal) {
