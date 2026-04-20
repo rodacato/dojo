@@ -50,7 +50,11 @@ function buildDeps(course: Course | null = buildCourse(), nudgeText = 'Re-check 
     generateSessionBody: vi.fn(),
     nudge: vi.fn().mockResolvedValue(nudgeText),
   }
-  return { courseRepo, llm }
+  const nudgeRepo = {
+    create: vi.fn().mockResolvedValue('nudge-1'),
+    setFeedback: vi.fn(),
+  }
+  return { courseRepo, llm, nudgeRepo }
 }
 
 describe('GenerateNudge', () => {
@@ -62,10 +66,19 @@ describe('GenerateNudge', () => {
       courseSlug: 'test-course',
       stepId: '00000000-0000-0000-0000-000000000001',
       userCode: 'function sum(a, b) { return a - b }',
+      userId: null,
     })
 
     expect(result.nudge).toBe('Re-check the return path.')
+    expect(result.id).toBe('nudge-1')
     expect(result.stepId).toBe('00000000-0000-0000-0000-000000000001')
+    expect(deps.nudgeRepo.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: null,
+        stepId: '00000000-0000-0000-0000-000000000001',
+        response: 'Re-check the return path.',
+      }),
+    )
   })
 
   it('passes the step instruction and testCode to the LLM', async () => {
@@ -77,6 +90,7 @@ describe('GenerateNudge', () => {
       stepId: '00000000-0000-0000-0000-000000000001',
       userCode: 'function sum(a, b) { return a - b }',
       stderr: 'expected 3 got -1',
+      userId: 'user-42',
     })
 
     expect(deps.llm.nudge).toHaveBeenCalledWith(
@@ -98,6 +112,7 @@ describe('GenerateNudge', () => {
         courseSlug: 'missing',
         stepId: '00000000-0000-0000-0000-000000000001',
         userCode: '',
+        userId: null,
       }),
     ).rejects.toBeInstanceOf(StepNotFoundError)
   })
@@ -111,6 +126,7 @@ describe('GenerateNudge', () => {
         courseSlug: 'test-course',
         stepId: '00000000-0000-0000-0000-000000000099',
         userCode: '',
+        userId: null,
       }),
     ).rejects.toBeInstanceOf(StepNotFoundError)
   })

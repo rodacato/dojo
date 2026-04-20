@@ -13,6 +13,8 @@ import { TrackProgress } from '../application/learning/TrackProgress'
 import { GetCourseProgress } from '../application/learning/GetCourseProgress'
 import { MergeAnonymousProgress } from '../application/learning/MergeAnonymousProgress'
 import { GenerateNudge } from '../application/learning/GenerateNudge'
+import { SubmitNudgeFeedback } from '../application/learning/SubmitNudgeFeedback'
+import { PostgresNudgeRepository } from './persistence/PostgresNudgeRepository'
 import { db } from './persistence/drizzle/client'
 import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
@@ -42,6 +44,7 @@ const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
 export const courseRepo = new PostgresCourseRepository(db)
 const courseProgressRepo = new PostgresCourseProgressRepository(db)
+const nudgeRepo = new PostgresNudgeRepository(db)
 
 function createLLMAdapter(): LLMPort {
   switch (config.LLM_ADAPTER_FORMAT) {
@@ -119,5 +122,6 @@ export const useCases = {
   trackProgress: new TrackProgress({ progressRepo: courseProgressRepo, courseRepo, eventBus }),
   getCourseProgress: new GetCourseProgress({ progressRepo: courseProgressRepo }),
   mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: courseProgressRepo }),
-  generateNudge: new GenerateNudge({ courseRepo, llm }),
+  generateNudge: new GenerateNudge({ courseRepo, llm, nudgeRepo }),
+  submitNudgeFeedback: new SubmitNudgeFeedback({ nudgeRepo }),
 }

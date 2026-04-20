@@ -250,6 +250,18 @@ export const courseProgressRelations = relations(courseProgress, ({ one }) => ({
   user: one(users, { fields: [courseProgress.userId], references: [users.id] }),
 }))
 
+// "Ask the sensei" nudges (PRD 026). Logged so we can iterate the nudge
+// prompt against real usage without instrumenting the LLM adapter.
+export const stepNudges = pgTable('step_nudges', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  userId: uuid('user_id').references(() => users.id),
+  stepId: uuid('step_id').notNull().references(() => steps.id),
+  prompt: text('prompt').notNull(),
+  response: text('response').notNull(),
+  feedback: varchar('feedback', { length: 8 }),
+})
+
 // Error reports captured by the ErrorReporterPort Postgres adapter (ADR 017).
 // Not a domain concept — this table exists to give us a durable local
 // fallback when Sentry is down or quota is exhausted.

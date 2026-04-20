@@ -332,10 +332,11 @@ function StepEditor({
   const [solutionError, setSolutionError] = useState<string | null>(null)
   // "Ask the sensei" nudge state (PRD 026). `nudgeDisabled` latches true when
   // the API 404s — that signals COURSE_NUDGE_ENABLED=false on the server.
-  const [nudge, setNudge] = useState<string | null>(null)
+  const [nudge, setNudge] = useState<{ id: string; text: string } | null>(null)
   const [nudgeLoading, setNudgeLoading] = useState(false)
   const [nudgeError, setNudgeError] = useState<string | null>(null)
   const [nudgeDisabled, setNudgeDisabled] = useState(false)
+  const [nudgeFeedback, setNudgeFeedback] = useState<'up' | 'down' | null>(null)
 
   const isIframeLang = language === 'javascript-dom'
   const stepTitle = extractStepTitle(step)
@@ -353,12 +354,14 @@ function StepEditor({
     setNudge(null)
     setNudgeError(null)
     setNudgeLoading(false)
+    setNudgeFeedback(null)
   }, [step.id, step.starterCode])
 
   async function askSensei() {
     if (nudgeLoading || nudgeDisabled) return
     setNudgeLoading(true)
     setNudgeError(null)
+    setNudgeFeedback(null)
     try {
       const response = await api.requestNudge({
         courseSlug,
@@ -371,11 +374,23 @@ function StepEditor({
         setNudgeDisabled(true)
         return
       }
-      setNudge(response.nudge)
+      setNudge({ id: response.id, text: response.nudge })
     } catch (err) {
       setNudgeError(err instanceof Error ? err.message : 'The sensei is unavailable right now.')
     } finally {
       setNudgeLoading(false)
+    }
+  }
+
+  async function rateNudge(rating: 'up' | 'down') {
+    if (!nudge || nudgeFeedback) return
+    // Optimistic — we only use the signal for prompt iteration, a silent
+    // failure to persist is not worth alerting the learner about.
+    setNudgeFeedback(rating)
+    try {
+      await api.submitNudgeFeedback(nudge.id, rating)
+    } catch {
+      // swallow
     }
   }
 
@@ -502,7 +517,7 @@ function StepEditor({
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs font-mono text-accent uppercase tracking-wider">sensei</p>
               <button
-                onClick={() => { setNudge(null); setNudgeError(null) }}
+                onClick={() => { setNudge(null); setNudgeError(null); setNudgeFeedback(null) }}
                 className="text-xs font-mono text-muted hover:text-secondary transition-colors"
                 aria-label="Dismiss nudge"
               >
@@ -510,7 +525,32 @@ function StepEditor({
               </button>
             </div>
             {nudge && (
-              <p className="text-sm text-secondary leading-relaxed whitespace-pre-wrap">{nudge}</p>
+              <>
+                <p className="text-sm text-secondary leading-relaxed whitespace-pre-wrap">{nudge.text}</p>
+                <div className="flex items-center gap-2 mt-2 text-xs font-mono">
+                  {nudgeFeedback ? (
+                    <span className="text-muted">Thanks — noted.</span>
+                  ) : (
+                    <>
+                      <span className="text-muted">Did this help?</span>
+                      <button
+                        onClick={() => rateNudge('up')}
+                        className="text-muted hover:text-success transition-colors"
+                        aria-label="This nudge helped"
+                      >
+                        👍
+                      </button>
+                      <button
+                        onClick={() => rateNudge('down')}
+                        className="text-muted hover:text-danger transition-colors"
+                        aria-label="This nudge did not help"
+                      >
+                        👎
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
             )}
             {nudgeError && (
               <p className="text-sm text-danger leading-relaxed">{nudgeError}</p>

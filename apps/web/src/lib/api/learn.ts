@@ -72,7 +72,7 @@ export const learn = {
     stderr?: string
   }) => {
     try {
-      return await request<{ nudge: string; stepId: string }>('/learn/nudge', {
+      return await request<{ id: string; nudge: string; stepId: string }>('/learn/nudge', {
         method: 'POST',
         body: JSON.stringify(params),
         redirectOnAuth: false,
@@ -84,4 +84,11 @@ export const learn = {
       throw err
     }
   },
+
+  submitNudgeFeedback: (id: string, feedback: 'up' | 'down') =>
+    request<{ ok: boolean }>(`/learn/nudge/${id}/feedback`, {
+      method: 'POST',
+      body: JSON.stringify({ feedback }),
+      redirectOnAuth: false,
+    }),
 }

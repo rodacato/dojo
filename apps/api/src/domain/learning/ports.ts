@@ -24,3 +24,18 @@ export interface CourseProgressPort {
   save(progress: CourseProgress): Promise<void>
   deleteAnonymous(sessionId: string): Promise<void>
 }
+
+export type NudgeFeedback = 'up' | 'down'
+
+export interface NudgeRepositoryPort {
+  // Returns the inserted nudge's id so the caller can expose it to the
+  // client for later feedback calls.
+  create(params: {
+    userId: string | null
+    stepId: string
+    prompt: string
+    response: string
+  }): Promise<string>
+
+  setFeedback(id: string, feedback: NudgeFeedback): Promise<void>
+}

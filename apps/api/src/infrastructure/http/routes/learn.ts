@@ -260,8 +260,13 @@ learnRoutes.post('/learn/nudge', nudgeLimiter, optionalAuth, async (c) => {
     return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
   }
 
+  const user = c.get('user')
+
   try {
-    const result = await useCases.generateNudge.execute(parsed.data)
+    const result = await useCases.generateNudge.execute({
+      ...parsed.data,
+      userId: user?.id ?? null,
+    })
     return c.json(result)
   } catch (err) {
     if (err instanceof StepNotFoundError) {
@@ -269,4 +274,25 @@ learnRoutes.post('/learn/nudge', nudgeLimiter, optionalAuth, async (c) => {
     }
     throw err
   }
+})
+
+// POST /learn/nudge/:id/feedback — thumbs up / down for prompt iteration.
+const nudgeFeedbackSchema = z.object({
+  feedback: z.enum(['up', 'down']),
+})
+
+learnRoutes.post('/learn/nudge/:id/feedback', nudgeLimiter, optionalAuth, async (c) => {
+  const id = c.req.param('id')
+  if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return c.json({ error: 'Invalid nudge id' }, 422)
+  }
+
+  const body = await c.req.json().catch(() => null)
+  const parsed = nudgeFeedbackSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+  }
+
+  await useCases.submitNudgeFeedback.execute({ id, feedback: parsed.data.feedback })
+  return c.json({ ok: true })
 })
