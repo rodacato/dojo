@@ -107,9 +107,9 @@ export function CoursePlayerPage() {
 
   if (!course) return <PageLoader />
 
-  const activeStep = course.lessons
-    .flatMap((l) => l.steps)
-    .find((s) => s.id === activeStepId)
+  const allSteps = course.lessons.flatMap((l) => l.steps)
+  const activeStep = allSteps.find((s) => s.id === activeStepId)
+  const courseComplete = allSteps.length > 0 && completedSteps.length >= allSteps.length
 
   return (
     <div className="min-h-screen bg-bg flex">
@@ -153,6 +153,15 @@ export function CoursePlayerPage() {
             {course.title}
           </span>
         </div>
+
+        {courseComplete && user && (
+          <CourseCompleteBanner
+            courseTitle={course.title}
+            courseSlug={course.slug}
+            accentColor={course.accentColor}
+            userId={user.id}
+          />
+        )}
 
         {activeStep ? (
           <StepContent
@@ -848,4 +857,79 @@ function MarkdownContent({ content }: { content: string }) {
     )
   }
   return <PlainMarkdown content={content} />
+}
+
+// ── CourseCompleteBanner ────────────────────────────────────────
+
+function CourseCompleteBanner({
+  courseTitle,
+  courseSlug,
+  accentColor,
+  userId,
+}: {
+  courseTitle: string
+  courseSlug: string
+  accentColor: string
+  userId: string
+}) {
+  const [copied, setCopied] = useState(false)
+  const shareUrl = `${window.location.origin}/share/course/${courseSlug}/${userId}`
+
+  async function handleShare() {
+    const text = `Completed ${courseTitle} in dojo_`
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'dojo_ course complete', text, url: shareUrl })
+        return
+      } catch {
+        // Fall through to clipboard copy if the share dialog is dismissed.
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(`${text}\n${shareUrl}`)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
+        '_blank',
+      )
+    }
+  }
+
+  return (
+    <section
+      className="border-b p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+      style={{ borderColor: `${accentColor}33`, backgroundColor: `${accentColor}11` }}
+    >
+      <div>
+        <p
+          className="text-xs font-mono uppercase tracking-widest mb-1"
+          style={{ color: accentColor }}
+        >
+          Course complete
+        </p>
+        <p className="text-sm text-primary font-mono">
+          Nice work — every step of {courseTitle} is done.
+        </p>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <button
+          onClick={handleShare}
+          className="px-4 py-2 font-mono text-xs uppercase tracking-wider rounded-sm transition-colors text-primary"
+          style={{ backgroundColor: accentColor }}
+        >
+          {copied ? 'Copied!' : 'Share completion'}
+        </button>
+        <a
+          href={shareUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="px-3 py-2 border border-border text-secondary font-mono text-xs uppercase tracking-wider rounded-sm hover:border-accent hover:text-primary transition-colors"
+        >
+          View card
+        </a>
+      </div>
+    </section>
+  )
 }
