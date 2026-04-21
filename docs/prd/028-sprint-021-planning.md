@@ -200,6 +200,6 @@ Not required for done:
 ## Next step
 
 - [x] User decided scope: 2-3 month friends cohort, no publicity — Option B.
+- [x] Initial cohort: creator + 1 friend (single invite dispatched end-of-sprint as sprint validation).
 - [ ] Convert to spec: `docs/specs/026-sprint-021-stability.md`
 - [ ] Day-1 audit walkthrough scheduled
-- [ ] First invite dispatch date (targets the end of the sprint as validation)
