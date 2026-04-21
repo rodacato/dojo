@@ -31,6 +31,10 @@ Deferred desde Sprint 019:
 - **Retrieval interleaving** — Lesson N tests usan identifiers introducidos en Lesson N-1. §3 del framework. Necesita PRD propio antes de sprint (Dr. Elif Yıldız)
 - **Diff visual** entre la solución del learner y la `step.solution` reference. Polish posterior al "Alternative approach" ya shippeado en Sprint 019 (Soren)
 
+Carry-forward from Sprint 020:
+
+- **Dashboard EXPLAIN ANALYZE re-run** — S020 ran the 3 hottest queries against prod; plans were clean but DB volume was too small to validate the sprint-012 N+1 fix. Re-run once the alpha cohort has been active 2-3 weeks to catch seq scans that should have become index scans.
+
 Conditional on Sprint 020 checkpoint:
 
 - **Python course full curriculum** — PRD 025 shippea en S020; el curso completo (2-3 sub-cursos × 8-12 steps) es S021+ (Nadia S7)

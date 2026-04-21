@@ -64,6 +64,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-017 — SQL Deep Cuts + Public Courses + Debugging Sensei](sprints/archive/sprint-017-sql-deep-cuts.md) | SQL Deep Cuts course en vivo (público), progreso anónimo + merge al loguearse, SQL katas reescritos a SQLite, sensei prompt con contexto `debugging` | ✅ Closed |
 | [sprint-018 — Course content quality v1](sprints/archive/sprint-018-course-content-quality.md) | Step type `exercise` reintroducido, `step.title` + `step.solution` en schema, reclasificación de los 29 steps, audits por curso (TS / JS DOM / SQL), solution reveal post-pass, validate:courses CI gate | ✅ Closed |
 | [sprint-019 — Course content quality v2](sprints/archive/sprint-019-course-quality-v2.md) | Semantic slots renderer, external references per course (framework §8), alternative approach post-pass, SQL L1.4 LAG/LEAD intro | ✅ Closed |
+| [sprint-020 — Phase 1 expansion](sprints/archive/sprint-020-phase1-expansion.md) | UX audit + 5 fixes, course acquisition loop (share card + badges + public courses), Ask the sensei MVP, Code Review kata POC, Python course skeleton, ErrorReporterPort observability pipeline, Piston prod recovery (ADR 018) | ✅ Closed |
 
 ---
 
