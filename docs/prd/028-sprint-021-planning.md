@@ -1,28 +1,38 @@
-# PRD-028: Sprint 021 — Launch readiness
+# PRD-028: Sprint 021 — Stability for the friends cohort
 
-> **Status:** exploring
+> **Status:** advancing to spec
 > **Date:** 2026-04-21
-> **Author:** Lucía Navarro (S4) — panel input: Priya Menon (C1), Soren Bachmann (C6), Amara Diallo (C7), Tomás Ríos (C3), Marta Kowalczyk (C5), Yemi Okafor (C4), Hiroshi Nakamura (S1), Joel Ferreira (S3, situational), Valentina Cruz (S2, situational)
+> **Author:** Lucía Navarro (S4) — panel input: Priya Menon (C1), Soren Bachmann (C6), Amara Diallo (C7), Tomás Ríos (C3), Marta Kowalczyk (C5), Yemi Okafor (C4), Hiroshi Nakamura (S1), Joel Ferreira (S3) withdrawn post-scope-clarification, Valentina Cruz (S2, situational)
+
+---
+
+## Scope clarification (2026-04-21)
+
+User clarified after initial panel draft: *"yo y mis amigos seran los usuarios por almenos 2-3 meses para asegurarme de probar todo y una experiencia consistente, así que no te preocupes por el marketing, si no por que el sitio esté estable y usable."*
+
+This reframes the sprint. It is **not** launch readiness — it is **stability readiness for a small invited cohort over a 2-3 month runway**. Marketing-adjacent concerns are explicitly out: no OG preview QA for Twitter/LinkedIn, no landing-page-for-strangers polish, no launch positioning, no market study. The target is roughly *"the creator + ~5-10 invited friends can use the product for 2-3 months without the creator having to intervene to unblock them."*
+
+The panel discussion below was drafted before this clarification; the *findings* still hold, the *recommended scope* is tightened accordingly (see Provisional conclusion).
 
 ---
 
 ## Idea in one sentence
 
-Take Dojo from "works for the creator" to **"functional, friendly, ready for publicity — and the first wave of users won't get bored or disappointed"**, by closing the loose ends surfaced during S020 verification plus a bug/UX hunt explicitly from the *new-user* perspective.
+Take Dojo from "works for the creator" to **"stable and usable enough that 5-10 invited friends can practice for 2-3 months without the creator having to unblock them"**, by closing S020 verification loose ends plus a focused audit from the *invited-friend* perspective.
 
 ---
 
 ## Why now
 
-The user's framing, verbatim: *"el objetivo es tener todo funcional, friendly y listo para hacer publicidad y tener usuarios y no se aburran o desilucionen."*
+The user's revised framing: *stable and usable for the creator + ~5-10 invited friends over 2-3 months. No marketing.*
 
 Three things make this the right sprint:
 
-1. **S020 closed with a list of known-small-but-real loose ends.** The retro named them: errors retention cron, Sentry dashboards/alerts, Piston runtime reprovision script, CSP multi-region, UX gaps F-4..F-6 + P-1..P-6. Each individually trivial; collectively they represent the "polished enough to show" gap.
-2. **S020 also showed the system is quietly fragile.** Piston was crashlooping for 3 weeks because nothing was watching. Sentry was silently blocked by CSP. The `throw` verification trap in Chrome DevTools. These are "it works most of the time" — Hiroshi's exact red flag.
-3. **We do not know what a new user actually experiences.** Every flow shipped in S014-S020 has been tested by the creator, who knows the system. No audit exists from the perspective of *"I just arrived from a Twitter link"*. That audit is the single highest-leverage thing we can do before making noise.
+1. **S020 closed with a list of known-small-but-real loose ends** that will bite within the 2-3 month runway if ignored. The retro named them: errors retention cron, Sentry dashboards/alerts, Piston runtime reprovision script, UX gaps F-4..F-6 + P-1..P-6. Most aren't user-facing in the first session, but the Piston auto-reprovision *is* (one accessory recreate silently wipes runtimes — the same class of bug that burned us in S020).
+2. **S020 showed the system is quietly fragile.** Piston was crashlooping for 3 weeks because nothing was watching. Sentry was silently blocked by CSP. Errors were silently swallowed. Over 2-3 months of 5-10 active users, these "it works most of the time" bugs become "the creator is debugging every weekend." Hiroshi's exact red flag.
+3. **We do not know what an invited friend actually experiences.** Every flow shipped S014-S020 has been tested by the creator, who knows the system. No audit exists from the perspective of *"my friend sent me a link and I'm trying to do my first kata on a Tuesday night."* That audit is the single highest-leverage thing we can do before the invites go out.
 
-This sprint is intentionally **not** about Phase 2 features. It's about making Phase 1 Alpha presentable to people who will judge quickly and silently by not coming back.
+This sprint is intentionally **not** about Phase 2 features and **not** about launch. It is about making Phase 1 Alpha stable enough that the creator isn't pulled into every small friction point for the next 2-3 months.
 
 ---
 
@@ -90,70 +100,82 @@ All of it: ops debt, UX backlog, landing/privacy, new-user audit, sensei calibra
 - **Cons:** 3 sprints of work in 1 box; high risk of partial delivery exactly when we're claiming "ready."
 - **Verdict:** Rejected. Proven failure mode from S020 retro.
 
-### Option B: First-30-minutes sprint (recommended)
+### Option B: Invited-friend audit sprint (recommended)
 
-Scope everything by the frame "would a new user hit this in their first 30 minutes?" Items pass if yes, defer if no. Explicit parts:
+Scope everything by the frame "would an invited friend hit this in their first few sessions?" Items pass if yes, defer if no. Explicit parts:
 
-1. **New-user audit** (Soren, 1 day) — walkthrough as if coming from a cold link
-2. **Sensei calibration** (Yemi, 0.5 day) — 10 representative runs, verdict distribution check
-3. **Smoke-test expansion** (Hiroshi, 1 day) — cover the 5 critical flows E2E, run against prod
-4. **Audit-driven fixes** (whoever, 3-5 days) — whatever the audit surfaces
-5. **Piston liveness + runtime reprovision** (Tomás, 1 day) — only ops item that's first-30-min-relevant
-6. **Privacy + Terms pages** (Marta + Priya, 1 day) — required before publicity regardless of audit
-7. **Reminder email verify + fix** (Tomás + Amara, 0.5 day) — does it actually send
-8. **Share card QA** (Amara + Soren, 0.5 day) — render checks on Twitter/LinkedIn/Discord
+1. **Invite-flow + new-user audit** (Soren, 1 day) — walkthrough the full loop as an invited friend: invite link → OAuth → dashboard → first kata → result → find something next → come back next day. Covers the invite redeem path specifically (it hasn't been exercised end-to-end since Sprint 005).
+2. **Sensei calibration** (Yemi, 0.5 day) — 10 representative runs across difficulty and type, logged, verdict distribution check. If PASS is >80% or <30% at a given difficulty, the prompts need adjustment. Inconsistent sensei = immediate disappointment from friends.
+3. **Smoke-test expansion** (Hiroshi, 1 day) — cover the 5 critical flows E2E (sign-in, complete-a-kata, complete-a-course-step, view-dashboard, view-profile), run against prod. These become the liveness guarantee for the 2-3 month runway.
+4. **Audit-driven fixes** (whoever, 3-5 days) — whatever the audit surfaces, prioritized by "does it make a friend ping the creator?"
+5. **Piston liveness + runtime reprovision** (Tomás, 1 day) — synthetic check against `/health/piston` every 5 min with alert; idempotent reprovision script so a future container recreate doesn't silently wipe runtimes again. This alone justifies the sprint.
+6. **Reminder email verify + fix** (Tomás, 0.5 day) — does the Resend-wired reminder actually send? Nobody has confirmed in prod. Part of the "does the product maintain engagement" baseline.
+7. **Errors retention cron** (Tomás, 0.5 day) — 30-day cleanup on the `errors` table. Small, but will matter within the 2-3 month window as the table grows.
+8. **Sensei eval visibility polish** (Soren, 0.5 day — if audit surfaces it) — the evaluation stream UX had friction points flagged in S020 that may affect sustained use.
 
 What gets **explicitly deferred**:
 
-- F-4..F-6 and P-1..P-6 unless the audit names them
-- Errors retention cron
-- Sentry alert rules
+- Public publicity work: OG render QA on Twitter/LinkedIn/Discord, landing-page-for-strangers polish, about/press pages
+- Privacy + Terms (only needed when inviting beyond friends; collect-before-needed is premature)
+- Market study (no publicity → no launch copy → no market-study-as-copy-input)
+- Sentry alert rules / dashboards (nice to have; the error reporter itself already captures to Postgres — the creator will see issues)
 - CSP multi-region
-- Activity dashboard for alpha tracking
-- Alpha gate metric definition (unblocked but not in-sprint)
+- Activity dashboard for cohort tracking (will want this, but the 2-3 month runway can start without it — S022)
+- Alpha gate metric definition (the cohort itself is the experiment — the metric is "do they come back in month 2?")
 - Content depth expansion (S022+)
 
-- **Pros:** Forcing function. Polishes the exact surface a new user touches. Clear DoD ("walk the first 30 minutes, find nothing broken or confusing").
-- **Cons:** Some backlog items slide again. The deferred list now has 2+ items with "was on the next sprint too."
+- **Pros:** Tight scope matched to actual usage pattern. Every item justifies itself against "would a friend bother telling me about this, or would they just not come back."
+- **Cons:** Some backlog items slide a third sprint. Acceptable given the 2-3 month runway.
 - **Verdict:** Primary recommendation.
 
-### Option C: Launch-readiness + market study cohort
+### Option C: Minimal hardening + content push
 
-Option B + run the market study (send to 15-30 contacts, gather responses, write up results) as Part 0 of the sprint.
+Ship only the ops-debt hardening (Piston liveness + runtime reprovision + errors retention cron + reminder email verify) and spend the rest of the sprint on content — Python L2 + L3, 20 more kata.
 
-- **Pros:** Market study results arrive in time for landing page copy revision. Launch copy is informed, not guessed.
-- **Cons:** Market study is real work (2-3 days of outreach + analysis) and doesn't affect readiness directly — it affects *what we say* about readiness.
-- **Verdict:** Conditional recommendation. Only if publicity is within 4 weeks.
+- **Pros:** Uses Valentina's runway warning — 4-6 weeks to content ceiling. 2-3 months of 5-10 friends will hit that ceiling. Getting ahead now is leverage.
+- **Cons:** Skips the UX/audit work. If the friends cohort hits friction on the *existing* content before reaching the ceiling, they leave before content depth matters.
+- **Verdict:** Tempting, but premature. Audit first, then decide whether content depth matters more than breadth-polish in S022.
 
-### Option D: Defer publicity, sprint on content
+### Option D: Defer the sprint, invite friends now, react
 
-Reframe the sprint around Valentina's point: the content runway is the real retention ceiling. Spend this sprint building 2 more courses (Python full, one more) and 30 more kata. Defer UX polish.
+Ship nothing proactively. Invite 3 friends, watch what breaks, fix as it happens.
 
-- **Pros:** Solves the 4-6 week engagement ceiling before it becomes a problem.
-- **Cons:** Contradicts the user's stated goal. A polished 3-course product is still publishable; an unpolished 5-course product is not.
-- **Verdict:** Rejected for this sprint; content runway is a S022 conversation.
+- **Pros:** Zero speculation. Real usage data.
+- **Cons:** The creator becomes the on-call. Every bug interrupts the creator's other work. The "I don't want to have to unblock them" goal contradicts this path directly.
+- **Verdict:** Rejected. User explicitly ruled this out.
 
 ---
 
 ## Provisional conclusion
 
-**Option B with a Joel-escape-hatch for market study.**
+**Option B.**
 
-Primary scope is the first-30-minutes audit sprint. Market study (Option C delta) lands in-sprint *if and only if* the user signals a target publicity date within 4 weeks. If the user says "publicize when ready, no date", skip the market study — Option B alone closes the readiness gap.
+Scope matches the user's explicit framing (stability + usability for 5-10 friends over 2-3 months). The panel's publicity-adjacent concerns (market study, Privacy/Terms, OG render, public landing polish) all move to "when publicity is actually imminent, revisit" — which is S023+ by the 2-3 month timeline.
+
+The sprint is smaller than S020 deliberately. Closing the loose ends + a single focused audit + the two ops items that protect the runway (Piston liveness, errors retention) is ~6-8 working days — a 1.5-week sprint, not a 2-week one. Tight on purpose, so the runway starts earlier and there's budget for reactive bug-fixing during the cohort window (which the user called out as *"incluso incluir bugfixing de lo que encontremos"*).
 
 **Sequence:**
 
-- **Days 1-2:** New-user audit (Soren) + sensei calibration (Yemi) + smoke-test expansion (Hiroshi) run in parallel. These three produce the *findings*.
-- **Days 3-7:** Audit-driven fixes (priority by impact). Privacy/Terms + reminder email verify + share card QA happen alongside.
-- **Day 8:** Piston liveness monitor + Piston runtime reprovision script.
-- **Day 9:** Full smoke pass on prod; verify the audit findings are actually resolved by walking the first 30 minutes again.
-- **Day 10:** Retro + close-out.
+- **Days 1-2:** Invited-friend audit (Soren) + sensei calibration (Yemi) + smoke-test expansion (Hiroshi). Findings produced in parallel.
+- **Days 3-6:** Audit-driven fixes. Piston liveness monitor + reprovision script. Reminder email verify. Errors retention cron.
+- **Day 7:** Full smoke pass on prod; walk the invited-friend path end-to-end as a sanity check. First invite goes out as the sprint's real validation.
+- **Day 8:** Retro + close-out.
+
+**Reactive budget during 2-3 month runway:**
+
+This sprint does not need to catch *every* issue. Bugs surfaced by the friends cohort get triaged between sprints; the creator has the error reporter infra (S020 Part 7) to see what's happening without friends pinging. Mini-patches ship out-of-band. A "S021.5 reactive bugfix" sprint lands in ~4-6 weeks if the volume warrants it.
 
 **Deferred list (explicitly, to S022+):**
 
-- Errors retention cron, Sentry alert rules, CSP multi-region, activity dashboard, alpha gate metric, content depth expansion.
+- All publicity-adjacent work (OG render QA, public landing polish, Privacy/Terms, market study)
+- Sentry alert rules / dashboards (errors already persisted to Postgres — creator sees them)
+- CSP multi-region
+- Activity dashboard for cohort tracking
+- Alpha gate metric definition
+- Content depth expansion (revisit in S022 based on runway signal from friends)
+- UX gap items F-4..F-6 + P-1..P-6 unless the audit surfaces them
 
-**Risk flag:** The "audit-driven fixes" bucket (Part 4) is unsized until the audit is done. If the audit surfaces >5 high-impact issues, the sprint needs a Part-3-style checkpoint (à la S020) to decide what slides.
+**Risk flag:** The "audit-driven fixes" bucket is unsized until the audit runs. If the audit surfaces >5 high-impact issues, we ship the top 3 and the rest goes to the reactive buffer.
 
 ---
 
@@ -161,21 +183,23 @@ Primary scope is the first-30-minutes audit sprint. Market study (Option C delta
 
 The sprint is complete when:
 
-1. A fresh GitHub account can sign up, complete a kata, complete a course step, see a sensible dashboard, and share a card — **without the creator intervening** and without the user encountering anything confusing enough to write down.
-2. `/health/piston` and `/health` both return `ok` under a cron-driven synthetic check; failures alert.
-3. Sensei verdict distribution on a calibration run is within [30%, 80%] PASS per difficulty level.
-4. Privacy and Terms pages exist, are linked from the footer, and are not generic boilerplate.
-5. The reminder email arrives in the creator's inbox after a test trigger.
-6. The course completion share card renders correctly on Twitter, LinkedIn, and Discord OG previews.
+1. An invited friend (not the creator) can redeem an invite, sign up, complete a kata, complete a course step, view their dashboard, and come back the next day — **without the creator intervening** and without friction severe enough that they'd ping the creator.
+2. `/health/piston` and `/health` both return `ok` under a cron-driven synthetic check; failures alert the creator.
+3. A Piston container recreate does not silently wipe runtimes. The reprovision script is idempotent and documented.
+4. Sensei verdict distribution on a calibration run is within [30%, 80%] PASS per difficulty level.
+5. The reminder email arrives in a real inbox after a test trigger.
+6. The `errors` table has a retention policy actively pruning rows older than 30 days.
 
 Not required for done:
-- Zero bugs. A *known, tracked, non-user-facing* bug is acceptable if it didn't surface in the audit or the smoke suite.
-- Market study complete (unless Option C delta is activated).
+- Zero bugs. A *known, tracked, non-user-facing* bug is acceptable if it didn't surface in the audit or the smoke suite; it goes into the reactive buffer.
+- Marketing-adjacent artifacts (Privacy, Terms, public OG renderers, landing-for-strangers polish, market study). Those belong to the sprint before actual publicity, not this one.
+- Activity dashboard / Alpha gate metric. The friends cohort *is* the experiment; the signal is whether they come back in month 2.
 
 ---
 
 ## Next step
 
-- [ ] User decides: target publicity window (none / 2-4 wks / 4-8 wks) — determines whether Option C delta is in
-- [ ] Convert to spec after scope decision
+- [x] User decided scope: 2-3 month friends cohort, no publicity — Option B.
+- [ ] Convert to spec: `docs/specs/026-sprint-021-stability.md`
 - [ ] Day-1 audit walkthrough scheduled
+- [ ] First invite dispatch date (targets the end of the sprint as validation)
