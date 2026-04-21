@@ -140,7 +140,7 @@ profileRoutes.get('/u/:username', async (c) => {
 
   // Languages used (distinct)
   const langRows = await db
-    .selectDistinct({ lang: sql<string>`unnest(${exercises.language})` })
+    .selectDistinct({ lang: sql<string>`jsonb_array_elements_text(${exercises.language})` })
     .from(sessions)
     .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
     .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
