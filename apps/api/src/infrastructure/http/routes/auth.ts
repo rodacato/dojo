@@ -4,7 +4,7 @@ import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { config } from '../../../config'
-import { useCases } from '../../container'
+import { errorReporter, useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
 import { invitations, userSessions, users } from '../../persistence/drizzle/schema'
 
@@ -29,7 +29,9 @@ authRoutes.get('/auth/github', async (c) => {
     path: '/',
   })
 
-  const url = github.createAuthorizationURL(state, []) // no scopes — just identity
+  // `user:email` gives us access to GET /user/emails so we can resolve the
+  // primary verified address even when the user hides it on their profile.
+  const url = github.createAuthorizationURL(state, ['user:email'])
   return c.redirect(url.toString())
 })
 
@@ -51,10 +53,12 @@ authRoutes.get('/auth/github/callback', async (c) => {
     return c.redirect(`${config.WEB_URL}?error=auth`)
   }
 
+  const accessToken = tokens.accessToken()
+
   // Fetch GitHub user profile
   const githubUserRes = await fetch('https://api.github.com/user', {
     headers: {
-      Authorization: `Bearer ${tokens.accessToken()}`,
+      Authorization: `Bearer ${accessToken}`,
       'User-Agent': 'dojo.notdefined.dev',
     },
   })
@@ -68,6 +72,10 @@ authRoutes.get('/auth/github/callback', async (c) => {
     login: string
     avatar_url: string
   }
+
+  // Resolve primary verified email via /user/emails (requires user:email scope).
+  // Falls back gracefully if the call fails — email is optional in our schema.
+  const email = await fetchPrimaryEmail(accessToken)
 
   const githubId = String(githubUser.id)
   const isCreator = !!config.CREATOR_GITHUB_ID && githubId === config.CREATOR_GITHUB_ID
@@ -106,8 +114,16 @@ authRoutes.get('/auth/github/callback', async (c) => {
     avatarUrl: githubUser.avatar_url,
   })
 
+  // Persist the email on the users row. Email lives in the DB schema but not
+  // on the User domain entity (same pattern as reminderEnabled/reminderHour)
+  // because it's a notification concern, not an identity invariant.
+  if (email) {
+    await db.update(users).set({ email }).where(eq(users.id, user.id))
+  }
+
   // Mark invitation as used (if this was a new user via invite)
-  if (!existingUser && !isCreator) {
+  const justRedeemedInvite = !existingUser && !isCreator
+  if (justRedeemedInvite) {
     const inviteToken = getCookie(c, 'oauth_invite')
     if (inviteToken) {
       await db
@@ -115,6 +131,24 @@ authRoutes.get('/auth/github/callback', async (c) => {
         .set({ usedBy: user.id })
         .where(eq(invitations.token, inviteToken))
       deleteCookie(c, 'oauth_invite')
+    }
+
+    // Fire-and-forget welcome email. The redeem flow must redirect regardless
+    // of whether Resend succeeds; failures go through the error reporter so we
+    // don't silently lose them the way invite-send failures did pre-S021.
+    if (email) {
+      void sendWelcomeEmail({ email, username: githubUser.login }).catch((err: unknown) => {
+        errorReporter.report({
+          message: 'Failed to send welcome email',
+          stack: err instanceof Error ? err.stack : undefined,
+          status: 500,
+          source: 'api',
+          route: '/auth/github/callback',
+          method: 'GET',
+          userId: user.id,
+          context: { email },
+        }).catch(() => {})
+      })
     }
   }
 
@@ -166,7 +200,7 @@ authRoutes.get('/auth/invite/:token', async (c) => {
     path: '/',
   })
 
-  const url = github.createAuthorizationURL(state, [])
+  const url = github.createAuthorizationURL(state, ['user:email'])
   return c.redirect(url.toString())
 })
 
@@ -182,3 +216,51 @@ authRoutes.delete('/auth/session', async (c) => {
   await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
   return c.json({ ok: true })
 })
+
+interface GithubEmailEntry {
+  email: string
+  primary: boolean
+  verified: boolean
+}
+
+async function fetchPrimaryEmail(accessToken: string): Promise<string | null> {
+  try {
+    const res = await fetch('https://api.github.com/user/emails', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'User-Agent': 'dojo.notdefined.dev',
+      },
+    })
+    if (!res.ok) return null
+    const entries = (await res.json()) as GithubEmailEntry[]
+    const primary = entries.find((e) => e.primary && e.verified) ?? entries.find((e) => e.primary)
+    return primary?.email ?? null
+  } catch {
+    return null
+  }
+}
+
+async function sendWelcomeEmail(params: { email: string; username: string }): Promise<void> {
+  if (!config.RESEND_API_KEY) return
+  const { Resend } = await import('resend')
+  const resend = new Resend(config.RESEND_API_KEY)
+  await resend.emails.send({
+    from: config.RESEND_FROM_EMAIL,
+    to: params.email,
+    subject: 'Welcome to the dojo',
+    html: `
+      <div style="font-family: monospace; color: #222; line-height: 1.55;">
+        <p>Hi ${params.username},</p>
+        <p>You're in. Quick orientation:</p>
+        <ul>
+          <li><strong>Kata</strong> — timed practice with a sensei who evaluates how you reason, not just what you ship.</li>
+          <li><strong>Courses</strong> — short, opinionated tracks (TypeScript, JavaScript DOM, SQL Deep Cuts). Public, no pressure.</li>
+          <li><strong>Dashboard</strong> — streak, recent work, weak areas once you have a few sessions in.</li>
+        </ul>
+        <p>Start here: <a href="${config.WEB_URL}">${config.WEB_URL}</a></p>
+        <p>The dojo is a quiet place. Come back when you feel like sharpening something.</p>
+        <p style="color: #888;">—<br/>dojo_</p>
+      </div>
+    `,
+  })
+}

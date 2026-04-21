@@ -54,21 +54,24 @@ export function AdminInvitationsPage() {
 
       {/* Create invitation */}
       <div className="bg-surface border border-border rounded-md p-5 mb-6">
-        <p className="text-secondary text-sm mb-4">Generate an invite link. Optionally send it via email.</p>
+        <p className="text-secondary text-sm mb-4">
+          Generate an invite and send it via email. The invitee also gets a welcome email after redeeming.
+        </p>
         <div className="flex gap-3">
           <input
             type="email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email (optional)"
+            placeholder="invitee@example.com"
             className="admin-input flex-1"
           />
           <button
             onClick={handleCreate}
-            disabled={creating}
+            disabled={creating || !email}
             className="px-5 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 disabled:opacity-40 transition-colors shrink-0"
           >
-            {creating ? 'Creating...' : email ? 'Create & send' : 'Create link'}
+            {creating ? 'Creating...' : 'Create & send'}
           </button>
         </div>
 
