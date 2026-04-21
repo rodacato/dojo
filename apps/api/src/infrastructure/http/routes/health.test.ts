@@ -40,23 +40,34 @@ describe('GET /health/piston', () => {
     ])
   })
 
-  it('returns 503 down when Piston returns non-2xx', async () => {
+  it('returns 503 down with target when Piston returns non-2xx', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response('bad', { status: 502 }))
     const app = createRouter()
     const res = await app.request('/health/piston')
     expect(res.status).toBe(503)
-    const body = (await res.json()) as { status: string; error: string }
+    const body = (await res.json()) as { status: string; error: string; target: string }
     expect(body.status).toBe('down')
     expect(body.error).toContain('502')
+    expect(body.target).toMatch(/^https?:\/\//)
   })
 
-  it('returns 503 down when fetch throws', async () => {
-    vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('ECONNREFUSED'))
+  it('returns 503 down with cause code when fetch throws with cause', async () => {
+    const err = new TypeError('fetch failed')
+    ;(err as TypeError & { cause: unknown }).cause = { code: 'ECONNREFUSED' }
+    vi.spyOn(global, 'fetch').mockRejectedValueOnce(err)
     const app = createRouter()
     const res = await app.request('/health/piston')
     expect(res.status).toBe(503)
-    const body = (await res.json()) as { status: string; error: string }
+    const body = (await res.json()) as {
+      status: string
+      errorName: string
+      causeCode: string
+      target: string
+    }
     expect(body.status).toBe('down')
-    expect(body.error).toContain('ECONNREFUSED')
+    expect(body.errorName).toBe('TypeError')
+    expect(body.causeCode).toBe('ECONNREFUSED')
+    expect(body.target).toMatch(/^https?:\/\//)
   })
+
 })
