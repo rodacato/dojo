@@ -71,9 +71,17 @@ accessories:
       - dojo-pgdata:/var/lib/postgresql/data
 
   piston:
-    image: ghcr.io/engineer-man/piston
+    # Pinned digest: engineer-man/piston is released as :latest only; pinning
+    # the digest guards against silent upstream updates breaking prod again.
+    image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     host: <%= ENV["HOST_IP"] %>
+    volumes:
+      # Persist installed runtimes so a container recreate doesn't wipe them.
+      - dojo-piston-packages:/piston/packages
     options:
+      # Piston's isolate sandbox creates cgroup v2 subtrees at /sys/fs/cgroup.
+      # Without privileged, `mkdir isolate/` in the entrypoint fails EROFS.
+      privileged: true
       tmpfs: /piston/jobs:exec,size=256m
 
 logging:
