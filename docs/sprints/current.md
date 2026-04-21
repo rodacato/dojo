@@ -1,110 +1,20 @@
-# Sprint 020 — Phase 1 expansion
+# Sprint 021 — (untitled)
 
-**Started:** 2026-04-20
+**Started:** _(TBD)_
 **Phase:** Phase 1 Alpha
-**Theme:** Extend the catalog, close the acquisition loop, open new kata formats.
+**Theme:** _(TBD — triage backlog before writing this)_
 
-**PRDs:**
-- [docs/prd/024-sprint-020-planning.md](../prd/024-sprint-020-planning.md) — sprint planning
-- [docs/prd/025-python-course.md](../prd/025-python-course.md) — Python course "Python for the Practiced"
-- [docs/prd/026-ask-the-sensei.md](../prd/026-ask-the-sensei.md) — "Ask the sensei" in course player
-- [docs/prd/027-code-review-kata.md](../prd/027-code-review-kata.md) — "Code Review" kata format
+Sprint-020 closed 2026-04-21. Full archive: [sprint-020-phase1-expansion.md](archive/sprint-020-phase1-expansion.md).
 
-**Spec:** _(to be written after Part 3 checkpoint)_
+**Next planning session should triage:**
 
----
+- Alpha gate — *define* the measurable criterion for Phase 1 completion before inviting the cohort ([docs/ROADMAP.md](../ROADMAP.md#milestones) currently reads "come back consistently" without a metric)
+- Market study cohort run — `docs/MARKET_STUDY.md` results section is still empty; Phase 1 gate in the strategic sense
+- Activity dashboard for alpha tracking — who practiced, when, did they return
+- Dashboard EXPLAIN ANALYZE re-run after the cohort has generated enough data
+- Retention cron for the `errors` table (deferred from S020 Part 7)
+- Editorial pass on `alternativeApproach` for remaining steps
+- Python L1.3 → L3 (deferred from S020 Part 4.3)
+- Observability polish — Sentry project dashboards, alert rules, team access (ops, not code)
 
-## Part 1 — UX/UI flow gap audit (Soren C6)
-
-- [x] Walkthrough of key flows: onboarding, kata, course player, dashboard, profile, share
-- [x] `docs/ux-gaps-2026-04.md` — 13 findings classified (2 blocker / 6 friction / 5 polish)
-- [x] `ErrorState` component (`apps/web/src/components/ui/ErrorState.tsx`) — reusable full-screen / inline error UI with primary + secondary actions
-- [x] **B-1** — Kata prepare: reduced poll ceiling 30→10 (~60s→20s), added "taking longer than usual" notice after ~8s, non-retryable errors surface immediately
-- [x] **B-2** — `ResultsPage` handles `getSession` failure with ErrorState + retry (no more perpetual loader)
-- [x] **F-1** — ErrorState retrofitted into `CoursePlayerPage`, `SharePage` (distinguishes 404 vs network), `PublicProfilePage` (distinguishes notfound vs network)
-- [x] **F-2** — SenseiEvalPage shows "Evaluation complete — opening full analysis..." during the 1.5s auto-redirect window
-- [x] **F-3** — `useEvaluationStream` WS close handler: unexpected close codes now set error state with reconnect affordance; only 1000 (clean) and 4001 (session expired) bypass the error UI
-- [x] Remaining findings (F-4/F-5/F-6 + P-1..P-6) promoted to backlog (`docs/sprints/backlog.md` → Triaged — later)
-
----
-
-## Part 2 — Acquisition loop (Amara C7 + Priya C1)
-
-- [x] Share card de completación de curso — dynamic OG image + `/share/course/:slug/:userId` (satori-based, mirrors kata share)
-- [x] Badge por curso completado — `CourseCompleted` domain event + 3 per-course badges (TS/JS DOM/SQL); migration 0017
-- [x] CTA "Share your completion" en pantalla final del curso — banner in `CoursePlayerPage` with native share + clipboard + Twitter intent fallback
-- [x] Migrar TS Fundamentals + JS DOM a público — `isPublic: true` in seed data; admin `/admin/courses` toggle also works
-
----
-
-## Part 3 — PRDs (parallel — gate Part 4)
-
-- [x] PRD 025 — Python course "Python for the Practiced" (Nadia S7) → **Option A: mini-course, 8-10 steps, ~15-20h authoring**
-- [x] PRD 026 — "Ask the sensei" in course player (Yemi C4) → **Option A: single-shot nudge, no memory, ~1-2 days**
-- [x] PRD 027 — "Code Review" kata format (Priya C1 + Hiroshi S1) → **Option A: 1 POC kata, schema additive, ~3-4 days**
-
-**Checkpoint outcome:** all three PRDs landed on the "ship small and cheap" option. Combined budget is ~10-12 days of author/build time, which fits a sprint *if everything else stays tight*. Panel priority for Part 4 execution (matches Fallback in `current.md` header):
-
-1. **Ask the sensei MVP** — ships first. Highest retention impact, smallest scope.
-2. **Code Review POC (1 kata)** — ships second. Novel format, locally-testable.
-3. **Python mini-course skeleton (L1 only, ~3 steps)** — ships third if time permits; full L1-L3 slides to S021.
-
----
-
-## Part 4 — Implementation (post-PRD)
-
-- [x] **4.1 Ask the sensei MVP** — LLMPort extension + GenerateNudge use case + POST /learn/nudge + rate limiter + COURSE_NUDGE_ENABLED flag + inline UI. Persistence layer (step_nudges table + 👍👎 feedback) shipped in the same sprint.
-- [x] **4.2 "Code Review" kata POC** — `'review'` exercise type + nullable `rubric JSONB` (migration 0019) + buildReviewPrompt + GenerateSessionBody short-circuit + seeded "Inventory drift bug" kata with 5-issue rubric + TypeBadge REVIEW variant + editor wiring.
-- [x] **4.3 Python course skeleton** — `python-for-the-practiced` (status: draft), L1 with 2 steps (intro read + `@dataclass` exercise). Python test harness in-file. L1.3 (match), L1.4 (Enum), L2+L3 slide to S021 per Part 3 checkpoint.
-
----
-
-## Part 5 — Editorial backfill
-
-- [x] `alternativeApproach` content for 6 key steps: TS L1.3 (template literal vs concatenation), TS L1.4 (arrow vs function), TS L2.2 (for-of vs reduce), TS L3.2 (concatenation form of FizzBuzz), JS DOM L1.2 (innerText vs textContent), SQL L1.2 (DENSE_RANK vs RANK).
-
----
-
-## Part 6 — Deploy + verify (Tomás C3 + Marta C5)
-
-- [x] Push 24+ pending commits → deploy
-- [x] **Piston production verification** (carry-forward S019) — surfaced a 3-week-old crashloop. Root cause: cgroup v2 host upgrade silently broke the accessory. Fix: `privileged: true` + `cgroupns: host` + named volume for `/piston/packages` + pinned image digest. Captured in [ADR 018](../adr/018-piston-cgroupns-host.md). 6 runtimes reinstalled (python 3.12.0, typescript 5.0.3, sqlite3 3.36.0, go 1.16.2, ruby 3.0.1, rust 1.68.2), `/health/piston` returns `status: ok` in prod.
-- [ ] Dashboard EXPLAIN ANALYZE in production (carry-forward S019)
-
----
-
-## Part 7 — Observability: error reporting (Tomás C3 + Marta C5)
-
-Surfaced from the Part 1 audit — a `GET /u/rodacato` 500 in prod showed we have zero error management beyond `console.error` to stdout. See [ADR 017](../adr/017-error-reporting-port.md) for design rationale.
-
-- [x] **7.4** — ADR 017: `ErrorReporterPort` + composable adapters (port lives in `infrastructure/observability/`, not domain)
-- [x] **7.1** — API port + 4 adapters (`Console`, `Postgres`, `Sentry`, `Composite`) + 5 unit tests for `CompositeErrorReporter` fault isolation
-- [x] **7.2** — Migration 0016 `errors` table + schema entry (retention policy script deferred — manual 30-day delete until traffic justifies a cron)
-- [x] **7.3** — `router.ts` `onError` uses `errorReporter.report(...)`; `requestIdMiddleware` captures `requestId` into context; `POST /errors` endpoint for web reports (rate-limited, 30/min/IP)
-- [x] **7.5** — Web `ErrorReporter` + 4 adapters (`Console`, `Api`, `SentryBrowser`, `Composite`) + wiring in `ErrorBoundary.componentDidCatch`, `window.onerror`, `unhandledrejection`
-- [x] **7.6** — `GET /admin/errors?source=&status=&limit=` + `/admin/errors` page (reuses `AdminLayout`), newest-first, expandable rows, pagination
-- [x] **7.7** — Sentry SDKs installed (`@sentry/node`, `@sentry/react`); adapters gated on `SENTRY_DSN` / `VITE_SENTRY_DSN` — **Sentry project provisioning still pending** (ops action, not code)
-- [x] **7.8** — Source map upload on web build via `@sentry/vite-plugin`, activates only when `SENTRY_AUTH_TOKEN` + `SENTRY_ORG` + `SENTRY_PROJECT` are all set; release = `VITE_SENTRY_RELEASE` (typically git SHA)
-- [x] **7.9** — `README.md` + `.env.example` updated; new section "Observability" in README with all env vars
-- [ ] **7.10** — End-to-end verification: trigger an error in prod → appears in all three sinks (Sentry, Postgres `errors` table, container stdout)
-
-**Risks:**
-- PII in Sentry breadcrumbs — sanitize user code/responses before send (Marta C5 review)
-- Reporting loop — `CompositeErrorReporter` must swallow per-reporter failures; covered by unit test
-- Sentry free quota cliff (5k/mo) — Postgres fallback catches overflow; alert on quota near-full configured in Sentry
-
----
-
-## Risks
-
-- **Scope creep** — 6 parts + 3 PRDs. Mitigation: mandatory checkpoint post-Part 3
-- **Deploy blocking** — 24 commits ahead; blocks Part 6 and S019 carry-forwards
-- **"Ask the sensei"** — touches sensei flow; prompt evaluation + rate limiting critical (Marta C5 must review)
-- **"Code Review"** — new format, may require exercise-type changes or sensei-eval changes (Hiroshi S1)
-- **Python course** — full course is too big; only the skeleton (2-3 steps) is realistic here
-
-## Fallback
-
-If mid-sprint we see we're not making it:
-1. Parts 1, 2, 5, 6 are **non-negotiable** (acquisition + deploy)
-2. From Parts 3-4 priority order: **Ask the sensei > Code Review > Python course** (Ask the sensei improves retention directly; Python is the 4th course — nice-to-have)
+See [backlog.md](backlog.md) for the full queue.
