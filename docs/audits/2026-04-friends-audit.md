@@ -53,11 +53,47 @@ Resend dashboard showed "No activity" on the `Dojo Site` API key a month after p
 
 ### Friction
 
-_(none yet)_
+#### F-1 · Dashboard zero-state feels empty
+
+~60% of the viewport is blank on first load. Only two cards render (streak + today's kata); heatmap / recent sessions / weak areas sections don't render at all when `totalCompleted === 0`. For a first-time user this reads as "small / unfinished product."
+
+**Fix sketch:** render those sections with zero-state content — greyed-out heatmap grid with explanatory copy, "your recent sessions will appear here", "weak areas surface after ~5 sessions". Anchor the page so it doesn't feel empty.
+
+#### F-2 · No secondary path from dashboard zero-state
+
+Only CTA is "Enter the dojo". A user who prefers to browse a course first has to discover `learn` in the sidebar with no affordance. Public courses exist; dashboard doesn't hint.
+
+**Fix sketch:** secondary link under the primary CTA: "or try a free course →" → `/learn`.
+
+#### F-4 · CSP blocks data-URI fonts — FIXED
+
+Console shows `Loading the font 'data:font/woff2;base64,…' violates the following Content Security Policy directive: "font-src 'self'". The action has been blocked.` Vite inlines small fonts as data URIs in the built CSS; our nginx CSP only allowed `'self'` so every inlined font got blocked and the UI quietly fell back to system-default monospace. That is exactly the kind of silent UX degradation that accumulates across invitees.
+
+**Fix:** added `data:` to `font-src` in `apps/web/nginx.conf` (same pattern we already use for `img-src`). Takes effect next web deploy.
+
+#### F-3 · Weekly goal "0/3" is visually invisible
+
+The weekly progress indicator (small bars + "0/3") sits at the bottom of the streak card in very small type. A new user will not register that this is a target they're meant to pursue.
+
+**Fix sketch:** dedicate a small card to it, or at least treat the label and number with enough weight that it reads as a commitment rather than a footnote.
 
 ### Polish
 
-_(none yet)_
+#### P-1 · `system_status: online` on dashboard
+
+Dev/ops-style text visible to all users. Zero end-user value. Either hide for logged-in users or move into a footer that doesn't compete for attention.
+
+#### P-2 · "Day 1. The dojo opens." — semantics unclear
+
+Great copy voice. Verify the day counter is correct — does it say "Day 2" tomorrow with zero sessions completed, or is it literal "days since you joined", or something else? If it stays "Day 1" forever until the first session, the phrasing is fine; if it increments without action, the narrative breaks.
+
+#### P-3 · Sidebar username lacks avatar
+
+"0xChained" shows as plain text at the bottom of the sidebar. A small GitHub avatar to the left would make the section feel personal and match the rest of the product's developer-identity framing.
+
+#### P-4 · Large empty gap in sidebar
+
+Between the nav items (ends at `badges`) and the username/logout section at the bottom, there is a large empty vertical space on tall screens. Pack or center the nav to reduce the deadspace.
 
 ---
 
