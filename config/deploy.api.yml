@@ -80,8 +80,11 @@ accessories:
       - dojo-piston-packages:/piston/packages
     options:
       # Piston's isolate sandbox creates cgroup v2 subtrees at /sys/fs/cgroup.
-      # Without privileged, `mkdir isolate/` in the entrypoint fails EROFS.
+      # Requires privileged + host cgroup namespace — with Docker's default
+      # `private` cgroupns the container gets a read-only view of cgroup v2
+      # and the entrypoint's `mkdir isolate/` fails EROFS.
       privileged: true
+      cgroupns: host
       tmpfs: /piston/jobs:exec,size=256m
 
 logging:
