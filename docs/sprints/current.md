@@ -67,8 +67,8 @@
 
 ## Part 6 — Deploy + verify (Tomás C3 + Marta C5)
 
-- [ ] Push 24+ pending commits → deploy
-- [ ] Piston production verification (carry-forward S019)
+- [x] Push 24+ pending commits → deploy
+- [x] **Piston production verification** (carry-forward S019) — surfaced a 3-week-old crashloop. Root cause: cgroup v2 host upgrade silently broke the accessory. Fix: `privileged: true` + `cgroupns: host` + named volume for `/piston/packages` + pinned image digest. Captured in [ADR 018](../adr/018-piston-cgroupns-host.md). 6 runtimes reinstalled (python 3.12.0, typescript 5.0.3, sqlite3 3.36.0, go 1.16.2, ruby 3.0.1, rust 1.68.2), `/health/piston` returns `status: ok` in prod.
 - [ ] Dashboard EXPLAIN ANALYZE in production (carry-forward S019)
 
 ---
