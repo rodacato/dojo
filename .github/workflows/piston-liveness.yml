@@ -1,0 +1,58 @@
+name: Piston Liveness
+
+# Synthetic check of the Piston accessory via /health/piston every 5 min.
+# Alerts on 2 consecutive failures (not single — Piston flakes occasionally,
+# and single-hit alerts would be noise). A red run sends an email via
+# GitHub's default notification settings — no extra observability wiring
+# is required.
+#
+# See docs/specs/027-sprint-022-playground.md §1.2 and ADR 018 for the
+# decision rationale. Runbook on recovery: scripts/piston-reprovision.sh.
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check /health/piston
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: First probe
+        id: probe1
+        env:
+          HEALTH_URL: ${{ secrets.PISTON_HEALTH_URL }}
+        run: |
+          set -uo pipefail
+          response=$(mktemp)
+          status=$(curl -sS -o "$response" -w '%{http_code}' --max-time 10 "$HEALTH_URL" || echo 000)
+          echo "first status=$status"
+          cat "$response" || true
+          echo ""
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Wait 30s before retry
+        if: steps.probe1.outputs.status != '200'
+        run: sleep 30
+
+      - name: Second probe
+        id: probe2
+        if: steps.probe1.outputs.status != '200'
+        env:
+          HEALTH_URL: ${{ secrets.PISTON_HEALTH_URL }}
+        run: |
+          set -uo pipefail
+          response=$(mktemp)
+          status=$(curl -sS -o "$response" -w '%{http_code}' --max-time 10 "$HEALTH_URL" || echo 000)
+          echo "second status=$status"
+          cat "$response" || true
+          echo ""
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Fail if two consecutive probes failed
+        if: steps.probe1.outputs.status != '200' && steps.probe2.outputs.status != '200'
+        run: |
+          echo "::error title=Piston down::2 consecutive /health/piston probes failed (${{ steps.probe1.outputs.status }}, ${{ steps.probe2.outputs.status }}). Recovery: ./scripts/piston-reprovision.sh"
+          exit 1

@@ -165,6 +165,24 @@ SENTRY_PROJECT=dojo-web
 
 Errors logged in Postgres are listed at `/admin/errors` with filters for source (api/web) and HTTP status — useful even when Sentry is down or over quota.
 
+**Errors retention.** The `errors` table is purged after 30 days by `POST /cron/cleanup-errors`, scheduled daily at 03:07 UTC via `.github/workflows/cron-cleanup-errors.yml`. Requires two repo secrets: `CRON_API_URL` and `CRON_SECRET` (the latter must match `CRON_SECRET` in the API's env).
+
+---
+
+## Operations
+
+### Piston recovery
+
+Piston runs as a Kamal accessory with a persisted `/piston/packages` volume (ADR 018). If the volume is ever reset or the six runtimes drift out of sync, rerun:
+
+```bash
+PISTON_URL=http://<host_ip>:2000 ./scripts/piston-reprovision.sh
+```
+
+The script is idempotent — present runtimes are skipped, missing ones are installed via Piston's `POST /api/v2/packages`. The source-of-truth list of runtimes lives in the script.
+
+**Liveness.** A GitHub Actions workflow (`.github/workflows/piston-liveness.yml`) probes `/health/piston` every 5 minutes. Two consecutive failures 30s apart fail the workflow run — an email goes out via GitHub's default notifications. See ADR 019. Requires the `PISTON_HEALTH_URL` repo secret (set to the app's `/health/piston`, not Piston directly — the app endpoint also catches API↔Piston network breaks).
+
 ---
 
 ## Why self-host?
