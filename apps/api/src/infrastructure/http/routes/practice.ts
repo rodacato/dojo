@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm'
+import { and, desc, eq, lt, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
 import { config } from '../../../config'
@@ -6,7 +6,7 @@ import { SessionExpiredError } from '../../../domain/shared/errors'
 import { ExerciseId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, sessions, users } from '../../persistence/drizzle/schema'
+import { attempts, errors, sessions, users } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { pendingAttempts } from './pending-attempts'
@@ -358,6 +358,42 @@ practiceRoutes.post('/cron/reminders', async (c) => {
   }
 
   return c.json({ sent })
+})
+
+// ---------------------------------------------------------------------------
+// POST /cron/cleanup-errors — Purge stored errors older than N days
+// ---------------------------------------------------------------------------
+
+// Keep stored errors for 30 days. The PostgresErrorReporter in S020 was
+// designed to let the creator browse historical incidents from /admin;
+// kept unbounded the table grows linearly and /admin/errors slows down.
+// 30 days covers a full cohort-feedback cycle without bloating the DB.
+const ERRORS_RETENTION_DAYS = 30
+
+practiceRoutes.post('/cron/cleanup-errors', async (c) => {
+  const authHeader = c.req.header('Authorization')
+  if (!config.CRON_SECRET || authHeader !== `Bearer ${config.CRON_SECRET}`) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const threshold = new Date(Date.now() - ERRORS_RETENTION_DAYS * 24 * 60 * 60 * 1000)
+
+  const deletedRows = await db
+    .delete(errors)
+    .where(lt(errors.createdAt, threshold))
+    .returning({ id: errors.id })
+
+  const deleted = deletedRows.length
+  console.log(
+    JSON.stringify({
+      evt: 'cron.cleanup_errors',
+      deleted,
+      thresholdIso: threshold.toISOString(),
+      retentionDays: ERRORS_RETENTION_DAYS,
+    }),
+  )
+
+  return c.json({ deleted, threshold: threshold.toISOString(), retentionDays: ERRORS_RETENTION_DAYS })
 })
 
 // ---------------------------------------------------------------------------
