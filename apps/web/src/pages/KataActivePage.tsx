@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import { api, ApiError, type SessionWithExercise } from '../lib/api'
@@ -7,8 +7,9 @@ import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { KataBody } from '../components/ui/KataBody'
 import { ErrorState } from '../components/ui/ErrorState'
+import { lazyWithRetry } from '../lib/lazyWithRetry'
 import type { ExerciseType } from '@dojo/shared'
-const MermaidEditor = lazy(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
+const MermaidEditor = lazyWithRetry(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
 
 const PREPARING_MESSAGES = [
   'The sensei is reading your brief...',
