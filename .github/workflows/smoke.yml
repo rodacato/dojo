@@ -50,6 +50,7 @@ jobs:
           SMOKE_BASE_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_BASE_URL || secrets.SMOKE_STAGING_BASE_URL }}
           SMOKE_API_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_API_URL || secrets.SMOKE_STAGING_API_URL }}
           SMOKE_AUTH_TOKEN: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_AUTH_TOKEN || secrets.SMOKE_STAGING_AUTH_TOKEN }}
+          SMOKE_PUBLIC_USERNAME: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_PUBLIC_USERNAME || secrets.SMOKE_STAGING_PUBLIC_USERNAME }}
 
       - name: Upload traces on failure
         if: failure()
