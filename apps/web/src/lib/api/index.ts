@@ -3,6 +3,7 @@ import { practice } from './practice'
 import { admin } from './admin'
 import { profile } from './profile'
 import { learn } from './learn'
+import { playground } from './playground'
 
 export { ApiError } from './client'
 
@@ -29,4 +30,5 @@ export const api = {
   ...admin,
   ...profile,
   ...learn,
+  playground,
 }

@@ -29,7 +29,12 @@ export function createRouter() {
 
   app.use('*', requestIdMiddleware)
   app.use('*', logger())
-  app.use('*', cors({ origin: config.WEB_URL }))
+  // credentials:true — required so the playground's dojo_playground_session
+  // cookie flows on cross-origin XHR in prod (web on dojo.*, API on dojo-api.*).
+  // All other auth uses Bearer tokens from localStorage, so allowing cookies
+  // here doesn't widen the auth surface; oauth_state and the playground cookie
+  // are both HttpOnly.
+  app.use('*', cors({ origin: config.WEB_URL, credentials: true }))
   app.use('*', globalLimiter)
   app.use('/auth/*', authLimiter)
 

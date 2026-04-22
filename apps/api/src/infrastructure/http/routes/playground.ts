@@ -52,12 +52,17 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
   let sessionId = getCookie(c, SESSION_COOKIE)
   if (!sessionId) {
     sessionId = randomUUID()
+    const isProd = config.NODE_ENV === 'production'
     setCookie(c, SESSION_COOKIE, sessionId, {
       path: '/',
       maxAge: SESSION_COOKIE_MAX_AGE_SECONDS,
       httpOnly: true,
-      sameSite: 'Lax',
-      secure: config.NODE_ENV === 'production',
+      // Prod ships the web on dojo.* and the API on dojo-api.* — cross
+      // origin. SameSite=None + Secure is the only combination that
+      // lets an XHR from the web send this cookie back. In dev both
+      // apps share `localhost` and Lax is enough.
+      sameSite: isProd ? 'None' : 'Lax',
+      secure: isProd,
     })
   }
   c.set('playgroundSessionId', sessionId)
