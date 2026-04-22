@@ -109,7 +109,7 @@ registerBadgeHandlers(eventBus, db)
 
 export const useCases = {
   startSession: new StartSession({ exerciseRepo, sessionRepo, eventBus }),
-  generateSessionBody: new GenerateSessionBody({ exerciseRepo, sessionRepo, llm }),
+  generateSessionBody: new GenerateSessionBody({ exerciseRepo, sessionRepo, llm, errorReporter }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
   getExerciseOptions: new GetExerciseOptions({ exerciseRepo, preferencesRepo }),
   getExerciseById: new GetExerciseById({ exerciseRepo }),

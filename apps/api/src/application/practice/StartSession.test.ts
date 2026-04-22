@@ -23,6 +23,7 @@ const makeExercise = () =>
 const makeStubSessionRepo = () => ({
   save: vi.fn().mockResolvedValue(undefined),
   updateBody: vi.fn().mockResolvedValue(undefined),
+  delete: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn().mockResolvedValue(null),
   findActiveByUserId: vi.fn().mockResolvedValue(null),
 })

@@ -19,10 +19,12 @@ const PREPARING_MESSAGES = [
   'Almost there...',
 ]
 
-// ~2s between polls — 10 polls = 20s ceiling; slow notice kicks in at ~8s.
+// Session-body generation can take ~30s p50 against slower LLM proxies and
+// occasionally longer. Ceiling ~2min so we don't bail before the API has
+// had a realistic chance to finish or mark the session failed.
 const PREPARE_POLL_INTERVAL_MS = 2000
-const PREPARE_MAX_POLLS = 10
-const PREPARE_SLOW_NOTICE_AFTER = 4
+const PREPARE_MAX_POLLS = 60
+const PREPARE_SLOW_NOTICE_AFTER = 8
 
 export function KataActivePage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -69,7 +71,13 @@ export function KataActivePage() {
           setTimeout(load, PREPARE_POLL_INTERVAL_MS)
           return
         }
-        // completed or failed
+        // Preparation failed on the server — show the error UI instead of
+        // routing to results (there is no attempt to render).
+        if (s.status === 'failed' && !s.finalAttempt) {
+          setPrepareError(true)
+          return
+        }
+        // completed or failed with an attempt to show
         navigate(`/kata/${sessionId}/result`, { replace: true })
       } catch (err) {
         if (cancelled) return
@@ -133,7 +141,7 @@ export function KataActivePage() {
     return (
       <ErrorState
         message="Something went wrong preparing your kata."
-        primaryAction={{ label: 'Try again', onClick: () => window.location.reload() }}
+        primaryAction={{ label: 'Start a new kata', onClick: () => navigate('/start') }}
         secondaryAction={{ label: 'Back to dashboard', onClick: () => navigate('/dashboard') }}
       />
     )

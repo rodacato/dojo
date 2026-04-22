@@ -21,6 +21,7 @@ const makeExercise = () =>
 const makeStubSessionRepo = () => ({
   save: vi.fn(),
   updateBody: vi.fn().mockResolvedValue(undefined),
+  delete: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn(),
   findActiveByUserId: vi.fn(),
 })
@@ -56,7 +57,7 @@ describe('GenerateSessionBody', () => {
     expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR that...')
   })
 
-  it('does nothing when exercise is not found', async () => {
+  it('deletes session when exercise is not found', async () => {
     const sessionRepo = makeStubSessionRepo()
     const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), nudge: vi.fn() }
     const exerciseRepo = {
@@ -74,9 +75,10 @@ describe('GenerateSessionBody', () => {
 
     expect(llm.generateSessionBody).not.toHaveBeenCalled()
     expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 
-  it('does nothing when variation is not found', async () => {
+  it('deletes session when variation is not found', async () => {
     const exercise = makeExercise()
     const sessionRepo = makeStubSessionRepo()
     const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), nudge: vi.fn() }
@@ -95,5 +97,47 @@ describe('GenerateSessionBody', () => {
 
     expect(llm.generateSessionBody).not.toHaveBeenCalled()
     expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
+  })
+
+  it('deletes session and reports error when LLM throws', async () => {
+    const exercise = makeExercise()
+    const variation = exercise.variations[0]!
+    const sessionRepo = makeStubSessionRepo()
+    const llmError = new Error('shellm: 401 Unauthorized')
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn().mockRejectedValue(llmError),
+      nudge: vi.fn(),
+    }
+    const exerciseRepo = {
+      findEligible: vi.fn(),
+      findById: vi.fn().mockResolvedValue(exercise),
+      save: vi.fn(),
+    }
+    const errorReporter = { report: vi.fn().mockResolvedValue(undefined) }
+
+    const useCase = new GenerateSessionBody({ exerciseRepo, sessionRepo, llm, errorReporter })
+
+    await expect(
+      useCase.execute({
+        sessionId: SessionId('session-1'),
+        exerciseId: exercise.id,
+        variationId: variation.id,
+      }),
+    ).rejects.toThrow('shellm: 401 Unauthorized')
+
+    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
+    expect(errorReporter.report).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'shellm: 401 Unauthorized',
+        source: 'api',
+        context: expect.objectContaining({
+          useCase: 'GenerateSessionBody',
+          sessionId: SessionId('session-1'),
+        }),
+      }),
+    )
   })
 })

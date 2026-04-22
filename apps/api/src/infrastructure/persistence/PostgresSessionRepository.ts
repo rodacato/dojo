@@ -53,6 +53,10 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
       .where(eq(sessions.id, id))
   }
 
+  async delete(id: SessionId): Promise<void> {
+    await this.db.delete(sessions).where(eq(sessions.id, id))
+  }
+
   async findById(id: SessionId): Promise<Session | null> {
     const row = await this.db.query.sessions.findFirst({
       where: eq(sessions.id, id),

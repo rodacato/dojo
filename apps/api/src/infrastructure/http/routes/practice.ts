@@ -140,10 +140,13 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
     variationId: variation.id,
   })
 
-  // Generate kata body in background — don't block the response
+  // Generate kata body in background — don't block the response. Errors
+  // are reported and the session is marked failed inside the use case;
+  // the catch here is a last-resort no-op so the orphan promise never
+  // trips an unhandled-rejection.
   void useCases.generateSessionBody
     .execute({ sessionId: session.id, exerciseId: session.exerciseId, variationId: session.variationId })
-    .catch((err) => console.error('Failed to generate session body:', err))
+    .catch(() => {})
 
   return c.json({ sessionId: session.id }, 201)
 })

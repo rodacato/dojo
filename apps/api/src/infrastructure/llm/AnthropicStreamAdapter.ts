@@ -6,12 +6,19 @@ import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePro
 import type { Rubric } from '@dojo/shared'
 import { config } from '../../config'
 
+// Shellm and similar proxies frequently exceed 30s p50 for session-body
+// generation. 90s covers typical p99 without letting a dead upstream keep
+// the background task alive forever.
+const REQUEST_TIMEOUT_MS = 90_000
+
 export class AnthropicStreamAdapter implements LLMPort {
   private client: Anthropic
 
   constructor(apiKey: string) {
     this.client = new Anthropic({
       apiKey,
+      timeout: REQUEST_TIMEOUT_MS,
+      maxRetries: 1,
       ...(config.LLM_BASE_URL ? { baseURL: config.LLM_BASE_URL } : {}),
     })
   }
@@ -72,19 +79,54 @@ export class AnthropicStreamAdapter implements LLMPort {
     exerciseDescription: string
   }): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
+    const reqId = crypto.randomUUID()
+    const startedAt = Date.now()
 
-    const response = await this.client.messages.create({
+    console.log(JSON.stringify({
+      evt: 'llm.request',
+      purpose: 'session_body',
+      reqId,
       model: config.LLM_MODEL,
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
-    })
+      baseUrl: config.LLM_BASE_URL ?? 'default',
+      promptChars: prompt.length,
+    }))
 
-    const block = response.content[0]
-    if (!block || block.type !== 'text') {
-      throw new Error('Unexpected response type from Anthropic')
+    try {
+      const response = await this.client.messages.create({
+        model: config.LLM_MODEL,
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
+      })
+
+      const block = response.content[0]
+      if (!block || block.type !== 'text') {
+        throw new Error('Unexpected response type from Anthropic')
+      }
+
+      console.log(JSON.stringify({
+        evt: 'llm.response',
+        purpose: 'session_body',
+        reqId,
+        latencyMs: Date.now() - startedAt,
+        inputTokens: response.usage?.input_tokens,
+        outputTokens: response.usage?.output_tokens,
+        stopReason: response.stop_reason,
+        responseChars: block.text.length,
+      }))
+
+      return block.text
+    } catch (err) {
+      console.error(JSON.stringify({
+        evt: 'llm.error',
+        purpose: 'session_body',
+        reqId,
+        latencyMs: Date.now() - startedAt,
+        message: err instanceof Error ? err.message : String(err),
+        status: (err as { status?: number })?.status,
+        name: err instanceof Error ? err.name : undefined,
+      }))
+      throw err
     }
-
-    return block.text
   }
 
   async nudge(params: {

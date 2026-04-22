@@ -22,6 +22,7 @@ describe('GetSession', () => {
     const sessionRepo = {
       save: vi.fn(),
       updateBody: vi.fn(),
+      delete: vi.fn(),
       findById: vi.fn().mockResolvedValue(session),
       findActiveByUserId: vi.fn(),
     }
@@ -37,6 +38,7 @@ describe('GetSession', () => {
     const sessionRepo = {
       save: vi.fn(),
       updateBody: vi.fn(),
+      delete: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       findActiveByUserId: vi.fn(),
     }
