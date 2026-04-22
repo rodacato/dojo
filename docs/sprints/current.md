@@ -7,7 +7,7 @@
 **Shape:** ambitious. 8 parts including Part 0 reactive buffer. Built deliberately on top of each other — Piston hardening before playground, smoke tests before first invite, v0 before v1.
 
 **PRD:** [docs/prd/029-playground-console.md](../prd/029-playground-console.md) (covers the playground surface; v1 scope widened — see Part 5)
-**Spec:** _(to be written in Part 1 as `docs/specs/027-sprint-022-playground.md` once the multi-version Piston decision is locked)_
+**Spec:** [docs/specs/027-sprint-022-playground.md](../specs/027-sprint-022-playground.md)
 
 **Cohort:** creator + 1 friend (single invite dispatched in Part 7 — the S021 Part 8 deferred validation).
 
