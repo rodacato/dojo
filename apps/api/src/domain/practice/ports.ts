@@ -63,6 +63,16 @@ export interface CodeExecutionPort {
     testCode: string
     timeoutMs?: number
   }): Promise<ExecutionResult>
+
+  // Free-form execution for the playground surface (no test combining).
+  // Tight timeouts + memory limits are applied inside the adapter —
+  // callers don't pick them because the playground is an untrusted
+  // input path.
+  run(params: {
+    language: string
+    version: string
+    code: string
+  }): Promise<ExecutionResult>
 }
 
 export interface EventBusPort {

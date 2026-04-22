@@ -16,6 +16,7 @@ import { adminCoursesRoutes } from './routes/admin-courses'
 import { adminErrorsRoutes } from './routes/admin-errors'
 import { shareRoutes } from './routes/share'
 import { learnRoutes } from './routes/learn'
+import { playgroundRoutes } from './routes/playground'
 import { ogRoutes } from './routes/og'
 import { errorRoutes } from './routes/errors'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
@@ -41,6 +42,7 @@ export function createRouter() {
   app.route('/', profileRoutes)
   app.route('/', shareRoutes)
   app.route('/', learnRoutes)
+  app.route('/', playgroundRoutes)
   app.route('/', ogRoutes)
   app.route('/', errorRoutes)
   app.route('/admin', adminRoutes)

@@ -11,7 +11,92 @@ const LANGUAGE_MAP: Record<string, { language: string; version: string }> = {
   sql: { language: 'sqlite3', version: '*' },
 }
 
+// Hardened Piston limits for untrusted anonymous input (spec 027 §4.6).
+// Separate from config.PISTON_RUN_TIMEOUT so a later concurrency bump
+// for kata doesn't accidentally widen the playground attack surface.
+const PLAYGROUND_RUN_TIMEOUT_MS = 3_000
+const PLAYGROUND_COMPILE_TIMEOUT_MS = 10_000
+const PLAYGROUND_MEMORY_LIMIT = 128_000_000 // 128 MB, half of kata's 256 MB
+
 export class PistonAdapter implements CodeExecutionPort {
+  async run(params: {
+    language: string
+    version: string
+    code: string
+  }): Promise<ExecutionResult> {
+    const langConfig = LANGUAGE_MAP[params.language.toLowerCase()]
+    if (!langConfig) {
+      return {
+        stdout: '',
+        stderr: `Unsupported language: ${params.language}`,
+        exitCode: 1,
+        timedOut: false,
+        executionTimeMs: 0,
+      }
+    }
+
+    const fileName = `main.${ext(params.language)}`
+    const start = Date.now()
+
+    try {
+      const response = await fetch(`${config.PISTON_URL}/api/v2/execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: langConfig.language,
+          version: params.version,
+          files: [{ name: fileName, content: params.code }],
+          run_timeout: PLAYGROUND_RUN_TIMEOUT_MS,
+          compile_timeout: PLAYGROUND_COMPILE_TIMEOUT_MS,
+          compile_memory_limit: PLAYGROUND_MEMORY_LIMIT,
+          run_memory_limit: PLAYGROUND_MEMORY_LIMIT,
+        }),
+        signal: AbortSignal.timeout(PLAYGROUND_RUN_TIMEOUT_MS + 5_000),
+      })
+
+      if (!response.ok) {
+        return {
+          stdout: '',
+          stderr: `Piston error: ${response.status} ${response.statusText}`,
+          exitCode: 1,
+          timedOut: false,
+          executionTimeMs: Date.now() - start,
+        }
+      }
+
+      const result = (await response.json()) as {
+        run: { stdout: string; stderr: string; code: number; signal: string | null }
+        compile?: { stdout: string; stderr: string; code: number }
+      }
+
+      if (result.compile && result.compile.code !== 0) {
+        return {
+          stdout: result.compile.stdout,
+          stderr: result.compile.stderr,
+          exitCode: result.compile.code,
+          timedOut: false,
+          executionTimeMs: Date.now() - start,
+        }
+      }
+
+      return {
+        stdout: result.run.stdout,
+        stderr: result.run.stderr,
+        exitCode: result.run.code,
+        timedOut: result.run.signal === 'SIGKILL',
+        executionTimeMs: Date.now() - start,
+      }
+    } catch (err) {
+      return {
+        stdout: '',
+        stderr: err instanceof Error ? err.message : 'Execution failed',
+        exitCode: 1,
+        timedOut: err instanceof Error && err.name === 'TimeoutError',
+        executionTimeMs: Date.now() - start,
+      }
+    }
+  }
+
   async execute(params: {
     language: string
     code: string

@@ -10,6 +10,7 @@ function mockExecutor(delayMs = 0): CodeExecutionPort {
       if (delayMs > 0) await new Promise((r) => setTimeout(r, delayMs))
       return ok
     }),
+    run: vi.fn(async () => ok),
   }
 }
 
@@ -33,6 +34,7 @@ describe('ExecutionQueue', () => {
         running--
         return ok
       },
+      run: async () => ok,
     }
 
     const queue = new ExecutionQueue(executor, 2)
@@ -53,6 +55,7 @@ describe('ExecutionQueue', () => {
         await new Promise((r) => setTimeout(r, 10))
         return { ...ok, stdout: String(idx) }
       },
+      run: async () => ok,
     }
 
     const queue = new ExecutionQueue(executor, 1)
@@ -71,6 +74,7 @@ describe('ExecutionQueue', () => {
         await new Promise((r) => setTimeout(r, 5000))
         return ok
       },
+      run: async () => ok,
     }
 
     const queue = new ExecutionQueue(slowExecutor, 1, 50)
@@ -90,6 +94,7 @@ describe('ExecutionQueue', () => {
         await new Promise((r) => setTimeout(r, 50))
         return ok
       },
+      run: async () => ok,
     }
 
     const queue = new ExecutionQueue(executor, 1)

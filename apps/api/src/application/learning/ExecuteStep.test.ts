@@ -11,6 +11,7 @@ function port(result: Partial<{ stdout: string; stderr: string; exitCode: number
       executionTimeMs: 100,
       ...result,
     }),
+    run: vi.fn(),
   }
 }
 

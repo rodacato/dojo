@@ -1,9 +1,13 @@
 import type { CodeExecutionPort, ExecutionResult } from '../../domain/practice/ports'
 
+type ExecuteParams = { language: string; code: string; testCode: string; timeoutMs?: number }
+type RunParams = { language: string; version: string; code: string }
+
 interface QueueItem {
   resolve: (result: ExecutionResult) => void
   reject: (error: Error) => void
-  params: { language: string; code: string; testCode: string; timeoutMs?: number }
+  mode: 'execute' | 'run'
+  params: ExecuteParams | RunParams
 }
 
 export class ExecutionQueue {
@@ -24,21 +28,29 @@ export class ExecutionQueue {
     return this.running
   }
 
-  async enqueue(params: {
-    language: string
-    code: string
-    testCode: string
-    timeoutMs?: number
-  }): Promise<ExecutionResult> {
+  async enqueue(params: ExecuteParams): Promise<ExecutionResult> {
+    return this.schedule('execute', params)
+  }
+
+  // Playground / free-form execution path. Shares the same concurrency
+  // pool as kata/course execution so a playground burst cannot starve
+  // real practice — see spec 027 §1.5.
+  async enqueueRun(params: RunParams): Promise<ExecutionResult> {
+    return this.schedule('run', params)
+  }
+
+  private async schedule(
+    mode: QueueItem['mode'],
+    params: ExecuteParams | RunParams,
+  ): Promise<ExecutionResult> {
     if (this.running < this.maxConcurrency) {
-      return this.run(params)
+      return this.runTask(mode, params)
     }
 
     return new Promise<ExecutionResult>((resolve, reject) => {
-      const item: QueueItem = { resolve, reject, params }
+      const item: QueueItem = { resolve, reject, mode, params }
       this.queue.push(item)
 
-      // Queue timeout — don't wait forever
       const timer = setTimeout(() => {
         const idx = this.queue.indexOf(item)
         if (idx !== -1) {
@@ -53,7 +65,6 @@ export class ExecutionQueue {
         }
       }, this.queueTimeoutMs)
 
-      // Clear timeout if the item gets processed before timeout
       const originalResolve = item.resolve
       item.resolve = (result) => {
         clearTimeout(timer)
@@ -62,10 +73,15 @@ export class ExecutionQueue {
     })
   }
 
-  private async run(params: QueueItem['params']): Promise<ExecutionResult> {
+  private async runTask(
+    mode: QueueItem['mode'],
+    params: ExecuteParams | RunParams,
+  ): Promise<ExecutionResult> {
     this.running++
     try {
-      return await this.executor.execute(params)
+      return mode === 'execute'
+        ? await this.executor.execute(params as ExecuteParams)
+        : await this.executor.run(params as RunParams)
     } finally {
       this.running--
       this.processNext()
@@ -75,7 +91,7 @@ export class ExecutionQueue {
   private processNext(): void {
     const next = this.queue.shift()
     if (next) {
-      this.run(next.params).then(next.resolve).catch(next.reject)
+      this.runTask(next.mode, next.params).then(next.resolve).catch(next.reject)
     }
   }
 }

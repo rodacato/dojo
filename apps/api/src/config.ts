@@ -35,6 +35,12 @@ const envSchema = z.object({
   // Course-player "Ask the sensei" — PRD 026. Feature-flagged so ops can
   // turn it off without redeploying if prompt drift surfaces.
   FF_COURSE_NUDGE_ENABLED: z.coerce.boolean().default(false),
+  // Public playground console — PRD 029, spec 027 Part 4. Off by default.
+  // When on, exposes anonymous code execution at POST /playground/run.
+  // The four-layer abuse stack (Turnstile + per-IP RL + per-session RL
+  // + global daily quota) arrives in subsequent commits — do not flip
+  // this flag in prod before they all land.
+  FF_PLAYGROUND_CONSOLE_ENABLED: z.coerce.boolean().default(false),
 })
 
 const result = envSchema.safeParse(process.env)
