@@ -1,12 +1,15 @@
-import { and, desc, eq, lt, sql } from 'drizzle-orm'
+import { createHash } from 'node:crypto'
+import { and, count, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
+import { getCookie } from 'hono/cookie'
 import { z } from 'zod'
 import { config } from '../../../config'
 import { SessionExpiredError } from '../../../domain/shared/errors'
 import { ExerciseId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
+import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, errors, sessions, users } from '../../persistence/drizzle/schema'
+import { attempts, errors, playgroundRuns, sessions, users } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { pendingAttempts } from './pending-attempts'
@@ -148,8 +151,53 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
     .execute({ sessionId: session.id, exerciseId: session.exerciseId, variationId: session.variationId })
     .catch(() => {})
 
+  // Funnel signal — playground → kata conversion. Fire-and-forget: a
+  // failed lookup must never block a real session creation. See spec
+  // 027 §4.8.
+  void trackPlaygroundConversion(c, session.id, user.id).catch(() => {})
+
   return c.json({ sessionId: session.id }, 201)
 })
+
+// Spec 027 §4.8: playground_signup_conversion fires when a session is
+// created and the same browser previously ran code in the playground
+// (matching `dojo_playground_session` cookie → `session_hash` within 24h).
+// Intentionally simpler than "first-ever attempt submission" — this
+// catches the funnel at kata start, which is the earliest point we can
+// tie to a playground visit using the cookie already in play.
+async function trackPlaygroundConversion(
+  c: Parameters<typeof getCookie>[0],
+  sessionId: string,
+  userId: string,
+): Promise<void> {
+  const playgroundSessionId = getCookie(c, 'dojo_playground_session')
+  if (!playgroundSessionId) return
+
+  const sessionHash = createHash('sha256')
+    .update(`${playgroundSessionId}:${config.SESSION_SECRET}`)
+    .digest('hex')
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000)
+
+  const [row] = await db
+    .select({ count: count() })
+    .from(playgroundRuns)
+    .where(
+      and(
+        eq(playgroundRuns.sessionHash, sessionHash),
+        gte(playgroundRuns.createdAt, since),
+      ),
+    )
+
+  const playgroundRunCount = Number(row?.count ?? 0)
+  if (playgroundRunCount === 0) return
+
+  trackEvent('playground_signup_conversion', {
+    sessionId,
+    userId,
+    playgroundRunCount,
+    windowHours: 24,
+  })
+}
 
 // ---------------------------------------------------------------------------
 // GET /sessions/:id

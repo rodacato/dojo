@@ -4,6 +4,7 @@ import { getCookie, setCookie } from 'hono/cookie'
 import { z } from 'zod'
 import { config } from '../../../config'
 import { executionQueue } from '../../container'
+import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
 import { playgroundRuns } from '../../persistence/drizzle/schema'
 import { optionalAuth } from '../middleware/auth'
@@ -143,6 +144,8 @@ playgroundRoutes.post(
 
     const result = await executionQueue.enqueueRun({ language, version, code })
 
+    const authed = Boolean(c.get('user'))
+
     // Fire-and-forget log. A failed insert must never block the
     // response — this table is abuse metadata, not a business invariant.
     db.insert(playgroundRuns)
@@ -162,6 +165,18 @@ playgroundRoutes.post(
           }),
         )
       })
+
+    // Spec 027 §4.8 — structured metric event for the funnel dashboard.
+    // Emitted on every run (success + failure); caller status is derived
+    // from the HTTP response the handler is about to send.
+    trackEvent('playground_run', {
+      language,
+      version,
+      exitCode: result.exitCode,
+      runtimeMs: result.executionTimeMs,
+      timedOut: result.timedOut,
+      authed,
+    })
 
     return c.json({
       stdout: result.stdout,

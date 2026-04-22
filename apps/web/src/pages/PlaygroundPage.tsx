@@ -4,6 +4,7 @@ import { api, ApiError } from '../lib/api'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { LogoWordmark } from '../components/Logo'
 import { useAuth } from '../context/AuthContext'
+import { trackEvent } from '../lib/metrics'
 
 // Source of truth for the dropdowns. Order: default first, older
 // versions go into the "advanced versions" group. Keep in sync with
@@ -132,6 +133,14 @@ export function PlaygroundPage() {
         runtimeMs: result.runtimeMs,
         errorMessage: null,
       })
+      trackEvent('playground_run', {
+        language: selectedLanguage,
+        version: selectedVersion,
+        exitCode: result.exitCode,
+        runtimeMs: result.runtimeMs,
+        authed: Boolean(user),
+        codeChars: code.length,
+      })
     } catch (err) {
       const message =
         err instanceof ApiError
@@ -140,7 +149,22 @@ export function PlaygroundPage() {
             ? err.message
             : 'Run failed.'
       setRun({ ...INITIAL_RUN, status: 'error', errorMessage: message })
+      trackEvent('playground_run', {
+        language: selectedLanguage,
+        version: selectedVersion,
+        exitCode: null,
+        authed: Boolean(user),
+        error: err instanceof ApiError ? err.message : 'unknown',
+      })
     }
+  }
+
+  function handleCtaClick(location: 'topbar' | 'banner' | 'footer'): void {
+    trackEvent('playground_cta_click', {
+      location,
+      authed: Boolean(user),
+      language: selectedLanguage,
+    })
   }
 
   const ctaHref = user ? '/start' : '/'
@@ -155,12 +179,17 @@ export function PlaygroundPage() {
           </Link>
           <p className="text-muted text-xs font-mono hidden sm:block flex-1 text-center">
             like running code?{' '}
-            <Link to={ctaHref} className="text-accent hover:text-primary transition-colors">
+            <Link
+              to={ctaHref}
+              onClick={() => handleCtaClick('banner')}
+              className="text-accent hover:text-primary transition-colors"
+            >
               practice with a kata →
             </Link>
           </p>
           <Link
             to={ctaHref}
+            onClick={() => handleCtaClick('topbar')}
             className="text-xs font-mono text-secondary hover:text-primary transition-colors px-3 py-1.5 border border-border/40 rounded-sm hover:border-accent/50 shrink-0"
           >
             {user ? 'Dashboard' : 'Sign in'}
@@ -253,7 +282,11 @@ export function PlaygroundPage() {
           <span>this is a sandbox. not graded.</span>
           <span>
             the kata is where the{' '}
-            <Link to={ctaHref} className="hover:text-secondary transition-colors">
+            <Link
+              to={ctaHref}
+              onClick={() => handleCtaClick('footer')}
+              className="hover:text-secondary transition-colors"
+            >
               sensei
             </Link>{' '}
             evaluates.
