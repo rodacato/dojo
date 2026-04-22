@@ -48,6 +48,10 @@ const envSchema = z.object({
   PLAYGROUND_RATE_LIMIT_ANON_PER_DAY: z.coerce.number().int().min(1).default(100),
   PLAYGROUND_RATE_LIMIT_AUTHED_PER_MIN: z.coerce.number().int().min(1).default(60),
   PLAYGROUND_RATE_LIMIT_AUTHED_PER_DAY: z.coerce.number().int().min(1).default(1000),
+  // Global ceiling across all playground traffic (anon + authed). Separate
+  // bucket from kata/courses — hitting it returns 503 from /playground/run
+  // only. Reset at UTC midnight.
+  PLAYGROUND_DAILY_QUOTA_GLOBAL: z.coerce.number().int().min(1).default(5000),
 })
 
 const result = envSchema.safeParse(process.env)

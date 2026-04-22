@@ -7,6 +7,7 @@ import { executionQueue } from '../../container'
 import { db } from '../../persistence/drizzle/client'
 import { playgroundRuns } from '../../persistence/drizzle/schema'
 import { optionalAuth } from '../middleware/auth'
+import { playgroundGlobalQuotaMiddleware } from '../middleware/playground-quota'
 import {
   playgroundAnonIpDayLimiter,
   playgroundAnonIpMinuteLimiter,
@@ -58,7 +59,6 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
   c.set('playgroundSessionId', sessionId)
   await next()
 }
-
 // POST /playground/run — anonymous code execution.
 //
 // Abuse-stack order (spec 027 §4.5):
@@ -66,9 +66,9 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
 //   Layer 2 (per-IP RL)   — ✅ playgroundAnonIp*Limiter (anon only)
 //                            + playgroundAuthedUser*Limiter (authed only)
 //   Layer 3 (per-session) — ✅ playgroundSession*Limiter (anon only)
-//   Layer 4 (global)      — NOT in place yet (arrives in step 4)
+//   Layer 4 (global)      — ✅ playgroundGlobalQuotaMiddleware (all traffic)
 //
-// The feature flag remains the primary guard in prod until 1 and 4 land.
+// The feature flag remains the primary guard in prod until Layer 1 lands.
 playgroundRoutes.post(
   '/playground/run',
   ensurePlaygroundSession,
@@ -79,6 +79,7 @@ playgroundRoutes.post(
   playgroundSessionDayLimiter,
   playgroundAuthedUserMinuteLimiter,
   playgroundAuthedUserDayLimiter,
+  playgroundGlobalQuotaMiddleware,
   async (c) => {
     if (!config.FF_PLAYGROUND_CONSOLE_ENABLED) {
       return c.json({ error: 'Not found' }, 404)
