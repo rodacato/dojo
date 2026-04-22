@@ -1,0 +1,60 @@
+name: Smoke Tests
+
+# Manual run only — smoke tests hit a real deployed environment and use
+# a pre-issued bearer token. They are intentionally not wired to PR/push
+# so a broken secret never blocks merges. See docs/specs/027-sprint-022-playground.md §3.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - prod
+          - staging
+
+jobs:
+  smoke:
+    name: Smoke (${{ inputs.environment }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run smoke suite
+        run: pnpm --filter=@dojo/e2e test:smoke
+        env:
+          CI: 'true'
+          SMOKE_BASE_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_BASE_URL || secrets.SMOKE_STAGING_BASE_URL }}
+          SMOKE_API_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_API_URL || secrets.SMOKE_STAGING_API_URL }}
+          SMOKE_AUTH_TOKEN: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_AUTH_TOKEN || secrets.SMOKE_STAGING_AUTH_TOKEN }}
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-${{ inputs.environment }}
+          path: apps/e2e/test-results/
+          retention-days: 7

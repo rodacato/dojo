@@ -26,6 +26,10 @@
       "cache": false,
       "inputs": ["tests/**/*.ts", "playwright.config.ts"]
     },
+    "@dojo/e2e#test:smoke": {
+      "cache": false,
+      "inputs": ["smoke/**/*.ts", "playwright.smoke.config.ts"]
+    },
     "clean": {
       "cache": false
     }
