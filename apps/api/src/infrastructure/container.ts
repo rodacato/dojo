@@ -60,7 +60,7 @@ function createLLMAdapter(): LLMPort {
 const llm = createLLMAdapter()
 
 function createExecutionAdapter(): CodeExecutionPort {
-  if (config.CODE_EXECUTION_ENABLED) return new PistonAdapter()
+  if (config.FF_CODE_EXECUTION_ENABLED) return new PistonAdapter()
   return new MockExecutionAdapter()
 }
 

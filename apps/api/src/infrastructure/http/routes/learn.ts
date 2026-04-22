@@ -237,7 +237,7 @@ learnRoutes.get('/learn/courses/:slug/steps/:stepId/solution', optionalAuth, asy
 // POST /learn/nudge
 //   { courseSlug, stepId, userCode, stdout?, stderr? }
 //
-// Gated by COURSE_NUDGE_ENABLED so the feature can be killed without a
+// Gated by FF_COURSE_NUDGE_ENABLED so the feature can be killed without a
 // redeploy if prompt quality regresses. Auth-optional — public courses
 // should not punish anonymous learners for asking. Rate-limited by IP.
 
@@ -250,7 +250,7 @@ const nudgeRequestSchema = z.object({
 })
 
 learnRoutes.post('/learn/nudge', nudgeLimiter, optionalAuth, async (c) => {
-  if (!config.COURSE_NUDGE_ENABLED) {
+  if (!config.FF_COURSE_NUDGE_ENABLED) {
     return c.json({ error: 'Nudges are not enabled.' }, 404)
   }
 

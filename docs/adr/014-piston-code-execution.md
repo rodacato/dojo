@@ -41,7 +41,7 @@ Code that doesn't compile or fails tests is NOT rejected — it's information fo
 ## Configuration
 
 ```env
-CODE_EXECUTION_ENABLED=true
+FF_CODE_EXECUTION_ENABLED=true
 PISTON_URL=http://piston:2000
 PISTON_MAX_CONCURRENT=3
 PISTON_RUN_TIMEOUT=15000

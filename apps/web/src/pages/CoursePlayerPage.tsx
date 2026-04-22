@@ -331,7 +331,7 @@ function StepEditor({
   const [alternativeApproach, setAlternativeApproach] = useState<string | null>(null)
   const [solutionError, setSolutionError] = useState<string | null>(null)
   // "Ask the sensei" nudge state (PRD 026). `nudgeDisabled` latches true when
-  // the API 404s — that signals COURSE_NUDGE_ENABLED=false on the server.
+  // the API 404s — that signals FF_COURSE_NUDGE_ENABLED=false on the server.
   const [nudge, setNudge] = useState<{ id: string; text: string } | null>(null)
   const [nudgeLoading, setNudgeLoading] = useState(false)
   const [nudgeError, setNudgeError] = useState<string | null>(null)

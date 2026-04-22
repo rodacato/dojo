@@ -15,7 +15,7 @@ const envSchema = z.object({
   MOCK_LLM_VERDICT: z.enum(['passed', 'passed_with_notes', 'needs_work']).default('needs_work'),
   MOCK_LLM_RESPONSE_TOKENS: z.coerce.number().int().min(1).default(20),
   MOCK_LLM_FOLLOW_UP: z.coerce.boolean().default(false),
-  CODE_EXECUTION_ENABLED: z.coerce.boolean().default(false),
+  FF_CODE_EXECUTION_ENABLED: z.coerce.boolean().default(false),
   PISTON_URL: z.string().url().default('http://piston:2000'),
   PISTON_MAX_CONCURRENT: z.coerce.number().int().min(1).default(3),
   PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(3000),
@@ -34,7 +34,7 @@ const envSchema = z.object({
   SENTRY_RELEASE: z.string().default(''),
   // Course-player "Ask the sensei" — PRD 026. Feature-flagged so ops can
   // turn it off without redeploying if prompt drift surfaces.
-  COURSE_NUDGE_ENABLED: z.coerce.boolean().default(false),
+  FF_COURSE_NUDGE_ENABLED: z.coerce.boolean().default(false),
 })
 
 const result = envSchema.safeParse(process.env)

@@ -122,4 +122,4 @@ Quota (Option B) and threaded chat (Option C) wait for data — we will not know
 
 **Recommended option:** A — single-shot nudge, no memory, per-step unlimited, rate-limited.
 **Key risks:** prompt discipline (requires Yemi review before ship); cost escalation past Phase 1 Alpha; silent hint-quality regressions.
-**Fallback / rollback:** the "Ask the sensei" button is gated behind a `COURSE_NUDGE_ENABLED` feature flag in config. Off by default; turn on in prod once Yemi + Hiroshi sign off. Rolling back is a single env flip.
+**Fallback / rollback:** the "Ask the sensei" button is gated behind a `FF_COURSE_NUDGE_ENABLED` feature flag in config. Off by default; turn on in prod once Yemi + Hiroshi sign off. Rolling back is a single env flip.
