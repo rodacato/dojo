@@ -279,3 +279,20 @@ export const errors = pgTable('errors', {
   userId: uuid('user_id'),
   context: jsonb('context'),
 })
+
+// Abuse-detection log for the anonymous /playground surface (S022 §4.2,
+// PRD 029). Deliberately NOT a telemetry table: no source code, no
+// stdout/stderr, no user id. Only the metadata needed to identify
+// abusive traffic patterns (burst by ip_hash, session_hash rotation)
+// and to enforce per-IP / per-session rate limits. Purged at 30 days
+// by the same cron mechanism as the `errors` table (see /cron/cleanup-errors).
+export const playgroundRuns = pgTable('playground_runs', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  ipHash: text('ip_hash').notNull(),
+  sessionHash: text('session_hash').notNull(),
+  language: text('language').notNull(),
+  version: text('version').notNull(),
+  exitCode: integer('exit_code'),
+  runtimeMs: integer('runtime_ms'),
+})
