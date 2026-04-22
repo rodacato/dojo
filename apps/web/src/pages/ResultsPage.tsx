@@ -48,6 +48,51 @@ export function ResultsPage() {
     ? Math.round((new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)
     : null
 
+  // No attempt + not active = the learner let the kata expire. Render a
+  // compact standalone layout — the wide grid is for verdict + insights,
+  // which do not exist here and leave the page visually broken.
+  if (!attempt && session.status !== 'active') {
+    return (
+      <div className="px-4 py-12 max-w-md mx-auto">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-muted text-xs font-mono uppercase tracking-wider">
+            {session.exercise.title}
+          </span>
+          <TypeBadge type={session.exercise.type} />
+          <DifficultyBadge difficulty={session.exercise.difficulty} />
+        </div>
+        <h1 className="font-mono text-3xl uppercase tracking-wider text-muted leading-none mb-2">
+          {session.status === 'failed' ? 'Incomplete' : 'Pending'}
+        </h1>
+        <p className="text-muted text-sm font-mono mb-8">
+          Started {new Date(session.startedAt).toLocaleDateString()}
+        </p>
+
+        <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
+          <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
+          <p className="text-muted text-xs">Start a new one to keep practicing.</p>
+        </div>
+
+        <div className="flex gap-3 pt-6 border-t border-border/40">
+          <button
+            onClick={() => navigate('/dashboard', { replace: true })}
+            className="flex-1 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => navigate('/start', { replace: true })}
+            className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
+          >
+            Keep Practicing
+          </button>
+        </div>
+
+        <p className="text-center text-muted/50 text-xs font-mono mt-6">Consistency compounds.</p>
+      </div>
+    )
+  }
+
   return (
     <div className="px-4 py-8 max-w-5xl mx-auto">
       {/* Exercise title + badges */}
@@ -146,14 +191,6 @@ export function ResultsPage() {
                 {attempt.userResponse}
               </div>
             </details>
-          )}
-
-          {/* No attempt at all */}
-          {!attempt && session.status !== 'active' && (
-            <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
-              <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
-              <p className="text-muted text-xs">Start a new one to keep practicing.</p>
-            </div>
           )}
 
           {/* Attempt exists but evaluation failed */}

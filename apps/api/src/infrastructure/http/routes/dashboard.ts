@@ -52,14 +52,25 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     }
   }
 
-  // Heatmap: sessions per day (last 30 days, any status)
+  // Heatmap / streak source: only sessions where the learner actually
+  // submitted a final evaluation. A day "counts" when there is real
+  // practice — creating a session and closing the tab does not, and
+  // neither does a session that expired without a submission.
   const heatmapRows = await db
     .select({
       date: sql<string>`DATE(${sessions.startedAt})::text`,
       count: count(),
     })
     .from(sessions)
-    .where(and(eq(sessions.userId, userId), gte(sessions.startedAt, thirtyDaysAgo)))
+    .where(and(
+      eq(sessions.userId, userId),
+      gte(sessions.startedAt, thirtyDaysAgo),
+      sql`EXISTS (
+        SELECT 1 FROM ${attempts}
+        WHERE ${attempts.sessionId} = ${sessions.id}
+          AND ${attempts.isFinalEvaluation} = true
+      )`,
+    ))
     .groupBy(sql`DATE(${sessions.startedAt})`)
 
   // Recent sessions with exercise info + verdict (last 5 completed/failed)
