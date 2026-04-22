@@ -41,6 +41,13 @@ const envSchema = z.object({
   // + global daily quota) arrives in subsequent commits — do not flip
   // this flag in prod before they all land.
   FF_PLAYGROUND_CONSOLE_ENABLED: z.coerce.boolean().default(false),
+  // Playground rate-limit ceilings (spec 027 §4.5). Anonymous traffic is
+  // bounded by per-IP + per-session buckets; authenticated users bypass
+  // the IP bucket (signed in, accountable) and are bounded per-user.
+  PLAYGROUND_RATE_LIMIT_ANON_PER_MIN: z.coerce.number().int().min(1).default(10),
+  PLAYGROUND_RATE_LIMIT_ANON_PER_DAY: z.coerce.number().int().min(1).default(100),
+  PLAYGROUND_RATE_LIMIT_AUTHED_PER_MIN: z.coerce.number().int().min(1).default(60),
+  PLAYGROUND_RATE_LIMIT_AUTHED_PER_DAY: z.coerce.number().int().min(1).default(1000),
 })
 
 const result = envSchema.safeParse(process.env)

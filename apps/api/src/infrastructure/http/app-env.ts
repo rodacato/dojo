@@ -8,5 +8,9 @@ export type AppEnv = {
   Variables: {
     user: typeof users.$inferSelect
     requestId: string
+    // Anonymous browser-session identifier for the playground surface.
+    // Populated by the playground route's ensurePlaygroundSession
+    // middleware before the rate limiters read it.
+    playgroundSessionId: string
   }
 }
