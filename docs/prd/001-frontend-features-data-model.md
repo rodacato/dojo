@@ -14,7 +14,7 @@ Map every screen to concrete features and identify what the current domain model
 
 ## Source material
 
-- 24 screens from `docs/screens/README.md`
+- 24 initial Stitch mockups (not maintained in-repo — historical reference only)
 - Domain model from `docs/ARCHITECTURE.md`
 - Existing DB schema: users, exercises, variations, sessions, attempts (specs 003, 006)
 

@@ -14,7 +14,7 @@ A screen-by-screen audit of missing states, mobile behavior, edge cases, and cop
 
 ## Source material
 
-- `docs/screens/README.md` — 24 screens with annotations
+- Initial Stitch mockups (24 screens, not maintained in-repo — historical)
 - `docs/prd/001-frontend-features-data-model.md` — feature inventory
 - `docs/prd/005-expert-panel-review.md` — Soren's feedback
 
