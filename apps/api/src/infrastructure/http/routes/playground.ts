@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto'
-import { Hono, type Context, type Next } from 'hono'
+import { Hono, type Context, type MiddlewareHandler, type Next } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { z } from 'zod'
 import { config } from '../../../config'
@@ -16,6 +16,7 @@ import {
   playgroundSessionDayLimiter,
   playgroundSessionMinuteLimiter,
 } from '../middleware/playground-rate-limiters'
+import { playgroundTurnstileMiddleware } from '../middleware/playground-turnstile'
 import type { AppEnv } from '../app-env'
 
 // Every Piston language we want anonymous visitors to be able to run.
@@ -30,11 +31,14 @@ const PLAYGROUND_LANGUAGE_WHITELIST = new Set(['python', 'typescript', 'go', 'ru
 const SESSION_COOKIE = 'dojo_playground_session'
 const SESSION_COOKIE_MAX_AGE_SECONDS = 24 * 60 * 60
 
-// Zod caps mirror spec 027 §4.4.
+// Zod caps mirror spec 027 §4.4. turnstileToken is optional at the schema
+// level — the Turnstile middleware enforces presence when a secret key
+// is configured, and its absence is fine in dev (no secret → no-op).
 const runSchema = z.object({
   language: z.string().min(1).max(30),
   version: z.string().min(1).max(30),
   code: z.string().min(1).max(16_384),
+  turnstileToken: z.string().max(2048).optional(),
 })
 
 export const playgroundRoutes = new Hono<AppEnv>()
@@ -59,18 +63,38 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
   c.set('playgroundSessionId', sessionId)
   await next()
 }
-// POST /playground/run — anonymous code execution.
-//
-// Abuse-stack order (spec 027 §4.5):
-//   Layer 1 (Turnstile)   — NOT in place yet (arrives in step 5)
+// Compose the abuse-stack chain into one middleware. Hono's route
+// handler overloads cap out around 8 arguments — past that TS loses
+// the types — so we combine the ten middlewares into one before mounting.
+function composeMiddleware(
+  ...mws: MiddlewareHandler<AppEnv>[]
+): MiddlewareHandler<AppEnv> {
+  return async (c, next) => {
+    let index = -1
+    const dispatch = async (i: number): Promise<void> => {
+      if (i <= index) throw new Error('next() called multiple times')
+      index = i
+      const fn = i === mws.length ? next : mws[i]
+      if (!fn) return
+      await fn(c, () => dispatch(i + 1))
+    }
+    await dispatch(0)
+  }
+}
+
+// Abuse-stack chain (spec 027 §4.5 — all four layers now in place):
 //   Layer 2 (per-IP RL)   — ✅ playgroundAnonIp*Limiter (anon only)
 //                            + playgroundAuthedUser*Limiter (authed only)
 //   Layer 3 (per-session) — ✅ playgroundSession*Limiter (anon only)
+//   Layer 1 (Turnstile)   — ✅ playgroundTurnstileMiddleware (no-op until
+//                            TURNSTILE_SECRET_KEY is set)
 //   Layer 4 (global)      — ✅ playgroundGlobalQuotaMiddleware (all traffic)
 //
-// The feature flag remains the primary guard in prod until Layer 1 lands.
-playgroundRoutes.post(
-  '/playground/run',
+// Order deviates from the spec-numbered layers for cost efficiency:
+// rate limiters first (fast, in-memory) drop scrapers before we pay a
+// Turnstile siteverify network call; Turnstile then drops invalid
+// tokens before we pay a DB query for the global quota.
+const playgroundRunChain = composeMiddleware(
   ensurePlaygroundSession,
   optionalAuth,
   playgroundAnonIpMinuteLimiter,
@@ -79,7 +103,13 @@ playgroundRoutes.post(
   playgroundSessionDayLimiter,
   playgroundAuthedUserMinuteLimiter,
   playgroundAuthedUserDayLimiter,
+  playgroundTurnstileMiddleware,
   playgroundGlobalQuotaMiddleware,
+)
+
+playgroundRoutes.post(
+  '/playground/run',
+  playgroundRunChain,
   async (c) => {
     if (!config.FF_PLAYGROUND_CONSOLE_ENABLED) {
       return c.json({ error: 'Not found' }, 404)

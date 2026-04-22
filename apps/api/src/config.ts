@@ -52,6 +52,12 @@ const envSchema = z.object({
   // bucket from kata/courses — hitting it returns 503 from /playground/run
   // only. Reset at UTC midnight.
   PLAYGROUND_DAILY_QUOTA_GLOBAL: z.coerce.number().int().min(1).default(5000),
+  // Cloudflare Turnstile — Layer 1 of the playground abuse stack. When
+  // empty the middleware is a no-op (dev mode). Set both values in prod
+  // from a Turnstile site (cloudflare.com → Turnstile → Add site). The
+  // site key is ALSO required by the web app as VITE_TURNSTILE_SITE_KEY.
+  TURNSTILE_SECRET_KEY: z.string().default(''),
+  TURNSTILE_SITE_KEY: z.string().default(''),
 })
 
 const result = envSchema.safeParse(process.env)
