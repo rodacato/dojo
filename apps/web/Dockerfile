@@ -20,6 +20,13 @@ ENV VITE_SENTRY_DSN=$VITE_SENTRY_DSN
 ENV VITE_SENTRY_ENVIRONMENT=$VITE_SENTRY_ENVIRONMENT
 ENV VITE_SENTRY_RELEASE=$VITE_SENTRY_RELEASE
 
+# Cloudflare Turnstile site key (public, baked into the bundle). Empty
+# disables the widget — in prod that desyncs us from the API middleware
+# and every run comes back 403 turnstile_required, so keep this ARG
+# declared even if some envs leave it empty.
+ARG VITE_TURNSTILE_SITE_KEY=
+ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY
+
 # Source map upload (build-time only — @sentry/vite-plugin reads process.env).
 # Skipped silently when any of the three is empty.
 ARG SENTRY_AUTH_TOKEN=
