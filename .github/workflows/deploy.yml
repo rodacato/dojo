@@ -40,7 +40,11 @@ jobs:
       RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       FF_CODE_EXECUTION_ENABLED: ${{ vars.FF_CODE_EXECUTION_ENABLED }}
+      FF_PLAYGROUND_CONSOLE_ENABLED: ${{ vars.FF_PLAYGROUND_CONSOLE_ENABLED || 'false' }}
       PISTON_URL: ${{ vars.PISTON_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+      TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
       SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
@@ -90,6 +94,7 @@ jobs:
       HOST_IP: ${{ vars.HOST_IP }}
       WEB_URL: ${{ vars.WEB_URL }}
       API_URL: ${{ vars.API_URL }}
+      TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
       VITE_SENTRY_ENVIRONMENT: ${{ vars.VITE_SENTRY_ENVIRONMENT || 'production' }}
       VITE_SENTRY_RELEASE: ${{ github.sha }}
