@@ -44,6 +44,7 @@ const AdminCoursesPage = lazyWithRetry(() => import('./pages/admin/AdminCoursesP
 const AdminErrorsPage = lazyWithRetry(() => import('./pages/admin/AdminErrorsPage').then(m => ({ default: m.AdminErrorsPage })))
 const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })))
 const PlaygroundPage = lazyWithRetry(() => import('./pages/PlaygroundPage').then(m => ({ default: m.PlaygroundPage })))
+import { OptionalSidebarLayout } from './components/layout/OptionalSidebarLayout'
 
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>
@@ -73,8 +74,10 @@ export function App() {
           <Route path="/share/course/:slug/:userId" element={<LazyRoute><CourseSharePage /></LazyRoute>} />
           <Route path="/learn" element={<LazyRoute><LearnPage /></LazyRoute>} />
           <Route path="/learn/:slug" element={<LazyRoute><CoursePlayerPage /></LazyRoute>} />
-          <Route path="/playground" element={<LazyRoute><PlaygroundPage /></LazyRoute>} />
-          <Route path="/playground/:language" element={<LazyRoute><PlaygroundPage /></LazyRoute>} />
+          <Route element={<OptionalSidebarLayout />}>
+            <Route path="/playground" element={<LazyRoute><PlaygroundPage /></LazyRoute>} />
+            <Route path="/playground/:language" element={<LazyRoute><PlaygroundPage /></LazyRoute>} />
+          </Route>
 
           {/* Protected — AppShell wraps all auth routes */}
           <Route element={<RequireAuth />}>

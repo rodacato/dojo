@@ -19,3 +19,9 @@ export const SENTRY_DSN = import.meta.env['VITE_SENTRY_DSN'] ?? ''
 export const SENTRY_ENVIRONMENT =
   import.meta.env['VITE_SENTRY_ENVIRONMENT'] ?? import.meta.env.MODE
 export const SENTRY_RELEASE = import.meta.env['VITE_SENTRY_RELEASE'] ?? ''
+
+// Cloudflare Turnstile site key (public, appears in HTML). When empty
+// the playground mounts no widget and the API middleware must also be
+// a no-op (TURNSTILE_SECRET_KEY unset). Set VITE_TURNSTILE_SITE_KEY at
+// build time — see config/deploy.web.yml builder.args.
+export const TURNSTILE_SITE_KEY = import.meta.env['VITE_TURNSTILE_SITE_KEY'] ?? ''
