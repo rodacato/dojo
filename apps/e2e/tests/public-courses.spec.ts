@@ -12,6 +12,7 @@ const SQL_COURSE_SUMMARY = {
   isPublic: true,
   lessonCount: 3,
   stepCount: 9,
+  externalReferences: [],
 }
 
 const SQL_COURSE_DETAIL = {
@@ -25,6 +26,7 @@ const SQL_COURSE_DETAIL = {
   isPublic: true,
   lessonCount: 3,
   stepCount: 3,
+  externalReferences: [],
   lessons: [
     {
       id: 'lesson-1',
@@ -111,8 +113,9 @@ test.describe('Public courses (anonymous)', () => {
 
     await page.goto('/learn/typescript-fundamentals')
 
-    // CoursePlayerPage surfaces a "Course not found" state with a back link
-    await expect(page.getByText(/course not found/i)).toBeVisible()
+    // CoursePlayerPage surfaces a generic load-failure state (covers 404
+    // and any other fetch error) with a back link to the catalog.
+    await expect(page.getByText(/we couldn't load this course/i)).toBeVisible()
     await expect(page.getByRole('link', { name: /back to courses/i })).toBeVisible()
   })
 
