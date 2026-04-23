@@ -316,10 +316,13 @@ export function PlaygroundPage() {
         </div>
       </div>
 
-      {/* Invisible Turnstile widget. No-op when VITE_TURNSTILE_SITE_KEY
-          is empty; then the API middleware must also be disabled. */}
+      {/* Turnstile widget — renders inline only when Cloudflare decides a
+          human challenge is required (appearance: 'interaction-only').
+          No-op when VITE_TURNSTILE_SITE_KEY is empty; the API middleware
+          must also be disabled in that case. Kept in a slim slot above
+          the footer so the challenge UI is reachable when it appears. */}
       {TURNSTILE_SITE_KEY && (
-        <div className="sr-only" aria-hidden>
+        <div className="shrink-0 px-4 py-1 empty:hidden">
           <TurnstileWidget
             ref={turnstileRef}
             siteKey={TURNSTILE_SITE_KEY}

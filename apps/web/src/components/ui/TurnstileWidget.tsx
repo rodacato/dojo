@@ -13,7 +13,7 @@ interface TurnstileOptions {
   'error-callback'?: (err?: string) => void
   'expired-callback'?: () => void
   'timeout-callback'?: () => void
-  size?: 'invisible' | 'compact' | 'normal' | 'flexible'
+  size?: 'compact' | 'normal' | 'flexible'
   appearance?: 'always' | 'execute' | 'interaction-only'
 }
 
@@ -103,7 +103,12 @@ export const TurnstileWidget = forwardRef<TurnstileHandle, TurnstileWidgetProps>
             'error-callback': () => onTokenRef.current(null),
             'expired-callback': () => onTokenRef.current(null),
             'timeout-callback': () => onTokenRef.current(null),
-            size: 'invisible',
+            // `appearance: 'interaction-only'` keeps the widget hidden
+            // unless the challenge actually needs human input — the
+            // invisible UX without the now-invalid `size: 'invisible'`
+            // param. For always-invisible, configure the site as
+            // "Invisible" in the Cloudflare Turnstile dashboard.
+            appearance: 'interaction-only',
           })
         })
         .catch(() => {
