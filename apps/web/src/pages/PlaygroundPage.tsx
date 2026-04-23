@@ -169,129 +169,127 @@ export function PlaygroundPage() {
 
   const ctaHref = user ? '/start' : '/'
 
+  // Soren-lens density rules:
+  //   - h-screen, not min-h-screen — flex-1 only redistributes inside a
+  //     container with a fixed height; min-h-* lets the column grow and
+  //     the editor stops claiming space, leaving the dead zone we just
+  //     shipped to prod.
+  //   - Editor dominates. Output stays a single-line ribbon when idle,
+  //     expands up to 35vh when there is content, scrolls inside.
+  //   - One header row. The CTA + auth link are the same affordance —
+  //     do not show both at the same prominence; the topbar button is
+  //     enough, the inline "practice with a kata →" is decorative chrome.
+  //   - Controls bar slim: dropdowns 28px tall, run button anchored right.
+  const hasOutput =
+    run.status === 'ok' || run.status === 'error' || run.status === 'running'
+
   return (
-    <div className="min-h-screen bg-base text-primary flex flex-col">
-      {/* Top bar — logo + CTA to the kata loop */}
-      <header className="border-b border-border/30">
-        <div className="max-w-5xl mx-auto flex items-center justify-between px-4 py-3 gap-4">
-          <Link to="/" className="shrink-0">
-            <LogoWordmark />
-          </Link>
-          <p className="text-muted text-xs font-mono hidden sm:block flex-1 text-center">
-            like running code?{' '}
-            <Link
-              to={ctaHref}
-              onClick={() => handleCtaClick('banner')}
-              className="text-accent hover:text-primary transition-colors"
-            >
-              practice with a kata →
-            </Link>
-          </p>
-          <Link
-            to={ctaHref}
-            onClick={() => handleCtaClick('topbar')}
-            className="text-xs font-mono text-secondary hover:text-primary transition-colors px-3 py-1.5 border border-border/40 rounded-sm hover:border-accent/50 shrink-0"
-          >
-            {user ? 'Dashboard' : 'Sign in'}
-          </Link>
-        </div>
+    <div className="h-screen bg-base text-primary flex flex-col overflow-hidden">
+      {/* One-row header: logo · subtle CTA · auth/dashboard chip */}
+      <header className="flex items-center justify-between gap-4 px-4 py-2 border-b border-border/30 shrink-0">
+        <Link to="/" className="shrink-0">
+          <LogoWordmark />
+        </Link>
+        <Link
+          to={ctaHref}
+          onClick={() => handleCtaClick('banner')}
+          className="text-muted text-[11px] font-mono hover:text-secondary transition-colors hidden md:inline truncate"
+        >
+          like running code? <span className="text-accent">practice with a kata →</span>
+        </Link>
+        <Link
+          to={ctaHref}
+          onClick={() => handleCtaClick('topbar')}
+          className="text-[11px] font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-accent/50 shrink-0"
+        >
+          {user ? 'Dashboard' : 'Sign in'}
+        </Link>
       </header>
 
-      {/* Controls bar */}
-      <div className="border-b border-border/20 bg-surface/30">
-        <div className="max-w-5xl mx-auto flex items-center flex-wrap gap-3 px-4 py-2">
-          <label className="flex items-center gap-2 text-xs font-mono text-muted">
-            <span className="hidden sm:inline">language</span>
-            <select
-              value={selectedLanguage}
-              onChange={(e) => changeLanguage(e.target.value)}
-              className="bg-base border border-border/40 rounded-sm px-2 py-1 text-primary text-sm focus:outline-none focus:border-accent"
-            >
-              {RUNTIMES.map((r) => (
-                <option key={r.language} value={r.language}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
-          </label>
+      {/* Slim controls bar */}
+      <div className="flex items-center flex-wrap gap-2 px-4 py-1.5 border-b border-border/20 bg-surface/30 shrink-0">
+        <select
+          aria-label="language"
+          value={selectedLanguage}
+          onChange={(e) => changeLanguage(e.target.value)}
+          className="bg-base border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
+        >
+          {RUNTIMES.map((r) => (
+            <option key={r.language} value={r.language}>
+              {r.label}
+            </option>
+          ))}
+        </select>
+        <select
+          aria-label="version"
+          value={selectedVersion}
+          onChange={(e) => setSelectedVersion(e.target.value)}
+          className="bg-base border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
+        >
+          {availableVersions.map((v) => (
+            <option key={v} value={v}>
+              {v}
+            </option>
+          ))}
+        </select>
+        {runtime.versions.advanced.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((s) => !s)}
+            className="text-muted text-[10px] font-mono hover:text-secondary transition-colors"
+          >
+            {showAdvanced ? '— hide older' : '+ older'}
+          </button>
+        )}
 
-          <label className="flex items-center gap-2 text-xs font-mono text-muted">
-            <span className="hidden sm:inline">version</span>
-            <select
-              value={selectedVersion}
-              onChange={(e) => setSelectedVersion(e.target.value)}
-              className="bg-base border border-border/40 rounded-sm px-2 py-1 text-primary text-sm focus:outline-none focus:border-accent"
-            >
-              {availableVersions.map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          {runtime.versions.advanced.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setShowAdvanced((s) => !s)}
-              className="text-muted text-[10px] font-mono hover:text-secondary transition-colors"
-            >
-              {showAdvanced ? '— hide older' : '+ older versions'}
-            </button>
+        <div className="ml-auto flex items-center gap-3">
+          {run.runtimeMs !== null && run.status !== 'running' && (
+            <span className="text-muted text-[10px] font-mono">
+              {run.runtimeMs}ms · exit {run.exitCode}
+            </span>
           )}
-
-          <div className="ml-auto flex items-center gap-3">
-            {run.runtimeMs !== null && run.status !== 'running' && (
-              <span className="text-muted text-[10px] font-mono">
-                {run.runtimeMs}ms · exit {run.exitCode}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={handleRun}
-              disabled={run.status === 'running' || code.trim().length === 0}
-              className="px-4 py-1.5 bg-accent text-primary font-mono text-xs rounded-sm hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              {run.status === 'running' ? 'running...' : '▶ run'}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleRun}
+            disabled={run.status === 'running' || code.trim().length === 0}
+            className="px-3 py-1 bg-accent text-primary font-mono text-xs rounded-sm hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {run.status === 'running' ? 'running...' : '▶ run'}
+          </button>
         </div>
       </div>
 
-      {/* Editor + output */}
-      <div className="flex-1 flex flex-col min-h-0">
-        <div className="flex-1 min-h-0">
-          <CodeEditor
-            value={code}
-            onChange={setCode}
-            language={runtime.editorLanguage}
-            placeholder="write some code and hit run"
-          />
-        </div>
+      {/* Editor — claims everything it can */}
+      <div className="flex-1 min-h-0">
+        <CodeEditor
+          value={code}
+          onChange={setCode}
+          language={runtime.editorLanguage}
+          placeholder="write some code and hit run"
+        />
+      </div>
 
-        <div className="border-t border-border/30 bg-surface/50 max-h-64 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 py-3 font-mono text-xs">
-            <OutputPanel run={run} />
-          </div>
+      {/* Output — single-line ribbon when idle, up to 35vh when active */}
+      <div
+        className={`shrink-0 border-t border-border/30 bg-surface/40 font-mono text-xs ${
+          hasOutput ? 'max-h-[35vh] overflow-y-auto' : ''
+        }`}
+      >
+        <div className="px-4 py-1.5">
+          <OutputPanel run={run} />
         </div>
       </div>
 
-      {/* Footer — honest disclosure about what the playground is */}
-      <footer className="border-t border-border/20 bg-base">
-        <div className="max-w-5xl mx-auto px-4 py-2 flex items-center justify-between text-muted/60 text-[10px] font-mono">
-          <span>this is a sandbox. not graded.</span>
-          <span>
-            the kata is where the{' '}
-            <Link
-              to={ctaHref}
-              onClick={() => handleCtaClick('footer')}
-              className="hover:text-secondary transition-colors"
-            >
-              sensei
-            </Link>{' '}
-            evaluates.
-          </span>
-        </div>
+      {/* Footer — single thin line */}
+      <footer className="shrink-0 border-t border-border/20 bg-base px-4 py-1 flex items-center justify-between text-muted/50 text-[10px] font-mono">
+        <span>sandbox · not graded</span>
+        <Link
+          to={ctaHref}
+          onClick={() => handleCtaClick('footer')}
+          className="hover:text-secondary transition-colors"
+        >
+          sensei evaluates in the kata →
+        </Link>
       </footer>
     </div>
   )
@@ -299,7 +297,7 @@ export function PlaygroundPage() {
 
 function OutputPanel({ run }: { run: RunState }) {
   if (run.status === 'idle') {
-    return <p className="text-muted/60">output will appear here.</p>
+    return <p className="text-muted/50">output will appear here.</p>
   }
   if (run.status === 'running') {
     return <p className="text-accent animate-pulse">executing...</p>
@@ -308,7 +306,7 @@ function OutputPanel({ run }: { run: RunState }) {
     return <p className="text-danger">{run.errorMessage}</p>
   }
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
       {run.stdout && (
         <pre className="text-secondary whitespace-pre-wrap break-words">{run.stdout}</pre>
       )}
@@ -316,7 +314,7 @@ function OutputPanel({ run }: { run: RunState }) {
         <pre className="text-danger whitespace-pre-wrap break-words">{run.stderr}</pre>
       )}
       {!run.stdout && !run.stderr && (
-        <p className="text-muted/60">(no output)</p>
+        <p className="text-muted/50">(no output)</p>
       )}
     </div>
   )

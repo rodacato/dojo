@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { to: '/dashboard', label: 'dashboard', icon: DashboardIcon },
   { to: '/start', label: 'practice', icon: CodeIcon },
   { to: '/learn', label: 'learn', icon: LearnIcon },
+  { to: '/playground', label: 'playground', icon: TerminalIcon },
   { to: '/leaderboard', label: 'leaderboard', icon: AnalyticsIcon },
   { to: '/badges', label: 'badges', icon: BadgesIcon },
 ]
@@ -147,6 +148,17 @@ function LogoutIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+    </svg>
+  )
+}
+
+function TerminalIcon({ className }: { className?: string }) {
+  // A small terminal/console glyph — matches the "sandbox to try code" intent
+  // and reads as distinct from the practice (chevrons) and learn (mortar)
+  // icons next to it.
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM5.7 16.3l-1.41-1.41L7.17 12 4.29 9.12 5.7 7.7 10 12l-4.3 4.3zM20 17h-8v-2h8v2z" />
     </svg>
   )
 }

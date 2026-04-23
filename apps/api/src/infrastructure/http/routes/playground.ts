@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto'
-import { Hono, type Context, type MiddlewareHandler, type Next } from 'hono'
+import { Hono, type Context, type Next } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
 import { z } from 'zod'
 import { config } from '../../../config'
@@ -69,53 +69,34 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
   c.set('playgroundSessionId', sessionId)
   await next()
 }
-// Compose the abuse-stack chain into one middleware. Hono's route
-// handler overloads cap out around 8 arguments — past that TS loses
-// the types — so we combine the ten middlewares into one before mounting.
-function composeMiddleware(
-  ...mws: MiddlewareHandler<AppEnv>[]
-): MiddlewareHandler<AppEnv> {
-  return async (c, next) => {
-    let index = -1
-    const dispatch = async (i: number): Promise<void> => {
-      if (i <= index) throw new Error('next() called multiple times')
-      index = i
-      const fn = i === mws.length ? next : mws[i]
-      if (!fn) return
-      await fn(c, () => dispatch(i + 1))
-    }
-    await dispatch(0)
-  }
-}
-
-// Abuse-stack chain (spec 027 §4.5 — all four layers now in place):
-//   Layer 2 (per-IP RL)   — ✅ playgroundAnonIp*Limiter (anon only)
+// Abuse-stack chain (spec 027 §4.5 — all four layers in place):
+//   Layer 2 (per-IP RL)   — playgroundAnonIp*Limiter (anon only)
 //                            + playgroundAuthedUser*Limiter (authed only)
-//   Layer 3 (per-session) — ✅ playgroundSession*Limiter (anon only)
-//   Layer 1 (Turnstile)   — ✅ playgroundTurnstileMiddleware (no-op until
+//   Layer 3 (per-session) — playgroundSession*Limiter (anon only)
+//   Layer 1 (Turnstile)   — playgroundTurnstileMiddleware (no-op until
 //                            TURNSTILE_SECRET_KEY is set)
-//   Layer 4 (global)      — ✅ playgroundGlobalQuotaMiddleware (all traffic)
+//   Layer 4 (global)      — playgroundGlobalQuotaMiddleware (all traffic)
 //
 // Order deviates from the spec-numbered layers for cost efficiency:
 // rate limiters first (fast, in-memory) drop scrapers before we pay a
 // Turnstile siteverify network call; Turnstile then drops invalid
 // tokens before we pay a DB query for the global quota.
-const playgroundRunChain = composeMiddleware(
-  ensurePlaygroundSession,
-  optionalAuth,
-  playgroundAnonIpMinuteLimiter,
-  playgroundAnonIpDayLimiter,
-  playgroundSessionMinuteLimiter,
-  playgroundSessionDayLimiter,
-  playgroundAuthedUserMinuteLimiter,
-  playgroundAuthedUserDayLimiter,
-  playgroundTurnstileMiddleware,
-  playgroundGlobalQuotaMiddleware,
-)
+//
+// Mounted with separate .use() calls because Hono's .post() overloads
+// cap out around 8 arguments and the chain is deeper than that.
+playgroundRoutes.use('/playground/run', ensurePlaygroundSession)
+playgroundRoutes.use('/playground/run', optionalAuth)
+playgroundRoutes.use('/playground/run', playgroundAnonIpMinuteLimiter)
+playgroundRoutes.use('/playground/run', playgroundAnonIpDayLimiter)
+playgroundRoutes.use('/playground/run', playgroundSessionMinuteLimiter)
+playgroundRoutes.use('/playground/run', playgroundSessionDayLimiter)
+playgroundRoutes.use('/playground/run', playgroundAuthedUserMinuteLimiter)
+playgroundRoutes.use('/playground/run', playgroundAuthedUserDayLimiter)
+playgroundRoutes.use('/playground/run', playgroundTurnstileMiddleware)
+playgroundRoutes.use('/playground/run', playgroundGlobalQuotaMiddleware)
 
 playgroundRoutes.post(
   '/playground/run',
-  playgroundRunChain,
   async (c) => {
     if (!config.FF_PLAYGROUND_CONSOLE_ENABLED) {
       return c.json({ error: 'Not found' }, 404)
