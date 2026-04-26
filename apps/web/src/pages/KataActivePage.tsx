@@ -46,20 +46,61 @@ export function KataActivePage() {
     if (!sessionId) return
     let cancelled = false
 
+    function applyActiveSession(s: SessionWithExercise): void {
+      setPreparing(false)
+      setSession(s)
+      if (s.exercise.starterCode) {
+        setUserResponse(s.exercise.starterCode)
+      }
+    }
+
     async function load() {
       try {
         const s = await api.getSession(sessionId!)
         if (cancelled) return
 
         if (s.status === 'active') {
-          setPreparing(false)
-          setSession(s)
-          if (s.exercise.starterCode) {
-            setUserResponse(s.exercise.starterCode)
-          }
+          applyActiveSession(s)
           return
         }
         if (s.status === 'preparing') {
+          setPreparing(true)
+          // Try the SSE stream first (S022 Part 6). If it 404s the flag
+          // is off on the API side and we fall back to the polling
+          // path. Any other error surfaces the prepare-error UI.
+          try {
+            for await (const _chunk of api.streamSessionBody(sessionId!)) {
+              if (cancelled) return
+              // Visible token-by-token feedback would need a body-progressive
+              // surface in the prepare UI; for now we just confirm the
+              // stream is alive so the slow-notice doesn't fire while the
+              // model is producing.
+            }
+            if (cancelled) return
+            // Stream finished — body is persisted. Refetch once to
+            // pull the now-active session shape (exercise, ownerRole).
+            const final = await api.getSession(sessionId!)
+            if (cancelled) return
+            if (final.status === 'active') {
+              applyActiveSession(final)
+              return
+            }
+            if (final.status === 'failed' && !final.finalAttempt) {
+              setPrepareError(true)
+              return
+            }
+            navigate(`/kata/${sessionId}/result`, { replace: true })
+            return
+          } catch (sseErr) {
+            if (cancelled) return
+            if (sseErr instanceof ApiError && sseErr.status === 404) {
+              // SSE flag off on the API — fall back to the polling path.
+            } else {
+              setPrepareError(true)
+              return
+            }
+          }
+          // Polling fallback (also covers FF off and pre-S022 deploys).
           pollCount.current++
           if (pollCount.current >= PREPARE_MAX_POLLS) {
             setPrepareError(true)
@@ -68,7 +109,6 @@ export function KataActivePage() {
           if (pollCount.current >= PREPARE_SLOW_NOTICE_AFTER) {
             setPrepareSlow(true)
           }
-          setPreparing(true)
           setTimeout(load, PREPARE_POLL_INTERVAL_MS)
           return
         }

@@ -129,6 +129,61 @@ export class AnthropicStreamAdapter implements LLMPort {
     }
   }
 
+  async *generateSessionBodyStream(params: {
+    ownerRole: string
+    ownerContext: string
+    exerciseDescription: string
+  }): AsyncIterable<string> {
+    const prompt = buildSessionBodyPrompt(params)
+    const reqId = crypto.randomUUID()
+    const startedAt = Date.now()
+
+    console.log(JSON.stringify({
+      evt: 'llm.request',
+      purpose: 'session_body_stream',
+      reqId,
+      model: config.LLM_MODEL,
+      baseUrl: config.LLM_BASE_URL ?? 'default',
+      promptChars: prompt.length,
+    }))
+
+    let chars = 0
+    try {
+      const stream = this.client.messages.stream({
+        model: config.LLM_MODEL,
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
+      })
+
+      for await (const event of stream) {
+        if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+          const chunk = event.delta.text
+          chars += chunk.length
+          yield chunk
+        }
+      }
+
+      console.log(JSON.stringify({
+        evt: 'llm.response',
+        purpose: 'session_body_stream',
+        reqId,
+        latencyMs: Date.now() - startedAt,
+        responseChars: chars,
+      }))
+    } catch (err) {
+      console.error(JSON.stringify({
+        evt: 'llm.error',
+        purpose: 'session_body_stream',
+        reqId,
+        latencyMs: Date.now() - startedAt,
+        message: err instanceof Error ? err.message : String(err),
+        status: (err as { status?: number })?.status,
+        name: err instanceof Error ? err.name : undefined,
+      }))
+      throw err
+    }
+  }
+
   async nudge(params: {
     stepInstruction: string
     testCode: string | null

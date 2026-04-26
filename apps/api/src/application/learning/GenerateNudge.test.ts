@@ -48,6 +48,7 @@ function buildDeps(course: Course | null = buildCourse(), nudgeText = 'Re-check 
   const llm = {
     evaluate: vi.fn(),
     generateSessionBody: vi.fn(),
+    generateSessionBodyStream: vi.fn(),
     nudge: vi.fn().mockResolvedValue(nudgeText),
   }
   const nudgeRepo = {

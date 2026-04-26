@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { and, count, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { getCookie } from 'hono/cookie'
+import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
 import { config } from '../../../config'
 import { SessionExpiredError } from '../../../domain/shared/errors'
@@ -147,9 +148,15 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
   // are reported and the session is marked failed inside the use case;
   // the catch here is a last-resort no-op so the orphan promise never
   // trips an unhandled-rejection.
-  void useCases.generateSessionBody
-    .execute({ sessionId: session.id, exerciseId: session.exerciseId, variationId: session.variationId })
-    .catch(() => {})
+  //
+  // When FF_LLM_PREP_STREAMING_ENABLED is on the SSE endpoint
+  // (GET /sessions/:id/body-stream) owns the LLM call and we skip the
+  // background kick-off so we don't double-call the model.
+  if (!config.FF_LLM_PREP_STREAMING_ENABLED) {
+    void useCases.generateSessionBody
+      .execute({ sessionId: session.id, exerciseId: session.exerciseId, variationId: session.variationId })
+      .catch(() => {})
+  }
 
   // Funnel signal — playground → kata conversion. Fire-and-forget: a
   // failed lookup must never block a real session creation. See spec
@@ -254,6 +261,83 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
         }
       : null,
   })
+})
+
+// ---------------------------------------------------------------------------
+// GET /sessions/:id/body-stream — S022 Part 6
+// ---------------------------------------------------------------------------
+//
+// SSE endpoint that streams the kata body as the LLM produces it. Clients
+// open this immediately after POST /sessions; the handler emits one
+// `token` event per text delta and a final `done` event with the full
+// body. On error a `error` event is emitted before the connection
+// closes (the session itself is deleted by the use case).
+//
+// Idempotency: if `session.body` is already populated when the client
+// connects (re-open after reload, or polling-fallback already won the
+// race), the handler emits the full body in a single `token` + `done`
+// pair and exits. The handler refuses to start a second LLM call for
+// the same sessionId — concurrent connections during the same in-flight
+// generation get a 409. The frontend retries with backoff in that case.
+
+const inFlightStreams = new Set<string>()
+
+practiceRoutes.get('/sessions/:id/body-stream', requireAuth, async (c) => {
+  if (!config.FF_LLM_PREP_STREAMING_ENABLED) {
+    return c.json({ error: 'Not found' }, 404)
+  }
+
+  const user = c.get('user') as { id: string }
+  const sessionId = c.req.param('id')!
+
+  const session = await useCases.getSession.execute(SessionId(sessionId))
+  if (!session) return c.json({ error: 'Session not found' }, 404)
+  if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
+
+  // Body already persisted — replay it as a single token event so the
+  // client doesn't need a separate code path for the cached case.
+  if (session.body) {
+    return streamSSE(c, async (sse) => {
+      await sse.writeSSE({ event: 'token', data: session.body! })
+      await sse.writeSSE({ event: 'done', data: '' })
+    })
+  }
+
+  // Reject if a stream is already in flight for this session — a second
+  // SSE connection would trigger a duplicate LLM call.
+  if (inFlightStreams.has(sessionId)) {
+    return c.json({ error: 'Stream already in progress' }, 409)
+  }
+  inFlightStreams.add(sessionId)
+
+  return streamSSE(
+    c,
+    async (sse) => {
+      try {
+        for await (const chunk of useCases.generateSessionBody.executeStream({
+          sessionId: SessionId(sessionId),
+          exerciseId: session.exerciseId,
+          variationId: session.variationId,
+        })) {
+          if (chunk) await sse.writeSSE({ event: 'token', data: chunk })
+        }
+        await sse.writeSSE({ event: 'done', data: '' })
+      } catch (err) {
+        await sse.writeSSE({
+          event: 'error',
+          data: err instanceof Error ? err.message : 'Unknown error',
+        })
+      } finally {
+        inFlightStreams.delete(sessionId)
+      }
+    },
+    async (_err, sse) => {
+      // onError fires when the stream callback throws past our catch.
+      // Defensive — clears the in-flight flag so a retry isn't blocked.
+      inFlightStreams.delete(sessionId)
+      await sse.writeSSE({ event: 'error', data: 'stream_failed' })
+    },
+  )
 })
 
 // ---------------------------------------------------------------------------

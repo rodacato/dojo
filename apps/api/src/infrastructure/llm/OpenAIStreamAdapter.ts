@@ -131,6 +131,38 @@ export class OpenAIStreamAdapter implements LLMPort {
     return content
   }
 
+  async *generateSessionBodyStream(params: {
+    ownerRole: string
+    ownerContext: string
+    exerciseDescription: string
+  }): AsyncIterable<string> {
+    const prompt = buildSessionBodyPrompt(params)
+
+    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.LLM_MODEL,
+        max_tokens: 1024,
+        stream: true,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    })
+
+    if (!response.ok) {
+      const body = await response.text()
+      throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
+    }
+
+    for await (const chunk of parseSSEStream(response)) {
+      const content = chunk.choices?.[0]?.delta?.content
+      if (content) yield content
+    }
+  }
+
   async nudge(params: {
     stepInstruction: string
     testCode: string | null

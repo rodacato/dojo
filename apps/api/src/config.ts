@@ -41,6 +41,13 @@ const envSchema = z.object({
   // + global daily quota) arrives in subsequent commits — do not flip
   // this flag in prod before they all land.
   FF_PLAYGROUND_CONSOLE_ENABLED: z.coerce.boolean().default(false),
+  // Stream the kata-prep body via SSE instead of the 2s polling path
+  // (S022 Part 6). When on, POST /sessions stops kicking off the
+  // background generate and the new GET /sessions/:id/body-stream
+  // endpoint owns the LLM call. Off by default — flip to on only after
+  // a smoke run in staging confirms both the streaming path and the
+  // fallback polling path still work.
+  FF_LLM_PREP_STREAMING_ENABLED: z.coerce.boolean().default(false),
   // Playground rate-limit ceilings (spec 027 §4.5). Anonymous traffic is
   // bounded by per-IP + per-session buckets; authenticated users bypass
   // the IP bucket (signed in, accountable) and are bounded per-user.

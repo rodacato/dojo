@@ -55,6 +55,7 @@ describe('SubmitAttempt', () => {
     const llm = {
       evaluate: vi.fn().mockReturnValue(fakeEvaluationStream(streamTokens)),
       generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
       nudge: vi.fn(),
     }
 
@@ -99,6 +100,7 @@ describe('SubmitAttempt', () => {
     const llm = {
       evaluate: vi.fn().mockReturnValue(fakeEvaluationStream(streamTokens)),
       generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
       nudge: vi.fn(),
     }
 
@@ -122,7 +124,7 @@ describe('SubmitAttempt', () => {
   it('throws SessionNotFoundError when session does not exist', async () => {
     const sessionRepo = makeStubSessionRepo(null)
     const eventBus = new InMemoryEventBus()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), nudge: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn() }
 
     const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus })
 

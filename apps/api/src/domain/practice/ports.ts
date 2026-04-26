@@ -29,6 +29,16 @@ export interface LLMPort {
     exerciseDescription: string
   }): Promise<string>
 
+  // Streaming variant of generateSessionBody (S022 Part 6). Yields text
+  // deltas as the model produces them. Used by the SSE prep endpoint —
+  // kept as a separate method so the blocking path stays available as a
+  // feature-flag fallback.
+  generateSessionBodyStream(params: {
+    ownerRole: string
+    ownerContext: string
+    exerciseDescription: string
+  }): AsyncIterable<string>
+
   // Course-player nudge — a single short hint pointing the learner toward
   // the gap without giving the answer. Returns the full nudge text.
   nudge(params: {
