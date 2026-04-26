@@ -28,9 +28,17 @@ PISTON_URL="${PISTON_URL:-http://localhost:2000}"
 # Multi-version note (S022 §1.4): Python 3.10 is provisionally listed
 # alongside 3.12 because `match` pedagogy wants 3.10+ and the course
 # framework targets 3.11+. TypeScript / Go / Ruby / Rust stay single-
-# version until a concrete use case asks for more. Runtime bumps
-# (Go 1.16 → current, Ruby 3.0 → 3.3, Rust 1.68 → current) are a
-# separate operational decision and travel in a separate commit.
+# version until a concrete use case asks for more.
+#
+# Runtime bump status (S022 close): blocked upstream. The pinned
+# engineer-man/piston image only ships these versions:
+#   - go     → 1.16.2 only
+#   - ruby   → 2.5.1, 3.0.1 (no 3.x ≥ 3.1)
+#   - rust   → up to 1.68.2
+# Bumping to current stable (Go 1.23 / Ruby 3.3 / Rust 1.83) requires
+# either a fork that maintains newer runtimes or building our own image
+# layer with extra packages. Tracked in the backlog as a conditional
+# item — re-evaluate when a learner actually trips a missing-feature gap.
 RUNTIMES=(
   "go 1.16.2"
   "python 3.10.0"

@@ -51,6 +51,16 @@ jobs:
           SMOKE_API_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_API_URL || secrets.SMOKE_STAGING_API_URL }}
           SMOKE_AUTH_TOKEN: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_AUTH_TOKEN || secrets.SMOKE_STAGING_AUTH_TOKEN }}
           SMOKE_PUBLIC_USERNAME: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_PUBLIC_USERNAME || secrets.SMOKE_STAGING_PUBLIC_USERNAME }}
+          # Set to '1' on a target whose API runs LLM_ADAPTER_FORMAT=mock,
+          # so the complete-kata smoke can run without burning tokens or
+          # depending on a real model's latency. Off by default.
+          SMOKE_USE_MOCK_LLM: ${{ inputs.environment == 'prod' && vars.SMOKE_PROD_USE_MOCK_LLM || vars.SMOKE_STAGING_USE_MOCK_LLM }}
+          # Set to '1' on a target whose Turnstile is configured with the
+          # Cloudflare dummy "always-passes" secret key, so the playground
+          # anon-run smoke can submit the dummy response token without
+          # being blocked by Layer 1. Off by default — prod with a real
+          # Turnstile secret key MUST leave this unset.
+          SMOKE_PLAYGROUND_ENABLED: ${{ inputs.environment == 'prod' && vars.SMOKE_PROD_PLAYGROUND_ENABLED || vars.SMOKE_STAGING_PLAYGROUND_ENABLED }}
 
       - name: Upload traces on failure
         if: failure()
