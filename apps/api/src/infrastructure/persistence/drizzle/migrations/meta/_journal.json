@@ -148,6 +148,13 @@
       "when": 1776885208471,
       "tag": "0020_friendly_fabian_cortez",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1777234291859,
+      "tag": "0021_strong_avengers",
+      "breakpoints": true
     }
   ]
 }

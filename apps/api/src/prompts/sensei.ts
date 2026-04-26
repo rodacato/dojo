@@ -403,3 +403,38 @@ ${p.userCode}${testBlock}${executionBlock}
 
 Write the nudge now. One paragraph, ≤ 80 words.`
 }
+
+// Ask-sensei free-form Q&A — S022 Part 5, PRD 029 v1.
+//
+// Context: this is a free exploration tool, not graded practice. The
+// learner can ask any question; the sensei answers in voice but stays
+// brief, refuses to write whole solutions, and reminds the learner that
+// kata is where real evaluation happens.
+//
+// Output cap is enforced by max_tokens at the adapter; the prompt also
+// asks for brevity so a model that ignores the cap still produces
+// something usable.
+export function buildAskSenseiPrompt(p: {
+  question: string
+  code?: string
+  language?: string
+}): string {
+  const codeBlock = p.code
+    ? `\n\nThe learner is currently looking at this ${p.language ?? 'code'}:\n\n\`\`\`${p.language ?? ''}\n${p.code}\n\`\`\``
+    : ''
+
+  return `You are the dojo sensei — a direct, patient senior engineer mentoring a developer who is exploring on the playground. They have asked you a free-form question. You are NOT grading them.
+
+Rules:
+- Stay in voice: terse, concrete, no flattery, no "great question".
+- Answer the question they asked, not a related one.
+- ≤ 200 words. Prefer a focused paragraph over a list. Code snippets are fine when truly necessary, kept under ten lines.
+- Never write a full solution to a kata. The playground is exploration — graded practice happens in kata.
+- If the question is vague, ask one clarifying question and stop.
+- If the question is off-topic for software, say so plainly and stop.
+
+LEARNER QUESTION:
+${p.question}${codeBlock}
+
+Answer now.`
+}

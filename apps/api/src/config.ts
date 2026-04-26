@@ -48,6 +48,14 @@ const envSchema = z.object({
   // a smoke run in staging confirms both the streaming path and the
   // fallback polling path still work.
   FF_LLM_PREP_STREAMING_ENABLED: z.coerce.boolean().default(false),
+  // Ask-sensei free-form Q&A on the playground (S022 Part 5, PRD 029
+  // v1). Authenticated users only — anonymous LLM access is explicitly
+  // out of scope. Off by default; flip to on after Yemi reviews the
+  // prompt in staging.
+  FF_PLAYGROUND_ASK_SENSEI_ENABLED: z.coerce.boolean().default(false),
+  // Daily ceiling for ask-sensei requests per authenticated user. Hard
+  // cap, server-side. Counted against the `llm_requests_log` table.
+  PLAYGROUND_ASK_SENSEI_DAILY_QUOTA: z.coerce.number().int().min(1).default(30),
   // Playground rate-limit ceilings (spec 027 §4.5). Anonymous traffic is
   // bounded by per-IP + per-session buckets; authenticated users bypass
   // the IP bucket (signed in, accountable) and are bounded per-user.

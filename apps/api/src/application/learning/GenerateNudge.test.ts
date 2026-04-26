@@ -50,6 +50,7 @@ function buildDeps(course: Course | null = buildCourse(), nudgeText = 'Re-check 
     generateSessionBody: vi.fn(),
     generateSessionBodyStream: vi.fn(),
     nudge: vi.fn().mockResolvedValue(nudgeText),
+    askSensei: vi.fn(),
   }
   const nudgeRepo = {
     create: vi.fn().mockResolvedValue('nudge-1'),

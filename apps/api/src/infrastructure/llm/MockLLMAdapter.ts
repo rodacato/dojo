@@ -16,6 +16,29 @@ export class MockLLMAdapter implements LLMPort {
     }
   }
 
+  askSensei(_params: { question: string; code?: string; language?: string }): {
+    stream: AsyncIterable<string>
+    usage: Promise<{ inputTokens: number | null; outputTokens: number | null }>
+  } {
+    let resolveUsage: (u: { inputTokens: number | null; outputTokens: number | null }) => void = () => {}
+    const usage = new Promise<{ inputTokens: number | null; outputTokens: number | null }>((res) => {
+      resolveUsage = res
+    })
+
+    const delayMs = config.MOCK_LLM_STREAM_DELAY_MS
+    const words = 'Mock sensei answer: focused exploration goes farther than rushed iteration.'.split(' ')
+
+    async function* generator(): AsyncIterable<string> {
+      for (let i = 0; i < words.length; i++) {
+        if (delayMs > 0) await sleep(delayMs)
+        yield words[i] + (i < words.length - 1 ? ' ' : '')
+      }
+      resolveUsage({ inputTokens: 50, outputTokens: words.length })
+    }
+
+    return { stream: generator(), usage }
+  }
+
   async nudge(_params: unknown): Promise<string> {
     return 'Take another look at the part of your code that handles the value you return. Compare it to what the step is asking for — there is a small mismatch there worth re-examining.'
   }

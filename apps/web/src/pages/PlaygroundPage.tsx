@@ -78,6 +78,22 @@ interface RunState {
   errorMessage: string | null
 }
 
+interface AskState {
+  open: boolean
+  status: 'idle' | 'streaming' | 'done' | 'error'
+  question: string
+  answer: string
+  errorMessage: string | null
+}
+
+const INITIAL_ASK: AskState = {
+  open: false,
+  status: 'idle',
+  question: '',
+  answer: '',
+  errorMessage: null,
+}
+
 const INITIAL_RUN: RunState = {
   status: 'idle',
   stdout: '',
@@ -100,6 +116,7 @@ export function PlaygroundPage() {
   const [run, setRun] = useState<RunState>(INITIAL_RUN)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const turnstileRef = useRef<TurnstileHandle>(null)
+  const [ask, setAsk] = useState<AskState>(INITIAL_ASK)
 
   const runtime = useMemo(
     () => RUNTIMES.find((r) => r.language === selectedLanguage) ?? RUNTIMES[0]!,
@@ -191,6 +208,35 @@ export function PlaygroundPage() {
     })
   }
 
+  async function handleAsk(): Promise<void> {
+    if (ask.status === 'streaming') return
+    if (!ask.question.trim()) return
+    setAsk((a) => ({ ...a, status: 'streaming', answer: '', errorMessage: null }))
+    try {
+      const askPayload: { question: string; code?: string; language?: string } = {
+        question: ask.question.trim(),
+      }
+      if (code.trim()) {
+        askPayload.code = code
+        askPayload.language = selectedLanguage
+      }
+      for await (const chunk of api.playground.askSensei(askPayload)) {
+        setAsk((a) => ({ ...a, answer: a.answer + chunk }))
+      }
+      setAsk((a) => ({ ...a, status: 'done' }))
+    } catch (err) {
+      const message =
+        err instanceof ApiError && err.status === 429
+          ? "you've hit the daily sensei limit, try again tomorrow."
+          : err instanceof ApiError && err.status === 404
+            ? 'ask-sensei is not available on this deploy.'
+            : err instanceof Error
+              ? err.message
+              : 'unknown error'
+      setAsk((a) => ({ ...a, status: 'error', errorMessage: message }))
+    }
+  }
+
   const ctaHref = user ? '/start' : '/'
 
   return (
@@ -273,6 +319,15 @@ export function PlaygroundPage() {
               {run.runtimeMs}ms · exit {run.exitCode}
             </span>
           )}
+          {user && (
+            <button
+              type="button"
+              onClick={() => setAsk((a) => ({ ...a, open: true }))}
+              className="px-2.5 py-1 border border-border/40 text-secondary font-mono text-[11px] rounded-sm hover:border-accent/60 hover:text-primary transition-colors"
+            >
+              ask the sensei
+            </button>
+          )}
           <button
             type="button"
             onClick={handleRun}
@@ -328,6 +383,78 @@ export function PlaygroundPage() {
             siteKey={TURNSTILE_SITE_KEY}
             onToken={setTurnstileToken}
           />
+        </div>
+      )}
+
+      {/* Ask-the-sensei modal — authed only. Token-by-token answer
+          stream, hard daily quota enforced server-side, disclaimer
+          baked into the panel so the learner never confuses this with
+          graded practice. */}
+      {user && ask.open && (
+        <div
+          role="dialog"
+          aria-label="Ask the sensei"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
+        >
+          <div
+            className="bg-base border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs text-secondary">ask the sensei</span>
+              <button
+                type="button"
+                onClick={() => setAsk(INITIAL_ASK)}
+                disabled={ask.status === 'streaming'}
+                className="text-muted hover:text-secondary text-xs font-mono disabled:opacity-40"
+                aria-label="close"
+              >
+                ✕
+              </button>
+            </div>
+            <textarea
+              value={ask.question}
+              onChange={(e) => setAsk((a) => ({ ...a, question: e.target.value }))}
+              placeholder="ask anything about the code on the left, a concept, or a pattern..."
+              rows={3}
+              maxLength={2000}
+              disabled={ask.status === 'streaming'}
+              className="w-full bg-surface/40 border border-border/40 rounded-sm p-2 font-mono text-xs text-primary focus:outline-none focus:border-accent resize-none"
+            />
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-muted/60 text-[10px] font-mono">
+                {ask.question.length}/2000
+              </span>
+              <button
+                type="button"
+                onClick={handleAsk}
+                disabled={ask.status === 'streaming' || !ask.question.trim()}
+                className="px-3 py-1 bg-accent text-primary font-mono text-xs rounded-sm hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {ask.status === 'streaming' ? 'thinking...' : 'ask'}
+              </button>
+            </div>
+            {(ask.answer || ask.status === 'error') && (
+              <div className="border-t border-border/30 pt-3 max-h-[40vh] overflow-y-auto">
+                {ask.status === 'error' ? (
+                  <p className="font-mono text-xs text-red-400 whitespace-pre-wrap">
+                    {ask.errorMessage}
+                  </p>
+                ) : (
+                  <p className="font-mono text-xs text-secondary whitespace-pre-wrap">
+                    {ask.answer}
+                    {ask.status === 'streaming' && (
+                      <span className="inline-block w-1 h-3 bg-accent/70 ml-0.5 animate-pulse" />
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
+            <p className="text-muted/60 text-[10px] font-mono leading-snug border-t border-border/30 pt-2">
+              free exploration tool, not graded practice. kata is where the sensei actually evaluates.
+            </p>
+          </div>
         </div>
       )}
 

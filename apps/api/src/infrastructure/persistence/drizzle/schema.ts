@@ -296,3 +296,18 @@ export const playgroundRuns = pgTable('playground_runs', {
   exitCode: integer('exit_code'),
   runtimeMs: integer('runtime_ms'),
 })
+
+// Cost / quota log for ask-sensei (S022 Part 5, PRD 029 v1). Lightweight
+// shape — not the full LLM telemetry table from the backlog. Only what
+// the daily quota check and a future cost rollup need: who, when, model,
+// token counts. Question text and answer text are NOT persisted: the
+// product surface is "free exploration", not graded practice, and we do
+// not want to retain free-form learner input.
+export const llmRequestsLog = pgTable('llm_requests_log', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  askedAt: timestamp('asked_at').defaultNow().notNull(),
+  model: text('model').notNull(),
+  inputTokens: integer('input_tokens'),
+  outputTokens: integer('output_tokens'),
+})

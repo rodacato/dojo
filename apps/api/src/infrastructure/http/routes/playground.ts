@@ -1,13 +1,15 @@
 import { createHash, randomUUID } from 'node:crypto'
+import { and, count, eq, gte } from 'drizzle-orm'
 import { Hono, type Context, type Next } from 'hono'
 import { getCookie, setCookie } from 'hono/cookie'
+import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
 import { config } from '../../../config'
-import { executionQueue } from '../../container'
+import { llm, executionQueue } from '../../container'
 import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
-import { playgroundRuns } from '../../persistence/drizzle/schema'
-import { optionalAuth } from '../middleware/auth'
+import { llmRequestsLog, playgroundRuns } from '../../persistence/drizzle/schema'
+import { optionalAuth, requireAuth } from '../middleware/auth'
 import { playgroundGlobalQuotaMiddleware } from '../middleware/playground-quota'
 import {
   playgroundAnonIpDayLimiter,
@@ -168,6 +170,94 @@ playgroundRoutes.post(
     })
   },
 )
+
+// ---------------------------------------------------------------------------
+// POST /playground/ask — S022 Part 5 (PRD 029 v1)
+// ---------------------------------------------------------------------------
+//
+// Authenticated free-form Q&A on the playground. Streams the sensei's
+// answer via SSE, hard-caps daily requests per user, logs cost into
+// llm_requests_log. Anonymous LLM access is explicitly out of scope —
+// the requireAuth middleware enforces that, no matter how nicely asked.
+
+const askSchema = z.object({
+  question: z.string().min(1).max(2_000),
+  code: z.string().max(16_384).optional(),
+  language: z.string().max(30).optional(),
+})
+
+playgroundRoutes.post('/playground/ask', requireAuth, async (c) => {
+  if (!config.FF_PLAYGROUND_ASK_SENSEI_ENABLED) {
+    return c.json({ error: 'Not found' }, 404)
+  }
+
+  const user = c.get('user') as { id: string }
+
+  const body = await c.req.json().catch(() => null)
+  const parsed = askSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json({ error: 'invalid_request', details: parsed.error.flatten() }, 400)
+  }
+
+  // Daily quota — reset at UTC midnight, enforced server-side.
+  const dayStart = new Date()
+  dayStart.setUTCHours(0, 0, 0, 0)
+  const [usage] = await db
+    .select({ used: count() })
+    .from(llmRequestsLog)
+    .where(and(eq(llmRequestsLog.userId, user.id), gte(llmRequestsLog.askedAt, dayStart)))
+  const used = usage?.used ?? 0
+  if (used >= config.PLAYGROUND_ASK_SENSEI_DAILY_QUOTA) {
+    return c.json(
+      {
+        error: 'quota_exhausted',
+        used,
+        limit: config.PLAYGROUND_ASK_SENSEI_DAILY_QUOTA,
+      },
+      429,
+    )
+  }
+
+  const askParams: { question: string; code?: string; language?: string } = {
+    question: parsed.data.question,
+  }
+  if (parsed.data.code !== undefined) askParams.code = parsed.data.code
+  if (parsed.data.language !== undefined) askParams.language = parsed.data.language
+
+  const { stream, usage: usagePromise } = llm.askSensei(askParams)
+
+  return streamSSE(c, async (sse) => {
+    try {
+      for await (const chunk of stream) {
+        if (chunk) await sse.writeSSE({ event: 'token', data: chunk })
+      }
+      await sse.writeSSE({ event: 'done', data: '' })
+
+      // Cost log — fire-and-forget. A failed insert must NOT block the
+      // response; the answer already streamed. Quota will undercount by
+      // one until the next successful insert, which we accept.
+      try {
+        const u = await usagePromise
+        await db.insert(llmRequestsLog).values({
+          userId: user.id,
+          model: config.LLM_MODEL,
+          inputTokens: u.inputTokens,
+          outputTokens: u.outputTokens,
+        })
+      } catch (logErr) {
+        console.error(JSON.stringify({
+          evt: 'ask_sensei.log_insert_failed',
+          message: logErr instanceof Error ? logErr.message : String(logErr),
+        }))
+      }
+    } catch (err) {
+      await sse.writeSSE({
+        event: 'error',
+        data: err instanceof Error ? err.message : 'stream_failed',
+      })
+    }
+  })
+})
 
 // ---------------------------------------------------------------------------
 // Helpers

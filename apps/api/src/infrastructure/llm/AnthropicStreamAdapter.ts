@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt, buildReviewPrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt, buildReviewPrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
 import type { Rubric } from '@dojo/shared'
 import { config } from '../../config'
 
@@ -202,6 +202,82 @@ export class AnthropicStreamAdapter implements LLMPort {
       throw new Error('Unexpected response type from Anthropic')
     }
     return block.text.trim()
+  }
+
+  askSensei(params: {
+    question: string
+    code?: string
+    language?: string
+  }): {
+    stream: AsyncIterable<string>
+    usage: Promise<{ inputTokens: number | null; outputTokens: number | null }>
+  } {
+    const prompt = buildAskSenseiPrompt(params)
+    const reqId = crypto.randomUUID()
+    const startedAt = Date.now()
+
+    let resolveUsage: (u: { inputTokens: number | null; outputTokens: number | null }) => void = () => {}
+    let rejectUsage: (e: unknown) => void = () => {}
+    const usage = new Promise<{ inputTokens: number | null; outputTokens: number | null }>((res, rej) => {
+      resolveUsage = res
+      rejectUsage = rej
+    })
+
+    const client = this.client
+
+    async function* generator(): AsyncIterable<string> {
+      console.log(JSON.stringify({
+        evt: 'llm.request',
+        purpose: 'ask_sensei',
+        reqId,
+        model: config.LLM_MODEL,
+        promptChars: prompt.length,
+      }))
+
+      let inputTokens: number | null = null
+      let outputTokens: number | null = null
+
+      try {
+        const sdkStream = client.messages.stream({
+          model: config.LLM_MODEL,
+          max_tokens: 512,
+          messages: [{ role: 'user', content: prompt }],
+        })
+
+        for await (const event of sdkStream) {
+          if (event.type === 'message_start') {
+            inputTokens = event.message.usage?.input_tokens ?? null
+          } else if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+            yield event.delta.text
+          } else if (event.type === 'message_delta') {
+            outputTokens = event.usage?.output_tokens ?? null
+          }
+        }
+
+        console.log(JSON.stringify({
+          evt: 'llm.response',
+          purpose: 'ask_sensei',
+          reqId,
+          latencyMs: Date.now() - startedAt,
+          inputTokens,
+          outputTokens,
+        }))
+        resolveUsage({ inputTokens, outputTokens })
+      } catch (err) {
+        console.error(JSON.stringify({
+          evt: 'llm.error',
+          purpose: 'ask_sensei',
+          reqId,
+          latencyMs: Date.now() - startedAt,
+          message: err instanceof Error ? err.message : String(err),
+          status: (err as { status?: number })?.status,
+        }))
+        rejectUsage(err)
+        throw err
+      }
+    }
+
+    return { stream: generator(), usage }
   }
 }
 

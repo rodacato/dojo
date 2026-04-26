@@ -57,6 +57,7 @@ describe('SubmitAttempt', () => {
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn(),
       nudge: vi.fn(),
+      askSensei: vi.fn(),
     }
 
     const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus })
@@ -102,6 +103,7 @@ describe('SubmitAttempt', () => {
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn(),
       nudge: vi.fn(),
+      askSensei: vi.fn(),
     }
 
     const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus })
@@ -124,7 +126,7 @@ describe('SubmitAttempt', () => {
   it('throws SessionNotFoundError when session does not exist', async () => {
     const sessionRepo = makeStubSessionRepo(null)
     const eventBus = new InMemoryEventBus()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
 
     const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus })
 

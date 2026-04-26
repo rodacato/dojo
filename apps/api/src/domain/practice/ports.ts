@@ -48,6 +48,20 @@ export interface LLMPort {
     stdout?: string
     stderr?: string
   }): Promise<string>
+
+  // Ask-sensei free-form streaming Q&A (S022 Part 5). Streams the answer
+  // token-by-token; the final element of the iterable carries usage
+  // metadata so the route can log cost. The text deltas are yielded as
+  // strings; the usage record is returned once via the resolved Promise
+  // returned alongside the stream.
+  askSensei(params: {
+    question: string
+    code?: string
+    language?: string
+  }): {
+    stream: AsyncIterable<string>
+    usage: Promise<{ inputTokens: number | null; outputTokens: number | null }>
+  }
 }
 
 export interface SessionRepositoryPort {

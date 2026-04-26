@@ -57,7 +57,7 @@ function createLLMAdapter(): LLMPort {
   }
 }
 
-const llm = createLLMAdapter()
+export const llm = createLLMAdapter()
 
 function createExecutionAdapter(): CodeExecutionPort {
   if (config.FF_CODE_EXECUTION_ENABLED) return new PistonAdapter()

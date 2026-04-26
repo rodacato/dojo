@@ -36,6 +36,7 @@ describe('GenerateSessionBody', () => {
       generateSessionBody: vi.fn().mockResolvedValue('You are reviewing a PR that...'),
       generateSessionBodyStream: vi.fn(),
       nudge: vi.fn(),
+      askSensei: vi.fn(),
     }
     const exerciseRepo = {
       findEligible: vi.fn(),
@@ -60,7 +61,7 @@ describe('GenerateSessionBody', () => {
 
   it('deletes session when exercise is not found', async () => {
     const sessionRepo = makeStubSessionRepo()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
     const exerciseRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
@@ -82,7 +83,7 @@ describe('GenerateSessionBody', () => {
   it('deletes session when variation is not found', async () => {
     const exercise = makeExercise()
     const sessionRepo = makeStubSessionRepo()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
     const exerciseRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(exercise),
@@ -111,6 +112,7 @@ describe('GenerateSessionBody', () => {
       generateSessionBody: vi.fn().mockRejectedValue(llmError),
       generateSessionBodyStream: vi.fn(),
       nudge: vi.fn(),
+      askSensei: vi.fn(),
     }
     const exerciseRepo = {
       findEligible: vi.fn(),
