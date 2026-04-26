@@ -6,7 +6,7 @@
 
 ## Decision
 
-1. Add a scheduled GitHub Actions workflow that probes `/health/piston` every 5 minutes and fails the workflow run on two consecutive probe failures 30 seconds apart.
+1. Add a scheduled GitHub Actions workflow that probes `/health/piston` every 30 minutes and fails the workflow run on two consecutive probe failures 30 seconds apart.
 2. Add `scripts/piston-reprovision.sh` as the idempotent source of truth for which runtimes Piston must have installed, callable by hand against any reachable Piston instance.
 
 Alerts come from GitHub's default workflow-failure email. No separate observability service is introduced.
@@ -17,7 +17,7 @@ Alerts come from GitHub's default workflow-failure email. No separate observabil
 
 | Option | Pros | Why not |
 |---|---|---|
-| **GHA schedule (chosen)** | Zero new infra, zero new secrets, red runs already notify via email | 5-min cadence is soft in GHA (best-effort, can delay during GitHub incidents); 1-min cadence not supported |
+| **GHA schedule (chosen)** | Zero new infra, zero new secrets, red runs already notify via email | Cadence is soft in GHA (best-effort, can delay during GitHub incidents); 1-min cadence not supported |
 | **UptimeRobot / Better Uptime** | Purpose-built, sub-minute cadence, built-in status pages | New vendor relationship, new account to manage, overkill for a 1-friend cohort |
 | **Sentry cron monitor** | Already have Sentry wired | Sentry cron requires check-in pings, not outbound probes — would need to push from the API itself, losing the independent-probe property |
 | **pg_cron on the app DB** | Fully self-contained | Cannot reach a Piston that is itself on the Hetzner host, and would be blind to network-layer issues between GHA and the host |
@@ -37,7 +37,7 @@ Piston occasionally flakes on a single request (container warm-up after a Docker
 
 ## What it covers
 
-- **Detection:** every 5 minutes GHA calls `/health/piston`. Red run = an email to the maintainer. No dashboard needed.
+- **Detection:** every 30 minutes GHA calls `/health/piston`. Red run = an email to the maintainer. No dashboard needed.
 - **Recovery:** the recovery email references `scripts/piston-reprovision.sh`. Operator runs it from a shell with access to `PISTON_URL`.
 - **Multi-version ground truth:** S022 §1.4 wants Python 3.10 alongside 3.12. That edit lives in the script's `RUNTIMES` array — one line, review-visible, re-runnable.
 
@@ -45,11 +45,11 @@ Piston occasionally flakes on a single request (container warm-up after a Docker
 
 - **Runtime bumps** (Go 1.16 → current, Ruby 3.0 → 3.3, Rust 1.68 → current) are operational changes, not architectural ones. They travel as separate commits that edit the `RUNTIMES` array plus any course adjustments.
 - **Concurrency decision** (PISTON_MAX_CONCURRENT bump vs. separate pool, S022 §1.5) is measured under Part 4 load before being decided.
-- **Sub-minute cadence** is not in scope. If 5-min probes turn out to be too coarse once the playground is live, we revisit — most likely by keeping GHA for cheap failure mode and adding UptimeRobot for a 1-minute signal.
+- **Sub-minute cadence** is not in scope. If 30-min probes turn out to be too coarse once the playground is live, we revisit — most likely by keeping GHA for cheap failure mode and adding UptimeRobot for a 1-minute signal.
 
-## Secrets required
+## Configuration required
 
-- `PISTON_HEALTH_URL` — repo-level secret, the full URL (e.g. `https://dojo-api.notdefined.dev/health/piston`). Setting it to the app's health endpoint rather than Piston directly means we also catch the case where the app can no longer reach Piston, which is the whole category of bug ADR 018 was about.
+- `PISTON_HEALTH_URL` — repo-level **Variable** (Settings → Secrets and variables → Actions → Variables tab), the full URL (e.g. `https://dojo-api.notdefined.dev/health/piston`). Stored as a Variable rather than a Secret because the endpoint URL is public — anyone can curl it. Setting it to the app's health endpoint rather than Piston directly means we also catch the case where the app can no longer reach Piston, which is the whole category of bug ADR 018 was about.
 
 ## Rollback
 

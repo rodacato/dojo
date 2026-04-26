@@ -1,6 +1,6 @@
 name: Piston Liveness
 
-# Synthetic check of the Piston accessory via /health/piston every 5 min.
+# Synthetic check of the Piston accessory via /health/piston every 30 min.
 # Alerts on 2 consecutive failures (not single — Piston flakes occasionally,
 # and single-hit alerts would be noise). A red run sends an email via
 # GitHub's default notification settings — no extra observability wiring
@@ -11,7 +11,7 @@ name: Piston Liveness
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
       - name: First probe
         id: probe1
         env:
-          HEALTH_URL: ${{ secrets.PISTON_HEALTH_URL }}
+          HEALTH_URL: ${{ vars.PISTON_HEALTH_URL }}
         run: |
           set -uo pipefail
           response=$(mktemp)
@@ -41,7 +41,7 @@ jobs:
         id: probe2
         if: steps.probe1.outputs.status != '200'
         env:
-          HEALTH_URL: ${{ secrets.PISTON_HEALTH_URL }}
+          HEALTH_URL: ${{ vars.PISTON_HEALTH_URL }}
         run: |
           set -uo pipefail
           response=$(mktemp)
