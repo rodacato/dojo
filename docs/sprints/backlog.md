@@ -8,7 +8,8 @@ The backlog is not a task list — it is a set of prioritized intentions. Items 
 
 _Ideas that arrived and have not been evaluated yet. Candidates for the next triage._
 
-_(cleared 2026-03-27)_
+- **Prompt engineering kata** (new exercise type) — user is given a problem; user writes the prompt that would solve it; sensei evaluates the prompt by rubric (clarity, context, constraints, output format, edge cases, example provision) rather than "% likelihood it would resolve". Needs explicit `target model` field in exercise body. Risk: brand tension with Dojo's anti-vibe-coding stance — needs framing as "prompting is a directing skill, not a substitute skill" (consistent with VISION.md) before PRD. No domain change — new `Exercise` type + per-type `owner_context` template (Yemi C4 + Priya C1 + Valentina S2)
+- **Design judgment kata** (new exercise type) — user is given a problem (or an existing solution) + real-world constraints (legacy code, junior-heavy team, short timeline); user proposes patterns/architecture; sensei evaluates whether the reasoning fits the constraints rather than whether the pattern is "correct". Constraints-first, patterns as candidate answers. Exercise body must carry enough context (code samples, system description) for constraints to bind — otherwise becomes a vocabulary quiz. On-brand: "process over correctness" applied to architecture. No domain change — new `Exercise` type + per-type `owner_context` template (Valentina S2 + Elif S5 + Darius C2)
 
 ---
 
@@ -24,34 +25,34 @@ _Confirmed for the next work block. Moved here after triage._
 
 _Good ideas, not urgent. Not in the next block._
 
-### Sprint 021+ candidates
+### Sprint 023+ candidates
 
-Deferred desde Sprint 019:
+**Hard carry-forward from S022:**
 
-- **Retrieval interleaving** — Lesson N tests usan identifiers introducidos en Lesson N-1. §3 del framework. Necesita PRD propio antes de sprint (Dr. Elif Yıldız)
-- **Diff visual** entre la solución del learner y la `step.solution` reference. Polish posterior al "Alternative approach" ya shippeado en Sprint 019 (Soren)
+- **First friend invite dispatch + audit doc fill-in** — code surface ready since S021. Audit doc scaffolded at [docs/audits/2026-04-friend-feedback.md](../audits/2026-04-friend-feedback.md) with the rule that it gets populated within 7 days of dispatch or the doc is cut and the slot rotates.
+- **Smoke-suite staging environment** — S022 shipped `complete-kata.smoke.spec.ts` and `playground-anon-run.smoke.spec.ts`, both gated on operator-set env vars (`SMOKE_USE_MOCK_LLM`, `SMOKE_PLAYGROUND_ENABLED`). On prod runs both skip, so the post-deploy safety net misses two of the surfaces this sprint built. Stand up a staging deploy with `LLM_ADAPTER_FORMAT=mock` + Turnstile dummy keys so the full suite runs on every deploy.
+- **Piston runtime bumps for Go / Ruby / Rust** — upstream-blocked. `engineer-man/piston` ships only Go 1.16.2, Ruby up to 3.0.1, Rust up to 1.68.2. Promote when there's a concrete pedagogical need; resolution requires either adopting a maintained fork or building a custom package layer.
 
-Carry-forward from Sprint 020:
+**Carry-forward from earlier sprints (still valid):**
 
-- **Dashboard EXPLAIN ANALYZE re-run** — S020 ran the 3 hottest queries against prod; plans were clean but DB volume was too small to validate the sprint-012 N+1 fix. Re-run once the alpha cohort has been active 2-3 weeks to catch seq scans that should have become index scans.
-
-Carry-forward from 2026-04-22 kata-prep bugfix session (commits dfd2214, 469dd89, 64c565f):
-
-- **Streaming in `generateSessionBody`** — `AnthropicStreamAdapter` already streams for `evaluate` but prep uses the blocking `.messages.create()`. Switching to `.messages.stream()` + SSE would bring perceived latency from ~30s to ~2s. Needs a mid-stream error strategy + feature flag fallback to the current blocking path (Yemi C4 + Tomás C3)
-- **LLM telemetry table** — persist `llm_calls` (purpose, refId, model, input/output tokens, latencyMs, prompt/response preview, status) behind a `TelemetrySinkPort` with a Postgres adapter. Current state (stdout JSON + Sentry on error + `PostgresErrorReporter`) is enough for debug; this unlocks historical queries and an admin view (Darius C2 + Tomás C3)
-- **Per-purpose LLM model config** — split `LLM_MODEL` into `LLM_MODEL_EVAL` + `LLM_MODEL_PREP` so prep can run on a cheaper/faster model (Haiku) independently of evaluation. Less urgent with Sonnet 4.6 in place, but still a latency lever if prep slows down again (Yemi C4)
+- **Retrieval interleaving** (S019) — Lesson N tests usan identifiers introducidos en Lesson N-1. §3 del framework. Necesita PRD propio antes de sprint (Dr. Elif Yıldız)
+- **Diff visual** (S019) — entre la solución del learner y la `step.solution` reference. Polish posterior al "Alternative approach" ya shippeado en S019 (Soren)
+- **Dashboard EXPLAIN ANALYZE re-run** (S020) — re-run the 3 hottest queries once the alpha cohort has been active 2-3 weeks; DB volume in S020 was too small to validate the sprint-012 N+1 fix.
+- **LLM telemetry table** — persist `llm_calls` (purpose, refId, model, input/output tokens, latencyMs, prompt/response preview, status) behind a `TelemetrySinkPort` with a Postgres adapter. S022 added the lightweight `llm_requests_log` for ask-sensei cost only; the full telemetry table is still pending. Current state (stdout JSON + Sentry on error + `PostgresErrorReporter`) is enough for debug; this unlocks historical queries and an admin view (Darius C2 + Tomás C3)
+- **Per-purpose LLM model config** — split `LLM_MODEL` into `LLM_MODEL_EVAL` + `LLM_MODEL_PREP` so prep can run on a cheaper/faster model (Haiku) independently of evaluation. Less urgent now that streaming has reduced the latency pain, but still a cost lever (Yemi C4)
 - **Graceful deploy of web assets** — preserve old chunk files for N minutes on each deploy so tabs open across deploys don't need `lazyWithRetry` to reload. Polish — the reload path already works (Tomás C3)
 
-Known issues (no action needed yet):
+**Known issues (no action needed yet):**
 
-- Sessions with `status='failed'` and no attempts from before commit dfd2214 stay in the DB. They don't affect the streak (heatmap filters `EXISTS attempt with isFinalEvaluation`), don't show up in the dashboard (ResultsPage compact layout handles them), and the new code no longer creates them. Leave as-is.
+- Sessions with `status='failed'` and no attempts from before commit dfd2214 stay in the DB. They don't affect the streak (heatmap filters `EXISTS attempt with isFinalEvaluation`), don't show up in the dashboard, and the new code no longer creates them. Leave as-is.
 - Rotating the LLM API key still requires editing `.env` and restarting the API. Addressed by the admin-settings PRD below.
+- Single-process in-memory state for ask-sensei concurrency (`inFlightStreams: Set<string>`) and rate limiters. Acceptable now; not acceptable once we run > 1 API process. Move to Redis or DB-backed rate-limit if we ever scale horizontally.
 
-Conditional on Sprint 020 checkpoint:
+**Conditional on S022 friend-cohort outcome:**
 
-- **Python course full curriculum** — PRD 025 shippea en S020; el curso completo (2-3 sub-cursos × 8-12 steps) es S021+ (Nadia S7)
-- **"Ask the sensei" full chat/quota** — si S020 solo shippea MVP (Opción A), threaded chat y quota-based son S021+ (Yemi)
-- **"Code Review" full format** — schema change + UI + rubric + 3 katas. S020 solo shippea POC de 1 kata (Priya + Hiroshi)
+- **Python course full curriculum** (S020 carry) — PRD 025 shippea en S020; el curso completo (2-3 sub-cursos × 8-12 steps) sigue pendiente. Reabrir según señal del primer friend (Nadia S7)
+- **"Code Review" full format** (S020 carry) — schema change + UI + rubric + 3 katas. POC de 1 kata ya shippeado; el formato completo es candidate (Priya + Hiroshi)
+- **Playground v2 — course exit-ramp** — once a learner finishes a course step, surface a "keep exploring" affordance that lands them on `/playground/:language` with their last solution prefilled. Funnel-from-exit, not funnel-from-entry. Trigger: playground v0 + v1 metrics show non-trivial conversion (post-S023).
 
 UX gaps surfaced by the Sprint 020 Part 1 audit (kept standalone for Triaged — later):
 
@@ -64,10 +65,6 @@ UX gaps surfaced by the Sprint 020 Part 1 audit (kept standalone for Triaged —
 - **P-4** — `AdminCoursesPage` line ~38: `refresh().catch(...)` on mount is not awaited — lossy loading boundary. Move to `useEffect` that awaits
 - **P-5** — Web test coverage: 1 unit test file (`slots.test.ts`) for 66 pages/components. Regression risk high — needs a dedicated "testing backbone" sprint (Hiroshi S1)
 - **P-6** — `SharePage` uses raw `fetch` instead of the API client — bypasses interceptors and error normalization. Switch to the shared client
-
-### Acquisition hooks (post-S021)
-
-- **Language playground console** — anonymous `/playground` surface so visitors can try a language + version (reusing Piston runtimes) with zero persistence, as a top-of-funnel hook into the kata loop. Phased: v0 hook only, v1 "ask the sensei" public surface, v2 course exit-ramp. Behind `FF_PLAYGROUND_CONSOLE_ENABLED`. PRD: [docs/prd/029-playground-console.md](../prd/029-playground-console.md). Promotion target: S023+ conditional on S021 closing cleanly and Phase 1 metrics validating the cohort.
 
 ### Phase 2 — The Scoreboard
 

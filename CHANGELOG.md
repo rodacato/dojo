@@ -4,6 +4,22 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 022 — Open the door: friend cohort + public playground (2026-04-26)
+**Phase 1 — Alpha → hook experiment**
+
+The sprint where the platform got its first top-of-funnel surface, the prep loop got real streaming, and authenticated learners got a free-form Q&A surface — all behind feature flags so the rollout is reversible.
+
+- **Playground v0** (PRD 029, migration 0020) — Anonymous code execution at `/playground` with the full four-layer abuse stack: per-IP rate limit + per-browser-session rate limit + Cloudflare Turnstile + global daily quota. `playground_runs` log retains only `(ip_hash, session_hash, language, version, exit_code, runtime_ms)` — no source code, no stdout/stderr. Funnel events emitted from day one (`playground_run`, `playground_cta_click`, `playground_signup_conversion`). Behind `FF_PLAYGROUND_CONSOLE_ENABLED`. Six languages whitelisted (Python, TypeScript, Go, Ruby, Rust, SQL).
+- **Playground v1 — ask-sensei** (migration 0021) — Authenticated free-form Q&A streamed via SSE. `LLMPort.askSensei` returns `{stream, usage}` so the route can stream answer deltas and log token counts simultaneously. Hard daily quota per user (default 30/day) enforced server-side against the new `llm_requests_log` table. Question and answer text deliberately NOT persisted — the surface is exploration, not graded practice. UI is a modal with the panel-mandated disclaimer baked in. Behind `FF_PLAYGROUND_ASK_SENSEI_ENABLED`. Anonymous LLM access stayed explicitly out of scope.
+- **Streaming kata prep** — `GET /sessions/:id/body-stream` SSE endpoint replaces the 2s polling loop when `FF_LLM_PREP_STREAMING_ENABLED` is on. Idempotent on already-persisted bodies (replays as one `token` + `done` frame). Concurrent connections get 409 to avoid duplicate LLM calls. Frontend prefers SSE and falls back to polling on 404 — old deploys and new deploys both work, the flag rollout is genuinely safe. Brings perceived prep latency from ~30s to ~2s on Sonnet 4.6.
+- **Smoke suite** — six specs (`sign-in`, `view-profile`, `view-dashboard`, `complete-course-step`, `complete-kata`, `playground-anon-run`). `complete-kata` and `playground-anon-run` skip cleanly on prod runs that don't carry `SMOKE_USE_MOCK_LLM=1` / `SMOKE_PLAYGROUND_ENABLED=1` so a single workflow definition works against staging and prod.
+- **Operational floor** — Errors retention cron (`/cron/cleanup-errors`, 30-day window). Piston liveness: GHA `piston-liveness.yml` workflow probes `/health/piston` every 30 minutes, two consecutive failures alert via GitHub's email path (ADR 019). `scripts/piston-reprovision.sh` is idempotent and documented in the README runbook.
+- **Runtime bumps blocked upstream** — Go / Ruby / Rust bumps deferred to backlog. `engineer-man/piston` ships only Go 1.16.2, Ruby up to 3.0.1, Rust up to 1.68.2; bumping to current stable requires either a maintained fork or a custom package layer.
+- **First friend invite carried to S023** — code surface ready (S021 + S022); dispatch is humans-only and was not blocked by anything in this sprint. Audit doc scaffolded at `docs/audits/2026-04-friend-feedback.md` with a 7-day populate-or-cut rule.
+- **Verification** — typecheck ✓, lint ✓, API test suite green (123 tests). Three new feature flags all default-off. Frontend's SSE-first / polling-fallback path makes flag flips reversible without redeploy.
+
+---
+
 ## Sprint 020 — Phase 1 expansion (2026-04-21)
 **Phase 1 — Alpha**
 

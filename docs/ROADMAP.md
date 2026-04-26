@@ -65,6 +65,8 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-018 — Course content quality v1](sprints/archive/sprint-018-course-content-quality.md) | Step type `exercise` reintroducido, `step.title` + `step.solution` en schema, reclasificación de los 29 steps, audits por curso (TS / JS DOM / SQL), solution reveal post-pass, validate:courses CI gate | ✅ Closed |
 | [sprint-019 — Course content quality v2](sprints/archive/sprint-019-course-quality-v2.md) | Semantic slots renderer, external references per course (framework §8), alternative approach post-pass, SQL L1.4 LAG/LEAD intro | ✅ Closed |
 | [sprint-020 — Phase 1 expansion](sprints/archive/sprint-020-phase1-expansion.md) | UX audit + 5 fixes, course acquisition loop (share card + badges + public courses), Ask the sensei MVP, Code Review kata POC, Python course skeleton, ErrorReporterPort observability pipeline, Piston prod recovery (ADR 018) | ✅ Closed |
+| [sprint-021 — Stability for the friends cohort](sprints/archive/sprint-021-stability.md) | Reactive bugfix week — kata-prep failure recovery, streak counts real practice only, lazy-route deploy survival, OAuth invite-email capture, FF_ rename, CSP fonts/Sentry | ✅ Closed |
+| [sprint-022 — Open the door](sprints/archive/sprint-022-playground-cohort.md) | Playground v0 (anon code execution + 4-layer abuse stack), Playground v1 ask-sensei (auth-only streaming Q&A + daily quota), streaming kata prep behind FF, smoke suite at six specs, errors retention cron, Piston liveness (ADR 019) | ✅ Closed |
 
 ---
 
@@ -160,6 +162,9 @@ Does not start until Phase 0 is in real daily use.
 | 014 | [Piston code execution](adr/014-piston-code-execution.md) | Piston sandbox for testCode exercises | ✅ Accepted |
 | 015 | [Courses bounded context](adr/015-courses-bounded-context.md) | Learning as separate bounded context from Practice | ✅ Accepted |
 | 016 | [iframe sandbox browser execution](adr/016-iframe-sandbox-browser-execution.md) | Browser-side execution for javascript-dom courses via iframe sandbox | ✅ Accepted |
+| 017 | [Error reporting port](adr/017-error-reporting-port.md) | `ErrorReporterPort` with Console / Postgres / Sentry / Composite adapters | ✅ Accepted |
+| 018 | [Piston cgroup namespace host](adr/018-piston-cgroupns-host.md) | `privileged: true` + `cgroupns: host` + named volume on Piston accessory after host kernel upgrade tightened cgroup v2 | ✅ Accepted |
+| 019 | [Piston liveness and reprovision](adr/019-piston-liveness-and-reprovision.md) | GHA liveness probe + idempotent reprovision script as the operational floor for an anonymous-traffic Piston surface | ✅ Accepted |
 
 ---
 
