@@ -1,9 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { ExerciseDTO } from '@dojo/shared'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
+
+const MOOD_LABEL: Record<string, string> = {
+  focused: 'In flow',
+  regular: 'Ok',
+  low_energy: 'Foggy',
+}
+
+interface StoredFilters {
+  mood?: string
+  maxDuration?: number
+}
 
 export function KataSelectionPage() {
   const navigate = useNavigate()
@@ -11,15 +23,17 @@ export function KataSelectionPage() {
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState<string | null>(null)
 
-  const stored = sessionStorage.getItem('dojo-start')
-  const filters = stored ? (JSON.parse(stored) as { mood?: string; maxDuration?: number }) : {}
+  const filters = useMemo<StoredFilters>(() => {
+    const stored = sessionStorage.getItem('dojo-start')
+    return stored ? (JSON.parse(stored) as StoredFilters) : {}
+  }, [])
 
   useEffect(() => {
     api
       .getExercises(filters)
       .then(setExercises)
       .finally(() => setLoading(false))
-  }, [])
+  }, [filters])
 
   async function handleSelect(exerciseId: string) {
     setStarting(exerciseId)
@@ -34,129 +48,158 @@ export function KataSelectionPage() {
   if (loading) return <PageLoader />
 
   return (
-    <div className="px-4 py-8 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="mb-2">
-        <div className="flex items-center gap-3 mb-1">
-          {(filters.mood || filters.maxDuration) && (
-            <div className="flex gap-2">
-              {filters.mood && (
-                <span className="text-xs font-mono px-2.5 py-1 bg-surface border border-border/40 rounded-sm text-muted">
-                  {filters.mood === 'focused' ? '🔥 on a roll' : filters.mood === 'low_energy' ? '🧠 half here' : '😐 just okay'}
-                </span>
-              )}
-              {filters.maxDuration && (
-                <span className="text-xs font-mono px-2.5 py-1 bg-surface border border-border/40 rounded-sm text-muted">
-                  ⏱ {filters.maxDuration} min
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-        <h1 className="font-mono text-xl md:text-2xl text-primary">
-          select_your_kata<span className="text-accent animate-pulse">|</span>
-        </h1>
-        <p className="text-muted text-xs font-sans mt-1">
-          Choose a clinical trial. Each session is designed to test structural thinking and algorithmic efficiency. High performance is mandatory.
-        </p>
-      </div>
+    <div className="px-4 py-10 md:py-14 max-w-3xl mx-auto">
+      <FilterStrip filters={filters} onDismiss={() => navigate('/start')} />
 
-      {/* Exercise cards */}
+      <header className="mt-4 mb-8">
+        <h1 className="font-mono text-3xl md:text-4xl text-primary leading-tight inline-flex items-baseline">
+          Three kata. One choice
+          <span className="text-accent animate-cursor ml-0.5">|</span>
+        </h1>
+        <p className="text-secondary text-sm mt-2">
+          These are your kata. No skip. No reroll.
+        </p>
+      </header>
+
       {exercises.length > 0 ? (
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
+        <div className="flex flex-col gap-4">
           {exercises.map((ex) => (
             <ExerciseCard
               key={ex.id}
               exercise={ex}
               onSelect={() => handleSelect(ex.id)}
-              loading={starting === ex.id}
+              starting={starting === ex.id}
+              disabled={starting !== null && starting !== ex.id}
             />
           ))}
         </div>
       ) : (
-        <div className="text-center py-16">
-          <p className="text-secondary font-mono text-sm mb-2">no kata match your current filters.</p>
-          <p className="text-muted text-xs mb-6">Try different preferences or a longer duration.</p>
-          <button
-            onClick={() => navigate('/start')}
-            className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-          >
-            Change preferences
-          </button>
-        </div>
+        <EmptyResults onChange={() => navigate('/start')} />
       )}
 
-      {/* Footer */}
-      <p className="text-muted/30 text-xs text-center font-mono mt-10">
-        these are your kata. no skip. no reroll.
-      </p>
-
-      {/* Subtle escape hatch */}
-      <div className="text-center mt-3">
+      <p className="text-muted/40 text-[11px] font-mono uppercase tracking-wider text-center mt-12">
         <button
+          type="button"
           onClick={() => navigate('/dashboard')}
-          className="text-muted/20 text-[10px] font-mono hover:text-muted/50 transition-colors"
+          className="hover:text-muted transition-colors"
         >
-          skip to dashboard
+          ← back to dashboard
         </button>
-      </div>
+      </p>
     </div>
   )
 }
 
+/* ------------------------------------------------------------------ */
+/*  Filter strip                                                       */
+/* ------------------------------------------------------------------ */
+
+function FilterStrip({ filters, onDismiss }: { filters: StoredFilters; onDismiss: () => void }) {
+  const today = useMemo(() => new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date()).toLowerCase(), [])
+  if (!filters.mood && !filters.maxDuration) return null
+  const parts: string[] = ['Today']
+  const moodLabel = filters.mood ? MOOD_LABEL[filters.mood] : undefined
+  if (moodLabel) parts.push(moodLabel)
+  if (filters.maxDuration) parts.push(`${filters.maxDuration} min`)
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <p
+        className="text-muted text-xs font-mono uppercase tracking-wider"
+        title={`Filters from ${today}`}
+      >
+        {parts.join(' · ')}
+      </p>
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Change filters"
+        className="text-muted hover:text-primary transition-colors p-1 -m-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent rounded-sm"
+      >
+        ×
+      </button>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Exercise card                                                      */
+/* ------------------------------------------------------------------ */
+
 function ExerciseCard({
   exercise: ex,
   onSelect,
-  loading,
+  starting,
+  disabled,
 }: {
   exercise: ExerciseDTO
   onSelect: () => void
-  loading: boolean
+  starting: boolean
+  disabled: boolean
 }) {
   return (
     <button
       onClick={onSelect}
-      disabled={loading}
-      className="w-full text-left bg-surface border border-border/60 rounded-md p-5 hover:border-accent flex flex-col h-full transition-all duration-150 disabled:opacity-50 group"
+      disabled={disabled || starting}
+      aria-busy={starting || undefined}
+      className="group w-full text-left bg-surface border border-border/60 rounded-md transition-colors hover:border-accent disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-border/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent flex"
     >
-      {/* Top: badges */}
-      <div className="flex items-center justify-between mb-3">
-        <TypeBadge type={ex.type} />
-        <DifficultyBadge difficulty={ex.difficulty} />
-      </div>
+      <div className="flex-1 min-w-0 p-5 md:p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <TypeBadge type={ex.type} />
+          <DifficultyBadge difficulty={ex.difficulty} />
+        </div>
 
-      {/* Title */}
-      <h2 className="text-primary font-mono text-sm font-medium mb-2 group-hover:text-accent transition-colors">
-        {ex.title.toLowerCase().replace(/\s+/g, '_')}
-      </h2>
+        <h2 className="text-primary font-mono text-lg md:text-xl mb-2">{ex.title}</h2>
 
-      {/* Description */}
-      <p className="text-secondary text-xs font-sans leading-relaxed line-clamp-3 mb-4 flex-1">
-        {ex.description}
-      </p>
+        <p className="text-secondary text-sm font-sans leading-relaxed line-clamp-3 mb-4">
+          {ex.description}
+        </p>
 
-      {/* Footer: tags + duration */}
-      <div className="border-t border-border/30 pt-3 mt-auto">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-wrap gap-1">
-            {ex.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="text-muted text-[10px] font-mono px-1.5 py-0.5 bg-page rounded-sm"
-              >
+        {ex.tags.length > 0 && (
+          <div className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-[11px]">
+            {ex.tags.slice(0, 4).map((tag) => (
+              <span key={tag} className="text-secondary">
+                <span className="text-accent">#</span>
                 {tag}
               </span>
             ))}
           </div>
-          <span className="font-mono text-muted text-xs">{ex.duration} min</span>
-        </div>
+        )}
       </div>
 
-      {loading && (
-        <span className="text-accent font-mono text-xs mt-3 block animate-pulse">
-          preparing kata...
+      <div className="flex flex-col items-end justify-between gap-3 px-5 md:px-6 py-5 md:py-6 border-l border-border/40 min-w-26 md:min-w-30">
+        <div className="text-right">
+          <p className="text-muted text-[10px] font-mono uppercase tracking-wider mb-1">Est. time</p>
+          <p className="text-primary text-xl md:text-2xl font-mono">
+            {ex.duration} <span className="text-muted text-sm">min</span>
+          </p>
+        </div>
+        <span
+          className={`text-xl ${starting ? 'text-accent animate-cursor' : 'text-accent group-hover:translate-x-0.5 transition-transform'}`}
+          aria-hidden
+        >
+          {starting ? '_' : '→'}
         </span>
-      )}
+      </div>
     </button>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Empty state                                                        */
+/* ------------------------------------------------------------------ */
+
+function EmptyResults({ onChange }: { onChange: () => void }) {
+  return (
+    <div className="bg-surface border border-border/40 rounded-md p-10 text-center">
+      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">No matches</p>
+      <h2 className="font-mono text-xl text-primary mb-2">No kata matched these filters.</h2>
+      <p className="text-secondary text-sm mb-6 max-w-md mx-auto">
+        Loosen mood, time, or interests — or start without filters and see what shows up.
+      </p>
+      <Button variant="primary" size="md" onClick={onChange}>
+        Change filters
+      </Button>
+    </div>
   )
 }
