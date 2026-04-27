@@ -277,64 +277,71 @@ export function PlaygroundPage() {
         </header>
       )}
 
-      {/* Slim controls bar */}
-      <div className="flex items-center flex-wrap gap-2 px-4 py-1.5 border-b border-border/20 bg-surface/30 shrink-0">
-        <select
-          aria-label="language"
-          value={selectedLanguage}
-          onChange={(e) => changeLanguage(e.target.value)}
-          className="bg-page border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
-        >
-          {RUNTIMES.map((r) => (
-            <option key={r.language} value={r.language}>
-              {r.label}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="version"
-          value={selectedVersion}
-          onChange={(e) => setSelectedVersion(e.target.value)}
-          className="bg-page border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
-        >
-          {availableVersions.map((v) => (
-            <option key={v} value={v}>
-              {v}
-            </option>
-          ))}
-        </select>
+      {/* Toolbar — language + version dropdowns + run controls */}
+      <div className="h-12 flex items-center flex-wrap gap-3 px-4 border-b border-border bg-surface/40 shrink-0">
+        <DropdownLabel label="Language">
+          <select
+            aria-label="Language"
+            value={selectedLanguage}
+            onChange={(e) => changeLanguage(e.target.value)}
+            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-[12px] font-mono focus:outline-none focus:border-accent transition-colors"
+          >
+            {RUNTIMES.map((r) => (
+              <option key={r.language} value={r.language}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </DropdownLabel>
+        <DropdownLabel label="Version">
+          <select
+            aria-label="Version"
+            value={selectedVersion}
+            onChange={(e) => setSelectedVersion(e.target.value)}
+            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-[12px] font-mono tabular-nums focus:outline-none focus:border-accent transition-colors"
+          >
+            {availableVersions.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
+        </DropdownLabel>
         {runtime.versions.advanced.length > 0 && (
           <button
             type="button"
             onClick={() => setShowAdvanced((s) => !s)}
-            className="text-muted text-[10px] font-mono hover:text-secondary transition-colors"
+            className="font-mono text-[10px] tracking-[0.04em] text-muted hover:text-secondary transition-colors"
           >
             {showAdvanced ? '— hide older' : '+ older'}
           </button>
         )}
 
         <div className="ml-auto flex items-center gap-3">
-          {run.runtimeMs !== null && run.status !== 'running' && (
-            <span className="text-muted text-[10px] font-mono">
-              {run.runtimeMs}ms · exit {run.exitCode}
-            </span>
-          )}
+          <RunStatusChip run={run} />
           {user && (
             <button
               type="button"
               onClick={() => setAsk((a) => ({ ...a, open: true }))}
-              className="px-2.5 py-1 border border-border/40 text-secondary font-mono text-[11px] rounded-sm hover:border-accent/60 hover:text-primary transition-colors"
+              className="font-mono text-[11px] tracking-[0.04em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-3 h-7 inline-flex items-center rounded-sm"
             >
-              ask the sensei
+              Ask the sensei
             </button>
           )}
           <button
             type="button"
             onClick={handleRun}
             disabled={runDisabled}
-            className="px-3 py-1 bg-accent text-primary font-mono text-xs rounded-sm hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="font-mono text-[11px] tracking-[0.04em] uppercase bg-accent text-primary hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-3 h-7 inline-flex items-center gap-1.5 rounded-sm"
           >
-            {run.status === 'running' ? 'running...' : '▶ run'}
+            {run.status === 'running' ? (
+              <>
+                Running
+                <span className="animate-cursor leading-none" aria-hidden>_</span>
+              </>
+            ) : (
+              <>▶ Run</>
+            )}
           </button>
         </div>
       </div>
@@ -472,6 +479,46 @@ export function PlaygroundPage() {
         </footer>
       )}
     </div>
+  )
+}
+
+function DropdownLabel({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="inline-flex items-center gap-2">
+      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">{label}</span>
+      {children}
+    </label>
+  )
+}
+
+function RunStatusChip({ run }: { run: RunState }) {
+  if (run.status === 'idle') {
+    return (
+      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border bg-elevated px-2 py-0.5 rounded-sm">
+        Ready
+      </span>
+    )
+  }
+  if (run.status === 'running') {
+    return (
+      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
+        Running
+        <span className="animate-cursor ml-0.5" aria-hidden>_</span>
+      </span>
+    )
+  }
+  if (run.status === 'ok') {
+    return (
+      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-0.5 rounded-sm tabular-nums">
+        OK · exit {run.exitCode ?? 0}
+        {run.runtimeMs != null && ` · ${run.runtimeMs}ms`}
+      </span>
+    )
+  }
+  return (
+    <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-danger border border-danger/40 bg-danger/10 px-2 py-0.5 rounded-sm tabular-nums">
+      Error · exit {run.exitCode ?? 1}
+    </span>
   )
 }
 

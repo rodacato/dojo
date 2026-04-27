@@ -110,76 +110,96 @@ export function CoursePlayerPage() {
   const allSteps = course.lessons.flatMap((l) => l.steps)
   const activeStep = allSteps.find((s) => s.id === activeStepId)
   const courseComplete = allSteps.length > 0 && completedSteps.length >= allSteps.length
+  const completedCount = completedSteps.length
 
   return (
-    <div className="min-h-screen bg-bg flex">
-      {/* Sidebar */}
-      <aside
-        className={`bg-surface border-r border-border/40 transition-all duration-200 flex flex-col shrink-0 ${
-          sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'
-        }`}
-      >
-        <div className="p-4 border-b border-border/20">
-          <Link to="/learn" className="text-muted text-xs font-mono hover:text-secondary transition-colors">
-            ← courses
-          </Link>
-          <h2 className="text-sm font-mono text-primary mt-2 truncate">{course.title}</h2>
-        </div>
-        <nav className="flex-1 overflow-y-auto py-2">
-          {course.lessons.map((lesson) => (
-            <LessonNav
-              key={lesson.id}
-              lesson={lesson}
-              activeStepId={activeStepId}
-              completedSteps={completedSteps}
-              onSelectStep={setActiveStepId}
-            />
-          ))}
-          <FurtherReading refs={course.externalReferences} />
-        </nav>
-      </aside>
+    <div className="h-screen bg-page flex flex-col overflow-hidden">
+      {/* Top bar — 56px, mono caps progress */}
+      <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
+        <Link
+          to="/learn"
+          className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
+        >
+          ← Learn
+        </Link>
+        <span className="h-4 w-px bg-border hidden sm:block" />
+        <span className="text-primary text-[14px] font-medium truncate hidden sm:inline">
+          {course.title}
+        </span>
+        <span
+          className={`ml-auto font-mono text-[11px] tracking-[0.08em] uppercase ${
+            courseComplete ? 'text-success' : 'text-muted'
+          }`}
+        >
+          {completedCount} / {allSteps.length} steps
+        </span>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          aria-label="Toggle sidebar"
+          className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors hidden md:inline"
+        >
+          {sidebarOpen ? 'Hide nav' : 'Show nav'}
+        </button>
+      </header>
 
-      {/* Main content */}
-      <main className="flex-1 min-w-0">
-        {/* Top bar */}
-        <div className="border-b border-border/40 bg-surface px-4 py-2 flex items-center gap-3">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-muted hover:text-secondary text-sm font-mono transition-colors"
-          >
-            {sidebarOpen ? '◀' : '▶'}
-          </button>
-          <span className="text-xs text-muted font-mono truncate">
-            {course.title}
-          </span>
-        </div>
-
-        {courseComplete && user && (
-          <CourseCompleteBanner
-            courseTitle={course.title}
-            courseSlug={course.slug}
-            accentColor={course.accentColor}
-            userId={user.id}
-          />
-        )}
-
-        {activeStep ? (
-          <StepContent
-            step={activeStep}
-            courseSlug={course.slug}
-            language={course.language}
-            isCompleted={completedSteps.includes(activeStep.id)}
-            onComplete={() => {
-              markStepComplete(activeStep.id)
-              advanceToNextStep()
-            }}
-          />
-        ) : (
-          <div className="flex items-center justify-center h-[calc(100vh-48px)]">
-            <p className="text-muted font-mono">Select a step to begin</p>
+      <div className="flex-1 flex min-h-0 overflow-hidden">
+        {/* Sidebar */}
+        <aside
+          className={`bg-surface border-r border-border transition-[width] duration-200 flex flex-col shrink-0 overflow-hidden ${
+            sidebarOpen ? 'w-70' : 'w-0'
+          }`}
+        >
+          <div className="px-4 pt-5 pb-3">
+            <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              Lessons · {course.lessons.length}
+            </p>
           </div>
-        )}
-      </main>
+          <nav className="flex-1 overflow-y-auto pb-4">
+            {course.lessons.map((lesson, i) => (
+              <LessonNav
+                key={lesson.id}
+                lesson={lesson}
+                index={i + 1}
+                activeStepId={activeStepId}
+                completedSteps={completedSteps}
+                onSelectStep={setActiveStepId}
+              />
+            ))}
+            <FurtherReading refs={course.externalReferences} />
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <main className="flex-1 min-w-0 overflow-y-auto">
+          {courseComplete && user && (
+            <CourseCompleteBanner
+              courseTitle={course.title}
+              courseSlug={course.slug}
+              userId={user.id}
+              lessonCount={course.lessons.length}
+              stepCount={allSteps.length}
+            />
+          )}
+
+          {activeStep ? (
+            <StepContent
+              step={activeStep}
+              courseSlug={course.slug}
+              language={course.language}
+              isCompleted={completedSteps.includes(activeStep.id)}
+              onComplete={() => {
+                markStepComplete(activeStep.id)
+                advanceToNextStep()
+              }}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-muted font-mono">Select a step to begin</p>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   )
 }
@@ -188,46 +208,64 @@ export function CoursePlayerPage() {
 
 function LessonNav({
   lesson,
+  index,
   activeStepId,
   completedSteps,
   onSelectStep,
 }: {
   lesson: LessonDTO
+  index: number
   activeStepId: string | null
   completedSteps: string[]
   onSelectStep: (id: string) => void
 }) {
   const [expanded, setExpanded] = useState(true)
+  const lessonNumber = index.toString().padStart(2, '0')
+  const lessonStepsDone = lesson.steps.filter((s) => completedSteps.includes(s.id)).length
+  const allDone = lessonStepsDone === lesson.steps.length
 
   return (
     <div className="mb-1">
       <button
+        type="button"
         onClick={() => setExpanded(!expanded)}
-        className="w-full text-left px-4 py-2 text-xs font-mono text-muted uppercase tracking-wider hover:text-secondary transition-colors flex items-center gap-1"
+        className="w-full px-4 h-8 flex items-center gap-2 hover:bg-elevated/50 transition-colors text-left"
+        aria-expanded={expanded}
       >
-        <span className="text-[10px]">{expanded ? '▼' : '▶'}</span>
-        <span className="truncate">{lesson.title}</span>
+        <span className="font-mono text-[10px] text-muted shrink-0">{expanded ? '▾' : '▸'}</span>
+        <span className="font-mono text-[13px] text-primary truncate">
+          <span className="text-muted">{lessonNumber} ·</span> {lesson.title}
+        </span>
+        <span
+          className={`ml-auto font-mono text-[10px] tracking-[0.04em] shrink-0 ${
+            allDone ? 'text-success' : 'text-muted'
+          }`}
+        >
+          {lessonStepsDone}/{lesson.steps.length}
+        </span>
       </button>
       {expanded && (
-        <div className="ml-2">
+        <div>
           {lesson.steps.map((step) => {
             const isActive = step.id === activeStepId
             const isComplete = completedSteps.includes(step.id)
             return (
               <button
                 key={step.id}
+                type="button"
                 onClick={() => onSelectStep(step.id)}
-                className={`w-full text-left px-4 py-1.5 text-sm font-mono transition-colors flex items-center gap-2 ${
+                className={`w-full pl-9 pr-4 h-7 flex items-center gap-2 transition-colors text-left text-[12px] ${
                   isActive
-                    ? 'text-accent bg-accent/5 border-l-2 border-accent'
-                    : 'text-muted hover:text-secondary border-l-2 border-transparent'
+                    ? 'bg-accent/8 border-l-2 border-accent text-primary'
+                    : 'border-l-2 border-transparent text-secondary hover:text-primary hover:bg-elevated/30'
                 }`}
               >
-                <span className="text-xs shrink-0">
-                  {isComplete ? '✓' : stepIcon(step.type)}
-                </span>
-                <span className="truncate text-xs" title={extractStepTitle(step)}>
+                <StepStatusIcon complete={isComplete} active={isActive} />
+                <span className="truncate flex-1" title={extractStepTitle(step)}>
                   {extractStepTitle(step)}
+                </span>
+                <span className="font-mono text-[9px] tracking-[0.08em] uppercase text-muted shrink-0">
+                  {stepTypeLabel(step.type)}
                 </span>
               </button>
             )
@@ -238,12 +276,34 @@ function LessonNav({
   )
 }
 
-function stepIcon(type: StepDTO['type']): string {
+function StepStatusIcon({ complete, active }: { complete: boolean; active: boolean }) {
+  if (complete) {
+    return (
+      <span className="font-mono text-[11px] text-success shrink-0" aria-hidden>
+        ✓
+      </span>
+    )
+  }
+  if (active) {
+    return (
+      <span className="font-mono text-[11px] text-accent shrink-0" aria-hidden>
+        ▸
+      </span>
+    )
+  }
+  return (
+    <span className="font-mono text-[11px] text-muted shrink-0" aria-hidden>
+      ○
+    </span>
+  )
+}
+
+function stepTypeLabel(type: StepDTO['type']): string {
   switch (type) {
-    case 'read': return '📖'
-    case 'challenge': return '⚡'
-    case 'exercise': return '📝'
-    case 'code': return '💻'
+    case 'read': return 'Read'
+    case 'challenge': return 'Challenge'
+    case 'exercise': return 'Exercise'
+    case 'code': return 'Code'
   }
 }
 
@@ -970,13 +1030,15 @@ function MarkdownContent({ content }: { content: string }) {
 function CourseCompleteBanner({
   courseTitle,
   courseSlug,
-  accentColor,
   userId,
+  lessonCount,
+  stepCount,
 }: {
   courseTitle: string
   courseSlug: string
-  accentColor: string
   userId: string
+  lessonCount: number
+  stepCount: number
 }) {
   const [copied, setCopied] = useState(false)
   const shareUrl = `${window.location.origin}/share/course/${courseSlug}/${userId}`
@@ -988,7 +1050,7 @@ function CourseCompleteBanner({
         await navigator.share({ title: 'dojo_ course complete', text, url: shareUrl })
         return
       } catch {
-        // Fall through to clipboard copy if the share dialog is dismissed.
+        // Fall through to clipboard if the user dismisses the share sheet.
       }
     }
     try {
@@ -1004,37 +1066,48 @@ function CourseCompleteBanner({
   }
 
   return (
-    <section
-      className="border-b p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
-      style={{ borderColor: `${accentColor}33`, backgroundColor: `${accentColor}11` }}
-    >
-      <div>
-        <p
-          className="text-xs font-mono uppercase tracking-widest mb-1"
-          style={{ color: accentColor }}
-        >
-          Course complete
+    <section className="px-4 md:px-8 py-10 md:py-12 max-w-3xl mx-auto text-center">
+      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-success">
+        Course · Complete
+      </p>
+      <h2 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight mt-4">
+        {courseTitle}
+      </h2>
+      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mt-3">
+        {lessonCount} lessons · {stepCount} steps
+      </p>
+
+      {/* Verdict-style block — emerald LEFT BORDER for completion (NOT indigo). */}
+      <div className="bg-surface border border-border border-l-4 border-l-success rounded-md p-6 md:p-8 mt-8 text-left">
+        <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-secondary">
+          [Sensei]
         </p>
-        <p className="text-sm text-primary font-mono">
-          Nice work — every step of {courseTitle} is done.
+        <p className="text-primary text-[15px] leading-relaxed mt-3">
+          You pulled apart everything you swore you understood. Some answers were elegant. Some
+          you brute-forced. Both worked. The cursor disagrees and keeps blinking.
         </p>
       </div>
-      <div className="flex items-center gap-2 shrink-0">
+
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-center gap-2 mt-8">
+        <Link
+          to="/learn"
+          className="font-mono text-[11px] tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
+        >
+          ← Back to courses
+        </Link>
         <button
+          type="button"
           onClick={handleShare}
-          className="px-4 py-2 font-mono text-xs uppercase tracking-wider rounded-sm transition-colors text-primary"
-          style={{ backgroundColor: accentColor }}
+          className="font-mono text-[11px] tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
-          {copied ? 'Copied!' : 'Share completion'}
+          {copied ? 'Link copied!' : 'Share completion'}
         </button>
-        <a
-          href={shareUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="px-3 py-2 border border-border text-secondary font-mono text-xs uppercase tracking-wider rounded-sm hover:border-accent hover:text-primary transition-colors"
+        <Link
+          to="/"
+          className="font-mono text-[11px] tracking-[0.08em] uppercase bg-accent text-primary hover:bg-accent/90 transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
-          View card
-        </a>
+          Try the dojo →
+        </Link>
       </div>
     </section>
   )

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
+import { PublicPageLayout } from '../components/PublicPageLayout'
 import { PageLoader } from '../components/PageLoader'
 import { useAuth } from '../context/AuthContext'
+import { buttonClasses } from '../components/ui/Button'
 import type { CourseDTO } from '@dojo/shared'
 
 export function LearnPage() {
@@ -15,43 +17,61 @@ export function LearnPage() {
 
   if (!courses) return <PageLoader />
 
-  const subtitle = user
-    ? 'All courses — drafts and private ones visible to you as a signed-in user.'
-    : 'Free courses — no account required'
-
   return (
-    <div className="min-h-screen bg-bg">
-      {/* Header */}
-      <header className="border-b border-border/40 bg-surface">
-        <div className="max-w-5xl mx-auto px-4 md:px-6 py-6 flex items-center justify-between">
-          <div>
-            <Link to="/" className="text-muted text-xs font-mono hover:text-secondary transition-colors">
-              ← dojo
-            </Link>
-            <h1 className="text-2xl font-mono text-primary mt-1">
-              learn<span className="text-accent">_</span>
-            </h1>
-            <p className="text-sm text-muted mt-1">{subtitle}</p>
-          </div>
-        </div>
-      </header>
+    <PublicPageLayout>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
+        {/* Hero */}
+        <section className="mb-12 md:mb-16">
+          <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-accent mb-4">
+            Free courses
+          </p>
+          <h1 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight max-w-3xl">
+            Learn deliberately. No AI helping you cheat.
+          </h1>
+          <p className="text-secondary text-base md:text-lg leading-relaxed mt-4 max-w-2xl">
+            Step-by-step courses on the things you keep delegating. Free. No account required to
+            begin. Progress merges into your account if you sign in later.
+          </p>
+          <p className="font-mono text-[11px] tracking-[0.04em] text-muted mt-3">
+            Anonymous progress is held in your browser — visible only to you.
+          </p>
+        </section>
 
-      {/* Course grid */}
-      <main className="max-w-5xl mx-auto px-4 md:px-6 py-8">
+        {/* Catalog */}
         {courses.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted font-mono">No courses available yet.</p>
-            <p className="text-muted/60 text-sm mt-2">Check back soon.</p>
+          <div className="bg-surface border border-border rounded-md py-16 px-4 text-center">
+            <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-2">
+              Empty
+            </p>
+            <p className="text-secondary text-base">No courses available yet. Check back soon.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {courses.map((course) => (
               <CourseCard key={course.id} course={course} showVisibilityBadges={!!user} />
             ))}
           </div>
         )}
-      </main>
-    </div>
+
+        {/* Promo band */}
+        <section className="mt-12 md:mt-16 bg-surface border border-border rounded-md p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="md:flex-1">
+            <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-2">
+              Ready for more?
+            </p>
+            <h2 className="text-primary text-xl md:text-2xl font-semibold leading-tight tracking-tight">
+              Step into the dojo.
+            </h2>
+            <p className="text-secondary text-[13px] mt-1">
+              Daily kata. Brutally honest sensei evaluation. No AI inside the exercise.
+            </p>
+          </div>
+          <Link to="/" className={buttonClasses({ variant: 'primary', size: 'md' })}>
+            Request invite →
+          </Link>
+        </section>
+      </div>
+    </PublicPageLayout>
   )
 }
 
@@ -62,44 +82,49 @@ function CourseCard({
   course: CourseDTO
   showVisibilityBadges: boolean
 }) {
-  // Visibility hints only matter for signed-in users, who see the full catalog
-  // (drafts, private). Anonymous visitors see only public + published courses
-  // by backend filter, so badges would be noise.
   const isDraft = showVisibilityBadges && course.status === 'draft'
   const isPrivate = showVisibilityBadges && !course.isPublic
 
   return (
     <Link
       to={`/learn/${course.slug}`}
-      className="group bg-surface rounded-md border border-border/40 hover:border-accent/40 transition-all p-5 flex flex-col"
-      style={{ borderTopColor: course.accentColor, borderTopWidth: '3px' }}
+      className={`group bg-surface border border-border rounded-md p-6 flex flex-col gap-3 hover:border-accent transition-colors min-h-70 ${
+        isDraft || isPrivate ? 'opacity-70' : ''
+      }`}
     >
-      <div className="flex items-center gap-2 mb-3 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap">
         <span
-          className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded"
-          style={{ backgroundColor: course.accentColor + '20', color: course.accentColor }}
+          className="font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-1 rounded-sm"
+          style={{
+            color: course.accentColor,
+            borderColor: `${course.accentColor}66`,
+            backgroundColor: `${course.accentColor}1a`,
+          }}
         >
           {course.language}
         </span>
         {isDraft && (
-          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-warning/10 text-warning border border-warning/30">
-            draft
+          <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-1 rounded-sm">
+            Draft
           </span>
         )}
         {isPrivate && !isDraft && (
-          <span className="text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded bg-muted/10 text-muted border border-muted/30">
-            private
+          <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border px-2 py-1 rounded-sm">
+            Private
           </span>
         )}
       </div>
-      <h2 className="text-lg font-mono text-primary group-hover:text-accent transition-colors">
+      <h3 className="text-primary text-2xl font-semibold leading-tight tracking-tight group-hover:text-accent transition-colors">
         {course.title}
-      </h2>
-      <p className="text-sm text-muted mt-2 flex-1">{course.description}</p>
-      <div className="flex items-center gap-3 mt-4 text-xs text-muted/60 font-mono">
-        <span>{course.lessonCount} lessons</span>
-        <span>·</span>
-        <span>{course.stepCount} steps</span>
+      </h3>
+      <p className="text-secondary text-[13px] leading-relaxed flex-1 line-clamp-3">
+        {course.description}
+      </p>
+      <div className="flex items-center justify-between pt-3 border-t border-border">
+        <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+          {course.lessonCount} lessons · {course.stepCount} steps
+        </span>
+        <span aria-hidden className="text-accent text-lg leading-none">→</span>
       </div>
     </Link>
   )
