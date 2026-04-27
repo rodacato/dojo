@@ -3,7 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
-import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
+import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
+import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
+import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { ErrorState } from '../components/ui/ErrorState'
@@ -44,28 +47,24 @@ export function ResultsPage() {
 
   const attempt = session.finalAttempt
   const verdict = attempt?.verdict as Verdict | undefined
-  const completionMinutes = session.completedAt
-    ? Math.round((new Date(session.completedAt).getTime() - new Date(session.startedAt).getTime()) / 60000)
-    : null
+  const completionTime = formatCompletionTime(session.startedAt, session.completedAt)
 
   // No attempt + not active = the learner let the kata expire. Render a
-  // compact standalone layout — the wide grid is for verdict + insights,
-  // which do not exist here and leave the page visually broken.
+  // compact layout — the wide grid is for verdict + insights, which don't
+  // exist here and leave the page visually broken.
   if (!attempt && session.status !== 'active') {
     return (
       <div className="px-4 py-12 max-w-md mx-auto">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-muted text-xs font-mono uppercase tracking-wider">
-            {session.exercise.title}
-          </span>
+        <div className="flex items-center gap-2 mb-2">
           <TypeBadge type={session.exercise.type} />
           <DifficultyBadge difficulty={session.exercise.difficulty} />
         </div>
-        <h1 className="font-mono text-3xl uppercase tracking-wider text-muted leading-none mb-2">
-          {session.status === 'failed' ? 'Incomplete' : 'Pending'}
+        <h1 className="text-primary text-3xl font-semibold leading-tight tracking-tight mb-2">
+          {session.exercise.title}
         </h1>
-        <p className="text-muted text-sm font-mono mb-8">
-          Started {new Date(session.startedAt).toLocaleDateString()}
+        <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-8">
+          {session.status === 'failed' ? 'Incomplete' : 'Pending'} · started{' '}
+          {new Date(session.startedAt).toLocaleDateString()}
         </p>
 
         <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
@@ -73,135 +72,82 @@ export function ResultsPage() {
           <p className="text-muted text-xs">Start a new one to keep practicing.</p>
         </div>
 
-        <div className="flex gap-3 pt-6 border-t border-border/40">
-          <button
-            onClick={() => navigate('/dashboard', { replace: true })}
-            className="flex-1 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
-          >
+        <div className="flex gap-3">
+          <Button variant="ghost" size="md" onClick={() => navigate('/dashboard', { replace: true })} className="flex-1">
             Dashboard
-          </button>
-          <button
-            onClick={() => navigate('/start', { replace: true })}
-            className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-          >
+          </Button>
+          <Button variant="primary" size="md" onClick={() => navigate('/start', { replace: true })} className="flex-1">
             Keep Practicing
-          </button>
+          </Button>
         </div>
 
-        <p className="text-center text-muted/50 text-xs font-mono mt-6">Consistency compounds.</p>
+        <p className="text-center text-muted text-[11px] font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+          Consistency compounds.
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="px-4 py-8 max-w-5xl mx-auto">
-      {/* Exercise title + badges */}
-      <div className="flex items-center gap-2 mb-1">
-        <span className="text-muted text-xs font-mono uppercase tracking-wider">
-          {session.exercise.title}
-        </span>
-        <TypeBadge type={session.exercise.type} />
-        <DifficultyBadge difficulty={session.exercise.difficulty} />
+    <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+      {/* Breadcrumb */}
+      <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase mb-6">
+        Dashboard / Recent kata / This result
+      </p>
+
+      {/* Page header band */}
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div className="min-w-0">
+          {session.ownerRole && <PersonaEyebrow role={session.ownerRole} className="mb-3 block" />}
+          <h1 className="text-primary text-3xl md:text-[32px] font-semibold leading-tight tracking-tight mb-3">
+            {session.exercise.title}
+          </h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <TypeBadge type={session.exercise.type} />
+            <DifficultyBadge difficulty={session.exercise.difficulty} />
+            <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted px-2 py-1 border border-border rounded-sm">
+              {session.exercise.duration} min
+            </span>
+          </div>
+        </div>
+        {completionTime && (
+          <div className="shrink-0 text-right">
+            <span className="block font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              Completed in
+            </span>
+            <span className="block font-mono text-[15px] text-primary tabular-nums">
+              {completionTime}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Verdict */}
-      {verdict ? (
-        <div className="mb-2">
-          <h1 className="font-mono text-3xl sm:text-4xl md:text-5xl uppercase tracking-wider text-primary leading-none">
-            {verdict.replace(/_/g, ' ')}
-            <span className="text-accent animate-pulse">|</span>
-          </h1>
-        </div>
-      ) : (
-        <div className="mb-2">
-          <h1 className="font-mono text-3xl md:text-4xl uppercase tracking-wider text-muted leading-none">
-            {session.status === 'failed' ? 'Incomplete' : 'Pending'}
-          </h1>
+      {/* Hero verdict block */}
+      {verdict && (
+        <div className="mb-8">
+          <VerdictBlock
+            verdict={verdict}
+            size="lg"
+            topics={attempt?.topicsToReview ?? undefined}
+          >
+            {attempt?.analysis && <AnalysisProse analysis={attempt.analysis} />}
+          </VerdictBlock>
         </div>
       )}
 
-      {/* Completion info */}
-      <p className="text-muted text-sm font-mono mb-8">
-        {session.completedAt
-          ? `Completed ${new Date(session.completedAt).toLocaleDateString()}`
-          : `Started ${new Date(session.startedAt).toLocaleDateString()}`}
-        {completionMinutes != null && ` · ${completionMinutes} min`}
-      </p>
+      {/* No verdict on a present attempt = eval failed — surface the retry */}
+      {attempt && !verdict && !attempt.analysis && (
+        <NoEvaluationCard sessionId={sessionId!} />
+      )}
 
-      {/* Main content — 2-col on desktop */}
-      <div className="grid lg:grid-cols-[1fr_320px] gap-4 lg:gap-8">
-        {/* Left column — analysis + collapsibles */}
-        <div className="min-w-0">
-          {/* Sensei analysis */}
-          {attempt?.analysis && (
-            <div className="p-5 bg-surface border-l-2 border-accent rounded-md mb-6">
-              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">
-                {session.ownerRole ? `Sensei — ${session.ownerRole}` : "Sensei's Analysis"}
-              </p>
-              {verdict && (
-                <div className="mb-4">
-                  <VerdictBadge verdict={verdict} />
-                </div>
-              )}
-              <div className="text-secondary text-sm font-sans leading-relaxed whitespace-pre-wrap">
-                {attempt.analysis}
-              </div>
-            </div>
-          )}
-
-          {/* Insight cards */}
-          <InsightCards analysis={attempt?.analysis} />
-
-          {/* Topics to review */}
-          {attempt?.topicsToReview && attempt.topicsToReview.length > 0 && (
-            <div className="mb-6">
-              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">Topics to review</p>
-              <div className="flex flex-wrap gap-2">
-                {attempt.topicsToReview.map((t) => (
-                  <span
-                    key={t}
-                    className="text-warning text-xs font-mono px-2.5 py-1 border border-warning/30 rounded-sm"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Kata body — collapsible */}
-          {session.body && (
-            <details className="mb-4 group">
-              <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
-                The kata <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
-              </summary>
-              <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md">
-                <KataBody body={session.body} />
-              </div>
-            </details>
-          )}
-
-          {/* User response — collapsible */}
-          {attempt?.userResponse && (
-            <details className="mb-6 group">
-              <summary className="text-muted text-xs font-mono uppercase tracking-wider cursor-pointer hover:text-secondary transition-colors select-none">
-                Your response <span className="text-muted/40 group-open:hidden">+</span><span className="text-muted/40 hidden group-open:inline">−</span>
-              </summary>
-              <div className="mt-3 p-4 bg-surface border border-border/40 rounded-md text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
-                {attempt.userResponse}
-              </div>
-            </details>
-          )}
-
-          {/* Attempt exists but evaluation failed */}
-          {attempt && !verdict && !attempt.analysis && (
-            <NoEvaluationCard sessionId={sessionId!} />
-          )}
-        </div>
-
-        {/* Right column — share card preview */}
-        {verdict && sessionId && (
-          <div className="lg:sticky lg:top-8 self-start">
+      {/* 2-col split — share rail (left 40%) + insights stack (right 60%) */}
+      {verdict && sessionId && (
+        <div className="grid lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8 mb-8">
+          {/* LEFT — share rail */}
+          <div className="lg:sticky lg:top-8 self-start flex flex-col gap-3">
+            <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              Share this
+            </p>
             <ShareCardPreview
               exerciseTitle={session.exercise.title}
               verdict={verdict}
@@ -209,39 +155,43 @@ export function ResultsPage() {
               approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
               ownerRole={session.ownerRole}
             />
+            <ShareActions
+              sessionId={sessionId}
+              exerciseTitle={session.exercise.title}
+              verdict={verdict}
+              approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
+            />
           </div>
-        )}
-      </div>
 
-      {/* Dojo position stat */}
-      {verdict && (
-        <p className="text-center text-muted text-xs font-mono mt-10">
-          +1 position in the dojo this week
-        </p>
+          {/* RIGHT — insights + topics + collapsibles */}
+          <div className="min-w-0 flex flex-col gap-6">
+            <InsightCards analysis={attempt?.analysis} />
+
+            {session.body && (
+              <CollapsibleRow title="Original kata">
+                <KataBody body={session.body} />
+              </CollapsibleRow>
+            )}
+
+            {attempt?.userResponse && (
+              <CollapsibleRow title="Your response">
+                <pre className="text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
+                  {attempt.userResponse}
+                </pre>
+              </CollapsibleRow>
+            )}
+          </div>
+        </div>
       )}
 
-      {/* Actions */}
-      <div className="flex gap-3 mt-4 pt-6 border-t border-border/40 max-w-md mx-auto">
-        <button
-          onClick={() => navigate('/dashboard', { replace: true })}
-          className="flex-1 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
-        >
-          Dashboard
-        </button>
-        <button
-          onClick={() => navigate('/start', { replace: true })}
-          className="flex-1 py-2.5 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-        >
-          Keep Practicing
-        </button>
-        {verdict && sessionId && (
-          <ShareButton
-            sessionId={sessionId}
-            exerciseTitle={session.exercise.title}
-            verdict={verdict}
-            approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
-          />
-        )}
+      {/* Action row */}
+      <div className="flex items-center justify-between gap-3 pt-6 border-t border-border mb-8">
+        <Button variant="ghost" size="md" onClick={() => navigate('/dashboard', { replace: true })}>
+          ← Dashboard
+        </Button>
+        <Button variant="primary" size="md" onClick={() => navigate('/start', { replace: true })}>
+          Keep practicing →
+        </Button>
       </div>
 
       {/* Feedback */}
@@ -249,9 +199,37 @@ export function ResultsPage() {
         <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
       )}
 
-      {/* Footer */}
-      <p className="text-center text-muted/50 text-xs font-mono mt-6">Consistency compounds.</p>
+      <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+        Consistency compounds.
+      </p>
     </div>
+  )
+}
+
+function AnalysisProse({ analysis }: { analysis: string }) {
+  const paragraphs = analysis.split(/\n\n+/).filter((p) => p.trim().length > 0)
+  return (
+    <>
+      {paragraphs.map((p, i) => (
+        <p key={i}>{p}</p>
+      ))}
+    </>
+  )
+}
+
+function CollapsibleRow({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <details className="group bg-surface border border-border rounded-md">
+      <summary className="px-4 py-3 cursor-pointer select-none flex items-center justify-between">
+        <span className="text-primary text-[14px]">{title}</span>
+        <span className="text-muted text-[14px] transition-transform group-open:rotate-90" aria-hidden>
+          ›
+        </span>
+      </summary>
+      <div className="px-4 pb-4 pt-2 border-t border-border">
+        {children}
+      </div>
+    </details>
   )
 }
 
@@ -262,33 +240,55 @@ function InsightCards({ analysis }: { analysis?: string }) {
   if (!hasAny) return null
 
   return (
-    <div className="flex flex-col gap-4 mb-6">
+    <div className="grid md:grid-cols-3 gap-4">
       {insight.strengths && (
-        <div className="p-4 bg-surface border-l-2 border-success rounded-md">
-          <p className="text-success text-xs font-mono uppercase tracking-wider mb-2">Strengths</p>
-          <ul className="list-disc list-inside text-secondary text-sm leading-relaxed space-y-1">
+        <InsightCard title="Strengths" tone="success">
+          <ul className="list-disc list-outside ml-4 text-secondary text-[13px] leading-relaxed space-y-1">
             {insight.strengths.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
           </ul>
-        </div>
+        </InsightCard>
       )}
       {insight.improvements && (
-        <div className="p-4 bg-surface border-l-2 border-warning rounded-md">
-          <p className="text-warning text-xs font-mono uppercase tracking-wider mb-2">Improvements</p>
-          <ul className="list-disc list-inside text-secondary text-sm leading-relaxed space-y-1">
+        <InsightCard title="Improvements" tone="warning">
+          <ul className="list-disc list-outside ml-4 text-secondary text-[13px] leading-relaxed space-y-1">
             {insight.improvements.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
           </ul>
-        </div>
+        </InsightCard>
       )}
       {insight.approachNote && (
-        <div className="p-4 bg-surface border-l-2 border-accent rounded-md">
-          <p className="text-accent text-xs font-mono uppercase tracking-wider mb-2">Alternative Approach</p>
-          <p className="text-secondary text-sm italic leading-relaxed">{insight.approachNote}</p>
-        </div>
+        <InsightCard title="Alternative approach" tone="accent">
+          <p className="text-secondary text-[13px] italic leading-relaxed">{insight.approachNote}</p>
+        </InsightCard>
       )}
+    </div>
+  )
+}
+
+function InsightCard({
+  title,
+  tone,
+  children,
+}: {
+  title: string
+  tone: 'success' | 'warning' | 'accent'
+  children: React.ReactNode
+}) {
+  const toneClass =
+    tone === 'success'
+      ? 'text-success'
+      : tone === 'warning'
+        ? 'text-warning'
+        : 'text-accent'
+  return (
+    <div className="bg-surface border border-border rounded-md p-4 flex flex-col gap-3 min-h-50">
+      <p className={`font-mono text-[10px] tracking-[0.08em] uppercase ${toneClass}`}>
+        {title}
+      </p>
+      <div className="flex-1">{children}</div>
     </div>
   )
 }
@@ -312,53 +312,60 @@ function NoEvaluationCard({ sessionId }: { sessionId: string }) {
     <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
       <p className="text-secondary text-sm mb-1">The sensei couldn't finish evaluating this kata.</p>
       <p className="text-muted text-xs mb-4">This usually means the LLM timed out or hit a rate limit.</p>
-      <button
-        onClick={handleRetry}
-        disabled={retrying}
-        className="px-5 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors disabled:opacity-50"
-      >
-        {retrying ? 'Requesting...' : 'Request re-evaluation'}
-      </button>
+      <Button variant="primary" size="md" onClick={handleRetry} disabled={retrying} loading={retrying}>
+        Request re-evaluation
+      </Button>
     </div>
   )
 }
 
-function ShareButton({ sessionId, exerciseTitle, verdict, approachNote }: { sessionId: string; exerciseTitle: string; verdict: string; approachNote?: string | null }) {
+function ShareActions({
+  sessionId,
+  exerciseTitle,
+  verdict,
+  approachNote,
+}: {
+  sessionId: string
+  exerciseTitle: string
+  verdict: string
+  approachNote?: string | null
+}) {
   const [copied, setCopied] = useState(false)
   const shareUrl = `${window.location.origin}/share/${sessionId}`
 
-  async function handleShare() {
-    const base = `${verdict.replace(/_/g, ' ')} — ${exerciseTitle} | dojo_`
+  async function handleCopy() {
+    const base = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${exerciseTitle} | dojo_`
     const text = approachNote ? `${base}\n\n"${approachNote}"` : base
-
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'dojo_ kata result', text, url: shareUrl })
-        return
-      } catch {
-        // Fallback to clipboard
-      }
-    }
-
     try {
       await navigator.clipboard.writeText(`${text}\n${shareUrl}`)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      window.open(
-        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
-        '_blank',
-      )
+      // Clipboard API unavailable — silently no-op; user can use the Twitter button.
     }
   }
 
+  function handleTwitter() {
+    const text = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${exerciseTitle} | dojo_`
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
+      '_blank',
+      'noopener,noreferrer',
+    )
+  }
+
   return (
-    <button
-      onClick={handleShare}
-      className="flex-1 py-2.5 border border-border text-secondary font-mono text-sm rounded-sm hover:border-accent hover:text-primary transition-colors"
-    >
-      {copied ? 'Copied!' : 'Share'}
-    </button>
+    <div className="flex flex-col gap-2 mt-1">
+      <Button variant="primary" size="md" onClick={handleCopy} className="w-full">
+        {copied ? 'Link copied!' : 'Copy share link'}
+      </Button>
+      <Button variant="ghost" size="md" onClick={handleTwitter} className="w-full">
+        Share to Twitter
+      </Button>
+      <p className="text-muted text-[10px] font-mono tracking-[0.08em] truncate mt-1">
+        {shareUrl.replace(/^https?:\/\//, '')}
+      </p>
+    </div>
   )
 }
 
@@ -375,37 +382,53 @@ function ShareCardPreview({
   approachNote?: string | null
   ownerRole?: string
 }) {
-  const verdictLabel = verdict.replace(/_/g, ' ')
+  const verdictLabel = verdict.replace(/_/g, ' ').toUpperCase()
   const verdictColor =
     verdict === 'passed'
-      ? 'text-success border-success/40'
+      ? 'text-success'
       : verdict === 'needs_work'
-        ? 'text-danger border-danger/40'
-        : 'text-warning border-warning/40'
+        ? 'text-danger'
+        : 'text-warning'
   const pullQuote = approachNote ?? (analysis
     ? analysis.length > 120 ? analysis.slice(0, 117) + '...' : analysis
     : null)
-  const snippet = pullQuote ? `"${pullQuote}"` : null
 
   return (
-    <div className="border border-border/40 rounded-md bg-surface p-5 flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <span className="font-mono text-accent text-xs">dojo_</span>
-        <span className={`font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border rounded-sm ${verdictColor}`}>
-          {verdictLabel}
-        </span>
-      </div>
-      <div>
-        <p className="font-mono text-primary text-sm font-bold">{exerciseTitle}</p>
-        {snippet && (
-          <p className="text-muted text-xs mt-2 leading-relaxed italic">{snippet}</p>
-        )}
-      </div>
-      {ownerRole && (
-        <p className="text-muted/50 text-[10px] font-mono border-t border-border/30 pt-3">
-          sensei — {ownerRole.toLowerCase()}
+    <div className="bg-page border border-border rounded-md p-5 flex flex-col gap-4 aspect-1200/630">
+      <span className="font-mono font-bold text-accent text-sm inline-flex items-center select-none">
+        dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
+      </span>
+      <p className={`font-mono text-2xl font-bold uppercase tracking-tight leading-none ${verdictColor}`}>
+        {verdictLabel}
+      </p>
+      <p className="text-primary text-[15px] font-semibold leading-snug line-clamp-2">
+        {exerciseTitle}
+      </p>
+      {pullQuote && (
+        <p className="text-secondary text-[12px] italic leading-relaxed line-clamp-3">
+          &ldquo;{pullQuote}&rdquo;
         </p>
       )}
+      <div className="mt-auto flex items-end justify-between gap-2">
+        {ownerRole && (
+          <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase truncate">
+            sensei — {ownerRole.toLowerCase()}
+          </p>
+        )}
+        <p className="text-accent text-[10px] font-mono tracking-[0.08em] uppercase shrink-0">
+          Find yours →
+        </p>
+      </div>
     </div>
   )
+}
+
+function formatCompletionTime(startedAt: string, completedAt: string | null): string | null {
+  if (!completedAt) return null
+  const elapsedMs = new Date(completedAt).getTime() - new Date(startedAt).getTime()
+  if (elapsedMs <= 0 || !Number.isFinite(elapsedMs)) return null
+  const totalSeconds = Math.floor(elapsedMs / 1000)
+  const mm = Math.floor(totalSeconds / 60)
+  const ss = totalSeconds % 60
+  return `${mm}:${ss.toString().padStart(2, '0')}`
 }

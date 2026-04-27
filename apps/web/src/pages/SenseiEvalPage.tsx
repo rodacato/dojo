@@ -1,12 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithExercise } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
 import { useTypingReveal } from '../hooks/useTypingReveal'
 import { useRotatingMessage } from '../hooks/useRotatingMessage'
-import { VerdictBadge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
+import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { StreamingText } from '../components/ui/StreamingText'
+import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
+import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
+import type { ExerciseType } from '@dojo/shared'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -22,6 +26,8 @@ interface Exchange {
   result: EvaluationResult
   userAnswer: string
 }
+
+type StatusChipKind = 'connecting' | 'executing' | 'streaming' | 'follow-up' | 'complete' | 'error'
 
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -53,16 +59,40 @@ export function SenseiEvalPage() {
     }
   }, [state.status, sessionId, submit])
 
-  // Auto-scroll on new content
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [state])
+
+  const isExecuting = state.status === 'executing'
+  const isStreaming = state.status === 'streaming'
+  const hasResult = state.status === 'evaluation' || state.status === 'complete'
+  const tokens = 'tokens' in state ? (state.tokens as string) : ''
+  const executionResult = 'executionResult' in state ? state.executionResult : undefined
+  const result = hasResult ? (state as { result: EvaluationResult }).result : null
+  const senseiInitials = useMemo(
+    () => deriveInitials(session?.ownerRole),
+    [session?.ownerRole],
+  )
+  const revealedTokens = useTypingReveal(tokens, !isStreaming)
+  const isLoadingStream =
+    state.status === 'idle' ||
+    state.status === 'connecting' ||
+    state.status === 'ready' ||
+    (isStreaming && !tokens)
+  const isWaiting = (isLoadingStream || isExecuting || state.status === 'execution_done') && !tokens
+
+  const status = deriveStatus({
+    state: state.status,
+    isStreaming,
+    hasResult,
+    isFinal: result?.isFinalEvaluation,
+    hasFollowUp: !!result?.followUpQuestion,
+  })
 
   async function handleFollowUp() {
     if (!sessionId || !followUpText.trim() || followUpSubmitting) return
     const answer = followUpText.trim()
     setFollowUpSubmitting(true)
-    // Preserve current exchange in history before resetting stream state
     if (result) {
       setHistory((prev) => [...prev, { tokens, result, userAnswer: answer }])
     }
@@ -72,272 +102,198 @@ export function SenseiEvalPage() {
     submit(attemptId)
   }
 
-  const isExecuting = state.status === 'executing'
-  const isStreaming = state.status === 'streaming'
-  const hasResult = state.status === 'evaluation' || state.status === 'complete'
-  const tokens = 'tokens' in state ? (state.tokens as string) : ''
-  const executionResult = 'executionResult' in state ? state.executionResult : undefined
-  const result = hasResult ? (state as { result: EvaluationResult }).result : null
-  const senseiInitials = session?.ownerRole?.split(' ').map(w => w[0]).slice(0, 2).join('') ?? 'S'
-  const revealedTokens = useTypingReveal(tokens, !isStreaming)
-  const isLoadingStream = state.status === 'idle' || state.status === 'connecting' || state.status === 'ready' || (isStreaming && !tokens)
-  const isWaiting = (isLoadingStream || isExecuting || state.status === 'execution_done') && !tokens
-
   return (
-    <div className="h-screen bg-page flex flex-col">
-      {/* Top bar — hidden during initial loading */}
-      {session && !isWaiting && (
-        <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-sm text-accent">terminal_kata</span>
-            <span className="text-muted text-xs font-mono hidden sm:inline">{session.exercise.title}</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {isStreaming && (
-              <span className="text-accent text-xs font-mono">
-                Evaluating<span className="animate-pulse">...</span>
-              </span>
-            )}
-            {result && (
-              <span className="text-success text-xs font-mono">evaluation_complete</span>
-            )}
-          </div>
+    <div className="h-screen bg-page flex flex-col overflow-hidden">
+      {/* Top bar — focus mode, no sidebar */}
+      <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
+        <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
+          dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
+        </span>
+        {session && (
+          <>
+            <span className="h-4 w-px bg-border hidden sm:block" />
+            <span className="font-mono text-[12px] text-primary truncate hidden sm:inline max-w-[40ch]">
+              {session.exercise.title}
+            </span>
+            <div className="hidden md:flex items-center gap-1.5">
+              <TypeBadge type={session.exercise.type as ExerciseType} />
+              <DifficultyBadge difficulty={session.exercise.difficulty} />
+            </div>
+          </>
+        )}
+        <div className="ml-auto">
+          <StatusChip kind={status} />
         </div>
-      )}
+      </header>
 
-      {/* Chat area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 max-w-3xl mx-auto w-full">
+      {/* Conversation column — max 880px centered */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-8">
+        <div className="max-w-220 mx-auto flex flex-col gap-6">
+          {/* Execution result card — code katas only */}
+          {executionResult && <ExecutionResultCard result={executionResult} />}
 
-        {/* Evaluating loader — full center */}
-        {isWaiting && (
-          <div className="flex flex-col items-center justify-center h-full gap-5">
-            {isExecuting && (
-              <>
-                <div className="w-8 h-8 border-2 border-warning border-t-transparent rounded-full animate-spin" />
-                <p className="font-mono text-warning text-sm">Running tests...</p>
-              </>
-            )}
-            {state.status === 'execution_done' && (
-              <div className="w-full max-w-md">
-                <ExecutionResultCard result={state.executionResult} />
-                <div className="flex flex-col items-center gap-3 mt-4">
-                  <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                  <p className="font-mono text-secondary text-sm animate-pulse">{evalMessage}</p>
-                </div>
-              </div>
-            )}
-            {!isExecuting && state.status !== 'execution_done' && (
-              <>
-                <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                <p className="font-mono text-secondary text-sm animate-pulse">{evalMessage}</p>
-              </>
-            )}
-          </div>
-        )}
+          {/* Past exchanges (multi-turn follow-ups) */}
+          {history.map((exchange, i) => (
+            <div key={i} className="flex flex-col gap-6">
+              <SenseiBubble initials={senseiInitials} role={session?.ownerRole}>
+                <StreamingText text={exchange.tokens} done className="text-primary" />
+              </SenseiBubble>
+              <UserBubble>{exchange.userAnswer}</UserBubble>
+            </div>
+          ))}
 
-        {/* Execution result card (shown above sensei when streaming starts) */}
-        {!isWaiting && executionResult && (
-          <div className="mb-4">
-            <ExecutionResultCard result={executionResult} />
-          </div>
-        )}
-
-        {/* Sensei identity */}
-        {session && !isWaiting && (
-          <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0">
-              {senseiInitials}
-            </div>
-            <div>
-              <span className="text-muted text-xs font-mono">[{session.ownerRole}]</span>
-            </div>
-          </div>
-        )}
-
-        {/* Previous exchanges */}
-        {history.map((exchange, i) => (
-          <div key={i}>
-            {/* Sensei message */}
-            <div className="flex gap-3 mb-6">
-              <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
-                {senseiInitials}
-              </div>
-              <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
-                <StreamingText text={exchange.tokens} done className="text-secondary text-sm font-sans leading-relaxed" />
-              </div>
-            </div>
-            {/* Verdict */}
-            <div className="flex gap-3 mb-6">
-              <div className="w-8 shrink-0" />
-              <div className="flex-1 min-w-0 p-4 bg-surface border border-border rounded-md">
-                <VerdictBadge verdict={exchange.result.verdict} />
-                {exchange.result.topicsToReview.length > 0 && (
-                  <div className="mt-3">
-                    <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">Review</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {exchange.result.topicsToReview.map((t) => (
-                        <span key={t} className="text-warning text-xs font-mono px-2 py-0.5 border border-warning/30 rounded-sm">{t}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            {/* Follow-up question */}
-            {exchange.result.followUpQuestion && (
-              <div className="flex gap-3 mb-6">
-                <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
-                  {senseiInitials}
-                </div>
-                <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent/40 rounded-md">
-                  <p className="text-secondary text-sm font-sans">{exchange.result.followUpQuestion}</p>
-                </div>
-              </div>
-            )}
-            {/* User answer */}
-            <div className="flex gap-3 mb-6 justify-end">
-              <div className="max-w-[80%] p-4 bg-accent/10 border border-accent/20 rounded-md">
-                <p className="text-secondary text-sm font-sans">{exchange.userAnswer}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        {/* Inline loading for follow-up */}
-        {isLoadingStream && history.length > 0 && (
-          <div className="flex gap-3 mb-6">
-            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
-              {senseiInitials}
-            </div>
-            <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
-              <div className="flex items-center gap-3">
-                <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                <p className="font-mono text-secondary text-xs animate-pulse">{evalMessage}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Sensei streaming message */}
-        {!isWaiting && !isLoadingStream && (revealedTokens || isStreaming) && (
-          <div className="flex gap-3 mb-6">
-            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
-              {senseiInitials}
-            </div>
-            <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent rounded-md">
-              <StreamingText
-                text={revealedTokens}
-                done={!isStreaming && revealedTokens === tokens}
-                className="text-secondary text-sm font-sans leading-relaxed"
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Verdict card */}
-        {result && (
-          <div className="flex gap-3 mb-6">
-            <div className="w-8 shrink-0" /> {/* spacer to align with avatar */}
-            <div className="flex-1 min-w-0 p-4 bg-surface border border-border rounded-md">
-              <div className="flex items-center justify-between mb-3">
-                <VerdictBadge verdict={result.verdict} />
-              </div>
-              {result.topicsToReview.length > 0 && (
-                <div className="mt-3">
-                  <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">Review</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {result.topicsToReview.map((t) => (
-                      <span
-                        key={t}
-                        className="text-warning text-xs font-mono px-2 py-0.5 border border-warning/30 rounded-sm"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+          {/* Live sensei message */}
+          {(isWaiting || revealedTokens || isStreaming) && (
+            <SenseiBubble
+              initials={senseiInitials}
+              role={session?.ownerRole}
+              streaming={isStreaming || isWaiting}
+            >
+              {isWaiting && !revealedTokens ? (
+                <span className="text-secondary text-[14px] font-sans">{evalMessage}</span>
+              ) : (
+                <StreamingText
+                  text={revealedTokens}
+                  done={!isStreaming && revealedTokens === tokens}
+                  className="text-primary"
+                />
               )}
-              {result.isFinalEvaluation && (
-                <div className="mt-4 flex flex-col gap-2">
-                  {state.status === 'complete' && (
-                    <p className="text-muted text-[11px] font-mono animate-pulse">
-                      Evaluation complete — opening full analysis...
-                    </p>
-                  )}
-                  <button
-                    onClick={() => navigate(`/kata/${sessionId}/result`)}
-                    className="text-accent text-xs font-mono hover:text-accent/80 transition-colors self-start"
-                  >
-                    View full analysis →
-                  </button>
-                </div>
+            </SenseiBubble>
+          )}
+
+          {/* Follow-up question (mid-conversation, before user answers) */}
+          {result && !result.isFinalEvaluation && result.followUpQuestion && (
+            <SenseiBubble initials={senseiInitials} role={session?.ownerRole}>
+              <p className="text-primary">{result.followUpQuestion}</p>
+            </SenseiBubble>
+          )}
+
+          {/* Verdict block — final evaluation */}
+          {result && result.isFinalEvaluation && (
+            <VerdictBlock
+              verdict={result.verdict}
+              role={session?.ownerRole}
+              topics={result.topicsToReview}
+              cta={
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => navigate(`/kata/${sessionId}/result`)}
+                >
+                  View full analysis →
+                </Button>
+              }
+            >
+              {state.status === 'complete' && (
+                <p className="text-muted text-[11px] font-mono animate-pulse">
+                  Evaluation complete — opening full analysis...
+                </p>
               )}
-            </div>
-          </div>
-        )}
+            </VerdictBlock>
+          )}
 
-        {/* Follow-up question from sensei */}
-        {result && !result.isFinalEvaluation && result.followUpQuestion && (
-          <div className="flex gap-3 mb-6">
-            <div className="w-8 h-8 bg-accent/20 rounded-sm flex items-center justify-center text-accent font-mono text-xs font-bold shrink-0 mt-1">
-              {senseiInitials}
+          {/* Stream error */}
+          {state.status === 'error' && (
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <p className="text-secondary font-mono text-sm">
+                The sensei couldn't evaluate your response.
+              </p>
+              <p className="text-muted text-xs">{state.message}</p>
+              <div className="flex gap-3 mt-2">
+                <Button variant="primary" size="md" onClick={() => connect()}>
+                  Try again
+                </Button>
+                <Button variant="ghost" size="md" onClick={() => navigate(`/kata/${sessionId}`)}>
+                  Back to kata
+                </Button>
+              </div>
             </div>
-            <div className="flex-1 min-w-0 p-4 bg-surface border-l-2 border-accent/40 rounded-md">
-              <p className="text-secondary text-sm font-sans">{result.followUpQuestion}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Error */}
-        {state.status === 'error' && (
-          <div className="flex flex-col items-center justify-center py-16">
-            <p className="text-secondary font-mono text-sm mb-2">The sensei couldn't evaluate your response.</p>
-            <p className="text-muted text-xs mb-6">{state.message}</p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => connect()}
-                className="px-4 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-              >
-                Try again
-              </button>
-              <button
-                onClick={() => navigate(`/kata/${sessionId}`)}
-                className="px-4 py-2 bg-surface border border-border text-secondary font-mono text-sm rounded-sm hover:text-primary transition-colors"
-              >
-                Back to kata
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Bottom input — hidden during initial loading */}
-      {!isWaiting && <div className="shrink-0 border-t border-border/40 bg-surface/50 px-4 py-3">
-        <div className="max-w-3xl mx-auto">
+      {/* Bottom band — 96px tall, status / textarea / final CTA */}
+      <div className="h-24 shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3 flex items-center">
+        <div className="max-w-220 mx-auto w-full">
           {result && !result.isFinalEvaluation && result.followUpQuestion ? (
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex gap-2">
               <textarea
                 value={followUpText}
                 onChange={(e) => setFollowUpText(e.target.value)}
                 placeholder="Your answer..."
                 rows={2}
-                className="flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
+                className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-[14px] font-sans resize-none focus:outline-none focus:border-accent transition-colors"
               />
-              <button
+              <Button
+                variant="primary"
+                size="md"
                 onClick={handleFollowUp}
                 disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
-                className="px-4 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 disabled:opacity-40 transition-colors shrink-0"
+                loading={followUpSubmitting}
               >
-                {followUpSubmitting ? '...' : 'Send →'}
-              </button>
+                Send →
+              </Button>
             </div>
+          ) : result?.isFinalEvaluation ? (
+            <p className="text-muted text-[11px] font-mono uppercase tracking-[0.08em] text-center">
+              The sensei has spoken.
+            </p>
           ) : (
-            <p className="text-muted/50 text-xs font-mono text-center py-2">
-              {result?.isFinalEvaluation ? 'The sensei has spoken.' : isStreaming ? 'The sensei is evaluating...' : 'Waiting for evaluation...'}
+            <p className="text-secondary text-[13px] font-mono text-center inline-flex items-center justify-center w-full">
+              The sensei is evaluating.
+              <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
             </p>
           )}
         </div>
-      </div>}
+      </div>
     </div>
+  )
+}
+
+function deriveInitials(role?: string): string {
+  if (!role) return 'S'
+  const words = role.trim().split(/\s+/)
+  return words.slice(0, 2).map((w) => w[0]).join('').toUpperCase() || 'S'
+}
+
+function deriveStatus({
+  state,
+  isStreaming,
+  hasResult,
+  isFinal,
+  hasFollowUp,
+}: {
+  state: string
+  isStreaming: boolean
+  hasResult: boolean
+  isFinal?: boolean
+  hasFollowUp?: boolean
+}): StatusChipKind {
+  if (state === 'error') return 'error'
+  if (state === 'connecting' || state === 'idle' || state === 'ready') return 'connecting'
+  if (state === 'executing') return 'executing'
+  if (isStreaming) return 'streaming'
+  if (hasResult && isFinal) return 'complete'
+  if (hasResult && hasFollowUp) return 'follow-up'
+  return 'streaming'
+}
+
+function StatusChip({ kind }: { kind: StatusChipKind }) {
+  const styles: Record<StatusChipKind, { label: string; color: string; cursor: boolean }> = {
+    connecting: { label: 'CONNECTING', color: 'text-muted border-border bg-elevated', cursor: true },
+    executing: { label: 'EXECUTING', color: 'text-warning border-warning/40 bg-warning/10', cursor: true },
+    streaming: { label: 'STREAMING', color: 'text-accent border-accent/40 bg-accent/10', cursor: true },
+    'follow-up': { label: 'FOLLOW-UP', color: 'text-accent border-accent/40 bg-accent/10', cursor: false },
+    complete: { label: 'COMPLETE', color: 'text-success border-success/40 bg-success/10', cursor: false },
+    error: { label: 'ERROR', color: 'text-danger border-danger/40 bg-danger/10', cursor: false },
+  }
+  const s = styles[kind]
+  return (
+    <span
+      className={`inline-flex items-center font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-1 rounded-sm ${s.color}`}
+    >
+      {s.label}
+      {s.cursor && <span className="animate-cursor ml-0.5" aria-hidden>_</span>}
+    </span>
   )
 }
