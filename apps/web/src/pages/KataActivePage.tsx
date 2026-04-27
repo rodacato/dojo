@@ -303,7 +303,7 @@ export function KataActivePage() {
             {isCode || isWhiteboard ? (
               <>
                 <span className="font-mono text-[12px] text-primary">
-                  {filename ?? 'whiteboard.mmd'}
+                  {filename ?? 'architecture.md'}
                 </span>
                 <span className="h-3 w-px bg-border" />
                 <span className="font-mono text-[11px] text-muted">{editorLabel}</span>
