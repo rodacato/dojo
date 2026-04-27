@@ -1,9 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
+
+const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
+const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+})
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -15,186 +23,279 @@ export function DashboardPage() {
 
   if (!dashboard) return <PageLoader />
 
+  const isFirstVisit = dashboard.streak === 0 && dashboard.recentSessions.length === 0
+
   return (
-    <div className="px-4 md:px-6 py-8 max-w-6xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
-        {/* ── Streak card ── */}
-        <section className="md:col-span-4 bg-surface rounded-md p-6 flex flex-col justify-between min-h-45">
-          <div>
-            <span className="text-[10px] text-muted uppercase tracking-[0.2em] font-mono">
-              active_streak
-            </span>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-4xl sm:text-5xl md:text-6xl font-mono text-accent tracking-tighter">
-                {dashboard.streak}
-              </span>
-              <span className="text-lg font-mono text-muted lowercase">day streak</span>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-border/30">
-            <p className="text-xs text-secondary/60 font-mono lowercase">
-              {dashboard.totalCompleted > 0
-                ? `last practiced: ${dashboard.streak > 0 ? 'today' : 'yesterday'}`
-                : 'no sessions yet'}
-            </p>
-          </div>
-          {/* Weekly goal */}
-          {dashboard.weeklyGoal && (
-            <div className="mt-3 pt-3 border-t border-border/30">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] text-muted font-mono lowercase">this week</span>
-                <span className="text-[10px] text-muted font-mono">
-                  {dashboard.weeklyGoal.completed}/{dashboard.weeklyGoal.target}
-                </span>
-              </div>
-              <div className="flex gap-1">
-                {Array.from({ length: dashboard.weeklyGoal.target }, (_, i) => (
-                  <div
-                    key={i}
-                    className={`h-1.5 flex-1 rounded-full ${
-                      i < dashboard.weeklyGoal.completed ? 'bg-accent' : 'bg-border/40'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        </section>
+    <div className="px-4 md:px-6 py-6 md:py-10 max-w-6xl mx-auto flex flex-col gap-8">
+      <DateStrip />
 
-        {/* ── Today's kata ── */}
-        <section className="md:col-span-8 bg-elevated rounded-md p-6 flex flex-col justify-center relative overflow-hidden">
-          <TodayCard
-            todayComplete={dashboard.todayComplete}
-            todaySession={dashboard.todaySession}
-            activeSessionId={dashboard.activeSessionId}
-            isFirstVisit={dashboard.streak === 0 && dashboard.recentSessions.length === 0}
-            onStart={() => navigate('/start')}
-            onResume={(id) => navigate(`/kata/${id}`)}
-            onViewResults={(id) => navigate(`/kata/${id}/result`)}
-          />
-          {/* Decorative element */}
-          <div className="absolute -right-5 -top-5 opacity-[0.04] pointer-events-none">
-            <svg width="160" height="160" viewBox="0 0 24 24" fill="currentColor" className="text-accent">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
-          </div>
-        </section>
+      <section className="bg-surface border border-border/40 rounded-md p-6 md:p-8">
+        <TodayCard
+          todayComplete={dashboard.todayComplete}
+          todaySession={dashboard.todaySession}
+          activeSessionId={dashboard.activeSessionId}
+          isFirstVisit={isFirstVisit}
+          onStart={() => navigate('/start')}
+          onResume={(id) => navigate(`/kata/${id}`)}
+          onViewResults={(id) => navigate(`/kata/${id}/result`)}
+        />
+      </section>
 
-        {/* ── Recent activity ── */}
-        <section className="md:col-span-8 space-y-4">
-          {dashboard.recentSessions.length > 0 && (
-            <>
-              <div className="flex justify-between items-end mb-2 px-1">
-                <h4 className="font-mono text-sm text-muted lowercase tracking-wider">
-                  recent_activity
-                </h4>
-                <button
-                  onClick={() => navigate('/history')}
-                  className="text-[10px] text-secondary/50 font-mono uppercase hover:text-secondary transition-colors"
-                >
-                  view_all_logs
-                </button>
-              </div>
-              <div className="space-y-3">
-                {dashboard.recentSessions.map((s) => (
-                  <RecentSessionRow
-                    key={s.id}
-                    session={s}
-                    onClick={() => navigate(`/kata/${s.id}/result`)}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </section>
-
-        {/* ── Right panel ── */}
-        {dashboard.totalCompleted >= 3 && (
-          <div className="md:col-span-4 space-y-6">
-            {/* Where you struggle */}
-            {dashboard.weakAreas.length > 0 && (
-              <section className="bg-surface/50 p-6 rounded-md">
-                <h4 className="font-mono text-xs text-muted lowercase tracking-[0.2em] mb-4">
-                  where you struggle
-                </h4>
-                <div className="flex flex-col gap-2">
-                  {dashboard.weakAreas.map((a) => (
-                    <div
-                      key={a.topic}
-                      className="flex justify-between items-center p-3 border border-danger/20 bg-danger/5 rounded-md"
-                    >
-                      <span className="text-xs text-primary">{a.topic}</span>
-                      <span className="text-[10px] font-mono text-danger">
-                        {a.frequency} sessions
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* How you practice */}
-            <section className="bg-page p-6 rounded-md border border-border/20">
-              <h4 className="font-mono text-xs text-muted lowercase tracking-[0.2em] mb-4">
-                how you practice
-              </h4>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-[11px] text-muted lowercase">avg time to submit</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-primary">
-                      {dashboard.practicePatterns.avgTimeMinutes}:00
-                    </span>
-                    <span className="text-[10px] font-mono text-success uppercase">
-                      vs 20:00
-                    </span>
-                  </div>
-                </div>
-                {dashboard.practicePatterns.mostAvoidedType && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-[11px] text-muted lowercase">most avoided type</span>
-                    <span className="text-[10px] font-mono text-accent bg-accent/10 px-2 py-0.5 rounded">
-                      {dashboard.practicePatterns.mostAvoidedType.toUpperCase()}
-                    </span>
-                  </div>
-                )}
-                <div className="flex justify-between items-center">
-                  <span className="text-[11px] text-muted lowercase">sessions timed out</span>
-                  <span
-                    className={`text-xs font-mono ${dashboard.practicePatterns.sessionsTimedOut > 0 ? 'text-danger' : 'text-success'}`}
-                  >
-                    {dashboard.practicePatterns.sessionsTimedOut}
-                  </span>
-                </div>
-              </div>
-            </section>
-
-            {/* Sensei suggests */}
-            {dashboard.senseiSuggests.length > 0 && (
-              <section className="px-1">
-                <h4 className="font-mono text-xs text-muted lowercase tracking-[0.2em] mb-3">
-                  the sensei suggests revisiting
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {dashboard.senseiSuggests.map((topic) => (
-                    <span
-                      key={topic}
-                      className="px-3 py-1.5 bg-warning/10 border border-warning/30 text-warning text-[10px] font-mono rounded-full lowercase"
-                    >
-                      {topic}
-                    </span>
-                  ))}
-                </div>
-              </section>
-            )}
-          </div>
-        )}
+      <div className="grid md:grid-cols-12 gap-4 md:gap-6">
+        <StreakCard
+          streak={dashboard.streak}
+          recentSessions={dashboard.recentSessions}
+          weeklyGoal={dashboard.weeklyGoal}
+        />
+        <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />
       </div>
 
-      {/* System status */}
-      <p className="text-muted/20 text-[10px] font-mono mt-12 text-center">
-        system_status: online
+      {dashboard.recentSessions.length > 0 && (
+        <RecentActivity sessions={dashboard.recentSessions} onView={(id) => navigate(`/kata/${id}/result`)} onAll={() => navigate('/history')} />
+      )}
+
+      {dashboard.totalCompleted >= 3 && (
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+          <WeakAreasCard weakAreas={dashboard.weakAreas} />
+          <SenseiSuggestsCard suggestions={dashboard.senseiSuggests} />
+        </div>
+      )}
+
+      <SystemStatusFooter />
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Sections                                                           */
+/* ------------------------------------------------------------------ */
+
+function DateStrip() {
+  const today = useMemo(() => DATE_FORMATTER.format(new Date()), [])
+  return (
+    <div className="flex items-center justify-between gap-4 -mb-2">
+      <p className="text-secondary text-xs font-mono uppercase tracking-wider">{today}</p>
+      <p className="text-muted text-xs font-mono uppercase tracking-wider flex items-center gap-1.5">
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-success" aria-hidden />
+        api · ok
       </p>
     </div>
   )
+}
+
+function StreakCard({
+  streak,
+  recentSessions,
+  weeklyGoal,
+}: {
+  streak: number
+  recentSessions: DashboardData['recentSessions']
+  weeklyGoal?: { target: number; completed: number }
+}) {
+  const week = useMemo(() => weekActivity(recentSessions), [recentSessions])
+  return (
+    <section className="md:col-span-7 bg-surface border border-border/40 rounded-md p-6">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-muted text-xs font-mono uppercase tracking-wider">Current streak</p>
+        {weeklyGoal && weeklyGoal.target > 0 && (
+          <p className="text-muted text-xs font-mono">
+            {weeklyGoal.completed}/{weeklyGoal.target} this week
+          </p>
+        )}
+      </div>
+      <div className="flex items-baseline gap-2 mb-6">
+        <span className="font-mono text-5xl text-accent leading-none tracking-tight">{streak}</span>
+        <span className="font-mono text-secondary text-sm">days</span>
+      </div>
+      <div className="flex gap-1.5">
+        {week.map((active, i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+            <div
+              className={`h-2 w-full rounded-sm ${active ? 'bg-success' : 'bg-page border border-border/40'}`}
+              aria-hidden
+            />
+            <span className="text-muted text-[10px] font-mono uppercase">{WEEKDAY_LABELS[i]}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function PracticePatternsCard({ practicePatterns }: { practicePatterns: DashboardData['practicePatterns'] }) {
+  const rows: Array<{ label: string; value: React.ReactNode }> = [
+    {
+      label: 'Avg time',
+      value: (
+        <span className="font-mono text-primary text-base">
+          {String(practicePatterns.avgTimeMinutes).padStart(2, '0')}:00
+        </span>
+      ),
+    },
+  ]
+  if (practicePatterns.mostAvoidedType) {
+    rows.push({
+      label: 'Most avoided',
+      value: (
+        <span className="font-mono text-accent text-[11px] uppercase tracking-wider bg-accent/10 px-2 py-0.5 rounded-sm">
+          {practicePatterns.mostAvoidedType}
+        </span>
+      ),
+    })
+  }
+  rows.push({
+    label: 'Sessions timed out',
+    value: (
+      <span
+        className={`font-mono text-base ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger' : 'text-success'}`}
+      >
+        {practicePatterns.sessionsTimedOut}
+      </span>
+    ),
+  })
+
+  return (
+    <section className="md:col-span-5 bg-surface border border-border/40 rounded-md p-6">
+      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-5">Practice patterns</p>
+      <div className="flex flex-col">
+        {rows.map(({ label, value }, i) => (
+          <div
+            key={label}
+            className={`flex items-center justify-between py-3 ${
+              i < rows.length - 1 ? 'border-b border-border/30' : ''
+            }`}
+          >
+            <span className="text-secondary text-sm">{label}</span>
+            {value}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function RecentActivity({
+  sessions,
+  onView,
+  onAll,
+}: {
+  sessions: DashboardData['recentSessions']
+  onView: (id: string) => void
+  onAll: () => void
+}) {
+  return (
+    <section>
+      <div className="flex items-baseline justify-between mb-3 px-1">
+        <h3 className="text-muted text-xs font-mono uppercase tracking-wider">Recent kata</h3>
+        <button
+          onClick={onAll}
+          className="text-muted text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors"
+        >
+          Full history →
+        </button>
+      </div>
+      <div className="bg-surface border border-border/40 rounded-md overflow-hidden">
+        {sessions.map((s, i) => (
+          <RecentSessionRow
+            key={s.id}
+            session={s}
+            onClick={() => onView(s.id)}
+            isLast={i === sessions.length - 1}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function WeakAreasCard({ weakAreas }: { weakAreas: DashboardData['weakAreas'] }) {
+  if (weakAreas.length === 0) return null
+  return (
+    <section className="bg-surface border border-border/40 rounded-md p-6">
+      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">Weak areas</p>
+      <div className="flex flex-wrap gap-2">
+        {weakAreas.map((a) => (
+          <span
+            key={a.topic}
+            className="font-mono text-[11px] text-warning bg-warning/10 border border-warning/30 rounded-sm px-2.5 py-1 inline-flex items-center gap-1.5"
+          >
+            <span className="text-primary lowercase">{a.topic}</span>
+            <span className="text-warning/70">({a.frequency})</span>
+          </span>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function SenseiSuggestsCard({ suggestions }: { suggestions: string[] }) {
+  if (suggestions.length === 0) return null
+  return (
+    <section className="bg-surface border border-border/40 rounded-md p-6">
+      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">Sensei suggests</p>
+      <ul className="space-y-3">
+        {suggestions.map((topic) => (
+          <li key={topic} className="flex items-start gap-3 text-secondary text-sm leading-relaxed">
+            <span className="text-accent shrink-0 mt-0.5" aria-hidden>→</span>
+            <span>
+              Revisit <span className="text-primary lowercase">{topic}</span>.
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function SystemStatusFooter() {
+  return (
+    <footer className="border-t border-border/30 pt-4 mt-4">
+      <p className="text-center text-muted text-[11px] font-mono uppercase tracking-wider flex items-center justify-center gap-3">
+        <StatusDot label="api" ok />
+        <StatusDot label="db" ok />
+        <StatusDot label="llm" ok />
+      </p>
+    </footer>
+  )
+}
+
+function StatusDot({ label, ok }: { label: string; ok: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className={`inline-block w-1.5 h-1.5 rounded-full ${ok ? 'bg-success' : 'bg-danger'}`} aria-hidden />
+      {label} {ok ? 'ok' : 'down'}
+    </span>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Derive a Mon-Sun activity boolean array for the current week from the
+ * sessions we already have client-side. Marks a weekday true if at least
+ * one session started on that day.
+ *
+ * NOTE: recentSessions is capped server-side (typically the last 5-10),
+ * so this is a best-effort derivation. A dedicated `weekHeatmap` field
+ * on DashboardData would be more accurate — see stitch/TODO.md G-029.
+ */
+function weekActivity(sessions: DashboardData['recentSessions']): boolean[] {
+  const today = new Date()
+  const day = today.getDay() // 0=Sun, 1=Mon, ..., 6=Sat
+  const monday = new Date(today)
+  monday.setDate(today.getDate() + (day === 0 ? -6 : 1 - day))
+  monday.setHours(0, 0, 0, 0)
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const start = new Date(monday)
+    start.setDate(monday.getDate() + i)
+    const end = new Date(start)
+    end.setDate(start.getDate() + 1)
+    return sessions.some((s) => {
+      const ts = new Date(s.startedAt)
+      return ts >= start && ts < end
+    })
+  })
 }
