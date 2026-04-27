@@ -17,7 +17,7 @@ export function AuthCallbackPage() {
   }, [params, navigate])
 
   return (
-    <div className="flex items-center justify-center h-screen bg-base text-muted font-mono text-sm">
+    <div className="flex items-center justify-center h-screen bg-page text-muted font-mono text-sm">
       loading...
     </div>
   )

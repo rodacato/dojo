@@ -17,7 +17,7 @@ export function LeaderboardPage() {
   }, [period])
 
   return (
-    <div className="min-h-screen bg-base px-4 py-8 max-w-3xl mx-auto">
+    <div className="min-h-screen bg-page px-4 py-8 max-w-3xl mx-auto">
       <div className="mb-8">
         <h1 className="font-mono text-2xl text-primary mb-1">Leaderboard</h1>
         <p className="text-muted text-sm">Ranked by consistency, not score.</p>

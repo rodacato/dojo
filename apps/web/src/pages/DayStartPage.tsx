@@ -118,7 +118,7 @@ export function DayStartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-page flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-lg space-y-8">
         {/* Date */}
         <p className="font-mono text-sm text-muted">{dateString}</p>

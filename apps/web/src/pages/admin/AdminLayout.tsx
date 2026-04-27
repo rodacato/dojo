@@ -11,7 +11,7 @@ const NAV_ITEMS = [
 
 export function AdminLayout() {
   return (
-    <div className="min-h-screen bg-base flex">
+    <div className="min-h-screen bg-page flex">
       {/* Sidebar */}
       <nav className="w-48 border-r border-border bg-surface p-4 shrink-0">
         <div className="font-mono text-primary mb-6">

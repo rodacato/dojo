@@ -84,7 +84,7 @@ export function SenseiEvalPage() {
   const isWaiting = (isLoadingStream || isExecuting || state.status === 'execution_done') && !tokens
 
   return (
-    <div className="h-screen bg-base flex flex-col">
+    <div className="h-screen bg-page flex flex-col">
       {/* Top bar — hidden during initial loading */}
       {session && !isWaiting && (
         <div className="flex items-center justify-between px-4 md:px-6 py-3 border-b border-border/40 bg-surface/50 shrink-0">

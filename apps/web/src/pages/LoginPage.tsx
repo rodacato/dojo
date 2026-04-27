@@ -13,7 +13,7 @@ export function LoginPage() {
   }, [user, navigate])
 
   return (
-    <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-page flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Watermark */}
       <span className="absolute text-[12rem] font-mono text-border/10 select-none pointer-events-none" aria-hidden="true">
         dojo_

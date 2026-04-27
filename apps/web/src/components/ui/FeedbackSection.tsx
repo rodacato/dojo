@@ -109,7 +109,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: FeedbackSection
           onChange={(e) => setNote(e.target.value.slice(0, 280))}
           placeholder="One thing you'd change or noticed"
           rows={2}
-          className="w-full bg-base border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted/40 focus:outline-none focus:border-accent transition-colors resize-none"
+          className="w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted/40 focus:outline-none focus:border-accent transition-colors resize-none"
         />
         <p className="text-muted/30 text-[10px] font-mono text-right mt-1">{note.length}/280</p>
       </div>

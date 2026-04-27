@@ -5,7 +5,7 @@ export function NotFoundPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-page flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Background 404 */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
         <span className="font-mono text-[10rem] sm:text-[16rem] md:text-[20rem] text-surface/80 leading-none">404</span>

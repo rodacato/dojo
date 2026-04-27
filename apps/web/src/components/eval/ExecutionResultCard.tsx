@@ -37,7 +37,7 @@ export function ExecutionResultCard({ result }: Props) {
           {result.stdout && (
             <div>
               <p className="text-muted text-[10px] font-mono uppercase mb-1">stdout</p>
-              <pre className="text-xs text-secondary bg-base rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
+              <pre className="text-xs text-secondary bg-page rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
                 {result.stdout}
               </pre>
             </div>
@@ -45,7 +45,7 @@ export function ExecutionResultCard({ result }: Props) {
           {result.stderr && (
             <div>
               <p className="text-danger text-[10px] font-mono uppercase mb-1">stderr</p>
-              <pre className="text-xs text-danger/80 bg-base rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
+              <pre className="text-xs text-danger/80 bg-page rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
                 {result.stderr}
               </pre>
             </div>

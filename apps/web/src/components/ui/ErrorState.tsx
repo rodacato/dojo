@@ -21,7 +21,7 @@ export function ErrorState({
 }: ErrorStateProps) {
   const container =
     variant === 'full'
-      ? 'min-h-screen bg-base flex flex-col items-center justify-center px-4 gap-2'
+      ? 'min-h-screen bg-page flex flex-col items-center justify-center px-4 gap-2'
       : 'flex flex-col items-center justify-center text-center px-4 py-10 gap-2'
 
   return (

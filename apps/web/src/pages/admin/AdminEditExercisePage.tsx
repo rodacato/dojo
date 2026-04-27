@@ -302,7 +302,7 @@ export function AdminEditExercisePage() {
               <div className="border-t border-border/30 pt-3 space-y-2">
                 <p className="text-muted text-[10px] font-mono uppercase tracking-wider">notes</p>
                 {feedback.notes.map((n, i) => (
-                  <div key={i} className="text-xs text-secondary bg-base p-2 rounded-sm">
+                  <div key={i} className="text-xs text-secondary bg-page p-2 rounded-sm">
                     <span className="text-muted/50 font-mono text-[10px] mr-2">
                       {new Date(n.submittedAt).toLocaleDateString()}
                     </span>

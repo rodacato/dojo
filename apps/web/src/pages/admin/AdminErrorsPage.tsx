@@ -111,13 +111,13 @@ export function AdminErrorsPage() {
                   {r.stack && (
                     <div>
                       <p className="text-muted mb-1">stack:</p>
-                      <pre className="bg-base border border-border/40 rounded-sm p-2 overflow-x-auto text-[11px] text-secondary whitespace-pre-wrap">{r.stack}</pre>
+                      <pre className="bg-page border border-border/40 rounded-sm p-2 overflow-x-auto text-[11px] text-secondary whitespace-pre-wrap">{r.stack}</pre>
                     </div>
                   )}
                   {r.context && (
                     <div>
                       <p className="text-muted mb-1">context:</p>
-                      <pre className="bg-base border border-border/40 rounded-sm p-2 overflow-x-auto text-[11px] text-secondary whitespace-pre-wrap">{JSON.stringify(r.context, null, 2)}</pre>
+                      <pre className="bg-page border border-border/40 rounded-sm p-2 overflow-x-auto text-[11px] text-secondary whitespace-pre-wrap">{JSON.stringify(r.context, null, 2)}</pre>
                     </div>
                   )}
                 </div>

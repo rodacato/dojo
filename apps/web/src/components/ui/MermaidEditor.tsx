@@ -80,7 +80,7 @@ export function MermaidEditor({ value, onChange }: MermaidEditorProps) {
             onChange={(e) => onChange(e.target.value)}
             placeholder={`graph TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Result]\n    B -->|No| D[Alternative]`}
             spellCheck={false}
-            className="w-full h-full bg-base p-4 text-primary text-sm font-mono resize-none focus:outline-none"
+            className="w-full h-full bg-page p-4 text-primary text-sm font-mono resize-none focus:outline-none"
           />
         ) : (
           <div ref={previewRef} className="w-full h-full overflow-auto p-4 flex items-center justify-center">

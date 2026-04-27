@@ -16,7 +16,7 @@ export function PublicPageLayout({ children }: PublicPageLayoutProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-base text-primary">
+    <div className="min-h-screen bg-page text-primary">
       <nav className="flex items-center justify-between px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
         <Link to="/">
           <LogoWordmark />

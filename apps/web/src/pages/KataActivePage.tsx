@@ -190,7 +190,7 @@ export function KataActivePage() {
 
   if (preparing || !session) {
     return (
-      <div className="h-screen bg-base flex flex-col items-center justify-center gap-4 px-4">
+      <div className="h-screen bg-page flex flex-col items-center justify-center gap-4 px-4">
         <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
         <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
         {prepareSlow && (
@@ -212,7 +212,7 @@ export function KataActivePage() {
     isMobile || (!isCode && !isWhiteboard && !isReview) ? 'vertical' : 'horizontal'
 
   return (
-    <div className="h-screen bg-base flex flex-col overflow-hidden">
+    <div className="h-screen bg-page flex flex-col overflow-hidden">
       {/* Top bar */}
       <div className="grid grid-cols-3 items-center px-4 py-2 border-b border-border bg-surface shrink-0">
         <div className="flex items-center gap-3">

@@ -64,7 +64,7 @@ export function PublicProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-base text-muted font-mono text-sm">
+      <div className="flex items-center justify-center h-screen bg-page text-muted font-mono text-sm">
         loading...
       </div>
     )
@@ -91,7 +91,7 @@ export function PublicProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-base text-primary">
+    <div className="min-h-screen bg-page text-primary">
       <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
         <Link to="/">
           <LogoWordmark />

@@ -46,7 +46,7 @@ const baseClasses = [
   'font-mono uppercase tracking-wider whitespace-nowrap',
   'rounded-sm',
   'transition-colors',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-base focus-visible:ring-accent',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent',
   'disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none',
 ].join(' ')
 

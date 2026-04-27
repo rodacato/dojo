@@ -134,7 +134,7 @@ export function DashboardPage() {
             )}
 
             {/* How you practice */}
-            <section className="bg-base p-6 rounded-md border border-border/20">
+            <section className="bg-page p-6 rounded-md border border-border/20">
               <h4 className="font-mono text-xs text-muted lowercase tracking-[0.2em] mb-4">
                 how you practice
               </h4>

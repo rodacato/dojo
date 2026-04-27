@@ -13,7 +13,7 @@ export function StreamingText({ text, done, className }: StreamingTextProps) {
         part.type === 'code' ? (
           <pre
             key={i}
-            className="bg-base border border-border/40 rounded-sm p-3 my-2 overflow-x-auto text-xs font-mono text-accent/90"
+            className="bg-page border border-border/40 rounded-sm p-3 my-2 overflow-x-auto text-xs font-mono text-accent/90"
           >
             <code>{part.content}</code>
           </pre>

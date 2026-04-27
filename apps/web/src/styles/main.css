@@ -8,7 +8,7 @@
 /* Design tokens → Tailwind utilities */
 @theme {
   /* Surfaces */
-  --color-base:     #0F172A;
+  --color-page:     #0F172A;
   --color-surface:  #1E293B;
   --color-elevated: #253347;
   --color-border:   #334155;
@@ -54,7 +54,7 @@
   }
 }
 
-/* Base */
+/* Base — sets the page bg + foreground without depending on Tailwind utilities. */
 html {
   background-color: #0F172A;
   color: #F8FAFC;

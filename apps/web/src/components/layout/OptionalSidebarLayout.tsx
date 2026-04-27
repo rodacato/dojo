@@ -30,7 +30,7 @@ export function OptionalSidebarLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-base">
+    <div className="flex min-h-screen bg-page">
       <Sidebar collapsed={collapsed} onToggle={toggleCollapsed} />
       <main className="flex-1 min-w-0 pb-16 md:pb-0">
         <Outlet />

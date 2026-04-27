@@ -76,7 +76,7 @@ export function AdminInvitationsPage() {
         </div>
 
         {lastCreated && (
-          <div className="mt-4 p-3 bg-base border border-accent/30 rounded-sm">
+          <div className="mt-4 p-3 bg-page border border-accent/30 rounded-sm">
             <div className="flex items-center justify-between gap-2">
               <code className="text-accent text-xs font-mono truncate">{lastCreated.url}</code>
               <button

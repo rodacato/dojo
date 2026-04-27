@@ -38,7 +38,7 @@ export function HistoryPage() {
   if (loading && sessions.length === 0) return <PageLoader />
 
   return (
-    <div className="min-h-screen bg-base px-4 py-8 max-w-2xl mx-auto">
+    <div className="min-h-screen bg-page px-4 py-8 max-w-2xl mx-auto">
       {/* Header */}
       <header className="flex items-center justify-between mb-8">
         <LogoWordmark />

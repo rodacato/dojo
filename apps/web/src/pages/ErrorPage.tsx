@@ -4,7 +4,7 @@ interface ErrorPageProps {
 
 export function ErrorPage({ message }: ErrorPageProps) {
   return (
-    <div className="min-h-screen bg-base flex flex-col items-center justify-center gap-6 px-4">
+    <div className="min-h-screen bg-page flex flex-col items-center justify-center gap-6 px-4">
       <p className="font-mono text-muted text-sm">something went wrong</p>
       {message && (
         <p className="text-secondary text-sm text-center max-w-sm">{message}</p>

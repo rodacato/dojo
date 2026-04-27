@@ -27,7 +27,7 @@ export function RecentSessionRow({ session, onClick }: RecentSessionRowProps) {
   return (
     <button
       onClick={onClick}
-      className="group w-full bg-base hover:bg-surface transition-all p-4 rounded-md flex flex-wrap md:flex-nowrap items-center justify-between gap-4 text-left border border-transparent hover:border-border/30"
+      className="group w-full bg-page hover:bg-surface transition-all p-4 rounded-md flex flex-wrap md:flex-nowrap items-center justify-between gap-4 text-left border border-transparent hover:border-border/30"
     >
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium text-primary">{session.exerciseTitle}</span>

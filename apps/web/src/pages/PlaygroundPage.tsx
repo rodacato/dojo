@@ -240,7 +240,7 @@ export function PlaygroundPage() {
   const ctaHref = user ? '/start' : '/'
 
   return (
-    <div className="h-screen bg-base text-primary flex flex-col overflow-hidden">
+    <div className="h-screen bg-page text-primary flex flex-col overflow-hidden">
       {/* Header. Authed users get chrome from the sidebar, so the logo
           + Dashboard chip collapse into a single inline CTA line. */}
       {user ? (
@@ -283,7 +283,7 @@ export function PlaygroundPage() {
           aria-label="language"
           value={selectedLanguage}
           onChange={(e) => changeLanguage(e.target.value)}
-          className="bg-base border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
+          className="bg-page border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
         >
           {RUNTIMES.map((r) => (
             <option key={r.language} value={r.language}>
@@ -295,7 +295,7 @@ export function PlaygroundPage() {
           aria-label="version"
           value={selectedVersion}
           onChange={(e) => setSelectedVersion(e.target.value)}
-          className="bg-base border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
+          className="bg-page border border-border/40 rounded-sm px-2 py-0.5 text-primary text-xs font-mono focus:outline-none focus:border-accent"
         >
           {availableVersions.map((v) => (
             <option key={v} value={v}>
@@ -398,7 +398,7 @@ export function PlaygroundPage() {
           onClick={() => ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
         >
           <div
-            className="bg-base border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
+            className="bg-page border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -460,7 +460,7 @@ export function PlaygroundPage() {
 
       {/* Anonymous footer only; authed users already get the sidebar. */}
       {!user && (
-        <footer className="shrink-0 border-t border-border/20 bg-base px-4 py-1 flex items-center justify-between text-muted/50 text-[10px] font-mono">
+        <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-muted/50 text-[10px] font-mono">
           <span>sandbox · not graded</span>
           <Link
             to={ctaHref}

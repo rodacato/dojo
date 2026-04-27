@@ -5,7 +5,7 @@ export function RequireAuth() {
   const { user, loading } = useAuth()
   if (loading)
     return (
-      <div className="flex items-center justify-center h-screen bg-base text-muted font-mono">
+      <div className="flex items-center justify-center h-screen bg-page text-muted font-mono">
         loading...
       </div>
     )

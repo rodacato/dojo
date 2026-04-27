@@ -96,7 +96,7 @@ export function SharePage() {
       <meta name="twitter:description" content={data.pullQuote ?? `Kata result by @${data.username}`} />
       <meta name="twitter:image" content={ogImageUrl} />
 
-      <div className="min-h-screen bg-base text-primary">
+      <div className="min-h-screen bg-page text-primary">
         {/* Nav */}
         <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-4xl mx-auto">
           <Link to="/">

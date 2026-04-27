@@ -7,7 +7,7 @@ export function InviteRedeemPage() {
   const { token } = useParams<{ token: string }>()
 
   return (
-    <div className="min-h-screen bg-base flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-page flex flex-col items-center justify-center px-4">
       <div className="max-w-md text-center">
         <div className="mb-10">
           <LogoWordmark />
