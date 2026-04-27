@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '../lib/config'
-import { LogoWordmark } from '../components/Logo'
+import { PublicPageLayout } from '../components/PublicPageLayout'
 import { PageLoader } from '../components/PageLoader'
 import { ErrorState } from '../components/ui/ErrorState'
+import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
+import { buttonClasses } from '../components/ui/Button'
 
 interface ShareData {
   sessionId: string
@@ -18,16 +20,16 @@ interface ShareData {
   ownerRole: string | null
 }
 
-const VERDICT_STYLES: Record<string, { color: string; border: string; bg: string }> = {
-  passed: { color: 'text-success', border: 'border-success/40', bg: 'bg-success/10' },
-  passed_with_notes: { color: 'text-warning', border: 'border-warning/40', bg: 'bg-warning/10' },
-  needs_work: { color: 'text-danger', border: 'border-danger/40', bg: 'bg-danger/10' },
+const VERDICT_LABELS: Record<string, string> = {
+  passed: 'PASSED',
+  passed_with_notes: 'PASSED WITH NOTES',
+  needs_work: 'NEEDS WORK',
 }
 
-const TYPE_COLORS: Record<string, string> = {
-  code: 'text-type-code',
-  chat: 'text-type-chat',
-  whiteboard: 'text-type-whiteboard',
+const VERDICT_COLORS: Record<string, string> = {
+  passed: 'text-success',
+  passed_with_notes: 'text-warning',
+  needs_work: 'text-danger',
 }
 
 export function SharePage() {
@@ -79,13 +81,12 @@ export function SharePage() {
 
   if (!data) return <PageLoader />
 
-  const verdictLabel = data.verdict.replace(/_/g, ' ').toUpperCase()
-  const style = VERDICT_STYLES[data.verdict] ?? VERDICT_STYLES.needs_work!
+  const verdictLabel = VERDICT_LABELS[data.verdict] ?? data.verdict.replace(/_/g, ' ').toUpperCase()
+  const verdictColor = VERDICT_COLORS[data.verdict] ?? 'text-warning'
   const ogImageUrl = `${API_URL}/share/${sessionId}.png`
 
   return (
     <>
-      {/* Dynamic OG tags via helmet-like approach — injected in index.html via SSR or meta */}
       <title>{`${verdictLabel} — ${data.exerciseTitle} | dojo_`}</title>
       <meta property="og:title" content={`${verdictLabel} — ${data.exerciseTitle}`} />
       <meta property="og:description" content={data.pullQuote ?? `Kata result by @${data.username}`} />
@@ -96,86 +97,93 @@ export function SharePage() {
       <meta name="twitter:description" content={data.pullQuote ?? `Kata result by @${data.username}`} />
       <meta name="twitter:image" content={ogImageUrl} />
 
-      <div className="min-h-screen bg-page text-primary">
-        {/* Nav */}
-        <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-4xl mx-auto">
-          <Link to="/">
-            <LogoWordmark />
-          </Link>
-          <Link
-            to="/"
-            className="text-sm font-mono text-muted hover:text-secondary transition-colors"
-          >
-            Enter the dojo →
-          </Link>
-        </nav>
+      <PublicPageLayout>
+        <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
+          <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted text-center mb-6">
+            Shared kata
+          </p>
 
-        {/* Card */}
-        <div className="max-w-2xl mx-auto px-4 md:px-8 py-12">
-          {/* Verdict */}
-          <div className="text-center mb-10">
-            <span className={`inline-block font-mono text-xs uppercase tracking-widest px-3 py-1.5 border rounded-sm ${style.color} ${style.border} ${style.bg}`}>
+          <article className="bg-surface border border-border rounded-md p-6 md:p-12 text-center flex flex-col items-center">
+            {/* Verdict */}
+            <h1
+              className={`font-mono text-4xl md:text-[56px] font-bold tracking-tight uppercase leading-none ${verdictColor}`}
+            >
               {verdictLabel}
-            </span>
-          </div>
+            </h1>
 
-          {/* Exercise info */}
-          <div className="text-center mb-8">
-            <h1 className="font-mono text-2xl md:text-3xl text-primary mb-3">{data.exerciseTitle}</h1>
-            <div className="flex items-center justify-center gap-3 text-xs font-mono">
-              <span className={TYPE_COLORS[data.exerciseType] ?? 'text-muted'}>{data.exerciseType.toUpperCase()}</span>
-              <span className="text-border">·</span>
-              <span className="text-secondary">{data.difficulty.toUpperCase()}</span>
-              {data.completionMinutes && (
+            {/* Title + badges */}
+            <h2 className="text-primary text-2xl font-semibold leading-tight tracking-tight mt-4 md:mt-6">
+              {data.exerciseTitle}
+            </h2>
+            <div className="mt-2 flex items-center gap-3 font-mono text-[11px] tracking-[0.08em] uppercase text-muted">
+              <span>{data.exerciseType}</span>
+              <span aria-hidden>·</span>
+              <span>{data.difficulty}</span>
+              {data.completionMinutes != null && (
                 <>
-                  <span className="text-border">·</span>
-                  <span className="text-muted">{data.completionMinutes} min</span>
+                  <span aria-hidden>·</span>
+                  <span>{data.completionMinutes} min</span>
                 </>
               )}
             </div>
-          </div>
 
-          {/* Pull quote */}
-          {data.pullQuote && (
-            <div className="border-l-2 border-accent pl-5 py-2 my-8 max-w-lg mx-auto">
-              <p className="text-secondary text-sm leading-relaxed italic">
-                "{data.pullQuote}"
-              </p>
-              {data.ownerRole && (
-                <p className="text-muted/50 text-[10px] font-mono mt-3">
-                  — sensei ({data.ownerRole.toLowerCase()})
+            {/* Pull quote */}
+            {data.pullQuote && (
+              <blockquote className="relative mt-8 md:mt-10 max-w-lg">
+                <span
+                  className="absolute -top-4 -left-2 font-mono text-5xl text-muted leading-none select-none"
+                  aria-hidden
+                >
+                  &ldquo;
+                </span>
+                <p className="text-primary text-lg md:text-[22px] italic leading-relaxed">
+                  {data.pullQuote}
                 </p>
-              )}
+                <span
+                  className="absolute -bottom-6 -right-2 font-mono text-5xl text-muted leading-none select-none"
+                  aria-hidden
+                >
+                  &rdquo;
+                </span>
+              </blockquote>
+            )}
+
+            {/* Persona */}
+            {data.ownerRole && (
+              <PersonaEyebrow role={data.ownerRole} className="mt-8 md:mt-10 block" />
+            )}
+
+            {/* User identity */}
+            <div className="flex items-center gap-2 mt-3">
+              <img
+                src={data.avatarUrl}
+                alt=""
+                aria-hidden
+                className="w-8 h-8 rounded-full bg-elevated"
+              />
+              <span className="text-secondary text-[15px]">@{data.username}</span>
             </div>
-          )}
 
-          {/* User */}
-          <div className="flex items-center justify-center gap-3 mt-10 mb-12">
-            <img
-              src={data.avatarUrl}
-              alt={data.username}
-              className="w-8 h-8 rounded-sm"
-            />
-            <span className="text-secondary text-sm font-mono">@{data.username}</span>
-          </div>
-
-          {/* CTA */}
-          <div className="text-center space-y-4">
+            {/* CTA */}
             <Link
               to="/"
-              className="inline-block px-8 py-3 bg-accent text-primary font-mono text-sm uppercase tracking-wider rounded-sm hover:bg-accent/90 transition-colors"
+              className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full mt-8 md:mt-10`}
             >
-              Enter the dojo →
+              Find yours. Enter the dojo →
             </Link>
-            <p className="text-muted/40 text-xs font-mono">
-              One kata a day. No shortcuts. No AI assistance.
+            <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-3">
+              Daily practice. Invite-only. dojo.notdefined.dev
             </p>
-          </div>
+          </article>
+
+          <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase text-center mt-10 opacity-60">
+            kata_id: {sessionId?.slice(0, 6) ?? ''}
+          </p>
         </div>
 
         {/* OG image preview (hidden, for crawlers that render) */}
         <img src={ogImageUrl} alt="" className="hidden" />
-      </div>
+      </PublicPageLayout>
     </>
   )
 }

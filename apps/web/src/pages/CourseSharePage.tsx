@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '../lib/config'
-import { LogoWordmark } from '../components/Logo'
+import { PublicPageLayout } from '../components/PublicPageLayout'
 import { PageLoader } from '../components/PageLoader'
 import { ErrorState } from '../components/ui/ErrorState'
+import { buttonClasses } from '../components/ui/Button'
 
 interface CourseShareData {
   courseSlug: string
@@ -66,10 +67,8 @@ export function CourseSharePage() {
   if (!data) return <PageLoader />
 
   const ogImageUrl = `${API_URL}/share/course/${data.courseSlug}/${userId}.png`
-  const completedDate = new Date(data.completedAt).toLocaleDateString('en-US', {
-    month: 'short',
-    year: 'numeric',
-  })
+  const completedDate = new Date(data.completedAt).toISOString().slice(0, 10)
+  const langGlyph = data.courseLanguage.slice(0, 4).toUpperCase()
 
   return (
     <>
@@ -83,65 +82,86 @@ export function CourseSharePage() {
       <meta name="twitter:description" content={`@${data.username} finished ${data.courseTitle} in the dojo`} />
       <meta name="twitter:image" content={ogImageUrl} />
 
-      <div className="min-h-screen bg-page text-primary">
-        <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-4xl mx-auto">
-          <Link to="/">
-            <LogoWordmark />
-          </Link>
-          <Link
-            to="/learn"
-            className="text-sm font-mono text-muted hover:text-secondary transition-colors"
-          >
-            Browse courses →
-          </Link>
-        </nav>
+      <PublicPageLayout>
+        <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
+          <article className="bg-surface border border-border rounded-md p-6 md:p-12 text-center flex flex-col items-center">
+            {/* Eyebrow */}
+            <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-1 rounded-sm">
+              Course complete
+            </p>
 
-        <div className="max-w-2xl mx-auto px-4 md:px-8 py-12">
-          <div className="text-center mb-10">
-            <span
-              className="inline-block font-mono text-xs uppercase tracking-widest px-3 py-1.5 border rounded-sm"
-              style={{ color: data.courseAccentColor, borderColor: `${data.courseAccentColor}66` }}
-            >
-              Course Complete
-            </span>
-          </div>
-
-          <div className="text-center mb-8">
-            <p className="text-muted text-sm font-mono mb-3">Completed</p>
-            <h1 className="font-mono text-3xl md:text-4xl text-primary mb-4 leading-tight">
+            {/* Title */}
+            <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight mt-5 md:mt-6">
               {data.courseTitle}
             </h1>
-            <p
-              className="font-mono text-sm"
-              style={{ color: data.courseAccentColor }}
+
+            {/* Badges row */}
+            <div className="flex items-center gap-2 flex-wrap justify-center mt-3">
+              <span
+                className="font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-1 rounded-sm"
+                style={{
+                  color: data.courseAccentColor,
+                  borderColor: `${data.courseAccentColor}66`,
+                  backgroundColor: `${data.courseAccentColor}1a`,
+                }}
+              >
+                {data.courseLanguage}
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border px-2 py-1 rounded-sm">
+                {data.totalSteps} steps
+              </span>
+            </div>
+
+            {/* Course icon mark — typographic */}
+            <div
+              className="mt-8 md:mt-10 w-24 h-24 bg-elevated border border-border rounded-md flex items-center justify-center"
+              aria-hidden
             >
-              {data.totalSteps} step{data.totalSteps === 1 ? '' : 's'} · {data.courseLanguage}
+              <span
+                className="font-mono text-3xl md:text-[40px] font-bold tracking-[0.04em]"
+                style={{ color: data.courseAccentColor }}
+              >
+                {langGlyph}
+              </span>
+            </div>
+
+            {/* Body */}
+            <p className="text-secondary text-base md:text-lg leading-relaxed mt-8 md:mt-10 max-w-md">
+              Completed all {data.totalSteps} steps. Pulled it apart and put it back together
+              under the timer.
             </p>
-          </div>
 
-          <div className="flex items-center justify-center gap-3 mt-10 mb-4">
-            <img src={data.avatarUrl} alt={data.username} className="w-8 h-8 rounded-sm" />
-            <span className="text-secondary text-sm font-mono">@{data.username}</span>
-            <span className="text-border">·</span>
-            <span className="text-muted text-sm font-mono">{completedDate}</span>
-          </div>
+            {/* User identity + completion date */}
+            <div className="flex flex-col items-center gap-1 mt-6 md:mt-8">
+              <div className="flex items-center gap-2">
+                <img
+                  src={data.avatarUrl}
+                  alt=""
+                  aria-hidden
+                  className="w-8 h-8 rounded-full bg-elevated"
+                />
+                <span className="text-secondary text-[15px]">@{data.username}</span>
+              </div>
+              <p className="font-mono text-[11px] tracking-[0.04em] text-muted">
+                Completed {completedDate}
+              </p>
+            </div>
 
-          <div className="text-center mt-12 space-y-4">
+            {/* CTA */}
             <Link
               to={`/learn/${data.courseSlug}`}
-              className="inline-block px-8 py-3 font-mono text-sm uppercase tracking-wider rounded-sm transition-colors text-primary"
-              style={{ backgroundColor: data.courseAccentColor }}
+              className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full mt-8 md:mt-10`}
             >
               Start the course →
             </Link>
-            <p className="text-muted/40 text-xs font-mono">
-              One step at a time. No shortcuts. No AI assistance.
+            <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-3">
+              Free. No account required to begin.
             </p>
-          </div>
+          </article>
         </div>
 
         <img src={ogImageUrl} alt="" className="hidden" />
-      </div>
+      </PublicPageLayout>
     </>
   )
 }
