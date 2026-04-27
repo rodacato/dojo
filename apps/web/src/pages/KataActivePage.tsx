@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import { api, ApiError, type SessionWithExercise } from '../lib/api'
@@ -40,6 +40,7 @@ export function KataActivePage() {
   const [submitting, setSubmitting] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
   const [prepareError, setPrepareError] = useState(false)
+  const [responseFont, setResponseFont] = useState<'mono' | 'sans'>('sans')
   const msgIndex = useRef(0)
   const pollCount = useRef(0)
 
@@ -207,10 +208,9 @@ export function KataActivePage() {
   const isCode = exercise.type === 'code'
   const isWhiteboard = exercise.type === 'whiteboard'
   const isReview = exercise.type === 'review'
-  // Horizontal split for side-by-side formats (diff + review panel works
-  // exactly like code + response). Chat stays vertical — the body is prose.
-  const orientation =
-    isMobile || (!isCode && !isWhiteboard && !isReview) ? 'vertical' : 'horizontal'
+  // All formats land side-by-side on desktop — the chat panel mirrors the
+  // code/whiteboard shell so the redesign reads as one product.
+  const orientation = isMobile ? 'vertical' : 'horizontal'
   const language = resolveLanguage(exercise.language)
   const filename = isCode ? `solution.${fileExtension(language)}` : null
   const editorLabel = isCode
@@ -299,15 +299,24 @@ export function KataActivePage() {
 
         {/* Response panel */}
         <Panel defaultSize={isCode ? 60 : 50} minSize={20} className="flex flex-col">
-          {(isCode || isWhiteboard) && (
-            <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
-              <span className="font-mono text-[12px] text-primary">
-                {filename ?? 'whiteboard.mmd'}
-              </span>
-              <span className="h-3 w-px bg-border" />
-              <span className="font-mono text-[11px] text-muted">{editorLabel}</span>
-            </div>
-          )}
+          <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
+            {isCode || isWhiteboard ? (
+              <>
+                <span className="font-mono text-[12px] text-primary">
+                  {filename ?? 'whiteboard.mmd'}
+                </span>
+                <span className="h-3 w-px bg-border" />
+                <span className="font-mono text-[11px] text-muted">{editorLabel}</span>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+                  {isReview ? 'Code Review' : 'Your Response'}
+                </span>
+                <FontToggle value={responseFont} onChange={setResponseFont} className="ml-auto" />
+              </>
+            )}
+          </div>
           <div className="flex-1 overflow-hidden">
             {isCode ? (
               <CodeEditor
@@ -324,6 +333,8 @@ export function KataActivePage() {
               <ChatEditor
                 value={userResponse}
                 onChange={setUserResponse}
+                font={responseFont}
+                onSubmit={handleSubmit}
                 placeholder={
                   isReview
                     ? 'Write your review. Focus on correctness — what would you ask to change before merging?'
@@ -341,35 +352,82 @@ export function KataActivePage() {
 function ChatEditor({
   value,
   onChange,
+  font,
+  onSubmit,
   placeholder,
 }: {
   value: string
   onChange: (v: string) => void
+  font: 'mono' | 'sans'
+  onSubmit: () => void
   placeholder?: string
 }) {
-  const [mono, setMono] = useState(false)
   const wordCount = value.split(/\s+/).filter(Boolean).length
 
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault()
+      onSubmit()
+    }
+  }
+
   return (
-    <div className="flex flex-col h-full p-4 gap-2 bg-page">
+    <div className="flex flex-col h-full bg-page">
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder ?? 'Start writing. Think out loud. The sensei reads everything.'}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder ?? 'Think out loud. The sensei reads everything.'}
         spellCheck={false}
-        className={`flex-1 bg-surface border border-border rounded-sm p-3 text-primary text-sm resize-none focus:outline-none focus:border-accent transition-colors ${
-          mono ? 'font-mono' : 'font-sans'
+        className={`flex-1 bg-page text-primary resize-none focus:outline-none px-6 py-5 placeholder:text-muted leading-relaxed ${
+          font === 'mono' ? 'font-mono text-[13px]' : 'font-sans text-[15px]'
         }`}
       />
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => setMono(!mono)}
-          className="text-muted text-[10px] font-mono hover:text-secondary transition-colors"
-        >
-          {mono ? 'sans' : 'mono'}
-        </button>
-        <span className="text-muted text-xs font-mono">{wordCount} words</span>
+      <div className="h-9 shrink-0 border-t border-border bg-surface/60 flex items-center justify-between px-4">
+        <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+          ⌘+Enter to submit
+        </span>
+        <span className="font-mono text-[10px] text-muted">{wordCount} words</span>
       </div>
+    </div>
+  )
+}
+
+function FontToggle({
+  value,
+  onChange,
+  className = '',
+}: {
+  value: 'mono' | 'sans'
+  onChange: (v: 'mono' | 'sans') => void
+  className?: string
+}) {
+  return (
+    <div
+      className={`inline-flex items-center font-mono text-[10px] uppercase tracking-[0.08em] border border-border rounded-sm overflow-hidden ${className}`}
+      role="group"
+      aria-label="Response font"
+    >
+      <button
+        type="button"
+        onClick={() => onChange('mono')}
+        aria-pressed={value === 'mono'}
+        className={`px-2 py-0.5 transition-colors ${
+          value === 'mono' ? 'bg-elevated text-primary' : 'text-muted hover:text-secondary'
+        }`}
+      >
+        Mono
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange('sans')}
+        aria-pressed={value === 'sans'}
+        className={`px-2 py-0.5 border-l border-border transition-colors ${
+          value === 'sans' ? 'bg-elevated text-primary' : 'text-muted hover:text-secondary'
+        }`}
+      >
+        Sans
+      </button>
     </div>
   )
 }
