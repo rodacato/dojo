@@ -35,7 +35,7 @@ export function LogoWordmark({ className = '', showMark = true, markSize = 20 }:
     <a href="/dashboard" className={`inline-flex items-center gap-2 hover:opacity-80 transition-opacity ${className}`}>
       {showMark && <LogoMark size={markSize} className="text-primary" />}
       <span className="font-mono text-lg text-primary tracking-wider">
-        dojo<span className="text-accent animate-pulse">_</span>
+        dojo<span className="text-accent animate-cursor">_</span>
       </span>
     </a>
   )

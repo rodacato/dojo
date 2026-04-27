@@ -30,7 +30,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <LogoMark size={20} className="text-primary shrink-0" />
         {!collapsed && (
           <span className="font-mono text-sm text-primary tracking-wider whitespace-nowrap">
-            dojo<span className="text-accent animate-pulse">_</span>
+            dojo<span className="text-accent animate-cursor">_</span>
           </span>
         )}
       </NavLink>

@@ -24,7 +24,7 @@ export function LoginPage() {
         {/* Logo */}
         <div className="text-center">
           <h1 className="font-mono text-5xl text-primary">
-            dojo<span className="text-accent animate-pulse">_</span>
+            dojo<span className="text-accent animate-cursor">_</span>
           </h1>
           <p className="text-secondary text-sm mt-2">dojo.notdefined.dev</p>
         </div>

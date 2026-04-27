@@ -1,21 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#0F172A"/>
 
-  <!-- Torii mark -->
-  <g transform="translate(100, 180) scale(4)">
-    <path d="M5 10 H35 M8 18 H32 M12 10 V35 M28 10 V35" stroke="#F8FAFC" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <!-- Inner frame, subtle -->
+  <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#334155" stroke-width="1"/>
+
+  <!-- Top-left wordmark with full URL + indigo cursor -->
+  <text x="64" y="100" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700" fill="#F8FAFC">dojo.notdefined.dev<tspan fill="#6366F1">_</tspan></text>
+
+  <!-- Top-right torii mark (muted, companion role) -->
+  <g transform="translate(1098, 70) scale(1.1)">
+    <path d="M5 10 H35 M8 18 H32 M12 10 V35 M28 10 V35" stroke="#475569" stroke-width="2.5" stroke-linecap="round" fill="none"/>
   </g>
 
-  <!-- Wordmark -->
-  <text x="320" y="290" font-family="'JetBrains Mono', monospace" font-size="72" fill="#F8FAFC" letter-spacing="0.15em">dojo</text>
-  <text x="585" y="290" font-family="'JetBrains Mono', monospace" font-size="72" fill="#6366F1" font-weight="bold">_</text>
+  <!-- Hero copy: canonical tagline -->
+  <text x="64" y="320" font-family="Inter, sans-serif" font-size="64" font-weight="600" fill="#F8FAFC">The dojo for developers</text>
+  <text x="64" y="395" font-family="Inter, sans-serif" font-size="64" font-weight="600" fill="#F8FAFC">who still have something to prove.</text>
+  <text x="64" y="470" font-family="Inter, sans-serif" font-size="40" font-weight="500" fill="#94A3B8">To themselves.</text>
 
-  <!-- Tagline -->
-  <text x="320" y="340" font-family="'Inter', sans-serif" font-size="22" fill="#94A3B8">A daily kata for software engineers who want to keep the skill.</text>
+  <!-- Bottom-left meta -->
+  <text x="64" y="560" font-family="'JetBrains Mono', monospace" font-size="14" fill="#475569" letter-spacing="0.08em">DAILY PRACTICE · INVITE ONLY · OPEN SOURCE</text>
 
-  <!-- Domain -->
-  <text x="320" y="400" font-family="'JetBrains Mono', monospace" font-size="16" fill="#64748B">dojo.notdefined.dev</text>
-
-  <!-- Accent line -->
-  <rect x="100" y="520" width="120" height="3" rx="1.5" fill="#6366F1"/>
+  <!-- Bottom-right CTA -->
+  <text x="1136" y="560" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#6366F1" letter-spacing="0.15em">FIND YOURS.</text>
 </svg>

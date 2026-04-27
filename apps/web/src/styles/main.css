@@ -36,6 +36,15 @@
   /* Border radius */
   --radius-sm: 4px;
   --radius-md: 6px;
+
+  /* Animations */
+  --animate-cursor: cursor-blink 1s step-end infinite;
+}
+
+/* Brand cursor — 1Hz crisp blink (NOT a soft pulse). */
+/* Used on the dojo_ wordmark, streaming text, and 404 headline. */
+@keyframes cursor-blink {
+  50% { opacity: 0; }
 }
 
 /* Admin form inputs */
