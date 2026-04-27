@@ -4,6 +4,8 @@ import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
+import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
+import { useFirstVisit } from '../hooks/useFirstVisit'
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
 const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
@@ -21,12 +23,14 @@ export function DashboardPage() {
     api.getDashboard().then(setDashboard)
   }, [])
 
-  if (!dashboard) return <PageLoader />
+  const isFirstVisit = !!dashboard && dashboard.streak === 0 && dashboard.recentSessions.length === 0
+  const onboarding = useFirstVisit(isFirstVisit)
 
-  const isFirstVisit = dashboard.streak === 0 && dashboard.recentSessions.length === 0
+  if (!dashboard) return <PageLoader />
 
   return (
     <div className="px-4 md:px-6 py-6 md:py-10 max-w-6xl mx-auto flex flex-col gap-8">
+      {onboarding.isFirstVisit && <OnboardingOverlay onDismiss={onboarding.dismiss} />}
       <DateStrip />
 
       <section className="bg-surface border border-border/40 rounded-md p-6 md:p-8">

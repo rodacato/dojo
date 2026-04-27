@@ -76,6 +76,17 @@ html {
   animation: slide-in 0.2s ease-out;
 }
 
+/* Indeterminate auth-progress bar — 1500ms loop, indigo scanner across an
+   elevated track. No spinner per spec. */
+@keyframes auth-progress {
+  0%   { left: -33%; }
+  100% { left: 100%; }
+}
+
+.animate-auth-progress {
+  animation: auth-progress 1.5s ease-in-out infinite;
+}
+
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
