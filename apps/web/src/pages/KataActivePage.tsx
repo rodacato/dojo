@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import { api, ApiError, type SessionWithExercise } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { KataBody } from '../components/ui/KataBody'
@@ -210,65 +211,84 @@ export function KataActivePage() {
   // exactly like code + response). Chat stays vertical — the body is prose.
   const orientation =
     isMobile || (!isCode && !isWhiteboard && !isReview) ? 'vertical' : 'horizontal'
+  const language = resolveLanguage(exercise.language)
+  const filename = isCode ? `solution.${fileExtension(language)}` : null
+  const editorLabel = isCode
+    ? languageLabel(language)
+    : isWhiteboard
+      ? 'Mermaid'
+      : 'Prose'
 
   return (
     <div className="h-screen bg-page flex flex-col overflow-hidden">
       {/* Top bar */}
-      <div className="grid grid-cols-3 items-center px-4 py-2 border-b border-border bg-surface shrink-0">
-        <div className="flex items-center gap-3">
-          <TypeBadge type={exercise.type as ExerciseType} />
-          <DifficultyBadge difficulty={exercise.difficulty} />
-          <span className="text-secondary text-sm hidden sm:inline">{exercise.title}</span>
+      <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md grid grid-cols-3 items-center px-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
+            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
+          </span>
+          <span className="h-4 w-px bg-border hidden sm:block" />
+          <span className="font-mono text-[10px] tracking-wider text-success border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
+            READY
+          </span>
+          <span className="font-mono text-[11px] text-secondary truncate hidden md:inline">
+            Active Task
+          </span>
         </div>
-        <div className="text-center">
+        <div className="flex justify-center">
           <Timer
             durationMinutes={exercise.duration}
             startedAt={session.startedAt}
             onExpired={() => { setTimedOut(true); handleSubmit() }}
+            size="sm"
           />
         </div>
-        <div className="text-right">
-          <button
+        <div className="flex justify-end">
+          <Button
+            variant={timedOut ? 'destructive' : 'primary'}
+            size="sm"
             onClick={handleSubmit}
+            loading={submitting}
             disabled={submitting || (!userResponse.trim() && !timedOut)}
-            className={`px-4 py-1.5 font-mono text-xs rounded-sm transition-colors disabled:opacity-30 ${
-              timedOut ? 'bg-danger text-primary' : 'bg-accent text-primary hover:bg-accent/90'
-            }`}
           >
-            {submitting ? '...' : timedOut ? 'Submit now' : 'Submit'}
-          </button>
+            {timedOut ? 'Submit now' : 'Submit'}
+          </Button>
         </div>
-      </div>
-
-      {/* Status bar */}
-      <div className="flex items-center justify-between px-4 py-1 bg-surface/50 border-b border-border/20 text-[10px] font-mono text-muted/50 shrink-0">
-        <span>connected</span>
-        <span>{exercise.type} mode</span>
-      </div>
+      </header>
 
       {/* Resizable split */}
       <PanelGroup orientation={orientation} className="flex-1 overflow-hidden">
         {/* Problem panel */}
-        <Panel defaultSize={50} minSize={25}>
-          <div className="h-full overflow-y-auto p-6 flex flex-col">
-            <div className="flex-1">
-              {isWhiteboard && exercise.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {exercise.tags.map((tag) => (
+        <Panel defaultSize={isCode ? 40 : 50} minSize={25}>
+          <div className="h-full flex flex-col bg-surface">
+            <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="mb-4">
+                <span className="inline-block font-mono text-[11px] tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm mb-3">
+                  [{session.ownerRole.toUpperCase()}]
+                </span>
+                <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-3">
+                  {exercise.title}
+                </h1>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <TypeBadge type={exercise.type as ExerciseType} />
+                  <DifficultyBadge difficulty={exercise.difficulty} />
+                  {isWhiteboard && exercise.tags.length > 0 && exercise.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
                       className="text-warning text-[10px] font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
                     >
-                      {tag}
+                      #{tag}
                     </span>
                   ))}
                 </div>
-              )}
+              </div>
               <KataBody body={session.body} />
             </div>
-            <p className="text-muted/30 text-[10px] font-mono mt-6 pt-4 border-t border-border/20">
-              Enter the dojo. Leave the AI outside.
-            </p>
+            <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
+              <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted text-center opacity-70">
+                Enter the dojo. Leave the AI outside.
+              </p>
+            </div>
           </div>
         </Panel>
 
@@ -278,13 +298,22 @@ export function KataActivePage() {
         `} />
 
         {/* Response panel */}
-        <Panel defaultSize={50} minSize={20} className="flex flex-col">
+        <Panel defaultSize={isCode ? 60 : 50} minSize={20} className="flex flex-col">
+          {(isCode || isWhiteboard) && (
+            <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
+              <span className="font-mono text-[12px] text-primary">
+                {filename ?? 'whiteboard.mmd'}
+              </span>
+              <span className="h-3 w-px bg-border" />
+              <span className="font-mono text-[11px] text-muted">{editorLabel}</span>
+            </div>
+          )}
           <div className="flex-1 overflow-hidden">
             {isCode ? (
               <CodeEditor
                 value={userResponse}
                 onChange={setUserResponse}
-                language={resolveLanguage(exercise.language)}
+                language={language}
                 placeholder="Write your solution..."
               />
             ) : isWhiteboard ? (
@@ -303,7 +332,6 @@ export function KataActivePage() {
               />
             )}
           </div>
-          {/* Submit via top bar button */}
         </Panel>
       </PanelGroup>
     </div>
@@ -323,7 +351,7 @@ function ChatEditor({
   const wordCount = value.split(/\s+/).filter(Boolean).length
 
   return (
-    <div className="flex flex-col h-full p-4 gap-2">
+    <div className="flex flex-col h-full p-4 gap-2 bg-page">
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -351,6 +379,14 @@ function resolveLanguage(langs: string[]): 'javascript' | 'typescript' | 'python
   if (langs.includes('python')) return 'python'
   if (langs.includes('sql')) return 'sql'
   return 'javascript'
+}
+
+function fileExtension(lang: 'javascript' | 'typescript' | 'python' | 'sql'): string {
+  return { javascript: 'js', typescript: 'ts', python: 'py', sql: 'sql' }[lang]
+}
+
+function languageLabel(lang: 'javascript' | 'typescript' | 'python' | 'sql'): string {
+  return { javascript: 'JavaScript', typescript: 'TypeScript', python: 'Python', sql: 'SQL' }[lang]
 }
 
 function useIsMobile() {
