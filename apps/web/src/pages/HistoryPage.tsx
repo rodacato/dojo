@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
-import { LogoWordmark } from '../components/Logo'
-import { TypeBadge, DifficultyBadge, VerdictBadge } from '../components/ui/Badge'
+import { Button } from '../components/ui/Button'
+import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
 
 interface HistorySession {
@@ -38,86 +38,125 @@ export function HistoryPage() {
   if (loading && sessions.length === 0) return <PageLoader />
 
   return (
-    <div className="min-h-screen bg-page px-4 py-8 max-w-2xl mx-auto">
-      {/* Header */}
-      <header className="flex items-center justify-between mb-8">
-        <LogoWordmark />
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="text-secondary text-sm font-mono hover:text-primary transition-colors"
-        >
-          ← Dashboard
-        </button>
-      </header>
+    <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+      <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase mb-6">
+        Dashboard / Kata history
+      </p>
 
-      {/* Title */}
-      <div className="mb-6">
-        <h1 className="font-mono text-xl text-primary">Kata history</h1>
-        <p className="text-muted text-sm mt-1">{total} sessions completed</p>
+      <div className="flex items-end justify-between gap-4 mb-8">
+        <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight">
+          Kata history
+        </h1>
+        {total > 0 && (
+          <div className="text-right shrink-0">
+            <span className="block font-mono text-2xl text-primary tabular-nums leading-none">
+              {total}
+            </span>
+            <span className="block text-muted text-[13px] mt-1">completed kata</span>
+          </div>
+        )}
       </div>
 
-      {/* Sessions list */}
       {sessions.length === 0 ? (
-        <div className="bg-surface border border-border rounded-md p-8 text-center">
-          <p className="text-secondary text-sm">No kata completed yet.</p>
-          <button
-            onClick={() => navigate('/start')}
-            className="mt-4 px-5 py-2 bg-accent text-primary font-mono text-sm rounded-sm hover:bg-accent/90 transition-colors"
-          >
+        <div className="bg-surface border border-border rounded-md py-16 px-4 flex flex-col items-center text-center gap-4">
+          <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">Empty</p>
+          <p className="text-secondary text-lg">No sessions yet. The dojo is patient.</p>
+          <Button variant="primary" size="md" onClick={() => navigate('/start')}>
             Enter the dojo →
-          </button>
+          </Button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="bg-surface border border-border rounded-md overflow-hidden">
           {sessions.map((s) => (
-            <button
+            <DenseSessionRow
               key={s.id}
+              type={s.exerciseType as ExerciseType}
+              difficulty={s.difficulty as Difficulty}
+              title={s.exerciseTitle}
+              verdict={s.verdict as Verdict | null}
+              status={s.status}
+              startedAt={s.startedAt}
+              completedAt={s.completedAt}
               onClick={() => navigate(`/kata/${s.id}/result`)}
-              className="w-full flex items-center justify-between p-3 bg-surface border border-border rounded-sm hover:border-accent/40 transition-colors text-left"
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <TypeBadge type={s.exerciseType as ExerciseType} />
-                <DifficultyBadge difficulty={s.difficulty as Difficulty} />
-                <span className="text-secondary text-sm truncate">{s.exerciseTitle}</span>
-              </div>
-              <div className="flex items-center gap-2 shrink-0 ml-2">
-                {s.verdict && <VerdictBadge verdict={s.verdict as Verdict} />}
-                <span className="text-muted text-xs font-mono">
-                  {new Date(s.startedAt).toLocaleDateString()}
-                </span>
-              </div>
-            </button>
+            />
           ))}
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page <= 1}
-            className="text-secondary text-sm font-mono hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
-          >
-            ← prev
-          </button>
-          <span className="text-muted text-xs font-mono">
-            {page} / {totalPages}
-          </span>
-          <button
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            disabled={page >= totalPages}
-            className="text-secondary text-sm font-mono hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
-          >
-            next →
-          </button>
-        </div>
+        <Pagination page={page} totalPages={totalPages} onChange={setPage} />
       )}
 
-      {/* Footer */}
-      <footer className="mt-12 text-center">
-        <p className="text-muted text-xs font-mono">Every session is a receipt.</p>
-      </footer>
+      <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+        Every session is a receipt.
+      </p>
     </div>
   )
+}
+
+function Pagination({
+  page,
+  totalPages,
+  onChange,
+}: {
+  page: number
+  totalPages: number
+  onChange: (next: number) => void
+}) {
+  const pages = pageWindow(page, totalPages)
+  return (
+    <nav className="flex items-center justify-center gap-3 mt-8" aria-label="History pagination">
+      <button
+        type="button"
+        onClick={() => onChange(Math.max(1, page - 1))}
+        disabled={page <= 1}
+        className="font-mono text-[13px] text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
+      >
+        ← Previous
+      </button>
+      <div className="flex items-center gap-1">
+        {pages.map((p, i) =>
+          p === '…' ? (
+            <span key={`gap-${i}`} className="font-mono text-[13px] text-muted px-2">
+              …
+            </span>
+          ) : (
+            <button
+              key={p}
+              type="button"
+              onClick={() => onChange(p)}
+              aria-current={p === page ? 'page' : undefined}
+              className={`font-mono text-[13px] tabular-nums w-8 h-8 inline-flex items-center justify-center rounded-sm transition-colors ${
+                p === page
+                  ? 'border border-accent text-primary'
+                  : 'text-secondary hover:text-primary'
+              }`}
+            >
+              {p}
+            </button>
+          ),
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={() => onChange(Math.min(totalPages, page + 1))}
+        disabled={page >= totalPages}
+        className="font-mono text-[13px] text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
+      >
+        Next →
+      </button>
+    </nav>
+  )
+}
+
+function pageWindow(page: number, totalPages: number): (number | '…')[] {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+  const window: (number | '…')[] = [1]
+  const start = Math.max(2, page - 1)
+  const end = Math.min(totalPages - 1, page + 1)
+  if (start > 2) window.push('…')
+  for (let i = start; i <= end; i++) window.push(i)
+  if (end < totalPages - 1) window.push('…')
+  window.push(totalPages)
+  return window
 }

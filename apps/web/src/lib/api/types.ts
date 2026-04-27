@@ -106,7 +106,9 @@ export interface PublicProfileData {
     exerciseType: string
     difficulty: string
     verdict: string | null
+    status: string
     startedAt: string
+    completedAt: string | null
   }>
   badges: Array<{
     slug: string

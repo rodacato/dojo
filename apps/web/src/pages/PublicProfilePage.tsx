@@ -1,45 +1,30 @@
-import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError, type PublicProfileData } from '../lib/api'
-import { LogoWordmark } from '../components/Logo'
+import { PublicPageLayout } from '../components/PublicPageLayout'
 import { ErrorState } from '../components/ui/ErrorState'
-
-const TYPE_COLORS: Record<string, string> = {
-  CODE: 'bg-accent/20 text-accent',
-  CHAT: 'bg-purple-500/20 text-purple-400',
-  WHITEBOARD: 'bg-teal-500/20 text-teal-400',
-}
-
-const DIFFICULTY_COLORS: Record<string, string> = {
-  EASY: 'text-success',
-  MEDIUM: 'text-warning',
-  HARD: 'text-danger',
-}
+import { DenseSessionRow } from '../components/ui/DenseSessionRow'
+import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
 
 const BADGE_NAMES: Record<string, string> = {
   FIRST_KATA: 'First Kata',
   '5_STREAK': '5 Day Streak',
+  POLYGLOT: 'Polyglot',
+  BRUTAL_TRUTH: 'Brutal Truth',
+  RUBBER_DUCK: 'Rubber Duck',
+  SQL_SURVIVOR: 'SQL Survivor',
+  CONSISTENT: 'Consistent',
+  SENSEI_APPROVED: 'Sensei Approved',
+  ARCHITECT: 'Architect',
+  UNDEFINED_NO_MORE: 'Undefined No More',
   COURSE_TYPESCRIPT_FUNDAMENTALS: 'TypeScript Fundamentals',
   COURSE_JAVASCRIPT_DOM_FUNDAMENTALS: 'DOM Wrangler',
   COURSE_SQL_DEEP_CUTS: 'SQL Deep Cuts',
 }
 
-const BADGE_DESCRIPTIONS: Record<string, string> = {
-  FIRST_KATA: 'Completed your first kata in the dojo.',
-  '5_STREAK': 'Practiced five consecutive days.',
-  COURSE_TYPESCRIPT_FUNDAMENTALS: 'Completed every step of the TypeScript Fundamentals course.',
-  COURSE_JAVASCRIPT_DOM_FUNDAMENTALS: 'Completed every step of the JavaScript DOM Fundamentals course.',
-  COURSE_SQL_DEEP_CUTS: 'Completed every step of the SQL Deep Cuts course.',
-}
-
-const VERDICT_COLORS: Record<string, string> = {
-  PASSED: 'text-success',
-  PASSED_WITH_NOTES: 'text-warning',
-  NEEDS_WORK: 'text-danger',
-}
-
 export function PublicProfilePage() {
   const { username } = useParams<{ username: string }>()
+  const navigate = useNavigate()
   const [profile, setProfile] = useState<PublicProfileData | null>(null)
   const [error, setError] = useState<'notfound' | 'network' | null>(null)
   const [loading, setLoading] = useState(true)
@@ -64,9 +49,11 @@ export function PublicProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-page text-muted font-mono text-sm">
-        loading...
-      </div>
+      <PublicPageLayout>
+        <div className="flex items-center justify-center min-h-[60vh] text-muted font-mono text-sm">
+          Loading profile<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
+        </div>
+      </PublicPageLayout>
     )
   }
 
@@ -74,7 +61,7 @@ export function PublicProfilePage() {
     return (
       <ErrorState
         title="Practitioner not found."
-        message="This profile doesn't exist or hasn't joined the dojo yet."
+        message="No one practices under that handle. Maybe they never did."
         primaryAction={{ label: 'Go home', to: '/' }}
       />
     )
@@ -90,67 +77,76 @@ export function PublicProfilePage() {
     )
   }
 
-  return (
-    <div className="min-h-screen bg-page text-primary">
-      <nav className="flex items-center justify-between px-4 md:px-8 py-5 border-b border-border/20 max-w-5xl mx-auto">
-        <Link to="/">
-          <LogoWordmark />
-        </Link>
-      </nav>
+  const memberSince = new Date(profile.memberSince).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  })
+  const passColor =
+    profile.stats.passRate >= 80
+      ? 'text-success/90'
+      : profile.stats.passRate >= 50
+        ? 'text-warning/90'
+        : 'text-danger/90'
+  const avgTime = formatAvgTime(profile.stats.avgTimeMinutes)
 
-      <div className="max-w-3xl mx-auto px-4 md:px-8 py-12">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-10">
-          <div className="flex items-center gap-4">
-            <img
-              src={profile.avatarUrl}
-              alt={profile.username}
-              className="w-12 h-12 rounded-md"
-            />
-            <div>
-              <h1 className="font-mono text-xl text-primary">{profile.username}</h1>
-              <p className="text-muted text-xs font-mono">
-                Member since {new Date(profile.memberSince).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-              </p>
+  return (
+    <PublicPageLayout>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 flex flex-col gap-6">
+        {/* Header band */}
+        <section className="relative bg-surface border border-border rounded-md p-6 md:p-8">
+          {profile.streak > 0 && (
+            <span className="absolute top-4 right-4 font-mono text-[11px] tracking-[0.08em] uppercase text-accent border border-accent/40 bg-accent/10 px-2 py-1 rounded-sm">
+              {profile.streak} day streak
+            </span>
+          )}
+          <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+            <div className="flex items-center gap-4 md:w-[40%] min-w-0">
+              <img
+                src={profile.avatarUrl}
+                alt=""
+                aria-hidden
+                className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-elevated shrink-0"
+              />
+              <div className="min-w-0">
+                <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight truncate">
+                  {profile.username}
+                </h1>
+                <p className="text-secondary text-[15px]">@{profile.username}</p>
+                <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-1">
+                  Member since {memberSince}
+                </p>
+              </div>
+            </div>
+            <div className="md:flex-1 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 md:divide-x md:divide-border">
+              <StatCell label="Kata" value={String(profile.stats.totalKata)} />
+              <StatCell label="Pass rate" value={`${profile.stats.passRate}%`} colorClass={passColor} />
+              <StatCell label="Avg time" value={avgTime} />
+              <StatCell label="Languages" value={String(profile.stats.languages.length)} />
             </div>
           </div>
-          <div className="bg-surface border border-accent/30 rounded-md px-5 py-3 text-right">
-            <span className="font-mono text-3xl text-accent">{profile.streak}</span>
-            <p className="text-muted text-xs font-mono">day streak</p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
-          <StatCard label="Total kata" value={String(profile.stats.totalKata)} />
-          <StatCard
-            label="Pass rate"
-            value={`${profile.stats.passRate}%`}
-            color={profile.stats.passRate >= 70 ? 'text-success' : profile.stats.passRate >= 40 ? 'text-warning' : 'text-danger'}
-          />
-          <StatCard label="Avg time" value={`${profile.stats.avgTimeMinutes}m`} />
-          <StatCard label="Languages" value={String(profile.stats.languages.length)} />
-        </div>
-
-        {/* Heatmap */}
-        <section className="mb-10">
-          <h2 className="text-muted text-xs font-mono mb-3">90-day activity</h2>
-          <Heatmap data={profile.heatmapData} />
         </section>
 
-        {/* Badges */}
+        {/* Activity */}
+        <section className="bg-surface border border-border rounded-md p-6 md:p-8">
+          <SectionEyebrow title="Activity" />
+          <Heatmap data={profile.heatmapData} />
+          <div className="flex items-center justify-between mt-3 font-mono text-[11px] text-muted">
+            <span>Each square is one day. Darker = more kata.</span>
+            <HeatmapLegend />
+          </div>
+        </section>
+
+        {/* Earned badges */}
         {profile.badges.length > 0 && (
-          <section className="mb-10">
-            <h2 className="text-muted text-xs font-mono mb-3">Earned badges</h2>
-            <div className="flex flex-wrap gap-3">
+          <section className="bg-surface border border-border rounded-md p-6 md:p-8">
+            <SectionEyebrow title="Earned badges" />
+            <div className="flex gap-3 overflow-x-auto pb-2">
               {profile.badges.map((badge) => (
-                <div
+                <BadgeMiniCard
                   key={badge.slug}
-                  className="bg-surface border border-accent/30 rounded-md px-4 py-3"
-                >
-                  <p className="font-mono text-sm text-primary">{BADGE_NAMES[badge.slug] ?? badge.slug}</p>
-                  <p className="text-muted text-xs mt-0.5">{BADGE_DESCRIPTIONS[badge.slug] ?? ''}</p>
-                </div>
+                  name={BADGE_NAMES[badge.slug] ?? badge.slug}
+                  earnedAt={badge.earnedAt}
+                />
               ))}
             </div>
           </section>
@@ -158,77 +154,119 @@ export function PublicProfilePage() {
 
         {/* Recent kata */}
         {profile.recentSessions.length > 0 && (
-          <section>
-            <h2 className="text-muted text-xs font-mono mb-3">Recent kata</h2>
-            <div className="space-y-0">
-              {profile.recentSessions.map((s, i) => (
-                <div key={s.id}>
-                  <div className="flex items-center justify-between py-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm shrink-0 ${TYPE_COLORS[s.exerciseType] ?? 'text-muted'}`}>
-                        {s.exerciseType}
-                      </span>
-                      <span className="text-sm text-primary truncate">{s.exerciseTitle}</span>
-                    </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <span className={`text-xs font-mono ${DIFFICULTY_COLORS[s.difficulty] ?? 'text-muted'}`}>
-                        {s.difficulty}
-                      </span>
-                      {s.verdict && (
-                        <span className={`text-xs font-mono ${VERDICT_COLORS[s.verdict] ?? 'text-muted'}`}>
-                          {s.verdict.replace(/_/g, ' ')}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {i < profile.recentSessions.length - 1 && <hr className="border-border/20" />}
-                </div>
+          <section className="bg-surface border border-border rounded-md overflow-hidden">
+            <div className="px-6 md:px-8 pt-6 md:pt-8">
+              <SectionEyebrow title="Recent kata" />
+            </div>
+            <div>
+              {profile.recentSessions.map((s) => (
+                <DenseSessionRow
+                  key={s.id}
+                  type={s.exerciseType as ExerciseType}
+                  difficulty={s.difficulty as Difficulty}
+                  title={s.exerciseTitle}
+                  verdict={s.verdict as Verdict | null}
+                  status={s.status}
+                  startedAt={s.startedAt}
+                  completedAt={s.completedAt}
+                  onClick={() => navigate(`/share/${s.id}`)}
+                />
               ))}
             </div>
           </section>
         )}
       </div>
+    </PublicPageLayout>
+  )
+}
+
+function StatCell({ label, value, colorClass }: { label: string; value: string; colorClass?: string }) {
+  return (
+    <div className="md:px-6 first:md:pl-0 last:md:pr-0">
+      <p className={`font-mono text-2xl md:text-[32px] tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
+        {value}
+      </p>
+      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mt-2">
+        {label}
+      </p>
     </div>
   )
 }
 
-function StatCard({ label, value, color }: { label: string; value: string; color?: string }) {
+function SectionEyebrow({ title }: { title: string }) {
   return (
-    <div className="bg-surface border border-border/40 rounded-md p-4">
-      <p className={`font-mono text-xl ${color ?? 'text-primary'}`}>{value}</p>
-      <p className="text-muted text-xs mt-1">{label}</p>
+    <div className="flex items-center gap-3 mb-4">
+      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted">{title}</p>
+      <span className="flex-1 h-px bg-border" />
+    </div>
+  )
+}
+
+function BadgeMiniCard({ name, earnedAt }: { name: string; earnedAt: string }) {
+  const earnedLabel = new Date(earnedAt).toISOString().slice(0, 10)
+  return (
+    <div className="bg-page border border-border rounded-md px-4 py-3 min-w-50 shrink-0">
+      <p className="font-mono text-[13px] font-bold tracking-[0.04em] uppercase text-primary">
+        {name}
+      </p>
+      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mt-1">
+        Earned {earnedLabel}
+      </p>
     </div>
   )
 }
 
 function Heatmap({ data }: { data: Array<{ date: string; count: number }> }) {
-  const dateMap = new Map(data.map((d) => [d.date, d.count]))
-  const days: Array<{ date: string; count: number }> = []
-
-  const end = new Date()
-  const start = new Date()
-  start.setDate(start.getDate() - 89)
-
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const key = d.toISOString().slice(0, 10)
-    days.push({ date: key, count: dateMap.get(key) ?? 0 })
-  }
+  const dateMap = useMemo(() => new Map(data.map((d) => [d.date, d.count])), [data])
+  const days = useMemo(() => {
+    const out: Array<{ date: string; count: number }> = []
+    const end = new Date()
+    end.setHours(0, 0, 0, 0)
+    const start = new Date(end)
+    start.setDate(start.getDate() - 89)
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().slice(0, 10)
+      out.push({ date: key, count: dateMap.get(key) ?? 0 })
+    }
+    return out
+  }, [dateMap])
 
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="grid grid-cols-18 gap-0.5">
       {days.map((d) => (
         <div
           key={d.date}
-          title={`${d.date}: ${d.count} sessions`}
-          className={`w-2.5 h-2.5 rounded-sm ${
-            d.count === 0
-              ? 'bg-border/30'
-              : d.count === 1
-                ? 'bg-accent/50'
-                : 'bg-accent'
-          }`}
+          title={`${d.date}: ${d.count} ${d.count === 1 ? 'session' : 'sessions'}`}
+          className={`aspect-square rounded-sm ${heatmapColor(d.count)}`}
         />
       ))}
     </div>
   )
+}
+
+function HeatmapLegend() {
+  return (
+    <div className="inline-flex items-center gap-1">
+      <span>less</span>
+      {[0, 1, 2, 3, 4].map((n) => (
+        <span key={n} className={`w-2.5 h-2.5 rounded-sm ${heatmapColor(n)}`} aria-hidden />
+      ))}
+      <span>more</span>
+    </div>
+  )
+}
+
+function heatmapColor(count: number): string {
+  if (count <= 0) return 'bg-page border border-border'
+  if (count === 1) return 'bg-accent/30'
+  if (count === 2) return 'bg-accent/55'
+  if (count === 3) return 'bg-accent/75'
+  return 'bg-accent'
+}
+
+function formatAvgTime(minutes: number): string {
+  if (!Number.isFinite(minutes) || minutes <= 0) return '—'
+  const mm = Math.floor(minutes)
+  const ss = Math.floor((minutes - mm) * 60)
+  return `${mm}:${ss.toString().padStart(2, '0')}`
 }

@@ -161,6 +161,7 @@ profileRoutes.get('/u/:username', async (c) => {
       id: sessions.id,
       status: sessions.status,
       startedAt: sessions.startedAt,
+      completedAt: sessions.completedAt,
       exerciseTitle: exercises.title,
       exerciseType: exercises.type,
       difficulty: exercises.difficulty,
@@ -202,7 +203,9 @@ profileRoutes.get('/u/:username', async (c) => {
       exerciseType: s.exerciseType,
       difficulty: s.difficulty,
       verdict: s.verdict ?? null,
+      status: s.status,
       startedAt: s.startedAt.toISOString(),
+      completedAt: s.completedAt ? s.completedAt.toISOString() : null,
     })),
     badges: badgeRows.map((b) => ({
       slug: b.slug,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { useAuth } from '../context/AuthContext'
@@ -13,23 +13,36 @@ interface Badge {
   earnedAt: string | null
 }
 
-const ALL_BADGES: Array<{ slug: string; name: string; description: string; category: string; isPrestige: boolean }> = [
-  { slug: 'FIRST_KATA', name: 'First Kata', description: 'Completed your first kata in the dojo.', category: 'practice', isPrestige: false },
-  { slug: '5_STREAK', name: '5 Day Streak', description: 'Practiced five consecutive days.', category: 'consistency', isPrestige: false },
-  { slug: 'POLYGLOT', name: 'Polyglot', description: 'Completed kata across all three types: CODE, CHAT, and WHITEBOARD.', category: 'mastery', isPrestige: false },
-  { slug: 'ARCHITECT', name: 'Architect', description: 'Completed three or more WHITEBOARD kata.', category: 'mastery', isPrestige: false },
+const ALL_BADGES: Array<{
+  slug: string
+  name: string
+  description: string
+  category: string
+  isPrestige: boolean
+}> = [
+  { slug: 'FIRST_KATA', name: 'First Kata', description: 'You completed your first exercise. The hardest one was always the first.', category: 'practice', isPrestige: false },
+  { slug: 'POLYGLOT', name: 'Polyglot', description: 'Solved kata across all three types: CODE, CHAT, and WHITEBOARD.', category: 'practice', isPrestige: false },
+  { slug: 'BRUTAL_TRUTH', name: 'Brutal Truth', description: 'Received NEEDS WORK three times. You kept showing up.', category: 'practice', isPrestige: false },
   { slug: 'RUBBER_DUCK', name: 'Rubber Duck', description: 'Completed three CHAT kata. You think by writing.', category: 'practice', isPrestige: false },
-  { slug: 'BRUTAL_TRUTH', name: 'Brutal Truth', description: 'Received NEEDS WORK three times. You keep showing up.', category: 'practice', isPrestige: false },
+  { slug: 'SQL_SURVIVOR', name: 'SQL Survivor', description: 'Completed three kata involving SQL.', category: 'mastery', isPrestige: false },
+  { slug: '5_STREAK', name: '5 Streak', description: 'Practiced five consecutive days.', category: 'consistency', isPrestige: false },
+  { slug: 'CONSISTENT', name: 'Consistent', description: 'Thirty consecutive days of practice.', category: 'consistency', isPrestige: false },
   { slug: 'SENSEI_APPROVED', name: 'Sensei Approved', description: 'Received a clean PASSED verdict five times.', category: 'mastery', isPrestige: false },
-  { slug: 'SQL_SURVIVOR', name: 'SQL Survivor', description: 'Completed three kata involving SQL.', category: 'practice', isPrestige: false },
-  { slug: 'CONSISTENT', name: 'Consistent', description: 'Thirty consecutive days of practice.', category: 'consistency', isPrestige: true },
-  { slug: 'UNDEFINED_NO_MORE', name: 'Undefined No More', description: 'Completed fifty kata. You are no longer undefined.', category: 'mastery', isPrestige: true },
+  { slug: 'ARCHITECT', name: 'Architect', description: 'Completed ten WHITEBOARD kata.', category: 'architect', isPrestige: false },
+  { slug: 'UNDEFINED_NO_MORE', name: 'Undefined No More', description: "Fifty kata completed. You're not undefined anymore. The cursor disagrees and keeps blinking.", category: 'mastery', isPrestige: true },
   { slug: 'COURSE_TYPESCRIPT_FUNDAMENTALS', name: 'TypeScript Fundamentals', description: 'Completed every step of the TypeScript Fundamentals course.', category: 'mastery', isPrestige: false },
   { slug: 'COURSE_JAVASCRIPT_DOM_FUNDAMENTALS', name: 'DOM Wrangler', description: 'Completed every step of the JavaScript DOM Fundamentals course.', category: 'mastery', isPrestige: false },
   { slug: 'COURSE_SQL_DEEP_CUTS', name: 'SQL Deep Cuts', description: 'Completed every step of the SQL Deep Cuts course.', category: 'mastery', isPrestige: false },
 ]
 
+const CATEGORY_ORDER = ['practice', 'consistency', 'mastery', 'architect'] as const
 type Filter = 'all' | 'earned' | 'locked'
+
+const FILTER_LABELS: Record<Filter, string> = {
+  all: 'All',
+  earned: 'Earned',
+  locked: 'Locked',
+}
 
 export function BadgesPage() {
   const { user } = useAuth()
@@ -49,16 +62,19 @@ export function BadgesPage() {
       .finally(() => setLoading(false))
   }, [user?.username])
 
+  const badges: Badge[] = useMemo(
+    () =>
+      ALL_BADGES.map((b) => ({
+        ...b,
+        earned: earnedSlugs.has(b.slug),
+        earnedAt: earnedSlugs.get(b.slug) ?? null,
+      })),
+    [earnedSlugs],
+  )
+
   if (loading) return <PageLoader />
 
-  const badges: Badge[] = ALL_BADGES.map((b) => ({
-    ...b,
-    earned: earnedSlugs.has(b.slug),
-    earnedAt: earnedSlugs.get(b.slug) ?? null,
-  }))
-
   const earnedCount = badges.filter((b) => b.earned).length
-
   const filtered =
     filter === 'earned'
       ? badges.filter((b) => b.earned)
@@ -67,59 +83,70 @@ export function BadgesPage() {
         : badges
 
   return (
-    <div className="min-h-screen bg-page px-4 py-8 max-w-3xl mx-auto">
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="font-mono text-2xl text-primary mb-1">Badges</h1>
-          <p className="text-muted text-sm">
-            {earnedCount} of {badges.length} earned
-          </p>
-        </div>
-
-        {/* Filter */}
-        <div className="flex gap-1 bg-surface border border-border/40 rounded-md p-1">
-          {(['all', 'earned', 'locked'] as const).map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`px-3 py-1 text-xs font-mono rounded-sm transition-colors ${
-                filter === f ? 'bg-accent text-primary' : 'text-muted hover:text-secondary'
-              }`}
-            >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          ))}
+    <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+      <div className="flex items-end justify-between gap-4 mb-6">
+        <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight">
+          Badges
+        </h1>
+        <div className="text-right shrink-0">
+          <span className="block font-mono text-2xl text-primary tabular-nums leading-none">
+            {earnedCount}
+          </span>
+          <span className="block text-muted text-[13px] mt-1">of {badges.length} earned</span>
         </div>
       </div>
 
-      {/* Badges grouped by category */}
-      {(['practice', 'consistency', 'mastery'] as const).map((cat) => {
+      <div className="flex items-center gap-2 mb-8" role="tablist" aria-label="Badge filter">
+        {(Object.keys(FILTER_LABELS) as Filter[]).map((f) => (
+          <button
+            key={f}
+            type="button"
+            role="tab"
+            aria-selected={filter === f}
+            onClick={() => setFilter(f)}
+            className={`font-mono text-[11px] tracking-[0.08em] uppercase px-3 py-1.5 rounded-sm border transition-colors ${
+              filter === f
+                ? 'border-accent text-accent'
+                : 'border-border text-muted hover:text-secondary'
+            }`}
+          >
+            {FILTER_LABELS[f]}
+          </button>
+        ))}
+      </div>
+
+      {CATEGORY_ORDER.map((cat) => {
         const catBadges = filtered.filter((b) => b.category === cat)
         if (catBadges.length === 0) return null
-        const catRegular = catBadges.filter((b) => !b.isPrestige)
-        const catPrestige = catBadges.filter((b) => b.isPrestige)
+        const regular = catBadges.filter((b) => !b.isPrestige)
+        const prestige = catBadges.filter((b) => b.isPrestige)
         return (
-          <div key={cat} className="mb-8">
-            <h2 className="text-muted text-[10px] font-mono uppercase tracking-widest mb-3">{cat}</h2>
-            {catRegular.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
-                {catRegular.map((badge) => (
+          <section key={cat} className="mb-10">
+            <div className="flex items-center gap-3 mb-4">
+              <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted">
+                {cat}
+              </p>
+              <span className="flex-1 h-px bg-border" />
+            </div>
+            {regular.length > 0 && (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {regular.map((badge) => (
                   <BadgeCard key={badge.slug} badge={badge} />
                 ))}
               </div>
             )}
-            {catPrestige.length > 0 && (
-              <div className="space-y-4">
-                {catPrestige.map((badge) => (
+            {prestige.length > 0 && (
+              <div className="flex flex-col gap-4 mt-4">
+                {prestige.map((badge) => (
                   <PrestigeBadgeCard key={badge.slug} badge={badge} />
                 ))}
               </div>
             )}
-          </div>
+          </section>
         )
       })}
 
-      <p className="text-center text-muted/40 text-xs font-mono mt-12">
+      <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
         Badges are earned in the dojo. There are no shortcuts.
       </p>
     </div>
@@ -127,52 +154,70 @@ export function BadgesPage() {
 }
 
 function BadgeCard({ badge }: { badge: Badge }) {
+  const earnedDate = badge.earnedAt
+    ? new Date(badge.earnedAt).toISOString().slice(0, 10)
+    : null
+
   return (
     <div
-      className={`rounded-md p-5 border transition-all ${
-        badge.earned
-          ? 'bg-surface border-accent/30 shadow-[0_0_12px_rgba(99,102,241,0.15)]'
-          : 'bg-surface/50 border-border/20 opacity-40'
+      className={`bg-surface border border-border rounded-md p-6 min-h-50 flex flex-col justify-between ${
+        badge.earned ? '' : 'opacity-50'
       }`}
     >
-      <p className={`font-mono text-sm mb-1 ${badge.earned ? 'text-primary' : 'text-muted'}`}>
-        {badge.name}
-      </p>
-      <p className={`text-xs leading-relaxed ${badge.earned ? 'text-secondary' : 'text-muted/60'}`}>
-        {badge.description}
-      </p>
-      {badge.earned && badge.earnedAt && (
-        <p className="text-muted text-[10px] font-mono mt-2">
-          {new Date(badge.earnedAt).toLocaleDateString()}
+      <div>
+        <h3
+          className={`font-mono text-lg font-bold tracking-[0.04em] uppercase mb-2 ${
+            badge.earned ? 'text-primary' : 'text-muted'
+          }`}
+        >
+          {badge.name}
+        </h3>
+        <p className={`text-[13px] leading-relaxed ${badge.earned ? 'text-secondary' : 'text-muted'}`}>
+          {badge.description}
         </p>
-      )}
+      </div>
+      <p
+        className={`font-mono text-[11px] tracking-[0.08em] uppercase mt-4 ${
+          badge.earned ? 'text-muted' : 'text-muted/60 text-center'
+        }`}
+      >
+        {earnedDate ? `Earned ${earnedDate}` : '—'}
+      </p>
     </div>
   )
 }
 
 function PrestigeBadgeCard({ badge }: { badge: Badge }) {
+  const earnedDate = badge.earnedAt
+    ? new Date(badge.earnedAt).toISOString().slice(0, 10)
+    : null
+
   return (
     <div
-      className={`rounded-md p-6 border w-full transition-all ${
-        badge.earned
-          ? 'bg-surface border-accent/40 shadow-[0_0_20px_rgba(99,102,241,0.2)]'
-          : 'bg-surface/50 border-border/20 opacity-40'
+      className={`bg-surface border border-border border-l-2 border-l-accent rounded-md p-6 md:p-8 ${
+        badge.earned ? '' : 'opacity-50'
       }`}
     >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className={`font-mono text-lg mb-1 ${badge.earned ? 'text-primary' : 'text-muted'}`}>
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h3
+            className={`font-mono text-2xl md:text-[32px] font-bold tracking-[0.04em] uppercase leading-none mb-3 ${
+              badge.earned ? 'text-primary' : 'text-muted'
+            }`}
+          >
             {badge.name}
-          </p>
-          <p className={`text-sm leading-relaxed ${badge.earned ? 'text-secondary' : 'text-muted/60'}`}>
+          </h3>
+          <p className={`text-[13px] leading-relaxed ${badge.earned ? 'text-secondary' : 'text-muted'}`}>
             {badge.description}
           </p>
         </div>
-        {badge.earned && badge.earnedAt && (
-          <p className="text-muted text-xs font-mono shrink-0 ml-4">
-            {new Date(badge.earnedAt).toLocaleDateString()}
-          </p>
-        )}
+        <p
+          className={`font-mono text-[11px] tracking-[0.08em] uppercase shrink-0 ${
+            badge.earned ? 'text-muted' : 'text-muted/60'
+          }`}
+        >
+          {earnedDate ? `Earned ${earnedDate}` : '—'}
+        </p>
       </div>
     </div>
   )
