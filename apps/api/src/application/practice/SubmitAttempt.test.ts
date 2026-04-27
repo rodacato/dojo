@@ -108,7 +108,6 @@ describe('SubmitAttempt', () => {
 
     const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus })
     // Consume the entire stream
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for await (const _ of useCase.execute({
       sessionId: SessionId('session-1'),
       userResponse: 'My solution',
@@ -137,7 +136,6 @@ describe('SubmitAttempt', () => {
       ownerContext: 'Context',
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     await expect(async () => { for await (const _ of stream) { /* consume */ } }).rejects.toThrow(SessionNotFoundError)
   })
 })
