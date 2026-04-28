@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../lib/api'
 import { Button } from '../../components/ui/Button'
+import { EmptyState } from '../../components/ui/EmptyState'
 import { Pagination } from '../../components/ui/Pagination'
 import { AdminBreadcrumb } from './_form-parts'
 
@@ -175,6 +176,13 @@ export function AdminInvitationsPage() {
         )}
       </form>
 
+      {!loading && invitations.length === 0 ? (
+        <EmptyState
+          eyebrow="Empty · Invitations"
+          headline="No invitations created yet."
+          microcopy="Tokens are single-use and expire after 7 days."
+        />
+      ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-[13px]">
@@ -199,13 +207,6 @@ export function AdminInvitationsPage() {
                 <tr>
                   <td colSpan={5} className="px-4 py-10 text-center text-muted font-mono">
                     Loading_
-                  </td>
-                </tr>
-              )}
-              {!loading && pageRows.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-muted text-[13px]">
-                    No invitations yet. Generate one above.
                   </td>
                 </tr>
               )}
@@ -255,6 +256,7 @@ export function AdminInvitationsPage() {
           </table>
         </div>
       </div>
+      )}
 
       {!loading && invitations.length > 0 && (
         <div className="flex items-center justify-between mt-6 font-mono text-[11px] uppercase tracking-wider text-muted">

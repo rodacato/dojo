@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import { Button } from '../components/ui/Button'
 import { Pagination } from '../components/ui/Pagination'
 import { SkeletonList } from '../components/ui/SkeletonLoader'
+import { EmptyState } from '../components/ui/EmptyState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
 
@@ -59,13 +60,16 @@ export function HistoryPage() {
       {loading && sessions.length === 0 ? (
         <SkeletonList rows={8} />
       ) : sessions.length === 0 ? (
-        <div className="bg-surface border border-border rounded-md py-16 px-4 flex flex-col items-center text-center gap-4">
-          <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">Empty</p>
-          <p className="text-secondary text-lg">No sessions yet. The dojo is patient.</p>
-          <Button variant="primary" size="md" onClick={() => navigate('/start')}>
-            Enter the dojo →
-          </Button>
-        </div>
+        <EmptyState
+          eyebrow="Empty · Kata history"
+          headline="No sessions yet. The dojo is patient."
+          microcopy="Your first kata is also the hardest one."
+          action={
+            <Button variant="primary" size="md" onClick={() => navigate('/start')}>
+              Enter the dojo →
+            </Button>
+          }
+        />
       ) : (
         <div className="bg-surface border border-border rounded-md overflow-hidden">
           {sessions.map((s) => (

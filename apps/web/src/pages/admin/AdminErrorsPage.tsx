@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { admin } from '../../lib/api/admin'
+import { Button } from '../../components/ui/Button'
+import { EmptyState } from '../../components/ui/EmptyState'
 import { Pagination } from '../../components/ui/Pagination'
 import { AdminBreadcrumb } from './_form-parts'
 
@@ -166,6 +168,33 @@ export function AdminErrorsPage() {
         </span>
       </div>
 
+      {!loading && !error && rows.length === 0 ? (
+        source !== 'all' || status !== 'all' ? (
+          <EmptyState
+            eyebrow={`No matches · Errors${source !== 'all' ? ` · SOURCE=${source.toUpperCase()}` : ''}${status !== 'all' ? ` · STATUS=${status}` : ''}`}
+            headline="No errors match the current filters."
+            action={
+              <Button
+                variant="ghost"
+                size="md"
+                onClick={() => {
+                  setSource('all')
+                  setStatus('all')
+                  setPage(1)
+                }}
+              >
+                Clear all filters
+              </Button>
+            }
+          />
+        ) : (
+          <EmptyState
+            eyebrow="Empty · Errors"
+            headline="No errors in this window. Nice."
+            microcopy="Retention is 30 days. Errors auto-refresh every 30s."
+          />
+        )
+      ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-[13px]">
@@ -201,13 +230,6 @@ export function AdminErrorsPage() {
                 <tr>
                   <td colSpan={7} className="px-4 py-10 text-center text-danger font-mono">
                     {error}
-                  </td>
-                </tr>
-              )}
-              {!loading && !error && rows.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-muted text-[13px]">
-                    No errors in this window. Nice.
                   </td>
                 </tr>
               )}
@@ -263,6 +285,7 @@ export function AdminErrorsPage() {
           </table>
         </div>
       </div>
+      )}
 
       {!loading && total > 0 && (
         <div className="flex items-center justify-between mt-6 font-mono text-[11px] uppercase tracking-wider text-muted">

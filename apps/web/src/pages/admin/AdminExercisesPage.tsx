@@ -4,6 +4,7 @@ import type { ExerciseType, Difficulty } from '@dojo/shared'
 import { api, type AdminExerciseDTO } from '../../lib/api'
 import { TypeBadge, DifficultyBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
+import { EmptyState } from '../../components/ui/EmptyState'
 import { Pagination } from '../../components/ui/Pagination'
 
 type StatusFilter = 'all' | 'published' | 'draft' | 'archived'
@@ -160,6 +161,34 @@ export function AdminExercisesPage() {
         />
       </div>
 
+      {!loading && exercises.length > 0 && pageRows.length === 0 ? (
+        <EmptyState
+          eyebrow={`No matches · Exercises${activeFilters({ search, typeFilter, difficultyFilter, statusFilter, sort }).map((f) => ` · ${f}`).join('')}`}
+          headline="No exercises match. Loosen the filter or wait for more catalog updates."
+          action={
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={() => {
+                setSearch('')
+                setTypeFilter('all')
+                setDifficultyFilter('all')
+                setStatusFilter('all')
+                setSort('newest')
+                setPage(1)
+              }}
+            >
+              Clear all filters
+            </Button>
+          }
+        />
+      ) : !loading && exercises.length === 0 ? (
+        <EmptyState
+          eyebrow="Empty · Exercises"
+          headline="No exercises in the catalog yet."
+          microcopy="Use the New exercise button above to create the first one."
+        />
+      ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-[13px]">
@@ -186,13 +215,6 @@ export function AdminExercisesPage() {
                 <tr>
                   <td colSpan={6} className="px-4 py-10 text-center text-muted font-mono text-[13px]">
                     Loading_
-                  </td>
-                </tr>
-              )}
-              {!loading && pageRows.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-muted text-[13px]">
-                    No exercises match the current filters.
                   </td>
                 </tr>
               )}
@@ -240,6 +262,7 @@ export function AdminExercisesPage() {
           </table>
         </div>
       </div>
+      )}
 
       {!loading && sorted.length > 0 && (
         <div className="flex items-center justify-between mt-6 font-mono text-[11px] uppercase tracking-wider text-muted">
@@ -257,6 +280,21 @@ export function AdminExercisesPage() {
       )}
     </div>
   )
+}
+
+function activeFilters(state: {
+  search: string
+  typeFilter: TypeFilter
+  difficultyFilter: DifficultyFilter
+  statusFilter: StatusFilter
+  sort: SortKey
+}): string[] {
+  const out: string[] = []
+  if (state.search.trim()) out.push(`Q="${state.search.trim()}"`)
+  if (state.typeFilter !== 'all') out.push(`TYPE=${state.typeFilter.toUpperCase()}`)
+  if (state.difficultyFilter !== 'all') out.push(`DIFFICULTY=${state.difficultyFilter.toUpperCase()}`)
+  if (state.statusFilter !== 'all') out.push(`STATUS=${state.statusFilter.toUpperCase()}`)
+  return out
 }
 
 function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {

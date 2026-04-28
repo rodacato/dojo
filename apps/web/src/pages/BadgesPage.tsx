@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
 import { SkeletonCard } from '../components/ui/SkeletonLoader'
+import { EmptyState } from '../components/ui/EmptyState'
 import { useAuth } from '../context/AuthContext'
 
 interface Badge {
@@ -129,6 +130,24 @@ export function BadgesPage() {
           </button>
         ))}
       </div>
+
+      {filtered.length === 0 && (
+        <EmptyState
+          eyebrow={`Empty · ${FILTER_LABELS[filter]}`}
+          headline={
+            filter === 'earned'
+              ? 'No badges earned yet. The dojo is patient.'
+              : filter === 'locked'
+                ? 'All earned. Even UNDEFINED NO MORE.'
+                : 'No badges defined yet.'
+          }
+          microcopy={
+            filter === 'locked'
+              ? "There's no Phase 2 badge yet. We'll know when there should be."
+              : undefined
+          }
+        />
+      )}
 
       {CATEGORY_ORDER.map((cat) => {
         const catBadges = filtered.filter((b) => b.category === cat)

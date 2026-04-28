@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, type LeaderboardEntry } from '../lib/api'
+import { Button } from '../components/ui/Button'
 import { SkeletonList } from '../components/ui/SkeletonLoader'
+import { EmptyState } from '../components/ui/EmptyState'
 
 type Period = 'month' | 'all-time'
 
@@ -62,11 +64,26 @@ export function LeaderboardPage() {
       {showLoader ? (
         <SkeletonList rows={8} />
       ) : entries.length === 0 ? (
-        <div className="bg-surface border border-border rounded-md py-16 px-4 text-center">
-          <p className="text-secondary text-[15px]">
-            No sessions in this period. Start one — the leaderboard fills slowly.
-          </p>
-        </div>
+        <EmptyState
+          eyebrow={`Empty · ${period === 'month' ? 'This month' : 'All time'}`}
+          headline={
+            period === 'month'
+              ? 'Nobody practiced this month. The dojo is patient.'
+              : 'Nobody on the board yet. The dojo is patient.'
+          }
+          action={
+            <Link to="/start" className="inline-block">
+              <Button size="md">Enter the dojo →</Button>
+            </Link>
+          }
+          secondaryAction={
+            period === 'month' ? (
+              <Button variant="ghost" size="md" onClick={() => setPeriod('all-time')}>
+                View all-time
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         <div className="bg-surface border border-border rounded-md overflow-hidden">
           {/* Header */}
