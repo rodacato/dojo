@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, type LeaderboardEntry } from '../lib/api'
-import { PageLoader } from '../components/PageLoader'
+import { SkeletonList } from '../components/ui/SkeletonLoader'
 
 type Period = 'month' | 'all-time'
 
@@ -60,7 +60,7 @@ export function LeaderboardPage() {
       </div>
 
       {showLoader ? (
-        <PageLoader />
+        <SkeletonList rows={8} />
       ) : entries.length === 0 ? (
         <div className="bg-surface border border-border rounded-md py-16 px-4 text-center">
           <p className="text-secondary text-[15px]">

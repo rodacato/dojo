@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
-import { PageLoader } from '../components/PageLoader'
+import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { useAuth } from '../context/AuthContext'
 
 interface Badge {
@@ -72,7 +72,22 @@ export function BadgesPage() {
     [earnedSlugs],
   )
 
-  if (loading) return <PageLoader />
+  if (loading) {
+    return (
+      <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+        <div className="flex items-end justify-between gap-4 mb-6">
+          <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight">
+            Badges
+          </h1>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   const earnedCount = badges.filter((b) => b.earned).length
   const filtered =

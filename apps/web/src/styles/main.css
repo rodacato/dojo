@@ -39,12 +39,21 @@
 
   /* Animations */
   --animate-cursor: cursor-blink 1s step-end infinite;
+  --animate-skeleton: skeleton-sweep 1500ms ease-in-out infinite;
 }
 
 /* Brand cursor — 1Hz crisp blink (NOT a soft pulse). */
 /* Used on the dojo_ wordmark, streaming text, and 404 headline. */
 @keyframes cursor-blink {
   50% { opacity: 0; }
+}
+
+/* Skeleton shimmer — 1500ms ease-in-out sweep with an 8% indigo highlight,
+   per stitch/batches/10-edge-states-modals.md SCREEN 1. Skeletons appear
+   for >200ms loads; spinners are reserved for inline action buttons. */
+@keyframes skeleton-sweep {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 /* Admin form inputs — 36px tall, 4px radius, focus ring per spec

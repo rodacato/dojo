@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
-import { PageLoader } from '../components/PageLoader'
 import { Button } from '../components/ui/Button'
 import { Pagination } from '../components/ui/Pagination'
+import { SkeletonList } from '../components/ui/SkeletonLoader'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
 
@@ -36,8 +36,6 @@ export function HistoryPage() {
     })
   }, [page])
 
-  if (loading && sessions.length === 0) return <PageLoader />
-
   return (
     <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
       <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase mb-6">
@@ -58,7 +56,9 @@ export function HistoryPage() {
         )}
       </div>
 
-      {sessions.length === 0 ? (
+      {loading && sessions.length === 0 ? (
+        <SkeletonList rows={8} />
+      ) : sessions.length === 0 ? (
         <div className="bg-surface border border-border rounded-md py-16 px-4 flex flex-col items-center text-center gap-4">
           <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">Empty</p>
           <p className="text-secondary text-lg">No sessions yet. The dojo is patient.</p>
