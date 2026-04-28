@@ -52,8 +52,8 @@ function LazyRoute({ children }: { children: React.ReactNode }) {
 
 export function App() {
   return (
-    <ErrorBoundary>
     <BrowserRouter>
+      <ErrorBoundary>
       <AuthProvider>
         <ToastContainer />
         <Routes>
@@ -122,7 +122,7 @@ export function App() {
           <Route path="*" element={<LazyRoute><NotFoundPage /></LazyRoute>} />
         </Routes>
       </AuthProvider>
+      </ErrorBoundary>
     </BrowserRouter>
-    </ErrorBoundary>
   )
 }

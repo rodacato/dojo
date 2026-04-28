@@ -32,11 +32,11 @@ interface LogoWordmarkProps {
 /** Full lockup: optional torii mark + dojo_ wordmark with blinking cursor */
 export function LogoWordmark({ className = '', showMark = true, markSize = 20 }: LogoWordmarkProps) {
   return (
-    <a href="/dashboard" className={`inline-flex items-center gap-2 hover:opacity-80 transition-opacity ${className}`}>
+    <span className={`inline-flex items-center gap-2 ${className}`}>
       {showMark && <LogoMark size={markSize} className="text-primary" />}
       <span className="font-mono text-lg text-primary tracking-wider">
         dojo<span className="text-accent animate-cursor">_</span>
       </span>
-    </a>
+    </span>
   )
 }

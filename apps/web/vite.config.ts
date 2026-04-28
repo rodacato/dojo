@@ -47,6 +47,30 @@ export default defineConfig({
   ],
   resolve: {
     alias: { '@dojo/shared': sharedSrc },
+    // CodeEditor is imported from one eager page (KataActivePage) and two
+    // lazy chunks (PlaygroundPage, CoursePlayerPage). Without dedupe Vite
+    // can resolve @codemirror/state from two URLs → two module instances
+    // → `instanceof Extension` checks fail with "Unrecognized extension".
+    dedupe: [
+      '@codemirror/state',
+      '@codemirror/view',
+      '@codemirror/language',
+      '@codemirror/commands',
+      '@lezer/common',
+      '@lezer/highlight',
+    ],
+  },
+  optimizeDeps: {
+    include: [
+      '@codemirror/state',
+      '@codemirror/view',
+      '@codemirror/language',
+      '@codemirror/commands',
+      '@codemirror/lang-javascript',
+      '@codemirror/lang-python',
+      '@codemirror/lang-sql',
+      '@lezer/highlight',
+    ],
   },
   build: {
     sourcemap: uploadSourcemaps,
