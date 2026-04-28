@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { BottomNav } from './BottomNav'
+import { OfflineBanner } from './OfflineBanner'
 
 /** Routes where nav is hidden — focused work screens */
 const FOCUSED_ROUTES = ['/kata/', '/eval']
@@ -29,15 +30,23 @@ export function AppShell() {
   }
 
   if (focused) {
-    return <Outlet />
+    return (
+      <>
+        <OfflineBanner />
+        <Outlet />
+      </>
+    )
   }
 
   return (
     <div className="flex min-h-screen bg-page">
       <Sidebar collapsed={collapsed} onToggle={toggleCollapsed} />
-      <main className="flex-1 min-w-0 pb-16 md:pb-0">
-        <Outlet />
-      </main>
+      <div className="flex-1 min-w-0 flex flex-col">
+        <OfflineBanner />
+        <main className="flex-1 min-w-0 pb-16 md:pb-0">
+          <Outlet />
+        </main>
+      </div>
       <BottomNav />
     </div>
   )

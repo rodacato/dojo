@@ -60,6 +60,7 @@ export function PublicProfilePage() {
   if (error === 'notfound') {
     return (
       <ErrorState
+        kind="not-found"
         title="Practitioner not found."
         message="No one practices under that handle. Maybe they never did."
         primaryAction={{ label: 'Go home', to: '/' }}
@@ -70,6 +71,7 @@ export function PublicProfilePage() {
   if (error === 'network' || !profile) {
     return (
       <ErrorState
+        kind="internal"
         message="We couldn't load this profile."
         primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
         secondaryAction={{ label: 'Go home', to: '/' }}

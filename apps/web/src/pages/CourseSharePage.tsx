@@ -48,6 +48,7 @@ export function CourseSharePage() {
   if (error === 'notfound') {
     return (
       <ErrorState
+        kind="not-found"
         message="This completion doesn't exist yet — finish the course first."
         primaryAction={{ label: 'Browse courses', to: '/learn' }}
       />
@@ -57,6 +58,7 @@ export function CourseSharePage() {
   if (error === 'network') {
     return (
       <ErrorState
+        kind="internal"
         message="We couldn't load this completion card."
         primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
         secondaryAction={{ label: 'Go home', to: '/' }}
