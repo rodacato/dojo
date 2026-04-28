@@ -4,6 +4,7 @@ import type { ExerciseType, Difficulty } from '@dojo/shared'
 import { api, type AdminExerciseDTO } from '../../lib/api'
 import { TypeBadge, DifficultyBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
+import { Pagination } from '../../components/ui/Pagination'
 
 type StatusFilter = 'all' | 'published' | 'draft' | 'archived'
 type TypeFilter = 'all' | 'code' | 'chat' | 'whiteboard' | 'review'
@@ -245,7 +246,13 @@ export function AdminExercisesPage() {
           <span>
             Showing {startIdx}–{endIdx} of {sorted.length}
           </span>
-          <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
+          <Pagination
+            page={safePage}
+            totalPages={totalPages}
+            onChange={setPage}
+            ariaLabel="Exercises pagination"
+            size="sm"
+          />
         </div>
       )}
     </div>
@@ -324,74 +331,6 @@ function FilterSelect<T extends string>({
       </select>
     </label>
   )
-}
-
-function Pagination({
-  page,
-  totalPages,
-  onChange,
-}: {
-  page: number
-  totalPages: number
-  onChange: (next: number) => void
-}) {
-  if (totalPages <= 1) return null
-  const pages = pageWindow(page, totalPages)
-  return (
-    <nav className="flex items-center gap-2" aria-label="Exercises pagination">
-      <button
-        type="button"
-        onClick={() => onChange(Math.max(1, page - 1))}
-        disabled={page <= 1}
-        className="font-mono text-[11px] uppercase tracking-wider text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
-      >
-        ← Prev
-      </button>
-      <div className="flex items-center gap-1">
-        {pages.map((p, i) =>
-          p === '…' ? (
-            <span key={`gap-${i}`} className="font-mono text-[11px] text-muted px-1">
-              …
-            </span>
-          ) : (
-            <button
-              key={p}
-              type="button"
-              onClick={() => onChange(p)}
-              aria-current={p === page ? 'page' : undefined}
-              className={`font-mono text-[11px] tabular-nums w-7 h-7 inline-flex items-center justify-center rounded-sm transition-colors ${
-                p === page
-                  ? 'border border-accent text-primary'
-                  : 'text-secondary hover:text-primary'
-              }`}
-            >
-              {p}
-            </button>
-          ),
-        )}
-      </div>
-      <button
-        type="button"
-        onClick={() => onChange(Math.min(totalPages, page + 1))}
-        disabled={page >= totalPages}
-        className="font-mono text-[11px] uppercase tracking-wider text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
-      >
-        Next →
-      </button>
-    </nav>
-  )
-}
-
-function pageWindow(page: number, totalPages: number): (number | '…')[] {
-  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
-  const window: (number | '…')[] = [1]
-  const start = Math.max(2, page - 1)
-  const end = Math.min(totalPages - 1, page + 1)
-  if (start > 2) window.push('…')
-  for (let i = start; i <= end; i++) window.push(i)
-  if (end < totalPages - 1) window.push('…')
-  window.push(totalPages)
-  return window
 }
 
 function SearchIcon({ className }: { className?: string }) {

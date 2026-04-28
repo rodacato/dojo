@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { Button } from '../components/ui/Button'
+import { Pagination } from '../components/ui/Pagination'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
 
@@ -84,7 +85,14 @@ export function HistoryPage() {
       )}
 
       {totalPages > 1 && (
-        <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        <div className="flex justify-center mt-8">
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onChange={setPage}
+            ariaLabel="History pagination"
+          />
+        </div>
       )}
 
       <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
@@ -92,71 +100,4 @@ export function HistoryPage() {
       </p>
     </div>
   )
-}
-
-function Pagination({
-  page,
-  totalPages,
-  onChange,
-}: {
-  page: number
-  totalPages: number
-  onChange: (next: number) => void
-}) {
-  const pages = pageWindow(page, totalPages)
-  return (
-    <nav className="flex items-center justify-center gap-3 mt-8" aria-label="History pagination">
-      <button
-        type="button"
-        onClick={() => onChange(Math.max(1, page - 1))}
-        disabled={page <= 1}
-        className="font-mono text-[13px] text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
-      >
-        ← Previous
-      </button>
-      <div className="flex items-center gap-1">
-        {pages.map((p, i) =>
-          p === '…' ? (
-            <span key={`gap-${i}`} className="font-mono text-[13px] text-muted px-2">
-              …
-            </span>
-          ) : (
-            <button
-              key={p}
-              type="button"
-              onClick={() => onChange(p)}
-              aria-current={p === page ? 'page' : undefined}
-              className={`font-mono text-[13px] tabular-nums w-8 h-8 inline-flex items-center justify-center rounded-sm transition-colors ${
-                p === page
-                  ? 'border border-accent text-primary'
-                  : 'text-secondary hover:text-primary'
-              }`}
-            >
-              {p}
-            </button>
-          ),
-        )}
-      </div>
-      <button
-        type="button"
-        onClick={() => onChange(Math.min(totalPages, page + 1))}
-        disabled={page >= totalPages}
-        className="font-mono text-[13px] text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-not-allowed"
-      >
-        Next →
-      </button>
-    </nav>
-  )
-}
-
-function pageWindow(page: number, totalPages: number): (number | '…')[] {
-  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
-  const window: (number | '…')[] = [1]
-  const start = Math.max(2, page - 1)
-  const end = Math.min(totalPages - 1, page + 1)
-  if (start > 2) window.push('…')
-  for (let i = start; i <= end; i++) window.push(i)
-  if (end < totalPages - 1) window.push('…')
-  window.push(totalPages)
-  return window
 }
