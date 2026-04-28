@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { PageLoader } from '../components/PageLoader'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { Toggle } from '../components/ui/Toggle'
-import { Modal } from '../components/ui/Modal'
+import { ConfirmModal } from '../components/ui/ConfirmModal'
 
 type Level = 'junior' | 'mid' | 'senior'
 
@@ -280,24 +280,19 @@ export function SettingsPage() {
         Changes auto-save.
       </p>
 
-      <Modal open={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
-        <div className="p-6">
-          <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mb-3">
-            Sign out?
-          </p>
-          <p className="text-secondary text-[14px] leading-relaxed mb-6">
-            You&apos;ll lose your session. Active kata in progress will be lost.
-          </p>
-          <div className="flex justify-end gap-2">
-            <Button variant="ghost" size="md" onClick={() => setShowLogoutModal(false)}>
-              Stay
-            </Button>
-            <Button variant="destructive" size="md" onClick={() => { void logout() }}>
-              Sign out
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      <ConfirmModal
+        open={showLogoutModal}
+        onCancel={() => setShowLogoutModal(false)}
+        eyebrow="Sign out?"
+        tone="muted"
+        title="See you tomorrow."
+        cancelLabel="Stay"
+        primaryVariant="destructive"
+        primaryLabel="Sign out"
+        onConfirm={() => { void logout() }}
+      >
+        <p>You&apos;ll lose your session. Active kata in progress will be lost.</p>
+      </ConfirmModal>
     </div>
   )
 }

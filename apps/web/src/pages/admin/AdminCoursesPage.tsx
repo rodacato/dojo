@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../../lib/api'
 import { Button } from '../../components/ui/Button'
-import { Modal } from '../../components/ui/Modal'
+import { ConfirmModal } from '../../components/ui/ConfirmModal'
 import { Toggle } from '../../components/ui/Toggle'
 import { AdminBreadcrumb } from './_form-parts'
 
@@ -304,12 +304,32 @@ export function AdminCoursesPage() {
         Snapshot diff visible in <Link to="/admin/errors" className="hover:text-secondary transition-colors">Errors</Link>. Re-seeding patches in place; wiping is per-course.
       </div>
 
-      <WipeConfirmModal
-        course={wipeTarget}
-        wiping={busy?.kind === 'wipe'}
+      <ConfirmModal
+        open={wipeTarget !== null}
         onCancel={() => setWipeTarget(null)}
-        onConfirm={performWipe}
-      />
+        eyebrow="Wipe course content"
+        tone="red"
+        title={wipeTarget ? `Wipe ${wipeTarget.title}?` : 'Wipe course content?'}
+        primaryVariant="danger"
+        primaryLabel="Wipe content"
+        busy={busy?.kind === 'wipe'}
+        onConfirm={() => wipeTarget && performWipe(wipeTarget)}
+        typedConfirm={
+          wipeTarget
+            ? {
+                expected: wipeTarget.slug,
+                label: 'Type the slug to confirm',
+                placeholder: wipeTarget.slug,
+              }
+            : { expected: '', label: 'Type the slug to confirm' }
+        }
+      >
+        <p>
+          Removes all lessons and steps. Sessions and progress for this course are kept.
+          Re-seeding restores content from{' '}
+          <code className="font-mono">/apps/api/seed/courses/</code>.
+        </p>
+      </ConfirmModal>
     </div>
   )
 }
@@ -351,82 +371,6 @@ function NoticeBanner({
   )
 }
 
-function WipeConfirmModal({
-  course,
-  wiping,
-  onCancel,
-  onConfirm,
-}: {
-  course: AdminCourse | null
-  wiping: boolean
-  onCancel: () => void
-  onConfirm: (course: AdminCourse) => void
-}) {
-  const [typed, setTyped] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (course) {
-      setTyped('')
-      requestAnimationFrame(() => inputRef.current?.focus())
-    }
-  }, [course])
-
-  if (!course) return null
-
-  const matched = typed === course.slug
-
-  return (
-    <Modal open onClose={() => !wiping && onCancel()} flow={wiping}>
-      <div className="p-8">
-        <div className="font-mono text-[11px] uppercase tracking-wider text-danger mb-2">
-          Wipe course content
-        </div>
-        <h2 className="text-[18px] font-semibold text-primary">
-          Wipe {course.title}?
-        </h2>
-        <div className="mt-3 text-[13px] text-secondary leading-relaxed">
-          Removes all lessons and steps. Sessions and progress for this course are kept.
-          Re-seeding restores content from <code className="font-mono">/apps/api/seed/courses/</code>.
-        </div>
-
-        <div className="mt-5">
-          <label
-            htmlFor="wipe-confirm"
-            className="block font-mono text-[11px] uppercase tracking-wider text-muted mb-1.5"
-          >
-            Type the slug to confirm
-          </label>
-          <input
-            ref={inputRef}
-            id="wipe-confirm"
-            value={typed}
-            onChange={(e) => setTyped(e.target.value)}
-            placeholder={course.slug}
-            disabled={wiping}
-            autoComplete="off"
-            spellCheck={false}
-            className="admin-input font-mono"
-          />
-        </div>
-
-        <div className="mt-6 flex items-center justify-end gap-3">
-          <Button variant="ghost" size="md" onClick={onCancel} disabled={wiping}>
-            Cancel
-          </Button>
-          <button
-            type="button"
-            onClick={() => matched && !wiping && onConfirm(course)}
-            disabled={!matched || wiping}
-            className="inline-flex items-center justify-center gap-2 h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-danger text-primary border border-danger text-[13px] transition-colors hover:bg-danger/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-danger/40 disabled:border-danger/40"
-          >
-            {wiping ? 'Wiping…' : 'Wipe content'}
-          </button>
-        </div>
-      </div>
-    </Modal>
-  )
-}
 
 function Th({
   children,

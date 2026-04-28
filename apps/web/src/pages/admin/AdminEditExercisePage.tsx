@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import type { Difficulty, ExerciseType } from '@dojo/shared'
 import { api } from '../../lib/api'
 import { Button } from '../../components/ui/Button'
+import { ConfirmModal } from '../../components/ui/ConfirmModal'
 import { Toggle } from '../../components/ui/Toggle'
 import { PageLoader } from '../../components/PageLoader'
 import {
@@ -53,6 +54,7 @@ export function AdminEditExercisePage() {
   const [variationLabels, setVariationLabels] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [archiving, setArchiving] = useState(false)
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState(false)
 
@@ -174,9 +176,8 @@ export function AdminEditExercisePage() {
     }
   }
 
-  async function handleArchive() {
+  async function performArchive() {
     if (!id || archiving) return
-    if (!confirm('Archive this exercise? It will be hidden from the catalog but data is preserved.')) return
     setArchiving(true)
     try {
       await api.archiveExercise(id)
@@ -184,6 +185,7 @@ export function AdminEditExercisePage() {
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Failed to archive')
       setArchiving(false)
+      setShowArchiveConfirm(false)
     }
   }
 
@@ -206,7 +208,7 @@ export function AdminEditExercisePage() {
         </div>
         <div className="flex items-center gap-3 mt-7">
           {!archived && (
-            <Button variant="destructive" size="sm" onClick={handleArchive} loading={archiving}>
+            <Button variant="destructive" size="sm" onClick={() => setShowArchiveConfirm(true)} loading={archiving}>
               Archive
             </Button>
           )}
@@ -309,6 +311,23 @@ export function AdminEditExercisePage() {
           Save changes
         </Button>
       </StickyFormBar>
+
+      <ConfirmModal
+        open={showArchiveConfirm}
+        onCancel={() => !archiving && setShowArchiveConfirm(false)}
+        eyebrow="Archive exercise?"
+        tone="red"
+        title={`Archive ${form.title || 'this exercise'}?`}
+        primaryVariant="destructive"
+        primaryLabel="Archive"
+        busy={archiving}
+        onConfirm={performArchive}
+      >
+        <p>
+          Archived exercises are hidden from the catalog but the data is preserved. You can
+          always re-publish from this page later.
+        </p>
+      </ConfirmModal>
     </div>
   )
 }
