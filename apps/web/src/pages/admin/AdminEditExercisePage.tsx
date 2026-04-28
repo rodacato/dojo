@@ -1,27 +1,28 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Difficulty, ExerciseType } from '@dojo/shared'
-import { TOPICS } from '@dojo/shared'
 import { api } from '../../lib/api'
-import { ChipSelect } from '../../components/ui/ChipSelect'
-import { ChipInput } from '../../components/ui/ChipInput'
+import { Button } from '../../components/ui/Button'
+import { Toggle } from '../../components/ui/Toggle'
 import { PageLoader } from '../../components/PageLoader'
+import {
+  AdminBreadcrumb,
+  type BasicsValue,
+  BasicsFields,
+  FormField,
+  SectionCard,
+  StickyFormBar,
+  ValidationBanner,
+  VariationCardItem,
+} from './_form-parts'
 
 interface VariationDraft {
   ownerRole: string
   ownerContext: string
 }
 
-interface FormState {
-  title: string
-  description: string
-  duration: number
-  difficulty: Difficulty
-  type: ExerciseType
+interface FormState extends BasicsValue {
   status: string
-  languages: string[]
-  tags: string[]
-  topics: string[]
   adminNotes: string
   variations: VariationDraft[]
 }
@@ -32,23 +33,33 @@ interface FeedbackData {
   timing: Record<string, number>
   evaluation: Record<string, number>
   notes: Array<{ note: string; variationId: string; submittedAt: string }>
-  byVariation: Record<string, { total: number; clarity: Record<string, number>; timing: Record<string, number>; evaluation: Record<string, number> }>
+  byVariation: Record<
+    string,
+    {
+      total: number
+      clarity: Record<string, number>
+      timing: Record<string, number>
+      evaluation: Record<string, number>
+    }
+  >
 }
 
 export function AdminEditExercisePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [form, setForm] = useState<FormState | null>(null)
+  const initialRef = useRef<FormState | null>(null)
   const [feedback, setFeedback] = useState<FeedbackData | null>(null)
-  const [variationMap, setVariationMap] = useState<Record<string, string>>({})
+  const [variationLabels, setVariationLabels] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [archiving, setArchiving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [showErrors, setShowErrors] = useState(false)
 
   useEffect(() => {
     if (!id) return
     api.getAdminExercise(id).then((ex) => {
-      setForm({
+      const next: FormState = {
         title: ex.title,
         description: ex.description,
         duration: ex.duration,
@@ -58,40 +69,90 @@ export function AdminEditExercisePage() {
         languages: ex.languages,
         tags: ex.tags,
         topics: ex.topics,
-        adminNotes: (ex as Record<string, unknown>).adminNotes as string ?? '',
+        adminNotes: ((ex as Record<string, unknown>).adminNotes as string) ?? '',
         variations: ex.variations.map((v) => ({
           ownerRole: v.ownerRole,
           ownerContext: v.ownerContext,
         })),
+      }
+      setForm(next)
+      initialRef.current = next
+      const labels: Record<string, string> = {}
+      ex.variations.forEach((v, i) => {
+        labels[v.id] = `VAR ${i + 1}`
       })
-      const vMap: Record<string, string> = {}
-      ex.variations.forEach((v, i) => { vMap[v.id] = `Variation ${i + 1}` })
-      setVariationMap(vMap)
+      setVariationLabels(labels)
     })
-    api.getExerciseFeedback(id).then(setFeedback).catch((err) => { console.error('Failed to fetch exercise feedback:', err) })
+    api.getExerciseFeedback(id).then(setFeedback).catch((err) => {
+      console.error('Failed to fetch exercise feedback:', err)
+    })
   }, [id])
+
+  const dirty = useMemo(() => {
+    if (!form || !initialRef.current) return false
+    return JSON.stringify(form) !== JSON.stringify(initialRef.current)
+  }, [form])
 
   if (!form) return <PageLoader />
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => prev ? { ...prev, [key]: value } : prev)
+  const titleInvalid = form.title.trim().length === 0
+  const variationsInvalid =
+    form.variations.length === 0 || form.variations.every((v) => !v.ownerRole.trim())
+  const validationMessage = (() => {
+    if (!showErrors) return null
+    const issues: string[] = []
+    if (titleInvalid) issues.push('Title is required.')
+    if (variationsInvalid) issues.push('At least 1 variation must have an owner role.')
+    if (issues.length === 0) return null
+    return `${issues.length} field${issues.length > 1 ? 's' : ''} require attention. ${issues.join(' ')}`
+  })()
+
+  const archived = form.status === 'archived'
+  const published = form.status === 'published'
+
+  function setBasics(next: BasicsValue) {
+    setForm((prev) => (prev ? { ...prev, ...next } : prev))
+  }
+
+  function setStatus(next: string) {
+    setForm((prev) => (prev ? { ...prev, status: next } : prev))
+  }
+
+  function setAdminNotes(value: string) {
+    setForm((prev) => (prev ? { ...prev, adminNotes: value } : prev))
   }
 
   function updateVariation(index: number, field: keyof VariationDraft, value: string) {
-    if (!form) return
-    const next = form.variations.map((v, i) => (i === index ? { ...v, [field]: value } : v))
-    update('variations', next)
+    setForm((prev) =>
+      prev
+        ? {
+            ...prev,
+            variations: prev.variations.map((v, i) => (i === index ? { ...v, [field]: value } : v)),
+          }
+        : prev,
+    )
   }
 
   function addVariation() {
-    if (!form) return
-    update('variations', [...form.variations, { ownerRole: '', ownerContext: '' }])
+    setForm((prev) =>
+      prev ? { ...prev, variations: [...prev.variations, { ownerRole: '', ownerContext: '' }] } : prev,
+    )
+  }
+
+  function removeVariation(index: number) {
+    setForm((prev) =>
+      prev ? { ...prev, variations: prev.variations.filter((_, i) => i !== index) } : prev,
+    )
   }
 
   async function handleSave() {
     if (!form || !id) return
+    if (titleInvalid || variationsInvalid) {
+      setShowErrors(true)
+      return
+    }
     setSaving(true)
-    setError(null)
+    setSubmitError(null)
     try {
       await api.updateExercise(id, {
         title: form.title,
@@ -108,127 +169,102 @@ export function AdminEditExercisePage() {
       })
       navigate('/admin/exercises')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save')
+      setSubmitError(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
     }
   }
 
   async function handleArchive() {
-    if (!id || !confirm('Archive this exercise? It will be removed from the catalog.')) return
+    if (!id || archiving) return
+    if (!confirm('Archive this exercise? It will be hidden from the catalog but data is preserved.')) return
     setArchiving(true)
     try {
       await api.archiveExercise(id)
       navigate('/admin/exercises')
-    } catch {
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Failed to archive')
       setArchiving(false)
     }
   }
 
   return (
-    <div className="max-w-2xl">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-mono text-xl text-primary">Edit Exercise</h1>
-        <button
-          onClick={() => navigate('/admin/exercises')}
-          className="text-muted font-mono text-sm hover:text-secondary"
-        >
-          ← Back
-        </button>
+    <div className="max-w-4xl">
+      <AdminBreadcrumb trail={['ADMIN', 'EXERCISES', `EDIT — ${form.title || 'Untitled'}`]} />
+
+      <div className="flex items-start justify-between gap-6 mb-8">
+        <div>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/exercises')}
+            className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
+          >
+            ← Back to exercises
+          </button>
+          <h1 className="text-[24px] font-semibold text-primary leading-tight">
+            {form.title || 'Untitled exercise'}
+          </h1>
+        </div>
+        <div className="flex items-center gap-3 mt-7">
+          {!archived && (
+            <Button variant="destructive" size="sm" onClick={handleArchive} loading={archiving}>
+              Archive
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+            Cancel
+          </Button>
+          <Button size="sm" onClick={handleSave} loading={saving}>
+            {dirty && <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />}
+            Save changes
+          </Button>
+        </div>
       </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-danger/10 border border-danger/30 rounded-sm text-danger text-sm font-mono">
-          {error}
-        </div>
-      )}
+      {validationMessage && <ValidationBanner message={validationMessage} />}
+      {submitError && <ValidationBanner message={submitError} />}
 
-      <div className="space-y-6">
-        <Field label="Title">
-          <input
-            value={form.title}
-            onChange={(e) => update('title', e.target.value)}
-            className="admin-input"
-          />
-        </Field>
-
-        <Field label="Description">
-          <textarea
-            value={form.description}
-            onChange={(e) => update('description', e.target.value)}
-            className="admin-input h-48"
-          />
-        </Field>
-
-        <div className="grid grid-cols-3 gap-4">
-          <Field label="Type">
-            <select
-              value={form.type}
-              onChange={(e) => update('type', e.target.value as ExerciseType)}
-              className="admin-input"
-            >
-              <option value="code">CODE</option>
-              <option value="chat">CHAT</option>
-              <option value="whiteboard">WHITEBOARD</option>
-            </select>
-          </Field>
-          <Field label="Difficulty">
-            <select
-              value={form.difficulty}
-              onChange={(e) => update('difficulty', e.target.value as Difficulty)}
-              className="admin-input"
-            >
-              <option value="easy">EASY</option>
-              <option value="medium">MEDIUM</option>
-              <option value="hard">HARD</option>
-            </select>
-          </Field>
-          <Field label="Duration (min)">
-            <select
-              value={form.duration}
-              onChange={(e) => update('duration', Number(e.target.value))}
-              className="admin-input"
-            >
-              {[10, 15, 20, 30, 45].map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
-          </Field>
+      <div className="space-y-8">
+        <div className="rounded-md border border-border bg-surface px-6 py-4 flex items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-muted">Status</span>
+            <StatusPill status={form.status} />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-muted">
+              Make public
+            </span>
+            <Toggle
+              checked={published}
+              disabled={archived}
+              onChange={(next) => setStatus(next ? 'published' : 'draft')}
+              ariaLabel="Make public"
+            />
+          </div>
         </div>
 
-        <Field label="Topics">
-          <ChipSelect
-            options={TOPICS}
-            selected={form.topics}
-            onChange={(topics) => update('topics', topics)}
-            placeholder="Select topics..."
+        <SectionCard eyebrow="Basics">
+          <BasicsFields
+            value={form}
+            onChange={setBasics}
+            titleError={showErrors && titleInvalid}
           />
-        </Field>
+        </SectionCard>
 
-        <Field label="Languages">
-          <ChipInput
-            value={form.languages}
-            onChange={(v) => update('languages', v)}
-            placeholder="Add language (Enter)..."
-          />
-        </Field>
-
-        <Field label="Tags">
-          <ChipInput
-            value={form.tags}
-            onChange={(v) => update('tags', v)}
-            placeholder="Add tag (Enter)..."
-          />
-        </Field>
-
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <label className="text-muted text-xs font-mono uppercase tracking-wider">
-              Variations
-            </label>
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                Variations · {form.variations.length}
+              </div>
+              <div className="font-mono text-[11px] text-muted mt-1">
+                Each variation is a sensei persona. The user gets one per session.
+              </div>
+            </div>
             {form.variations.length < 3 && (
               <button
+                type="button"
                 onClick={addVariation}
-                className="text-accent font-mono text-xs hover:text-accent/80"
+                className="font-mono text-[11px] uppercase tracking-wider text-accent hover:text-accent/80 transition-colors"
               >
                 + Add variation
               </button>
@@ -236,144 +272,256 @@ export function AdminEditExercisePage() {
           </div>
           <div className="space-y-4">
             {form.variations.map((v, i) => (
-              <div key={i} className="p-4 bg-surface border border-border rounded-sm space-y-3">
-                <div className="text-muted text-xs font-mono">Variation {i + 1}</div>
-                <Field label="Owner Role">
-                  <input
-                    value={v.ownerRole}
-                    onChange={(e) => updateVariation(i, 'ownerRole', e.target.value)}
-                    className="admin-input"
-                  />
-                </Field>
-                <Field label="Owner Context">
-                  <textarea
-                    value={v.ownerContext}
-                    onChange={(e) => updateVariation(i, 'ownerContext', e.target.value)}
-                    className="admin-input h-32"
-                  />
-                </Field>
+              <VariationCardItem
+                key={i}
+                index={i}
+                ownerRole={v.ownerRole}
+                ownerContext={v.ownerContext}
+                onChange={(field, value) => updateVariation(i, field, value)}
+                onRemove={form.variations.length > 1 ? () => removeVariation(i) : undefined}
+              />
+            ))}
+          </div>
+        </section>
+
+        <SectionCard eyebrow="Admin notes">
+          <FormField label="Internal notes" hint="Not shown to users.">
+            <textarea
+              value={form.adminNotes}
+              onChange={(e) => setAdminNotes(e.target.value)}
+              placeholder="Why this exercise exists, what to watch for, who tested it..."
+              rows={4}
+              className="admin-input font-mono"
+            />
+          </FormField>
+        </SectionCard>
+
+        {feedback && feedback.total > 0 && (
+          <FeedbackPanel feedback={feedback} variationLabels={variationLabels} />
+        )}
+      </div>
+
+      <StickyFormBar hint={dirty ? 'Unsaved changes · ⌘+S to save' : '⌘+S to save'}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+          Cancel
+        </Button>
+        <Button size="sm" onClick={handleSave} loading={saving}>
+          Save changes
+        </Button>
+      </StickyFormBar>
+    </div>
+  )
+}
+
+function StatusPill({ status }: { status: string }) {
+  const styles: Record<string, string> = {
+    published: 'bg-success/10 text-success border-success/30',
+    draft: 'bg-muted/15 text-secondary border-border',
+    archived: 'bg-danger/10 text-danger border-danger/30',
+  }
+  return (
+    <span
+      className={`font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
+        styles[status] ?? styles['draft']
+      }`}
+    >
+      {status}
+    </span>
+  )
+}
+
+const CLARITY_WEIGHTS: Record<string, number> = { clear: 5, somewhat_unclear: 3, confusing: 1 }
+const TIMING_WEIGHTS: Record<string, number> = { about_right: 5, too_short: 2, too_long: 3 }
+const FAIRNESS_WEIGHTS: Record<string, number> = {
+  fair_and_relevant: 5,
+  too_generic: 3,
+  missed_the_point: 1,
+}
+
+function score(distribution: Record<string, number>, weights: Record<string, number>) {
+  let total = 0
+  let weighted = 0
+  for (const [key, count] of Object.entries(distribution)) {
+    const w = weights[key]
+    if (w == null) continue
+    total += count
+    weighted += w * count
+  }
+  return total === 0 ? null : { value: weighted / total, votes: total }
+}
+
+function tone(value: number | null): 'emerald' | 'indigo' | 'amber' | 'red' | 'muted' {
+  if (value == null) return 'muted'
+  if (value >= 4.5) return 'emerald'
+  if (value >= 3.5) return 'indigo'
+  if (value >= 2.5) return 'amber'
+  return 'red'
+}
+
+function FeedbackPanel({
+  feedback,
+  variationLabels,
+}: {
+  feedback: FeedbackData
+  variationLabels: Record<string, string>
+}) {
+  const clarity = score(feedback.clarity, CLARITY_WEIGHTS)
+  const timing = score(feedback.timing, TIMING_WEIGHTS)
+  const fairness = score(feedback.evaluation, FAIRNESS_WEIGHTS)
+
+  const variations = Object.entries(feedback.byVariation)
+
+  return (
+    <section>
+      <div className="flex items-center justify-between mb-4">
+        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+          Learner feedback · {feedback.total} sessions
+        </div>
+        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+          Last 30 days
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <SignalCard label="Clarity" score={clarity} />
+        <SignalCard label="Timing" score={timing} />
+        <SignalCard label="Fairness" score={fairness} />
+      </div>
+
+      {variations.length > 0 && (
+        <div className="rounded-md border border-border bg-surface overflow-hidden mb-6">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="border-b border-border">
+                <ThSm>Variation</ThSm>
+                <ThSm align="right">Sessions</ThSm>
+                <ThSm align="right">Clarity</ThSm>
+                <ThSm align="right">Timing</ThSm>
+                <ThSm align="right">Fairness</ThSm>
+              </tr>
+            </thead>
+            <tbody>
+              {variations.map(([vId, vData]) => {
+                const c = score(vData.clarity, CLARITY_WEIGHTS)
+                const t = score(vData.timing, TIMING_WEIGHTS)
+                const f = score(vData.evaluation, FAIRNESS_WEIGHTS)
+                return (
+                  <tr key={vId} className="border-b border-border last:border-b-0">
+                    <td className="px-4 h-12 align-middle font-mono text-[11px] uppercase tracking-wider text-secondary">
+                      {variationLabels[vId] ?? vId.slice(0, 8)}
+                    </td>
+                    <td className="px-4 h-12 align-middle text-right font-mono tabular-nums text-primary">
+                      {vData.total}
+                    </td>
+                    <Td score={c} />
+                    <Td score={t} />
+                    <Td score={f} />
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {feedback.notes.length > 0 && (
+        <div>
+          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-3">
+            Recent notes
+          </div>
+          <div className="space-y-3">
+            {feedback.notes.slice(0, 4).map((n, i) => (
+              <div
+                key={i}
+                className="rounded-md border border-border bg-page p-4"
+              >
+                <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-2">
+                  Anonymous · {new Date(n.submittedAt).toISOString().slice(0, 10)} ·{' '}
+                  {variationLabels[n.variationId] ?? 'VAR ?'}
+                </div>
+                <div className="text-[13px] text-secondary leading-relaxed">{n.note}</div>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Admin Notes */}
-        <Field label="Admin Notes (internal)">
-          <textarea
-            value={form.adminNotes}
-            onChange={(e) => update('adminNotes', e.target.value)}
-            placeholder="Internal notes about edit decisions, feedback responses..."
-            className="admin-input h-24"
-          />
-        </Field>
-
-        {/* Feedback Section */}
-        {feedback && feedback.total > 0 && (
-          <div className="border border-border/40 rounded-sm p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-muted text-xs font-mono uppercase tracking-wider">
-                Kata Feedback ({feedback.total} sessions)
-              </span>
+          {feedback.notes.length > 4 && (
+            <div className="mt-4 font-mono text-[11px] uppercase tracking-wider text-muted">
+              {feedback.notes.length - 4} more notes
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <SignalBar label="Description clarity" data={feedback.clarity} labels={{ clear: 'Clear', somewhat_unclear: 'Unclear', confusing: 'Confusing' }} colors={{ clear: 'text-success', somewhat_unclear: 'text-warning', confusing: 'text-danger' }} />
-              <SignalBar label="Time limit" data={feedback.timing} labels={{ about_right: 'Right', too_short: 'Too short', too_long: 'Too long' }} colors={{ about_right: 'text-success', too_short: 'text-danger', too_long: 'text-warning' }} />
-              <SignalBar label="Evaluation" data={feedback.evaluation} labels={{ fair_and_relevant: 'Fair', too_generic: 'Generic', missed_the_point: 'Missed' }} colors={{ fair_and_relevant: 'text-success', too_generic: 'text-warning', missed_the_point: 'text-danger' }} />
-            </div>
-
-            {/* By variation */}
-            {Object.keys(feedback.byVariation).length > 1 && (
-              <div className="border-t border-border/30 pt-3">
-                <p className="text-muted text-[10px] font-mono uppercase tracking-wider mb-2">by variation</p>
-                {Object.entries(feedback.byVariation).map(([vId, vData]) => (
-                  <div key={vId} className="flex items-center justify-between text-xs py-1">
-                    <span className="text-secondary font-mono">{variationMap[vId] ?? vId.slice(0, 8)}</span>
-                    <span className="text-muted font-mono">
-                      {vData.total} sessions
-                      {vData.evaluation?.['missed_the_point'] ? ` · ${vData.evaluation['missed_the_point']} missed` : ''}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Notes */}
-            {feedback.notes.length > 0 && (
-              <div className="border-t border-border/30 pt-3 space-y-2">
-                <p className="text-muted text-[10px] font-mono uppercase tracking-wider">notes</p>
-                {feedback.notes.map((n, i) => (
-                  <div key={i} className="text-xs text-secondary bg-page p-2 rounded-sm">
-                    <span className="text-muted/50 font-mono text-[10px] mr-2">
-                      {new Date(n.submittedAt).toLocaleDateString()}
-                    </span>
-                    {n.note}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex gap-3">
-          <button
-            onClick={handleSave}
-            disabled={saving || !form.title || !form.description || form.variations.length === 0}
-            className="flex-1 py-3 bg-accent text-primary font-mono rounded-sm hover:bg-accent/90 disabled:opacity-40"
-          >
-            {saving ? 'Saving...' : 'Update exercise'}
-          </button>
-          {form.status !== 'archived' && (
-            <button
-              onClick={handleArchive}
-              disabled={archiving}
-              className="px-4 py-3 border border-danger/40 text-danger font-mono text-sm rounded-sm hover:bg-danger/10 disabled:opacity-40"
-            >
-              {archiving ? '...' : 'Archive'}
-            </button>
           )}
         </div>
-      </div>
-    </div>
+      )}
+    </section>
   )
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <label className="block text-muted text-xs font-mono uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      {children}
-    </div>
-  )
-}
-
-function SignalBar({
+function SignalCard({
   label,
-  data,
-  labels,
-  colors,
+  score,
 }: {
   label: string
-  data: Record<string, number>
-  labels: Record<string, string>
-  colors: Record<string, string>
+  score: { value: number; votes: number } | null
 }) {
-  const entries = Object.entries(data).sort((a, b) => b[1] - a[1])
-  if (entries.length === 0) return null
-
+  const t = tone(score?.value ?? null)
+  const fill = score ? Math.min(100, Math.max(0, (score.value / 5) * 100)) : 0
+  const barColor = TONE_BAR[t]
+  const valueColor = TONE_VALUE[t]
   return (
-    <div>
-      <p className="text-muted text-[10px] font-mono uppercase mb-1.5">{label}</p>
-      <div className="space-y-1">
-        {entries.map(([key, count]) => (
-          <div key={key} className="flex items-center justify-between text-xs">
-            <span className={colors[key] ?? 'text-secondary'}>{labels[key] ?? key}</span>
-            <span className="font-mono text-muted">{count}</span>
-          </div>
-        ))}
+    <div className="rounded-md border border-border bg-surface p-4 flex flex-col gap-3 h-30">
+      <div className="font-mono text-[11px] uppercase tracking-wider text-muted">{label}</div>
+      <div className="flex items-baseline gap-1">
+        <span className={`font-mono font-bold text-[32px] leading-none ${valueColor}`}>
+          {score ? score.value.toFixed(1) : '—'}
+        </span>
+        <span className="text-[13px] text-muted">/ 5</span>
+      </div>
+      <div className="h-1 rounded-sm bg-page overflow-hidden">
+        <div
+          className={`h-full ${barColor} transition-all`}
+          style={{ width: `${fill}%` }}
+        />
+      </div>
+      <div className="font-mono text-[11px] text-muted">
+        {score ? `${score.votes} votes · last 30d` : 'no votes yet'}
       </div>
     </div>
+  )
+}
+
+const TONE_BAR: Record<ReturnType<typeof tone>, string> = {
+  emerald: 'bg-success',
+  indigo: 'bg-accent',
+  amber: 'bg-warning',
+  red: 'bg-danger',
+  muted: 'bg-border',
+}
+
+const TONE_VALUE: Record<ReturnType<typeof tone>, string> = {
+  emerald: 'text-success',
+  indigo: 'text-primary',
+  amber: 'text-warning',
+  red: 'text-danger',
+  muted: 'text-muted',
+}
+
+function ThSm({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
+  return (
+    <th
+      className={`h-10 px-4 font-mono text-[11px] uppercase tracking-wider text-muted ${
+        align === 'right' ? 'text-right' : 'text-left'
+      }`}
+    >
+      {children}
+    </th>
+  )
+}
+
+function Td({ score }: { score: { value: number; votes: number } | null }) {
+  const t = tone(score?.value ?? null)
+  return (
+    <td
+      className={`px-4 h-12 align-middle text-right font-mono tabular-nums ${TONE_VALUE[t]}`}
+    >
+      {score ? score.value.toFixed(1) : '—'}
+    </td>
   )
 }

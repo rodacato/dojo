@@ -47,10 +47,12 @@
   50% { opacity: 0; }
 }
 
-/* Admin form inputs */
+/* Admin form inputs — 36px tall, 4px radius, focus ring per spec
+   (stitch/batches/06-admin-authoring.md). bg-page so the input stands out
+   inside bg-surface section cards. */
 @layer components {
   .admin-input {
-    @apply w-full bg-surface border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors;
+    @apply w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-[13px] font-sans resize-none focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-colors placeholder:text-muted;
   }
 }
 

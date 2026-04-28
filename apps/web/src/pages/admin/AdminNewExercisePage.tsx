@@ -1,25 +1,23 @@
-import { type ReactNode, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { Difficulty, ExerciseType } from '@dojo/shared'
-import { TOPICS } from '@dojo/shared'
 import { api } from '../../lib/api'
-import { ChipSelect } from '../../components/ui/ChipSelect'
-import { ChipInput } from '../../components/ui/ChipInput'
+import { Button } from '../../components/ui/Button'
+import {
+  AdminBreadcrumb,
+  type BasicsValue,
+  BasicsFields,
+  SectionCard,
+  StickyFormBar,
+  ValidationBanner,
+  VariationCardItem,
+} from './_form-parts'
 
 interface VariationDraft {
   ownerRole: string
   ownerContext: string
 }
 
-interface FormState {
-  title: string
-  description: string
-  duration: number
-  difficulty: Difficulty
-  type: ExerciseType
-  languages: string[]
-  tags: string[]
-  topics: string[]
+interface FormState extends BasicsValue {
   variations: VariationDraft[]
 }
 
@@ -39,24 +37,52 @@ export function AdminNewExercisePage() {
   const navigate = useNavigate()
   const [form, setForm] = useState<FormState>(INITIAL)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [showErrors, setShowErrors] = useState(false)
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value }))
+  const titleInvalid = form.title.trim().length === 0
+  const variationsInvalid = form.variations.length === 0 || form.variations.every((v) => !v.ownerRole.trim())
+  const validationMessage = (() => {
+    if (!showErrors) return null
+    const issues: string[] = []
+    if (titleInvalid) issues.push('Title is required.')
+    if (variationsInvalid) issues.push('At least 1 variation must have an owner role.')
+    if (issues.length === 0) return null
+    return `${issues.length} field${issues.length > 1 ? 's' : ''} require attention. ${issues.join(' ')}`
+  })()
+
+  function setBasics(next: BasicsValue) {
+    setForm((prev) => ({ ...prev, ...next }))
   }
 
   function updateVariation(index: number, field: keyof VariationDraft, value: string) {
-    const next = form.variations.map((v, i) => (i === index ? { ...v, [field]: value } : v))
-    update('variations', next)
+    setForm((prev) => ({
+      ...prev,
+      variations: prev.variations.map((v, i) => (i === index ? { ...v, [field]: value } : v)),
+    }))
   }
 
   function addVariation() {
-    update('variations', [...form.variations, { ownerRole: '', ownerContext: '' }])
+    setForm((prev) => ({
+      ...prev,
+      variations: [...prev.variations, { ownerRole: '', ownerContext: '' }],
+    }))
+  }
+
+  function removeVariation(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      variations: prev.variations.filter((_, i) => i !== index),
+    }))
   }
 
   async function handleSave() {
+    if (titleInvalid || variationsInvalid) {
+      setShowErrors(true)
+      return
+    }
     setSaving(true)
-    setError(null)
+    setSubmitError(null)
     try {
       await api.createExercise({
         title: form.title,
@@ -71,120 +97,81 @@ export function AdminNewExercisePage() {
       })
       navigate('/admin/exercises')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save')
+      setSubmitError(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
     }
   }
 
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        if (!saving) void handleSave()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  })
+
   return (
-    <div className="max-w-2xl">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-mono text-xl text-primary">New Exercise</h1>
-        <button
-          onClick={() => navigate('/admin/exercises')}
-          className="text-muted font-mono text-sm hover:text-secondary"
-        >
-          ← Back
-        </button>
+    <div className="max-w-4xl">
+      <AdminBreadcrumb trail={['ADMIN', 'EXERCISES', 'NEW']} />
+
+      <div className="flex items-start justify-between gap-6 mb-8">
+        <div>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/exercises')}
+            className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
+          >
+            ← Back to exercises
+          </button>
+          <h1 className="text-[24px] font-semibold text-primary leading-tight">New exercise</h1>
+        </div>
+        <div className="flex items-center gap-3 mt-7">
+          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+            Cancel
+          </Button>
+          <Button size="sm" onClick={handleSave} loading={saving}>
+            Save as draft
+          </Button>
+        </div>
       </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-danger/10 border border-danger/30 rounded-sm text-danger text-sm font-mono">
-          {error}
-        </div>
-      )}
+      {validationMessage && <ValidationBanner message={validationMessage} />}
+      {submitError && <ValidationBanner message={submitError} />}
 
-      <div className="space-y-6">
-        <Field label="Title">
-          <input
-            value={form.title}
-            onChange={(e) => update('title', e.target.value)}
-            className="admin-input"
-            placeholder="The N+1 You Didn't Write"
+      <div className="space-y-8">
+        <SectionCard
+          eyebrow="Basics"
+          rightSlot={
+            <span className="font-mono text-[11px] uppercase tracking-wider text-muted bg-elevated border border-border px-2 py-0.5 rounded-sm">
+              Draft
+            </span>
+          }
+        >
+          <BasicsFields
+            value={form}
+            onChange={setBasics}
+            titleError={showErrors && titleInvalid}
           />
-        </Field>
+        </SectionCard>
 
-        <Field label="Description">
-          <textarea
-            value={form.description}
-            onChange={(e) => update('description', e.target.value)}
-            className="admin-input h-48"
-            placeholder="Markdown supported. Include code blocks with triple backticks."
-          />
-        </Field>
-
-        <div className="grid grid-cols-3 gap-4">
-          <Field label="Type">
-            <select
-              value={form.type}
-              onChange={(e) => update('type', e.target.value as ExerciseType)}
-              className="admin-input"
-            >
-              <option value="code">CODE</option>
-              <option value="chat">CHAT</option>
-              <option value="whiteboard">WHITEBOARD</option>
-            </select>
-          </Field>
-          <Field label="Difficulty">
-            <select
-              value={form.difficulty}
-              onChange={(e) => update('difficulty', e.target.value as Difficulty)}
-              className="admin-input"
-            >
-              <option value="easy">EASY</option>
-              <option value="medium">MEDIUM</option>
-              <option value="hard">HARD</option>
-            </select>
-          </Field>
-          <Field label="Duration (min)">
-            <select
-              value={form.duration}
-              onChange={(e) => update('duration', Number(e.target.value))}
-              className="admin-input"
-            >
-              {[10, 15, 20, 30, 45].map((d) => (
-                <option key={d} value={d}>
-                  {d}
-                </option>
-              ))}
-            </select>
-          </Field>
-        </div>
-
-        <Field label="Topics">
-          <ChipSelect
-            options={TOPICS}
-            selected={form.topics}
-            onChange={(topics) => update('topics', topics)}
-            placeholder="Select topics..."
-          />
-        </Field>
-
-        <Field label="Languages">
-          <ChipInput
-            value={form.languages}
-            onChange={(v) => update('languages', v)}
-            placeholder="Add language (Enter)..."
-          />
-        </Field>
-
-        <Field label="Tags">
-          <ChipInput
-            value={form.tags}
-            onChange={(v) => update('tags', v)}
-            placeholder="Add tag (Enter)..."
-          />
-        </Field>
-
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <label className="text-muted text-xs font-mono uppercase tracking-wider">
-              Variations
-            </label>
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                Variations
+              </div>
+              <div className="font-mono text-[11px] text-muted mt-1">
+                Each variation is a sensei persona evaluating the same kata. The user gets one per session.
+              </div>
+            </div>
             {form.variations.length < 3 && (
               <button
+                type="button"
                 onClick={addVariation}
-                className="text-accent font-mono text-xs hover:text-accent/80"
+                className="font-mono text-[11px] uppercase tracking-wider text-accent hover:text-accent/80 transition-colors"
               >
                 + Add variation
               </button>
@@ -192,48 +179,38 @@ export function AdminNewExercisePage() {
           </div>
           <div className="space-y-4">
             {form.variations.map((v, i) => (
-              <div key={i} className="p-4 bg-surface border border-border rounded-sm space-y-3">
-                <div className="text-muted text-xs font-mono">Variation {i + 1}</div>
-                <Field label="Owner Role">
-                  <input
-                    value={v.ownerRole}
-                    onChange={(e) => updateVariation(i, 'ownerRole', e.target.value)}
-                    className="admin-input"
-                    placeholder="Senior Rails engineer with 8 years..."
-                  />
-                </Field>
-                <Field label="Owner Context">
-                  <textarea
-                    value={v.ownerContext}
-                    onChange={(e) => updateVariation(i, 'ownerContext', e.target.value)}
-                    className="admin-input h-32"
-                    placeholder="Evaluate the developer's ability to..."
-                  />
-                </Field>
-              </div>
+              <VariationCardItem
+                key={i}
+                index={i}
+                ownerRole={v.ownerRole}
+                ownerContext={v.ownerContext}
+                onChange={(field, value) => updateVariation(i, field, value)}
+                onRemove={form.variations.length > 1 ? () => removeVariation(i) : undefined}
+              />
             ))}
           </div>
-        </div>
+        </section>
 
-        <button
-          onClick={handleSave}
-          disabled={saving || !form.title || !form.description || form.variations.length === 0}
-          className="w-full py-3 bg-accent text-primary font-mono rounded-sm hover:bg-accent/90 disabled:opacity-40"
-        >
-          {saving ? 'Saving...' : 'Save exercise'}
-        </button>
+        <SectionCard eyebrow="Status">
+          <div className="flex items-center gap-4">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-muted bg-elevated border border-border px-2 py-0.5 rounded-sm">
+              Draft
+            </span>
+            <span className="text-[13px] text-muted">
+              New exercises start as draft. Publish from Edit after preview.
+            </span>
+          </div>
+        </SectionCard>
       </div>
-    </div>
-  )
-}
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <label className="block text-muted text-xs font-mono uppercase tracking-wider mb-1.5">
-        {label}
-      </label>
-      {children}
+      <StickyFormBar hint="⌘+S to save">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+          Cancel
+        </Button>
+        <Button size="sm" onClick={handleSave} loading={saving}>
+          Save as draft
+        </Button>
+      </StickyFormBar>
     </div>
   )
 }
