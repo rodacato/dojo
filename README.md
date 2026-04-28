@@ -165,7 +165,7 @@ SENTRY_PROJECT=dojo-web
 
 Errors logged in Postgres are listed at `/admin/errors` with filters for source (api/web) and HTTP status — useful even when Sentry is down or over quota.
 
-**Errors retention.** The `errors` table is purged after 30 days by `POST /cron/cleanup-errors`, scheduled daily at 03:07 UTC via `.github/workflows/cron-cleanup-errors.yml`. Requires two repo secrets: `CRON_API_URL` and `CRON_SECRET` (the latter must match `CRON_SECRET` in the API's env).
+**Errors retention.** The `errors` table can be purged manually via `POST /cron/cleanup-errors` (deletes rows older than 30 days). Auth: `Authorization: Bearer ${CRON_SECRET}`. The scheduled GitHub Action that called this daily was disabled — pending a replacement scheduling solution.
 
 ---
 
