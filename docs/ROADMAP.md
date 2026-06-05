@@ -69,6 +69,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-020 — Phase 1 expansion](sprints/archive/sprint-020-phase1-expansion.md) | UX audit + 5 fixes, course acquisition loop (share card + badges + public courses), Ask the sensei MVP, Code Review kata POC, Python course skeleton, ErrorReporterPort observability pipeline, Piston prod recovery (ADR 018) | ✅ Closed |
 | [sprint-021 — Stability for the friends cohort](sprints/archive/sprint-021-stability.md) | Reactive bugfix week — kata-prep failure recovery, streak counts real practice only, lazy-route deploy survival, OAuth invite-email capture, FF_ rename, CSP fonts/Sentry | ✅ Closed |
 | [sprint-022 — Open the door](sprints/archive/sprint-022-playground-cohort.md) | Playground v0 (anon code execution + 4-layer abuse stack), Playground v1 ask-sensei (auth-only streaming Q&A + daily quota), streaming kata prep behind FF, smoke suite at six specs, errors retention cron, Piston liveness (ADR 019) | ✅ Closed |
+| [sprint-023 — Dojo language pass](sprints/current.md) | Ubiquitous-language rename across shared, domain, application, infrastructure, frontend, docs: Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object with PRD-031 rubric; routes /katas, /scrolls, /engawa, /belts; /kumite placeholder; /leaderboard deleted; ADR 020. Monorepo typecheck green. | 🚧 In flight |
 
 ---
 
@@ -110,6 +111,7 @@ Does not start until Phase 0 is in real daily use.
 | 026 | Invitation system | DB table, OAuth gate, redeem flow, admin UI, Resend emails | sprint-005 |
 | 027 | Admin edit exercise | GET/PUT endpoints, edit page, clickable table rows | sprint-005 |
 | 020 | [Courses MVP](specs/020-courses-mvp.md) | Repos, use cases, routes, seed data, frontend catalog + player | sprint-014 |
+| 028 | [Dojo language pass](specs/028-dojo-language-pass.md) | Per-layer identifier maps, file renames, route path changes, DB-to-domain mapping strategy in repository adapters, BeltCalculator + ListUserMilestones use cases, topicCluster helper, sensei calibration gate | sprint-023 |
 
 ---
 
@@ -141,6 +143,9 @@ Does not start until Phase 0 is in real daily use.
 | 021 | [Sprint 017 planning](prd/021-sprint-017-planning.md) | SQL Deep Cuts + cursos públicos + step type `read` + debugging sensei | ✅ Advancing to spec |
 | 022 | [Sprint 018 planning](prd/022-sprint-018-planning.md) | Course content quality — schema fix, reclassify, audits, solution reveal | ✅ Advancing to spec |
 | 023 | [Sprint 019 planning](prd/023-sprint-019-planning.md) | Pedagogy v2 — slots renderer, external references, alternative approach, LAG/LEAD | ✅ Advancing to spec |
+| 030 | [Dojo terminology pass](prd/030-dojo-terminology-routes.md) | Routes (/katas, /scrolls, /engawa, /belts, /kumite); domain rename Exercise→Kata, Course→Scroll, Badge→Milestone; no backward compat (Phase 0 window) | ✅ Advancing to spec |
+| 031 | [Belt progression rubric](prd/031-belt-progression-rubric.md) | Option C — volume + diversity + active days + cooldown; sensei verdicts excluded from advancement; English colors; global v1 (per-track marks v1.1) | ✅ Advancing to spec |
+| 032 | [Sprint 023 plan](prd/032-sprint-023-planning.md) | Sprint plan with day-by-day critical path, scope cuts, calibration gate for sensei voice update | ✅ Advancing to spec |
 
 ---
 
@@ -167,6 +172,7 @@ Does not start until Phase 0 is in real daily use.
 | 017 | [Error reporting port](adr/017-error-reporting-port.md) | `ErrorReporterPort` with Console / Postgres / Sentry / Composite adapters | ✅ Accepted |
 | 018 | [Piston cgroup namespace host](adr/018-piston-cgroupns-host.md) | `privileged: true` + `cgroupns: host` + named volume on Piston accessory after host kernel upgrade tightened cgroup v2 | ✅ Accepted |
 | 019 | [Piston liveness and reprovision](adr/019-piston-liveness-and-reprovision.md) | GHA liveness probe + idempotent reprovision script as the operational floor for an anonymous-traffic Piston surface | ✅ Accepted |
+| 020 | [Ubiquitous language pass](adr/020-ubiquitous-language-pass.md) | Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object; schema.ts exports dojo-native names while DB tables/columns stay legacy via pgTable arg; /leaderboard deleted (not renamed to /kumite); /kumite reserved as future feature placeholder | ✅ Accepted |
 
 ---
 

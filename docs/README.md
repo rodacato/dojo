@@ -14,7 +14,7 @@ This is the entry point for everything in `docs/`. Each document has a lifecycle
 | **A contributor** | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) → [`WORKFLOW.md`](WORKFLOW.md) → [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | **An AI agent** | [`../AGENTS.md`](../AGENTS.md) → [`IDENTITY.md`](IDENTITY.md) → [`EXPERTS.md`](EXPERTS.md) |
 | **Picking up active work** | [`sprints/current.md`](sprints/current.md) → [`sprints/backlog.md`](sprints/backlog.md) |
-| **Authoring a course** | [`courses/README.md`](courses/README.md) → [`courses/testcode-pattern.md`](courses/testcode-pattern.md) |
+| **Authoring a scroll** | [`scrolls/README.md`](scrolls/README.md) → [`scrolls/testcode-pattern.md`](scrolls/testcode-pattern.md) |
 | **Looking for *why* a past decision was made** | [`adr/`](adr/) → [`sprints/archive/`](sprints/archive/) → [`research/`](research/) |
 
 ---
@@ -36,9 +36,9 @@ Edit when reality changes. Always reflects current behavior.
 | [`WORKFLOW.md`](WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [`BRANDING.md`](BRANDING.md) | Colors, typography, tokens, voice |
-| [`courses/README.md`](courses/README.md) | Course content model and authoring conventions |
-| [`courses/testcode-pattern.md`](courses/testcode-pattern.md) | Active reference for authoring iframe testCode |
-| [`courses/{language}.md`](courses/) | Per-language course design (go, python, ruby, rust, typescript) |
+| [`scrolls/README.md`](scrolls/README.md) | Scroll content model and authoring conventions |
+| [`scrolls/testcode-pattern.md`](scrolls/testcode-pattern.md) | Active reference for authoring iframe testCode |
+| [`scrolls/{language}.md`](scrolls/) | Per-language scroll design (go, python, ruby, rust, typescript) |
 
 ### Live — active work
 

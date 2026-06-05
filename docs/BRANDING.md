@@ -23,6 +23,27 @@ Alternativas consideradas: `Dojo`, `CodeDojo`, `kata.notdefined.dev`, `debug.not
 
 ---
 
+## Glosario
+
+The product speaks one vocabulary. Each term below is load-bearing — it does product work, not branding decoration. If a future term doesn't earn its place by being distinguishable from a generic SaaS word, don't add it. (See [ADR 020](adr/020-ubiquitous-language-pass.md) for the full rename.)
+
+| Term | What it means in the product | On-brand | Off-brand |
+|---|---|---|---|
+| **Kata** | A single practice unit — one prompt, one sit, one sensei verdict. Atomic. | *"completed five katas this week"* | *"completed five exercises"* |
+| **Sensei** | The LLM evaluator. Honest, structured, never softens. Voice register matters: noted, observed, recognized — not master/zen/wisdom. | *"the sensei noted the gap in your reasoning"* | *"the master grants you wisdom"* |
+| **Scroll** | A multi-step learning path — read, code, exercise, challenge — followed in order, with instant Piston/iframe feedback. The scroll is the curriculum; the steps are inside it. | *"finish the SQL Deep Cuts scroll"* | *"finish the SQL Deep Cuts course"* |
+| **Belt** | A single rank per user — white / yellow / green / brown / black — computed from session history. Earned, kept (no decay in v1). The sensei does not influence advancement. | *"I'm working toward brown belt"* | *"I unlocked the brown belt trophy"* |
+| **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`, scroll completions). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
+| **Engawa** | The anonymous code playground at `/engawa`. The Japanese veranda — the transitional space between inside and outside. No account required to try a snippet. | *"opened the engawa to test a Ruby idea"* | *"opened the playground" (in our product surface)* |
+| **Kumite** | The planned 1v1 sparring feature — paired evaluation, shared kata, side-by-side reasoning compared by the sensei. **Not built yet** — the route exists as an honest placeholder. Not a relabel of the deleted leaderboard. | *"when kumite ships I want to spar against another reviewer"* | *"check the kumite leaderboard"* |
+
+Two more that are *not* dojo-flavored on purpose:
+
+- **Dashboard** — generic post-login orientation surface. The one place we don't translate; the user shouldn't have to learn vocabulary before seeing where they are.
+- **Practice** (the `/start` route label) — the verb works without translation. Keeping it lowercase, English, and unadorned signals that practice is the whole point.
+
+---
+
 ## Personalidad de Marca
 
 **Tono:** Brutalmente honesto pero con humor. No es un producto que te abraza — te dice la verdad con una sonrisa dark. Piensa en un tech lead que te respeta lo suficiente como para no mentirte.
@@ -348,22 +369,46 @@ Estos son ejemplos de cómo suena el producto en momentos clave:
 
 ---
 
-## Badges & Gamificación
+## Belts & Milestones
 
-Badges deberían ser earned, no regalados. El vocabulario sigue la metáfora del dojo:
+Dos conceptos ortogonales, ambos en `/belts`. El rubric vive en [PRD-031](prd/031-belt-progression-rubric.md); aquí se documenta la voz.
 
-- **`FIRST KATA`** — Completaste tu primer ejercicio
-- **`5 STREAK`** — 5 días consecutivos con al menos un kata
-- **`POLYGLOT`** — Completaste ejercicios en 3+ lenguajes distintos
-- **`ARCHITECT`** — 10 ejercicios de whiteboard/design completados
-- **`BRUTAL TRUTH`** — Recibiste un análisis particularmente duro y volviste al día siguiente
-- **`CONSISTENT`** — 30 días con al menos un kata en el mes
-- **`SQL SURVIVOR`** — Pasaste un ejercicio de SQL después de haberlo fallado antes
-- **`SENSEI APPROVED`** — Completaste un ejercicio con evaluación perfecta del LLM experto
-- **`UNDEFINED NO MORE`** — Completaste 50 ejercicios en total
-- **`RUBBER DUCK`** — Completaste un kata de chat/discussion con score alto
+### Belts — el rank
 
-Los badges no tienen puntos ni XP. Son colecciones — están o no están. El nombre `UNDEFINED NO MORE` conecta directamente con `notdefined.dev` y es el badge de progreso más significativo.
+Una sola progresión por usuario, derivada de session history en cada lectura. Cinco grados:
+
+- **white** — default al firmar
+- **yellow** — 10 katas, 2 topic clusters distintos, 5 active days en 30
+- **green** — 40 katas, 4 clusters, 10 active days, 21 días en yellow
+- **brown** — 120 katas, 6 clusters, 15 active days, 60 días en green
+- **black** — 300 katas, 8 clusters, 18 active days, 120 días en brown
+
+El sensei no influye en la promoción. Esto es deliberado: si los verdicts contaran, habría incentivo a presionar al evaluador para que sea más suave. La promoción es función de práctica sostenida y diversidad, no de batting average.
+
+**Voz on-brand:** *"earned brown belt — Code Review track"*, *"working toward green belt"*.
+**Voz off-brand:** *"unlocked the brown belt trophy"*, *"belt achievement complete"*.
+
+Sin progress bar al siguiente rank (el dojo no babysittea). El usuario ve los cuatro factores actuales — completed katas, topic clusters distintos, active days en 30, días en rank actual — y deduce qué le falta sin que el sistema lo empuje.
+
+### Milestones — momentos puntuales
+
+Eventos one-shot que se ganan en un instante específico. No son rank; son la memoria de "esto pasó". Las llamábamos badges hasta que el rename de Sprint 023 desentangló los dos conceptos.
+
+- **`FIRST_KATA`** — completaste tu primer kata
+- **`5_STREAK`** — 5 días consecutivos con al menos un kata
+- **`POLYGLOT`** — completaste katas en los 3 types (CODE, CHAT, WHITEBOARD)
+- **`ARCHITECT`** — 10 katas de whiteboard
+- **`BRUTAL_TRUTH`** — 3 verdicts NEEDS_WORK acumulados (showed up anyway)
+- **`CONSISTENT`** — 30 días de streak
+- **`SQL_SURVIVOR`** — 3 katas con tag SQL
+- **`SENSEI_APPROVED`** — 5 verdicts PASSED limpios
+- **`UNDEFINED_NO_MORE`** — 50 katas en total (prestige milestone — conecta con `notdefined.dev`)
+- **`RUBBER_DUCK`** — 3 katas CHAT
+- **`COURSE_TYPESCRIPT_FUNDAMENTALS`** / **`COURSE_JAVASCRIPT_DOM_FUNDAMENTALS`** / **`COURSE_SQL_DEEP_CUTS`** — scroll completions
+
+Los stored slugs siguen con prefijo `COURSE_` por compatibilidad con datos persistidos; el surface visible al usuario habla de "scroll completions" (ADR 020).
+
+Los milestones no tienen puntos ni XP. Son colecciones — están o no están. El nombre `UNDEFINED_NO_MORE` conecta directamente con `notdefined.dev` y es el milestone de progreso más significativo.
 
 ---
 

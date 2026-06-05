@@ -2,7 +2,7 @@
 
 > The dojo for developers who still have something to prove. To themselves.
 
-Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the exercise. The timer runs. The sensei tells you the truth.
+Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
 
 It is not a certification platform. It is not a leaderboard. It is a daily practice for developers who want to stay technically alive.
 
@@ -12,7 +12,7 @@ Live at [dojo.notdefined.dev](https://dojo.notdefined.dev)
 
 ## How it works
 
-You enter the dojo. You get 3 kata — no skip, no reroll. You pick one: a code refactor, a system design, a technical discussion. A sensei (an LLM with a specific role and 12 years of experience in whatever domain the exercise covers) evaluates your work in real time. Not with praise, not with the answer — with honest, specific feedback on what you did and what you missed.
+You enter the dojo. You get 3 kata — no skip, no reroll. You pick one: a code refactor, a system design, a technical discussion. A sensei (an LLM with a specific role and 12 years of experience in whatever domain the kata covers) evaluates your work in real time. Not with praise, not with the answer — with honest, specific feedback on what you did and what you missed.
 
 ```
 Enter the dojo
@@ -105,12 +105,12 @@ pnpm build                            # Build all workspaces
 pnpm lint                             # Lint all workspaces
 pnpm typecheck                        # Type-check all workspaces
 pnpm test --filter=api                # Run API unit + integration tests
-pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript, JS DOM, SQL Deep Cuts)
+pnpm --filter=api db:seed:scrolls     # Seed scroll catalog (TypeScript, JS DOM, SQL Deep Cuts)
 ```
 
 ---
 
-## Exercise Types
+## Kata Types
 
 | Type | Description |
 |---|---|
@@ -118,7 +118,7 @@ pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript, JS DOM,
 | `chat` | Technical roleplay — respond to a scenario as you would in real life |
 | `whiteboard` | System design and architecture using [Drawhaus](https://drawhaus.notdefined.dev) |
 
-**60+ exercises** across 10 categories: backend, frontend, architecture, security, DevOps, SQL, design patterns, algorithms, testing, and process. Each exercise has 2 sensei variations with distinct evaluation perspectives.
+**60+ katas** across 10 categories: backend, frontend, architecture, security, DevOps, SQL, design patterns, algorithms, testing, and process. Each kata has 2 sensei variations with distinct evaluation perspectives.
 
 ---
 
@@ -126,14 +126,16 @@ pnpm --filter=api db:seed:courses     # Seed course catalog (TypeScript, JS DOM,
 
 | Feature | Description |
 |---|---|
-| **Courses** | Public learning paths at `/learn` — step-by-step exercises with instant feedback. TypeScript and SQL Deep Cuts run via Piston; JavaScript DOM exercises run in a browser iframe sandbox. Public courses (e.g. SQL Deep Cuts) can be followed without an account — progress persists in `localStorage` and merges into your account if you later sign in |
+| **Scrolls** | Public learning paths at `/scrolls` — step-by-step katas with instant feedback. TypeScript and SQL Deep Cuts run via Piston; JavaScript DOM katas run in a browser iframe sandbox. Public scrolls (e.g. SQL Deep Cuts) can be followed without an account — progress persists in `localStorage` and merges into your account if you later sign in |
 | **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
 | **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
-| **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into exercise quality |
-| **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, exercise info, and OG image for social previews |
-| **Admin review** | Aggregated feedback per exercise and variation, admin notes, exercise versioning, archive lifecycle |
-| **Leaderboard** | Monthly and all-time rankings by consistency |
-| **Badges** | 10 achievement badges across practice, consistency, and mastery categories |
+| **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
+| **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
+| **Admin review** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle |
+| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The sensei never influences advancement (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
+| **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, scroll completions, consistency streaks. Surfaced alongside the belt on `/belts` |
+| **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
+| **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel that explains what kumite will be — not a relabel of the old leaderboard |
 | **Responsive** | Mobile-first with sidebar (desktop) and bottom nav (mobile) |
 | **Error reporting** | Every unhandled error fans out to three sinks (console, Postgres, Sentry) via the `ErrorReporterPort` — see [docs/adr/017-error-reporting-port.md](docs/adr/017-error-reporting-port.md). Sentry is opt-in; without a DSN the Postgres + console fallback still captures everything, visible at `/admin/errors` |
 
@@ -195,8 +197,8 @@ Your data stays on your server. Your kata history, your verdicts, your progressi
 
 The dojo does not enforce rules technically. It trusts you.
 
-- No AI during the exercise — debrief with AI after
-- No skipping exercises you find uncomfortable
+- No AI during the kata — debrief with AI after
+- No skipping katas you find uncomfortable
 - The timer runs. You submit what you have.
 
 If you cheat yourself here, you cheat yourself everywhere.

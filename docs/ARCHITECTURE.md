@@ -58,8 +58,8 @@ The domain is split into four contexts with explicit boundaries. Events crossing
 │ Recognition │        │ Content             │
 │ (Supporting)│        │ (Supporting)        │
 │             │        │                     │
-│ Badge       │        │ Exercise · Variation│
-│ Streak      │        │ Kata catalog        │
+│ Belt        │        │ Kata · Variation    │
+│ Milestone   │        │ Kata catalog        │
 │ ShareCard   │        │                     │
 └─────────────┘        └─────────────────────┘
 
@@ -70,8 +70,8 @@ The domain is split into four contexts with explicit boundaries. Events crossing
 ```
 
 - **Practice** is the core domain — where value is created. Everything else supports it.
-- **Content** provides the raw material (exercises, variations) that Practice consumes.
-- **Recognition** reacts to Practice events to update badges, streaks, and generate share cards.
+- **Content** provides the raw material (katas, variations) that Practice consumes.
+- **Recognition** reacts to Practice events to update milestones, streaks, and generate share cards.
 - **Identity** is generic infrastructure — user management and authentication.
 
 ---
@@ -82,13 +82,13 @@ The domain is split into four contexts with explicit boundaries. Events crossing
 
 **Session** — Aggregate Root
 
-The central concept. Created when a user picks a kata. Once created, the exercise body is generated and locked — it never changes. The user committed; there is no escape.
+The central concept. Created when a user picks a kata. Once created, the kata body is generated and locked — it never changes. The user committed; there is no escape.
 
 ```typescript
 class Session {
   id: SessionId
   userId: UserId
-  exerciseId: ExerciseId
+  kataId: KataId
   variationId: VariationId
   body: string               // generated at creation, immutable
   status: SessionStatus      // "active" | "completed" | "failed"
@@ -141,20 +141,20 @@ type Verdict = "passed" | "passed_with_notes" | "needs_work"
 
 ### Content Context
 
-**Exercise** — Aggregate Root
+**Kata** — Aggregate Root
 
 The template. Created by the owner, published manually or via Dojocho (future). The template is immutable once published — variations handle persona/context changes.
 
 ```typescript
-class Exercise {
-  id: ExerciseId
+class Kata {
+  id: KataId
   title: string
   description: string        // shown to the user
   duration: number           // minutes
   difficulty: Difficulty     // "easy" | "medium" | "hard"
   category: string
-  type: ExerciseType         // "code" | "chat" | "whiteboard"
-  status: ExerciseStatus     // "draft" | "published" | "archived"
+  type: KataType         // "code" | "chat" | "whiteboard"
+  status: KataStatus     // "draft" | "published" | "archived"
   language: string[]         // ["ruby", "typescript", "agnostic", ...]
   tags: string[]
   topics: string[]           // areas covered, used in "topics to review"
@@ -164,14 +164,14 @@ class Exercise {
 }
 ```
 
-**Variation** — Entity (child of Exercise)
+**Variation** — Entity (child of Kata)
 
-At least one per exercise. Allows the same exercise to have different LLM personas or contexts, adding variability without duplication.
+At least one per kata. Allows the same kata to have different LLM personas or contexts, adding variability without duplication.
 
 ```typescript
 class Variation {
   id: VariationId
-  exerciseId: ExerciseId
+  kataId: KataId
   ownerRole: string          // "Senior DBA with 12 years in PostgreSQL"
   ownerContext: string       // technical briefing for the LLM
   createdAt: Date
@@ -184,7 +184,7 @@ class Variation {
 
 Reacts to events published by the Practice context. Has no direct dependency on Practice code — only on the event contracts.
 
-- **Badge** — awarded when specific patterns in a user's session history are met
+- **Milestone** — awarded when specific patterns in a user's session history are met
 - **Streak** — days with at least one completed session
 - **ShareCard** — generated on `SessionCompleted`, carries the verdict and a memorable line from the analysis
 
@@ -206,10 +206,10 @@ Events published by aggregates. The only coupling between bounded contexts.
 | `SessionCreated` | Session | (internal — triggers body generation) |
 | `AttemptSubmitted` | Session | (internal — triggers sensei evaluation) |
 | `EvaluationCompleted` | Session | (internal — checks for final verdict) |
-| `SessionCompleted` | Session | Recognition (badge, streak, share card) |
-| `SessionFailed` | Session | Recognition (streak reset check) |
-| `ExercisePublished` | Exercise | Content catalog query cache invalidation |
-| `BadgeEarned` | Recognition | (future: notification context) |
+| `SessionCompleted` | Session | Recognition (belt, milestone, share card) |
+| `SessionFailed` | Session | Recognition (streak reset check, belt recalculation) |
+| `KataPublished` | Kata | Content catalog query cache invalidation |
+| `MilestoneEarned` | Recognition | (future: notification context) |
 
 ---
 
@@ -245,10 +245,10 @@ interface SessionRepositoryPort {
   findActiveByUserId(userId: UserId): Promise<Session | null>
 }
 
-interface ExerciseRepositoryPort {
-  findEligible(userId: UserId, filters: ExerciseFilters): Promise<Exercise[]>
-  findById(id: ExerciseId): Promise<Exercise | null>
-  save(exercise: Exercise): Promise<void>
+interface KataRepositoryPort {
+  findEligible(userId: UserId, filters: KataFilters): Promise<Kata[]>
+  findById(id: KataId): Promise<Kata | null>
+  save(kata: Kata): Promise<void>
 }
 
 interface UserRepositoryPort {
@@ -276,7 +276,7 @@ interface EventBusPort {
 | `LLMPort` | `AnthropicStreamAdapter` | Primary; also supports OpenAI-compatible endpoints |
 | `LLMPort` | `MockLLMAdapter` | Used in tests — deterministic, no API calls |
 | `SessionRepositoryPort` | `PostgresSessionRepository` | Primary persistence |
-| `ExerciseRepositoryPort` | `PostgresExerciseRepository` | Includes eligibility filter (6-month window) |
+| `KataRepositoryPort` | `PostgresKataRepository` | Includes eligibility filter (6-month window) |
 | `UserRepositoryPort` | `PostgresUserRepository` | |
 | `WhiteboardPort` | `DrawhausHttpClient` | HTTP client for Drawhaus API |
 | `EventBusPort` | `InMemoryEventBus` | Phase 0; synchronous, in-process |
@@ -290,7 +290,7 @@ Use cases orchestrate domain objects and call ports. They do not contain busines
 ```typescript
 // Practice context use cases
 StartSession(userId, mood, duration)          → Session
-  → calls ExerciseRepositoryPort.findEligible()
+  → calls KataRepositoryPort.findEligible()
   → generates body via LLMPort
   → saves via SessionRepositoryPort
   → publishes SessionCreated
@@ -303,8 +303,8 @@ SubmitAttempt(sessionId, userResponse)        → AsyncIterator<EvaluationToken>
       → if isFinalEvaluation: publishes SessionCompleted or SessionFailed
       → saves Session
 
-GetExerciseOptions(userId, mood, duration)    → Exercise[]
-  → calls ExerciseRepositoryPort.findEligible() with 6-month exclusion window
+GetKataOptions(userId, mood, duration)    → Kata[]
+  → calls KataRepositoryPort.findEligible() with 6-month exclusion window
 ```
 
 ---
@@ -350,10 +350,10 @@ LLM_MODEL=claude-sonnet-4-20250514
 ## Key Design Decisions
 
 **`body` lives in Session, not Variation.**
-The exercise is the template. The session is the instance. The body is generated once at session creation and locked. Refreshing the page always shows the same exercise.
+The kata is the template. The session is the instance. The body is generated once at session creation and locked. Refreshing the page always shows the same kata.
 
 **Mood and time are filters, not persisted data.**
-Query parameters that filter available exercises — not saved to the database. No complexity, no tracking, no inferred behavior. Honor code.
+Query parameters that filter available katas — not saved to the database. No complexity, no tracking, no inferred behavior. Honor code.
 
 **No fixed attempt counter — the sensei decides.**
 The sensei determines when it has enough to evaluate. It can ask follow-up questions (max 2 exchanges) before giving a final verdict. This mirrors real technical discussions.
@@ -361,18 +361,18 @@ The sensei determines when it has enough to evaluate. It can ask follow-up quest
 **The sensei evaluates the process, not the answer.**
 Evaluation focuses on reasoning, tradeoffs identified, and communication — not whether the solution was optimal. This is enforced in the prompt architecture, not in application code.
 
-**No repeat exercises within 6 months.**
-Enforced in `ExerciseRepositoryPort.findEligible()` — the exclusion window is a query concern, not a domain invariant.
+**No repeat katas within 6 months.**
+Enforced in `KataRepositoryPort.findEligible()` — the exclusion window is a query concern, not a domain invariant.
 
-**Exercises are multi-language by default.**
-A developer should be able to reason about Ruby even if they primarily write TypeScript. Exercises can specify `language: ["agnostic"]` for language-independent scenarios.
+**Katas are multi-language by default.**
+A developer should be able to reason about Ruby even if they primarily write TypeScript. Katas can specify `language: ["agnostic"]` for language-independent scenarios.
 
 **`InMemoryEventBus` for Phase 0.**
 Simple, synchronous, in-process. No infrastructure dependency. Upgradeable to Redis/BullMQ when cross-process event delivery becomes necessary (Phase 2+).
 
 ---
 
-## Exercise Types
+## Kata Types
 
 ### code
 Split-panel view. Left: context and requirements. Right: code editor (no autocomplete — honor code). The sensei reviews the submitted code.
@@ -396,4 +396,4 @@ Kata come from:
 - Stack Overflow and technical blog posts
 - Contributions from invited users (require creator approval or LLM QA gate — Phase 3)
 
-Quality bar: every exercise should leave the user feeling they practiced or learned something, even if they failed. Wasted time is the one failure mode the product cannot afford.
+Quality bar: every kata should leave the user feeling they practiced or learned something, even if they failed. Wasted time is the one failure mode the product cannot afford.

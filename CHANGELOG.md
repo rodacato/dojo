@@ -4,6 +4,26 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 023 — Dojo ubiquitous language pass (2026-06-05)
+**Phase 1 — Alpha**
+
+The sprint where the codebase finally speaks one vocabulary. The product was already half-committed to the dojo metaphor (dojo, sensei, kata) but the URLs and the code still spoke generic SaaS (`/learn`, `/badges`, `/leaderboard`, `Exercise`, `Course`, `Badge`). The seam read as indecision. Doing this before Phase 1 invites scale meant zero external links to break and no share cards in circulation to regenerate.
+
+- **Routes renamed end-to-end** (PRD-030) — `/kata` → `/katas`, `/learn` → `/scrolls`, `/playground` → `/engawa`, `/badges` → `/belts`, `/share/course/*` → `/share/scroll/*`, `/admin/exercises` → `/admin/katas`, `/admin/courses` → `/admin/scrolls`. Old paths deleted (zero users, no 301s). `/dashboard` and `/start` stay — generic terms that earn their place.
+- **`/leaderboard` deleted, not renamed** — kumite is sparring, not ranking. Surfacing rank lives on `/belts` (identity), not on a competitive leaderboard surface. The leaderboard endpoint, page, types, and client method are all gone. PRD-031 documents the leaderboard-as-identity-corruption rationale.
+- **`/kumite` placeholder shipped** — reserved URL with an honest "coming soon" panel that explains kumite will be 1v1 sparring with paired evaluation. Not built; not a relabel of leaderboard. Future PRD covers the feature design.
+- **Belts system shipped** (PRD-031, Spec 028) — `BeltRank` value object (white / yellow / green / brown / black), `BELT_THRESHOLDS` table in `domain/recognition/belt.ts`, `CalculateBelt` use case (stubbed to white at sprint close; full factor projection deferred). Hard constraint: the sensei does **not** influence belt advancement. Rubric is volume + topic-cluster diversity + active days + cooldown — derivable from existing session/attempt data, no migrations required to revise.
+- **Badge → Milestone** — the existing `Badge` records (FIRST_KATA, POLYGLOT, COURSE_*) are single-moment achievements, not rank. PRD-030 originally proposed renaming them to `Belt`; the rename inventory caught the conflation. They are renamed to `Milestone` instead. `/belts` page surfaces both: belt rank as headline + milestones as a section below.
+- **Domain code ubiquitous language** — `Exercise` aggregate → `Kata`, `Course` aggregate → `Scroll`, `Badge` aggregate → `Milestone`. Touched: shared schemas, domain layer, application use cases, infrastructure adapters, HTTP routes, container wiring, event handlers, frontend pages, App.tsx, Sidebar/BottomNav, API client. ~157 files renamed across the monorepo.
+- **Schema export rename, DB names preserved** (ADR 020) — Spec 028's "alias on import" approach was insufficient: Drizzle's relational query API binds to the exported table variable name. Adjusted: `schema.ts` exports `katas`, `scrolls`, `userMilestones`, `scrollProgress` directly, while DB table names stay legacy via `pgTable('exercises', ...)`. Column property names also follow ubiquitous language (`sessions.kataId` maps to column `exercise_id`). The schema file becomes the single canonical mapping point between legacy DB shape and dojo vocabulary.
+- **Topic clusters helper** — `topicCluster(topic: Topic): TopicCluster` added to `@dojo/shared`. The mapping is `Record<Topic, TopicCluster>` so TypeScript fails the build if a new topic is added without a cluster — invariant enforced at compile time, no runtime test needed.
+- **Sensei prompts — variables renamed, voice deferred to Day 6 calibration gate** — internal props in `prompts/sensei.ts` renamed (`exerciseTitle` → `kataTitle`). Literal prompt strings still say *"Exercise:"* and *"this is a bug-fix exercise"*; updating them changes verdict distribution and ships behind a calibration test (10-kata fixed set, ±10pt drift gate per difficulty bucket). Deferred to a follow-up.
+- **Step type `'exercise'` stays** — orthogonal to the aggregate rename. It's the step kind inside a Scroll, not the renamed aggregate. Left intact in `StepType`.
+- **Docs aligned in the same sprint** — `ARCHITECTURE.md`, `README.md`, `AGENTS.md`, `BRANDING.md` updated. BRANDING gained a glossary section (kata / sensei / scroll / belt / milestone / engawa / kumite — each with on-brand and off-brand examples) plus a rewritten Belts & Milestones section. Old ADRs / archived sprints / archived specs were **not** edited — they are history.
+- **Verification** — `pnpm typecheck` green across the monorepo (shared + api + web). Belt computation stubbed (Day 5 stub returns white belt — production rollout depends on completing the SessionRepository projection in a follow-up). Visual polish (belt rings, share card variant) and the sensei calibration gate are explicit follow-ups, not blockers.
+
+---
+
 ## Documentation cleanup (2026-06-05)
 
 The `docs/` folder had drifted: `docs/wip/` had become a permanent limbo for research that had already materialized into specs, root-level `CODE_SCHOOL_PLAN.md` and `MARKET_STUDY.md` were ungrouped with the rest, and early-phase PRDs (001-005, 008-010, 013) sat next to active ones, signaling "still relevant" when they were not. The fix was structural, not cosmetic.
