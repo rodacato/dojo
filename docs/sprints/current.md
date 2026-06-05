@@ -1,10 +1,20 @@
-# Sprint 023 — _(unscheduled)_
+# Sprint 023 — Dojo language pass
 
-S022 closed 2026-04-26. Next sprint is open — see [backlog.md](backlog.md) for triaged candidates.
+> **Status:** scoped, awaiting kickoff
+> **Planned:** 2026-06-05
+> **Plan:** [PRD-032](../prd/032-sprint-023-planning.md)
+> **Dependent PRDs:** [PRD-030](../prd/030-dojo-terminology-routes.md) (language pass), [PRD-031](../prd/031-belt-progression-rubric.md) (belt rubric)
 
-**Hard carry-forwards into S023:**
+S022 closed 2026-04-26. S023 scoped 2026-06-05 around the ubiquitous-language pass — routes, domain code (`Exercise → Kata`, `Course → Scroll`, `Badge → Belt`), brand voice, visual, plus `/belts` shipped with a real progression rubric.
 
-- **First friend invite dispatch.** The product surface is ready (S021 + S022). The blocker is humans-only — creator picks a friend, sends the invite, and the friend completes ≥1 kata. Audit doc waiting at [docs/audits/2026-04-friend-feedback.md](../audits/2026-04-friend-feedback.md). If unpopulated within 7 days of dispatch, the slot rotates and the doc is cut.
-- **Smoke-suite staging environment.** S022 shipped `complete-kata` and `playground-anon-run` smoke specs that skip on prod runs without their gating env vars. Stand up a staging deploy with `LLM_ADAPTER_FORMAT=mock` + Turnstile dummy keys so the full smoke runs on every deploy, not just in prod where two specs skip.
+**Hard carry-forwards into S023 (folded into PRD-032 scope):**
 
-Otherwise: the next sprint is shaped around what S022's friend feedback (and the playground funnel metrics) actually surface — not around a pre-baked plan.
+- **First friend invite dispatch.** Humans-only — not a code task. Adrian dispatches when the language pass is live. Audit doc at [docs/audits/2026-04-friend-feedback.md](../audits/2026-04-friend-feedback.md).
+- **Smoke-suite staging environment.** Staging deploy with `LLM_ADAPTER_FORMAT=mock` + Turnstile dummy keys so the full smoke suite runs on every deploy. In sprint scope (PRD-032 §7).
+
+**Out of scope, parked:**
+
+- Kumite feature itself (only the route reservation ships)
+- Per-track belt marks, rust indicator (v1.1)
+- DB table renames (mapping at adapter layer)
+- `/dashboard` and `/start` renames (stay)
