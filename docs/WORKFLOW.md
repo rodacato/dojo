@@ -1,5 +1,7 @@
 # Dojo — Workflow & Documentation Guide
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 ## Philosophy
 
 Documentation is the foundation, not an afterthought. Before writing a line of code, the intention lives in a document. Before merging, the docs reflect the reality. This is not bureaucracy — it is the difference between a project that grows coherently and one that accumulates confusion.
@@ -16,23 +18,32 @@ Idea → Backlog → [Triage] → PRD (optional) → Spec (optional) → Impleme
 
 ## Documentation Map
 
-| Document | Location | Purpose |
-|---|---|---|
-| `CLAUDE.md` | `/CLAUDE.md` | Agent instructions, commands, project conventions |
-| `AGENTS.md` | `/AGENTS.md` | AI agent behavior, identity, expert panel routing, trigger phrases |
-| `docs/VISION.md` | `docs/VISION.md` | Why Dojo exists, philosophy, who it's for |
-| `docs/IDENTITY.md` | `docs/IDENTITY.md` | Primary build persona — decision style and defaults |
-| `docs/EXPERTS.md` | `docs/EXPERTS.md` | Virtual advisory panel — 11 specialist personas (quick reference at top) |
-| `docs/ROADMAP.md` | `docs/ROADMAP.md` | Active phase status — current phase only |
-| `docs/BRANDING.md` | `docs/BRANDING.md` | Colors, typography, tokens, voice, UI components |
-| `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | DDD model, bounded contexts, ports, events, decisions |
-| `docs/prd/` | `docs/prd/` | Exploratory PRDs — pre-spec, multi-perspective, disposable |
-| `docs/sprints/current.md` | `docs/sprints/current.md` | Active work block — committed items and expected outcome |
-| `docs/sprints/backlog.md` | `docs/sprints/backlog.md` | Ideas by triage state — untriaged, next block, later, explore, discarded |
-| `docs/sprints/archive/` | `docs/sprints/archive/` | Closed blocks with retros |
-| `CONTRIBUTING.md` | `/CONTRIBUTING.md` | How to set up, branch, commit, and open a PR |
-| `SECURITY.md` | `/SECURITY.md` | Vulnerability reporting, scope, response timeline |
-| `LICENSE.md` | `/LICENSE.md` | MIT License |
+For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs/README.md`](README.md).
+
+| Document | Location | Lifecycle | Purpose |
+|---|---|---|---|
+| `CLAUDE.md` | `/CLAUDE.md` | Canonical | Agent instructions, commands, project conventions |
+| `AGENTS.md` | `/AGENTS.md` | Canonical | AI agent behavior, identity, expert panel routing, trigger phrases |
+| `docs/README.md` | `docs/README.md` | Canonical | Documentation map — where to start, what is canonical vs. disposable |
+| `docs/VISION.md` | `docs/VISION.md` | Canonical | Why Dojo exists, philosophy, who it's for |
+| `docs/IDENTITY.md` | `docs/IDENTITY.md` | Canonical | Primary build persona — decision style and defaults |
+| `docs/EXPERTS.md` | `docs/EXPERTS.md` | Canonical | Virtual advisory panel — 11 specialist personas (quick reference at top) |
+| `docs/ROADMAP.md` | `docs/ROADMAP.md` | Canonical | Active phase status, sprint and spec history |
+| `docs/BRANDING.md` | `docs/BRANDING.md` | Canonical | Colors, typography, tokens, voice, UI components |
+| `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | Canonical | DDD model, bounded contexts, ports, events, decisions |
+| `docs/courses/` | `docs/courses/` | Canonical | Per-language course design + `testcode-pattern.md` authoring reference |
+| `docs/sprints/current.md` | `docs/sprints/current.md` | Live | Active work block — committed items and expected outcome |
+| `docs/sprints/backlog.md` | `docs/sprints/backlog.md` | Live | Ideas by triage state — untriaged, next block, later, explore, discarded |
+| `docs/adr/` | `docs/adr/` | History (immutable) | Architecture Decision Records — never deleted |
+| `docs/specs/` | `docs/specs/` | History (immutable) | Sprint-tied implementation specs |
+| `docs/sprints/archive/` | `docs/sprints/archive/` | History (immutable) | Closed blocks with retros |
+| `docs/audits/` | `docs/audits/` | History | Time-stamped audits (friend feedback, security, etc.) |
+| `docs/prd/` | `docs/prd/` | Exploratory (disposable) | Pre-spec PRDs. Close each with: `Materialized in spec-NNN` / `Discarded` / `Archived to research/` |
+| `docs/research/` | `docs/research/` | Archived research | Background plans/analyses that informed past decisions, kept for traceability |
+| `docs/research/prd-archive/` | `docs/research/prd-archive/` | Archived research | PRDs that served their purpose during early planning phases |
+| `CONTRIBUTING.md` | `/CONTRIBUTING.md` | Canonical | How to set up, branch, commit, and open a PR |
+| `SECURITY.md` | `/SECURITY.md` | Canonical | Vulnerability reporting, scope, response timeline |
+| `LICENSE.md` | `/LICENSE.md` | Canonical | MIT License |
 
 ---
 

@@ -1,5 +1,7 @@
 # Vision
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 ## The Problem
 
 Vibe coding — delegating all technical thinking to AI — is creating cognitive atrophy in developers. It's not a knowledge problem. It's that the path of least resistance is always the prompt. The technical muscle atrophies when you stop using it, the same way it happens with calculators or GPS.

@@ -188,7 +188,7 @@ async function handleRun() {
 
 ## 4. testCode pattern for DOM exercises
 
-**File to create:** `docs/wip/IFRAME-TESTCODE-PATTERN.md`
+**File to create:** [`docs/courses/testcode-pattern.md`](../courses/testcode-pattern.md)
 
 Full testCode template for DOM exercises:
 

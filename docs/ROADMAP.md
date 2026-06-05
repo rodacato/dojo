@@ -1,5 +1,7 @@
 # Roadmap
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 This document is the project map: where it came from, where it is, and where it is going. No dates — this is a personal project. Each milestone is defined by what becomes possible, not by when.
 
 Active work: [`docs/sprints/current.md`](sprints/current.md)
@@ -116,19 +118,19 @@ Does not start until Phase 0 is in real daily use.
 | # | PRD | Description | Status |
 |---|---|---|---|
 | 000 | [Template](prd/000-template.md) | Template for exploratory PRDs | 📋 Template |
-| 001 | [Frontend features & data model](prd/001-frontend-features-data-model.md) | Feature inventory from all screens, data model gaps by phase | 🔍 Exploring |
-| 002 | [API design](prd/002-api-design.md) | Endpoints, auth flow, roles, request/response contracts, WS protocol | 🔍 Exploring |
-| 003 | [Implementation phasing](prd/003-implementation-phasing.md) | Build order by value — critical path for first usable state | 🔍 Exploring |
-| 004 | [Local dev strategy](prd/004-local-dev-strategy.md) | What to mock vs real, enhanced MockLLMAdapter, dev workflow | 🔍 Exploring |
-| 005 | [Expert panel review](prd/005-expert-panel-review.md) | Full panel validation — gaps, adjustments, what was missed | 🔍 Exploring |
+| 001 | [Frontend features & data model](research/prd-archive/001-frontend-features-data-model.md) | Feature inventory from all screens, data model gaps by phase | 📦 Archived |
+| 002 | [API design](research/prd-archive/002-api-design.md) | Endpoints, auth flow, roles, request/response contracts, WS protocol | 📦 Archived |
+| 003 | [Implementation phasing](research/prd-archive/003-implementation-phasing.md) | Build order by value — critical path for first usable state | 📦 Archived |
+| 004 | [Local dev strategy](research/prd-archive/004-local-dev-strategy.md) | What to mock vs real, enhanced MockLLMAdapter, dev workflow | 📦 Archived |
+| 005 | [Expert panel review](research/prd-archive/005-expert-panel-review.md) | Full panel validation — gaps, adjustments, what was missed | 📦 Archived |
 | 006 | [Seed kata drafts](prd/006-seed-kata-drafts.md) | 8 hand-crafted kata (4 CODE, 3 CHAT, 1 WHITEBOARD), 2 variations each | 📝 Draft |
 | 007 | [Sprint-002 readiness](prd/007-sprint-002-readiness.md) | Consolidated decisions, resolved questions, spec outline for sprint-002 | ✅ Confirmed |
-| 008 | [Kata batch 2](prd/008-kata-batch-2.md) | 12 kata — security, testing, database performance, API design | 📝 Draft |
-| 009 | [Kata batch 3](prd/009-kata-batch-3.md) | 12 kata — communication, debugging, performance, architecture | 📝 Draft |
-| 010 | [Kata batch 4](prd/010-kata-batch-4.md) | 12 kata — operations, frontend, team dynamics, refactoring | 📝 Draft |
+| 008 | [Kata batch 2](research/prd-archive/008-kata-batch-2.md) | 12 kata — security, testing, database performance, API design | 📦 Archived |
+| 009 | [Kata batch 3](research/prd-archive/009-kata-batch-3.md) | 12 kata — communication, debugging, performance, architecture | 📦 Archived |
+| 010 | [Kata batch 4](research/prd-archive/010-kata-batch-4.md) | 12 kata — operations, frontend, team dynamics, refactoring | 📦 Archived |
 | 011 | [Kata feedback system](prd/011-kata-feedback-system.md) | Structured exercise quality signal — clarity, timing, evaluation fairness | 🔍 Exploring |
 | 012 | [Sensei system prompts](prd/012-sensei-system-prompts.md) | 3 prompt variations for testing before wiring WebSocket | 📝 Draft |
-| 013 | [UX/UI gap analysis](prd/013-ux-gap-analysis.md) | Missing states, mobile layouts, edge cases — screen by screen | 🔍 Exploring |
+| 013 | [UX/UI gap analysis](research/prd-archive/013-ux-gap-analysis.md) | Missing states, mobile layouts, edge cases — screen by screen | 📦 Archived |
 | 014 | [Landing page copy](prd/014-landing-page-copy.md) | Hero, problem statement, how it works, access section | 📝 Draft |
 | 015 | [Bearer token auth](prd/015-bearer-token-auth.md) | Replace cross-domain cookies with Bearer tokens | ✅ Advancing to spec |
 | 016 | [Sprint 004 planning](prd/016-sprint-004-planning.md) | Polish, branding & dogfooding sprint scope | ✅ Delivered |

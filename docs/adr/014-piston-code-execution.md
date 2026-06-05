@@ -57,4 +57,4 @@ PISTON_COMPILE_TIMEOUT=30000
 
 ## Ref
 
-Full implementation plan: `docs/wip/EXECUTION_PLAN.md`
+Full implementation plan: [`docs/research/EXECUTION_PLAN.md`](../research/EXECUTION_PLAN.md)

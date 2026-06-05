@@ -15,8 +15,8 @@ A screen-by-screen audit of missing states, mobile behavior, edge cases, and cop
 ## Source material
 
 - Initial Stitch mockups (24 screens, not maintained in-repo — historical)
-- `docs/prd/001-frontend-features-data-model.md` — feature inventory
-- `docs/prd/005-expert-panel-review.md` — Soren's feedback
+- `001-frontend-features-data-model.md` — feature inventory (sibling in this folder)
+- `005-expert-panel-review.md` — Soren's feedback (sibling in this folder)
 
 ---
 

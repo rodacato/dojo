@@ -1,5 +1,7 @@
 # Dojo — Virtual Expert Advisory Panel
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 Specialists for every domain where the wrong call has lasting consequences. They disagree openly, decide clearly, and document why.
 
 The primary build identity (Kira Tanaka, Fractional CTO) consults this panel when a decision requires a perspective outside her day-to-day scope. See `docs/IDENTITY.md` for when and how she uses the panel.

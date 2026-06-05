@@ -1,5 +1,7 @@
 # Dojo — Branding, UX/UI & Design Direction
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 ## El Nombre
 
 **Dojo** — Del japonés, el lugar donde se practica un arte hasta dominarlo.

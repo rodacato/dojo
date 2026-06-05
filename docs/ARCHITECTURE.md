@@ -1,5 +1,7 @@
 # Architecture
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 Everything you need to understand the system before writing a line of code — the ecosystem, domain model, bounded contexts, ports, events, and key decisions.
 
 ---

@@ -52,6 +52,7 @@ Expert panel output must end with: **recommended option, key risks, fallback/rol
 
 | Source | Purpose |
 |---|---|
+| [docs/README.md](docs/README.md) | Documentation map — entry point, lifecycle organization |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Milestones, phases, sprint and spec history |
 | [docs/sprints/current.md](docs/sprints/current.md) | Active block — committed items and expected outcome |
 | [docs/sprints/backlog.md](docs/sprints/backlog.md) | Ideas by triage state |

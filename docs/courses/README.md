@@ -309,7 +309,7 @@ The routing rule:
 - `course.language === 'javascript-dom'` → frontend `IframeSandboxRunner`, no API call.
 - Anything else → `POST /learn/execute` → Piston.
 
-Course authors do not pick the path manually. The frontend `StepEditor` reads `course.language` and routes. Test code for iframe steps follows the `postMessage` contract documented in `docs/wip/IFRAME-TESTCODE-PATTERN.md`. The contract is structurally identical to the Piston test harness; the difference is the transport.
+Course authors do not pick the path manually. The frontend `StepEditor` reads `course.language` and routes. Test code for iframe steps follows the `postMessage` contract documented in [`testcode-pattern.md`](./testcode-pattern.md). The contract is structurally identical to the Piston test harness; the difference is the transport.
 
 Future browser-native runtimes (Pyodide for Python in browser, Ruby.wasm, etc.) will reuse the iframe pattern. None are committed in v1.
 

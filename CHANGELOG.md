@@ -4,6 +4,22 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Documentation cleanup (2026-06-05)
+
+The `docs/` folder had drifted: `docs/wip/` had become a permanent limbo for research that had already materialized into specs, root-level `CODE_SCHOOL_PLAN.md` and `MARKET_STUDY.md` were ungrouped with the rest, and early-phase PRDs (001-005, 008-010, 013) sat next to active ones, signaling "still relevant" when they were not. The fix was structural, not cosmetic.
+
+- **`docs/research/` introduced** — Background plans/analyses that informed past decisions and are still cited from canonical docs (ADRs, courses/README) live here. Moved in: `CODE_SCHOOL_PLAN.md`, `EXECUTION_PLAN.md`, `EXERCISE-VARIETY-ANALYSIS.md`, `MARKET_RESEARCH.md`, `SPRINT-014-alt-iframe-sandbox.md`. Stale references in ADR 014, ADR 016, spec 021, sprint-015 archive, and `courses/README.md` updated to the new paths.
+- **`docs/courses/testcode-pattern.md`** — `IFRAME-TESTCODE-PATTERN.md` was an active reference for course authors, not WIP. Promoted out of `wip/` into `courses/` next to `courses/README.md` where it gets discovered.
+- **`docs/research/prd-archive/`** — Early-phase exploratory PRDs (001-005, 008-010, 013) that served their purpose during Phase 0 planning moved out of `docs/prd/`. `ROADMAP.md` PRD index updated to point to the archive and marks them `Archived`.
+- **`docs/wip/` deleted** — The concept was the bug. In-progress work belongs in `sprints/current.md` or in a branch, not in a doc folder that never empties. `.gitignore` cleaned up accordingly.
+- **`docs/MARKET_STUDY.md` deleted** — Survey methodology written for Phase 0 problem validation, never executed (alpha cohort feedback served that role instead). Zero references.
+- **`docs/README.md` introduced** — Entry point that organizes everything by lifecycle: canonical (source of truth) / live (active work) / history (immutable) / exploratory & archived research (disposable). Reading order by role (new contributor / AI agent / picking up active work / course author / decision archaeology).
+- **Status headers on the seven canonical docs** — `VISION`, `IDENTITY`, `EXPERTS`, `ROADMAP`, `WORKFLOW`, `ARCHITECTURE`, `BRANDING` now carry a one-liner declaring their lifecycle. A reader knows at a glance whether they are reading current truth or a frozen artifact.
+- **`docs/WORKFLOW.md` doc map rewritten** — Now includes a Lifecycle column so each doc declares its expected mutation rate. `AGENTS.md` build context now points at `docs/README.md` as the entry point.
+- **What was *not* touched** — `docs/specs/`, `docs/adr/`, `docs/sprints/archive/`, and `docs/courses/{language}.md` are project history or active references; left untouched. `stitch/` was left in place pending Adrian's verification that its ciclo terminó.
+
+---
+
 ## Sprint 022 — Open the door: friend cohort + public playground (2026-04-26)
 **Phase 1 — Alpha → hook experiment**
 

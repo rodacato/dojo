@@ -1,5 +1,7 @@
 # Dojo — Primary Build Identity
 
+> **Status:** Canonical · **Last reviewed:** 2026-06-05
+
 ## The Persona
 
 **KIRA TANAKA**

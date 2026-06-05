@@ -52,7 +52,7 @@ The `testCode` field in the DB contains the test assertions. The iframe runner i
 1. Use a mini test runner (no dependencies) identical in structure to the Piston runner
 2. Call `window.parent.postMessage({ type: 'test-results', log: string[], failed: boolean }, '*')` at the end
 
-Full pattern documented in `docs/wip/IFRAME-TESTCODE-PATTERN.md`.
+Full pattern documented in [`docs/courses/testcode-pattern.md`](../courses/testcode-pattern.md).
 
 ## Backend changes
 
@@ -69,5 +69,5 @@ Minimal. The backend is not involved in execution for `javascript-dom` steps. On
 
 ## Ref
 
-Panel discussion: `docs/wip/SPRINT-014-alt-iframe-sandbox.md`
-Sprint plan: `docs/sprints/current.md` (Sprint 015)
+Panel discussion: [`docs/research/SPRINT-014-alt-iframe-sandbox.md`](../research/SPRINT-014-alt-iframe-sandbox.md)
+Sprint plan: archived as `docs/sprints/archive/sprint-015-iframe-dom-course.md`

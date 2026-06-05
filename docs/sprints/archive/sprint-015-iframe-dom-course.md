@@ -40,7 +40,7 @@
 
 ## Part 4 — testCode DOM Pattern
 
-- [x] `docs/wip/IFRAME-TESTCODE-PATTERN.md` — referencia para escribir testCode en cursos DOM
+- [x] [`docs/courses/testcode-pattern.md`](../../courses/testcode-pattern.md) — referencia para escribir testCode en cursos DOM
 - [x] Mini runner en JS puro (sin tipos TypeScript)
 - [x] `window.parent.postMessage({ type: 'test-results', log, failed }, '*')` como protocolo de salida
 - [x] Patrones documentados: función que consulta el DOM, función que muta, listeners de eventos, "fix the bug"
