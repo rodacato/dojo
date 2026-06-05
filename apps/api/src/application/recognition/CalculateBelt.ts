@@ -1,40 +1,26 @@
 import type { SessionRepositoryPort } from '../../domain/practice/ports'
-import type { KataRepositoryPort } from '../../domain/content/ports'
-import { rankFromFactors, type Belt } from '../../domain/recognition/belt'
+import { computeBeltFromHistory, type Belt } from '../../domain/recognition/belt'
 import type { UserId } from '../../domain/shared/types'
 
 interface Deps {
   sessionRepo: SessionRepositoryPort
-  kataRepo: KataRepositoryPort
+  now?: () => Date
 }
 
 /**
- * Computes a user's current belt rank + factors from session history.
- * Pure derivation — no persistence write. PRD-031 Option C: rank is a
- * function of completed katas, distinct topic clusters touched, active
- * days in the trailing 30, and days at the previous rank (cooldown).
- *
- * `daysAtRank` is recomputed by walking history. If perf becomes a
- * concern, persist belt transitions later — derivable, no migration debt.
+ * Computes a user's current belt rank + factors from completed session
+ * history (PRD-031 Option C). Pure derivation — no persistence write.
+ * Sensei verdicts are intentionally NOT inputs to the rubric.
  */
 export class CalculateBelt {
-  constructor(private readonly deps: Deps) {}
+  private readonly now: () => Date
+
+  constructor(private readonly deps: Deps) {
+    this.now = deps.now ?? (() => new Date())
+  }
 
   async execute(userId: UserId): Promise<Belt> {
-    // Day 5 deliverable — depends on infrastructure projections (Day 4).
-    // Stubbed to white belt until SessionRepository exposes the trailing-30
-    // active-days and topic-cluster aggregations. See Spec 028 §3.3 + §5.
-    void this.deps.sessionRepo
-    void this.deps.kataRepo
-    void userId
-    return {
-      rank: rankFromFactors({
-        completed: 0,
-        distinctClusters: 0,
-        activeDays30: 0,
-        daysAtRank: 0,
-      }),
-      factors: { completed: 0, distinctClusters: 0, activeDays30: 0, daysAtRank: 0 },
-    }
+    const history = await this.deps.sessionRepo.listCompletedKataHistoryForBelt(userId)
+    return computeBeltFromHistory(history, this.now())
   }
 }

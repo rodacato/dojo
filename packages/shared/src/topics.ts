@@ -171,6 +171,17 @@ export function topicCluster(topic: Topic): TopicCluster {
   return TOPIC_TO_CLUSTER[topic]
 }
 
-export function topicClustersFor(topics: readonly Topic[]): Set<TopicCluster> {
-  return new Set(topics.map(topicCluster))
+/**
+ * Tolerant of unknown topic slugs — silently skips them. Production data may
+ * carry legacy slugs that were removed from `TOPICS`; the belt computation
+ * should degrade gracefully (under-count clusters) rather than throw.
+ */
+export function topicClustersFor(topics: readonly string[]): Set<TopicCluster> {
+  const result = new Set<TopicCluster>()
+  for (const t of topics) {
+    if (Object.prototype.hasOwnProperty.call(TOPIC_TO_CLUSTER, t)) {
+      result.add(TOPIC_TO_CLUSTER[t as Topic])
+    }
+  }
+  return result
 }

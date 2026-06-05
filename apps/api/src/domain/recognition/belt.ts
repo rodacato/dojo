@@ -1,4 +1,4 @@
-import type { BeltRank } from '@dojo/shared'
+import { topicClustersFor, type BeltRank } from '@dojo/shared'
 
 export interface BeltFactors {
   completed: number
@@ -10,6 +10,11 @@ export interface BeltFactors {
 export interface Belt {
   rank: BeltRank
   factors: BeltFactors
+}
+
+export interface KataHistoryEntry {
+  startedAt: Date
+  topics: string[]
 }
 
 /**
@@ -49,4 +54,91 @@ export function rankFromFactors(factors: BeltFactors): BeltRank {
     }
   }
   return current
+}
+
+function nextRankAbove(rank: BeltRank): Exclude<BeltRank, 'white'> | null {
+  const idx = ASCENDING_RANKS.indexOf(rank)
+  if (idx < 0 || idx >= ASCENDING_RANKS.length - 1) return null
+  return ASCENDING_RANKS[idx + 1] as Exclude<BeltRank, 'white'>
+}
+
+const MS_PER_DAY = 86_400_000
+
+function utcDayString(d: Date): string {
+  return d.toISOString().slice(0, 10)
+}
+
+/**
+ * Counts distinct UTC calendar dates in `dates` within the 30-day window
+ * ending at `referenceAt` (inclusive). Used by the belt rubric's activeDays30
+ * factor.
+ */
+export function countActiveDaysIn30(dates: readonly Date[], referenceAt: Date): number {
+  const windowStart = referenceAt.getTime() - 30 * MS_PER_DAY
+  const seen = new Set<string>()
+  for (const d of dates) {
+    const t = d.getTime()
+    if (t >= windowStart && t <= referenceAt.getTime()) {
+      seen.add(utcDayString(d))
+    }
+  }
+  return seen.size
+}
+
+function daysBetween(earlier: Date, later: Date): number {
+  return Math.floor((later.getTime() - earlier.getTime()) / MS_PER_DAY)
+}
+
+/**
+ * Walks completed kata history forward through time, maintaining the user's
+ * current belt rank and the timestamp at which they entered it. Each session
+ * may trigger at most one promotion — when its accumulated factors satisfy
+ * the next rank's thresholds AND the cooldown at the previous rank has
+ * elapsed. Returns the rank at "now" and the four factors as of now.
+ *
+ * Honors PRD-031 Option C: sensei verdicts are NOT inputs. The rank derives
+ * from volume, topic-cluster diversity, calendar activity, and cooldown.
+ */
+export function computeBeltFromHistory(
+  history: readonly KataHistoryEntry[],
+  now: Date,
+): Belt {
+  let rank: BeltRank = 'white'
+  let enteredRankAt: Date | null = null
+
+  let completed = 0
+  const clusters = new Set<string>()
+  const dates: Date[] = []
+
+  for (const entry of history) {
+    completed++
+    for (const c of topicClustersFor(entry.topics)) clusters.add(c)
+    dates.push(entry.startedAt)
+
+    const activeDays30 = countActiveDaysIn30(dates, entry.startedAt)
+    const daysAtRank = enteredRankAt ? daysBetween(enteredRankAt, entry.startedAt) : Infinity
+
+    const next = nextRankAbove(rank)
+    if (!next) continue
+    const t = BELT_THRESHOLDS[next]
+    if (
+      completed >= t.completed &&
+      clusters.size >= t.distinctClusters &&
+      activeDays30 >= t.activeDays30 &&
+      daysAtRank >= t.daysAtRank
+    ) {
+      rank = next
+      enteredRankAt = entry.startedAt
+    }
+  }
+
+  return {
+    rank,
+    factors: {
+      completed,
+      distinctClusters: clusters.size,
+      activeDays30: countActiveDaysIn30(dates, now),
+      daysAtRank: enteredRankAt ? daysBetween(enteredRankAt, now) : 0,
+    },
+  }
 }

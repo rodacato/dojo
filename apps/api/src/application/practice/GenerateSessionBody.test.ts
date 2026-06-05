@@ -24,6 +24,7 @@ const makeStubSessionRepo = () => ({
   delete: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn(),
   findActiveByUserId: vi.fn(),
+      listCompletedKataHistoryForBelt: vi.fn(),
 })
 
 describe('GenerateSessionBody', () => {

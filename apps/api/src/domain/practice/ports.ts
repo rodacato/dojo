@@ -64,12 +64,24 @@ export interface LLMPort {
   }
 }
 
+export interface CompletedKataHistoryEntry {
+  startedAt: Date
+  topics: string[]
+}
+
 export interface SessionRepositoryPort {
   save(session: Session): Promise<void>
   updateBody(id: SessionId, body: string): Promise<void>
   delete(id: SessionId): Promise<void>
   findById(id: SessionId): Promise<Session | null>
   findActiveByUserId(userId: UserId): Promise<Session | null>
+  /**
+   * Read projection used by belt computation. Returns one row per completed
+   * session in chronological order, joined to the kata's topics. Crosses the
+   * Practice→Content boundary as a read-only projection — implementations
+   * may join the underlying tables directly.
+   */
+  listCompletedKataHistoryForBelt(userId: UserId): Promise<CompletedKataHistoryEntry[]>
 }
 
 export interface ExecutionResult {

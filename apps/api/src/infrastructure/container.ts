@@ -128,6 +128,6 @@ export const useCases = {
   mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: scrollProgressRepo }),
   generateNudge: new GenerateNudge({ scrollRepo, llm, nudgeRepo }),
   submitNudgeFeedback: new SubmitNudgeFeedback({ nudgeRepo }),
-  calculateBelt: new CalculateBelt({ sessionRepo, kataRepo }),
+  calculateBelt: new CalculateBelt({ sessionRepo }),
   listUserMilestones: new ListUserMilestones({ milestoneRepo }),
 }

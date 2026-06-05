@@ -1,11 +1,11 @@
-import { and, eq } from 'drizzle-orm'
+import { and, asc, eq } from 'drizzle-orm'
 import { Attempt } from '../../domain/practice/attempt'
-import type { SessionRepositoryPort } from '../../domain/practice/ports'
+import type { CompletedKataHistoryEntry, SessionRepositoryPort } from '../../domain/practice/ports'
 import { Session } from '../../domain/practice/session'
 import type { EvaluationResult } from '../../domain/practice/values'
 import { AttemptId, KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import type { DB } from './drizzle/client'
-import { attempts, sessions } from './drizzle/schema'
+import { attempts, katas, sessions } from './drizzle/schema'
 
 export class PostgresSessionRepository implements SessionRepositoryPort {
   constructor(private readonly db: DB) {}
@@ -73,6 +73,23 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     })
     if (!row) return null
     return this.toSession(row)
+  }
+
+  async listCompletedKataHistoryForBelt(userId: UserId): Promise<CompletedKataHistoryEntry[]> {
+    const rows = await this.db
+      .select({
+        startedAt: sessions.startedAt,
+        topics: katas.topics,
+      })
+      .from(sessions)
+      .innerJoin(katas, eq(sessions.kataId, katas.id))
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+      .orderBy(asc(sessions.startedAt))
+
+    return rows.map((row) => ({
+      startedAt: row.startedAt,
+      topics: Array.isArray(row.topics) ? (row.topics as string[]) : [],
+    }))
   }
 
   private toSession(

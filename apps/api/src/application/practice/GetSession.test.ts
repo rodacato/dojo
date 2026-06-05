@@ -25,6 +25,7 @@ describe('GetSession', () => {
       delete: vi.fn(),
       findById: vi.fn().mockResolvedValue(session),
       findActiveByUserId: vi.fn(),
+      listCompletedKataHistoryForBelt: vi.fn(),
     }
 
     const useCase = new GetSession({ sessionRepo })
@@ -41,6 +42,7 @@ describe('GetSession', () => {
       delete: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       findActiveByUserId: vi.fn(),
+      listCompletedKataHistoryForBelt: vi.fn(),
     }
 
     const useCase = new GetSession({ sessionRepo })

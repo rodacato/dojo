@@ -61,13 +61,13 @@ vi.mock('../../persistence/drizzle/client', () => ({
 }))
 vi.mock('../../persistence/drizzle/schema', () => ({ steps: {} }))
 
-describe('GET /learn/scrolls/:slug/steps/:stepId/solution', () => {
+describe('GET /scrolls/:slug/steps/:stepId/solution', () => {
   beforeAll(async () => {
     scrollRoutes = (await import('./scrolls')).scrollRoutes
   })
 
   function get(stepId: string, query = '') {
-    return scrollRoutes.request(`/learn/scrolls/sql-deep-cuts/steps/${stepId}/solution${query}`)
+    return scrollRoutes.request(`/scrolls/sql-deep-cuts/steps/${stepId}/solution${query}`)
   }
 
   it('returns 404 when the step does not belong to the scroll', async () => {
