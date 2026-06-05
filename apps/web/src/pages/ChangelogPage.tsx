@@ -22,7 +22,7 @@ const ENTRIES: ChangelogEntry[] = [
     phase: 'Phase 0→1',
     title: 'Security hardening and invitation system',
     description:
-      'CSP headers, beforeunload on active kata, error boundaries, 404 page with personality. Invitation system: create tokens, gate new users, redeem flow. Admin can now manage exercises and invitations. The dojo has a door — and a lock.',
+      'CSP headers, beforeunload on active kata, error boundaries, 404 page with personality. Invitation system: create tokens, gate new users, redeem flow. Admin can now manage katas and invitations. The dojo has a door — and a lock.',
   },
   {
     date: '2026-03-22',
@@ -50,7 +50,7 @@ const ENTRIES: ChangelogEntry[] = [
     phase: 'Phase 0',
     title: 'Core loop complete',
     description:
-      'The full kata cycle works end to end: day start ritual, kata selection, timed code/chat/whiteboard exercise, sensei evaluation with streaming, verdict, and results. 16 hand-crafted exercises seeded. Dashboard with streak tracking and activity heatmap.',
+      'The full kata cycle works end to end: day start ritual, kata selection, timed code/chat/whiteboard kata, sensei evaluation with streaming, verdict, and results. 16 hand-crafted katas seeded. Dashboard with streak tracking and activity heatmap.',
   },
 ]
 

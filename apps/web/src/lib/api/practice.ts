@@ -1,8 +1,8 @@
-import type { ExerciseDTO } from '@dojo/shared'
+import type { KataDTO } from '@dojo/shared'
 import { API_URL } from '../config'
 import { getToken } from '../auth-token'
 import { request, ApiError } from './client'
-import type { DashboardData, SessionWithExercise, StartSessionResponse, SubmitAttemptResponse } from './types'
+import type { DashboardData, SessionWithKata, StartSessionResponse, SubmitAttemptResponse } from './types'
 
 // SSE stream of the kata-prep body — S022 Part 6. Yields plain text
 // chunks as the model produces them, then resolves when the server
@@ -65,20 +65,20 @@ async function* streamSessionBody(sessionId: string): AsyncGenerator<string> {
 export const practice = {
   getDashboard: () => request<DashboardData>('/dashboard'),
 
-  getExercises: (params: { mood?: string; maxDuration?: number }) => {
+  getKatas: (params: { mood?: string; maxDuration?: number }) => {
     const qs = new URLSearchParams()
     if (params.mood) qs.set('mood', params.mood)
     if (params.maxDuration) qs.set('maxDuration', String(params.maxDuration))
-    return request<ExerciseDTO[]>(`/exercises?${qs}`)
+    return request<KataDTO[]>(`/katas?${qs}`)
   },
 
-  startSession: (exerciseId: string) =>
+  startSession: (kataId: string) =>
     request<StartSessionResponse>('/sessions', {
       method: 'POST',
-      body: JSON.stringify({ exerciseId }),
+      body: JSON.stringify({ kataId }),
     }),
 
-  getSession: (id: string) => request<SessionWithExercise>(`/sessions/${id}`),
+  getSession: (id: string) => request<SessionWithKata>(`/sessions/${id}`),
 
   streamSessionBody,
 
@@ -112,8 +112,8 @@ export const practice = {
       sessions: Array<{
         id: string
         status: string
-        exerciseTitle: string
-        exerciseType: string
+        kataTitle: string
+        kataType: string
         difficulty: string
         verdict: string | null
         startedAt: string

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { api, type SessionWithExercise } from '../lib/api'
+import { api, type SessionWithKata } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
 import { useTypingReveal } from '../hooks/useTypingReveal'
 import { useRotatingMessage } from '../hooks/useRotatingMessage'
@@ -10,7 +10,7 @@ import { StreamingText } from '../components/ui/StreamingText'
 import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
-import type { ExerciseType } from '@dojo/shared'
+import type { KataType } from '@dojo/shared'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -32,7 +32,7 @@ type StatusChipKind = 'connecting' | 'executing' | 'streaming' | 'follow-up' | '
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [session, setSession] = useState<SessionWithExercise | null>(null)
+  const [session, setSession] = useState<SessionWithKata | null>(null)
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
   const [history, setHistory] = useState<Exchange[]>([])
@@ -113,11 +113,11 @@ export function SenseiEvalPage() {
           <>
             <span className="h-4 w-px bg-border hidden sm:block" />
             <span className="font-mono text-[12px] text-primary truncate hidden sm:inline max-w-[40ch]">
-              {session.exercise.title}
+              {session.kata.title}
             </span>
             <div className="hidden md:flex items-center gap-1.5">
-              <TypeBadge type={session.exercise.type as ExerciseType} />
-              <DifficultyBadge difficulty={session.exercise.difficulty} />
+              <TypeBadge type={session.kata.type as KataType} />
+              <DifficultyBadge difficulty={session.kata.difficulty} />
             </div>
           </>
         )}

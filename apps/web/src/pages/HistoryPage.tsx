@@ -6,13 +6,13 @@ import { Pagination } from '../components/ui/Pagination'
 import { SkeletonList } from '../components/ui/SkeletonLoader'
 import { EmptyState } from '../components/ui/EmptyState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
-import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
+import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
 interface HistorySession {
   id: string
   status: string
-  exerciseTitle: string
-  exerciseType: string
+  kataTitle: string
+  kataType: string
   difficulty: string
   verdict: string | null
   startedAt: string
@@ -75,9 +75,9 @@ export function HistoryPage() {
           {sessions.map((s) => (
             <DenseSessionRow
               key={s.id}
-              type={s.exerciseType as ExerciseType}
+              type={s.kataType as KataType}
               difficulty={s.difficulty as Difficulty}
-              title={s.exerciseTitle}
+              title={s.kataTitle}
               verdict={s.verdict as Verdict | null}
               status={s.status}
               startedAt={s.startedAt}

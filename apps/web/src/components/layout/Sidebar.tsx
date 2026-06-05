@@ -3,12 +3,12 @@ import { LogoMark } from '../Logo'
 import { useAuth } from '../../context/AuthContext'
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'dashboard', icon: DashboardIcon },
-  { to: '/start', label: 'practice', icon: CodeIcon },
-  { to: '/learn', label: 'learn', icon: LearnIcon },
-  { to: '/playground', label: 'playground', icon: TerminalIcon },
-  { to: '/leaderboard', label: 'leaderboard', icon: AnalyticsIcon },
-  { to: '/badges', label: 'badges', icon: BadgesIcon },
+  { to: '/dashboard', label: 'dashboard', icon: DashboardIcon, soon: false },
+  { to: '/start', label: 'practice', icon: CodeIcon, soon: false },
+  { to: '/scrolls', label: 'scrolls', icon: LearnIcon, soon: false },
+  { to: '/engawa', label: 'engawa', icon: TerminalIcon, soon: false },
+  { to: '/kumite', label: 'kumite', icon: AnalyticsIcon, soon: true },
+  { to: '/belts', label: 'belts', icon: BadgesIcon, soon: false },
 ]
 
 interface SidebarProps {
@@ -50,7 +50,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             }
           >
             <item.icon className="w-4.5 h-4.5 shrink-0" />
-            {!collapsed && <span>{item.label}</span>}
+            {!collapsed && (
+              <span className="flex items-center gap-2">
+                {item.label}
+                {item.soon && (
+                  <span className="font-mono text-[9px] tracking-[0.08em] uppercase text-muted/70 border border-border/40 rounded-sm px-1 py-0.5">
+                    soon
+                  </span>
+                )}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>

@@ -20,7 +20,7 @@ const SECTIONS: LegalSection[] = [
           </LegalListItem>
           <LegalListItem>Your kata submissions and the sensei's evaluations.</LegalListItem>
           <LegalListItem>
-            Session metadata (start time, completion time, exercise selected).
+            Session metadata (start time, completion time, kata selected).
           </LegalListItem>
           <LegalListItem>
             Your streak and activity data (derived from sessions).
@@ -58,7 +58,7 @@ const SECTIONS: LegalSection[] = [
         <p>Your data is used to:</p>
         <LegalList>
           <LegalListItem>
-            Run the kata loop (assign exercises, evaluate submissions, track progress).
+            Run the kata loop (assign katas, evaluate submissions, track progress).
           </LegalListItem>
           <LegalListItem>
             Display your profile and streak to other practitioners.

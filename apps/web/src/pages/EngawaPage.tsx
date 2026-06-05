@@ -103,7 +103,7 @@ const INITIAL_RUN: RunState = {
   errorMessage: null,
 }
 
-export function PlaygroundPage() {
+export function EngawaPage() {
   const { language: urlLanguage } = useParams<{ language?: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()

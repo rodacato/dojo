@@ -1,53 +1,53 @@
 import type {
-  CourseDTO,
-  CourseDetailDTO,
+  ScrollDTO,
+  ScrollDetailDTO,
   ExecuteStepRequest,
   ExecuteStepResponse,
-  CourseProgressDTO,
+  ScrollProgressDTO,
   StepSolutionDTO,
 } from '@dojo/shared'
 import { request, ApiError } from './client'
 
-export const learn = {
-  getCourses: () =>
-    request<{ courses: CourseDTO[] }>('/learn/courses', { redirectOnAuth: false }).then(
-      (r) => r.courses,
+export const scrolls = {
+  getScrolls: () =>
+    request<{ scrolls: ScrollDTO[] }>('/scrolls', { redirectOnAuth: false }).then(
+      (r) => r.scrolls,
     ),
 
-  getCourse: (slug: string) =>
-    request<{ course: CourseDetailDTO }>(`/learn/courses/${slug}`, {
+  getScroll: (slug: string) =>
+    request<{ scroll: ScrollDetailDTO }>(`/scrolls/${slug}`, {
       redirectOnAuth: false,
-    }).then((r) => r.course),
+    }).then((r) => r.scroll),
 
   executeStep: (params: ExecuteStepRequest) =>
-    request<ExecuteStepResponse>('/learn/execute', {
+    request<ExecuteStepResponse>('/scrolls/execute', {
       method: 'POST',
       body: JSON.stringify(params),
       redirectOnAuth: false,
     }),
 
-  trackProgress: (courseId: string, stepId: string, anonymousSessionId?: string) =>
-    request<{ ok: boolean }>('/learn/progress', {
+  trackProgress: (scrollId: string, stepId: string, anonymousSessionId?: string) =>
+    request<{ ok: boolean }>('/scrolls/progress', {
       method: 'POST',
       body: JSON.stringify({
-        courseId,
+        scrollId,
         stepId,
         ...(anonymousSessionId ? { anonymousSessionId } : {}),
       }),
       redirectOnAuth: false,
     }),
 
-  getProgress: (courseId: string, anonymousSessionId?: string) => {
+  getProgress: (scrollId: string, anonymousSessionId?: string) => {
     const query = anonymousSessionId
       ? `?anonymousSessionId=${encodeURIComponent(anonymousSessionId)}`
       : ''
-    return request<CourseProgressDTO>(`/learn/progress/${courseId}${query}`, {
+    return request<ScrollProgressDTO>(`/scrolls/progress/${scrollId}${query}`, {
       redirectOnAuth: false,
     })
   },
 
   mergeAnonymousProgress: (anonymousSessionId: string) =>
-    request<{ ok: boolean }>('/learn/progress/merge', {
+    request<{ ok: boolean }>('/scrolls/progress/merge', {
       method: 'POST',
       body: JSON.stringify({ anonymousSessionId }),
     }),
@@ -57,7 +57,7 @@ export const learn = {
       ? `?anonymousSessionId=${encodeURIComponent(anonymousSessionId)}`
       : ''
     return request<StepSolutionDTO>(
-      `/learn/courses/${slug}/steps/${stepId}/solution${query}`,
+      `/scrolls/${slug}/steps/${stepId}/solution${query}`,
       { redirectOnAuth: false },
     )
   },
@@ -65,14 +65,14 @@ export const learn = {
   // "Ask the sensei" nudge (PRD 026). Can return a 404 when the feature flag
   // is off — the UI interprets that as "disabled" and hides the button.
   requestNudge: async (params: {
-    courseSlug: string
+    scrollSlug: string
     stepId: string
     userCode: string
     stdout?: string
     stderr?: string
   }) => {
     try {
-      return await request<{ id: string; nudge: string; stepId: string }>('/learn/nudge', {
+      return await request<{ id: string; nudge: string; stepId: string }>('/scrolls/nudge', {
         method: 'POST',
         body: JSON.stringify(params),
         redirectOnAuth: false,
@@ -86,7 +86,7 @@ export const learn = {
   },
 
   submitNudgeFeedback: (id: string, feedback: 'up' | 'down') =>
-    request<{ ok: boolean }>(`/learn/nudge/${id}/feedback`, {
+    request<{ ok: boolean }>(`/scrolls/nudge/${id}/feedback`, {
       method: 'POST',
       body: JSON.stringify({ feedback }),
       redirectOnAuth: false,

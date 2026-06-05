@@ -1,6 +1,6 @@
 import { TypeBadge, DifficultyBadge } from '../ui/Badge'
 import type { DashboardData } from '../../lib/api'
-import type { ExerciseType, Difficulty } from '@dojo/shared'
+import type { KataType, Difficulty } from '@dojo/shared'
 
 const VERDICT_PILL: Record<string, { label: string; classes: string }> = {
   passed: { label: 'Passed', classes: 'text-success bg-success/10 border border-success/30' },
@@ -25,13 +25,13 @@ export function RecentSessionRow({ session, onClick, isLast }: RecentSessionRowP
       }`}
     >
       <span className="shrink-0">
-        <TypeBadge type={session.exerciseType as ExerciseType} />
+        <TypeBadge type={session.kataType as KataType} />
       </span>
       <span className="shrink-0 hidden sm:inline-flex">
         <DifficultyBadge difficulty={session.difficulty as Difficulty} />
       </span>
       <span className="flex-1 min-w-0 text-primary text-sm font-medium truncate">
-        {session.exerciseTitle}
+        {session.kataTitle}
       </span>
       {verdict && (
         <span

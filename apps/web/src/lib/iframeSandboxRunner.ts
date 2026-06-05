@@ -2,7 +2,7 @@ import type { ExecuteStepResponse, TestResultDTO } from '@dojo/shared'
 
 /**
  * Executes JavaScript code in an isolated iframe sandbox.
- * Used for `javascript-dom` course steps where DOM context is required.
+ * Used for `javascript-dom` scroll steps where DOM context is required.
  * No server call — runs entirely in the browser.
  *
  * Security: `sandbox="allow-scripts"` without `allow-same-origin`.

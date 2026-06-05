@@ -1,10 +1,10 @@
 import { request } from './client'
-import type { AdminExerciseDTO } from './types'
+import type { AdminKataDTO } from './types'
 
 export const admin = {
-  getAdminExercises: () => request<AdminExerciseDTO[]>('/admin/exercises'),
+  getAdminKatas: () => request<AdminKataDTO[]>('/admin/katas'),
 
-  getAdminExercise: (id: string) =>
+  getAdminKata: (id: string) =>
     request<{
       id: string
       title: string
@@ -17,9 +17,9 @@ export const admin = {
       topics: string[]
       status: string
       variations: Array<{ id: string; ownerRole: string; ownerContext: string }>
-    }>(`/admin/exercises/${id}`),
+    }>(`/admin/katas/${id}`),
 
-  updateExercise: (id: string, data: {
+  updateKata: (id: string, data: {
     title: string
     description: string
     duration: number
@@ -32,12 +32,12 @@ export const admin = {
     adminNotes?: string | null
     variations: Array<{ ownerRole: string; ownerContext: string }>
   }) =>
-    request<{ ok: boolean }>(`/admin/exercises/${id}`, {
+    request<{ ok: boolean }>(`/admin/katas/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
 
-  createExercise: (data: {
+  createKata: (data: {
     title: string
     description: string
     duration: number
@@ -48,15 +48,15 @@ export const admin = {
     topics: string[]
     variations: Array<{ ownerRole: string; ownerContext: string }>
   }) =>
-    request<{ id: string }>('/admin/exercises', {
+    request<{ id: string }>('/admin/katas', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  archiveExercise: (id: string) =>
-    request<{ ok: boolean }>(`/admin/exercises/${id}/archive`, { method: 'POST' }),
+  archiveKata: (id: string) =>
+    request<{ ok: boolean }>(`/admin/katas/${id}/archive`, { method: 'POST' }),
 
-  getExerciseFeedback: (id: string) =>
+  getKataFeedback: (id: string) =>
     request<{
       total: number
       clarity: Record<string, number>
@@ -64,7 +64,7 @@ export const admin = {
       evaluation: Record<string, number>
       notes: Array<{ note: string; variationId: string; submittedAt: string }>
       byVariation: Record<string, { total: number; clarity: Record<string, number>; timing: Record<string, number>; evaluation: Record<string, number> }>
-    }>(`/admin/exercises/${id}/feedback`),
+    }>(`/admin/katas/${id}/feedback`),
 
   createInvitation: (email?: string) =>
     request<{ id: string; token: string; url: string; expiresAt: string; emailSent: boolean }>('/admin/invitations', {
@@ -82,7 +82,7 @@ export const admin = {
       createdAt: string
     }>>('/admin/invitations'),
 
-  getAdminCourses: () =>
+  getAdminScrolls: () =>
     request<Array<{
       id: string
       slug: string
@@ -95,24 +95,24 @@ export const admin = {
       lessonCount: number
       stepCount: number
       createdAt: string
-    }>>('/admin/courses'),
+    }>>('/admin/scrolls'),
 
-  updateCourse: (
+  updateScroll: (
     id: string,
     patch: { isPublic?: boolean; status?: 'draft' | 'published' },
   ) =>
     request<{ id: string; isPublic: boolean; status: 'draft' | 'published' }>(
-      `/admin/courses/${id}`,
+      `/admin/scrolls/${id}`,
       { method: 'PATCH', body: JSON.stringify(patch) },
     ),
 
-  seedCourses: () =>
+  seedScrolls: () =>
     request<{
       seeded: Array<{ slug: string; title: string; lessonCount: number; stepCount: number }>
-    }>('/admin/courses/seed', { method: 'POST' }),
+    }>('/admin/scrolls/seed', { method: 'POST' }),
 
-  wipeCourseContent: (id: string) =>
-    request<{ ok: boolean }>(`/admin/courses/${id}/wipe`, { method: 'POST' }),
+  wipeScrollContent: (id: string) =>
+    request<{ ok: boolean }>(`/admin/scrolls/${id}/wipe`, { method: 'POST' }),
 
   getErrors: (params: { source?: 'api' | 'web'; status?: number; limit?: number; offset?: number } = {}) => {
     const qs = new URLSearchParams()

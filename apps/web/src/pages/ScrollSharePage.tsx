@@ -6,20 +6,20 @@ import { PageLoader } from '../components/PageLoader'
 import { ErrorState } from '../components/ui/ErrorState'
 import { buttonClasses } from '../components/ui/Button'
 
-interface CourseShareData {
-  courseSlug: string
-  courseTitle: string
-  courseLanguage: string
-  courseAccentColor: string
+interface ScrollShareData {
+  scrollSlug: string
+  scrollTitle: string
+  scrollLanguage: string
+  scrollAccentColor: string
   totalSteps: number
   completedAt: string
   username: string
   avatarUrl: string
 }
 
-export function CourseSharePage() {
+export function ScrollSharePage() {
   const { slug, userId } = useParams<{ slug: string; userId: string }>()
-  const [data, setData] = useState<CourseShareData | null>(null)
+  const [data, setData] = useState<ScrollShareData | null>(null)
   const [error, setError] = useState<'notfound' | 'network' | null>(null)
   const [retryTick, setRetryTick] = useState(0)
 
@@ -27,7 +27,7 @@ export function CourseSharePage() {
     if (!slug || !userId) return
     let cancelled = false
     setError(null)
-    fetch(`${API_URL}/share/course/${slug}/${userId}`)
+    fetch(`${API_URL}/share/scroll/${slug}/${userId}`)
       .then((r) => {
         if (cancelled) return
         if (r.status === 404) {
@@ -40,7 +40,7 @@ export function CourseSharePage() {
         }
         return r.json()
       })
-      .then((d) => { if (!cancelled && d) setData(d as CourseShareData) })
+      .then((d) => { if (!cancelled && d) setData(d as ScrollShareData) })
       .catch(() => { if (!cancelled) setError('network') })
     return () => { cancelled = true }
   }, [slug, userId, retryTick])
@@ -49,8 +49,8 @@ export function CourseSharePage() {
     return (
       <ErrorState
         kind="not-found"
-        message="This completion doesn't exist yet — finish the course first."
-        primaryAction={{ label: 'Browse courses', to: '/learn' }}
+        message="This completion doesn't exist yet — finish the scroll first."
+        primaryAction={{ label: 'Browse scrolls', to: '/learn' }}
       />
     )
   }
@@ -68,20 +68,20 @@ export function CourseSharePage() {
 
   if (!data) return <PageLoader />
 
-  const ogImageUrl = `${API_URL}/share/course/${data.courseSlug}/${userId}.png`
+  const ogImageUrl = `${API_URL}/share/scroll/${data.scrollSlug}/${userId}.png`
   const completedDate = new Date(data.completedAt).toISOString().slice(0, 10)
-  const langGlyph = data.courseLanguage.slice(0, 4).toUpperCase()
+  const langGlyph = data.scrollLanguage.slice(0, 4).toUpperCase()
 
   return (
     <>
-      <title>{`${data.courseTitle} — completed by @${data.username} | dojo_`}</title>
-      <meta property="og:title" content={`${data.courseTitle} — completed`} />
-      <meta property="og:description" content={`@${data.username} finished ${data.courseTitle} in the dojo`} />
+      <title>{`${data.scrollTitle} — completed by @${data.username} | dojo_`}</title>
+      <meta property="og:title" content={`${data.scrollTitle} — completed`} />
+      <meta property="og:description" content={`@${data.username} finished ${data.scrollTitle} in the dojo`} />
       <meta property="og:image" content={ogImageUrl} />
       <meta property="og:type" content="article" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={`${data.courseTitle} — completed | dojo_`} />
-      <meta name="twitter:description" content={`@${data.username} finished ${data.courseTitle} in the dojo`} />
+      <meta name="twitter:title" content={`${data.scrollTitle} — completed | dojo_`} />
+      <meta name="twitter:description" content={`@${data.username} finished ${data.scrollTitle} in the dojo`} />
       <meta name="twitter:image" content={ogImageUrl} />
 
       <PublicPageLayout>
@@ -89,12 +89,12 @@ export function CourseSharePage() {
           <article className="bg-surface border border-border rounded-md p-6 md:p-12 text-center flex flex-col items-center">
             {/* Eyebrow */}
             <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-1 rounded-sm">
-              Course complete
+              Scroll complete
             </p>
 
             {/* Title */}
             <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight mt-5 md:mt-6">
-              {data.courseTitle}
+              {data.scrollTitle}
             </h1>
 
             {/* Badges row */}
@@ -102,26 +102,26 @@ export function CourseSharePage() {
               <span
                 className="font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-1 rounded-sm"
                 style={{
-                  color: data.courseAccentColor,
-                  borderColor: `${data.courseAccentColor}66`,
-                  backgroundColor: `${data.courseAccentColor}1a`,
+                  color: data.scrollAccentColor,
+                  borderColor: `${data.scrollAccentColor}66`,
+                  backgroundColor: `${data.scrollAccentColor}1a`,
                 }}
               >
-                {data.courseLanguage}
+                {data.scrollLanguage}
               </span>
               <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border px-2 py-1 rounded-sm">
                 {data.totalSteps} steps
               </span>
             </div>
 
-            {/* Course icon mark — typographic */}
+            {/* Scroll icon mark — typographic */}
             <div
               className="mt-8 md:mt-10 w-24 h-24 bg-elevated border border-border rounded-md flex items-center justify-center"
               aria-hidden
             >
               <span
                 className="font-mono text-3xl md:text-[40px] font-bold tracking-[0.04em]"
-                style={{ color: data.courseAccentColor }}
+                style={{ color: data.scrollAccentColor }}
               >
                 {langGlyph}
               </span>
@@ -151,10 +151,10 @@ export function CourseSharePage() {
 
             {/* CTA */}
             <Link
-              to={`/learn/${data.courseSlug}`}
+              to={`/learn/${data.scrollSlug}`}
               className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full mt-8 md:mt-10`}
             >
-              Start the course →
+              Start the scroll →
             </Link>
             <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-3">
               Free. No account required to begin.

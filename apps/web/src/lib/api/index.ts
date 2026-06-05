@@ -2,7 +2,7 @@ import { auth } from './auth'
 import { practice } from './practice'
 import { admin } from './admin'
 import { profile } from './profile'
-import { learn } from './learn'
+import { scrolls } from './scrolls'
 import { playground } from './playground'
 
 export { ApiError } from './client'
@@ -11,12 +11,10 @@ export type {
   AttemptDTO,
   DashboardData,
   SessionAttempt,
-  SessionWithExercise,
+  SessionWithKata,
   StartSessionResponse,
   SubmitAttemptResponse,
-  AdminExerciseDTO,
-  LeaderboardEntry,
-  LeaderboardData,
+  AdminKataDTO,
   PublicProfileData,
 } from './types'
 
@@ -29,6 +27,6 @@ export const api = {
   ...practice,
   ...admin,
   ...profile,
-  ...learn,
+  ...scrolls,
   playground,
 }

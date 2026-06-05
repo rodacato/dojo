@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { api, type SessionWithExercise } from '../lib/api'
+import { api, type SessionWithKata } from '../lib/api'
 import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
@@ -15,7 +15,7 @@ import { parseInsight } from '../lib/parse-insight'
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [session, setSession] = useState<SessionWithExercise | null>(null)
+  const [session, setSession] = useState<SessionWithKata | null>(null)
   const [loadError, setLoadError] = useState(false)
   const [retryTick, setRetryTick] = useState(0)
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
@@ -56,11 +56,11 @@ export function ResultsPage() {
     return (
       <div className="px-4 py-12 max-w-md mx-auto">
         <div className="flex items-center gap-2 mb-2">
-          <TypeBadge type={session.exercise.type} />
-          <DifficultyBadge difficulty={session.exercise.difficulty} />
+          <TypeBadge type={session.kata.type} />
+          <DifficultyBadge difficulty={session.kata.difficulty} />
         </div>
         <h1 className="text-primary text-3xl font-semibold leading-tight tracking-tight mb-2">
-          {session.exercise.title}
+          {session.kata.title}
         </h1>
         <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-8">
           {session.status === 'failed' ? 'Incomplete' : 'Pending'} · started{' '}
@@ -100,13 +100,13 @@ export function ResultsPage() {
         <div className="min-w-0">
           {session.ownerRole && <PersonaEyebrow role={session.ownerRole} className="mb-3 block" />}
           <h1 className="text-primary text-3xl md:text-[32px] font-semibold leading-tight tracking-tight mb-3">
-            {session.exercise.title}
+            {session.kata.title}
           </h1>
           <div className="flex items-center gap-2 flex-wrap">
-            <TypeBadge type={session.exercise.type} />
-            <DifficultyBadge difficulty={session.exercise.difficulty} />
+            <TypeBadge type={session.kata.type} />
+            <DifficultyBadge difficulty={session.kata.difficulty} />
             <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted px-2 py-1 border border-border rounded-sm">
-              {session.exercise.duration} min
+              {session.kata.duration} min
             </span>
           </div>
         </div>
@@ -149,7 +149,7 @@ export function ResultsPage() {
               Share this
             </p>
             <ShareCardPreview
-              exerciseTitle={session.exercise.title}
+              kataTitle={session.kata.title}
               verdict={verdict}
               analysis={attempt?.analysis}
               approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
@@ -157,7 +157,7 @@ export function ResultsPage() {
             />
             <ShareActions
               sessionId={sessionId}
-              exerciseTitle={session.exercise.title}
+              kataTitle={session.kata.title}
               verdict={verdict}
               approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
             />
@@ -321,12 +321,12 @@ function NoEvaluationCard({ sessionId }: { sessionId: string }) {
 
 function ShareActions({
   sessionId,
-  exerciseTitle,
+  kataTitle,
   verdict,
   approachNote,
 }: {
   sessionId: string
-  exerciseTitle: string
+  kataTitle: string
   verdict: string
   approachNote?: string | null
 }) {
@@ -334,7 +334,7 @@ function ShareActions({
   const shareUrl = `${window.location.origin}/share/${sessionId}`
 
   async function handleCopy() {
-    const base = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${exerciseTitle} | dojo_`
+    const base = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${kataTitle} | dojo_`
     const text = approachNote ? `${base}\n\n"${approachNote}"` : base
     try {
       await navigator.clipboard.writeText(`${text}\n${shareUrl}`)
@@ -346,7 +346,7 @@ function ShareActions({
   }
 
   function handleTwitter() {
-    const text = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${exerciseTitle} | dojo_`
+    const text = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${kataTitle} | dojo_`
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
       '_blank',
@@ -370,13 +370,13 @@ function ShareActions({
 }
 
 function ShareCardPreview({
-  exerciseTitle,
+  kataTitle,
   verdict,
   analysis,
   approachNote,
   ownerRole,
 }: {
-  exerciseTitle: string
+  kataTitle: string
   verdict: string
   analysis?: string
   approachNote?: string | null
@@ -402,7 +402,7 @@ function ShareCardPreview({
         {verdictLabel}
       </p>
       <p className="text-primary text-[15px] font-semibold leading-snug line-clamp-2">
-        {exerciseTitle}
+        {kataTitle}
       </p>
       {pullQuote && (
         <p className="text-secondary text-[12px] italic leading-relaxed line-clamp-3">

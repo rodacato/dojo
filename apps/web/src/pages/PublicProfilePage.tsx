@@ -4,7 +4,7 @@ import { api, ApiError, type PublicProfileData } from '../lib/api'
 import { PublicPageLayout } from '../components/PublicPageLayout'
 import { ErrorState } from '../components/ui/ErrorState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
-import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
+import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
 const BADGE_NAMES: Record<string, string> = {
   FIRST_KATA: 'First Kata',
@@ -164,9 +164,9 @@ export function PublicProfilePage() {
               {profile.recentSessions.map((s) => (
                 <DenseSessionRow
                   key={s.id}
-                  type={s.exerciseType as ExerciseType}
+                  type={s.kataType as KataType}
                   difficulty={s.difficulty as Difficulty}
-                  title={s.exerciseTitle}
+                  title={s.kataTitle}
                   verdict={s.verdict as Verdict | null}
                   status={s.status}
                   startedAt={s.startedAt}

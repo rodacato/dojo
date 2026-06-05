@@ -1,7 +1,7 @@
 import { Suspense, useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
-import { api, ApiError, type SessionWithExercise } from '../lib/api'
+import { api, ApiError, type SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Timer } from '../components/ui/Timer'
@@ -9,7 +9,7 @@ import { CodeEditor } from '../components/ui/CodeEditor'
 import { KataBody } from '../components/ui/KataBody'
 import { ErrorState } from '../components/ui/ErrorState'
 import { lazyWithRetry } from '../lib/lazyWithRetry'
-import type { ExerciseType } from '@dojo/shared'
+import type { KataType } from '@dojo/shared'
 const MermaidEditor = lazyWithRetry(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
 
 const PREPARING_MESSAGES = [
@@ -32,7 +32,7 @@ export function KataActivePage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
-  const [session, setSession] = useState<SessionWithExercise | null>(null)
+  const [session, setSession] = useState<SessionWithKata | null>(null)
   const [preparing, setPreparing] = useState(false)
   const [preparingMsg, setPreparingMsg] = useState(PREPARING_MESSAGES[0]!)
   const [prepareSlow, setPrepareSlow] = useState(false)
@@ -48,11 +48,11 @@ export function KataActivePage() {
     if (!sessionId) return
     let cancelled = false
 
-    function applyActiveSession(s: SessionWithExercise): void {
+    function applyActiveSession(s: SessionWithKata): void {
       setPreparing(false)
       setSession(s)
-      if (s.exercise.starterCode) {
-        setUserResponse(s.exercise.starterCode)
+      if (s.kata.starterCode) {
+        setUserResponse(s.kata.starterCode)
       }
     }
 
@@ -80,7 +80,7 @@ export function KataActivePage() {
             }
             if (cancelled) return
             // Stream finished — body is persisted. Refetch once to
-            // pull the now-active session shape (exercise, ownerRole).
+            // pull the now-active session shape (kata, ownerRole).
             const final = await api.getSession(sessionId!)
             if (cancelled) return
             if (final.status === 'active') {
@@ -204,14 +204,14 @@ export function KataActivePage() {
     )
   }
 
-  const { exercise } = session
-  const isCode = exercise.type === 'code'
-  const isWhiteboard = exercise.type === 'whiteboard'
-  const isReview = exercise.type === 'review'
+  const { kata } = session
+  const isCode = kata.type === 'code'
+  const isWhiteboard = kata.type === 'whiteboard'
+  const isReview = kata.type === 'review'
   // All formats land side-by-side on desktop — the chat panel mirrors the
   // code/whiteboard shell so the redesign reads as one product.
   const orientation = isMobile ? 'vertical' : 'horizontal'
-  const language = resolveLanguage(exercise.language)
+  const language = resolveLanguage(kata.language)
   const filename = isCode ? `solution.${fileExtension(language)}` : null
   const editorLabel = isCode
     ? languageLabel(language)
@@ -237,7 +237,7 @@ export function KataActivePage() {
         </div>
         <div className="flex justify-center">
           <Timer
-            durationMinutes={exercise.duration}
+            durationMinutes={kata.duration}
             startedAt={session.startedAt}
             onExpired={() => { setTimedOut(true); handleSubmit() }}
             size="sm"
@@ -267,12 +267,12 @@ export function KataActivePage() {
                   [{session.ownerRole.toUpperCase()}]
                 </span>
                 <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-3">
-                  {exercise.title}
+                  {kata.title}
                 </h1>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <TypeBadge type={exercise.type as ExerciseType} />
-                  <DifficultyBadge difficulty={exercise.difficulty} />
-                  {isWhiteboard && exercise.tags.length > 0 && exercise.tags.slice(0, 3).map((tag) => (
+                  <TypeBadge type={kata.type as KataType} />
+                  <DifficultyBadge difficulty={kata.difficulty} />
+                  {isWhiteboard && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
                       className="text-warning text-[10px] font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"

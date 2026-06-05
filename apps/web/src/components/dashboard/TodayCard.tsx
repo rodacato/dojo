@@ -43,7 +43,7 @@ export function TodayCard({
     return (
       <HeroLayout
         eyebrow="Done today"
-        headline={todaySession.exerciseTitle}
+        headline={todaySession.kataTitle}
         body="The dojo received your work. The verdict is on the page."
         cta={
           <Button variant="ghost" size="lg" onClick={() => onViewResults(todaySession.id)}>

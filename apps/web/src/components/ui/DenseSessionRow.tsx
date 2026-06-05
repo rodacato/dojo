@@ -1,8 +1,8 @@
-import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
+import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 import { TypeBadge, DifficultyBadge } from './Badge'
 
 interface DenseSessionRowProps {
-  type: ExerciseType
+  type: KataType
   difficulty: Difficulty
   title: string
   verdict: Verdict | null

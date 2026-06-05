@@ -6,11 +6,9 @@ export {
   type AttemptDTO,
   type DashboardData,
   type SessionAttempt,
-  type SessionWithExercise,
+  type SessionWithKata,
   type StartSessionResponse,
   type SubmitAttemptResponse,
-  type AdminExerciseDTO,
-  type LeaderboardEntry,
-  type LeaderboardData,
+  type AdminKataDTO,
   type PublicProfileData,
 } from './api/index'

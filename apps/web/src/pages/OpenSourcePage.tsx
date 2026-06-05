@@ -125,7 +125,7 @@ export function OpenSourcePage() {
                 repo — not hidden, not proprietary.
               </p>
               <p>
-                Every exercise carries an{' '}
+                Every kata carries an{' '}
                 <code className="text-accent font-mono text-[13px]">owner_role</code> (who the
                 sensei pretends to be) and an{' '}
                 <code className="text-accent font-mono text-[13px]">owner_context</code> (what

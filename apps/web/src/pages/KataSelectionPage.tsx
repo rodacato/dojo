@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { ExerciseDTO } from '@dojo/shared'
+import type { KataDTO } from '@dojo/shared'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
@@ -19,7 +19,7 @@ interface StoredFilters {
 
 export function KataSelectionPage() {
   const navigate = useNavigate()
-  const [exercises, setExercises] = useState<ExerciseDTO[]>([])
+  const [katas, setKatas] = useState<KataDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [starting, setStarting] = useState<string | null>(null)
 
@@ -30,15 +30,15 @@ export function KataSelectionPage() {
 
   useEffect(() => {
     api
-      .getExercises(filters)
-      .then(setExercises)
+      .getKatas(filters)
+      .then(setKatas)
       .finally(() => setLoading(false))
   }, [filters])
 
-  async function handleSelect(exerciseId: string) {
-    setStarting(exerciseId)
+  async function handleSelect(kataId: string) {
+    setStarting(kataId)
     try {
-      const { sessionId } = await api.startSession(exerciseId)
+      const { sessionId } = await api.startSession(kataId)
       navigate(`/kata/${sessionId}`)
     } catch {
       setStarting(null)
@@ -61,12 +61,12 @@ export function KataSelectionPage() {
         </p>
       </header>
 
-      {exercises.length > 0 ? (
+      {katas.length > 0 ? (
         <div className="flex flex-col gap-4">
-          {exercises.map((ex) => (
-            <ExerciseCard
+          {katas.map((ex) => (
+            <KataCard
               key={ex.id}
-              exercise={ex}
+              kata={ex}
               onSelect={() => handleSelect(ex.id)}
               starting={starting === ex.id}
               disabled={starting !== null && starting !== ex.id}
@@ -122,16 +122,16 @@ function FilterStrip({ filters, onDismiss }: { filters: StoredFilters; onDismiss
 }
 
 /* ------------------------------------------------------------------ */
-/*  Exercise card                                                      */
+/*  Kata card                                                      */
 /* ------------------------------------------------------------------ */
 
-function ExerciseCard({
-  exercise: ex,
+function KataCard({
+  kata: ex,
   onSelect,
   starting,
   disabled,
 }: {
-  exercise: ExerciseDTO
+  kata: KataDTO
   onSelect: () => void
   starting: boolean
   disabled: boolean

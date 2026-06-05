@@ -1,6 +1,6 @@
-import type { ExerciseType, Difficulty, Verdict } from '@dojo/shared'
+import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
-const TYPE_STYLES: Record<ExerciseType, string> = {
+const TYPE_STYLES: Record<KataType, string> = {
   code: 'bg-type-code text-primary',
   chat: 'bg-type-chat text-primary',
   whiteboard: 'bg-type-whiteboard text-primary',
@@ -27,7 +27,7 @@ const VERDICT_LABELS: Record<Verdict, string> = {
   needs_work: 'NEEDS WORK',
 }
 
-export function TypeBadge({ type }: { type: ExerciseType }) {
+export function TypeBadge({ type }: { type: KataType }) {
   return (
     <span className={`font-mono text-xs px-2 py-0.5 rounded-sm ${TYPE_STYLES[type]}`}>
       {type.toUpperCase()}

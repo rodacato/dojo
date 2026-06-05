@@ -33,7 +33,7 @@ const INITIAL: FormState = {
   variations: [{ ownerRole: '', ownerContext: '' }],
 }
 
-export function AdminNewExercisePage() {
+export function AdminNewKataPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState<FormState>(INITIAL)
   const [saving, setSaving] = useState(false)
@@ -84,7 +84,7 @@ export function AdminNewExercisePage() {
     setSaving(true)
     setSubmitError(null)
     try {
-      await api.createExercise({
+      await api.createKata({
         title: form.title,
         description: form.description,
         duration: form.duration,
@@ -95,7 +95,7 @@ export function AdminNewExercisePage() {
         topics: form.topics,
         variations: form.variations,
       })
-      navigate('/admin/exercises')
+      navigate('/admin/katas')
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
@@ -121,15 +121,15 @@ export function AdminNewExercisePage() {
         <div>
           <button
             type="button"
-            onClick={() => navigate('/admin/exercises')}
+            onClick={() => navigate('/admin/katas')}
             className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
           >
-            ← Back to exercises
+            ← Back to katas
           </button>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">New exercise</h1>
+          <h1 className="text-[24px] font-semibold text-primary leading-tight">New kata</h1>
         </div>
         <div className="flex items-center gap-3 mt-7">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
             Cancel
           </Button>
           <Button size="sm" onClick={handleSave} loading={saving}>
@@ -197,14 +197,14 @@ export function AdminNewExercisePage() {
               Draft
             </span>
             <span className="text-[13px] text-muted">
-              New exercises start as draft. Publish from Edit after preview.
+              New katas start as draft. Publish from Edit after preview.
             </span>
           </div>
         </SectionCard>
       </div>
 
       <StickyFormBar hint="⌘+S to save">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
           Cancel
         </Button>
         <Button size="sm" onClick={handleSave} loading={saving}>

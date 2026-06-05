@@ -109,9 +109,9 @@ export function DayStartPage() {
         ...(duration ? { maxDuration: duration } : {}),
       }
       sessionStorage.setItem('dojo-start', JSON.stringify({ mood: mood ?? 'regular', maxDuration: duration ?? 20 }))
-      const exercises = await api.getExercises(params)
-      if (exercises.length === 0) return
-      const picked = exercises[Math.floor(Math.random() * exercises.length)]!
+      const katas = await api.getKatas(params)
+      if (katas.length === 0) return
+      const picked = katas[Math.floor(Math.random() * katas.length)]!
       const { sessionId } = await api.startSession(picked.id)
       navigate(`/kata/${sessionId}`)
     } catch {

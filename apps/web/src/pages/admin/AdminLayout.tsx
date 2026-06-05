@@ -10,8 +10,8 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/admin/exercises', label: 'Exercises', icon: GridIcon },
-  { to: '/admin/courses', label: 'Courses', icon: BookIcon },
+  { to: '/admin/katas', label: 'Katas', icon: GridIcon },
+  { to: '/admin/scrolls', label: 'Scrolls', icon: BookIcon },
   { to: '/admin/invitations', label: 'Invitations', icon: MailIcon },
   { to: '/admin/errors', label: 'Errors', icon: AlertIcon },
 ]
@@ -23,7 +23,7 @@ export function AdminLayout() {
     <div className="min-h-screen bg-page flex">
       <aside className="w-48 shrink-0 border-r border-border/40 bg-surface flex flex-col h-screen sticky top-0">
         <div className="px-4 py-5 border-b border-border/20">
-          <Link to="/admin/exercises" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <Link to="/admin/katas" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <LogoMark size={20} className="text-primary shrink-0" />
             <span className="font-mono text-sm text-primary tracking-wider">
               dojo<span className="text-accent animate-cursor">_</span>

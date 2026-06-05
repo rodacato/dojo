@@ -7,7 +7,7 @@ export type ConfirmTone = 'muted' | 'amber' | 'red' | 'indigo'
 interface ConfirmModalBaseProps {
   open: boolean
   onCancel: () => void
-  /** Caps-mono eyebrow ("Sign out?", "Quit kata?", "Wipe course content"). */
+  /** Caps-mono eyebrow ("Sign out?", "Quit kata?", "Wipe scroll content"). */
   eyebrow: string
   /** Tone for the eyebrow + (when applicable) the destructive button. */
   tone?: ConfirmTone

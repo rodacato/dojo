@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { Difficulty, ExerciseType } from '@dojo/shared'
+import type { Difficulty, KataType } from '@dojo/shared'
 import { TOPICS } from '@dojo/shared'
 import { ChipSelect } from '../../components/ui/ChipSelect'
 import { ChipInput } from '../../components/ui/ChipInput'
@@ -73,7 +73,7 @@ export function SectionCard({
 export interface BasicsValue {
   title: string
   description: string
-  type: ExerciseType
+  type: KataType
   difficulty: Difficulty
   duration: number
   topics: string[]
@@ -121,7 +121,7 @@ export function BasicsFields({
         <FormField label="Type">
           <select
             value={value.type}
-            onChange={(e) => set('type', e.target.value as ExerciseType)}
+            onChange={(e) => set('type', e.target.value as KataType)}
             className="admin-input"
           >
             <option value="code">CODE</option>

@@ -13,7 +13,7 @@ export class ApiError extends Error {
 export interface RequestOptions extends RequestInit {
   // When false, a 401 response is thrown as ApiError instead of triggering
   // a session-expired redirect. Use this for endpoints that can legitimately
-  // return 401 to anonymous users (e.g. private course access).
+  // return 401 to anonymous users (e.g. private scroll access).
   redirectOnAuth?: boolean
 }
 

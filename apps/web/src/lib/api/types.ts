@@ -1,4 +1,4 @@
-import type { ExerciseDTO, AttemptDTO } from '@dojo/shared'
+import type { KataDTO, AttemptDTO } from '@dojo/shared'
 
 export { type AttemptDTO }
 
@@ -6,13 +6,13 @@ export interface DashboardData {
   streak: number
   totalCompleted: number
   todayComplete: boolean
-  todaySession: { id: string; exerciseTitle: string; verdict: string | null } | null
+  todaySession: { id: string; kataTitle: string; verdict: string | null } | null
   activeSessionId: string | null
   heatmapData: Array<{ date: string; count: number }>
   recentSessions: Array<{
     id: string
-    exerciseTitle: string
-    exerciseType: string
+    kataTitle: string
+    kataType: string
     difficulty: string
     verdict: string | null
     startedAt: string
@@ -38,13 +38,13 @@ export interface SessionAttempt {
   submittedAt: string
 }
 
-export interface SessionWithExercise {
+export interface SessionWithKata {
   id: string
   body: string
   status: string
   startedAt: string
   completedAt: string | null
-  exercise: ExerciseDTO
+  kata: KataDTO
   variationId: string
   ownerRole: string
   finalAttempt: SessionAttempt | null
@@ -58,7 +58,7 @@ export interface SubmitAttemptResponse {
   attemptId: string
 }
 
-export interface AdminExerciseDTO {
+export interface AdminKataDTO {
   id: string
   title: string
   type: string
@@ -69,23 +69,6 @@ export interface AdminExerciseDTO {
   avgScore: number | null
   variationCount: number
   createdAt: string
-}
-
-export interface LeaderboardEntry {
-  rank: number
-  userId: string
-  username: string
-  avatarUrl: string
-  streak: number
-  kataCount: number
-  passRate: number
-  lastActive: string
-  isCurrentUser: boolean
-}
-
-export interface LeaderboardData {
-  entries: LeaderboardEntry[]
-  period: 'month' | 'all-time'
 }
 
 export interface PublicProfileData {
@@ -102,8 +85,8 @@ export interface PublicProfileData {
   heatmapData: Array<{ date: string; count: number }>
   recentSessions: Array<{
     id: string
-    exerciseTitle: string
-    exerciseType: string
+    kataTitle: string
+    kataType: string
     difficulty: string
     verdict: string | null
     status: string

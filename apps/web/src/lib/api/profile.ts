@@ -1,12 +1,13 @@
 import { request } from './client'
-import type { PublicProfileData, LeaderboardData } from './types'
+import type { PublicProfileData } from './types'
+import type { BeltDTO, MilestoneDTO } from '@dojo/shared'
 
 export const profile = {
   getPublicProfile: (username: string) =>
     request<PublicProfileData>(`/u/${username}`),
 
-  getLeaderboard: (period: 'month' | 'all-time' = 'month') =>
-    request<LeaderboardData>(`/leaderboard?period=${period}`),
+  getBelts: () =>
+    request<{ belt: BeltDTO; milestones: MilestoneDTO[] }>('/belts'),
 
   getPreferences: () =>
     request<{

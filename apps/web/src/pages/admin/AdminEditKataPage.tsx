@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import type { Difficulty, ExerciseType } from '@dojo/shared'
+import type { Difficulty, KataType } from '@dojo/shared'
 import { api } from '../../lib/api'
 import { Button } from '../../components/ui/Button'
 import { ConfirmModal } from '../../components/ui/ConfirmModal'
@@ -45,7 +45,7 @@ interface FeedbackData {
   >
 }
 
-export function AdminEditExercisePage() {
+export function AdminEditKataPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [form, setForm] = useState<FormState | null>(null)
@@ -60,13 +60,13 @@ export function AdminEditExercisePage() {
 
   useEffect(() => {
     if (!id) return
-    api.getAdminExercise(id).then((ex) => {
+    api.getAdminKata(id).then((ex) => {
       const next: FormState = {
         title: ex.title,
         description: ex.description,
         duration: ex.duration,
         difficulty: ex.difficulty as Difficulty,
-        type: ex.type as ExerciseType,
+        type: ex.type as KataType,
         status: ex.status,
         languages: ex.languages,
         tags: ex.tags,
@@ -85,8 +85,8 @@ export function AdminEditExercisePage() {
       })
       setVariationLabels(labels)
     })
-    api.getExerciseFeedback(id).then(setFeedback).catch((err) => {
-      console.error('Failed to fetch exercise feedback:', err)
+    api.getKataFeedback(id).then(setFeedback).catch((err) => {
+      console.error('Failed to fetch kata feedback:', err)
     })
   }, [id])
 
@@ -156,7 +156,7 @@ export function AdminEditExercisePage() {
     setSaving(true)
     setSubmitError(null)
     try {
-      await api.updateExercise(id, {
+      await api.updateKata(id, {
         title: form.title,
         description: form.description,
         duration: form.duration,
@@ -169,7 +169,7 @@ export function AdminEditExercisePage() {
         adminNotes: form.adminNotes || null,
         variations: form.variations,
       })
-      navigate('/admin/exercises')
+      navigate('/admin/katas')
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
@@ -180,8 +180,8 @@ export function AdminEditExercisePage() {
     if (!id || archiving) return
     setArchiving(true)
     try {
-      await api.archiveExercise(id)
-      navigate('/admin/exercises')
+      await api.archiveKata(id)
+      navigate('/admin/katas')
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Failed to archive')
       setArchiving(false)
@@ -197,13 +197,13 @@ export function AdminEditExercisePage() {
         <div>
           <button
             type="button"
-            onClick={() => navigate('/admin/exercises')}
+            onClick={() => navigate('/admin/katas')}
             className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
           >
-            ← Back to exercises
+            ← Back to katas
           </button>
           <h1 className="text-[24px] font-semibold text-primary leading-tight">
-            {form.title || 'Untitled exercise'}
+            {form.title || 'Untitled kata'}
           </h1>
         </div>
         <div className="flex items-center gap-3 mt-7">
@@ -212,7 +212,7 @@ export function AdminEditExercisePage() {
               Archive
             </Button>
           )}
-          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
             Cancel
           </Button>
           <Button size="sm" onClick={handleSave} loading={saving}>
@@ -291,7 +291,7 @@ export function AdminEditExercisePage() {
             <textarea
               value={form.adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder="Why this exercise exists, what to watch for, who tested it..."
+              placeholder="Why this kata exists, what to watch for, who tested it..."
               rows={4}
               className="admin-input font-mono"
             />
@@ -304,7 +304,7 @@ export function AdminEditExercisePage() {
       </div>
 
       <StickyFormBar hint={dirty ? 'Unsaved changes · ⌘+S to save' : '⌘+S to save'}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/exercises')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
           Cancel
         </Button>
         <Button size="sm" onClick={handleSave} loading={saving}>
@@ -315,16 +315,16 @@ export function AdminEditExercisePage() {
       <ConfirmModal
         open={showArchiveConfirm}
         onCancel={() => !archiving && setShowArchiveConfirm(false)}
-        eyebrow="Archive exercise?"
+        eyebrow="Archive kata?"
         tone="red"
-        title={`Archive ${form.title || 'this exercise'}?`}
+        title={`Archive ${form.title || 'this kata'}?`}
         primaryVariant="destructive"
         primaryLabel="Archive"
         busy={archiving}
         onConfirm={performArchive}
       >
         <p>
-          Archived exercises are hidden from the catalog but the data is preserved. You can
+          Archived katas are hidden from the catalog but the data is preserved. You can
           always re-publish from this page later.
         </p>
       </ConfirmModal>

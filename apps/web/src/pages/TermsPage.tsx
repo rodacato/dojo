@@ -7,7 +7,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Dojo is a daily practice tool for software engineers. It assigns you a timed exercise
+          Dojo is a daily practice tool for software engineers. It assigns you a timed kata
           (a "kata"), evaluates your response with an AI sensei, and gives you a verdict.
         </p>
         <p>
@@ -47,7 +47,7 @@ const SECTIONS: LegalSection[] = [
       <>
         <LegalCallout>
           <p className="text-[15px] font-medium leading-relaxed">
-            The timer doesn't pause. The kata is yours. No AI during the exercise.
+            The timer doesn't pause. The kata is yours. No AI during the kata.
           </p>
         </LegalCallout>
         <p>
@@ -78,12 +78,12 @@ const SECTIONS: LegalSection[] = [
       <>
         <p>
           Dojo is open source under the MIT License. The source code is available on GitHub.
-          The exercise content and sensei prompts are part of the codebase — they are not
+          The kata content and sensei prompts are part of the codebase — they are not
           secret.
         </p>
         <p>
           "Open source" means you can read, fork, and learn from the code. It does not mean
-          you can run a competing instance using our exercise catalog without attribution.
+          you can run a competing instance using our kata catalog without attribution.
         </p>
       </>
     ),

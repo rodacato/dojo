@@ -30,20 +30,20 @@ const ChangelogPage = lazyWithRetry(() => import('./pages/ChangelogPage').then(m
 const OpenSourcePage = lazyWithRetry(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })))
 const PublicProfilePage = lazyWithRetry(() => import('./pages/PublicProfilePage').then(m => ({ default: m.PublicProfilePage })))
 const SharePage = lazyWithRetry(() => import('./pages/SharePage').then(m => ({ default: m.SharePage })))
-const CourseSharePage = lazyWithRetry(() => import('./pages/CourseSharePage').then(m => ({ default: m.CourseSharePage })))
-const LearnPage = lazyWithRetry(() => import('./pages/LearnPage').then(m => ({ default: m.LearnPage })))
-const CoursePlayerPage = lazyWithRetry(() => import('./pages/CoursePlayerPage').then(m => ({ default: m.CoursePlayerPage })))
-const LeaderboardPage = lazyWithRetry(() => import('./pages/LeaderboardPage').then(m => ({ default: m.LeaderboardPage })))
-const BadgesPage = lazyWithRetry(() => import('./pages/BadgesPage').then(m => ({ default: m.BadgesPage })))
+const ScrollSharePage = lazyWithRetry(() => import('./pages/ScrollSharePage').then(m => ({ default: m.ScrollSharePage })))
+const ScrollsPage = lazyWithRetry(() => import('./pages/ScrollsPage').then(m => ({ default: m.ScrollsPage })))
+const ScrollPlayerPage = lazyWithRetry(() => import('./pages/ScrollPlayerPage').then(m => ({ default: m.ScrollPlayerPage })))
+const BeltsPage = lazyWithRetry(() => import('./pages/BeltsPage').then(m => ({ default: m.BeltsPage })))
+const KumitePlaceholderPage = lazyWithRetry(() => import('./pages/KumitePlaceholderPage').then(m => ({ default: m.KumitePlaceholderPage })))
 const AdminLayout = lazyWithRetry(() => import('./pages/admin/AdminLayout').then(m => ({ default: m.AdminLayout })))
-const AdminExercisesPage = lazyWithRetry(() => import('./pages/admin/AdminExercisesPage').then(m => ({ default: m.AdminExercisesPage })))
-const AdminNewExercisePage = lazyWithRetry(() => import('./pages/admin/AdminNewExercisePage').then(m => ({ default: m.AdminNewExercisePage })))
-const AdminEditExercisePage = lazyWithRetry(() => import('./pages/admin/AdminEditExercisePage').then(m => ({ default: m.AdminEditExercisePage })))
+const AdminKatasPage = lazyWithRetry(() => import('./pages/admin/AdminKatasPage').then(m => ({ default: m.AdminKatasPage })))
+const AdminNewKataPage = lazyWithRetry(() => import('./pages/admin/AdminNewKataPage').then(m => ({ default: m.AdminNewKataPage })))
+const AdminEditKataPage = lazyWithRetry(() => import('./pages/admin/AdminEditKataPage').then(m => ({ default: m.AdminEditKataPage })))
 const AdminInvitationsPage = lazyWithRetry(() => import('./pages/admin/AdminInvitationsPage').then(m => ({ default: m.AdminInvitationsPage })))
-const AdminCoursesPage = lazyWithRetry(() => import('./pages/admin/AdminCoursesPage').then(m => ({ default: m.AdminCoursesPage })))
+const AdminScrollsPage = lazyWithRetry(() => import('./pages/admin/AdminScrollsPage').then(m => ({ default: m.AdminScrollsPage })))
 const AdminErrorsPage = lazyWithRetry(() => import('./pages/admin/AdminErrorsPage').then(m => ({ default: m.AdminErrorsPage })))
 const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })))
-const PlaygroundPage = lazyWithRetry(() => import('./pages/PlaygroundPage').then(m => ({ default: m.PlaygroundPage })))
+const EngawaPage = lazyWithRetry(() => import('./pages/EngawaPage').then(m => ({ default: m.EngawaPage })))
 import { OptionalSidebarLayout } from './components/layout/OptionalSidebarLayout'
 
 function LazyRoute({ children }: { children: React.ReactNode }) {
@@ -71,12 +71,12 @@ export function App() {
           <Route path="/open-source" element={<LazyRoute><OpenSourcePage /></LazyRoute>} />
           <Route path="/u/:username" element={<LazyRoute><PublicProfilePage /></LazyRoute>} />
           <Route path="/share/:id" element={<LazyRoute><SharePage /></LazyRoute>} />
-          <Route path="/share/course/:slug/:userId" element={<LazyRoute><CourseSharePage /></LazyRoute>} />
-          <Route path="/learn" element={<LazyRoute><LearnPage /></LazyRoute>} />
-          <Route path="/learn/:slug" element={<LazyRoute><CoursePlayerPage /></LazyRoute>} />
+          <Route path="/share/scroll/:slug/:userId" element={<LazyRoute><ScrollSharePage /></LazyRoute>} />
+          <Route path="/scrolls" element={<LazyRoute><ScrollsPage /></LazyRoute>} />
+          <Route path="/scrolls/:slug" element={<LazyRoute><ScrollPlayerPage /></LazyRoute>} />
           <Route element={<OptionalSidebarLayout />}>
-            <Route path="/playground" element={<LazyRoute><PlaygroundPage /></LazyRoute>} />
-            <Route path="/playground/:language" element={<LazyRoute><PlaygroundPage /></LazyRoute>} />
+            <Route path="/engawa" element={<LazyRoute><EngawaPage /></LazyRoute>} />
+            <Route path="/engawa/:language" element={<LazyRoute><EngawaPage /></LazyRoute>} />
           </Route>
 
           {/* Protected — AppShell wraps all auth routes */}
@@ -85,15 +85,15 @@ export function App() {
               {/* Eager (critical path) */}
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/start" element={<DayStartPage />} />
-              <Route path="/kata" element={<KataSelectionPage />} />
-              <Route path="/kata/:id" element={<KataActivePage />} />
-              <Route path="/kata/:id/eval" element={<SenseiEvalPage />} />
-              <Route path="/kata/:id/result" element={<ResultsPage />} />
+              <Route path="/katas" element={<KataSelectionPage />} />
+              <Route path="/katas/:id" element={<KataActivePage />} />
+              <Route path="/katas/:id/eval" element={<SenseiEvalPage />} />
+              <Route path="/katas/:id/result" element={<ResultsPage />} />
 
               {/* Lazy */}
               <Route path="/history" element={<LazyRoute><HistoryPage /></LazyRoute>} />
-              <Route path="/leaderboard" element={<LazyRoute><LeaderboardPage /></LazyRoute>} />
-              <Route path="/badges" element={<LazyRoute><BadgesPage /></LazyRoute>} />
+              <Route path="/kumite" element={<LazyRoute><KumitePlaceholderPage /></LazyRoute>} />
+              <Route path="/belts" element={<LazyRoute><BeltsPage /></LazyRoute>} />
               <Route path="/settings" element={<LazyRoute><SettingsPage /></LazyRoute>} />
             </Route>
 
@@ -109,12 +109,12 @@ export function App() {
                 </LazyRoute>
               }
             >
-              <Route index element={<Navigate to="/admin/exercises" replace />} />
-              <Route path="exercises" element={<LazyRoute><AdminExercisesPage /></LazyRoute>} />
-              <Route path="exercises/new" element={<LazyRoute><AdminNewExercisePage /></LazyRoute>} />
-              <Route path="exercises/:id/edit" element={<LazyRoute><AdminEditExercisePage /></LazyRoute>} />
+              <Route index element={<Navigate to="/admin/katas" replace />} />
+              <Route path="katas" element={<LazyRoute><AdminKatasPage /></LazyRoute>} />
+              <Route path="katas/new" element={<LazyRoute><AdminNewKataPage /></LazyRoute>} />
+              <Route path="katas/:id/edit" element={<LazyRoute><AdminEditKataPage /></LazyRoute>} />
               <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
-              <Route path="courses" element={<LazyRoute><AdminCoursesPage /></LazyRoute>} />
+              <Route path="scrolls" element={<LazyRoute><AdminScrollsPage /></LazyRoute>} />
               <Route path="errors" element={<LazyRoute><AdminErrorsPage /></LazyRoute>} />
             </Route>
           </Route>

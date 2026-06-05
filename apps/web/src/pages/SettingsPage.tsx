@@ -151,7 +151,7 @@ export function SettingsPage() {
 
       <Section title="Practice">
         <div className="bg-surface border border-border rounded-md p-6 flex flex-col gap-6">
-          <Field label="Skill level" hint="Shapes exercise difficulty and sensei tone.">
+          <Field label="Skill level" hint="Shapes kata difficulty and sensei tone.">
             <div className="flex gap-2 flex-wrap">
               {LEVELS.map((l) => (
                 <PillButton

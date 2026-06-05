@@ -97,7 +97,7 @@ export const playground = {
   // limiter. Without it the cookie never makes it back on the next
   // cross-origin fetch and every call looks like a new browser.
   run: (body: PlaygroundRunRequest): Promise<PlaygroundRunResponse> =>
-    request<PlaygroundRunResponse>('/playground/run', {
+    request<PlaygroundRunResponse>('/engawa/run', {
       method: 'POST',
       body: JSON.stringify(body),
       credentials: 'include',

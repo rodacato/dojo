@@ -9,8 +9,8 @@ import { buttonClasses } from '../components/ui/Button'
 
 interface ShareData {
   sessionId: string
-  exerciseTitle: string
-  exerciseType: string
+  kataTitle: string
+  kataType: string
   difficulty: string
   verdict: string
   pullQuote: string | null
@@ -87,13 +87,13 @@ export function SharePage() {
 
   return (
     <>
-      <title>{`${verdictLabel} — ${data.exerciseTitle} | dojo_`}</title>
-      <meta property="og:title" content={`${verdictLabel} — ${data.exerciseTitle}`} />
+      <title>{`${verdictLabel} — ${data.kataTitle} | dojo_`}</title>
+      <meta property="og:title" content={`${verdictLabel} — ${data.kataTitle}`} />
       <meta property="og:description" content={data.pullQuote ?? `Kata result by @${data.username}`} />
       <meta property="og:image" content={ogImageUrl} />
       <meta property="og:type" content="article" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={`${verdictLabel} — ${data.exerciseTitle} | dojo_`} />
+      <meta name="twitter:title" content={`${verdictLabel} — ${data.kataTitle} | dojo_`} />
       <meta name="twitter:description" content={data.pullQuote ?? `Kata result by @${data.username}`} />
       <meta name="twitter:image" content={ogImageUrl} />
 
@@ -113,10 +113,10 @@ export function SharePage() {
 
             {/* Title + badges */}
             <h2 className="text-primary text-2xl font-semibold leading-tight tracking-tight mt-4 md:mt-6">
-              {data.exerciseTitle}
+              {data.kataTitle}
             </h2>
             <div className="mt-2 flex items-center gap-3 font-mono text-[11px] tracking-[0.08em] uppercase text-muted">
-              <span>{data.exerciseType}</span>
+              <span>{data.kataType}</span>
               <span aria-hidden>·</span>
               <span>{data.difficulty}</span>
               {data.completionMinutes != null && (

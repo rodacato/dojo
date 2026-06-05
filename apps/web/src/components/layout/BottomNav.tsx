@@ -7,8 +7,8 @@ type NavItem = { to: string; label: string; icon: (props: { className?: string }
 const BASE_NAV: NavItem[] = [
   { to: '/dashboard', label: 'dash', icon: DashboardIcon },
   { to: '/start', label: 'practice', icon: CodeIcon },
-  { to: '/learn', label: 'learn', icon: LearnIcon },
-  { to: '/leaderboard', label: 'board', icon: AnalyticsIcon },
+  { to: '/scrolls', label: 'scrolls', icon: LearnIcon },
+  { to: '/belts', label: 'belts', icon: BadgesIcon },
 ]
 
 export function BottomNav() {
@@ -17,7 +17,7 @@ export function BottomNav() {
     ...BASE_NAV,
     user
       ? { to: '/settings', label: 'settings', icon: CogIcon }
-      : { to: '/badges', label: 'badges', icon: BadgesIcon },
+      : { to: '/engawa', label: 'engawa', icon: AnalyticsIcon },
   ]
 
   return (

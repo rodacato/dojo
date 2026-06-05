@@ -10,39 +10,39 @@ import {
 import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { ErrorState } from '../components/ui/ErrorState'
-import type { CourseDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, ExternalReference, ExternalReferenceKind } from '@dojo/shared'
+import type { ScrollDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, ExternalReference, ExternalReferenceKind } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
 import { renderSlots, type SlotHeading } from '../lib/slots'
 
 // ── Main component ──────────────────────────────────────────────
 
-export function CoursePlayerPage() {
+export function ScrollPlayerPage() {
   const { slug } = useParams<{ slug: string }>()
   const { user } = useAuth()
 
-  const [course, setCourse] = useState<CourseDetailDTO | null>(null)
+  const [scroll, setScroll] = useState<ScrollDetailDTO | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [retryTick, setRetryTick] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<string[]>([])
   const [activeStepId, setActiveStepId] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
-  // Load course
+  // Load scroll
   useEffect(() => {
     if (!slug) return
     let cancelled = false
     setError(null)
-    api.getCourse(slug)
+    api.getScroll(slug)
       .then((c) => {
         if (cancelled) return
-        setCourse(c)
+        setScroll(c)
         const firstLesson = c.lessons[0]
         const firstStep = firstLesson?.steps[0]
         if (firstStep) {
           setActiveStepId(firstStep.id)
         }
       })
-      .catch(() => { if (!cancelled) setError('We couldn\'t load this course.') })
+      .catch(() => { if (!cancelled) setError('We couldn\'t load this scroll.') })
     return () => { cancelled = true }
   }, [slug, retryTick])
 
@@ -58,58 +58,58 @@ export function CoursePlayerPage() {
 
   // Load progress from server — source of truth for both authenticated and
   // anonymous owners. We only create an anonymous id when we actually need
-  // to track progress on a public course without auth.
+  // to track progress on a public scroll without auth.
   useEffect(() => {
-    if (!course) return
+    if (!scroll) return
     if (user) {
-      api.getProgress(course.id)
+      api.getProgress(scroll.id)
         .then((r) => setCompletedSteps(r.completedSteps))
         .catch(() => setCompletedSteps([]))
-    } else if (course.isPublic) {
+    } else if (scroll.isPublic) {
       const anonId = getOrCreateAnonymousId()
-      api.getProgress(course.id, anonId)
+      api.getProgress(scroll.id, anonId)
         .then((r) => setCompletedSteps(r.completedSteps))
         .catch(() => setCompletedSteps([]))
     } else {
       setCompletedSteps([])
     }
-  }, [course, user])
+  }, [scroll, user])
 
   const markStepComplete = useCallback((stepId: string) => {
-    if (!course) return
+    if (!scroll) return
     setCompletedSteps((prev) => {
       if (prev.includes(stepId)) return prev
       return [...prev, stepId]
     })
-    const anonId = !user && course.isPublic ? getAnonymousId() : undefined
-    api.trackProgress(course.id, stepId, anonId ?? undefined).catch(() => {})
-  }, [course, user])
+    const anonId = !user && scroll.isPublic ? getAnonymousId() : undefined
+    api.trackProgress(scroll.id, stepId, anonId ?? undefined).catch(() => {})
+  }, [scroll, user])
 
   const advanceToNextStep = useCallback(() => {
-    if (!course || !activeStepId) return
-    const allSteps = course.lessons.flatMap((l) => l.steps)
+    if (!scroll || !activeStepId) return
+    const allSteps = scroll.lessons.flatMap((l) => l.steps)
     const currentIdx = allSteps.findIndex((s) => s.id === activeStepId)
     const nextStep = allSteps[currentIdx + 1]
     if (nextStep) {
       setActiveStepId(nextStep.id)
     }
-  }, [course, activeStepId])
+  }, [scroll, activeStepId])
 
   if (error) {
     return (
       <ErrorState
         message={error}
         primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
-        secondaryAction={{ label: 'Back to courses', to: '/learn' }}
+        secondaryAction={{ label: 'Back to scrolls', to: '/learn' }}
       />
     )
   }
 
-  if (!course) return <PageLoader />
+  if (!scroll) return <PageLoader />
 
-  const allSteps = course.lessons.flatMap((l) => l.steps)
+  const allSteps = scroll.lessons.flatMap((l) => l.steps)
   const activeStep = allSteps.find((s) => s.id === activeStepId)
-  const courseComplete = allSteps.length > 0 && completedSteps.length >= allSteps.length
+  const scrollComplete = allSteps.length > 0 && completedSteps.length >= allSteps.length
   const completedCount = completedSteps.length
 
   return (
@@ -124,11 +124,11 @@ export function CoursePlayerPage() {
         </Link>
         <span className="h-4 w-px bg-border hidden sm:block" />
         <span className="text-primary text-[14px] font-medium truncate hidden sm:inline">
-          {course.title}
+          {scroll.title}
         </span>
         <span
           className={`ml-auto font-mono text-[11px] tracking-[0.08em] uppercase ${
-            courseComplete ? 'text-success' : 'text-muted'
+            scrollComplete ? 'text-success' : 'text-muted'
           }`}
         >
           {completedCount} / {allSteps.length} steps
@@ -152,11 +152,11 @@ export function CoursePlayerPage() {
         >
           <div className="px-4 pt-5 pb-3">
             <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
-              Lessons · {course.lessons.length}
+              Lessons · {scroll.lessons.length}
             </p>
           </div>
           <nav className="flex-1 overflow-y-auto pb-4">
-            {course.lessons.map((lesson, i) => (
+            {scroll.lessons.map((lesson, i) => (
               <LessonNav
                 key={lesson.id}
                 lesson={lesson}
@@ -166,18 +166,18 @@ export function CoursePlayerPage() {
                 onSelectStep={setActiveStepId}
               />
             ))}
-            <FurtherReading refs={course.externalReferences} />
+            <FurtherReading refs={scroll.externalReferences} />
           </nav>
         </aside>
 
         {/* Main content */}
         <main className="flex-1 min-w-0 overflow-y-auto">
-          {courseComplete && user && (
-            <CourseCompleteBanner
-              courseTitle={course.title}
-              courseSlug={course.slug}
+          {scrollComplete && user && (
+            <ScrollCompleteBanner
+              scrollTitle={scroll.title}
+              scrollSlug={scroll.slug}
               userId={user.id}
-              lessonCount={course.lessons.length}
+              lessonCount={scroll.lessons.length}
               stepCount={allSteps.length}
             />
           )}
@@ -185,8 +185,8 @@ export function CoursePlayerPage() {
           {activeStep ? (
             <StepContent
               step={activeStep}
-              courseSlug={course.slug}
-              language={course.language}
+              scrollSlug={scroll.slug}
+              language={scroll.language}
               isCompleted={completedSteps.includes(activeStep.id)}
               onComplete={() => {
                 markStepComplete(activeStep.id)
@@ -314,7 +314,7 @@ function extractStepTitle(step: StepDTO): string {
   if (step.title && step.title.trim()) return step.title.trim()
   const match = step.instruction.match(/^#\s+(.+)$/m)
   if (match && match[1]) {
-    return match[1].replace(/^(exercise|challenge|read):\s*/i, '').trim()
+    return match[1].replace(/^(kata|challenge|read):\s*/i, '').trim()
   }
   if (step.type === 'read') return 'Read'
   return `Step ${step.order}`
@@ -324,13 +324,13 @@ function extractStepTitle(step: StepDTO): string {
 
 function StepContent({
   step,
-  courseSlug,
+  scrollSlug,
   language,
   isCompleted,
   onComplete,
 }: {
   step: StepDTO
-  courseSlug: string
+  scrollSlug: string
   language: string
   isCompleted: boolean
   onComplete: () => void
@@ -354,7 +354,7 @@ function StepContent({
   return (
     <StepEditor
       step={step}
-      courseSlug={courseSlug}
+      scrollSlug={scrollSlug}
       language={language}
       isCompleted={isCompleted}
       onComplete={onComplete}
@@ -368,13 +368,13 @@ type OutputTab = 'tests' | 'output' | 'solution'
 
 function StepEditor({
   step,
-  courseSlug,
+  scrollSlug,
   language,
   isCompleted,
   onComplete,
 }: {
   step: StepDTO
-  courseSlug: string
+  scrollSlug: string
   language: string
   isCompleted: boolean
   onComplete: () => void
@@ -424,7 +424,7 @@ function StepEditor({
     setNudgeFeedback(null)
     try {
       const response = await api.requestNudge({
-        courseSlug,
+        scrollSlug,
         stepId: step.id,
         userCode: code,
         stdout: result?.stdout,
@@ -463,7 +463,7 @@ function StepEditor({
     if (solutionCode !== null || solutionError !== null) return
     const anonId = !isIframeLang ? getAnonymousId() ?? undefined : undefined
     api
-      .getStepSolution(courseSlug, step.id, anonId)
+      .getStepSolution(scrollSlug, step.id, anonId)
       .then((r) => {
         setSolutionCode(r.solution ?? '')
         setAlternativeApproach(r.alternativeApproach ?? null)
@@ -471,7 +471,7 @@ function StepEditor({
       .catch((e) => {
         setSolutionError(e instanceof Error ? e.message : 'Could not load solution')
       })
-  }, [tab, isCompleted, solutionCode, solutionError, courseSlug, step.id, isIframeLang])
+  }, [tab, isCompleted, solutionCode, solutionError, scrollSlug, step.id, isIframeLang])
 
   const runCode = async () => {
     if (!step.testCode || running) return
@@ -1025,29 +1025,29 @@ function MarkdownContent({ content }: { content: string }) {
   return <PlainMarkdown content={content} />
 }
 
-// ── CourseCompleteBanner ────────────────────────────────────────
+// ── ScrollCompleteBanner ────────────────────────────────────────
 
-function CourseCompleteBanner({
-  courseTitle,
-  courseSlug,
+function ScrollCompleteBanner({
+  scrollTitle,
+  scrollSlug,
   userId,
   lessonCount,
   stepCount,
 }: {
-  courseTitle: string
-  courseSlug: string
+  scrollTitle: string
+  scrollSlug: string
   userId: string
   lessonCount: number
   stepCount: number
 }) {
   const [copied, setCopied] = useState(false)
-  const shareUrl = `${window.location.origin}/share/course/${courseSlug}/${userId}`
+  const shareUrl = `${window.location.origin}/share/scroll/${scrollSlug}/${userId}`
 
   async function handleShare() {
-    const text = `Completed ${courseTitle} in dojo_`
+    const text = `Completed ${scrollTitle} in dojo_`
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'dojo_ course complete', text, url: shareUrl })
+        await navigator.share({ title: 'dojo_ scroll complete', text, url: shareUrl })
         return
       } catch {
         // Fall through to clipboard if the user dismisses the share sheet.
@@ -1068,10 +1068,10 @@ function CourseCompleteBanner({
   return (
     <section className="px-4 md:px-8 py-10 md:py-12 max-w-3xl mx-auto text-center">
       <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-success">
-        Course · Complete
+        Scroll · Complete
       </p>
       <h2 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight mt-4">
-        {courseTitle}
+        {scrollTitle}
       </h2>
       <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mt-3">
         {lessonCount} lessons · {stepCount} steps
@@ -1093,7 +1093,7 @@ function CourseCompleteBanner({
           to="/learn"
           className="font-mono text-[11px] tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
-          ← Back to courses
+          ← Back to scrolls
         </Link>
         <button
           type="button"

@@ -4,7 +4,7 @@ interface PersonaEyebrowProps {
 }
 
 // Small monospaced caps eyebrow used on every sensei surface — eval bubble,
-// results header, share page, course nudge inset. Keeps the "this is a real
+// results header, share page, scroll nudge inset. Keeps the "this is a real
 // persona, not a chatbot" anchor consistent (Yemi's note in batch 03).
 export function PersonaEyebrow({ role, className = '' }: PersonaEyebrowProps) {
   return (

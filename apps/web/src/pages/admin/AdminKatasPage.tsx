@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import type { ExerciseType, Difficulty } from '@dojo/shared'
-import { api, type AdminExerciseDTO } from '../../lib/api'
+import type { KataType, Difficulty } from '@dojo/shared'
+import { api, type AdminKataDTO } from '../../lib/api'
 import { TypeBadge, DifficultyBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
@@ -14,9 +14,9 @@ type SortKey = 'newest' | 'oldest' | 'most_sessions' | 'highest_score'
 
 const PAGE_SIZE = 12
 
-export function AdminExercisesPage() {
+export function AdminKatasPage() {
   const navigate = useNavigate()
-  const [exercises, setExercises] = useState<AdminExerciseDTO[]>([])
+  const [katas, setKatas] = useState<AdminKataDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
@@ -27,31 +27,31 @@ export function AdminExercisesPage() {
 
   useEffect(() => {
     api
-      .getAdminExercises()
-      .then(setExercises)
+      .getAdminKatas()
+      .then(setKatas)
       .finally(() => setLoading(false))
   }, [])
 
   const counts = useMemo(() => {
     const c = { published: 0, draft: 0, archived: 0 }
-    for (const ex of exercises) {
+    for (const ex of katas) {
       if (ex.status === 'published') c.published++
       else if (ex.status === 'draft') c.draft++
       else if (ex.status === 'archived') c.archived++
     }
     return c
-  }, [exercises])
+  }, [katas])
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return exercises.filter((ex) => {
+    return katas.filter((ex) => {
       if (q && !ex.title.toLowerCase().includes(q)) return false
       if (typeFilter !== 'all' && ex.type !== typeFilter) return false
       if (difficultyFilter !== 'all' && ex.difficulty !== difficultyFilter) return false
       if (statusFilter !== 'all' && ex.status !== statusFilter) return false
       return true
     })
-  }, [exercises, search, typeFilter, difficultyFilter, statusFilter])
+  }, [katas, search, typeFilter, difficultyFilter, statusFilter])
 
   const sorted = useMemo(() => {
     const copy = [...filtered]
@@ -88,7 +88,7 @@ export function AdminExercisesPage() {
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">Exercises</h1>
+          <h1 className="text-[24px] font-semibold text-primary leading-tight">Katas</h1>
           <div className="mt-1 text-[13px] text-muted">
             <span className="text-success">{counts.published} published</span>
             <span className="mx-2">·</span>
@@ -97,7 +97,7 @@ export function AdminExercisesPage() {
             <span>{counts.archived} archived</span>
           </div>
         </div>
-        <Button onClick={() => navigate('/admin/exercises/new')}>+ New exercise</Button>
+        <Button onClick={() => navigate('/admin/katas/new')}>+ New kata</Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-6 p-3 rounded-md border border-border bg-surface">
@@ -161,10 +161,10 @@ export function AdminExercisesPage() {
         />
       </div>
 
-      {!loading && exercises.length > 0 && pageRows.length === 0 ? (
+      {!loading && katas.length > 0 && pageRows.length === 0 ? (
         <EmptyState
-          eyebrow={`No matches · Exercises${activeFilters({ search, typeFilter, difficultyFilter, statusFilter, sort }).map((f) => ` · ${f}`).join('')}`}
-          headline="No exercises match. Loosen the filter or wait for more catalog updates."
+          eyebrow={`No matches · Katas${activeFilters({ search, typeFilter, difficultyFilter, statusFilter, sort }).map((f) => ` · ${f}`).join('')}`}
+          headline="No katas match. Loosen the filter or wait for more catalog updates."
           action={
             <Button
               variant="ghost"
@@ -182,11 +182,11 @@ export function AdminExercisesPage() {
             </Button>
           }
         />
-      ) : !loading && exercises.length === 0 ? (
+      ) : !loading && katas.length === 0 ? (
         <EmptyState
-          eyebrow="Empty · Exercises"
-          headline="No exercises in the catalog yet."
-          microcopy="Use the New exercise button above to create the first one."
+          eyebrow="Empty · Katas"
+          headline="No katas in the catalog yet."
+          microcopy="Use the New kata button above to create the first one."
         />
       ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
@@ -224,11 +224,11 @@ export function AdminExercisesPage() {
                   return (
                     <tr
                       key={ex.id}
-                      onClick={() => navigate(`/admin/exercises/${ex.id}/edit`)}
+                      onClick={() => navigate(`/admin/katas/${ex.id}/edit`)}
                       className="border-b border-border last:border-b-0 hover:bg-elevated transition-colors cursor-pointer"
                     >
                       <td className="px-4 h-14 align-middle">
-                        <TypeBadge type={ex.type as ExerciseType} />
+                        <TypeBadge type={ex.type as KataType} />
                       </td>
                       <td className="px-4 h-14 align-middle">
                         <DifficultyBadge difficulty={ex.difficulty as Difficulty} />
@@ -273,7 +273,7 @@ export function AdminExercisesPage() {
             page={safePage}
             totalPages={totalPages}
             onChange={setPage}
-            ariaLabel="Exercises pagination"
+            ariaLabel="Katas pagination"
             size="sm"
           />
         </div>

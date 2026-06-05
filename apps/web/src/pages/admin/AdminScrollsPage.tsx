@@ -6,7 +6,7 @@ import { ConfirmModal } from '../../components/ui/ConfirmModal'
 import { Toggle } from '../../components/ui/Toggle'
 import { AdminBreadcrumb } from './_form-parts'
 
-interface AdminCourse {
+interface AdminScroll {
   id: string
   slug: string
   title: string
@@ -33,16 +33,16 @@ type Notice = {
   at: number
 } | null
 
-export function AdminCoursesPage() {
-  const [courses, setCourses] = useState<AdminCourse[] | null>(null)
+export function AdminScrollsPage() {
+  const [scrolls, setScrolls] = useState<AdminScroll[] | null>(null)
   const [busy, setBusy] = useState<Busy>(null)
   const [notice, setNotice] = useState<Notice>(null)
-  const [wipeTarget, setWipeTarget] = useState<AdminCourse | null>(null)
+  const [wipeTarget, setWipeTarget] = useState<AdminScroll | null>(null)
   const [now, setNow] = useState(() => Date.now())
 
   const refresh = useCallback(async () => {
-    const list = await api.getAdminCourses()
-    setCourses(list)
+    const list = await api.getAdminScrolls()
+    setScrolls(list)
   }, [])
 
   useEffect(() => {
@@ -64,11 +64,11 @@ export function AdminCoursesPage() {
   async function onSeed() {
     setBusy({ kind: 'seed' })
     try {
-      const report = await api.seedCourses()
+      const report = await api.seedScrolls()
       setNotice({
         tone: 'ok',
         eyebrow: 'Re-seed complete',
-        body: `${report.seeded.length} course${report.seeded.length === 1 ? '' : 's'} patched in place.`,
+        body: `${report.seeded.length} scroll${report.seeded.length === 1 ? '' : 's'} patched in place.`,
         at: Date.now(),
       })
       await refresh()
@@ -90,7 +90,7 @@ export function AdminCoursesPage() {
   ) {
     setBusy({ kind: 'patch', id })
     try {
-      await api.updateCourse(id, patch)
+      await api.updateScroll(id, patch)
       await refresh()
     } catch (e) {
       setNotice({
@@ -104,14 +104,14 @@ export function AdminCoursesPage() {
     }
   }
 
-  async function performWipe(course: AdminCourse) {
-    setBusy({ kind: 'wipe', id: course.id })
+  async function performWipe(scroll: AdminScroll) {
+    setBusy({ kind: 'wipe', id: scroll.id })
     try {
-      await api.wipeCourseContent(course.id)
+      await api.wipeScrollContent(scroll.id)
       setNotice({
         tone: 'ok',
         eyebrow: 'Content wiped',
-        body: `${course.title} cleared. Click "Re-seed all" to repopulate.`,
+        body: `${scroll.title} cleared. Click "Re-seed all" to repopulate.`,
         at: Date.now(),
       })
       await refresh()
@@ -134,12 +134,12 @@ export function AdminCoursesPage() {
 
   const counts = useMemo(() => {
     const c = { published: 0, draft: 0 }
-    for (const course of courses ?? []) {
-      if (course.status === 'published') c.published++
+    for (const scroll of scrolls ?? []) {
+      if (scroll.status === 'published') c.published++
       else c.draft++
     }
     return c
-  }, [courses])
+  }, [scrolls])
 
   const noticeAge = notice ? relativePast(now, notice.at) : null
 
@@ -149,13 +149,13 @@ export function AdminCoursesPage() {
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">Courses</h1>
+          <h1 className="text-[24px] font-semibold text-primary leading-tight">Scrolls</h1>
           <div className="mt-1 text-[13px] text-muted">
             <span className="text-success">{counts.published} published</span>
             <span className="mx-2">·</span>
             <span>{counts.draft} draft</span>
             <span className="mx-2">·</span>
-            <span>Catalog seeded from <code className="font-mono text-secondary">/apps/api/seed/courses/</code></span>
+            <span>Catalog seeded from <code className="font-mono text-secondary">/apps/api/seed/scrolls/</code></span>
           </div>
         </div>
         <Button variant="ghost" size="sm" onClick={onSeed} loading={busy?.kind === 'seed'}>
@@ -186,7 +186,7 @@ export function AdminCoursesPage() {
             </colgroup>
             <thead>
               <tr className="border-b border-border">
-                <Th>Course</Th>
+                <Th>Scroll</Th>
                 <Th>Language</Th>
                 <Th align="right">Lessons</Th>
                 <Th align="right">Steps</Th>
@@ -196,21 +196,21 @@ export function AdminCoursesPage() {
               </tr>
             </thead>
             <tbody>
-              {courses === null && (
+              {scrolls === null && (
                 <tr>
                   <td colSpan={7} className="px-4 py-10 text-center text-muted font-mono">
                     Loading_
                   </td>
                 </tr>
               )}
-              {courses && courses.length === 0 && (
+              {scrolls && scrolls.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-4 py-10 text-center text-muted text-[13px]">
-                    No courses yet. Click <span className="font-mono">Re-seed all</span> to populate from seed files.
+                    No scrolls yet. Click <span className="font-mono">Re-seed all</span> to populate from seed files.
                   </td>
                 </tr>
               )}
-              {courses?.map((c) => {
+              {scrolls?.map((c) => {
                 const patching = busy?.kind === 'patch' && busy.id === c.id
                 const wiping = busy?.kind === 'wipe' && busy.id === c.id
                 return (
@@ -271,7 +271,7 @@ export function AdminCoursesPage() {
                     <td className="px-4 h-14 align-middle text-right">
                       <div className="inline-flex items-center gap-1">
                         <IconAction
-                          label="Open course"
+                          label="Open scroll"
                           as={Link}
                           to={`/learn/${c.slug}`}
                           target="_blank"
@@ -301,15 +301,15 @@ export function AdminCoursesPage() {
       </div>
 
       <div className="mt-4 font-mono text-[11px] uppercase tracking-wider text-muted">
-        Snapshot diff visible in <Link to="/admin/errors" className="hover:text-secondary transition-colors">Errors</Link>. Re-seeding patches in place; wiping is per-course.
+        Snapshot diff visible in <Link to="/admin/errors" className="hover:text-secondary transition-colors">Errors</Link>. Re-seeding patches in place; wiping is per-scroll.
       </div>
 
       <ConfirmModal
         open={wipeTarget !== null}
         onCancel={() => setWipeTarget(null)}
-        eyebrow="Wipe course content"
+        eyebrow="Wipe scroll content"
         tone="red"
-        title={wipeTarget ? `Wipe ${wipeTarget.title}?` : 'Wipe course content?'}
+        title={wipeTarget ? `Wipe ${wipeTarget.title}?` : 'Wipe scroll content?'}
         primaryVariant="danger"
         primaryLabel="Wipe content"
         busy={busy?.kind === 'wipe'}
@@ -325,9 +325,9 @@ export function AdminCoursesPage() {
         }
       >
         <p>
-          Removes all lessons and steps. Sessions and progress for this course are kept.
+          Removes all lessons and steps. Sessions and progress for this scroll are kept.
           Re-seeding restores content from{' '}
-          <code className="font-mono">/apps/api/seed/courses/</code>.
+          <code className="font-mono">/apps/api/seed/scrolls/</code>.
         </p>
       </ConfirmModal>
     </div>
