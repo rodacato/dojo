@@ -39,7 +39,7 @@ export function DashboardPage() {
           todaySession={dashboard.todaySession}
           activeSessionId={dashboard.activeSessionId}
           isFirstVisit={isFirstVisit}
-          onStart={() => navigate('/start')}
+          onStart={() => navigate('/katas')}
           onResume={(id) => navigate(`/kata/${id}`)}
           onViewResults={(id) => navigate(`/kata/${id}/result`)}
         />

@@ -65,7 +65,7 @@ export function HistoryPage() {
           headline="No sessions yet. The dojo is patient."
           microcopy="Your first kata is also the hardest one."
           action={
-            <Button variant="primary" size="md" onClick={() => navigate('/start')}>
+            <Button variant="primary" size="md" onClick={() => navigate('/katas')}>
               Enter the dojo →
             </Button>
           }

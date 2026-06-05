@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'dashboard', icon: DashboardIcon, soon: false },
-  { to: '/start', label: 'practice', icon: CodeIcon, soon: false },
+  { to: '/katas', label: 'katas', icon: CodeIcon, soon: false },
   { to: '/scrolls', label: 'scrolls', icon: LearnIcon, soon: false },
   { to: '/engawa', label: 'engawa', icon: TerminalIcon, soon: false },
   { to: '/kumite', label: 'kumite', icon: AnalyticsIcon, soon: true },

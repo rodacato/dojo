@@ -184,7 +184,7 @@ export function KataActivePage() {
     return (
       <ErrorState
         message="Something went wrong preparing your kata."
-        primaryAction={{ label: 'Start a new kata', onClick: () => navigate('/start') }}
+        primaryAction={{ label: 'Start a new kata', onClick: () => navigate('/katas') }}
         secondaryAction={{ label: 'Back to dashboard', onClick: () => navigate('/dashboard') }}
       />
     )

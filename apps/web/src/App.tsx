@@ -12,8 +12,7 @@ import { lazyWithRetry } from './lib/lazyWithRetry'
 // Critical path — eager loaded
 import { LandingPage } from './pages/LandingPage'
 import { DashboardPage } from './pages/DashboardPage'
-import { DayStartPage } from './pages/DayStartPage'
-import { KataSelectionPage } from './pages/KataSelectionPage'
+import { KatasPage } from './pages/KatasPage'
 import { KataActivePage } from './pages/KataActivePage'
 import { SenseiEvalPage } from './pages/SenseiEvalPage'
 import { ResultsPage } from './pages/ResultsPage'
@@ -84,8 +83,7 @@ export function App() {
             <Route element={<AppShell />}>
               {/* Eager (critical path) */}
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/start" element={<DayStartPage />} />
-              <Route path="/katas" element={<KataSelectionPage />} />
+              <Route path="/katas" element={<KatasPage />} />
               <Route path="/katas/:id" element={<KataActivePage />} />
               <Route path="/katas/:id/eval" element={<SenseiEvalPage />} />
               <Route path="/katas/:id/result" element={<ResultsPage />} />

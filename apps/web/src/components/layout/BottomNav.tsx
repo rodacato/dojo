@@ -6,7 +6,7 @@ type NavItem = { to: string; label: string; icon: (props: { className?: string }
 
 const BASE_NAV: NavItem[] = [
   { to: '/dashboard', label: 'dash', icon: DashboardIcon },
-  { to: '/start', label: 'practice', icon: CodeIcon },
+  { to: '/katas', label: 'katas', icon: CodeIcon },
   { to: '/scrolls', label: 'scrolls', icon: LearnIcon },
   { to: '/belts', label: 'belts', icon: BadgesIcon },
 ]

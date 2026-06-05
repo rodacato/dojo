@@ -21,7 +21,7 @@ export function OnboardingOverlay({ onDismiss }: OnboardingOverlayProps) {
 
   function handleStart() {
     onDismiss()
-    navigate('/start')
+    navigate('/katas')
   }
 
   return (

@@ -237,7 +237,7 @@ export function EngawaPage() {
     }
   }
 
-  const ctaHref = user ? '/start' : '/'
+  const ctaHref = user ? '/katas' : '/'
 
   return (
     <div className="h-screen bg-page text-primary flex flex-col overflow-hidden">

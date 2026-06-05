@@ -76,7 +76,7 @@ export function ResultsPage() {
           <Button variant="ghost" size="md" onClick={() => navigate('/dashboard', { replace: true })} className="flex-1">
             Dashboard
           </Button>
-          <Button variant="primary" size="md" onClick={() => navigate('/start', { replace: true })} className="flex-1">
+          <Button variant="primary" size="md" onClick={() => navigate('/katas', { replace: true })} className="flex-1">
             Keep Practicing
           </Button>
         </div>
@@ -189,7 +189,7 @@ export function ResultsPage() {
         <Button variant="ghost" size="md" onClick={() => navigate('/dashboard', { replace: true })}>
           ← Dashboard
         </Button>
-        <Button variant="primary" size="md" onClick={() => navigate('/start', { replace: true })}>
+        <Button variant="primary" size="md" onClick={() => navigate('/katas', { replace: true })}>
           Keep practicing →
         </Button>
       </div>

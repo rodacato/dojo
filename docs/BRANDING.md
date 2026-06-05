@@ -37,10 +37,11 @@ The product speaks one vocabulary. Each term below is load-bearing — it does p
 | **Engawa** | The anonymous code playground at `/engawa`. The Japanese veranda — the transitional space between inside and outside. No account required to try a snippet. | *"opened the engawa to test a Ruby idea"* | *"opened the playground" (in our product surface)* |
 | **Kumite** | The planned 1v1 sparring feature — paired evaluation, shared kata, side-by-side reasoning compared by the sensei. **Not built yet** — the route exists as an honest placeholder. Not a relabel of the deleted leaderboard. | *"when kumite ships I want to spar against another reviewer"* | *"check the kumite leaderboard"* |
 
-Two more that are *not* dojo-flavored on purpose:
+One more that is *not* dojo-flavored on purpose:
 
 - **Dashboard** — generic post-login orientation surface. The one place we don't translate; the user shouldn't have to learn vocabulary before seeing where they are.
-- **Practice** (the `/start` route label) — the verb works without translation. Keeping it lowercase, English, and unadorned signals that practice is the whole point.
+
+> **Historical note:** an earlier draft kept `/start` + "practice" as a separate nav item. Day-to-day use showed it was a stutter — one extra click between intent and the picks. `/katas` now hosts the full ritual (streak + mood + duration + customize) plus the three picks inline. One surface, one click to commit.
 
 ---
 
