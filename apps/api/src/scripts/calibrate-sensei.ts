@@ -234,12 +234,9 @@ function aggregate(results: CaseResult[]): Record<Difficulty, BucketStats> {
 }
 
 function report(results: CaseResult[], stats: Record<Difficulty, BucketStats>): boolean {
-  // eslint-disable-next-line no-console
   console.log('\n=== Per-case verdicts ===')
-  // eslint-disable-next-line no-console
   console.table(results)
 
-  // eslint-disable-next-line no-console
   console.log('\n=== Per-difficulty drift ===')
   const rows = (Object.entries(stats) as [Difficulty, BucketStats][]).map(([d, s]) => ({
     difficulty: d,
@@ -249,11 +246,9 @@ function report(results: CaseResult[], stats: Record<Difficulty, BucketStats>): 
     drift_pts: s.driftPoints.toFixed(1),
     within_gate: s.driftPoints <= DRIFT_THRESHOLD_POINTS,
   }))
-  // eslint-disable-next-line no-console
   console.table(rows)
 
   const allWithinGate = rows.every((r) => r.within_gate === true)
-  // eslint-disable-next-line no-console
   console.log(
     `\nGate: drift ≤ ±${DRIFT_THRESHOLD_POINTS}pt per difficulty → ${allWithinGate ? 'PASS' : 'FAIL'}`,
   )
@@ -264,7 +259,6 @@ async function main() {
   const smoke = process.argv.includes('--smoke')
   let runner: LLMRunner
   if (smoke) {
-    // eslint-disable-next-line no-console
     console.log('[calibrate-sensei] smoke mode — using SmokeRunner (no real LLM calls)')
     runner = new SmokeRunner()
   } else {
@@ -272,14 +266,12 @@ async function main() {
     const model = process.env['LLM_MODEL']
     if (!apiKey) throw new Error('LLM_API_KEY env var required (or pass --smoke)')
     if (!model) throw new Error('LLM_MODEL env var required (or pass --smoke)')
-    // eslint-disable-next-line no-console
     console.log(`[calibrate-sensei] using Anthropic model=${model}`)
     runner = new AnthropicRunner(apiKey, model, process.env['LLM_BASE_URL'])
   }
 
   const results: CaseResult[] = []
   for (const c of CALIBRATION_CASES) {
-    // eslint-disable-next-line no-console
     console.log(`[calibrate-sensei] ${c.id} ...`)
     results.push(await evaluateCase(runner, c))
   }

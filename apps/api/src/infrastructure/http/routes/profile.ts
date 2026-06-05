@@ -2,7 +2,6 @@ import { and, count, desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { db } from '../../persistence/drizzle/client'
 import { attempts, katas, sessions, userMilestones, users } from '../../persistence/drizzle/schema'
-import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { verdictSubquery, calculateStreak } from './query-helpers'
 
