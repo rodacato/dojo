@@ -184,11 +184,12 @@ Residual risk:
 | `/kumite` in sprint | **Reserved as placeholder** — route exists, renders "coming soon" panel with brief copy on what kumite will be | Reserving the URL without lying about the feature; aligns with "consolidate the theme" goal |
 | Sensei voice register | Single calibration pass during sprint (Yemi-style: verdict consistency on 10-kata test set before/after prompt revision) | Voice update is a prompt change; ship behind validation |
 | Belt visual treatment | Sprint-level UX decision — Soren executes against PRD-031 thresholds | Not blocking; design happens alongside implementation |
+| Badge code mapping | **Corrected:** `Badge` → `Milestone` (achievement events stay as a concept); `Belt` is a NEW value object computed on read, orthogonal to milestones. Both surface on `/belts` page (belt as headline, milestones as section). | Inventory surfaced that current `Badge` records (FIRST_KATA, POLYGLOT, COURSE_*) are milestones, not rank — conflating them would break product value. Locked in [Spec 028 Part 0](../specs/028-dojo-language-pass.md). |
 
 ## Next step
 
 - [x] PRD locked, Option A confirmed
 - [x] PRD-031 (belt rubric) confirmed — Option C
-- [ ] Sprint 023 plan: see [PRD-032](032-sprint-023-planning.md)
-- [ ] Spec: `docs/specs/NNN-dojo-language-pass.md` written during sprint kickoff
+- [x] Sprint 023 plan: see [PRD-032](032-sprint-023-planning.md)
+- [x] Spec: [Spec 028](../specs/028-dojo-language-pass.md) — implementation contract
 - [ ] Defer to future PRD: `PRD-NNN: Kumite — 1v1 sparring feature` (independent, post-sprint-023)
