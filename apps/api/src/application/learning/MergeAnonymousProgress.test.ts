@@ -1,16 +1,16 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { CourseProgress } from '../../domain/learning/ports'
+import type { ScrollProgress } from '../../domain/learning/ports'
 import { MergeAnonymousProgress } from './MergeAnonymousProgress'
 
-function makeRepo(anonList: CourseProgress[], userProgress: Map<string, CourseProgress>) {
+function makeRepo(anonList: ScrollProgress[], userProgress: Map<string, ScrollProgress>) {
   return {
-    findByOwnerAndCourse: vi.fn(async (owner, courseId) => {
+    findByOwnerAndScroll: vi.fn(async (owner, scrollId) => {
       if (owner.kind !== 'user') return null
-      return userProgress.get(courseId) ?? null
+      return userProgress.get(scrollId) ?? null
     }),
     findAllForAnonymous: vi.fn(async () => anonList),
-    save: vi.fn(async (p: CourseProgress) => {
-      userProgress.set(p.courseId, p)
+    save: vi.fn(async (p: ScrollProgress) => {
+      userProgress.set(p.scrollId, p)
     }),
     deleteAnonymous: vi.fn(async () => {}),
   }
@@ -18,19 +18,19 @@ function makeRepo(anonList: CourseProgress[], userProgress: Map<string, CoursePr
 
 describe('MergeAnonymousProgress', () => {
   it('merges with overlap — union of steps, max lastAccessedAt', async () => {
-    const anon: CourseProgress = {
+    const anon: ScrollProgress = {
       owner: { kind: 'anonymous', sessionId: 'anon-1' },
-      courseId: 'course-1',
+      scrollId: 'scroll-1',
       completedSteps: ['step-1', 'step-2'],
       lastAccessedAt: new Date('2026-03-28T10:00:00Z'),
     }
-    const user: CourseProgress = {
+    const user: ScrollProgress = {
       owner: { kind: 'user', userId: 'user-1' },
-      courseId: 'course-1',
+      scrollId: 'scroll-1',
       completedSteps: ['step-2', 'step-3'],
       lastAccessedAt: new Date('2026-03-27T10:00:00Z'),
     }
-    const userMap = new Map([['course-1', user]])
+    const userMap = new Map([['scroll-1', user]])
     const repo = makeRepo([anon], userMap)
 
     await new MergeAnonymousProgress({ progressRepo: repo }).execute({
@@ -41,7 +41,7 @@ describe('MergeAnonymousProgress', () => {
     expect(repo.save).toHaveBeenCalledWith(
       expect.objectContaining({
         owner: { kind: 'user', userId: 'user-1' },
-        courseId: 'course-1',
+        scrollId: 'scroll-1',
         completedSteps: ['step-2', 'step-3', 'step-1'],
         lastAccessedAt: new Date('2026-03-28T10:00:00Z'),
       }),
@@ -50,9 +50,9 @@ describe('MergeAnonymousProgress', () => {
   })
 
   it('merges without overlap — user has no prior progress', async () => {
-    const anon: CourseProgress = {
+    const anon: ScrollProgress = {
       owner: { kind: 'anonymous', sessionId: 'anon-1' },
-      courseId: 'course-1',
+      scrollId: 'scroll-1',
       completedSteps: ['step-1'],
       lastAccessedAt: new Date(),
     }
@@ -66,7 +66,7 @@ describe('MergeAnonymousProgress', () => {
     expect(repo.save).toHaveBeenCalledWith(
       expect.objectContaining({
         owner: { kind: 'user', userId: 'user-1' },
-        courseId: 'course-1',
+        scrollId: 'scroll-1',
         completedSteps: ['step-1'],
       }),
     )

@@ -86,19 +86,19 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
 //
 // Mounted with separate .use() calls because Hono's .post() overloads
 // cap out around 8 arguments and the chain is deeper than that.
-playgroundRoutes.use('/playground/run', ensurePlaygroundSession)
-playgroundRoutes.use('/playground/run', optionalAuth)
-playgroundRoutes.use('/playground/run', playgroundAnonIpMinuteLimiter)
-playgroundRoutes.use('/playground/run', playgroundAnonIpDayLimiter)
-playgroundRoutes.use('/playground/run', playgroundSessionMinuteLimiter)
-playgroundRoutes.use('/playground/run', playgroundSessionDayLimiter)
-playgroundRoutes.use('/playground/run', playgroundAuthedUserMinuteLimiter)
-playgroundRoutes.use('/playground/run', playgroundAuthedUserDayLimiter)
-playgroundRoutes.use('/playground/run', playgroundTurnstileMiddleware)
-playgroundRoutes.use('/playground/run', playgroundGlobalQuotaMiddleware)
+playgroundRoutes.use('/engawa/run', ensurePlaygroundSession)
+playgroundRoutes.use('/engawa/run', optionalAuth)
+playgroundRoutes.use('/engawa/run', playgroundAnonIpMinuteLimiter)
+playgroundRoutes.use('/engawa/run', playgroundAnonIpDayLimiter)
+playgroundRoutes.use('/engawa/run', playgroundSessionMinuteLimiter)
+playgroundRoutes.use('/engawa/run', playgroundSessionDayLimiter)
+playgroundRoutes.use('/engawa/run', playgroundAuthedUserMinuteLimiter)
+playgroundRoutes.use('/engawa/run', playgroundAuthedUserDayLimiter)
+playgroundRoutes.use('/engawa/run', playgroundTurnstileMiddleware)
+playgroundRoutes.use('/engawa/run', playgroundGlobalQuotaMiddleware)
 
 playgroundRoutes.post(
-  '/playground/run',
+  '/engawa/run',
   async (c) => {
     if (!config.FF_PLAYGROUND_CONSOLE_ENABLED) {
       return c.json({ error: 'Not found' }, 404)
@@ -186,7 +186,7 @@ const askSchema = z.object({
   language: z.string().max(30).optional(),
 })
 
-playgroundRoutes.post('/playground/ask', requireAuth, async (c) => {
+playgroundRoutes.post('/engawa/ask', requireAuth, async (c) => {
   if (!config.FF_PLAYGROUND_ASK_SENSEI_ENABLED) {
     return c.json({ error: 'Not found' }, 404)
   }

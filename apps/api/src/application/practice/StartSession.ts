@@ -1,11 +1,11 @@
-import type { ExerciseRepositoryPort } from '../../domain/content/ports'
-import { ExerciseNotFoundError } from '../../domain/shared/errors'
-import type { ExerciseId, UserId, VariationId } from '../../domain/shared/types'
+import type { KataRepositoryPort } from '../../domain/content/ports'
+import { KataNotFoundError } from '../../domain/shared/errors'
+import type { KataId, UserId, VariationId } from '../../domain/shared/types'
 import type { EventBusPort, SessionRepositoryPort } from '../../domain/practice/ports'
 import { Session } from '../../domain/practice/session'
 
 interface Deps {
-  exerciseRepo: ExerciseRepositoryPort
+  kataRepo: KataRepositoryPort
   sessionRepo: SessionRepositoryPort
   eventBus: EventBusPort
 }
@@ -15,18 +15,18 @@ export class StartSession {
 
   async execute(params: {
     userId: UserId
-    exerciseId: ExerciseId
+    kataId: KataId
     variationId: VariationId
   }): Promise<Session> {
-    const exercise = await this.deps.exerciseRepo.findById(params.exerciseId)
-    if (!exercise) throw new ExerciseNotFoundError(params.exerciseId)
+    const kata = await this.deps.kataRepo.findById(params.kataId)
+    if (!kata) throw new KataNotFoundError(params.kataId)
 
-    const variation = exercise.variations.find((v) => v.id === params.variationId)
-    if (!variation) throw new ExerciseNotFoundError(params.variationId)
+    const variation = kata.variations.find((v) => v.id === params.variationId)
+    if (!variation) throw new KataNotFoundError(params.variationId)
 
     const session = Session.createPreparing({
       userId: params.userId,
-      exerciseId: params.exerciseId,
+      kataId: params.kataId,
       variationId: params.variationId,
     })
 

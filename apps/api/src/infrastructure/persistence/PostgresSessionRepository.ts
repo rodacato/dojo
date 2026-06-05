@@ -3,7 +3,7 @@ import { Attempt } from '../../domain/practice/attempt'
 import type { SessionRepositoryPort } from '../../domain/practice/ports'
 import { Session } from '../../domain/practice/session'
 import type { EvaluationResult } from '../../domain/practice/values'
-import { AttemptId, ExerciseId, SessionId, UserId, VariationId } from '../../domain/shared/types'
+import { AttemptId, KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import type { DB } from './drizzle/client'
 import { attempts, sessions } from './drizzle/schema'
 
@@ -14,7 +14,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     const sessionRow = {
       id: session.id,
       userId: session.userId,
-      exerciseId: session.exerciseId,
+      kataId: session.kataId,
       variationId: session.variationId,
       body: session.body,
       status: session.status,
@@ -93,7 +93,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     return new Session({
       id: SessionId(row.id),
       userId: UserId(row.userId),
-      exerciseId: ExerciseId(row.exerciseId),
+      kataId: KataId(row.kataId),
       variationId: VariationId(row.variationId),
       body: row.body,
       status: row.status as Session['status'],

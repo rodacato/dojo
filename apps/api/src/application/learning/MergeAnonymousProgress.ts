@@ -1,7 +1,7 @@
-import type { CourseProgressPort } from '../../domain/learning/ports'
+import type { ScrollProgressPort } from '../../domain/learning/ports'
 
 interface Deps {
-  progressRepo: CourseProgressPort
+  progressRepo: ScrollProgressPort
 }
 
 export class MergeAnonymousProgress {
@@ -17,9 +17,9 @@ export class MergeAnonymousProgress {
     }
 
     for (const anon of anonymousProgressList) {
-      const existing = await this.deps.progressRepo.findByOwnerAndCourse(
+      const existing = await this.deps.progressRepo.findByOwnerAndScroll(
         { kind: 'user', userId: params.userId },
-        anon.courseId,
+        anon.scrollId,
       )
 
       const mergedSteps = existing
@@ -33,7 +33,7 @@ export class MergeAnonymousProgress {
 
       await this.deps.progressRepo.save({
         owner: { kind: 'user', userId: params.userId },
-        courseId: anon.courseId,
+        scrollId: anon.scrollId,
         completedSteps: mergedSteps,
         lastAccessedAt,
       })

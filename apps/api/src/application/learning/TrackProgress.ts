@@ -1,10 +1,10 @@
-import type { CourseProgressPort, CourseRepositoryPort, ProgressOwner } from '../../domain/learning/ports'
+import type { ScrollProgressPort, ScrollRepositoryPort, ProgressOwner } from '../../domain/learning/ports'
 import type { EventBusPort } from '../../domain/practice/ports'
-import type { CourseCompleted } from '../../domain/learning/events'
+import type { ScrollCompleted } from '../../domain/learning/events'
 
 interface Deps {
-  progressRepo: CourseProgressPort
-  courseRepo: CourseRepositoryPort
+  progressRepo: ScrollProgressPort
+  scrollRepo: ScrollRepositoryPort
   eventBus: EventBusPort
 }
 
@@ -13,12 +13,12 @@ export class TrackProgress {
 
   async execute(params: {
     owner: ProgressOwner
-    courseId: string
+    scrollId: string
     stepId: string
   }): Promise<void> {
-    const existing = await this.deps.progressRepo.findByOwnerAndCourse(
+    const existing = await this.deps.progressRepo.findByOwnerAndScroll(
       params.owner,
-      params.courseId,
+      params.scrollId,
     )
 
     const completedSteps = existing?.completedSteps ?? []
@@ -31,20 +31,20 @@ export class TrackProgress {
     const nextCompletedSteps = [...completedSteps, params.stepId]
     await this.deps.progressRepo.save({
       owner: params.owner,
-      courseId: params.courseId,
+      scrollId: params.scrollId,
       completedSteps: nextCompletedSteps,
       lastAccessedAt: new Date(),
     })
 
-    // Course completion: only emit for authenticated users, only on the
+    // Scroll completion: only emit for authenticated users, only on the
     // transition into the "all steps done" state. Anonymous completions are
-    // skipped — badges and recognition require an account.
+    // skipped — milestones and recognition require an account.
     if (params.owner.kind !== 'user') return
 
-    const course = await this.deps.courseRepo.findById(params.courseId)
-    if (!course) return
+    const scroll = await this.deps.scrollRepo.findById(params.scrollId)
+    if (!scroll) return
 
-    const totalSteps = course.lessons.reduce((sum, lesson) => sum + lesson.steps.length, 0)
+    const totalSteps = scroll.lessons.reduce((sum, lesson) => sum + lesson.steps.length, 0)
     const justCompleted =
       totalSteps > 0 &&
       nextCompletedSteps.length >= totalSteps &&
@@ -52,11 +52,11 @@ export class TrackProgress {
 
     if (!justCompleted) return
 
-    const event: CourseCompleted = {
-      type: 'CourseCompleted',
-      aggregateId: params.courseId,
+    const event: ScrollCompleted = {
+      type: 'ScrollCompleted',
+      aggregateId: params.scrollId,
       userId: params.owner.userId,
-      courseSlug: course.slug,
+      scrollSlug: scroll.slug,
       totalSteps,
       occurredAt: new Date(),
     }

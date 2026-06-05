@@ -6,7 +6,7 @@ import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
 import { config } from '../../../config'
 import { SessionExpiredError } from '../../../domain/shared/errors'
-import { ExerciseId, SessionId, UserId } from '../../../domain/shared/types'
+import { KataId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
 import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
@@ -80,23 +80,23 @@ practiceRoutes.post('/access-requests', async (c) => {
 })
 
 // ---------------------------------------------------------------------------
-// GET /exercises
+// GET /katas
 // ---------------------------------------------------------------------------
 
-const exerciseFiltersSchema = z.object({
+const kataFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),
   maxDuration: z.coerce.number().int().positive().optional(),
 })
 
-practiceRoutes.get('/exercises', requireAuth, async (c) => {
+practiceRoutes.get('/katas', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
   const query = c.req.query()
-  const filters = exerciseFiltersSchema.parse({
+  const filters = kataFiltersSchema.parse({
     mood: query['mood'],
     maxDuration: query['maxDuration'],
   })
 
-  const exerciseList = await useCases.getExerciseOptions.execute({
+  const exerciseList = await useCases.getKataOptions.execute({
     userId: UserId(user.id),
     filters,
   })
@@ -120,7 +120,7 @@ practiceRoutes.get('/exercises', requireAuth, async (c) => {
 // ---------------------------------------------------------------------------
 
 const startSessionSchema = z.object({
-  exerciseId: z.string().uuid(),
+  kataId: z.string().uuid(),
 })
 
 practiceRoutes.post('/sessions', requireAuth, async (c) => {
@@ -129,18 +129,18 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
   const parsed = startSessionSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
 
-  const { exerciseId } = parsed.data
+  const { kataId } = parsed.data
 
-  // Fetch exercise to pick a random variation
-  const exercise = await useCases.getExerciseById.execute(ExerciseId(exerciseId))
-  if (!exercise) return c.json({ error: 'Exercise not found' }, 404)
-  if (exercise.variations.length === 0) return c.json({ error: 'Exercise has no variations' }, 422)
+  // Fetch kata to pick a random variation
+  const kata = await useCases.getKataById.execute(KataId(kataId))
+  if (!kata) return c.json({ error: 'Kata not found' }, 404)
+  if (kata.variations.length === 0) return c.json({ error: 'Kata has no variations' }, 422)
 
-  const variation = exercise.variations[Math.floor(Math.random() * exercise.variations.length)]!
+  const variation = kata.variations[Math.floor(Math.random() * kata.variations.length)]!
 
   const session = await useCases.startSession.execute({
     userId: UserId(user.id),
-    exerciseId: ExerciseId(exerciseId),
+    kataId: KataId(kataId),
     variationId: variation.id,
   })
 
@@ -154,7 +154,7 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
   // background kick-off so we don't double-call the model.
   if (!config.FF_LLM_PREP_STREAMING_ENABLED) {
     void useCases.generateSessionBody
-      .execute({ sessionId: session.id, exerciseId: session.exerciseId, variationId: session.variationId })
+      .execute({ sessionId: session.id, kataId: session.kataId, variationId: session.variationId })
       .catch(() => {})
   }
 
@@ -218,10 +218,10 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
   if (!session) return c.json({ error: 'Session not found' }, 404)
   if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
 
-  const exercise = await useCases.getExerciseById.execute(session.exerciseId)
-  if (!exercise) return c.json({ error: 'Exercise not found' }, 404)
+  const kata = await useCases.getKataById.execute(session.kataId)
+  if (!kata) return c.json({ error: 'Kata not found' }, 404)
 
-  const variation = exercise.variations.find((v) => v.id === session.variationId)
+  const variation = kata.variations.find((v) => v.id === session.variationId)
 
   // Fetch attempts for this session
   const sessionAttempts = await db
@@ -240,16 +240,16 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
     completedAt: session.completedAt?.toISOString() ?? null,
     variationId: session.variationId,
     ownerRole: variation?.ownerRole ?? '',
-    exercise: {
-      id: exercise.id,
-      title: exercise.title,
-      description: exercise.description,
-      duration: exercise.durationMinutes,
-      difficulty: exercise.difficulty,
-      type: exercise.type,
-      language: exercise.languages,
-      tags: exercise.tags,
-      starterCode: exercise.starterCode ?? null,
+    kata: {
+      id: kata.id,
+      title: kata.title,
+      description: kata.description,
+      duration: kata.durationMinutes,
+      difficulty: kata.difficulty,
+      type: kata.type,
+      language: kata.languages,
+      tags: kata.tags,
+      starterCode: kata.starterCode ?? null,
     },
     finalAttempt: finalAttempt
       ? {
@@ -316,7 +316,7 @@ practiceRoutes.get('/sessions/:id/body-stream', requireAuth, async (c) => {
       try {
         for await (const chunk of useCases.generateSessionBody.executeStream({
           sessionId: SessionId(sessionId),
-          exerciseId: session.exerciseId,
+          kataId: session.kataId,
           variationId: session.variationId,
         })) {
           if (chunk) await sse.writeSSE({ event: 'token', data: chunk })
@@ -362,10 +362,10 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
   if (session.status !== 'active') return c.json({ error: 'Session is no longer active' }, 409)
 
   // Timer enforcement — domain method encapsulates 10% grace window
-  const exercise = await useCases.getExerciseById.execute(session.exerciseId)
-  if (!exercise) return c.json({ error: 'Exercise not found' }, 404)
+  const kata = await useCases.getKataById.execute(session.kataId)
+  if (!kata) return c.json({ error: 'Kata not found' }, 404)
 
-  if (session.isExpired(exercise.durationMinutes)) {
+  if (session.isExpired(kata.durationMinutes)) {
     throw new SessionExpiredError(sessionId)
   }
 

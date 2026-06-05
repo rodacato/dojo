@@ -1,10 +1,10 @@
-import type { ExerciseRepositoryPort } from '../../domain/content/ports'
+import type { KataRepositoryPort } from '../../domain/content/ports'
 import type { LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
-import type { ExerciseId, SessionId, VariationId } from '../../domain/shared/types'
+import type { KataId, SessionId, VariationId } from '../../domain/shared/types'
 import type { ErrorReporterPort } from '../../infrastructure/observability/ports'
 
 interface Deps {
-  exerciseRepo: ExerciseRepositoryPort
+  kataRepo: KataRepositoryPort
   sessionRepo: SessionRepositoryPort
   llm: LLMPort
   errorReporter?: ErrorReporterPort
@@ -15,7 +15,7 @@ export class GenerateSessionBody {
 
   async execute(params: {
     sessionId: SessionId
-    exerciseId: ExerciseId
+    kataId: KataId
     variationId: VariationId
   }): Promise<void> {
     // Failures in prep delete the session rather than mark it failed. A
@@ -23,30 +23,30 @@ export class GenerateSessionBody {
     // the row around pollutes the dashboard, skews streak counts, and sends
     // the learner to a misleading "expired without submission" screen.
     try {
-      const exercise = await this.deps.exerciseRepo.findById(params.exerciseId)
-      if (!exercise) {
+      const kata = await this.deps.kataRepo.findById(params.kataId)
+      if (!kata) {
         await this.deps.sessionRepo.delete(params.sessionId)
         return
       }
 
-      const variation = exercise.variations.find((v) => v.id === params.variationId)
+      const variation = kata.variations.find((v) => v.id === params.variationId)
       if (!variation) {
         await this.deps.sessionRepo.delete(params.sessionId)
         return
       }
 
       // Review kata (PRD 027) ship with a deterministic diff authored directly
-      // into the exercise description. Running it through the LLM would drift
+      // into the kata description. Running it through the LLM would drift
       // the diff every session, which defeats the rubric. Skip the call.
-      if (exercise.type === 'review') {
-        await this.deps.sessionRepo.updateBody(params.sessionId, exercise.description)
+      if (kata.type === 'review') {
+        await this.deps.sessionRepo.updateBody(params.sessionId, kata.description)
         return
       }
 
       const body = await this.deps.llm.generateSessionBody({
         ownerRole: variation.ownerRole,
         ownerContext: variation.ownerContext,
-        exerciseDescription: exercise.description,
+        kataDescription: kata.description,
       })
 
       await this.deps.sessionRepo.updateBody(params.sessionId, body)
@@ -60,7 +60,7 @@ export class GenerateSessionBody {
         context: {
           useCase: 'GenerateSessionBody',
           sessionId: params.sessionId,
-          exerciseId: params.exerciseId,
+          kataId: params.kataId,
           variationId: params.variationId,
         },
       })
@@ -75,25 +75,25 @@ export class GenerateSessionBody {
   // chunk so the consumer's logic stays uniform.
   async *executeStream(params: {
     sessionId: SessionId
-    exerciseId: ExerciseId
+    kataId: KataId
     variationId: VariationId
   }): AsyncIterable<string> {
     try {
-      const exercise = await this.deps.exerciseRepo.findById(params.exerciseId)
-      if (!exercise) {
+      const kata = await this.deps.kataRepo.findById(params.kataId)
+      if (!kata) {
         await this.deps.sessionRepo.delete(params.sessionId)
         return
       }
 
-      const variation = exercise.variations.find((v) => v.id === params.variationId)
+      const variation = kata.variations.find((v) => v.id === params.variationId)
       if (!variation) {
         await this.deps.sessionRepo.delete(params.sessionId)
         return
       }
 
-      if (exercise.type === 'review') {
-        yield exercise.description
-        await this.deps.sessionRepo.updateBody(params.sessionId, exercise.description)
+      if (kata.type === 'review') {
+        yield kata.description
+        await this.deps.sessionRepo.updateBody(params.sessionId, kata.description)
         return
       }
 
@@ -101,7 +101,7 @@ export class GenerateSessionBody {
       for await (const chunk of this.deps.llm.generateSessionBodyStream({
         ownerRole: variation.ownerRole,
         ownerContext: variation.ownerContext,
-        exerciseDescription: exercise.description,
+        kataDescription: kata.description,
       })) {
         acc += chunk
         yield chunk
@@ -125,7 +125,7 @@ export class GenerateSessionBody {
         context: {
           useCase: 'GenerateSessionBody.executeStream',
           sessionId: params.sessionId,
-          exerciseId: params.exerciseId,
+          kataId: params.kataId,
           variationId: params.variationId,
         },
       })

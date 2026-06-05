@@ -12,7 +12,7 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const exercises = pgTable('exercises', {
+export const katas = pgTable('exercises', {
   id: uuid('id').primaryKey(),
   title: varchar('title', { length: 500 }).notNull(),
   description: text('description').notNull(),
@@ -40,9 +40,9 @@ export const exercises = pgTable('exercises', {
 
 export const variations = pgTable('variations', {
   id: uuid('id').primaryKey(),
-  exerciseId: uuid('exercise_id')
+  kataId: uuid('exercise_id')
     .notNull()
-    .references(() => exercises.id),
+    .references(() => katas.id),
   ownerRole: text('owner_role').notNull(),
   ownerContext: text('owner_context').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -53,9 +53,9 @@ export const sessions = pgTable('sessions', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id),
-  exerciseId: uuid('exercise_id')
+  kataId: uuid('exercise_id')
     .notNull()
-    .references(() => exercises.id),
+    .references(() => katas.id),
   variationId: uuid('variation_id')
     .notNull()
     .references(() => variations.id),
@@ -78,12 +78,12 @@ export const attempts = pgTable('attempts', {
 })
 
 // Relations (for relational query API)
-export const exercisesRelations = relations(exercises, ({ many }) => ({
+export const katasRelations = relations(katas, ({ many }) => ({
   variations: many(variations),
 }))
 
 export const variationsRelations = relations(variations, ({ one }) => ({
-  exercise: one(exercises, { fields: [variations.exerciseId], references: [exercises.id] }),
+  kata: one(katas, { fields: [variations.kataId], references: [katas.id] }),
 }))
 
 export const sessionsRelations = relations(sessions, ({ many, one }) => ({
@@ -120,12 +120,12 @@ export const badgeDefinitions = pgTable('badge_definitions', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const userBadges = pgTable('user_badges', {
+export const userMilestones = pgTable('user_badges', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id),
-  badgeSlug: varchar('badge_slug', { length: 100 })
+  milestoneSlug: varchar('badge_slug', { length: 100 })
     .notNull()
     .references(() => badgeDefinitions.slug),
   sessionId: uuid('session_id').references(() => sessions.id),
@@ -138,9 +138,9 @@ export const kataFeedback = pgTable('kata_feedback', {
     .notNull()
     .unique()
     .references(() => sessions.id),
-  exerciseId: uuid('exercise_id')
+  kataId: uuid('exercise_id')
     .notNull()
-    .references(() => exercises.id),
+    .references(() => katas.id),
   variationId: uuid('variation_id')
     .notNull()
     .references(() => variations.id),
@@ -156,7 +156,7 @@ export const kataFeedback = pgTable('kata_feedback', {
 
 export const kataFeedbackRelations = relations(kataFeedback, ({ one }) => ({
   session: one(sessions, { fields: [kataFeedback.sessionId], references: [sessions.id] }),
-  exercise: one(exercises, { fields: [kataFeedback.exerciseId], references: [exercises.id] }),
+  kata: one(katas, { fields: [kataFeedback.kataId], references: [katas.id] }),
   variation: one(variations, { fields: [kataFeedback.variationId], references: [variations.id] }),
   user: one(users, { fields: [kataFeedback.userId], references: [users.id] }),
 }))
@@ -190,7 +190,7 @@ export const userSessionsRelations = relations(userSessions, ({ one }) => ({
 
 // ── Learning (Courses) ──────────────────────────────────────────────
 
-export const courses = pgTable('courses', {
+export const scrolls = pgTable('courses', {
   id: uuid('id').primaryKey().defaultRandom(),
   slug: varchar('slug', { length: 255 }).unique().notNull(),
   title: varchar('title', { length: 500 }).notNull(),
@@ -205,7 +205,7 @@ export const courses = pgTable('courses', {
 
 export const lessons = pgTable('lessons', {
   id: uuid('id').primaryKey().defaultRandom(),
-  courseId: uuid('course_id').notNull().references(() => courses.id),
+  scrollId: uuid('course_id').notNull().references(() => scrolls.id),
   order: integer('order').notNull(),
   title: varchar('title', { length: 500 }).notNull(),
 })
@@ -224,21 +224,21 @@ export const steps = pgTable('steps', {
   alternativeApproach: text('alternative_approach'),
 })
 
-export const courseProgress = pgTable('course_progress', {
+export const scrollProgress = pgTable('course_progress', {
   id: uuid('id').primaryKey().defaultRandom(),
   userId: uuid('user_id').references(() => users.id),
   anonymousSessionId: text('anonymous_session_id'),
-  courseId: uuid('course_id').notNull().references(() => courses.id),
+  scrollId: uuid('course_id').notNull().references(() => scrolls.id),
   completedSteps: jsonb('completed_steps').notNull().default([]),
   lastAccessedAt: timestamp('last_accessed_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
-export const coursesRelations = relations(courses, ({ many }) => ({
+export const scrollsRelations = relations(scrolls, ({ many }) => ({
   lessons: many(lessons),
 }))
 
 export const lessonsRelations = relations(lessons, ({ one, many }) => ({
-  course: one(courses, { fields: [lessons.courseId], references: [courses.id] }),
+  scroll: one(scrolls, { fields: [lessons.scrollId], references: [scrolls.id] }),
   steps: many(steps),
 }))
 
@@ -246,9 +246,9 @@ export const stepsRelations = relations(steps, ({ one }) => ({
   lesson: one(lessons, { fields: [steps.lessonId], references: [lessons.id] }),
 }))
 
-export const courseProgressRelations = relations(courseProgress, ({ one }) => ({
-  course: one(courses, { fields: [courseProgress.courseId], references: [courses.id] }),
-  user: one(users, { fields: [courseProgress.userId], references: [users.id] }),
+export const scrollProgressRelations = relations(scrollProgress, ({ one }) => ({
+  scroll: one(scrolls, { fields: [scrollProgress.scrollId], references: [scrolls.id] }),
+  user: one(users, { fields: [scrollProgress.userId], references: [users.id] }),
 }))
 
 // "Ask the sensei" nudges (PRD 026). Logged so we can iterate the nudge

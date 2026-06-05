@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Session } from '../../domain/practice/session'
 import { SessionNotFoundError } from '../../domain/shared/errors'
-import { ExerciseId, SessionId, UserId, VariationId } from '../../domain/shared/types'
+import { KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import { InMemoryEventBus } from '../../infrastructure/events/InMemoryEventBus'
 import type { EvaluationToken } from '../../domain/practice/values'
 import { SubmitAttempt } from './SubmitAttempt'
@@ -10,7 +10,7 @@ const makeActiveSession = () =>
   new Session({
     id: SessionId('session-1'),
     userId: UserId('user-1'),
-    exerciseId: ExerciseId('ex-1'),
+    kataId: KataId('ex-1'),
     variationId: VariationId('var-1'),
     body: 'Review this code...',
     status: 'active',

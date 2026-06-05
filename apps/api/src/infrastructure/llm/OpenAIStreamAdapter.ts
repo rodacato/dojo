@@ -100,7 +100,7 @@ export class OpenAIStreamAdapter implements LLMPort {
   async generateSessionBody(params: {
     ownerRole: string
     ownerContext: string
-    exerciseDescription: string
+    kataDescription: string
   }): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
 
@@ -197,7 +197,7 @@ export class OpenAIStreamAdapter implements LLMPort {
   async *generateSessionBodyStream(params: {
     ownerRole: string
     ownerContext: string
-    exerciseDescription: string
+    kataDescription: string
   }): AsyncIterable<string> {
     const prompt = buildSessionBodyPrompt(params)
 
@@ -277,7 +277,7 @@ function buildMessages(params: {
       content: buildReviewPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        exerciseTitle: '',
+        kataTitle: '',
         diff: params.sessionBody,
         review: params.userResponse,
         rubric: params.rubric,
@@ -292,8 +292,8 @@ function buildMessages(params: {
       content: buildPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        exerciseTitle: '',
-        exerciseDescription: params.sessionBody,
+        kataTitle: '',
+        kataDescription: params.sessionBody,
         userResponse: params.userResponse,
         category: params.category,
       }),
@@ -305,8 +305,8 @@ function buildMessages(params: {
       content: buildPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        exerciseTitle: '',
-        exerciseDescription: params.sessionBody,
+        kataTitle: '',
+        kataDescription: params.sessionBody,
         userResponse: firstTurn.userResponse,
         category: params.category,
       }),

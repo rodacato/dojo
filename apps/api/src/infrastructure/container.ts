@@ -1,22 +1,25 @@
-import { GetExerciseOptions } from '../application/practice/GetExerciseOptions'
+import { CalculateBelt } from '../application/recognition/CalculateBelt'
+import { ListUserMilestones } from '../application/recognition/ListUserMilestones'
+import { PostgresMilestoneRepository } from './persistence/PostgresMilestoneRepository'
+import { GetKataOptions } from '../application/practice/GetKataOptions'
 import { GetSession } from '../application/practice/GetSession'
 import { GenerateSessionBody } from '../application/practice/GenerateSessionBody'
 import { StartSession } from '../application/practice/StartSession'
 import { SubmitAttempt } from '../application/practice/SubmitAttempt'
-import { GetExerciseById } from '../application/content/GetExerciseById'
-import { CreateExercise } from '../application/content/CreateExercise'
+import { GetKataById } from '../application/content/GetKataById'
+import { CreateKata } from '../application/content/CreateKata'
 import { UpsertUser } from '../application/identity/UpsertUser'
-import { GetCourseList } from '../application/learning/GetCourseList'
-import { GetCourseBySlug } from '../application/learning/GetCourseBySlug'
+import { GetScrollList } from '../application/learning/GetScrollList'
+import { GetScrollBySlug } from '../application/learning/GetScrollBySlug'
 import { ExecuteStep } from '../application/learning/ExecuteStep'
 import { TrackProgress } from '../application/learning/TrackProgress'
-import { GetCourseProgress } from '../application/learning/GetCourseProgress'
+import { GetScrollProgress } from '../application/learning/GetScrollProgress'
 import { MergeAnonymousProgress } from '../application/learning/MergeAnonymousProgress'
 import { GenerateNudge } from '../application/learning/GenerateNudge'
 import { SubmitNudgeFeedback } from '../application/learning/SubmitNudgeFeedback'
 import { PostgresNudgeRepository } from './persistence/PostgresNudgeRepository'
 import { db } from './persistence/drizzle/client'
-import { PostgresExerciseRepository } from './persistence/PostgresExerciseRepository'
+import { PostgresKataRepository } from './persistence/PostgresKataRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
 import { PostgresUserRepository } from './persistence/PostgresUserRepository'
 import { InMemoryEventBus } from './events/InMemoryEventBus'
@@ -24,10 +27,10 @@ import { MockLLMAdapter } from './llm/MockLLMAdapter'
 import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
 import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
-import { registerBadgeHandlers } from './events/BadgeEventHandler'
+import { registerMilestoneHandlers } from './events/MilestoneEventHandler'
 import { PostgresPreferencesRepository } from './persistence/PostgresPreferencesRepository'
-import { PostgresCourseRepository } from './persistence/PostgresCourseRepository'
-import { PostgresCourseProgressRepository } from './persistence/PostgresCourseProgressRepository'
+import { PostgresScrollRepository } from './persistence/PostgresScrollRepository'
+import { PostgresScrollProgressRepository } from './persistence/PostgresScrollProgressRepository'
 import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
 import { ExecutionQueue } from './execution/ExecutionQueue'
@@ -39,12 +42,13 @@ import { SentryErrorReporter } from './observability/SentryErrorReporter'
 import { CompositeErrorReporter } from './observability/CompositeErrorReporter'
 
 const sessionRepo = new PostgresSessionRepository(db)
-const exerciseRepo = new PostgresExerciseRepository(db)
+const kataRepo = new PostgresKataRepository(db)
 const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
-export const courseRepo = new PostgresCourseRepository(db)
-const courseProgressRepo = new PostgresCourseProgressRepository(db)
+export const scrollRepo = new PostgresScrollRepository(db)
+const scrollProgressRepo = new PostgresScrollProgressRepository(db)
 const nudgeRepo = new PostgresNudgeRepository(db)
+const milestoneRepo = new PostgresMilestoneRepository(db)
 
 function createLLMAdapter(): LLMPort {
   switch (config.LLM_ADAPTER_FORMAT) {
@@ -105,23 +109,25 @@ export const errorReporter = createErrorReporter()
 export const eventBus = new InMemoryEventBus()
 
 // Register domain event handlers
-registerBadgeHandlers(eventBus, db)
+registerMilestoneHandlers(eventBus, db)
 
 export const useCases = {
-  startSession: new StartSession({ exerciseRepo, sessionRepo, eventBus }),
-  generateSessionBody: new GenerateSessionBody({ exerciseRepo, sessionRepo, llm, errorReporter }),
+  startSession: new StartSession({ kataRepo, sessionRepo, eventBus }),
+  generateSessionBody: new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
-  getExerciseOptions: new GetExerciseOptions({ exerciseRepo, preferencesRepo }),
-  getExerciseById: new GetExerciseById({ exerciseRepo }),
-  createExercise: new CreateExercise({ exerciseRepo }),
+  getKataOptions: new GetKataOptions({ kataRepo, preferencesRepo }),
+  getKataById: new GetKataById({ kataRepo }),
+  createKata: new CreateKata({ kataRepo }),
   getSession: new GetSession({ sessionRepo }),
   upsertUser: new UpsertUser({ userRepo }),
-  getCourseList: new GetCourseList({ courseRepo }),
-  getCourseBySlug: new GetCourseBySlug({ courseRepo }),
+  getScrollList: new GetScrollList({ scrollRepo }),
+  getScrollBySlug: new GetScrollBySlug({ scrollRepo }),
   executeStep: new ExecuteStep({ executionPort: createExecutionAdapter() }),
-  trackProgress: new TrackProgress({ progressRepo: courseProgressRepo, courseRepo, eventBus }),
-  getCourseProgress: new GetCourseProgress({ progressRepo: courseProgressRepo }),
-  mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: courseProgressRepo }),
-  generateNudge: new GenerateNudge({ courseRepo, llm, nudgeRepo }),
+  trackProgress: new TrackProgress({ progressRepo: scrollProgressRepo, scrollRepo, eventBus }),
+  getScrollProgress: new GetScrollProgress({ progressRepo: scrollProgressRepo }),
+  mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: scrollProgressRepo }),
+  generateNudge: new GenerateNudge({ scrollRepo, llm, nudgeRepo }),
   submitNudgeFeedback: new SubmitNudgeFeedback({ nudgeRepo }),
+  calculateBelt: new CalculateBelt({ sessionRepo, kataRepo }),
+  listUserMilestones: new ListUserMilestones({ milestoneRepo }),
 }

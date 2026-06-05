@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
-import { Exercise } from '../../domain/content/exercise'
-import { ExerciseId, SessionId, UserId, VariationId } from '../../domain/shared/types'
+import { Kata } from '../../domain/content/kata'
+import { KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import { GenerateSessionBody } from './GenerateSessionBody'
 
-const makeExercise = () =>
-  Exercise.create({
-    title: 'Test Exercise',
-    description: 'A test code review exercise',
+const makeKata = () =>
+  Kata.create({
+    title: 'Test Kata',
+    description: 'A test code review kata',
     durationMinutes: 30,
     difficulty: 'medium',
     category: 'code-review',
@@ -28,8 +28,8 @@ const makeStubSessionRepo = () => ({
 
 describe('GenerateSessionBody', () => {
   it('generates body via LLM and updates session', async () => {
-    const exercise = makeExercise()
-    const variation = exercise.variations[0]!
+    const kata = makeKata()
+    const variation = kata.variations[0]!
     const sessionRepo = makeStubSessionRepo()
     const llm = {
       evaluate: vi.fn(),
@@ -38,40 +38,40 @@ describe('GenerateSessionBody', () => {
       nudge: vi.fn(),
       askSensei: vi.fn(),
     }
-    const exerciseRepo = {
+    const kataRepo = {
       findEligible: vi.fn(),
-      findById: vi.fn().mockResolvedValue(exercise),
+      findById: vi.fn().mockResolvedValue(kata),
       save: vi.fn(),
     }
 
-    const useCase = new GenerateSessionBody({ exerciseRepo, sessionRepo, llm })
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
     await useCase.execute({
       sessionId: SessionId('session-1'),
-      exerciseId: exercise.id,
+      kataId: kata.id,
       variationId: variation.id,
     })
 
     expect(llm.generateSessionBody).toHaveBeenCalledWith({
       ownerRole: 'Tech Lead',
       ownerContext: 'Startup context',
-      exerciseDescription: 'A test code review exercise',
+      kataDescription: 'A test code review kata',
     })
     expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR that...')
   })
 
-  it('deletes session when exercise is not found', async () => {
+  it('deletes session when kata is not found', async () => {
     const sessionRepo = makeStubSessionRepo()
     const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
-    const exerciseRepo = {
+    const kataRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       save: vi.fn(),
     }
 
-    const useCase = new GenerateSessionBody({ exerciseRepo, sessionRepo, llm })
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
     await useCase.execute({
       sessionId: SessionId('session-1'),
-      exerciseId: ExerciseId('nonexistent'),
+      kataId: KataId('nonexistent'),
       variationId: VariationId('var-1'),
     })
 
@@ -81,19 +81,19 @@ describe('GenerateSessionBody', () => {
   })
 
   it('deletes session when variation is not found', async () => {
-    const exercise = makeExercise()
+    const kata = makeKata()
     const sessionRepo = makeStubSessionRepo()
     const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
-    const exerciseRepo = {
+    const kataRepo = {
       findEligible: vi.fn(),
-      findById: vi.fn().mockResolvedValue(exercise),
+      findById: vi.fn().mockResolvedValue(kata),
       save: vi.fn(),
     }
 
-    const useCase = new GenerateSessionBody({ exerciseRepo, sessionRepo, llm })
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
     await useCase.execute({
       sessionId: SessionId('session-1'),
-      exerciseId: exercise.id,
+      kataId: kata.id,
       variationId: VariationId('nonexistent-var'),
     })
 
@@ -103,8 +103,8 @@ describe('GenerateSessionBody', () => {
   })
 
   it('deletes session and reports error when LLM throws', async () => {
-    const exercise = makeExercise()
-    const variation = exercise.variations[0]!
+    const kata = makeKata()
+    const variation = kata.variations[0]!
     const sessionRepo = makeStubSessionRepo()
     const llmError = new Error('shellm: 401 Unauthorized')
     const llm = {
@@ -114,19 +114,19 @@ describe('GenerateSessionBody', () => {
       nudge: vi.fn(),
       askSensei: vi.fn(),
     }
-    const exerciseRepo = {
+    const kataRepo = {
       findEligible: vi.fn(),
-      findById: vi.fn().mockResolvedValue(exercise),
+      findById: vi.fn().mockResolvedValue(kata),
       save: vi.fn(),
     }
     const errorReporter = { report: vi.fn().mockResolvedValue(undefined) }
 
-    const useCase = new GenerateSessionBody({ exerciseRepo, sessionRepo, llm, errorReporter })
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter })
 
     await expect(
       useCase.execute({
         sessionId: SessionId('session-1'),
-        exerciseId: exercise.id,
+        kataId: kata.id,
         variationId: variation.id,
       }),
     ).rejects.toThrow('shellm: 401 Unauthorized')

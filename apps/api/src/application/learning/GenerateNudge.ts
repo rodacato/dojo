@@ -1,15 +1,15 @@
-import type { CourseRepositoryPort, NudgeRepositoryPort } from '../../domain/learning/ports'
+import type { ScrollRepositoryPort, NudgeRepositoryPort } from '../../domain/learning/ports'
 import type { LLMPort } from '../../domain/practice/ports'
 import { buildNudgePrompt } from '../../prompts/sensei'
 
 interface Deps {
-  courseRepo: CourseRepositoryPort
+  scrollRepo: ScrollRepositoryPort
   llm: LLMPort
   nudgeRepo: NudgeRepositoryPort
 }
 
 export interface NudgeInput {
-  courseSlug: string
+  scrollSlug: string
   stepId: string
   userCode: string
   stdout?: string
@@ -25,7 +25,7 @@ export interface NudgeResult {
 
 export class StepNotFoundError extends Error {
   readonly name = 'DomainError'
-  readonly code = 'EXERCISE_NOT_FOUND'
+  readonly code = 'KATA_NOT_FOUND'
 }
 
 export class GenerateNudge {
@@ -35,10 +35,10 @@ export class GenerateNudge {
   // so the prompt can be iterated against real usage (PRD 026). The id of
   // the logged row is returned so the client can later attach feedback.
   async execute(input: NudgeInput): Promise<NudgeResult> {
-    const course = await this.deps.courseRepo.findBySlug(input.courseSlug)
-    if (!course) throw new StepNotFoundError('Course not found')
+    const scroll = await this.deps.scrollRepo.findBySlug(input.scrollSlug)
+    if (!scroll) throw new StepNotFoundError('Scroll not found')
 
-    const step = course.lessons.flatMap((l) => l.steps).find((s) => s.id === input.stepId)
+    const step = scroll.lessons.flatMap((l) => l.steps).find((s) => s.id === input.stepId)
     if (!step) throw new StepNotFoundError('Step not found')
 
     const nudge = await this.deps.llm.nudge({

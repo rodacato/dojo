@@ -60,9 +60,9 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
     return
   }
 
-  // Get ownerRole/ownerContext from the exercise variation
-  const exercise = await useCases.getExerciseById.execute(currentSession.exerciseId)
-  const variation = exercise?.variations.find((v) => v.id === currentSession.variationId)
+  // Get ownerRole/ownerContext from the kata variation
+  const kata = await useCases.getKataById.execute(currentSession.kataId)
+  const variation = kata?.variations.find((v) => v.id === currentSession.variationId)
 
   // Initialize stream cache for reconnect support (ADR-009)
   const cache: StreamCache = { tokens: [], result: null, complete: false, isFinal: false }
@@ -70,14 +70,14 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
 
   pendingAttempts.delete(attemptId)
 
-  // ── Code execution (if exercise has testCode) ──────────────────────────────
+  // ── Code execution (if kata has testCode) ──────────────────────────────
   let executionContext: string | undefined
-  const testCode = exercise?.testCode
+  const testCode = kata?.testCode
   if (testCode && pending.userResponse.trim()) {
     send(ws, { type: 'executing' })
     try {
       const execResult = await executionQueue.enqueue({
-        language: exercise?.languages?.[0] ?? 'javascript',
+        language: kata?.languages?.[0] ?? 'javascript',
         code: pending.userResponse,
         testCode,
       })
@@ -105,8 +105,8 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       ownerRole: variation?.ownerRole ?? '',
       ownerContext: variation?.ownerContext ?? '',
       executionContext,
-      category: exercise?.category,
-      rubric: exercise?.type === 'review' ? exercise.rubric ?? undefined : undefined,
+      category: kata?.category,
+      rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
     })) {
       if (token.chunk) {
         send(ws, { type: 'token', content: token.chunk })

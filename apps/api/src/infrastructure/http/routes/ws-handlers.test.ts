@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { Session } from '../../../domain/practice/session'
-import { ExerciseId, SessionId, UserId, VariationId } from '../../../domain/shared/types'
+import { KataId, SessionId, UserId, VariationId } from '../../../domain/shared/types'
 import type { EvaluationResult } from '../../../domain/practice/values'
 import type { WSInstance } from './ws-handlers'
 
@@ -9,7 +9,7 @@ vi.mock('../../container', () => ({
   useCases: {
     getSession: { execute: vi.fn() },
     submitAttempt: { execute: vi.fn() },
-    getExerciseById: { execute: vi.fn() },
+    getKataById: { execute: vi.fn() },
   },
   executionQueue: { enqueue: vi.fn() },
 }))
@@ -45,7 +45,7 @@ function makeSession(overrides: { attempts?: unknown[] } = {}) {
   return new Session({
     id: SessionId('session-1'),
     userId: UserId('user-1'),
-    exerciseId: ExerciseId('ex-1'),
+    kataId: KataId('ex-1'),
     variationId: VariationId('var-1'),
     body: 'Review this code...',
     status: 'active',

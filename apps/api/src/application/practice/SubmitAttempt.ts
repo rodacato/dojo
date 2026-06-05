@@ -20,7 +20,7 @@ export class SubmitAttempt {
     ownerRole: string
     ownerContext: string
     executionContext?: string // test results injected before LLM evaluation
-    category?: string // exercise.category — shapes sensei prompt (e.g. debugging)
+    category?: string // kata.category — shapes sensei prompt (e.g. debugging)
     rubric?: Rubric // review kata rubric — switches the adapter to the review prompt
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)

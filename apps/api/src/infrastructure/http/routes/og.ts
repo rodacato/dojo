@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { and, eq, sql } from 'drizzle-orm'
 import { db } from '../../persistence/drizzle/client'
-import { sessions, exercises, attempts, users } from '../../persistence/drizzle/schema'
+import { sessions, katas, attempts, users } from '../../persistence/drizzle/schema'
 import { config } from '../../../config'
 import type { AppEnv } from '../app-env'
 
@@ -52,8 +52,8 @@ ogRoutes.get('/og/kata/:sessionId', async (c) => {
 
   const [row] = await db
     .select({
-      exerciseTitle: exercises.title,
-      exerciseType: exercises.type,
+      kataTitle: katas.title,
+      kataType: katas.type,
       username: users.username,
       verdict: sql<string | null>`(
         SELECT ${attempts.llmResponse}::jsonb->>'verdict'
@@ -63,7 +63,7 @@ ogRoutes.get('/og/kata/:sessionId', async (c) => {
       )`,
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .innerJoin(users, eq(sessions.userId, users.id))
     .where(and(eq(sessions.id, sessionId), eq(sessions.status, 'completed')))
     .limit(1)
@@ -74,8 +74,8 @@ ogRoutes.get('/og/kata/:sessionId', async (c) => {
   const apiUrl = c.req.url.replace(/\/og\/kata\/.*/, '')
 
   return c.html(ogHtml({
-    title: `${verdict} — ${row.exerciseTitle} | dojo_`,
-    description: `@${row.username} completed a ${row.exerciseType} kata in the dojo.`,
+    title: `${verdict} — ${row.kataTitle} | dojo_`,
+    description: `@${row.username} completed a ${row.kataType} kata in the dojo.`,
     image: `${apiUrl}/share/${sessionId}.png`,
     url: `${config.WEB_URL}/kata/${sessionId}/result`,
   }))

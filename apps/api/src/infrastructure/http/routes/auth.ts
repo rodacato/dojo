@@ -254,7 +254,7 @@ async function sendWelcomeEmail(params: { email: string; username: string }): Pr
         <p>You're in. Quick orientation:</p>
         <ul>
           <li><strong>Kata</strong> — timed practice with a sensei who evaluates how you reason, not just what you ship.</li>
-          <li><strong>Courses</strong> — short, opinionated tracks (TypeScript, JavaScript DOM, SQL Deep Cuts). Public, no pressure.</li>
+          <li><strong>Scrolls</strong> — short, opinionated tracks (TypeScript, JavaScript DOM, SQL Deep Cuts). Public, no pressure.</li>
           <li><strong>Dashboard</strong> — streak, recent work, weak areas once you have a few sessions in.</li>
         </ul>
         <p>Start here: <a href="${config.WEB_URL}">${config.WEB_URL}</a></p>

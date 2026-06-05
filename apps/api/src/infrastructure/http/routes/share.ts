@@ -5,13 +5,13 @@ import { Resvg } from '@resvg/resvg-js'
 import { db } from '../../persistence/drizzle/client'
 import {
   sessions,
-  exercises,
+  katas,
   attempts,
   users,
-  courses,
+  scrolls,
   lessons,
   steps,
-  courseProgress,
+  scrollProgress,
 } from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
 
@@ -47,9 +47,9 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
       status: sessions.status,
       startedAt: sessions.startedAt,
       completedAt: sessions.completedAt,
-      exerciseTitle: exercises.title,
-      exerciseType: exercises.type,
-      difficulty: exercises.difficulty,
+      kataTitle: katas.title,
+      kataType: katas.type,
+      difficulty: katas.difficulty,
       username: users.username,
       verdict: sql<string | null>`(
         SELECT ${attempts.llmResponse}::jsonb->>'verdict'
@@ -65,7 +65,7 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
       )`,
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .innerJoin(users, eq(sessions.userId, users.id))
     .where(eq(sessions.id, sessionId))
     .limit(1)
@@ -77,7 +77,7 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
   const verdictColor =
     verdict === 'passed' ? '#10B981' : verdict === 'passed_with_notes' ? '#F59E0B' : '#EF4444'
 
-  const exType = row.exerciseType.toLowerCase()
+  const exType = row.kataType.toLowerCase()
   const typeColor =
     exType === 'code' ? '#6366F1' : exType === 'chat' ? '#7C3AED' : '#0D9488'
 
@@ -94,10 +94,10 @@ shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
 
   const middleChildren = [
     h('div', { display: 'flex', gap: '12px', alignItems: 'center' },
-      h('span', { fontSize: '14px', color: typeColor, padding: '3px 10px', backgroundColor: 'rgba(99,102,241,0.15)', borderRadius: '3px' }, row.exerciseType.toUpperCase()),
+      h('span', { fontSize: '14px', color: typeColor, padding: '3px 10px', backgroundColor: 'rgba(99,102,241,0.15)', borderRadius: '3px' }, row.kataType.toUpperCase()),
       h('span', { fontSize: '14px', color: diffColor }, row.difficulty.toUpperCase()),
     ),
-    h('span', { fontSize: '32px', color: '#F8FAFC', lineHeight: '1.3' }, row.exerciseTitle),
+    h('span', { fontSize: '32px', color: '#F8FAFC', lineHeight: '1.3' }, row.kataTitle),
   ]
 
   if (pullQuote) {
@@ -172,9 +172,9 @@ shareRoutes.get('/share/:sessionId', async (c) => {
       status: sessions.status,
       startedAt: sessions.startedAt,
       completedAt: sessions.completedAt,
-      exerciseTitle: exercises.title,
-      exerciseType: exercises.type,
-      difficulty: exercises.difficulty,
+      kataTitle: katas.title,
+      kataType: katas.type,
+      difficulty: katas.difficulty,
       username: users.username,
       avatarUrl: users.avatarUrl,
       verdict: sql<string | null>`(
@@ -194,7 +194,7 @@ shareRoutes.get('/share/:sessionId', async (c) => {
       )`,
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .innerJoin(users, eq(sessions.userId, users.id))
     .where(eq(sessions.id, sessionId))
     .limit(1)
@@ -210,8 +210,8 @@ shareRoutes.get('/share/:sessionId', async (c) => {
 
   return c.json({
     sessionId: row.sessionId,
-    exerciseTitle: row.exerciseTitle,
-    exerciseType: row.exerciseType,
+    kataTitle: row.kataTitle,
+    kataType: row.kataType,
     difficulty: row.difficulty,
     verdict: row.verdict ?? 'needs_work',
     pullQuote,
@@ -234,14 +234,14 @@ function extractPullQuote(analysis: string): string | null {
 }
 
 // ---------------------------------------------------------------------------
-// Course completion share
+// Scroll completion share
 // ---------------------------------------------------------------------------
 
-interface CourseCompletionRow {
-  courseId: string
-  courseTitle: string
+interface ScrollCompletionRow {
+  scrollId: string
+  scrollTitle: string
   courseAccentColor: string
-  courseLanguage: string
+  scrollLanguage: string
   isPublic: boolean
   totalSteps: number
   completedSteps: string[]
@@ -250,37 +250,37 @@ interface CourseCompletionRow {
   avatarUrl: string
 }
 
-async function loadCourseCompletion(
+async function loadScrollCompletion(
   slug: string,
   userId: string,
-): Promise<CourseCompletionRow | null> {
-  // One round-trip: course + progress + step count + user, joined. We
+): Promise<ScrollCompletionRow | null> {
+  // One round-trip: scroll + progress + step count + user, joined. We
   // aggregate step count via a correlated subquery so every step of every
   // lesson is counted without another N+1 risk.
   const [row] = await db
     .select({
-      courseId: courses.id,
-      courseTitle: courses.title,
-      courseAccentColor: courses.accentColor,
-      courseLanguage: courses.language,
-      isPublic: courses.isPublic,
+      scrollId: scrolls.id,
+      scrollTitle: scrolls.title,
+      courseAccentColor: scrolls.accentColor,
+      scrollLanguage: scrolls.language,
+      isPublic: scrolls.isPublic,
       totalSteps: sql<number>`(
         SELECT COUNT(*)::int FROM ${steps}
         INNER JOIN ${lessons} ON ${lessons.id} = ${steps.lessonId}
-        WHERE ${lessons.courseId} = ${courses.id}
+        WHERE ${lessons.scrollId} = ${scrolls.id}
       )`,
-      completedSteps: courseProgress.completedSteps,
-      lastAccessedAt: courseProgress.lastAccessedAt,
+      completedSteps: scrollProgress.completedSteps,
+      lastAccessedAt: scrollProgress.lastAccessedAt,
       username: users.username,
       avatarUrl: users.avatarUrl,
     })
-    .from(courses)
+    .from(scrolls)
     .innerJoin(
-      courseProgress,
-      and(eq(courseProgress.courseId, courses.id), eq(courseProgress.userId, userId)),
+      scrollProgress,
+      and(eq(scrollProgress.scrollId, scrolls.id), eq(scrollProgress.userId, userId)),
     )
     .innerJoin(users, eq(users.id, userId))
-    .where(eq(courses.slug, slug))
+    .where(eq(scrolls.slug, slug))
     .limit(1)
 
   if (!row) return null
@@ -296,10 +296,10 @@ async function loadCourseCompletion(
   }
 
   return {
-    courseId: row.courseId,
-    courseTitle: row.courseTitle,
+    scrollId: row.scrollId,
+    scrollTitle: row.scrollTitle,
     courseAccentColor: row.courseAccentColor,
-    courseLanguage: row.courseLanguage,
+    scrollLanguage: row.scrollLanguage,
     isPublic: row.isPublic,
     totalSteps: row.totalSteps,
     completedSteps,
@@ -309,12 +309,12 @@ async function loadCourseCompletion(
   }
 }
 
-// GET /share/course/:slug/:userId.png — OG image for course completion.
-shareRoutes.get('/share/course/:slug/:userId{.+\\.png$}', async (c) => {
+// GET /share/scroll/:slug/:userId.png — OG image for scroll completion.
+shareRoutes.get('/share/scroll/:slug/:userId{.+\\.png$}', async (c) => {
   const slug = c.req.param('slug')
   const userIdRaw = c.req.param('userId').replace(/\.png$/, '')
 
-  const completion = await loadCourseCompletion(slug, userIdRaw)
+  const completion = await loadScrollCompletion(slug, userIdRaw)
   if (!completion) return c.json({ error: 'Completion not found' }, 404)
 
   const font = await getFont()
@@ -356,11 +356,11 @@ shareRoutes.get('/share/course/:slug/:userId{.+\\.png$}', async (c) => {
       'div',
       { display: 'flex', flexDirection: 'column', gap: '12px', flex: '1', justifyContent: 'center' },
       h('span', { fontSize: '18px', color: '#94A3B8' }, 'Completed'),
-      h('span', { fontSize: '48px', color: '#F8FAFC', lineHeight: '1.2' }, completion.courseTitle),
+      h('span', { fontSize: '48px', color: '#F8FAFC', lineHeight: '1.2' }, completion.scrollTitle),
       h(
         'span',
         { fontSize: '18px', color: completion.courseAccentColor },
-        `${completion.totalSteps} step${completion.totalSteps === 1 ? '' : 's'} · ${completion.courseLanguage}`,
+        `${completion.totalSteps} step${completion.totalSteps === 1 ? '' : 's'} · ${completion.scrollLanguage}`,
       ),
     ),
     h(
@@ -389,20 +389,20 @@ shareRoutes.get('/share/course/:slug/:userId{.+\\.png$}', async (c) => {
   })
 })
 
-// GET /share/course/:slug/:userId — JSON payload for the course share page.
-shareRoutes.get('/share/course/:slug/:userId', async (c) => {
+// GET /share/scroll/:slug/:userId — JSON payload for the scroll share page.
+shareRoutes.get('/share/scroll/:slug/:userId', async (c) => {
   const slug = c.req.param('slug')
   const userId = c.req.param('userId')
 
   if (userId.endsWith('.png')) return c.notFound()
 
-  const completion = await loadCourseCompletion(slug, userId)
+  const completion = await loadScrollCompletion(slug, userId)
   if (!completion) return c.json({ error: 'Not found' }, 404)
 
   return c.json({
-    courseSlug: slug,
-    courseTitle: completion.courseTitle,
-    courseLanguage: completion.courseLanguage,
+    scrollSlug: slug,
+    scrollTitle: completion.scrollTitle,
+    scrollLanguage: completion.scrollLanguage,
     courseAccentColor: completion.courseAccentColor,
     totalSteps: completion.totalSteps,
     completedAt: completion.lastAccessedAt.toISOString(),

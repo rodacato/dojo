@@ -47,7 +47,7 @@ feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
   const { clarity, timing, evaluation, note } = parsed.data
   await db.insert(kataFeedback).values({
     sessionId: session.id,
-    exerciseId: session.exerciseId,
+    kataId: session.kataId,
     variationId: session.variationId,
     userId: user.id,
     clarity,

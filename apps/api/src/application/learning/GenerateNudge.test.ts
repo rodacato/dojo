@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { Course } from '../../domain/learning/course'
+import type { Scroll } from '../../domain/learning/scroll'
 import { GenerateNudge, StepNotFoundError } from './GenerateNudge'
 
-function buildCourse(overrides: Partial<Course> = {}): Course {
+function buildScroll(overrides: Partial<Scroll> = {}): Scroll {
   return {
-    id: 'course-1',
-    slug: 'test-course',
+    id: 'scroll-1',
+    slug: 'test-scroll',
     title: 'Test',
     description: '',
     language: 'typescript',
@@ -38,10 +38,10 @@ function buildCourse(overrides: Partial<Course> = {}): Course {
   }
 }
 
-function buildDeps(course: Course | null = buildCourse(), nudgeText = 'Re-check the return path.') {
-  const courseRepo = {
+function buildDeps(scroll: Scroll | null = buildScroll(), nudgeText = 'Re-check the return path.') {
+  const scrollRepo = {
     findById: vi.fn(),
-    findBySlug: vi.fn().mockResolvedValue(course),
+    findBySlug: vi.fn().mockResolvedValue(scroll),
     findAllPublished: vi.fn(),
     findAllPublic: vi.fn(),
   }
@@ -56,7 +56,7 @@ function buildDeps(course: Course | null = buildCourse(), nudgeText = 'Re-check 
     create: vi.fn().mockResolvedValue('nudge-1'),
     setFeedback: vi.fn(),
   }
-  return { courseRepo, llm, nudgeRepo }
+  return { scrollRepo, llm, nudgeRepo }
 }
 
 describe('GenerateNudge', () => {
@@ -65,7 +65,7 @@ describe('GenerateNudge', () => {
     const useCase = new GenerateNudge(deps)
 
     const result = await useCase.execute({
-      courseSlug: 'test-course',
+      scrollSlug: 'test-scroll',
       stepId: '00000000-0000-0000-0000-000000000001',
       userCode: 'function sum(a, b) { return a - b }',
       userId: null,
@@ -88,7 +88,7 @@ describe('GenerateNudge', () => {
     const useCase = new GenerateNudge(deps)
 
     await useCase.execute({
-      courseSlug: 'test-course',
+      scrollSlug: 'test-scroll',
       stepId: '00000000-0000-0000-0000-000000000001',
       userCode: 'function sum(a, b) { return a - b }',
       stderr: 'expected 3 got -1',
@@ -105,13 +105,13 @@ describe('GenerateNudge', () => {
     )
   })
 
-  it('throws StepNotFoundError when the course does not exist', async () => {
+  it('throws StepNotFoundError when the scroll does not exist', async () => {
     const deps = buildDeps(null)
     const useCase = new GenerateNudge(deps)
 
     await expect(
       useCase.execute({
-        courseSlug: 'missing',
+        scrollSlug: 'missing',
         stepId: '00000000-0000-0000-0000-000000000001',
         userCode: '',
         userId: null,
@@ -119,13 +119,13 @@ describe('GenerateNudge', () => {
     ).rejects.toBeInstanceOf(StepNotFoundError)
   })
 
-  it('throws StepNotFoundError when the step is not part of the course', async () => {
+  it('throws StepNotFoundError when the step is not part of the scroll', async () => {
     const deps = buildDeps()
     const useCase = new GenerateNudge(deps)
 
     await expect(
       useCase.execute({
-        courseSlug: 'test-course',
+        scrollSlug: 'test-scroll',
         stepId: '00000000-0000-0000-0000-000000000099',
         userCode: '',
         userId: null,

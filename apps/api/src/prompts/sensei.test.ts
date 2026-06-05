@@ -4,8 +4,8 @@ import { buildPromptA, buildPromptB, buildPromptC, type PromptParams } from './s
 const baseParams: PromptParams = {
   ownerRole: 'Principal Engineer',
   ownerContext: 'You care about correctness over cleverness.',
-  exerciseTitle: 'Fix: Off-by-one in pagination',
-  exerciseDescription: 'The paginate function has a bug.',
+  kataTitle: 'Fix: Off-by-one in pagination',
+  kataDescription: 'The paginate function has a bug.',
   userResponse: 'function paginate(items, page, limit) { ... }',
 }
 

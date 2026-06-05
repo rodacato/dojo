@@ -2,7 +2,7 @@ import { and, count, desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, exercises, sessions, userPreferences } from '../../persistence/drizzle/schema'
+import { attempts, katas, sessions, userPreferences } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { verdictSubquery, calculateStreak } from './query-helpers'
@@ -24,7 +24,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const [activeRow] = await db
     .select({
       sessionId: sessions.id,
-      exerciseDuration: exercises.duration,
+      kataDuration: katas.duration,
       startedAt: sessions.startedAt,
       hasFinalEval: sql<boolean>`EXISTS(
         SELECT 1 FROM ${attempts}
@@ -34,13 +34,13 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       )`,
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(eq(sessions.userId, userId), eq(sessions.status, 'active')))
     .limit(1)
 
   let activeSessionId: string | null = null
   if (activeRow) {
-    const limitMs = activeRow.exerciseDuration * 60 * 1000 * 1.1
+    const limitMs = activeRow.kataDuration * 60 * 1000 * 1.1
     const elapsedMs = Date.now() - activeRow.startedAt.getTime()
     if (elapsedMs > limitMs) {
       await db
@@ -73,19 +73,19 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     ))
     .groupBy(sql`DATE(${sessions.startedAt})`)
 
-  // Recent sessions with exercise info + verdict (last 5 completed/failed)
+  // Recent sessions with kata info + verdict (last 5 completed/failed)
   const recentRows = await db
     .select({
       id: sessions.id,
       status: sessions.status,
       startedAt: sessions.startedAt,
-      exerciseTitle: exercises.title,
-      exerciseType: exercises.type,
-      difficulty: exercises.difficulty,
+      kataTitle: katas.title,
+      kataType: katas.type,
+      difficulty: katas.difficulty,
       verdict: verdictSubquery(),
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(eq(sessions.userId, userId), sql`${sessions.status} != 'active'`))
     .orderBy(desc(sessions.startedAt))
     .limit(5)
@@ -106,7 +106,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const [todayRow] = await db
     .select({
       id: sessions.id,
-      exerciseTitle: exercises.title,
+      kataTitle: katas.title,
       verdict: sql<string | null>`(
         SELECT ${attempts.llmResponse}::jsonb->>'verdict'
         FROM ${attempts}
@@ -115,7 +115,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       )`,
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(
       eq(sessions.userId, userId),
       sql`${sessions.status} IN ('completed', 'failed')`,
@@ -126,7 +126,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
 
   const todayComplete = !!todayRow
   const todaySession = todayRow
-    ? { id: todayRow.id, exerciseTitle: todayRow.exerciseTitle, verdict: todayRow.verdict }
+    ? { id: todayRow.id, kataTitle: todayRow.kataTitle, verdict: todayRow.verdict }
     : null
 
   // --- Extended dashboard data ---
@@ -160,11 +160,11 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
 
   // Most avoided type: type with fewest completions
   const typeCountRows = await db
-    .select({ type: exercises.type, count: count() })
+    .select({ type: katas.type, count: count() })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
-    .groupBy(exercises.type)
+    .groupBy(katas.type)
   const allTypes = ['CODE', 'CHAT', 'WHITEBOARD']
   const typeCounts = new Map(typeCountRows.map((r) => [r.type, Number(r.count)]))
   const mostAvoided = allTypes
@@ -202,8 +202,8 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),
     recentSessions: recentRows.map((s) => ({
       id: s.id,
-      exerciseTitle: s.exerciseTitle,
-      exerciseType: s.exerciseType,
+      kataTitle: s.kataTitle,
+      kataType: s.kataType,
       difficulty: s.difficulty,
       verdict: s.verdict ?? null,
       startedAt: s.startedAt.toISOString(),
@@ -253,13 +253,13 @@ dashboardRoutes.get('/history', requireAuth, async (c) => {
       status: sessions.status,
       startedAt: sessions.startedAt,
       completedAt: sessions.completedAt,
-      exerciseTitle: exercises.title,
-      exerciseType: exercises.type,
-      difficulty: exercises.difficulty,
+      kataTitle: katas.title,
+      kataType: katas.type,
+      difficulty: katas.difficulty,
       verdict: verdictSubquery(),
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(eq(sessions.userId, user.id), sql`${sessions.status} != 'active'`))
     .orderBy(desc(sessions.startedAt))
     .limit(pageSize)
@@ -269,8 +269,8 @@ dashboardRoutes.get('/history', requireAuth, async (c) => {
     sessions: rows.map((s) => ({
       id: s.id,
       status: s.status,
-      exerciseTitle: s.exerciseTitle,
-      exerciseType: s.exerciseType,
+      kataTitle: s.kataTitle,
+      kataType: s.kataType,
       difficulty: s.difficulty,
       verdict: s.verdict ?? null,
       startedAt: s.startedAt.toISOString(),

@@ -33,7 +33,7 @@ export class ExecutionQueue {
   }
 
   // Playground / free-form execution path. Shares the same concurrency
-  // pool as kata/course execution so a playground burst cannot starve
+  // pool as kata/scroll execution so a playground burst cannot starve
   // real practice — see spec 027 §1.5.
   async enqueueRun(params: RunParams): Promise<ExecutionResult> {
     return this.schedule('run', params)

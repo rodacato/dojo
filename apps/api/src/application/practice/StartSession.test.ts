@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
-import { Exercise } from '../../domain/content/exercise'
-import { ExerciseNotFoundError } from '../../domain/shared/errors'
-import { ExerciseId, UserId, VariationId } from '../../domain/shared/types'
+import { Kata } from '../../domain/content/kata'
+import { KataNotFoundError } from '../../domain/shared/errors'
+import { KataId, UserId, VariationId } from '../../domain/shared/types'
 import { InMemoryEventBus } from '../../infrastructure/events/InMemoryEventBus'
 import { StartSession } from './StartSession'
 
-const makeExercise = () =>
-  Exercise.create({
-    title: 'Test Exercise',
-    description: 'A test code review exercise',
+const makeKata = () =>
+  Kata.create({
+    title: 'Test Kata',
+    description: 'A test code review kata',
     durationMinutes: 30,
     difficulty: 'medium',
     category: 'code-review',
@@ -30,10 +30,10 @@ const makeStubSessionRepo = () => ({
 
 describe('StartSession', () => {
   it('creates a session and publishes SessionCreated', async () => {
-    const exercise = makeExercise()
-    const exerciseRepo = {
+    const kata = makeKata()
+    const kataRepo = {
       findEligible: vi.fn(),
-      findById: vi.fn().mockResolvedValue(exercise),
+      findById: vi.fn().mockResolvedValue(kata),
       save: vi.fn(),
     }
     const sessionRepo = makeStubSessionRepo()
@@ -43,12 +43,12 @@ describe('StartSession', () => {
       published.push(e.type)
     })
 
-    const useCase = new StartSession({ exerciseRepo, sessionRepo, eventBus })
-    const variation = exercise.variations[0]!
+    const useCase = new StartSession({ kataRepo, sessionRepo, eventBus })
+    const variation = kata.variations[0]!
 
     const session = await useCase.execute({
       userId: UserId('user-1'),
-      exerciseId: exercise.id,
+      kataId: kata.id,
       variationId: variation.id,
     })
 
@@ -57,14 +57,14 @@ describe('StartSession', () => {
     expect(published).toContain('SessionCreated')
   })
 
-  it('throws ExerciseNotFoundError when exercise does not exist', async () => {
-    const exerciseRepo = {
+  it('throws KataNotFoundError when kata does not exist', async () => {
+    const kataRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       save: vi.fn(),
     }
     const useCase = new StartSession({
-      exerciseRepo,
+      kataRepo,
       sessionRepo: makeStubSessionRepo(),
       eventBus: new InMemoryEventBus(),
     })
@@ -72,9 +72,9 @@ describe('StartSession', () => {
     await expect(
       useCase.execute({
         userId: UserId('user-1'),
-        exerciseId: ExerciseId('nonexistent'),
+        kataId: KataId('nonexistent'),
         variationId: VariationId('variation-1'),
       }),
-    ).rejects.toThrow(ExerciseNotFoundError)
+    ).rejects.toThrow(KataNotFoundError)
   })
 })

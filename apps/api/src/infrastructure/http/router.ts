@@ -11,11 +11,12 @@ import { feedbackRoutes } from './routes/feedback'
 import { preferencesRoutes } from './routes/preferences'
 import { dashboardRoutes } from './routes/dashboard'
 import { profileRoutes } from './routes/profile'
-import { adminRoutes } from './routes/admin-exercises'
-import { adminCoursesRoutes } from './routes/admin-courses'
+import { adminKatasRoutes } from './routes/admin-katas'
+import { adminScrollsRoutes } from './routes/admin-scrolls'
 import { adminErrorsRoutes } from './routes/admin-errors'
 import { shareRoutes } from './routes/share'
-import { learnRoutes } from './routes/learn'
+import { scrollRoutes } from './routes/scrolls'
+import { beltsRoutes } from './routes/belts'
 import { playgroundRoutes } from './routes/playground'
 import { ogRoutes } from './routes/og'
 import { errorRoutes } from './routes/errors'
@@ -46,12 +47,13 @@ export function createRouter() {
   app.route('/', dashboardRoutes)
   app.route('/', profileRoutes)
   app.route('/', shareRoutes)
-  app.route('/', learnRoutes)
+  app.route('/', scrollRoutes)
+  app.route('/', beltsRoutes)
   app.route('/', playgroundRoutes)
   app.route('/', ogRoutes)
   app.route('/', errorRoutes)
-  app.route('/admin', adminRoutes)
-  app.route('/admin/courses', adminCoursesRoutes)
+  app.route('/admin', adminKatasRoutes)
+  app.route('/admin/scrolls', adminScrollsRoutes)
   app.route('/admin/errors', adminErrorsRoutes)
 
   app.onError((err, c) => {
@@ -84,13 +86,13 @@ export function createRouter() {
 function domainErrorToStatus(code?: string): ContentfulStatusCode {
   switch (code) {
     case 'SESSION_NOT_FOUND':
-    case 'EXERCISE_NOT_FOUND':
+    case 'KATA_NOT_FOUND':
       return 404
     case 'SESSION_ALREADY_COMPLETED':
       return 409
     case 'SESSION_EXPIRED':
       return 408
-    case 'NO_ELIGIBLE_EXERCISES':
+    case 'NO_ELIGIBLE_KATAS':
       return 422
     default:
       return 500

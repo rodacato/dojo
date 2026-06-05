@@ -76,7 +76,7 @@ export class AnthropicStreamAdapter implements LLMPort {
   async generateSessionBody(params: {
     ownerRole: string
     ownerContext: string
-    exerciseDescription: string
+    kataDescription: string
   }): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
     const reqId = crypto.randomUUID()
@@ -132,7 +132,7 @@ export class AnthropicStreamAdapter implements LLMPort {
   async *generateSessionBodyStream(params: {
     ownerRole: string
     ownerContext: string
-    exerciseDescription: string
+    kataDescription: string
   }): AsyncIterable<string> {
     const prompt = buildSessionBodyPrompt(params)
     const reqId = crypto.randomUUID()
@@ -307,7 +307,7 @@ function buildMessages(params: {
       content: buildReviewPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        exerciseTitle: '',
+        kataTitle: '',
         diff: params.sessionBody,
         review: params.userResponse,
         rubric: params.rubric,
@@ -323,8 +323,8 @@ function buildMessages(params: {
       content: buildPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        exerciseTitle: '', // TODO: pass exerciseTitle through params in Phase 1
-        exerciseDescription: params.sessionBody,
+        kataTitle: '', // TODO: pass kataTitle through params in Phase 1
+        kataDescription: params.sessionBody,
         userResponse: params.userResponse,
         category: params.category,
       }),
@@ -337,8 +337,8 @@ function buildMessages(params: {
       content: buildPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        exerciseTitle: '',
-        exerciseDescription: params.sessionBody,
+        kataTitle: '',
+        kataDescription: params.sessionBody,
         userResponse: firstTurn.userResponse,
         category: params.category,
       }),

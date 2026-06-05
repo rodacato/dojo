@@ -2,7 +2,7 @@ import { and, count, desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, exercises, sessions, userBadges, users } from '../../persistence/drizzle/schema'
+import { attempts, katas, sessions, userMilestones, users } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { verdictSubquery, calculateStreak } from './query-helpers'
@@ -140,9 +140,9 @@ profileRoutes.get('/u/:username', async (c) => {
 
   // Languages used (distinct)
   const langRows = await db
-    .selectDistinct({ lang: sql<string>`jsonb_array_elements_text(${exercises.language})` })
+    .selectDistinct({ lang: sql<string>`jsonb_array_elements_text(${katas.language})` })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
 
   // Avg time (completed sessions)
@@ -162,28 +162,28 @@ profileRoutes.get('/u/:username', async (c) => {
       status: sessions.status,
       startedAt: sessions.startedAt,
       completedAt: sessions.completedAt,
-      exerciseTitle: exercises.title,
-      exerciseType: exercises.type,
-      difficulty: exercises.difficulty,
+      kataTitle: katas.title,
+      kataType: katas.type,
+      difficulty: katas.difficulty,
       verdict: verdictSubquery(),
     })
     .from(sessions)
-    .innerJoin(exercises, eq(sessions.exerciseId, exercises.id))
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
     .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
     .orderBy(desc(sessions.startedAt))
     .limit(10)
 
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
-  // Badges
+  // Milestones
   const badgeRows = await db
     .select({
-      slug: userBadges.badgeSlug,
-      earnedAt: userBadges.earnedAt,
+      slug: userMilestones.milestoneSlug,
+      earnedAt: userMilestones.earnedAt,
     })
-    .from(userBadges)
-    .where(eq(userBadges.userId, userId))
-    .orderBy(userBadges.earnedAt)
+    .from(userMilestones)
+    .where(eq(userMilestones.userId, userId))
+    .orderBy(userMilestones.earnedAt)
 
   return c.json({
     username: user.username,
@@ -199,15 +199,15 @@ profileRoutes.get('/u/:username', async (c) => {
     heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),
     recentSessions: recentRows.map((s) => ({
       id: s.id,
-      exerciseTitle: s.exerciseTitle,
-      exerciseType: s.exerciseType,
+      kataTitle: s.kataTitle,
+      kataType: s.kataType,
       difficulty: s.difficulty,
       verdict: s.verdict ?? null,
       status: s.status,
       startedAt: s.startedAt.toISOString(),
       completedAt: s.completedAt ? s.completedAt.toISOString() : null,
     })),
-    badges: badgeRows.map((b) => ({
+    milestones: badgeRows.map((b) => ({
       slug: b.slug,
       earnedAt: b.earnedAt.toISOString(),
     })),

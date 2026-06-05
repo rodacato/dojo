@@ -6,7 +6,7 @@ import { playgroundRuns } from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
 
 // Layer 4 of spec 027 §4.5 — global daily quota across all traffic.
-// Separate from kata/courses: once the playground ceiling is hit,
+// Separate from kata/scrolls: once the playground ceiling is hit,
 // /playground/run returns 503 but every other endpoint keeps working.
 //
 // Implementation is a cached DB COUNT(*) with a short TTL. At the

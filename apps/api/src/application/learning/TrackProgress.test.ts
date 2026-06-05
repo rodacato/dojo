@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { Course } from '../../domain/learning/course'
+import type { Scroll } from '../../domain/learning/scroll'
 import type { ProgressOwner } from '../../domain/learning/ports'
 import { TrackProgress } from './TrackProgress'
 
 const userOwner: ProgressOwner = { kind: 'user', userId: 'user-1' }
 const anonOwner: ProgressOwner = { kind: 'anonymous', sessionId: 'anon-1' }
 
-function buildCourse(overrides: Partial<Course> = {}): Course {
+function buildScroll(overrides: Partial<Scroll> = {}): Scroll {
   return {
-    id: 'course-1',
-    slug: 'test-course',
+    id: 'scroll-1',
+    slug: 'test-scroll',
     title: 'Test',
     description: '',
     language: 'typescript',
@@ -34,17 +34,17 @@ function buildCourse(overrides: Partial<Course> = {}): Course {
 
 function buildDeps(overrides: {
   existing?: { completedSteps: string[] } | null
-  course?: Course | null
+  scroll?: Scroll | null
 } = {}) {
   const existing = overrides.existing === undefined ? null : overrides.existing
-  const course = overrides.course === undefined ? buildCourse() : overrides.course
+  const scroll = overrides.scroll === undefined ? buildScroll() : overrides.scroll
 
   const progressRepo = {
-    findByOwnerAndCourse: vi
+    findByOwnerAndScroll: vi
       .fn()
       .mockResolvedValue(
         existing
-          ? { owner: userOwner, courseId: 'course-1', lastAccessedAt: new Date(), ...existing }
+          ? { owner: userOwner, scrollId: 'scroll-1', lastAccessedAt: new Date(), ...existing }
           : null,
       ),
     findAllForAnonymous: vi.fn(),
@@ -52,8 +52,8 @@ function buildDeps(overrides: {
     deleteAnonymous: vi.fn(),
   }
 
-  const courseRepo = {
-    findById: vi.fn().mockResolvedValue(course),
+  const scrollRepo = {
+    findById: vi.fn().mockResolvedValue(scroll),
     findBySlug: vi.fn(),
     findAllPublished: vi.fn(),
     findAllPublic: vi.fn(),
@@ -64,19 +64,19 @@ function buildDeps(overrides: {
     subscribe: vi.fn(),
   }
 
-  return { progressRepo, courseRepo, eventBus }
+  return { progressRepo, scrollRepo, eventBus }
 }
 
 describe('TrackProgress', () => {
   it('creates new progress for a user when none exists', async () => {
     const deps = buildDeps()
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: userOwner, courseId: 'course-1', stepId: 'step-1' })
+    await useCase.execute({ owner: userOwner, scrollId: 'scroll-1', stepId: 'step-1' })
 
     expect(deps.progressRepo.save).toHaveBeenCalledWith(
       expect.objectContaining({
         owner: userOwner,
-        courseId: 'course-1',
+        scrollId: 'scroll-1',
         completedSteps: ['step-1'],
       }),
     )
@@ -85,7 +85,7 @@ describe('TrackProgress', () => {
   it('appends step to existing progress', async () => {
     const deps = buildDeps({ existing: { completedSteps: ['step-1'] } })
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: userOwner, courseId: 'course-1', stepId: 'step-2' })
+    await useCase.execute({ owner: userOwner, scrollId: 'scroll-1', stepId: 'step-2' })
 
     expect(deps.progressRepo.save).toHaveBeenCalledWith(
       expect.objectContaining({ completedSteps: ['step-1', 'step-2'] }),
@@ -95,7 +95,7 @@ describe('TrackProgress', () => {
   it('is idempotent — does not duplicate steps', async () => {
     const deps = buildDeps({ existing: { completedSteps: ['step-1'] } })
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: userOwner, courseId: 'course-1', stepId: 'step-1' })
+    await useCase.execute({ owner: userOwner, scrollId: 'scroll-1', stepId: 'step-1' })
 
     expect(deps.progressRepo.save).not.toHaveBeenCalled()
   })
@@ -103,30 +103,30 @@ describe('TrackProgress', () => {
   it('tracks anonymous progress', async () => {
     const deps = buildDeps()
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: anonOwner, courseId: 'course-1', stepId: 'step-1' })
+    await useCase.execute({ owner: anonOwner, scrollId: 'scroll-1', stepId: 'step-1' })
 
     expect(deps.progressRepo.save).toHaveBeenCalled()
     expect(deps.eventBus.publish).not.toHaveBeenCalled()
   })
 
-  it('emits CourseCompleted when a user finishes the last step', async () => {
+  it('emits ScrollCompleted when a user finishes the last step', async () => {
     const deps = buildDeps({ existing: { completedSteps: ['step-1'] } })
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: userOwner, courseId: 'course-1', stepId: 'step-2' })
+    await useCase.execute({ owner: userOwner, scrollId: 'scroll-1', stepId: 'step-2' })
 
     expect(deps.eventBus.publish).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'CourseCompleted',
-        aggregateId: 'course-1',
+        type: 'ScrollCompleted',
+        aggregateId: 'scroll-1',
         userId: 'user-1',
-        courseSlug: 'test-course',
+        scrollSlug: 'test-scroll',
         totalSteps: 2,
       }),
     )
   })
 
-  it('does not emit CourseCompleted on intermediate steps', async () => {
-    const course = buildCourse({
+  it('does not emit ScrollCompleted on intermediate steps', async () => {
+    const scroll = buildScroll({
       lessons: [
         {
           id: 'l1',
@@ -140,17 +140,17 @@ describe('TrackProgress', () => {
         },
       ],
     })
-    const deps = buildDeps({ existing: { completedSteps: ['step-1'] }, course })
+    const deps = buildDeps({ existing: { completedSteps: ['step-1'] }, scroll })
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: userOwner, courseId: 'course-1', stepId: 'step-2' })
+    await useCase.execute({ owner: userOwner, scrollId: 'scroll-1', stepId: 'step-2' })
 
     expect(deps.eventBus.publish).not.toHaveBeenCalled()
   })
 
-  it('does not re-emit CourseCompleted when all steps are already done', async () => {
+  it('does not re-emit ScrollCompleted when all steps are already done', async () => {
     const deps = buildDeps({ existing: { completedSteps: ['step-1', 'step-2'] } })
     const useCase = new TrackProgress(deps)
-    await useCase.execute({ owner: userOwner, courseId: 'course-1', stepId: 'step-2' })
+    await useCase.execute({ owner: userOwner, scrollId: 'scroll-1', stepId: 'step-2' })
 
     // Idempotent short-circuit fires before we reach the event bus.
     expect(deps.progressRepo.save).not.toHaveBeenCalled()

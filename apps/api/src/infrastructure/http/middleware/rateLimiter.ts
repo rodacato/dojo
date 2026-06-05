@@ -33,7 +33,7 @@ export const sessionLimiter = rateLimiter({
   message: { error: 'Session limit reached. You can start up to 5 kata per hour.' },
 })
 
-// 10 requests per minute per IP — for anonymous Piston code execution (courses)
+// 10 requests per minute per IP — for anonymous Piston code execution (scrolls)
 // Authenticated users get 60/min. Per Marta: anonymous is the biggest attack surface.
 export const executionLimiter = rateLimiter({
   windowMs: 60 * 1000,
@@ -60,7 +60,7 @@ export const errorReportLimiter = rateLimiter({
   message: { error: 'Too many error reports.' },
 })
 
-// Course-player nudge — each call is an LLM request, so the limit is tight.
+// Scroll-player nudge — each call is an LLM request, so the limit is tight.
 // 4/min/IP leaves room for a genuine back-and-forth; past that we would
 // rather the learner wait or look at the solution.
 export const nudgeLimiter = rateLimiter({

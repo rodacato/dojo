@@ -3,8 +3,8 @@ import type { Rubric } from '@dojo/shared'
 export interface PromptParams {
   ownerRole: string
   ownerContext: string
-  exerciseTitle: string
-  exerciseDescription: string
+  kataTitle: string
+  kataDescription: string
   userResponse: string
   category?: string
 }
@@ -38,9 +38,9 @@ ${p.ownerContext}
 You are evaluating a developer's response to the following exercise:
 
 EXERCISE:
-${p.exerciseTitle}
+${p.kataTitle}
 
-${p.exerciseDescription}
+${p.kataDescription}
 
 ---
 
@@ -100,9 +100,9 @@ Your evaluation rubric: ${p.ownerContext}
 ---
 
 THE KATA:
-${p.exerciseTitle}
+${p.kataTitle}
 
-${p.exerciseDescription}
+${p.kataDescription}
 
 ---
 
@@ -160,8 +160,8 @@ export function buildPromptC(p: PromptParams): string {
   return `Role: ${p.ownerRole}
 Rubric: ${p.ownerContext}
 
-Exercise: ${p.exerciseTitle}
-${p.exerciseDescription}
+Exercise: ${p.kataTitle}
+${p.kataDescription}
 
 Developer response:
 ${p.userResponse}
@@ -245,7 +245,7 @@ Then output the structured evaluation result:
 export function buildSessionBodyPrompt(p: {
   ownerRole: string
   ownerContext: string
-  exerciseDescription: string
+  kataDescription: string
 }): string {
   return `You are ${p.ownerRole}.
 
@@ -255,7 +255,7 @@ ${p.ownerContext}
 
 A developer is about to start the following exercise:
 
-${p.exerciseDescription}
+${p.kataDescription}
 
 ---
 
@@ -274,7 +274,7 @@ export const buildPrompt = buildPromptA
 export interface ReviewPromptParams {
   ownerRole: string
   ownerContext: string
-  exerciseTitle: string
+  kataTitle: string
   diff: string
   review: string
   rubric: Rubric
@@ -301,7 +301,7 @@ ${p.ownerContext}
 You are evaluating a developer's code review of the following pull-request diff.
 
 PR TITLE:
-${p.exerciseTitle}
+${p.kataTitle}
 
 DIFF:
 ${p.diff}
@@ -364,7 +364,7 @@ Then the structured evaluation:
 </evaluation>`
 }
 
-// Course-player nudge prompt — see PRD 026.
+// Scroll-player nudge prompt — see PRD 026.
 //
 // Design rules baked into this prompt:
 // - The sensei never writes code, never names the exact fix.
