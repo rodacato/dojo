@@ -1,12 +1,12 @@
 import type { DomainEvent } from '../shared/events'
-import type { AttemptId, ExerciseId, UserId, VariationId } from '../shared/types'
+import type { AttemptId, KataId, UserId, VariationId } from '../shared/types'
 import type { Verdict } from './values'
 
 export interface SessionCreated extends DomainEvent {
   readonly type: 'SessionCreated'
   readonly aggregateId: string // SessionId
   readonly userId: UserId
-  readonly exerciseId: ExerciseId
+  readonly kataId: KataId
   readonly variationId: VariationId
 }
 

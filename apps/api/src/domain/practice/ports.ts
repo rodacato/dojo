@@ -26,7 +26,7 @@ export interface LLMPort {
   generateSessionBody(params: {
     ownerRole: string
     ownerContext: string
-    exerciseDescription: string
+    kataDescription: string
   }): Promise<string>
 
   // Streaming variant of generateSessionBody (S022 Part 6). Yields text
@@ -36,10 +36,10 @@ export interface LLMPort {
   generateSessionBodyStream(params: {
     ownerRole: string
     ownerContext: string
-    exerciseDescription: string
+    kataDescription: string
   }): AsyncIterable<string>
 
-  // Course-player nudge — a single short hint pointing the learner toward
+  // Scroll-player nudge — a single short hint pointing the learner toward
   // the gap without giving the answer. Returns the full nudge text.
   nudge(params: {
     stepInstruction: string

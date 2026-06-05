@@ -1,9 +1,9 @@
 import type { DomainEvent } from '../shared/events'
-import type { ExerciseId, UserId } from '../shared/types'
+import type { KataId, UserId } from '../shared/types'
 
-export interface ExercisePublished extends DomainEvent {
-  readonly type: 'ExercisePublished'
-  readonly aggregateId: string // ExerciseId
-  readonly exerciseId: ExerciseId
+export interface KataPublished extends DomainEvent {
+  readonly type: 'KataPublished'
+  readonly aggregateId: string // KataId
+  readonly kataId: KataId
   readonly publishedBy: UserId
 }

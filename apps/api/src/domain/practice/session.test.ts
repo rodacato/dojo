@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { SessionAlreadyCompletedError } from '../shared/errors'
-import { ExerciseId, SessionId, UserId, VariationId } from '../shared/types'
+import { KataId, SessionId, UserId, VariationId } from '../shared/types'
 import { Attempt } from './attempt'
 import { Session } from './session'
 import type { EvaluationResult } from './values'
@@ -24,7 +24,7 @@ const makeAttempt = (isFinal: boolean, verdict: EvaluationResult['verdict'] = 'p
 const makeSession = () =>
   Session.create({
     userId: UserId('user-1'),
-    exerciseId: ExerciseId('exercise-1'),
+    kataId: KataId('kata-1'),
     variationId: VariationId('variation-1'),
     body: 'You are a code reviewer...',
   })

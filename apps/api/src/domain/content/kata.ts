@@ -1,27 +1,27 @@
 import type { DomainEvent } from '../shared/events'
-import { ExerciseId, VariationId } from '../shared/types'
+import { KataId, VariationId } from '../shared/types'
 import type { UserId } from '../shared/types'
-import type { ExercisePublished } from './events'
-import type { Difficulty, ExerciseStatus, ExerciseType } from './values'
+import type { KataPublished } from './events'
+import type { Difficulty, KataStatus, KataType } from './values'
 import type { Rubric } from '@dojo/shared'
 
 export interface Variation {
   readonly id: VariationId
-  readonly exerciseId: ExerciseId
+  readonly kataId: KataId
   readonly ownerRole: string
   readonly ownerContext: string
   readonly createdAt: Date
 }
 
-export interface ExerciseProps {
-  id: ExerciseId
+export interface KataProps {
+  id: KataId
   title: string
   description: string
   durationMinutes: number
   difficulty: Difficulty
   category: string
-  type: ExerciseType
-  status: ExerciseStatus
+  type: KataType
+  status: KataStatus
   languages: string[]
   tags: string[]
   topics: string[]
@@ -38,14 +38,14 @@ export interface ExerciseProps {
   updatedAt: Date | null
 }
 
-export class Exercise {
-  readonly id: ExerciseId
+export class Kata {
+  readonly id: KataId
   readonly title: string
   readonly description: string
   readonly durationMinutes: number
   readonly difficulty: Difficulty
   readonly category: string
-  readonly type: ExerciseType
+  readonly type: KataType
   readonly languages: string[]
   readonly tags: string[]
   readonly topics: string[]
@@ -58,10 +58,10 @@ export class Exercise {
   readonly createdBy: UserId
   readonly createdAt: Date
   readonly updatedAt: Date | null
-  private _status: ExerciseStatus
+  private _status: KataStatus
   private _pendingEvents: DomainEvent[] = []
 
-  constructor(props: ExerciseProps) {
+  constructor(props: KataProps) {
     this.id = props.id
     this.title = props.title
     this.description = props.description
@@ -84,7 +84,7 @@ export class Exercise {
     this.updatedAt = props.updatedAt
   }
 
-  get status(): ExerciseStatus {
+  get status(): KataStatus {
     return this._status
   }
 
@@ -94,23 +94,23 @@ export class Exercise {
     durationMinutes: number
     difficulty: Difficulty
     category: string
-    type: ExerciseType
+    type: KataType
     languages: string[]
     tags: string[]
     topics: string[]
     createdBy: UserId
     variations: Array<{ ownerRole: string; ownerContext: string }>
-  }): Exercise {
-    const id = ExerciseId(crypto.randomUUID())
+  }): Kata {
+    const id = KataId(crypto.randomUUID())
     const variations: Variation[] = params.variations.map((v) => ({
       id: VariationId(crypto.randomUUID()),
-      exerciseId: id,
+      kataId: id,
       ownerRole: v.ownerRole,
       ownerContext: v.ownerContext,
       createdAt: new Date(),
     }))
 
-    return new Exercise({
+    return new Kata({
       id,
       title: params.title,
       description: params.description,
@@ -136,15 +136,15 @@ export class Exercise {
 
   publish(publishedBy: UserId): void {
     if (this._status === 'archived') {
-      throw new Error('Cannot publish an archived exercise')
+      throw new Error('Cannot publish an archived kata')
     }
     this._status = 'published'
 
-    const event: ExercisePublished = {
-      type: 'ExercisePublished',
+    const event: KataPublished = {
+      type: 'KataPublished',
       aggregateId: this.id,
       occurredAt: new Date(),
-      exerciseId: this.id,
+      kataId: this.id,
       publishedBy,
     }
     this._pendingEvents.push(event)

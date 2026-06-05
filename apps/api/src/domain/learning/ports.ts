@@ -1,35 +1,33 @@
-import type { Course } from './course'
+import type { Scroll } from './scroll'
 
-export interface CourseRepositoryPort {
-  findById(id: string): Promise<Course | null>
-  findBySlug(slug: string): Promise<Course | null>
-  findAllPublished(): Promise<Course[]>
-  findAllPublic(): Promise<Course[]>
+export interface ScrollRepositoryPort {
+  findById(id: string): Promise<Scroll | null>
+  findBySlug(slug: string): Promise<Scroll | null>
+  findAllPublished(): Promise<Scroll[]>
+  findAllPublic(): Promise<Scroll[]>
 }
 
 export type ProgressOwner =
   | { kind: 'user'; userId: string }
   | { kind: 'anonymous'; sessionId: string }
 
-export interface CourseProgress {
+export interface ScrollProgress {
   owner: ProgressOwner
-  courseId: string
+  scrollId: string
   completedSteps: string[]
   lastAccessedAt: Date
 }
 
-export interface CourseProgressPort {
-  findByOwnerAndCourse(owner: ProgressOwner, courseId: string): Promise<CourseProgress | null>
-  findAllForAnonymous(sessionId: string): Promise<CourseProgress[]>
-  save(progress: CourseProgress): Promise<void>
+export interface ScrollProgressPort {
+  findByOwnerAndScroll(owner: ProgressOwner, scrollId: string): Promise<ScrollProgress | null>
+  findAllForAnonymous(sessionId: string): Promise<ScrollProgress[]>
+  save(progress: ScrollProgress): Promise<void>
   deleteAnonymous(sessionId: string): Promise<void>
 }
 
 export type NudgeFeedback = 'up' | 'down'
 
 export interface NudgeRepositoryPort {
-  // Returns the inserted nudge's id so the caller can expose it to the
-  // client for later feedback calls.
   create(params: {
     userId: string | null
     stepId: string

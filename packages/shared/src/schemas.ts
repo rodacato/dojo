@@ -12,8 +12,8 @@
 import { z } from 'zod'
 
 export const difficultySchema = z.enum(['easy', 'medium', 'hard'])
-export const exerciseTypeSchema = z.enum(['code', 'chat', 'whiteboard', 'review'])
-export const exerciseStatusSchema = z.enum(['draft', 'published', 'archived'])
+export const kataTypeSchema = z.enum(['code', 'chat', 'whiteboard', 'review'])
+export const kataStatusSchema = z.enum(['draft', 'published', 'archived'])
 export const sessionStatusSchema = z.enum(['active', 'completed', 'failed'])
 export const verdictSchema = z.enum(['passed', 'passed_with_notes', 'needs_work'])
 export const rubricSeveritySchema = z.enum(['high', 'medium', 'low'])
@@ -34,27 +34,27 @@ export const userDTOSchema = z.object({
   createdAt: z.string().datetime(),
 })
 
-export const exerciseDTOSchema = z.object({
+export const kataDTOSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
   description: z.string(),
   duration: z.number().int().positive(),
   difficulty: difficultySchema,
-  type: exerciseTypeSchema,
+  type: kataTypeSchema,
   language: z.array(z.string()),
   tags: z.array(z.string()),
 })
 
 export const variationDTOSchema = z.object({
   id: z.string().uuid(),
-  exerciseId: z.string().uuid(),
+  kataId: z.string().uuid(),
   ownerRole: z.string(),
   ownerContext: z.string(),
 })
 
 export const sessionDTOSchema = z.object({
   id: z.string().uuid(),
-  exerciseId: z.string().uuid(),
+  kataId: z.string().uuid(),
   variationId: z.string().uuid(),
   body: z.string(),
   status: sessionStatusSchema,
@@ -88,17 +88,17 @@ export const feedbackSubmitSchema = z.object({
 export const userLevelSchema = z.enum(['junior', 'mid', 'senior'])
 
 // Shared filter schema — used by both API (query param parsing) and frontend (form state)
-export const exerciseFiltersSchema = z.object({
+export const kataFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),
   maxDuration: z.number().int().positive().optional(),
 })
 
-// ── Learning (Courses) ──────────────────────────────────────────────
+// ── Learning (Scrolls) ──────────────────────────────────────────────
 
 export const stepTypeSchema = z.enum(['read', 'code', 'exercise', 'challenge'])
-export const courseStatusSchema = z.enum(['draft', 'published'])
+export const scrollStatusSchema = z.enum(['draft', 'published'])
 
-export const courseSlugSchema = z.object({
+export const scrollSlugSchema = z.object({
   slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
 })
 
@@ -109,7 +109,7 @@ export const executeStepSchema = z.object({
 })
 
 export const trackProgressSchema = z.object({
-  courseId: z.string().uuid(),
+  scrollId: z.string().uuid(),
   stepId: z.string().uuid(),
   anonymousSessionId: z.string().uuid().optional(),
 })
@@ -144,14 +144,14 @@ export const externalReferenceSchema = z.object({
   kind: externalReferenceKindSchema,
 })
 
-export const courseDTOSchema = z.object({
+export const scrollDTOSchema = z.object({
   id: z.string().uuid(),
   slug: z.string(),
   title: z.string(),
   description: z.string(),
   language: z.string(),
   accentColor: z.string(),
-  status: courseStatusSchema,
+  status: scrollStatusSchema,
   lessonCount: z.number().int(),
   stepCount: z.number().int(),
   externalReferences: z.array(externalReferenceSchema),
@@ -162,6 +162,26 @@ export const stepSolutionDTOSchema = z.object({
   alternativeApproach: z.string().nullable(),
 })
 
-export const courseDetailDTOSchema = courseDTOSchema.extend({
+export const scrollDetailDTOSchema = scrollDTOSchema.extend({
   lessons: z.array(lessonDTOSchema),
+})
+
+// ── Recognition (Belts + Milestones) ────────────────────────────────
+
+export const beltRankSchema = z.enum(['white', 'yellow', 'green', 'brown', 'black'])
+
+export const beltDTOSchema = z.object({
+  rank: beltRankSchema,
+  factors: z.object({
+    completed: z.number().int().nonnegative(),
+    distinctClusters: z.number().int().nonnegative(),
+    activeDays30: z.number().int().nonnegative(),
+    daysAtRank: z.number().int().nonnegative(),
+  }),
+})
+
+export const milestoneDTOSchema = z.object({
+  id: z.string(),
+  earnedAt: z.string().datetime(),
+  contextRef: z.string().nullable(),
 })

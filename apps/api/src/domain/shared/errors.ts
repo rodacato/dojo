@@ -20,15 +20,15 @@ export class SessionAlreadyCompletedError extends DomainError {
   }
 }
 
-export class ExerciseNotFoundError extends DomainError {
+export class KataNotFoundError extends DomainError {
   constructor(id: string) {
-    super(`Exercise not found: ${id}`, 'EXERCISE_NOT_FOUND')
+    super(`Kata not found: ${id}`, 'KATA_NOT_FOUND')
   }
 }
 
-export class NoEligibleExercisesError extends DomainError {
+export class NoEligibleKatasError extends DomainError {
   constructor() {
-    super('No eligible exercises found for the given filters', 'NO_ELIGIBLE_EXERCISES')
+    super('No eligible katas found for the given filters', 'NO_ELIGIBLE_KATAS')
   }
 }
 

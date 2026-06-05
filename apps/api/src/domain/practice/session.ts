@@ -1,7 +1,7 @@
 import { SessionAlreadyCompletedError } from '../shared/errors'
 import type { DomainEvent } from '../shared/events'
 import { SessionId } from '../shared/types'
-import type { ExerciseId, UserId, VariationId } from '../shared/types'
+import type { KataId, UserId, VariationId } from '../shared/types'
 import type { Attempt } from './attempt'
 import type { AttemptSubmitted, SessionCompleted, SessionCreated, SessionFailed } from './events'
 import type { SessionStatus, Verdict } from './values'
@@ -9,7 +9,7 @@ import type { SessionStatus, Verdict } from './values'
 export interface SessionProps {
   id: SessionId
   userId: UserId
-  exerciseId: ExerciseId
+  kataId: KataId
   variationId: VariationId
   body: string
   status: SessionStatus
@@ -21,7 +21,7 @@ export interface SessionProps {
 export class Session {
   readonly id: SessionId
   readonly userId: UserId
-  readonly exerciseId: ExerciseId
+  readonly kataId: KataId
   readonly variationId: VariationId
   readonly body: string
   private _status: SessionStatus
@@ -33,7 +33,7 @@ export class Session {
   constructor(props: SessionProps) {
     this.id = props.id
     this.userId = props.userId
-    this.exerciseId = props.exerciseId
+    this.kataId = props.kataId
     this.variationId = props.variationId
     this.body = props.body
     this._status = props.status
@@ -63,13 +63,13 @@ export class Session {
 
   static createPreparing(params: {
     userId: UserId
-    exerciseId: ExerciseId
+    kataId: KataId
     variationId: VariationId
   }): Session {
     const session = new Session({
       id: SessionId(crypto.randomUUID()),
       userId: params.userId,
-      exerciseId: params.exerciseId,
+      kataId: params.kataId,
       variationId: params.variationId,
       body: '',
       status: 'preparing',
@@ -83,7 +83,7 @@ export class Session {
       aggregateId: session.id,
       occurredAt: new Date(),
       userId: params.userId,
-      exerciseId: params.exerciseId,
+      kataId: params.kataId,
       variationId: params.variationId,
     }
     session._pendingEvents.push(event)
@@ -93,14 +93,14 @@ export class Session {
 
   static create(params: {
     userId: UserId
-    exerciseId: ExerciseId
+    kataId: KataId
     variationId: VariationId
     body: string
   }): Session {
     const session = new Session({
       id: SessionId(crypto.randomUUID()),
       userId: params.userId,
-      exerciseId: params.exerciseId,
+      kataId: params.kataId,
       variationId: params.variationId,
       body: params.body,
       status: 'active',
@@ -114,7 +114,7 @@ export class Session {
       aggregateId: session.id,
       occurredAt: new Date(),
       userId: params.userId,
-      exerciseId: params.exerciseId,
+      kataId: params.kataId,
       variationId: params.variationId,
     }
     session._pendingEvents.push(event)

@@ -1,7 +1,7 @@
-import type { CourseStatus, StepType } from './values'
+import type { ScrollStatus, StepType } from './values'
 import type { ExternalReference } from '@dojo/shared'
 
-// Minimal types for the Course aggregate
+// Minimal types for the Scroll aggregate
 export interface Step {
   id: string
   order: number
@@ -22,14 +22,14 @@ export interface Lesson {
   steps: Step[]
 }
 
-export interface Course {
+export interface Scroll {
   id: string
   slug: string
   title: string
   description: string
   language: string
   accentColor: string
-  status: CourseStatus
+  status: ScrollStatus
   isPublic: boolean
   externalReferences: ExternalReference[]
   lessons: Lesson[]

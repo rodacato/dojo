@@ -15,8 +15,8 @@
  */
 
 export type Difficulty = 'easy' | 'medium' | 'hard'
-export type ExerciseType = 'code' | 'chat' | 'whiteboard' | 'review'
-export type ExerciseStatus = 'draft' | 'published' | 'archived'
+export type KataType = 'code' | 'chat' | 'whiteboard' | 'review'
+export type KataStatus = 'draft' | 'published' | 'archived'
 export type SessionStatus = 'active' | 'completed' | 'failed'
 export type Verdict = 'passed' | 'passed_with_notes' | 'needs_work'
 export type UserLevel = 'junior' | 'mid' | 'senior'
@@ -48,13 +48,13 @@ export interface UserDTO {
   isCreator?: boolean
 }
 
-export interface ExerciseDTO {
+export interface KataDTO {
   id: string
   title: string
   description: string
   duration: number
   difficulty: Difficulty
-  type: ExerciseType
+  type: KataType
   language: string[]
   tags: string[]
   starterCode?: string | null
@@ -62,14 +62,14 @@ export interface ExerciseDTO {
 
 export interface VariationDTO {
   id: string
-  exerciseId: string
+  kataId: string
   ownerRole: string
   ownerContext: string
 }
 
 export interface SessionDTO {
   id: string
-  exerciseId: string
+  kataId: string
   variationId: string
   body: string
   status: SessionStatus
@@ -95,10 +95,10 @@ export interface FeedbackDTO {
   note: string | null
 }
 
-// ── Learning (Courses) ──────────────────────────────────────────────
+// ── Learning (Scrolls) ──────────────────────────────────────────────
 
 export type StepType = 'read' | 'code' | 'exercise' | 'challenge'
-export type CourseStatus = 'draft' | 'published'
+export type ScrollStatus = 'draft' | 'published'
 export type ExternalReferenceKind = 'book' | 'docs' | 'talk' | 'article'
 
 export interface ExternalReference {
@@ -119,7 +119,7 @@ export interface StepDTO {
   testCode: string | null
   hint: string | null
   // Solution is intentionally NOT in StepDTO — it ships only via
-  // GET /learn/courses/:slug/steps/:id/solution after pass.
+  // GET /scrolls/:slug/steps/:id/solution after pass.
 }
 
 export interface LessonDTO {
@@ -129,16 +129,16 @@ export interface LessonDTO {
   steps: StepDTO[]
 }
 
-export interface CourseDTO {
+export interface ScrollDTO {
   id: string
   slug: string
   title: string
   description: string
   language: string
   accentColor: string
-  // Optional because /learn/courses (summary list) omits it when not needed;
-  // /admin/courses and /learn/courses/:slug both include it.
-  status?: CourseStatus
+  // Optional because /scrolls (summary list) omits it when not needed;
+  // /admin/scrolls and /scrolls/:slug both include it.
+  status?: ScrollStatus
   isPublic: boolean
   lessonCount: number
   stepCount: number
@@ -150,7 +150,7 @@ export interface StepSolutionDTO {
   alternativeApproach: string | null
 }
 
-export interface CourseDetailDTO extends CourseDTO {
+export interface ScrollDetailDTO extends ScrollDTO {
   lessons: LessonDTO[]
 }
 
@@ -193,6 +193,28 @@ export interface ExecuteStepResponse {
   errorMessage?: string
 }
 
-export interface CourseProgressDTO {
+export interface ScrollProgressDTO {
   completedSteps: string[]
+}
+
+// ── Recognition (Belts + Milestones) ────────────────────────────────
+
+export type BeltRank = 'white' | 'yellow' | 'green' | 'brown' | 'black'
+
+export interface BeltFactors {
+  completed: number
+  distinctClusters: number
+  activeDays30: number
+  daysAtRank: number
+}
+
+export interface BeltDTO {
+  rank: BeltRank
+  factors: BeltFactors
+}
+
+export interface MilestoneDTO {
+  id: string         // FIRST_KATA, POLYGLOT, CONSISTENT, 5_STREAK, SCROLL_* (preserved)
+  earnedAt: string   // ISO
+  contextRef: string | null  // session id or scroll slug
 }
