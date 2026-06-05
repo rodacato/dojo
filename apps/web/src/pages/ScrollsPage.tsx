@@ -87,7 +87,7 @@ function ScrollCard({
 
   return (
     <Link
-      to={`/learn/${scroll.slug}`}
+      to={`/scrolls/${scroll.slug}`}
       className={`group bg-surface border border-border rounded-md p-6 flex flex-col gap-3 hover:border-accent transition-colors min-h-70 ${
         isDraft || isPrivate ? 'opacity-70' : ''
       }`}

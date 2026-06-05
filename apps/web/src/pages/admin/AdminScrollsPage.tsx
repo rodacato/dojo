@@ -129,7 +129,7 @@ export function AdminScrollsPage() {
   }
 
   async function copyUrl(slug: string) {
-    await navigator.clipboard.writeText(`${window.location.origin}/learn/${slug}`)
+    await navigator.clipboard.writeText(`${window.location.origin}/scrolls/${slug}`)
   }
 
   const counts = useMemo(() => {
@@ -220,7 +220,7 @@ export function AdminScrollsPage() {
                   >
                     <td className="px-4 h-14 align-middle">
                       <div className="text-[15px] font-medium text-primary">{c.title}</div>
-                      <div className="font-mono text-[11px] text-muted mt-0.5">/learn/{c.slug}</div>
+                      <div className="font-mono text-[11px] text-muted mt-0.5">/scrolls/{c.slug}</div>
                     </td>
                     <td className="px-4 h-14 align-middle">
                       <span
@@ -273,7 +273,7 @@ export function AdminScrollsPage() {
                         <IconAction
                           label="Open scroll"
                           as={Link}
-                          to={`/learn/${c.slug}`}
+                          to={`/scrolls/${c.slug}`}
                           target="_blank"
                           rel="noreferrer"
                         >

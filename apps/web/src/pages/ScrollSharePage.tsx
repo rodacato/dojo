@@ -50,7 +50,7 @@ export function ScrollSharePage() {
       <ErrorState
         kind="not-found"
         message="This completion doesn't exist yet — finish the scroll first."
-        primaryAction={{ label: 'Browse scrolls', to: '/learn' }}
+        primaryAction={{ label: 'Browse scrolls', to: '/scrolls' }}
       />
     )
   }
@@ -151,7 +151,7 @@ export function ScrollSharePage() {
 
             {/* CTA */}
             <Link
-              to={`/learn/${data.scrollSlug}`}
+              to={`/scrolls/${data.scrollSlug}`}
               className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full mt-8 md:mt-10`}
             >
               Start the scroll →

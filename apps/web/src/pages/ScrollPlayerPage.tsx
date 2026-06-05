@@ -100,7 +100,7 @@ export function ScrollPlayerPage() {
       <ErrorState
         message={error}
         primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
-        secondaryAction={{ label: 'Back to scrolls', to: '/learn' }}
+        secondaryAction={{ label: 'Back to scrolls', to: '/scrolls' }}
       />
     )
   }
@@ -117,7 +117,7 @@ export function ScrollPlayerPage() {
       {/* Top bar — 56px, mono caps progress */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <Link
-          to="/learn"
+          to="/scrolls"
           className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
         >
           ← Learn
@@ -1090,7 +1090,7 @@ function ScrollCompleteBanner({
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-center gap-2 mt-8">
         <Link
-          to="/learn"
+          to="/scrolls"
           className="font-mono text-[11px] tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
           ← Back to scrolls
