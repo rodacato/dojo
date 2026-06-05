@@ -17,8 +17,9 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx --env-file=../../.env src/infrastructure/persistence/seed.ts",
-    "db:seed:courses": "tsx --env-file=../../.env src/infrastructure/persistence/seed-courses.ts",
-    "validate:courses": "tsx --env-file=../../.env src/scripts/validate-course-solutions.ts",
+    "db:seed:scrolls": "tsx --env-file=../../.env src/infrastructure/persistence/seed-scrolls.ts",
+    "validate:scrolls": "tsx --env-file=../../.env src/scripts/validate-scroll-solutions.ts",
+    "calibrate:sensei": "tsx --env-file=../../.env src/scripts/calibrate-sensei.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {

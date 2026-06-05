@@ -19,18 +19,18 @@ describe('sensei prompts — debugging context', () => {
   for (const { name, fn } of variants) {
     it(`variant ${name} injects debugging context when category === 'debugging'`, () => {
       const prompt = fn({ ...baseParams, category: 'debugging' })
-      expect(prompt).toContain('DEBUGGING EXERCISE')
+      expect(prompt).toContain('DEBUGGING KATA')
       expect(prompt).toContain('root cause')
     })
 
     it(`variant ${name} omits debugging context for other categories`, () => {
       const prompt = fn({ ...baseParams, category: 'sql' })
-      expect(prompt).not.toContain('DEBUGGING EXERCISE')
+      expect(prompt).not.toContain('DEBUGGING KATA')
     })
 
     it(`variant ${name} omits debugging context when category is undefined`, () => {
       const prompt = fn({ ...baseParams })
-      expect(prompt).not.toContain('DEBUGGING EXERCISE')
+      expect(prompt).not.toContain('DEBUGGING KATA')
     })
   }
 })

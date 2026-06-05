@@ -14,10 +14,10 @@ export interface FollowUpParams {
   originalFollowUpQuestion: string
 }
 
-// Extra block injected when the exercise is a bug-fix kata. The goal is for
+// Extra block injected when the kata is a bug-fix. The goal is for
 // the sensei to evaluate root-cause identification, not just a surface patch.
-const DEBUGGING_CONTEXT = `CONTEXT — DEBUGGING EXERCISE:
-This is a bug-fix exercise. The developer received broken code and was asked to find and fix the bug. Evaluate:
+const DEBUGGING_CONTEXT = `CONTEXT — DEBUGGING KATA:
+This is a bug-fix kata. The developer received broken code and was asked to find and fix the bug. Evaluate:
 - Did they identify the root cause, not just patch the symptom?
 - Is their fix minimal and targeted, or did they rewrite unnecessarily?
 - Do they understand WHY the original code was wrong?
@@ -35,9 +35,9 @@ ${p.ownerContext}
 
 ---
 
-You are evaluating a developer's response to the following exercise:
+You are evaluating a developer's response to the following kata:
 
-EXERCISE:
+KATA:
 ${p.kataTitle}
 
 ${p.kataDescription}
@@ -160,7 +160,7 @@ export function buildPromptC(p: PromptParams): string {
   return `Role: ${p.ownerRole}
 Rubric: ${p.ownerContext}
 
-Exercise: ${p.kataTitle}
+Kata: ${p.kataTitle}
 ${p.kataDescription}
 
 Developer response:
@@ -253,7 +253,7 @@ ${p.ownerContext}
 
 ---
 
-A developer is about to start the following exercise:
+A developer is about to start the following kata:
 
 ${p.kataDescription}
 
