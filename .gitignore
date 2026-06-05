@@ -49,3 +49,7 @@ playwright-report/
 
 docs/screens
 docs/wip
+stitch/
+.kwik-e/
+CLAUDE.local.md
+.claude/rules/kwik-e/
