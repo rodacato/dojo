@@ -19,9 +19,7 @@ import { StepNotFoundError } from '../../../application/learning/GenerateNudge'
 
 // Languages permitted for anonymous (unauthenticated) code execution.
 // Authenticated users may execute any supported runtime.
-// `ruby` added 2026-06-06 for the ADR 022 crash-course re-evaluation pass —
-// makes the Ruby scroll fully runnable without GitHub OAuth.
-const PUBLIC_LANGUAGE_WHITELIST = new Set(['sql', 'typescript', 'python', 'javascript-dom', 'ruby'])
+const PUBLIC_LANGUAGE_WHITELIST = new Set(['sql', 'typescript', 'python', 'javascript-dom'])
 
 export const scrollRoutes = new Hono<AppEnv>()
 

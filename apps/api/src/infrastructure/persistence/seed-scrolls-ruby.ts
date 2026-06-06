@@ -20,12 +20,11 @@
 // Lessons 2-5 are stubbed in the spec, not in this seed yet. They land per the
 // implementation order in docs/courses/curricula/ruby.md §8.
 //
-// Status: draft. isPublic: true (overridden for the POC re-evaluation pass so
-// the scroll is reachable without GitHub OAuth). Ruby execution is also
-// added to PUBLIC_LANGUAGE_WHITELIST in routes/scrolls.ts so anonymous Run
-// works end-to-end. Both moves widen the anonymous attack surface — Marta
-// (S5 security) flagged this in the original POC; the call is deliberate
-// for accessibility and reversible by flipping these two values.
+// Status: draft. isPublic: false. Ruby execution requires auth — the
+// /scrolls/execute endpoint (apps/api/src/infrastructure/http/routes/scrolls.ts)
+// only allows anonymous calls for sql/typescript/python/javascript-dom.
+// The POC eval pass briefly flipped both to anonymous for ease of review;
+// restored to authed-only at Sprint 025 close per Marta's security stance.
 //
 // Test harness: manual (mirrors the Python pattern — _t + _eq helpers, JSON
 // emitted on a __DOJO_RESULT__ line that ExecuteStep parses). Minitest is
@@ -95,7 +94,7 @@ export const RUBY_COURSE_DATA = {
   language: 'ruby',
   accentColor: '#CC342D',
   status: 'draft' as const,
-  isPublic: true,
+  isPublic: false,
   externalReferences: [
     {
       title: 'The Well-Grounded Rubyist, 3rd ed. (Black & Leo)',
