@@ -173,13 +173,21 @@ function StreakCard({
   )
 }
 
+function formatAvgTime(minutes: number): string {
+  if (minutes <= 0) return '—'
+  if (minutes < 60) return `${minutes}m`
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return m === 0 ? `${h}h` : `${h}h ${m}m`
+}
+
 function PracticePatternsCard({ practicePatterns }: { practicePatterns: DashboardData['practicePatterns'] }) {
   const rows: Array<{ label: string; value: React.ReactNode }> = [
     {
       label: 'Avg time',
       value: (
         <span className="font-mono text-primary text-base">
-          {String(practicePatterns.avgTimeMinutes).padStart(2, '0')}:00
+          {formatAvgTime(practicePatterns.avgTimeMinutes)}
         </span>
       ),
     },
