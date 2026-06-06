@@ -25,3 +25,11 @@ export const SENTRY_RELEASE = import.meta.env['VITE_SENTRY_RELEASE'] ?? ''
 // a no-op (TURNSTILE_SECRET_KEY unset). Set VITE_TURNSTILE_SITE_KEY at
 // build time — see config/deploy.web.yml builder.args.
 export const TURNSTILE_SITE_KEY = import.meta.env['VITE_TURNSTILE_SITE_KEY'] ?? ''
+
+// Sumi-e theme migration kill switch. Off by default — the theme
+// switcher UI and the data-theme attribute writer only activate when
+// this flag is on. Lets us ship infra + components dark with the slate
+// theme still rendering, and flip a single env var to enable iteration.
+// See DESIGN.md §Migration path.
+export const FF_SUMI_THEME_ENABLED =
+  import.meta.env['VITE_FF_SUMI_THEME_ENABLED'] === 'true'
