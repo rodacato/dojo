@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
 import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { EmptyState } from '../components/ui/EmptyState'
+import { HankoBadge } from '../components/ui/HankoBadge'
 import { useAuth } from '../context/AuthContext'
 import { BELT_COLOR } from '../lib/belt-colors'
 import type { BeltDTO, MilestoneDTO } from '@dojo/shared'
@@ -191,17 +192,20 @@ function MilestoneCard({ milestone }: { milestone: MilestoneView }) {
         milestone.earned ? '' : 'opacity-50'
       }`}
     >
-      <div>
-        <h3
-          className={`font-mono text-lg font-bold tracking-[0.04em] uppercase mb-2 ${
-            milestone.earned ? 'text-primary' : 'text-muted'
-          }`}
-        >
-          {milestone.name}
-        </h3>
-        <p className={`text-sm leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
-          {milestone.description}
-        </p>
+      <div className="flex items-start gap-4">
+        <HankoBadge text={milestone.name} earned={milestone.earned} />
+        <div className="flex-1 min-w-0">
+          <h3
+            className={`font-mono text-lg font-bold tracking-[0.04em] uppercase mb-2 ${
+              milestone.earned ? 'text-primary' : 'text-muted'
+            }`}
+          >
+            {milestone.name}
+          </h3>
+          <p className={`text-sm leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
+            {milestone.description}
+          </p>
+        </div>
       </div>
       <p
         className={`font-mono text-xs tracking-[0.08em] uppercase mt-4 ${
@@ -225,18 +229,21 @@ function PrestigeMilestoneCard({ milestone }: { milestone: MilestoneView }) {
         milestone.earned ? '' : 'opacity-50'
       }`}
     >
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h3
-            className={`font-mono text-2xl md:text-2xl font-bold tracking-[0.04em] uppercase leading-none mb-3 ${
-              milestone.earned ? 'text-primary' : 'text-muted'
-            }`}
-          >
-            {milestone.name}
-          </h3>
-          <p className={`text-sm leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
-            {milestone.description}
-          </p>
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex items-start gap-4 flex-1 min-w-0">
+          <HankoBadge text={milestone.name} earned={milestone.earned} />
+          <div className="flex-1 min-w-0">
+            <h3
+              className={`font-mono text-2xl md:text-2xl font-bold tracking-[0.04em] uppercase leading-none mb-3 ${
+                milestone.earned ? 'text-primary' : 'text-muted'
+              }`}
+            >
+              {milestone.name}
+            </h3>
+            <p className={`text-sm leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
+              {milestone.description}
+            </p>
+          </div>
         </div>
         <p
           className={`font-mono text-xs tracking-[0.08em] uppercase shrink-0 ${
