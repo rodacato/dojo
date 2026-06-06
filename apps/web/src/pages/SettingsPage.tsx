@@ -6,8 +6,10 @@ import { PageLoader } from '../components/PageLoader'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { Toggle } from '../components/ui/Toggle'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
+import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
 import { useTheme } from '../hooks/useTheme'
 import type { ThemeChoice } from '../lib/theme'
+import type { BeltDTO } from '@dojo/shared'
 
 const THEME_CHOICES: Array<{ value: ThemeChoice; label: string }> = [
   { value: 'auto', label: 'Auto' },
@@ -50,12 +52,16 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error'
 export function SettingsPage() {
   const { user, logout } = useAuth()
   const [prefs, setPrefs] = useState<Preferences | null>(null)
+  const [belt, setBelt] = useState<BeltDTO | null>(null)
   const [save, setSave] = useState<SaveState>('idle')
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const { theme, setTheme } = useTheme()
 
   useEffect(() => {
     api.getPreferences().then(setPrefs).catch(() => setSave('error'))
+    api.getBelts().then((res) => setBelt(res.belt)).catch(() => {
+      // Non-blocking — settings is still usable without the belt avatar ring
+    })
   }, [])
 
   // Auto-fade the SAVED chip back to idle after 1.5s so the header doesn't
@@ -113,17 +119,22 @@ export function SettingsPage() {
         <div className="bg-surface border border-border rounded-md p-6">
           <div className="flex flex-col md:flex-row md:items-start gap-6">
             <div className="flex items-center gap-4 md:flex-1 min-w-0">
-              <img
-                src={user.avatarUrl}
-                alt=""
-                aria-hidden
-                className="w-16 h-16 rounded-full bg-elevated shrink-0"
-              />
+              {belt ? (
+                <BeltRingAvatar src={user.avatarUrl} rank={belt.rank} size={64} alt="" />
+              ) : (
+                <img
+                  src={user.avatarUrl}
+                  alt=""
+                  aria-hidden
+                  className="w-16 h-16 rounded-full bg-elevated shrink-0"
+                />
+              )}
               <div className="min-w-0">
                 <p className="text-primary text-lg font-semibold truncate">{user.username}</p>
                 <p className="text-muted text-sm">@{user.username}</p>
                 <p className="text-muted text-xs font-mono tracking-[0.04em] mt-1">
                   Member since {memberSince}
+                  {belt && ` · ${belt.rank} belt`}
                 </p>
               </div>
             </div>
