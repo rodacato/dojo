@@ -64,8 +64,6 @@ export function DashboardPage() {
           <SenseiSuggestsCard suggestions={dashboard.senseiSuggests} />
         </div>
       )}
-
-      <SystemStatusFooter />
     </div>
   )
 }
@@ -77,12 +75,8 @@ export function DashboardPage() {
 function DateStrip() {
   const today = useMemo(() => DATE_FORMATTER.format(new Date()), [])
   return (
-    <div className="flex items-center justify-between gap-4 -mb-2">
+    <div className="flex items-center -mb-2">
       <p className="text-secondary text-xs font-mono uppercase tracking-wider">{today}</p>
-      <p className="text-muted text-xs font-mono uppercase tracking-wider flex items-center gap-1.5">
-        <span className="inline-block w-1.5 h-1.5 rounded-full bg-success" aria-hidden />
-        api · ok
-      </p>
     </div>
   )
 }
@@ -248,27 +242,6 @@ function SenseiSuggestsCard({ suggestions }: { suggestions: string[] }) {
         ))}
       </ul>
     </section>
-  )
-}
-
-function SystemStatusFooter() {
-  return (
-    <footer className="border-t border-border/30 pt-4 mt-4">
-      <p className="text-center text-muted text-[11px] font-mono uppercase tracking-wider flex items-center justify-center gap-3">
-        <StatusDot label="api" ok />
-        <StatusDot label="db" ok />
-        <StatusDot label="llm" ok />
-      </p>
-    </footer>
-  )
-}
-
-function StatusDot({ label, ok }: { label: string; ok: boolean }) {
-  return (
-    <span className="inline-flex items-center gap-1.5">
-      <span className={`inline-block w-1.5 h-1.5 rounded-full ${ok ? 'bg-success' : 'bg-danger'}`} aria-hidden />
-      {label} {ok ? 'ok' : 'down'}
-    </span>
   )
 }
 
