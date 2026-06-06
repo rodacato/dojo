@@ -27,7 +27,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth()
-  const { theme, setTheme, enabled: themeEnabled } = useTheme()
+  const { theme, setTheme } = useTheme()
 
   return (
     <aside
@@ -100,18 +100,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <LogoutIcon className="w-4.5 h-4.5 shrink-0" />
           {!collapsed && <span>log out</span>}
         </button>
-        {themeEnabled && (
-          <button
-            onClick={() => setTheme(nextInCycle(theme))}
-            title={`theme: ${theme} (click to cycle)`}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-muted hover:text-secondary transition-colors border-l-2 border-transparent ${
-              collapsed ? 'justify-center px-2' : ''
-            }`}
-          >
-            <ThemeIcon className="w-4.5 h-4.5 shrink-0" />
-            {!collapsed && <span>{theme}</span>}
-          </button>
-        )}
+        <button
+          onClick={() => setTheme(nextInCycle(theme))}
+          title={`theme: ${theme} (click to cycle)`}
+          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-muted hover:text-secondary transition-colors border-l-2 border-transparent ${
+            collapsed ? 'justify-center px-2' : ''
+          }`}
+        >
+          <ThemeIcon className="w-4.5 h-4.5 shrink-0" />
+          {!collapsed && <span>{theme}</span>}
+        </button>
       </div>
 
       {/* Collapse toggle */}

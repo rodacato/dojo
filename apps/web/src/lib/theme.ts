@@ -1,5 +1,3 @@
-import { FF_SUMI_THEME_ENABLED } from './config'
-
 export type ThemeChoice = 'auto' | 'sumi' | 'washi' | 'slate'
 
 const STORAGE_KEY = 'dojo-theme'
@@ -35,10 +33,11 @@ export function applyTheme(resolved: 'sumi' | 'washi' | 'slate'): void {
   }
 }
 
-// Boot-time initializer. Safe to call regardless of flag — no-op when
-// disabled so the Slate Indigo @theme defaults keep rendering unchanged.
+// Boot-time initializer — runs before React mounts so the first paint
+// already has the right palette. No FOUC flash from default to user
+// choice. Default 'auto' resolves to sumi (dark) or washi (light)
+// based on the OS prefers-color-scheme.
 export function initTheme(): void {
-  if (!FF_SUMI_THEME_ENABLED) return
   const choice = getStoredTheme()
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
   applyTheme(resolveTheme(choice, prefersDark))

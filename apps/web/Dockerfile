@@ -27,12 +27,6 @@ ENV VITE_SENTRY_RELEASE=$VITE_SENTRY_RELEASE
 ARG VITE_TURNSTILE_SITE_KEY=
 ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY
 
-# Sumi-e theme migration flag. Off ('false' or empty) keeps Slate Indigo
-# rendering and hides the theme toggle UI. Flip to 'true' to expose the
-# washi/sumi switcher in /settings.
-ARG VITE_FF_SUMI_THEME_ENABLED=false
-ENV VITE_FF_SUMI_THEME_ENABLED=$VITE_FF_SUMI_THEME_ENABLED
-
 # Source map upload (build-time only — @sentry/vite-plugin reads process.env).
 # Skipped silently when any of the three is empty.
 ARG SENTRY_AUTH_TOKEN=

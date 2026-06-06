@@ -55,7 +55,7 @@ The motifs are explicit: **brushstroke**, **enso** (the zen circle, used as load
 **Why not yet:**
 - Token values for Sumi-e need a designer pass (current values in this doc are v1 draft — expect calibration)
 - A two-theme system requires the components to be re-audited against both palettes; that's a sprint, not an afternoon
-- Migration goes behind a feature flag (`FF_SUMI_THEME_ENABLED`) so the slate theme keeps working during the transition
+- The user-facing toggle (`Auto / Sumi / Washi / Slate`) is always available; `Slate` stays in the toggle as the legacy escape hatch during calibration
 
 ---
 
@@ -415,14 +415,14 @@ The Sumi-e direction is a sprint of its own. Not a piecemeal sed-and-pray.
 
 ### Migration order (when it ships)
 
-1. **Sprint kickoff:** add `FF_SUMI_THEME_ENABLED` env flag. Default off.
-2. **Token values:** add a CSS class `[data-theme="sumi"]` and `[data-theme="washi"]` that override the `@theme` defaults. Toggle on `<html>` based on the flag + (later) user preference.
+1. **Sprint kickoff:** the theme switcher ships as a regular feature, not behind a flag. Sole-user constraint — the only person who sees a broken Sumi-e draft is the creator, who can flip to Slate from the sidebar or settings in one click.
+2. **Token values:** add CSS classes `[data-theme="sumi"]` and `[data-theme="washi"]` that override the `@theme` defaults. `<html>` carries the attribute based on user preference (localStorage) or OS prefers-color-scheme when set to `auto`.
 3. **Motifs first, gradually:** ship Enso Loader on `/scrolls` only behind the flag. Verify rendering, perf, reduced-motion fallback. Then enable on `/katas`. Then everywhere.
 4. **Verdict + share card** — high-visibility surfaces; ship these once Enso + Hanko + brushstroke are stable.
 5. **Belt + avatar + heatmap colors** — last because they're cross-cutting and benign-looking-but-everywhere.
 6. **Cleanup:** remove the slate-indigo values from this doc and from `main.css`. Update `stitch/DESIGN.md` to match. This is the last commit of the migration sprint.
 
-**Rollback:** if anything goes wrong, the feature flag flips back. The slate-indigo values stay in this doc until the cleanup commit, exactly so rollback is a flag toggle, not a revert.
+**Rollback:** the creator picks `Slate` from the theme toggle and the document re-renders without `data-theme` set, falling back to the @theme defaults. The slate-indigo values stay in this doc until the cleanup commit, exactly so rollback is a single click, not a revert.
 
 ### What does NOT migrate
 
