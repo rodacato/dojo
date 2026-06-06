@@ -152,10 +152,14 @@ function Hero() {
   const line1Ref = useRef<HTMLSpanElement>(null)
   const cursorRef = useRef<HTMLSpanElement>(null)
   const line2Ref = useRef<HTMLSpanElement>(null)
-  const brushRef = useRef<SVGPathElement>(null)
   const paragraphRef = useRef<HTMLParagraphElement>(null)
   const ctaRef = useRef<HTMLAnchorElement>(null)
   const terminalRef = useRef<HTMLDivElement>(null)
+
+  // Brushstroke removed for now — the placeholder SVG path was a wavy line
+  // that read as distracting doodle rather than a confident sumi-e stroke.
+  // Reintroduce in the sumi-e migration sprint once a real CC0 ink stroke
+  // path is sourced. See docs/DESIGN.md §Brand motifs.
 
   useGSAP(
     () => {
@@ -163,22 +167,18 @@ function Hero() {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], { autoAlpha: 0, y: 16 })
-        gsap.set(terminalRef.current, { autoAlpha: 0, y: 24 })
+        // Terminal is NOT hidden during fade — only slides up. Hiding it with
+        // autoAlpha caused the visible-chrome / empty-content "dead time" gap
+        // because the inner session's autoAlpha:1 was masked by the parent's
+        // autoAlpha:0. Slide-only keeps session 0 visible from t=0.
+        gsap.set(terminalRef.current, { y: 24 })
         if (line1Ref.current) line1Ref.current.textContent = ''
 
-        // Brushstroke seals the headline once the typewriter completes. Use the
-        // classic stroke-dash technique — works with any single path, no DrawSVG
-        // plugin required for v1.
-        if (brushRef.current) {
-          const length = brushRef.current.getTotalLength()
-          gsap.set(brushRef.current, { strokeDasharray: length, strokeDashoffset: length })
-        }
-
         const obj = { n: 0 }
-        // delay 0.3s — suspense before the typewriter starts.
-        const tl = gsap.timeline({ delay: 0.3 })
+        // delay 0.15s — small suspense beat before the typewriter starts.
+        const tl = gsap.timeline({ delay: 0.15 })
 
-        tl.to(terminalRef.current, { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out' }, 0)
+        tl.to(terminalRef.current, { y: 0, duration: 0.9, ease: 'expo.out' }, 0)
           .to(
             obj,
             {
@@ -191,15 +191,10 @@ function Hero() {
                 }
               },
             },
-            0.2,
+            0.1,
           )
           .to(cursorRef.current, { autoAlpha: 0, duration: 0.25 }, '>0.15')
           .to(line2Ref.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '<')
-          .to(
-            brushRef.current,
-            { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' },
-            '>-0.15',
-          )
           .to(
             [paragraphRef.current, ctaRef.current],
             { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.12 },
@@ -210,12 +205,11 @@ function Hero() {
       mm.add('(prefers-reduced-motion: reduce)', () => {
         if (line1Ref.current) line1Ref.current.textContent = HERO_LINE_1
         gsap.set(cursorRef.current, { autoAlpha: 0 })
-        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current, terminalRef.current], {
+        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], {
           autoAlpha: 1,
           y: 0,
         })
-        // brushstroke renders fully — no dasharray override, so the path
-        // displays in its final state from t=0.
+        gsap.set(terminalRef.current, { y: 0 })
       })
     },
     { scope: heroRef },
@@ -226,10 +220,18 @@ function Hero() {
       <DotGridBackground className="z-0" />
       <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
         <div>
-          <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-2">
-            <span ref={line1Ref} />
-            <span ref={cursorRef} className="text-accent animate-cursor" aria-hidden>
-              _
+          <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-2 relative">
+            {/* Ghost text reserves the final layout — keeps the container from
+                growing as the typewriter types. opacity-0 stays in layout AND
+                is announced by screen readers (vs. `invisible` which would not). */}
+            <span className="opacity-0 select-none">{HERO_LINE_1}</span>
+            {/* Visual typewriter overlays the ghost. aria-hidden so screen
+                readers only announce the ghost (the full headline). */}
+            <span aria-hidden className="absolute inset-0">
+              <span ref={line1Ref} />
+              <span ref={cursorRef} className="text-accent animate-cursor">
+                _
+              </span>
             </span>
           </h1>
           <span
@@ -238,24 +240,6 @@ function Hero() {
           >
             To themselves.
           </span>
-          {/* Brushstroke seals the headline. POC path data — replace with a
-              CC0-sourced ink stroke when the sumi-e migration ships. */}
-          <svg
-            width="180"
-            height="12"
-            viewBox="0 0 180 12"
-            className="block mt-4 -ml-0.5"
-            aria-hidden
-          >
-            <path
-              ref={brushRef}
-              d="M 4 8 Q 50 2 95 6 T 176 9"
-              stroke="var(--color-accent)"
-              strokeWidth={2.5}
-              strokeLinecap="round"
-              fill="none"
-            />
-          </svg>
           <p
             ref={paragraphRef}
             className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
@@ -334,31 +318,57 @@ const TERMINAL_SESSIONS: TerminalSession[] = [
 
 function TerminalDemo() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [currentIdx, setCurrentIdx] = useState(0)
+  const prevIdxRef = useRef<number | null>(null)
 
+  // Rotate every 4s after first display. setInterval so each tick is independent
+  // of GSAP timeline — no chance of timeline drift causing dead intervals.
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+    const interval = setInterval(() => {
+      setCurrentIdx((i) => (i + 1) % TERMINAL_SESSIONS.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // GSAP only animates the transition. State drives which session is current.
   useGSAP(
     () => {
       const sessions = gsap.utils.toArray<HTMLElement>('.tdemo-session')
-      if (sessions.length <= 1) return
+      if (sessions.length === 0) return
 
-      gsap.set(sessions, { autoAlpha: 0 })
-      gsap.set(sessions[0]!, { autoAlpha: 1 })
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const prevIdx = prevIdxRef.current
 
-      const mm = gsap.matchMedia()
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        const tl = gsap.timeline({ repeat: -1, delay: 1.0 })
-        sessions.forEach((current, i) => {
-          const next = sessions[(i + 1) % sessions.length]!
-          tl.to(current, { autoAlpha: 0, x: -30, duration: 0.5, ease: 'power2.in' }, '+=3.5')
-            .fromTo(
-              next,
-              { autoAlpha: 0, x: 30 },
-              { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power2.out' },
-              '<0.1',
-            )
+      if (prevIdx === null) {
+        // Initial mount — set state without animation
+        sessions.forEach((el, i) => {
+          gsap.set(el, { autoAlpha: i === currentIdx ? 1 : 0, x: 0 })
         })
-      })
+      } else if (prevIdx !== currentIdx) {
+        if (reduced) {
+          gsap.set(sessions[prevIdx]!, { autoAlpha: 0 })
+          gsap.set(sessions[currentIdx]!, { autoAlpha: 1, x: 0 })
+        } else {
+          const tl = gsap.timeline()
+          tl.to(sessions[prevIdx]!, {
+            autoAlpha: 0,
+            x: -30,
+            duration: 0.5,
+            ease: 'power2.in',
+          }).fromTo(
+            sessions[currentIdx]!,
+            { autoAlpha: 0, x: 30 },
+            { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power2.out' },
+            '<0.15',
+          )
+        }
+      }
+
+      prevIdxRef.current = currentIdx
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [currentIdx] },
   )
 
   return (
@@ -371,10 +381,16 @@ function TerminalDemo() {
           <span className="ml-2 text-muted text-xs font-mono">session_</span>
         </div>
         <div className="relative">
-          {TERMINAL_SESSIONS.map((s) => (
+          {TERMINAL_SESSIONS.map((s, i) => (
             <div
               key={s.id}
-              className="tdemo-session p-5 font-mono text-xs leading-relaxed space-y-2 not-first:absolute not-first:inset-0"
+              className={`tdemo-session p-5 font-mono text-xs leading-relaxed space-y-2 ${
+                i > 0 ? 'absolute inset-0' : ''
+              }`}
+              // Initial CSS state matches first useGSAP run — prevents FOUC
+              // where all 3 sessions render visible on first paint before
+              // GSAP's gsap.set fires.
+              style={{ opacity: i === 0 ? 1 : 0 }}
             >
               <p className="text-secondary">
                 <span className="text-muted">$</span> {s.command}{' '}
