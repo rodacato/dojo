@@ -47,7 +47,6 @@ Thumbs.db
 test-results/
 playwright-report/
 
-stitch/
 .kwik-e/
 CLAUDE.local.md
 .claude/rules/kwik-e/
