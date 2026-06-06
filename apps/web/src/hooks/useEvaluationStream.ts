@@ -42,6 +42,7 @@ interface WsMessage {
 export function useEvaluationStream(sessionId: string) {
   const [state, setState] = useState<EvalStreamState>({ status: 'idle' })
   const wsRef = useRef<WebSocket | null>(null)
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const latestResult = useRef<EvaluationResult | null>(null)
   const latestExecResult = useRef<ExecutionResult | undefined>(undefined)
   const navigate = useNavigate()
@@ -100,7 +101,10 @@ export function useEvaluationStream(sessionId: string) {
               executionResult: latestExecResult.current,
             }
             if (result.isFinalEvaluation) {
-              setTimeout(() => navigate(`/kata/${sessionId}/result`), 1500)
+              redirectTimerRef.current = setTimeout(
+                () => navigate(`/kata/${sessionId}/result`),
+                1500,
+              )
             }
             return next
           })
@@ -148,7 +152,10 @@ export function useEvaluationStream(sessionId: string) {
   )
 
   useEffect(() => {
-    return () => wsRef.current?.close()
+    return () => {
+      wsRef.current?.close()
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current)
+    }
   }, [])
 
   return { state, connect, submit, reconnect }
