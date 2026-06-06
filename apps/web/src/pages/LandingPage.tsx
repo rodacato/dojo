@@ -371,6 +371,7 @@ function RequestAccessForm() {
   const [reason, setReason] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   if (submitted) {
     return (
@@ -387,12 +388,14 @@ function RequestAccessForm() {
     e.preventDefault()
     if (!githubHandle.trim() || submitting) return
     setSubmitting(true)
+    setError(null)
     try {
       await api.requestAccess(githubHandle.trim(), reason.trim() || undefined)
+      setSubmitted(true)
     } catch {
-      // Show "Received" even if the email fails — graceful degradation
+      setError("Didn't go through. Try again, or ping @rodacato on github.")
+      setSubmitting(false)
     }
-    setSubmitted(true)
   }
 
   return (
@@ -441,6 +444,11 @@ function RequestAccessForm() {
       >
         {submitting ? 'Sending' : 'Submit_request'}
       </Button>
+      {error && (
+        <p role="alert" className="text-danger text-xs font-mono leading-relaxed">
+          {error}
+        </p>
+      )}
     </form>
   )
 }
