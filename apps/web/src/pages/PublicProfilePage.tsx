@@ -4,6 +4,8 @@ import { api, ApiError, type PublicProfileData } from '../lib/api'
 import { PublicPageLayout } from '../components/PublicPageLayout'
 import { ErrorState } from '../components/ui/ErrorState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
+import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
+import { BELT_COLOR } from '../lib/belt-colors'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
 const BADGE_NAMES: Record<string, string> = {
@@ -95,7 +97,13 @@ export function PublicProfilePage() {
     <PublicPageLayout>
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 flex flex-col gap-6">
         {/* Header band */}
-        <section className="relative bg-surface border border-border rounded-md p-6 md:p-8">
+        <section className="relative bg-surface border border-border rounded-md p-6 md:p-8 overflow-hidden">
+          {/* Belt-color band — 4px full-width at top per DESIGN.md §Belt colors */}
+          <div
+            aria-hidden
+            className="absolute top-0 inset-x-0 h-1"
+            style={{ backgroundColor: BELT_COLOR[profile.belt.rank] }}
+          />
           {profile.streak > 0 && (
             <span className="absolute top-4 right-4 font-mono text-xs tracking-[0.08em] uppercase text-accent border border-accent/40 bg-accent/10 px-2 py-1 rounded-sm">
               {profile.streak} day streak
@@ -103,11 +111,11 @@ export function PublicProfilePage() {
           )}
           <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
             <div className="flex items-center gap-4 md:w-[40%] min-w-0">
-              <img
+              <BeltRingAvatar
                 src={profile.avatarUrl}
+                rank={profile.belt.rank}
+                size={96}
                 alt=""
-                aria-hidden
-                className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-elevated shrink-0"
               />
               <div className="min-w-0">
                 <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight truncate">
@@ -115,7 +123,7 @@ export function PublicProfilePage() {
                 </h1>
                 <p className="text-secondary text-base">@{profile.username}</p>
                 <p className="text-muted text-xs font-mono tracking-[0.04em] mt-1">
-                  Member since {memberSince}
+                  Member since {memberSince} · {profile.belt.rank} belt
                 </p>
               </div>
             </div>

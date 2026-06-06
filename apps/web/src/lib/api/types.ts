@@ -97,4 +97,5 @@ export interface PublicProfileData {
     slug: string
     earnedAt: string
   }>
+  belt: BeltDTO
 }
