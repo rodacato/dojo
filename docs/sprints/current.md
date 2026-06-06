@@ -1,6 +1,6 @@
 # Sprint 023 — Dojo language pass
 
-> **Status:** code & docs done; calibration harness ready (awaiting real-LLM run); visual polish + staging smoke pending
+> **Status:** code & docs done; calibration harness ready (awaiting real-LLM run); staging smoke pending. Visual polish closed by [Sprint 024](archive/sprint-024-maintenance-sumi-e.md).
 > **Plan:** [PRD-032](../prd/032-sprint-023-planning.md)
 > **Dependent PRDs:** [PRD-030](../prd/030-dojo-terminology-routes.md), [PRD-031](../prd/031-belt-progression-rubric.md)
 > **Spec:** [Spec 028](../specs/028-dojo-language-pass.md) · **ADR:** [ADR 020](../adr/020-ubiquitous-language-pass.md)
