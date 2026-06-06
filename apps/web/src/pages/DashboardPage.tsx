@@ -61,8 +61,11 @@ export function DashboardPage() {
           streak={dashboard.streak}
           heatmapData={dashboard.heatmapData}
           weeklyGoal={dashboard.weeklyGoal}
+          spanWhenAlone={dashboard.totalCompleted < 3}
         />
-        <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />
+        {dashboard.totalCompleted >= 3 && (
+          <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />
+        )}
       </div>
 
       {dashboard.recentSessions.length > 0 && (
@@ -131,17 +134,21 @@ function StreakCard({
   streak,
   heatmapData,
   weeklyGoal,
+  spanWhenAlone = false,
 }: {
   streak: number
   heatmapData: DashboardData['heatmapData']
-  weeklyGoal?: { target: number; completed: number }
+  weeklyGoal: DashboardData['weeklyGoal']
+  spanWhenAlone?: boolean
 }) {
   const week = useMemo(() => weekActivity(heatmapData), [heatmapData])
   return (
-    <section className="md:col-span-7 bg-surface border border-border/40 rounded-md p-6">
+    <section
+      className={`${spanWhenAlone ? 'md:col-span-12' : 'md:col-span-7'} bg-surface border border-border/40 rounded-md p-6`}
+    >
       <div className="flex items-center justify-between mb-4">
         <p className="text-muted text-xs font-mono uppercase tracking-wider">Current streak</p>
-        {weeklyGoal && weeklyGoal.target > 0 && (
+        {weeklyGoal.target !== null && weeklyGoal.target > 0 && (
           <p className="text-muted text-xs font-mono">
             {weeklyGoal.completed}/{weeklyGoal.target} this week
           </p>
