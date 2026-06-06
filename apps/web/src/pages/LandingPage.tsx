@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
 import { useAuth } from '../context/AuthContext'
 import { GitHubIcon } from '../components/GitHubIcon'
 import { LogoWordmark, LogoMark } from '../components/Logo'
 import { DotGridBackground } from '../components/ui/DotGridBackground'
-import { ScrollFadeIn } from '../components/ui/ScrollFadeIn'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { api } from '../lib/api'
 import { API_URL } from '../lib/config'
+
+gsap.registerPlugin(useGSAP, ScrollTrigger)
 
 interface GitHubStats {
   stars: number
@@ -22,10 +26,42 @@ export function LandingPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const errorParam = searchParams.get('error')
+  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!loading && user) navigate('/dashboard', { replace: true })
   }, [user, loading, navigate])
+
+  useGSAP(
+    () => {
+      const reveals = gsap.utils.toArray<HTMLElement>('[data-anim="reveal"]')
+      if (reveals.length === 0) return
+
+      const mm = gsap.matchMedia()
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.set(reveals, { autoAlpha: 0, y: 16 })
+        ScrollTrigger.batch(reveals, {
+          start: 'top 85%',
+          once: true,
+          onEnter: (els) =>
+            gsap.to(els, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.6,
+              ease: 'power2.out',
+              stagger: 0.12,
+              overwrite: true,
+            }),
+        })
+      })
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(reveals, { autoAlpha: 1, y: 0 })
+      })
+    },
+    { scope: rootRef, dependencies: [loading] },
+  )
 
   if (loading) {
     return (
@@ -36,7 +72,7 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-page text-primary">
+    <div ref={rootRef} className="min-h-screen bg-page text-primary">
       {errorParam && <AuthErrorBanner errorParam={errorParam} />}
       <StickyNav />
       <Hero />
@@ -111,59 +147,212 @@ function StickyNav() {
 }
 
 function Hero() {
+  const heroRef = useRef<HTMLDivElement>(null)
+  const line1Ref = useRef<HTMLSpanElement>(null)
+  const cursorRef = useRef<HTMLSpanElement>(null)
+  const line2Ref = useRef<HTMLSpanElement>(null)
+  const paragraphRef = useRef<HTMLParagraphElement>(null)
+  const ctaRef = useRef<HTMLAnchorElement>(null)
+  const terminalRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia()
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], { autoAlpha: 0, y: 12 })
+        gsap.set(terminalRef.current, { autoAlpha: 0, y: 12 })
+        if (line1Ref.current) line1Ref.current.textContent = ''
+
+        const obj = { n: 0 }
+        const tl = gsap.timeline()
+
+        tl.to(terminalRef.current, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0)
+          .to(
+            obj,
+            {
+              n: HERO_LINE_1.length,
+              duration: HERO_LINE_1.length * 0.045,
+              ease: 'none',
+              onUpdate: () => {
+                if (line1Ref.current) {
+                  line1Ref.current.textContent = HERO_LINE_1.slice(0, Math.round(obj.n))
+                }
+              },
+            },
+            0,
+          )
+          .to(cursorRef.current, { autoAlpha: 0, duration: 0.2 }, '>0.1')
+          .to(line2Ref.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '<')
+          .to(
+            [paragraphRef.current, ctaRef.current],
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.1 },
+            '-=0.2',
+          )
+      })
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        if (line1Ref.current) line1Ref.current.textContent = HERO_LINE_1
+        gsap.set(cursorRef.current, { autoAlpha: 0 })
+        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current, terminalRef.current], {
+          autoAlpha: 1,
+          y: 0,
+        })
+      })
+    },
+    { scope: heroRef },
+  )
+
   return (
-    <section className="relative max-w-5xl mx-auto px-4 md:px-8 pt-20 pb-24">
+    <section ref={heroRef} className="relative max-w-5xl mx-auto px-4 md:px-8 pt-20 pb-24">
       <DotGridBackground className="z-0" />
       <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
         <div>
           <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-2">
-            <TypewriterText text={HERO_LINE_1} />
+            <span ref={line1Ref} />
+            <span ref={cursorRef} className="text-accent animate-cursor" aria-hidden>
+              _
+            </span>
           </h1>
-          <SecondLine />
-          <p className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md">
-            You've been delegating the thinking. The muscle is atrophying.
-            Dojo is the deliberate resistance.
+          <span
+            ref={line2Ref}
+            className="block font-mono text-3xl md:text-4xl lg:text-5xl text-secondary leading-tight"
+          >
+            To themselves.
+          </span>
+          <p
+            ref={paragraphRef}
+            className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
+          >
+            You've been delegating the thinking. The muscle is atrophying. Dojo is the
+            deliberate resistance.
           </p>
-          <a href="#access" className={buttonClasses({ variant: 'primary', size: 'lg' })}>
+          <a
+            ref={ctaRef}
+            href="#access"
+            className={buttonClasses({ variant: 'primary', size: 'lg' })}
+          >
             Enter dojo →
           </a>
         </div>
-        <TerminalDemo />
+        <div ref={terminalRef}>
+          <TerminalDemo />
+        </div>
       </div>
     </section>
   )
 }
 
+interface TerminalSession {
+  id: string
+  command: string
+  args: string
+  lines: Array<{ tone: 'muted' | 'secondary'; content: React.ReactNode }>
+  prompt: string
+}
+
+const TERMINAL_SESSIONS: TerminalSession[] = [
+  {
+    id: 'session_a3f8c2d',
+    command: 'dojo kata start',
+    args: '--time 30 --mood focused',
+    lines: [
+      { tone: 'muted', content: <>fetching kata catalog... <span className="text-success">[OK]</span></> },
+      { tone: 'muted', content: <>filtering by your weak areas... <span className="text-success">[OK]</span></> },
+      { tone: 'muted', content: <>3 candidates loaded:</> },
+      { tone: 'secondary', content: <><span className="text-warning">*</span> CODE        Refactor a 200-line useEffect      28 min</> },
+      { tone: 'secondary', content: <><span className="text-warning">*</span> CHAT        The angry CTO                      25 min</> },
+      { tone: 'secondary', content: <><span className="text-warning">*</span> WHITEBOARD  Multi-tenant rate limiting         30 min</> },
+    ],
+    prompt: 'choose one. no skip. no reroll.',
+  },
+  {
+    id: 'session_7d2e4b1',
+    command: 'dojo sensei eval',
+    args: '--kata 0421 --strict',
+    lines: [
+      { tone: 'muted', content: <>analyzing submission... <span className="text-success">[OK]</span></> },
+      { tone: 'muted', content: <>cross-checking against 12 reference impls...</> },
+      { tone: 'secondary', content: <><span className="text-accent">verdict</span> = PASSED_WITH_NOTES</> },
+      { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "O(n^2) where O(n log n) was on the table"</> },
+      { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "naming: `data` and `result` say nothing"</> },
+      { tone: 'muted', content: <>logged to history. belt unchanged.</> },
+    ],
+    prompt: 'open the analysis or close the session.',
+  },
+  {
+    id: 'session_c91a5e8',
+    command: 'dojo belt status',
+    args: '',
+    lines: [
+      { tone: 'muted', content: <>computing from session history...</> },
+      { tone: 'secondary', content: <><span className="text-accent">belt</span>     = yellow</> },
+      { tone: 'secondary', content: <><span className="text-accent">katas</span>    = 23 / 40</> },
+      { tone: 'secondary', content: <><span className="text-accent">clusters</span> = 3 / 4</> },
+      { tone: 'secondary', content: <><span className="text-accent">active</span>   = 8 / 10 days (last 30)</> },
+      { tone: 'muted', content: <>green belt requires: 17 katas, 1 cluster, 2 active days.</> },
+    ],
+    prompt: 'no progress bar. the dojo doesn\'t babysit.',
+  },
+]
+
 function TerminalDemo() {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(
+    () => {
+      const sessions = gsap.utils.toArray<HTMLElement>('.tdemo-session')
+      if (sessions.length <= 1) return
+
+      gsap.set(sessions, { autoAlpha: 0 })
+      gsap.set(sessions[0]!, { autoAlpha: 1 })
+
+      const mm = gsap.matchMedia()
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const tl = gsap.timeline({ repeat: -1, delay: 1.5 })
+        sessions.forEach((current, i) => {
+          const next = sessions[(i + 1) % sessions.length]!
+          tl.to(current, { autoAlpha: 0, duration: 0.4, ease: 'power2.in' }, '+=5')
+            .to(next, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' }, '<0.1')
+        })
+      })
+    },
+    { scope: containerRef },
+  )
+
   return (
-    <div className="hidden md:block">
+    <div ref={containerRef} className="hidden md:block">
       <div className="bg-surface border border-border/60 rounded-md overflow-hidden">
         <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border/40">
           <div className="w-2.5 h-2.5 rounded-full bg-danger/60" />
           <div className="w-2.5 h-2.5 rounded-full bg-warning/60" />
           <div className="w-2.5 h-2.5 rounded-full bg-success/60" />
-          <span className="ml-2 text-muted text-xs font-mono">session_a3f8c2d</span>
+          <span className="ml-2 text-muted text-xs font-mono">session_</span>
         </div>
-        <div className="p-5 font-mono text-xs leading-relaxed space-y-2">
-          <p className="text-secondary">
-            <span className="text-muted">$</span> dojo kata start <span className="text-accent">--time 30 --mood focused</span>
-          </p>
-          <p className="text-muted">fetching kata catalog... <span className="text-success">[OK]</span></p>
-          <p className="text-muted">filtering by your weak areas... <span className="text-success">[OK]</span></p>
-          <p className="text-muted pb-2">3 candidates loaded:</p>
-          <p className="text-secondary">
-            <span className="text-warning">*</span> CODE        Refactor a 200-line useEffect      28 min
-          </p>
-          <p className="text-secondary">
-            <span className="text-warning">*</span> CHAT        The angry CTO                      25 min
-          </p>
-          <p className="text-secondary">
-            <span className="text-warning">*</span> WHITEBOARD  Multi-tenant rate limiting         30 min
-          </p>
-          <p className="text-muted pt-2">
-            <span className="text-secondary">{'>'}</span> choose one. no skip. no reroll.
-            <span className="text-accent animate-cursor ml-0.5">_</span>
-          </p>
+        <div className="relative">
+          {TERMINAL_SESSIONS.map((s) => (
+            <div
+              key={s.id}
+              className="tdemo-session p-5 font-mono text-xs leading-relaxed space-y-2 not-first:absolute not-first:inset-0"
+            >
+              <p className="text-secondary">
+                <span className="text-muted">$</span> {s.command}{' '}
+                {s.args && <span className="text-accent">{s.args}</span>}
+              </p>
+              {s.lines.map((line, i) => (
+                <p
+                  key={i}
+                  className={line.tone === 'muted' ? 'text-muted' : 'text-secondary'}
+                >
+                  {line.content}
+                </p>
+              ))}
+              <p className="text-muted pt-2">
+                <span className="text-secondary">{'>'}</span> {s.prompt}
+                <span className="text-accent animate-cursor ml-0.5">_</span>
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -192,27 +381,29 @@ function WhyItExists() {
     },
   ]
   return (
-    <ScrollFadeIn>
-      <section id="problem" className="bg-surface/30 border-y border-border/20">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-20">
-          <div className="flex items-end justify-between mb-12 gap-4">
-            <h2 className="font-mono text-xl md:text-2xl text-primary">Why it exists</h2>
-            <p className="text-muted text-xs font-mono uppercase tracking-wider">[ SYS_RATIONALE ]</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-10">
-            {reasons.map(({ n, tag, title, body }) => (
-              <div key={n}>
-                <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
-                  {n} / {tag}
-                </p>
-                <h3 className="font-mono text-lg text-primary mb-3">{title}</h3>
-                <p className="text-secondary text-sm leading-relaxed">{body}</p>
-              </div>
-            ))}
-          </div>
+    <section
+      id="problem"
+      data-anim="reveal"
+      className="bg-surface/30 border-y border-border/20"
+    >
+      <div className="max-w-5xl mx-auto px-4 md:px-8 py-20">
+        <div className="flex items-end justify-between mb-12 gap-4">
+          <h2 className="font-mono text-xl md:text-2xl text-primary">Why it exists</h2>
+          <p className="text-muted text-xs font-mono uppercase tracking-wider">[ SYS_RATIONALE ]</p>
         </div>
-      </section>
-    </ScrollFadeIn>
+        <div className="grid md:grid-cols-3 gap-10">
+          {reasons.map(({ n, tag, title, body }) => (
+            <div key={n}>
+              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
+                {n} / {tag}
+              </p>
+              <h3 className="font-mono text-lg text-primary mb-3">{title}</h3>
+              <p className="text-secondary text-sm leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -240,22 +431,20 @@ function ExecutionFlow() {
     },
   ]
   return (
-    <ScrollFadeIn>
-      <section className="max-w-5xl mx-auto px-4 md:px-8 py-20">
-        <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">Execution flow</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {steps.map(({ n, title, body }) => (
-            <div key={n} className="bg-surface border border-border/60 rounded-md p-5">
-              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
-                STEP_{n}
-              </p>
-              <h3 className="font-mono text-sm text-primary mb-2 font-bold">{title}</h3>
-              <p className="text-secondary text-sm leading-relaxed">{body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </ScrollFadeIn>
+    <section data-anim="reveal" className="max-w-5xl mx-auto px-4 md:px-8 py-20">
+      <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">Execution flow</h2>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {steps.map(({ n, title, body }) => (
+          <div key={n} className="bg-surface border border-border/60 rounded-md p-5">
+            <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
+              STEP_{n}
+            </p>
+            <h3 className="font-mono text-sm text-primary mb-2 font-bold">{title}</h3>
+            <p className="text-secondary text-sm leading-relaxed">{body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -267,9 +456,8 @@ function OpenSourceStrip() {
     setTimeout(() => setCopied(false), 2000)
   }
   return (
-    <ScrollFadeIn>
-      <section className="bg-surface/40 border-y border-border/20 py-16">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 text-center">
+    <section data-anim="reveal" className="bg-surface/40 border-y border-border/20 py-16">
+      <div className="max-w-3xl mx-auto px-4 md:px-8 text-center">
           <p className="text-muted text-xs font-mono uppercase tracking-wider mb-6">
             The core engine is open source
           </p>
@@ -302,8 +490,7 @@ function OpenSourceStrip() {
             </a>
           </div>
         </div>
-      </section>
-    </ScrollFadeIn>
+    </section>
   )
 }
 
@@ -345,24 +532,26 @@ function GitHubStatsRow() {
 
 function AccessSection() {
   return (
-    <ScrollFadeIn>
-      <section id="access" className="max-w-3xl mx-auto px-4 md:px-8 py-20">
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          <div>
-            <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">
-              The dojo is invite-only.
-            </h2>
-            <p className="text-secondary text-base leading-relaxed mb-4">
-              We are not building a platform. We are building a practice.
-            </p>
-            <p className="text-secondary text-base leading-relaxed">
-              Invitations go to people we know or people those people know. Tell us why you want in.
-            </p>
-          </div>
-          <RequestAccessForm />
+    <section
+      id="access"
+      data-anim="reveal"
+      className="max-w-3xl mx-auto px-4 md:px-8 py-20"
+    >
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div>
+          <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">
+            The dojo is invite-only.
+          </h2>
+          <p className="text-secondary text-base leading-relaxed mb-4">
+            We are not building a platform. We are building a practice.
+          </p>
+          <p className="text-secondary text-base leading-relaxed">
+            Invitations go to people we know or people those people know. Tell us why you want in.
+          </p>
         </div>
-      </section>
-    </ScrollFadeIn>
+        <RequestAccessForm />
+      </div>
+    </section>
   )
 }
 
@@ -495,66 +684,6 @@ function Footer() {
 /* ------------------------------------------------------------------ */
 /*  Sub-components                                                     */
 /* ------------------------------------------------------------------ */
-
-function TypewriterText({ text }: { text: string }) {
-  const [displayed, setDisplayed] = useState('')
-  const [done, setDone] = useState(false)
-  const prefersReduced = useRef(
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-
-  useEffect(() => {
-    if (prefersReduced.current) {
-      setDisplayed(text)
-      setDone(true)
-      return
-    }
-    let i = 0
-    const interval = setInterval(() => {
-      i++
-      setDisplayed(text.slice(0, i))
-      if (i >= text.length) {
-        clearInterval(interval)
-        setDone(true)
-      }
-    }, 45)
-    return () => clearInterval(interval)
-  }, [text])
-
-  return (
-    <>
-      {displayed}
-      {!done && <span className="text-accent animate-cursor">_</span>}
-    </>
-  )
-}
-
-function SecondLine() {
-  const [show, setShow] = useState(false)
-  const prefersReduced = useRef(
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-
-  useEffect(() => {
-    if (prefersReduced.current) {
-      setShow(true)
-      return
-    }
-    const delay = 45 * HERO_LINE_1.length + 300
-    const timer = setTimeout(() => setShow(true), delay)
-    return () => clearTimeout(timer)
-  }, [])
-
-  return (
-    <span
-      className={`block font-mono text-3xl md:text-4xl lg:text-5xl text-secondary leading-tight transition-opacity duration-500 ${
-        show ? 'opacity-100' : 'opacity-0'
-      }`}
-    >
-      To themselves.
-    </span>
-  )
-}
 
 function ClipboardIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
