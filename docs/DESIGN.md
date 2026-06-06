@@ -168,7 +168,10 @@ Unchanged in the migration. The Sumi-e direction does NOT introduce a new face â
 | `--text-lg` | 18 / 28 | Section headers |
 | `--text-xl` | 24 / 32 | Page titles (Inter) |
 | `--text-2xl` | 32 / 40 | Dashboard stats (JetBrains Mono) |
+| `--text-3xl` | 30 / 38 | Belt rank header on `/belts` (JetBrains Mono, all caps) |
 | `--text-4xl` | 48 / 56 | Verdicts, hero numbers (JetBrains Mono, all caps) |
+
+These tokens live in `apps/web/src/styles/main.css` inside the `@theme` block â€” Tailwind 4 picks them up automatically and the resulting utilities (`text-xs`, `text-sm`, etc.) are bound to these values, overriding Tailwind defaults. Arbitrary values like `text-[13px]` are an anti-pattern from before this scale was formalized; new code uses the named utilities.
 
 **Weight rules:**
 - Inter: 400 (body), 500 (UI emphasis), 600 (titles, labels). No 700+, no light weights.
