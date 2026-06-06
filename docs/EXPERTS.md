@@ -278,7 +278,7 @@ The primary build identity (Kira Tanaka, Fractional CTO) consults this panel whe
 - Timer UX: the no-pause timer is philosophically correct but psychologically demanding — he has specific opinions on the amber/red progression
 
 *Visual brand & design system:*
-- Translates `docs/BRANDING.md` into implementable design tokens: `--color-surface-base`, `--color-accent-primary`, `--font-mono`, etc.
+- Translates `docs/DESIGN.md` into implementable design tokens (`--color-surface`, `--color-accent`, `--font-mono`, etc.) — DESIGN.md owns the visual system; BRANDING.md owns the voice and IA
 - Share card and OG image design — the visual output of a completed kata session; this is a high-leverage brand surface
 - Favicon, logo execution (the `dojo_` logotype with blinking cursor), app icon
 - Ensures the visual system is consistent across dark mode, share cards, and mobile
