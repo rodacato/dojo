@@ -3,7 +3,8 @@ import { api } from '../lib/api'
 import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { EmptyState } from '../components/ui/EmptyState'
 import { useAuth } from '../context/AuthContext'
-import type { BeltDTO, BeltRank, MilestoneDTO } from '@dojo/shared'
+import { BELT_COLOR } from '../lib/belt-colors'
+import type { BeltDTO, MilestoneDTO } from '@dojo/shared'
 
 interface MilestoneView {
   slug: string
@@ -38,14 +39,6 @@ const ALL_MILESTONES: Array<{
 ]
 
 const CATEGORY_ORDER = ['practice', 'consistency', 'mastery', 'architect'] as const
-
-const RANK_COLOR: Record<BeltRank, string> = {
-  white: '#E5E7EB',
-  yellow: '#FBBF24',
-  green: '#10B981',
-  brown: '#92400E',
-  black: '#111827',
-}
 
 export function BeltsPage() {
   const { user } = useAuth()
@@ -109,7 +102,7 @@ export function BeltsPage() {
           <span
             aria-label={`${belt.rank} belt`}
             className="inline-block w-12 h-12 rounded-full border border-border"
-            style={{ backgroundColor: RANK_COLOR[belt.rank] }}
+            style={{ backgroundColor: BELT_COLOR[belt.rank] }}
           />
           <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-none tracking-tight uppercase font-mono">
             {belt.rank} belt

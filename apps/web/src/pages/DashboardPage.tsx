@@ -1,20 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import type { BeltDTO, BeltRank } from '@dojo/shared'
+import type { BeltDTO } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
 import { useFirstVisit } from '../hooks/useFirstVisit'
-
-const RANK_COLOR: Record<BeltRank, string> = {
-  white: '#E5E7EB',
-  yellow: '#FBBF24',
-  green: '#10B981',
-  brown: '#92400E',
-  black: '#111827',
-}
+import { BELT_COLOR } from '../lib/belt-colors'
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
 const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
@@ -99,7 +92,7 @@ function BeltStrip({ belt }: { belt: BeltDTO }) {
         <span
           aria-hidden
           className="inline-block w-7 h-7 rounded-full border border-border"
-          style={{ backgroundColor: RANK_COLOR[belt.rank] }}
+          style={{ backgroundColor: BELT_COLOR[belt.rank] }}
         />
         <h2 className="font-mono uppercase text-base md:text-lg text-primary tracking-tight">
           {belt.rank} belt
