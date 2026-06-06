@@ -5,7 +5,6 @@
 > Single source of truth for tokens, themes, motifs, components, and motion. Companion to:
 >
 > - [`BRANDING.md`](BRANDING.md) — brand strategy, glosario (kata / scroll / belt / milestone / engawa / kumite), voice & microcopy.
-> - [`../stitch/DESIGN.md`](../stitch/DESIGN.md) — condensation of this doc into the format Stitch (or any AI design tool) needs.
 > - [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md) — step type animations, per-step motion contracts.
 >
 > When this file and any other diverge, **this file is the source of truth.**
@@ -16,10 +15,9 @@
 
 The brand voice is in `BRANDING.md`. The product strategy is in `VISION.md`. **This file is the rest** — what the product looks and moves like.
 
-It exists because three different surfaces were drifting:
+It exists because two surfaces were drifting:
 
 - `apps/web/src/styles/main.css` was the de-facto truth (the values that actually render)
-- `stitch/DESIGN.md` was an AI-prompt-shaped duplicate, written for Stitch
 - The sumi-e visual direction Adrian articulated in 2026-06 lived only in chat
 
 This file consolidates them, declares the migration honestly, and keeps the token contract stable while the values evolve.
@@ -32,7 +30,7 @@ Dojo carries two complete palettes. Both run on the same token names — only th
 
 ### Theme A — **Slate Indigo** (shipped today)
 
-What renders in production. "Terminal meets product" — Linear / Raycast / Warp as references. Cold blue-grays with an indigo accent. Documented in `stitch/DESIGN.md`. Implemented in `apps/web/src/styles/main.css`.
+What renders in production. "Terminal meets product" — Linear / Raycast / Warp as references. Cold blue-grays with an indigo accent. Implemented in `apps/web/src/styles/main.css`.
 
 This theme stays the source of truth for `--color-*` values **until the Sumi-e migration sprint lands**. No piecemeal swap.
 
@@ -71,7 +69,7 @@ The motifs are explicit: **brushstroke**, **enso** (the zen circle, used as load
 
 **One acento, two themes.** The vermillion of the hanko reads in both washi and sumi. Single accent simplifies decisions: if it's interactive, it's vermillion. If it's not, it isn't.
 
-**Three rules of thumb (inherited from `stitch/DESIGN.md`):**
+**Three rules of thumb:**
 
 1. If a developer would be embarrassed to show this on a Friday demo, it's wrong.
 2. If it could appear in a B2B SaaS landing page from 2019, it's wrong.
@@ -158,7 +156,7 @@ Unchanged in the migration. The Sumi-e direction does NOT introduce a new face �
 | `JetBrains Mono` | Logo, dashboard numbers, code, timer, verdicts, all-caps labels, badges |
 | `Inter` | Body, UI text, headings (except dashboard numbers and verdicts), descriptions |
 
-**Type scale** (unchanged from `stitch/DESIGN.md`):
+**Type scale:**
 
 | Token | Size / Line | Use |
 |---|---|---|
@@ -234,7 +232,7 @@ Rank progression — already documented in `BRANDING.md` §Belts & Milestones. T
 
 ## Shape & spacing
 
-Mostly unchanged from `stitch/DESIGN.md`. The Sumi-e direction adds shape constraints around motifs.
+Mostly unchanged across the migration. The Sumi-e direction adds shape constraints around motifs.
 
 ### Border radius
 
@@ -339,7 +337,7 @@ Quick reference for what this document enforces visually:
 
 ## Component vocabulary
 
-Components inherit the contract from `stitch/DESIGN.md`. This section names the **additions and changes** the Sumi-e migration introduces. Everything not listed here keeps its `stitch/DESIGN.md` definition.
+The shipped components carry the contract defined elsewhere in this doc (Color tokens, Typography, Shape & spacing, Motion). This section names the **additions and changes** the Sumi-e migration introduces. Everything not listed here keeps its existing shape.
 
 ### New in Sumi-e
 
@@ -357,13 +355,13 @@ Components inherit the contract from `stitch/DESIGN.md`. This section names the 
 
 ### Unchanged
 
-Cards, buttons, inputs, tag chips, code editor, mermaid editor, timer, public share page layout — all preserve their `stitch/DESIGN.md` shape. Only color values update during migration.
+Cards, buttons, inputs, tag chips, code editor, mermaid editor, timer, public share page layout — all preserve their existing shape. Only color values update during migration.
 
 ---
 
 ## What we don't do
 
-Inherited from `stitch/DESIGN.md` and reinforced:
+Reinforced rules — these apply across themes and never lapse during the Sumi-e migration:
 
 - **No glassmorphism.** No frosted blurs.
 - **No neumorphism.** No inner shadows.
@@ -382,7 +380,7 @@ Inherited from `stitch/DESIGN.md` and reinforced:
 
 **Stance change from previous (note explicitly):**
 
-- **Light mode is no longer banned.** Previously `stitch/DESIGN.md` declared "No light mode." The Sumi-e migration opens the washi (light) variant for the catalog and scroll-reading surfaces specifically — those benefit from a calmer reading background. Kata flow stays dark by default in both themes.
+- **Light mode is no longer banned.** The pre-migration stance was "No light mode." The Sumi-e migration opens the washi (light) variant for the catalog and scroll-reading surfaces specifically — those benefit from a calmer reading background. Kata flow stays dark by default in both themes.
 
 ---
 
@@ -394,8 +392,8 @@ Where each token lives in code, for the next person who touches them:
 |---|---|
 | Source of truth for values | This file — `docs/DESIGN.md` |
 | Shipped CSS (Slate Indigo) | `apps/web/src/styles/main.css` (`@theme` block) |
+| Sumi-e theme overrides | `apps/web/src/styles/main.css` (`[data-theme='sumi'\|'washi']` blocks) |
 | Tailwind utilities | Generated by Tailwind 4 from the `@theme` block in `main.css` |
-| Stitch prompt condensation | `stitch/DESIGN.md` |
 | Brand glosario, voice, microcopy | `docs/BRANDING.md` |
 | Step type animations | `docs/courses/INTERACTIVITY-PATTERNS.md` |
 | Belt rubric | `docs/prd/031-belt-progression-rubric.md` |
@@ -420,7 +418,7 @@ The Sumi-e direction is a sprint of its own. Not a piecemeal sed-and-pray.
 3. **Motifs first, gradually:** ship Enso Loader on `/scrolls` only behind the flag. Verify rendering, perf, reduced-motion fallback. Then enable on `/katas`. Then everywhere.
 4. **Verdict + share card** — high-visibility surfaces; ship these once Enso + Hanko + brushstroke are stable.
 5. **Belt + avatar + heatmap colors** — last because they're cross-cutting and benign-looking-but-everywhere.
-6. **Cleanup:** remove the slate-indigo values from this doc and from `main.css`. Update `stitch/DESIGN.md` to match. This is the last commit of the migration sprint.
+6. **Cleanup:** remove the slate-indigo values from this doc and from `main.css`. This is the last commit of the migration sprint.
 
 **Rollback:** the creator picks `Slate` from the theme toggle and the document re-renders without `data-theme` set, falling back to the @theme defaults. The slate-indigo values stay in this doc until the cleanup commit, exactly so rollback is a single click, not a revert.
 
@@ -448,7 +446,7 @@ These five were live during the doc's first draft. Each is now resolved. Reasoni
 
 ### 1. Hanko text is English slug, in monospace caps
 
-The milestone hanko shows `FIRST KATA` / `POLYGLOT` / `BLACK BELT` in JetBrains Mono uppercase, not a stylized Japanese character. The "product UI is English only" stance from `BRANDING.md` and `stitch/DESIGN.md` outranks cultural-motif integrity. The hanko stays Japanese in *form* (the square red seal), not in *text*. Legibility for the audience (English-reading developers) wins.
+The milestone hanko shows `FIRST KATA` / `POLYGLOT` / `BLACK BELT` in JetBrains Mono uppercase, not a stylized Japanese character. The "product UI is English only" stance from `BRANDING.md` outranks cultural-motif integrity. The hanko stays Japanese in *form* (the square red seal), not in *text*. Legibility for the audience (English-reading developers) wins.
 
 ### 2. Theme persistence: localStorage only, defaults to OS preference
 
@@ -550,7 +548,6 @@ The decision is documented here, in [`courses/INTERACTIVITY-PATTERNS.md`](course
 
 - [`BRANDING.md`](BRANDING.md) — voice, glosario, microcopy, identity strategy
 - [`VISION.md`](VISION.md) — product strategy
-- [`../stitch/DESIGN.md`](../stitch/DESIGN.md) — Stitch-prompt condensation of this file
 - [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md) — step-type animations and motion contracts
 - [`prd/031-belt-progression-rubric.md`](prd/031-belt-progression-rubric.md) — belt rank rubric (the colors in §Belt rank colors realize this)
 - [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md) — Sprint 023's rename that introduced `scroll / kata / belt / milestone` as the visible vocabulary
