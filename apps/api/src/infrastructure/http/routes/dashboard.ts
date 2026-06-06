@@ -3,6 +3,8 @@ import { Hono } from 'hono'
 import { z } from 'zod'
 import { db } from '../../persistence/drizzle/client'
 import { attempts, katas, sessions, userPreferences } from '../../persistence/drizzle/schema'
+import { useCases } from '../../container'
+import { UserId } from '../../../domain/shared/types'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { verdictSubquery, calculateStreak } from './query-helpers'
@@ -193,6 +195,8 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   })
   const weeklyTarget = prefs?.goalWeeklyTarget ?? 3
 
+  const belt = await useCases.calculateBelt.execute(UserId(userId))
+
   return c.json({
     streak,
     totalCompleted,
@@ -220,6 +224,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       target: weeklyTarget,
       completed: weeklyCompleted,
     },
+    belt,
   })
 })
 

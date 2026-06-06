@@ -1,4 +1,4 @@
-import type { KataDTO, AttemptDTO } from '@dojo/shared'
+import type { KataDTO, AttemptDTO, BeltDTO } from '@dojo/shared'
 
 export { type AttemptDTO }
 
@@ -26,6 +26,7 @@ export interface DashboardData {
   }
   senseiSuggests: string[]
   weeklyGoal: { target: number; completed: number }
+  belt: BeltDTO
 }
 
 export interface SessionAttempt {

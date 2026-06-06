@@ -1,11 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import type { BeltDTO, BeltRank } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
 import { useFirstVisit } from '../hooks/useFirstVisit'
+
+const RANK_COLOR: Record<BeltRank, string> = {
+  white: '#E5E7EB',
+  yellow: '#FBBF24',
+  green: '#10B981',
+  brown: '#92400E',
+  black: '#111827',
+}
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
 const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
@@ -45,6 +54,8 @@ export function DashboardPage() {
         />
       </section>
 
+      <BeltStrip belt={dashboard.belt} />
+
       <div className="grid md:grid-cols-12 gap-4 md:gap-6">
         <StreakCard
           streak={dashboard.streak}
@@ -77,6 +88,44 @@ function DateStrip() {
   return (
     <div className="flex items-center -mb-2">
       <p className="text-secondary text-xs font-mono uppercase tracking-wider">{today}</p>
+    </div>
+  )
+}
+
+function BeltStrip({ belt }: { belt: BeltDTO }) {
+  return (
+    <section className="bg-surface border border-border/40 rounded-md p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+      <div className="flex items-center gap-3 shrink-0">
+        <span
+          aria-hidden
+          className="inline-block w-7 h-7 rounded-full border border-border"
+          style={{ backgroundColor: RANK_COLOR[belt.rank] }}
+        />
+        <h2 className="font-mono uppercase text-base md:text-lg text-primary tracking-tight">
+          {belt.rank} belt
+        </h2>
+      </div>
+      <dl className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 flex-1">
+        <BeltFactor label="katas" value={belt.factors.completed} />
+        <BeltFactor label="clusters" value={belt.factors.distinctClusters} />
+        <BeltFactor label="active (30)" value={belt.factors.activeDays30} />
+        <BeltFactor label="at rank" value={belt.factors.daysAtRank} />
+      </dl>
+      <Link
+        to="/belts"
+        className="text-muted text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors shrink-0 self-start md:self-auto"
+      >
+        View →
+      </Link>
+    </section>
+  )
+}
+
+function BeltFactor({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <dt className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
+      <dd className="font-mono text-xl text-primary tabular-nums leading-none">{value}</dd>
     </div>
   )
 }
