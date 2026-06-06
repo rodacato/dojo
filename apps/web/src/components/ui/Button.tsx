@@ -14,8 +14,6 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
  *
  * For composing with react-router Link or anchor (no <button> render):
  *   <Link to="..." className={buttonClasses({ variant: 'ghost' })}>label</Link>
- *
- * Per stitch/batches/08-components-core.md SCREEN 1 — BUTTONS.
  */
 
 export type ButtonVariant = 'primary' | 'ghost' | 'subtle' | 'destructive'

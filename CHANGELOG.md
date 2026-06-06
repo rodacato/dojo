@@ -37,7 +37,7 @@ The `docs/` folder had drifted: `docs/wip/` had become a permanent limbo for res
 - **`docs/README.md` introduced** — Entry point that organizes everything by lifecycle: canonical (source of truth) / live (active work) / history (immutable) / exploratory & archived research (disposable). Reading order by role (new contributor / AI agent / picking up active work / course author / decision archaeology).
 - **Status headers on the seven canonical docs** — `VISION`, `IDENTITY`, `EXPERTS`, `ROADMAP`, `WORKFLOW`, `ARCHITECTURE`, `BRANDING` now carry a one-liner declaring their lifecycle. A reader knows at a glance whether they are reading current truth or a frozen artifact.
 - **`docs/WORKFLOW.md` doc map rewritten** — Now includes a Lifecycle column so each doc declares its expected mutation rate. `AGENTS.md` build context now points at `docs/README.md` as the entry point.
-- **What was *not* touched** — `docs/specs/`, `docs/adr/`, `docs/sprints/archive/`, and `docs/courses/{language}.md` are project history or active references; left untouched. `stitch/` was left in place pending Adrian's verification that its ciclo terminó.
+- **What was *not* touched** — `docs/specs/`, `docs/adr/`, `docs/sprints/archive/`, and `docs/courses/{language}.md` are project history or active references; left untouched. (`stitch/` was later deleted — see the doc-system sweep that consolidated everything into `docs/DESIGN.md` + `docs/BRANDING.md`.)
 
 ---
 

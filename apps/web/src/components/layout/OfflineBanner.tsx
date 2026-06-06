@@ -4,8 +4,7 @@ import { Banner } from '../ui/Banner'
 
 /**
  * Persistent offline banner — fixed at the top of the viewport while
- * offline, dismisses automatically when reconnected. Per stitch/batches/
- * 10-edge-states-modals.md SCREEN 3 — "OFFLINE BANNER".
+ * offline, dismisses automatically when reconnected.
  */
 export function OfflineBanner() {
   const { online, offlineSince } = useOnline()
