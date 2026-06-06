@@ -6,6 +6,15 @@ import { PageLoader } from '../components/PageLoader'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { Toggle } from '../components/ui/Toggle'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
+import { useTheme } from '../hooks/useTheme'
+import type { ThemeChoice } from '../lib/theme'
+
+const THEME_CHOICES: Array<{ value: ThemeChoice; label: string }> = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'sumi', label: 'Sumi (dark)' },
+  { value: 'washi', label: 'Washi (light)' },
+  { value: 'slate', label: 'Slate Indigo' },
+]
 
 type Level = 'junior' | 'mid' | 'senior'
 
@@ -43,6 +52,7 @@ export function SettingsPage() {
   const [prefs, setPrefs] = useState<Preferences | null>(null)
   const [save, setSave] = useState<SaveState>('idle')
   const [showLogoutModal, setShowLogoutModal] = useState(false)
+  const { theme, setTheme, enabled: themeEnabled } = useTheme()
 
   useEffect(() => {
     api.getPreferences().then(setPrefs).catch(() => setSave('error'))
@@ -148,6 +158,26 @@ export function SettingsPage() {
           </div>
         </div>
       </Section>
+
+      {themeEnabled && (
+        <Section title="Theme">
+          <div className="bg-surface border border-border rounded-md p-6">
+            <Field label="Visual theme" hint="Auto follows your OS color preference. Sumi-e is in calibration.">
+              <div className="flex gap-2 flex-wrap">
+                {THEME_CHOICES.map((c) => (
+                  <PillButton
+                    key={c.value}
+                    active={theme === c.value}
+                    onClick={() => setTheme(c.value)}
+                  >
+                    {c.label}
+                  </PillButton>
+                ))}
+              </div>
+            </Field>
+          </div>
+        </Section>
+      )}
 
       <Section title="Practice">
         <div className="bg-surface border border-border rounded-md p-6 flex flex-col gap-6">

@@ -1,6 +1,15 @@
 import { NavLink } from 'react-router-dom'
 import { LogoMark } from '../Logo'
 import { useAuth } from '../../context/AuthContext'
+import { useTheme } from '../../hooks/useTheme'
+import type { ThemeChoice } from '../../lib/theme'
+
+const THEME_CYCLE: ThemeChoice[] = ['sumi', 'washi', 'slate']
+function nextInCycle(current: ThemeChoice): ThemeChoice {
+  const idx = THEME_CYCLE.indexOf(current)
+  if (idx === -1) return THEME_CYCLE[0]! // from 'auto', start the cycle
+  return THEME_CYCLE[(idx + 1) % THEME_CYCLE.length]!
+}
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'dashboard', icon: DashboardIcon, soon: false },
@@ -18,6 +27,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth()
+  const { theme, setTheme, enabled: themeEnabled } = useTheme()
 
   return (
     <aside
@@ -90,6 +100,18 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           <LogoutIcon className="w-4.5 h-4.5 shrink-0" />
           {!collapsed && <span>log out</span>}
         </button>
+        {themeEnabled && (
+          <button
+            onClick={() => setTheme(nextInCycle(theme))}
+            title={`theme: ${theme} (click to cycle)`}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-muted hover:text-secondary transition-colors border-l-2 border-transparent ${
+              collapsed ? 'justify-center px-2' : ''
+            }`}
+          >
+            <ThemeIcon className="w-4.5 h-4.5 shrink-0" />
+            {!collapsed && <span>{theme}</span>}
+          </button>
+        )}
       </div>
 
       {/* Collapse toggle */}
@@ -157,6 +179,16 @@ function LogoutIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
       <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+    </svg>
+  )
+}
+
+function ThemeIcon({ className }: { className?: string }) {
+  // Half-filled circle — the classic theme toggle glyph. Conveys
+  // light/dark duality without committing to any one motif.
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18V4a8 8 0 0 1 0 16z" />
     </svg>
   )
 }
