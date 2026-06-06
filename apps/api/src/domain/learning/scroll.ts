@@ -1,5 +1,5 @@
 import type { ScrollStatus, StepType } from './values'
-import type { ExternalReference } from '@dojo/shared'
+import type { ExternalReference, PredictData } from '@dojo/shared'
 
 // Minimal types for the Scroll aggregate
 export interface Step {
@@ -13,6 +13,8 @@ export interface Step {
   hint: string | null
   solution: string | null
   alternativeApproach: string | null
+  // Variant-shaped data — currently only used by `predict` steps.
+  data: PredictData | null
 }
 
 export interface Lesson {

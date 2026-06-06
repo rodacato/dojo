@@ -95,8 +95,24 @@ export const kataFiltersSchema = z.object({
 
 // ── Learning (Scrolls) ──────────────────────────────────────────────
 
-export const stepTypeSchema = z.enum(['read', 'code', 'exercise', 'challenge'])
+export const stepTypeSchema = z.enum(['read', 'code', 'exercise', 'challenge', 'predict'])
 export const scrollStatusSchema = z.enum(['draft', 'published'])
+
+// `predict` step data — variant-shaped JSONB column per ADR 022 + the
+// scroll-player CSS state machine (unanswered → reviewing → revealed).
+// The PredictData / PredictOption TS types live in types.ts; this schema
+// is the runtime validator the API uses when persisting or returning
+// `step.data` for a predict step.
+export const predictOptionSchema = z.object({
+  id: z.string().min(1),
+  text: z.string().min(1),
+})
+export const predictDataSchema = z.object({
+  snippet: z.string(),
+  options: z.array(predictOptionSchema).min(2).max(4),
+  correct: z.string().min(1),
+  feedback: z.record(z.string(), z.string()),
+})
 
 export const scrollSlugSchema = z.object({
   slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
@@ -127,6 +143,11 @@ export const stepDTOSchema = z.object({
   starterCode: z.string().nullable(),
   testCode: z.string().nullable(),
   hint: z.string().nullable(),
+  // Variant-shaped data for Tier 2 step types (predict; later trace, read+inline).
+  // Null for kata/read/code/exercise/challenge. The renderer dispatches on
+  // step.type and parses data against the corresponding variant schema
+  // (e.g. predictDataSchema for `predict`).
+  data: z.unknown().nullable(),
 })
 
 export const lessonDTOSchema = z.object({

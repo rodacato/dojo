@@ -183,16 +183,18 @@ export function ScrollPlayerPage() {
           )}
 
           {activeStep ? (
-            <StepContent
-              step={activeStep}
-              scrollSlug={scroll.slug}
-              language={scroll.language}
-              isCompleted={completedSteps.includes(activeStep.id)}
-              onComplete={() => {
-                markStepComplete(activeStep.id)
-                advanceToNextStep()
-              }}
-            />
+            <div key={activeStep.id} className="animate-step-fade-in h-full">
+              <StepContent
+                step={activeStep}
+                scrollSlug={scroll.slug}
+                language={scroll.language}
+                isCompleted={completedSteps.includes(activeStep.id)}
+                onComplete={() => {
+                  markStepComplete(activeStep.id)
+                  advanceToNextStep()
+                }}
+              />
+            </div>
           ) : (
             <div className="flex items-center justify-center h-full">
               <p className="text-muted font-mono">Select a step to begin</p>
@@ -304,6 +306,7 @@ function stepTypeLabel(type: StepDTO['type']): string {
     case 'challenge': return 'Challenge'
     case 'exercise': return 'Exercise'
     case 'code': return 'Code'
+    case 'predict': return 'Predict'
   }
 }
 
@@ -342,12 +345,23 @@ function StepContent({
         <div className="mt-8">
           <button
             onClick={onComplete}
-            className="px-6 py-2.5 bg-accent text-bg font-mono text-sm rounded hover:bg-accent/90 transition-colors"
+            className="px-6 py-2.5 bg-accent text-bg font-mono text-sm rounded transition-all duration-150 hover:bg-accent/90 active:scale-95"
           >
             {isCompleted ? 'Next →' : 'Continue →'}
           </button>
         </div>
       </div>
+    )
+  }
+
+  if (step.type === 'predict') {
+    return (
+      <PredictStep
+        step={step}
+        language={language}
+        isCompleted={isCompleted}
+        onComplete={onComplete}
+      />
     )
   }
 
@@ -359,6 +373,148 @@ function StepContent({
       isCompleted={isCompleted}
       onComplete={onComplete}
     />
+  )
+}
+
+// ── PredictStep ─────────────────────────────────────────────────
+//
+// CSS-driven state machine for the `predict` step type per ADR 022 +
+// docs/courses/INTERACTIVITY-PATTERNS.md §predict. Three states:
+//   unanswered → revealed
+// (the "reviewing" intermediate state from the doc applies to the Rive
+// variant; CSS skips directly to revealed because no async transition is
+// needed). On reveal, the per-option feedback is the load-bearing surface
+// — the wrong-answer voice addresses the specific mental model the
+// distractor encodes, not the right answer in the abstract.
+
+function PredictStep({
+  step,
+  language,
+  isCompleted,
+  onComplete,
+}: {
+  step: StepDTO
+  language: string
+  isCompleted: boolean
+  onComplete: () => void
+}) {
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const data = step.data as {
+    snippet: string
+    options: { id: string; text: string }[]
+    correct: string
+    feedback: Record<string, string>
+  } | null
+
+  if (!data) {
+    return (
+      <div className="max-w-3xl mx-auto px-6 py-8">
+        <p className="text-sm font-mono text-danger">
+          Predict step is missing required `data` payload.
+        </p>
+      </div>
+    )
+  }
+
+  const revealed = selectedId !== null
+  const isCorrect = revealed && selectedId === data.correct
+  const stepTitle = step.title ?? `Step ${step.order}`
+  const instructionBody = step.instruction
+    .replace(new RegExp(`^# +${stepTitle}\\s*\\n+`), '')
+    .trim()
+
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+      <div>
+        <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted mb-2">
+          Predict
+        </p>
+        <h1 className="text-xl md:text-2xl font-mono text-primary leading-tight">
+          {stepTitle}
+        </h1>
+      </div>
+
+      {instructionBody && (
+        <div className="text-secondary leading-relaxed">
+          <MarkdownContent content={instructionBody} />
+        </div>
+      )}
+
+      <pre className="bg-surface border border-border rounded p-4 overflow-x-auto">
+        <code className={`font-mono text-sm text-primary language-${language}`}>
+          {data.snippet}
+        </code>
+      </pre>
+
+      <div role="radiogroup" aria-label="Predict the result" className="space-y-2">
+        {data.options.map((opt, i) => {
+          const letter = String.fromCharCode('A'.charCodeAt(0) + i)
+          const isSelected = selectedId === opt.id
+          const isThisCorrect = opt.id === data.correct
+          let stateClass = 'border-border bg-surface hover:border-accent/60 hover:bg-elevated/40'
+          let icon: string | null = null
+          if (revealed) {
+            if (isSelected && isThisCorrect) {
+              stateClass = 'border-success bg-success/10 text-success'
+              icon = '✓'
+            } else if (isSelected && !isThisCorrect) {
+              stateClass = 'border-danger bg-danger/10 text-danger'
+              icon = '✗'
+            } else if (!isSelected && isThisCorrect) {
+              stateClass = 'border-success/60 bg-surface text-success'
+              icon = '✓'
+            } else {
+              stateClass = 'border-border/40 bg-surface text-muted'
+            }
+          }
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              disabled={revealed}
+              onClick={() => setSelectedId(opt.id)}
+              className={`w-full text-left px-4 py-3 rounded border transition-all duration-200 font-mono text-sm flex items-start gap-3 ${stateClass} ${revealed ? 'cursor-default' : 'cursor-pointer active:scale-[0.99]'}`}
+            >
+              <span className="shrink-0 w-6 h-6 rounded border border-current/40 flex items-center justify-center text-xs">
+                {revealed && icon ? icon : letter}
+              </span>
+              <span className="flex-1 leading-relaxed pt-0.5">{opt.text}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      {revealed && (
+        <div
+          key={selectedId}
+          className={`animate-step-fade-in rounded border p-4 ${isCorrect ? 'border-success/40 bg-success/5' : 'border-danger/40 bg-danger/5'}`}
+        >
+          <p className={`font-mono text-xs uppercase tracking-[0.08em] mb-2 ${isCorrect ? 'text-success' : 'text-danger'}`}>
+            {isCorrect ? 'Correct' : 'Not quite'}
+          </p>
+          <p className="text-secondary leading-relaxed whitespace-pre-wrap">
+            {data.feedback[selectedId] ?? ''}
+          </p>
+        </div>
+      )}
+
+      <div className="flex items-center gap-3 pt-2">
+        <button
+          onClick={onComplete}
+          disabled={!revealed}
+          className="px-6 py-2.5 bg-accent text-bg font-mono text-sm rounded transition-all duration-150 hover:bg-accent/90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
+        >
+          {isCompleted ? 'Next →' : 'Continue →'}
+        </button>
+        {!revealed && (
+          <span className="text-xs font-mono text-muted">
+            Pick an answer to reveal the explanation.
+          </span>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -517,7 +673,7 @@ function StepEditor({
 
       {/* Editor + Results */}
       <div className="flex-1 flex flex-col min-h-0">
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 editor-focus-ring">
           <CodeEditor
             value={code}
             onChange={setCode}
@@ -530,7 +686,7 @@ function StepEditor({
           <button
             onClick={runCode}
             disabled={running}
-            className={`px-5 py-2 font-mono text-sm rounded transition-colors ${
+            className={`px-5 py-2 font-mono text-sm rounded transition-all duration-150 active:scale-95 ${
               running
                 ? 'bg-muted/20 text-muted cursor-wait'
                 : 'bg-accent text-bg hover:bg-accent/90'
@@ -637,18 +793,22 @@ function StepEditor({
 function StatusChip({ result }: { result: ExecuteStepResponse }) {
   if (result.errorKind) {
     return (
-      <span className="text-sm font-mono text-warning">
+      <span className="text-sm font-mono text-warning animate-status-reveal">
         ⚠ {labelForErrorKind(result.errorKind)}
       </span>
     )
   }
   if (result.passed) {
-    return <span className="text-sm font-mono text-success">✓ All tests passed</span>
+    return (
+      <span className="text-sm font-mono text-success animate-status-reveal">
+        ✓ All tests passed
+      </span>
+    )
   }
   const failed = result.testResults.filter((t) => !t.passed).length
   const total = result.testResults.length
   return (
-    <span className="text-sm font-mono text-danger">
+    <span className="text-sm font-mono text-danger animate-status-reveal">
       ✗ {failed} of {total} test{total === 1 ? '' : 's'} failed
     </span>
   )
@@ -843,9 +1003,10 @@ function TestsTab({ result }: { result: ExecuteStepResponse }) {
       {result.testResults.map((tr, i) => (
         <div
           key={i}
-          className={`text-xs font-mono flex items-start gap-2 ${
+          className={`text-xs font-mono flex items-start gap-2 animate-test-row ${
             tr.passed ? 'text-success' : 'text-danger'
           }`}
+          style={{ animationDelay: `${i * 30}ms` }}
         >
           <span className="shrink-0">{tr.passed ? '✓' : '✗'}</span>
           <div className="min-w-0 flex-1">

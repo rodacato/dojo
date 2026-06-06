@@ -222,6 +222,11 @@ export const steps = pgTable('steps', {
   hint: text('hint'),
   solution: text('solution'),
   alternativeApproach: text('alternative_approach'),
+  // Variant-shaped data for non-kata step types. Currently used by `predict`
+  // ({ snippet, options, correct, feedback }) per docs/courses/INTERACTIVITY-PATTERNS.md
+  // §predict. Extensible to future Tier 2 step types (trace, read+inline)
+  // without further schema changes.
+  data: jsonb('data'),
 })
 
 export const scrollProgress = pgTable('course_progress', {

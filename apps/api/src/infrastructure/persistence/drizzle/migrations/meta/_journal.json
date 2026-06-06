@@ -155,6 +155,13 @@
       "when": 1777234291859,
       "tag": "0021_strong_avengers",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1780782790744,
+      "tag": "0022_typical_slipstream",
+      "breakpoints": true
     }
   ]
 }

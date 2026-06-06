@@ -23,8 +23,8 @@ function buildScroll(overrides: Partial<Scroll> = {}): Scroll {
         order: 1,
         title: 'Lesson',
         steps: [
-          { id: 'step-1', order: 1, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null },
-          { id: 'step-2', order: 2, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null },
+          { id: 'step-1', order: 1, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null, data: null },
+          { id: 'step-2', order: 2, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null, data: null },
         ],
       },
     ],
@@ -133,9 +133,9 @@ describe('TrackProgress', () => {
           order: 1,
           title: 'Lesson',
           steps: [
-            { id: 'step-1', order: 1, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null },
-            { id: 'step-2', order: 2, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null },
-            { id: 'step-3', order: 3, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null },
+            { id: 'step-1', order: 1, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null, data: null },
+            { id: 'step-2', order: 2, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null, data: null },
+            { id: 'step-3', order: 3, type: 'exercise', title: null, instruction: '', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null, data: null },
           ],
         },
       ],

@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm'
 import type { Scroll, Lesson, Step } from '../../domain/learning/scroll'
 import type { ScrollStatus, StepType } from '../../domain/learning/values'
-import type { ExternalReference } from '@dojo/shared'
+import type { ExternalReference, PredictData } from '@dojo/shared'
 import type { ScrollRepositoryPort } from '../../domain/learning/ports'
 import type { DB } from './drizzle/client'
 import { scrolls } from './drizzle/schema'
@@ -20,6 +20,7 @@ type StepRow = {
   hint: string | null
   solution: string | null
   alternativeApproach: string | null
+  data: unknown
 }
 
 type ScrollWithRelations = ScrollRow & {
@@ -123,6 +124,7 @@ export class PostgresScrollRepository implements ScrollRepositoryPort {
       hint: row.hint,
       solution: row.solution,
       alternativeApproach: row.alternativeApproach,
+      data: (row.data ?? null) as PredictData | null,
     }
   }
 }

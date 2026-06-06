@@ -97,7 +97,7 @@ export interface FeedbackDTO {
 
 // ── Learning (Scrolls) ──────────────────────────────────────────────
 
-export type StepType = 'read' | 'code' | 'exercise' | 'challenge'
+export type StepType = 'read' | 'code' | 'exercise' | 'challenge' | 'predict'
 export type ScrollStatus = 'draft' | 'published'
 export type ExternalReferenceKind = 'book' | 'docs' | 'talk' | 'article'
 
@@ -105,6 +105,20 @@ export interface ExternalReference {
   title: string
   url: string
   kind: ExternalReferenceKind
+}
+
+// `predict` step variant data — shipped on the `data` field of StepDTO when
+// step.type === 'predict'. CSS state machine in the renderer dispatches on
+// the option ids; per-option feedback voice is the load-bearing surface.
+export interface PredictOption {
+  id: string
+  text: string
+}
+export interface PredictData {
+  snippet: string
+  options: PredictOption[]
+  correct: string
+  feedback: Record<string, string>
 }
 
 export interface StepDTO {
@@ -118,6 +132,9 @@ export interface StepDTO {
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  // Variant-shaped data for Tier 2 step types (currently only `predict`).
+  // The renderer parses this per step.type. Null for kata/read.
+  data: PredictData | null
   // Solution is intentionally NOT in StepDTO — it ships only via
   // GET /scrolls/:slug/steps/:id/solution after pass.
 }

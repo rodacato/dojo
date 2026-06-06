@@ -168,47 +168,53 @@ type Interaction =
 
 ## Animation tech recommendation
 
-Two libraries, scoped by domain:
+**Per ADR 022 (Sprint 025): on `/scrolls/*` routes the motion runtime budget is Rive + CSS only. GSAP is explicitly excluded from scroll routes.** The previous two-library model (GSAP + Rive co-loaded on scrolls) was simplified after the crash-course pivot — the creator's policy is one motion runtime per surface, and on scrolls that runtime is Rive when (and only when) a state machine truly justifies the cost. Everything else is CSS.
 
-- **GSAP** for site motion identity (enso loader, brushstroke reveals, hanko stamp on verdicts, page transitions) — declared in [`../DESIGN.md`](../DESIGN.md) §Motion. DrawSVG plugin is load-bearing; nothing else paints brushstrokes.
-- **Rive** for step type interactions (predict state machines, trace step transitions). Rive's state machine editor is genuinely better suited for the predict reveal flow than a hand-written GSAP timeline, and the creator (acting as designer) iterates animations without writing TypeScript.
+The route-scoped rule:
 
-They co-load only on `/scrolls/*` routes (where step types render). Routes that don't ship step types — `/katas/*`, landing, dashboard, admin — get only GSAP or nothing. Lazy-loaded per route; never both libraries on the same chunk.
+- **`/scrolls/*` (scroll player + catalog):** Rive when a step type needs a designer-authored state machine (`predict` reveals; future `trace` for DOM). CSS for everything else (step transitions, status reveal, button feedback, focus accents, hover states). **GSAP is not loaded on these routes.**
+- **`/katas/*`, `/belts`, `/sensei-eval`, landing, dashboard:** GSAP for site motion identity (enso loader, brushstroke reveals, hanko stamp on verdicts) per [`../DESIGN.md`](../DESIGN.md) §Motion. CSS for everything else. No Rive on these routes — they ship no step types.
 
 ### Decision matrix
 
 | Use case | Recommended | Why | Bundle cost |
 |---|---|---|---|
-| `predict` state machine (unanswered → reviewing → revealed) | **Rive** | Designer-authored state machine; creator iterates the reveal in Rive editor without code changes; the predict flow is the highest-value pedagogical surface | ~30KB Rive runtime + <5KB per .riv |
+| `predict` state machine (unanswered → revealed) | **CSS state machine in React (v1) → Rive (v2 when a designer authors the .riv)** | v1: the creator is the only user and the only designer; CSS state in React handles three states cleanly and ships without a new runtime. v2: when a real designer enters the picture, the same React component swaps internal state → `useStateMachineInput` driving a Rive `.riv`, contract unchanged. | v1: 0. v2: ~30KB Rive runtime + <5KB per .riv |
 | `trace` step transitions (line highlight, state panel update) | **CSS transitions + React state** | Simple variable-driven UI; binary state change doesn't need a library | 0 — no new runtime |
 | `read+inline` collapse/expand | **CSS transitions** | One-axis animation; reduced-motion respected automatically | 0 |
-| Trace for DOM (dot animating through event flow) | **Rive** | Path animation along the DOM tree visualization; Rive's state model represents capture / target / bubbling phases natively | ~30KB (shared with predict) |
+| Trace for DOM (dot animating through event flow) | **Rive** *(when shipped)* | Path animation along the DOM tree visualization; Rive's state model represents capture / target / bubbling phases natively | ~30KB |
 | Trace for SQL (query plan walk) | **CSS + React state** | Tree nodes are React components with className transitions; no path animation needed | 0 |
+| Step transition between `activeStepId` changes | **CSS keyframe** (`step-fade-in`) | Triggered on remount via `key={step.id}` — no JS animation needed | 0 |
+| Status chip reveal on test result arrival | **CSS keyframe** (`status-reveal`) | Triggered on component mount | 0 |
+| Test result row stagger | **CSS keyframe + per-row `animation-delay`** | Index-based delay; no library | 0 |
 | Decorative animations (header pulses, cursor blinks) | **CSS only** | Already used across the rest of Dojo | 0 |
-| Ink-stroke reveal of explanation steps (brushstroke underline on H1) | **GSAP DrawSVG** | Per `DESIGN.md` — site-wide motion signature | ~60KB (shared with all GSAP usage) |
+| Ink-stroke reveal of H1 on scroll player | **NOT IMPLEMENTED on scrolls** | Per the GSAP exclusion above; the brushstroke H1 lives on `/katas/*` and `/belts` only. If a scroll wants a brushstroke equivalent, it's a CSS `@keyframes stroke-dashoffset` over an inline SVG path — no DrawSVG, no GSAP. | 0 |
 
 ### Combined bundle cost on `/scrolls/*` routes
 
-GSAP core ~50KB + DrawSVG plugin ~10KB + Rive runtime ~30KB = ~90KB lazy-loaded motion runtime. Comparison frame on the same route:
+Pre-policy projection (GSAP + Rive co-load): ~90KB motion runtime.
+Post-policy reality: **0 bytes of motion runtime in v1**. Rive (~30KB) loads when v2 swaps the CSS state machine for an authored `.riv`. GSAP never loads on scrolls.
 
-- CodeMirror already loaded: ~200KB
-- Mermaid (some scrolls): ~400KB
+CodeMirror (~200KB) and Mermaid (~400KB on some scrolls) remain the dominant route-cost drivers; motion is now a marginal concern on scrolls.
 
-90KB on routes already at ~600KB is signal under the noise floor. Approved.
+### Felix's rule (post-ADR-022)
 
-### Felix's rule (revised)
+> "On `/scrolls/*`: CSS first, Rive when there's a state machine that earns its 30KB. GSAP is for site motion identity and lives on the routes that ship it — never `/scrolls/*`. When you reach for a runtime on a scroll, you owe an answer to 'what state machine does this drive?' If the answer is 'a fade', use CSS."
 
-> "GSAP earns its keep through DrawSVG — the brand can't paint brushstrokes any other way. Rive earns its keep through the designer-author advantage on step type state machines. They are scoped to different jobs and only co-load on `/scrolls/*` routes. CSS handles everything else. Never reach for either when a 200ms CSS transition would do."
+### Panel disagreement history
 
-### Panel disagreement (resolved)
+Three rounds of debate on this surface:
 
-Earlier this doc recommended Rive only. A subsequent revision pushed toward GSAP-only — the argument was "carry one library, simpler". The creator's reversal restored the two-library model:
+1. **Original:** Rive-only on scrolls.
+2. **Revision:** GSAP-only on everything ("one mental model").
+3. **Counter-revision (the two-library era):** GSAP + Rive co-load on scrolls, scoped by domain.
+4. **Post-ADR-022 (current):** Rive + CSS only on scrolls; GSAP excluded from scroll routes entirely.
 
-- **Maya (S11) supports two libraries:** the designer-author advantage of Rive for step types is real and concrete, not hypothetical. Predict reveal animations are the highest-leverage pedagogical surface — the creator iterating them in the Rive editor without engineer intervention is the right development loop.
-- **Felix (S12) was the GSAP-only voice:** simpler runtime story, one motion mental model, no co-load. He defers to the resolved call but flags: when contributors arrive (Phase 3+), the two-library learning curve becomes real cost. Revisit then.
-- **The decision:** two libraries, scoped by domain. Documented honestly so the reasoning survives future re-litigation.
+Maya (S11) defended Rive on scrolls because of the designer-iterates-without-engineer property. **In v1 with one user/designer/engineer (Adrian), that property is vapor** — there is no designer↔engineer loop to optimise. CSS state machine is the honest v1 choice; Rive comes back when a real designer or a 5+ state machine arrives.
 
-The cost: one extra mental model for the engineer, ~30KB extra on `/scrolls/*`. Acceptable.
+Felix (S12) defended a single runtime per surface from the start. The current policy is his preferred shape, route-scoped.
+
+The PredictStep component is built so the swap from CSS state machine → Rive is mechanical: the same three-state contract (`unanswered`, `selected`, `revealed`), the same per-option feedback render, the same `onComplete` callback. Only the runtime that drives the transition changes.
 
 ### Lazy-load boundary
 

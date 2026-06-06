@@ -30,6 +30,7 @@ function buildScroll(overrides: Partial<Scroll> = {}): Scroll {
             hint: null,
             solution: null,
             alternativeApproach: null,
+            data: null,
           },
         ],
       },

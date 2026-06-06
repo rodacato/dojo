@@ -180,6 +180,54 @@ html {
   }
 }
 
+/* ── Scroll player motion (ADR 022) ─────────────────────────────────────
+   CSS-only motion for the scroll player surface. Per Adrian's policy on
+   /scrolls/*: Rive when a state machine truly justifies the runtime
+   (predict, future trace); CSS for everything else; GSAP excluded from
+   scroll routes. All animations honor prefers-reduced-motion via the
+   global override at the bottom of this file. */
+
+/* Step transition — fades the new step body in from a small downward
+   offset when activeStepId changes. Triggered via key={step.id} remount. */
+@keyframes step-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-step-fade-in {
+  animation: step-fade-in 240ms ease-out;
+}
+
+/* Status reveal — fades the pass/fail chip in from a small left offset
+   when test results arrive. Triggered on mount of StatusChip. */
+@keyframes status-reveal {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-status-reveal {
+  animation: status-reveal 200ms ease-out;
+}
+
+/* Test row stagger — each result row fades in with a small left offset.
+   `backwards` keeps the row invisible during the staggered animationDelay
+   before its animation begins. */
+@keyframes test-row-fade-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-test-row {
+  animation: test-row-fade-in 220ms ease-out backwards;
+}
+
+/* Editor focus accent — inset glow on the editor wrapper when the
+   CodeMirror inside has focus. Uses focus-within so we don't have to
+   poke into CodeMirror's internal classnames. */
+.editor-focus-ring {
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+.editor-focus-ring:focus-within {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
 /* Indeterminate auth-progress bar — 1500ms loop, indigo scanner across an
    elevated track. No spinner per spec. */
 @keyframes auth-progress {

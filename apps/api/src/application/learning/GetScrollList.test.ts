@@ -19,8 +19,8 @@ const makeScroll = (overrides: Partial<Scroll> = {}): Scroll => ({
       order: 1,
       title: 'Variables',
       steps: [
-        { id: 'step-1', order: 1, type: 'read', title: null, instruction: 'Intro', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null },
-        { id: 'step-2', order: 2, type: 'challenge', title: null, instruction: 'Write greet', starterCode: '', testCode: '', hint: null, solution: null, alternativeApproach: null },
+        { id: 'step-1', order: 1, type: 'read', title: null, instruction: 'Intro', starterCode: null, testCode: null, hint: null, solution: null, alternativeApproach: null, data: null },
+        { id: 'step-2', order: 2, type: 'challenge', title: null, instruction: 'Write greet', starterCode: '', testCode: '', hint: null, solution: null, alternativeApproach: null, data: null },
       ],
     },
     {
@@ -28,7 +28,7 @@ const makeScroll = (overrides: Partial<Scroll> = {}): Scroll => ({
       order: 2,
       title: 'Arrays',
       steps: [
-        { id: 'step-3', order: 1, type: 'challenge', title: null, instruction: 'Sum', starterCode: '', testCode: '', hint: null, solution: null, alternativeApproach: null },
+        { id: 'step-3', order: 1, type: 'challenge', title: null, instruction: 'Sum', starterCode: '', testCode: '', hint: null, solution: null, alternativeApproach: null, data: null },
       ],
     },
   ],

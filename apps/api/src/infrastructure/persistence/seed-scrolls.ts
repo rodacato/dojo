@@ -12,6 +12,11 @@ import {
   PYTHON_LESSONS,
   PYTHON_STEPS,
 } from './seed-scrolls-python'
+import {
+  RUBY_COURSE_DATA,
+  RUBY_LESSONS,
+  RUBY_STEPS,
+} from './seed-scrolls-ruby'
 
 // ---------------------------------------------------------------------------
 // Deterministic UUIDs for seed data
@@ -1063,7 +1068,7 @@ type StepSeed = {
   id: string
   lessonId: string
   order: number
-  type: 'read' | 'code' | 'kata' | 'challenge'
+  type: 'read' | 'code' | 'kata' | 'challenge' | 'predict'
   // Optional in the type because Sprint 018 backfills incrementally —
   // every new step authored from now on must set it.
   title?: string | null
@@ -1073,6 +1078,9 @@ type StepSeed = {
   hint: string | null
   solution?: string | null
   alternativeApproach?: string | null
+  // Variant-shaped JSONB payload — only set for `predict` steps today
+  // (per docs/courses/INTERACTIVITY-PATTERNS.md §predict).
+  data?: unknown
 }
 
 type ScrollConfig = {
@@ -1116,8 +1124,8 @@ async function seedOneScroll(
   }
   console.log(`  ✓ Lessons: ${lessonsData.length}`)
 
-  // Steps: upsert by id. type, order, title and solution propagate too so
-  // edits to those fields land without a wipe.
+  // Steps: upsert by id. type, order, title, solution, and data propagate
+  // too so edits to those fields land without a wipe.
   for (const step of stepsData) {
     await db
       .insert(steps)
@@ -1126,6 +1134,7 @@ async function seedOneScroll(
         title: step.title ?? null,
         solution: step.solution ?? null,
         alternativeApproach: step.alternativeApproach ?? null,
+        data: step.data ?? null,
       })
       .onConflictDoUpdate({
         target: steps.id,
@@ -1139,6 +1148,7 @@ async function seedOneScroll(
           hint: step.hint,
           solution: step.solution ?? null,
           alternativeApproach: step.alternativeApproach ?? null,
+          data: step.data ?? null,
         },
       })
   }
@@ -1166,6 +1176,11 @@ export async function seedAllScrolls(db: ReturnType<typeof drizzle>): Promise<Se
       courseData: PYTHON_COURSE_DATA,
       lessonsData: PYTHON_LESSONS,
       stepsData: PYTHON_STEPS,
+    },
+    {
+      courseData: RUBY_COURSE_DATA,
+      lessonsData: RUBY_LESSONS,
+      stepsData: RUBY_STEPS,
     },
   ]
 

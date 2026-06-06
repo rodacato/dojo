@@ -44,28 +44,34 @@ When you arrive here new, read order is:
 
 ---
 
-## 1. What Dojo courses are — and what they are not
+## 1. What Dojo scrolls are — and what they are not
 
-Dojo Courses are the **Learning** half of the product. Free, public, no timer, no LLM verdict, no streaming sensei. A learner lands on `/learn`, picks a course, opens a step, reads a short explanation, edits some code, hits **Run**, and gets a binary pass/fail back from a sandboxed runner (Piston for server-side languages, an `<iframe sandbox>` for DOM/browser courses). That is the entire loop. It is not a feature tour.
+> **Direction:** crash courses for developers who already program. Per [ADR 022](../adr/022-crash-course-pivot.md), every language scroll is a 90-minute (up to 120 when warranted) onramp that assumes the reader already writes code in another language and wants to be confident in this one by Friday. Long fundamentals are not in scope; deep-dives on specific topics are a separate shape, deferred.
 
-What courses **are**:
+Dojo Scrolls are the **Learning** half of the product. Free, public, no timer, no LLM verdict, no streaming sensei. A learner lands on `/scrolls`, picks one, opens a step, reads a short explanation, edits some code, hits **Run**, and gets a binary pass/fail back from a sandboxed runner (Piston for server-side languages, an `<iframe sandbox>` for DOM/browser scrolls). That is the entire loop. It is not a feature tour.
 
-- **Inline text → inline exercise → instant pass/fail.** No video. No "click next slide". The code editor is on the same page as the explanation, the test results render under the editor, and the whole interaction lives inside one `CoursePlayer` view.
-- **Concept-dense, time-honest.** A sub-course is 2-6 hours of *real* work, not "10 hours of estimated study time" pulled out of a marketing dashboard. We tell you what you'll learn and we don't pad.
-- **The on-ramp into Dojo's wider voice.** Same intentional friction, same dry tone, same "we assume you're a literate developer" stance as the Practice (kata) side. Courses are how someone who's never paid us anything finds out whether they want the kata invite.
-- **Authoritative, not encyclopedic.** Each course has a strong opinion about what's worth learning first. We will not cover every method on `Array.prototype`. We will cover the ones you actually reach for.
+What scrolls **are**:
+
+- **Crash courses, not curricula.** A language scroll is the dojo's opinionated 90-minute traverse — object model + idioms + the surprises that bite — for a developer who already knows what a function and a loop are. Deep-dive scrolls (e.g. `sql-deep-cuts`) cover a focused topic in the same player but with a different time profile.
+- **Inline text → inline exercise → instant pass/fail.** No video. No "click next slide". The code editor is on the same page as the explanation, the test results render under the editor, and the whole interaction lives inside one `ScrollPlayerPage` view.
+- **Concept-dense, time-honest.** A language scroll is 60-120 minutes of *real* work, target 90, not "10 hours of estimated study time" pulled out of a marketing dashboard. We tell you what you'll learn and we don't pad.
+- **Authoritative, not encyclopedic.** Each scroll has a strong opinion about what's worth learning first. We will not cover every method on `Array.prototype`. We will cover the ones you actually reach for, plus the idioms a polyglot needs to recognise and the surprises that bite at 2am.
+- **The on-ramp into Dojo's wider voice.** Same intentional friction, same dry tone, same "we respect your time" stance as the Practice (kata) side. Scrolls are how someone who's never paid us anything finds out whether they want the kata invite.
 - **Replayable.** Every step is stateless. You can redo Lesson 2 Step 3 in isolation; nothing depends on a hidden REPL state from earlier in the day.
 
-What courses are **not**:
+What scrolls are **not**:
 
-- **Not katas.** Katas are timed, evaluated by an LLM sensei, gated by invite, and deliver a written verdict. Courses are none of those things. If you find yourself wanting to add a timer or a streaming critique to a course step, you have wandered into the Practice context — back away. (See ADR 015.)
+- **Not fundamentals.** A learner who has never programmed in any language is not the target. The first step assumes transferable mental models from another language. If a scroll's first lesson needs to define what a variable is, the wrong audience opened the wrong file.
+- **Not katas.** Katas are timed, evaluated by an LLM sensei, gated by invite, and deliver a written verdict. Scrolls are none of those things. If you find yourself wanting to add a timer or a streaming critique to a scroll step, you have wandered into the Practice context — back away. (See ADR 015.)
 - **Not Udemy.** Nobody is recording themselves typing. There is no 14-hour playlist with a quiz tacked on the end. Passive video is explicitly rejected.
 - **Not Codecademy circa 2015.** We do not present a 30-line file with one blank that says `# fill me in`. Exercises are functions or short modules with real signatures and real test suites you can read.
-- **Not a free trial for the kata product.** Courses stand on their own. They are not a 7-day window that locks. A learner who only ever uses the free courses is a successful learner, full stop.
-- **Not certifications.** No badges, no XP bar, no LinkedIn-shareable PDF. Completion is its own reward; if it isn't, the course was bad.
+- **Not a free trial for the kata product.** Scrolls stand on their own. They are not a 7-day window that locks. A learner who only ever uses the free scrolls is a successful learner, full stop.
+- **Not certifications.** No badges, no XP bar, no LinkedIn-shareable PDF. Completion is its own reward; if it isn't, the scroll was bad.
 - **Not a content marketing funnel.** We are not optimising step count for SEO. Each step exists because removing it would degrade the learner.
 
-Closest sibling in the existing market: **Exercism**. Closest spiritual ancestor: **Code School** (RIP). The next two sections explain what we take from each and what we leave behind.
+The scrolls catalog has a closed shape: five language scrolls (Ruby, Go, Python, Rust, TypeScript) plus topic deep-dives that ship on their own schedule. The set is anchored to be *finishable*, not extensible — see [ADR 022](../adr/022-crash-course-pivot.md).
+
+Closest sibling in the existing market: **Exercism** for exercise philosophy, **Rustlings** for compression, **O'Reilly *Just Enough X*** books for the audience contract (devs who already program). Closest spiritual ancestor: **Code School** (RIP). The next two sections explain what we take from each and what we leave behind.
 
 ---
 
@@ -145,49 +151,56 @@ A compact reference for the ports between learning science and the existing data
 
 ---
 
-## 4. Course structure taxonomy
+## 4. Scroll structure taxonomy
 
-### 4.1 Levels
+### 4.1 Scroll kinds
 
-Every course (and every sub-course within it) is tagged with one of four levels.
+The catalog has two scroll kinds. The shape, sizing, and audience contract differ; the player and the schema do not.
 
-| Level | Audience | Prerequisites | Typical content |
+| Kind | What it teaches | Audience contract | Sizing |
 |---|---|---|---|
-| **Basic** | Has programmed before in *some* language. New to this language. | Variables, functions, conditionals, loops in any language. | Syntax, type system basics, the standard library's most-used 20%, idiomatic equivalents of constructs they already know. |
-| **Intermediate** | Comfortable in the language. Can ship a small project unsupervised. | Completed Basic or has 6+ months of working experience in the language. | Iterators / generators / streams, error handling idioms, module / package structure, common stdlib pitfalls, test idioms. |
-| **Advanced** | Production user. Wants to deepen, not broaden. | Completed Intermediate or 1+ year of working experience. | Concurrency model, performance edges, metaprogramming, the corner cases that bite at 2am. |
-| **Specific** | Any level — the topic stands alone. | Stated explicitly per sub-course. | Focused deep-dives that don't slot into a linear progression: "Ruby Metaprogramming", "Go Generics", "Python `asyncio` from scratch", "TypeScript template literal types", "SQL window functions". |
+| **Language scroll** (crash course) | A whole language's idioms, surprises, and judgement primitives — Ruby, Go, Python, Rust, TypeScript. | Developer who already programs in another language and wants confidence in this one. No novice onramp. | 60-120 min real time, target 90. ~12-20 steps across 4-6 lessons. See §4.2. |
+| **Topic scroll** (deep-dive) | A focused topic that stands alone, often crossing or extending a language scroll — SQL window functions, Ruby metaprogramming, Python `asyncio`, TypeScript template literal types. | Any level *for that topic specifically*. Prereq surface stated explicitly per scroll. | Variable. Often 2-4 hours, often dense. Sized by the topic, not by a global heuristic. |
 
-The Specific level exists because not every valuable thing fits a ladder. A learner who knows Go well does not need to repeat Basic to learn Generics — they need a clean, focused, three-lesson sub-course on generics specifically. We don't pretend that's "Advanced".
+The five language scrolls are the **anchored set** — see [ADR 022](../adr/022-crash-course-pivot.md). Adding a sixth language requires dropping one of the five first. Topic scrolls have no fixed catalog cap; they ship when authoring bandwidth is real and the topic earns its scroll.
 
-### 4.2 Sub-course sizing
+The previous "Basic / Intermediate / Advanced / Specific" four-level taxonomy is **deprecated**. A language scroll is not "Basic" — it's the whole language compressed for a polyglot. A topic scroll is not "Specific" — it's a topic-shaped artifact that names its prereqs in its own header. Existing scrolls authored under the old taxonomy keep their level tags until re-scoped.
 
-A **sub-course** is the unit a learner commits to. It's what shows up as a single card on `/learn`.
+### 4.2 Language scroll sizing
 
-- **Typical shape:** 3 lessons × 3-5 steps = **9-15 steps** total.
-- **Time target:** **2-6 hours** of real practice time. Not "estimated study time". Not "3 weekends". The number we publish is what an attentive intermediate-level reader actually spends, editor open, doing the work.
-- **When to split a sub-course in two:** any of (a) more than 18 steps, (b) more than 6 hours of real time, (c) more than one "big idea" — e.g. iterators *and* error handling don't belong together; ship them as two sub-courses.
-- **When to merge two ideas into one sub-course:** any of (a) under 6 steps total, (b) under 90 minutes of real time, (c) the topic only makes sense bundled — e.g. `async / await` and `Promise` in TypeScript are conceptually inseparable for a learner; one sub-course.
-- **When to kill a sub-course outright:** if you cannot state a one-sentence "after finishing this, the learner can do X" — and X is something they could not do before — the sub-course doesn't exist yet. Refine or drop.
+A **language scroll** is what shows up as a card on `/scrolls` under "Languages". It is the load-bearing artifact of the courses surface.
+
+- **Target shape:** 4-6 lessons × 3-4 steps = **12-20 steps** total.
+- **Time target:** **90 minutes** of *real* work, up to 120 when the language warrants (e.g. Rust ownership, Ruby blocks). Not "estimated study time". Not "an evening". The number we publish is what an attentive polyglot developer actually spends, editor open, doing the work.
+- **Hard ceiling: 120 minutes.** Above this the artifact stops being "crash" and competes with full curricula we are deliberately not building. If the language seems to need more, the surplus belongs in topic scrolls, not in stretching the language scroll.
+- **Hard floor: 60 minutes.** Below this the artifact reads as a blog post. If the language seems to fit in less, the framing is wrong — what the learner needs is not less content but a sharper "what changed in the learner's head" per lesson.
+- **When the language doesn't fit in 120 minutes:** that's signal the deep-dive surface exists for a reason. Cut the language scroll to its core idioms + surprises and spin the surplus out as topic scrolls (`ruby-metaprogramming`, `python-asyncio`, etc.). Do not extend.
+- **When to kill a language scroll outright:** if the unifying angle (per the language's Course Authoring Profile in `curricula/<lang>.md` §2) is "Ruby is like Python with some syntax differences" — that scroll has no reason to exist. Find the angle or do not ship.
 
 ### 4.3 Step type distribution guidelines
 
-For a typical 12-step sub-course we aim for roughly:
+For a typical 16-step language scroll we aim for roughly:
 
-| Step type | Share | Count (out of 12) | Purpose |
+| Step type | Share | Count (out of 16) | Purpose |
 |---|---|---|---|
-| `explanation` | ~30% | 3-4 | Concept introduction with worked examples |
-| `exercise` | ~55% | 6-7 | Pass/fail Piston (or iframe) — the load-bearing learning surface |
-| `challenge` | ~15% | 1-2 | Optional stretch at the end of a lesson; harder, longer time budget |
+| `read` (`explanation`) | ~25% | 4 | Concept introduction with worked examples |
+| `predict` | ~10-15% | 2 | Hypothesis activation at a real surprise (per `INTERACTIVITY-PATTERNS.md` §predict) |
+| `exercise` | ~55% | 8-9 | Pass/fail Piston (or iframe) — the load-bearing learning surface |
+| `challenge` | ~5-10% | 1-2 | Optional stretch; harder, longer time budget |
+| `read+inline` | use as `read` substitute | (0-2) | A `read` step with embedded reveals or micro-quizzes; counts against the read budget |
 
-These ratios are **starting heuristics, not laws**. Conceptually dense material (e.g. Rust ownership, SQL window functions) leans more on explanation — 40-50% explanation is acceptable. Pattern-practice material (e.g. "iterate, filter, fold across 8 small arrays") leans more on exercises — 70%+ exercise is fine.
+These ratios are **starting heuristics, not laws**. Hard-edged constraints (Elif S5):
+
+- **≥55% exercise even at 90 minutes.** The crash compression cannot be used as permission to drop deliberate practice. If a scroll's exercise share drops below 55%, the format has degraded to cheatsheet and the scroll is rejected.
+- **Every concept earns an exercise** (Valentina S2). A read step that introduces an idea with no exercise downstream is tour-mode — cut or pair with practice.
+- **Every interaction passes the Maya test** (S11). For `predict` and `read+inline`: would a learner who skipped the interaction still understand the concept from the prose? If yes, the interaction is decoration — drop it.
 
 What we never accept:
 
-- A sub-course with **zero challenges**. That signals nothing was hard enough to mark.
-- A sub-course with **more challenges than exercises**. That is no longer a course; it's a problem set.
-- An **explanation step longer than ~400 words** of prose. If you need more, split the concept across two explanation steps with an exercise between them.
-- Two consecutive explanation steps with no exercise in between. The learner's hands have to be on the keyboard within ~5 minutes or the format collapses into reading a textbook.
+- A scroll with **zero challenges**. That signals nothing was hard enough to mark.
+- A scroll with **more challenges than exercises**. That is no longer a scroll; it's a problem set.
+- A **`read` step longer than ~400 words** of prose. If you need more, split the concept across two read steps with an exercise between them.
+- Two consecutive `read` (or `read+inline`) steps with no exercise in between. The learner's hands have to be on the keyboard within ~5 minutes or the format collapses into reading a textbook.
 
 ### 4.4 Lesson ordering heuristics
 
@@ -202,13 +215,14 @@ A lesson is a *coherent sequence* of steps inside a sub-course. Ordering matters
 
 ### 4.5 Catalog and discovery
 
-The catalog page (`/learn`) is part of the curriculum, not a UI afterthought. Three rules apply:
+The catalog page (`/scrolls`) is part of the curriculum, not a UI afterthought. Four rules apply:
 
-- **Cards state level and time on the front.** A learner picks a course in seconds; they need "Intermediate · 3-4 hours" before they need a marketing tagline.
-- **Group by language, then by level.** Not by "popularity", not by "newest". Linear progression is part of the pedagogy.
-- **Don't show progress as a percentage on the catalog.** A learner who's done 1 of 12 steps does not need a `8% complete` bar shaming them on the home page. Show "in progress" as a binary state. Surface granular progress *inside* the course, not in the catalog.
+- **Cards state time and audience contract on the front.** A learner picks a scroll in seconds; they need "~90 min · for devs who already program" before they need a marketing tagline.
+- **Group by kind: Languages first, then Topics.** The five language scrolls are the canonical top of the catalog — they are the closed set the dojo commits to. Topic scrolls are a secondary section, ordered by relevance to the learner's prior selections (if any) or alphabetically by default.
+- **No level tags in the catalog header.** Crash courses are not levels. If a scroll genuinely needs a prereq surface (e.g. `ruby-metaprogramming` assumes Ruby basics), that prereq belongs in the card body, not as a coloured badge that implies a global hierarchy.
+- **Don't show progress as a percentage on the catalog.** A learner who's done 1 of 16 steps does not need a `6% complete` bar shaming them on the home page. Show "in progress" as a binary state. Surface granular progress *inside* the scroll, not in the catalog.
 
-The catalog page also has a job the framework cares about: it's the only place a learner sees the full shape of a language's curriculum at once. That visibility is what makes intentional gaps (a deferred sub-course, a missing Advanced level) read as deliberate rather than as a content backlog.
+The catalog page also has a job the framework cares about: it's the only place a learner sees the full shape of the scroll set at once. That visibility is what makes intentional gaps (a deep-dive that doesn't exist yet, a language that's deliberately not in the set) read as deliberate rather than as a content backlog.
 
 ---
 
@@ -392,8 +406,9 @@ Course prose is part of the product. It carries the same brand voice as the rest
 - **Direct.** Address the learner as "you". Never "the user", never "students", never "we" when "we" means "you and me, learner-and-author, holding hands".
 - **Dry wit acceptable.** Dark humour is on-brand. We do not perform enthusiasm.
 - **No emoji. No exclamation marks of celebration.** No "Great job!", no "Let's dive in!", no "Awesome!". The pass/fail indicator is feedback enough.
-- **Assume intelligence.** The learner knows what a function is. They know what an HTTP request is in concept. We are teaching language, idiom, and judgement — not first programming concepts.
-- **Don't assume prior Dojo knowledge.** A new learner may be on `/learn` for the first time and have no idea what a kata is. Course copy explains its own context.
+- **Assume the reader already programs.** This is the audience contract — the polyglot developer who picked up the scroll because they need confidence in this language by Friday. They know what a function is, what an HTTP request is in concept, what a closure is in some other language even if not in this one. We are teaching idiom, judgement, and the surprises that bite — not "what is a variable".
+- **Name the prior-language reflex when it matters.** "If you came from Python, you'll reach for `is None` — Ruby is different here. `nil` is an object." Explicit transfer beats implicit. The reader brings a mental model; respect it and correct it.
+- **Don't assume prior Dojo knowledge.** A new learner may be on `/scrolls` for the first time and have no idea what a kata is. Scroll copy explains its own context.
 - **When the learner fails: blame the code, not the learner.** "The function returned `undefined` — the test expected `0`." Not "you forgot to return".
 
 ### 7.2 Structural conventions
@@ -413,7 +428,7 @@ Course prose is part of the product. It carries the same brand voice as the rest
 - **"Simply / just / obviously."** Same family. These words insult anyone who doesn't find it simple.
 - **Quiz-format trivia.** "Which of these is a string method? (a) `length` (b) `slice` (c) `pop`" — no. Exercises write code, they don't bubble-fill.
 - **Apologising for the language.** "I know JavaScript's `==` is weird, but bear with me…" — no. Teach the rule. The learner can form their own opinions.
-- **Marketing the next sub-course inside a step.** No "Loved this? Try our Advanced course!" CTAs inside lesson content. The catalog page does that work.
+- **Marketing the next scroll inside a step.** No "Loved this? Try our Advanced course!" CTAs inside lesson content. The catalog page does that work.
 - **Dated cultural references.** "Like the show *Friends*, this function has six parameters." We are writing for learners we will never meet, in a language version that will outlive the joke.
 
 ### 7.4 Accessibility floor
@@ -432,34 +447,71 @@ These are constraints on the framework, not on individual authors — the platfo
 
 ## 8. The per-language course file template
 
-Every language file (`go.md`, `python.md`, `rust.md`, `typescript.md`, `ruby.md`) follows this skeleton, in this order, with these section names:
+A language file (`curricula/<lang>.md`) is the **course index** for one language. It declares the language-wide voice and lists every sub-course at a glance. The **executable authoring detail** (per-step prose, starter code, tests, hints, solutions, interactive step data) lives in a separate file per sub-course — see §8.2 below.
+
+Every language file follows this skeleton, in this order, with these section names:
 
 1. **Learning Philosophy for `<Language>`** — a paragraph or two stating the language's idiomatic teaching priorities. Example: "Go's pedagogy is dominated by the standard library, the `testing` package, and the explicit error return. We do not teach Go as a Java with goroutines."
-2. **Course Tree Overview** — a table of all sub-courses with columns: Slug · Level · Lessons · Steps · Time · Status (`shipped` / `planned` / `deferred`).
-3. **Sub-courses (detailed)** — one section per sub-course (see template below).
-4. **Cross-course exercise patterns** — recurring exercise shapes specific to this language (e.g. for Go: "implement-the-interface" exercises; for Rust: "fix-the-borrow-error" exercises).
-5. **Known pedagogical pitfalls** — the things this language gets wrong-taught most often, and how this curriculum specifically avoids them. (e.g. Python: the class-vs-instance mutable-default-argument trap; Ruby: teaching `attr_accessor` before `initialize`.)
-6. **External references** — books, language docs, talks, community resources that the curriculum draws from. Real, currently-extant sources only. Linked.
-7. **Suggested implementation order** — the order in which sub-courses should be authored and shipped. Dependencies between sub-courses (if any) noted explicitly.
+2. **Course Authoring Profile** — the language's course-level voice and authoring decisions. See §8.1.
+3. **Course Tree Overview** — a table of all sub-courses with columns: Slug · Level · Lessons · Steps · Time · Status (`shipped` / `planned` / `deferred`).
+4. **Sub-courses (index)** — one section per sub-course summarising slug · level · prereqs · learner time · learning outcomes · lesson titles · sandbox notes · references. **Step-level content does not live here.** When a sub-course has been spec'd for authoring, this section links to its spec file under [`curricula/<lang>/<slug>.md`](#82-per-sub-course-authoring-spec).
+5. **Cross-course exercise patterns** — recurring exercise shapes specific to this language (e.g. for Go: "implement-the-interface" exercises; for Rust: "fix-the-borrow-error" exercises).
+6. **Known pedagogical pitfalls** — the things this language gets wrong-taught most often, and how this curriculum specifically avoids them. (e.g. Python: the class-vs-instance mutable-default-argument trap; Ruby: teaching `attr_accessor` before `initialize`.)
+7. **External references** — books, language docs, talks, community resources that the curriculum draws from. Real, currently-extant sources only. Linked.
+8. **Suggested implementation order** — the order in which sub-courses should be authored and shipped. Dependencies between sub-courses (if any) noted explicitly.
 
-### Per-sub-course detail template
+### Per-sub-course index template
 
-For each sub-course in section 3, document:
+For each sub-course in section 4, document at index level:
 
 - **Slug** (URL-safe, e.g. `python-iterators-generators`)
 - **Level** (Basic / Intermediate / Advanced / Specific)
 - **Prerequisites** (other sub-courses, or "none")
 - **Learner time** (real, not aspirational — e.g. "3-4 hours")
 - **Learning outcomes** — bulleted list of "after this, the learner can…" statements
-- **Lesson → Step breakdown** — every step listed by title and type (`explanation`, `exercise`, `challenge`)
-- **Piston (or iframe) considerations** — anything language-specific the runner needs (test harness choice, stdlib modules, fixture quirks)
+- **Lesson titles** — one line per lesson ("what changed in the learner's head"). Step-level detail goes in the spec file, not here.
+- **Sandbox notes** — anything language-specific the runner needs (test harness choice, stdlib modules, fixture quirks)
 - **Reference material** — the specific book chapter, doc page, or talk this sub-course draws from
+- **Spec file** — link to [`curricula/<lang>/<slug>.md`](#82-per-sub-course-authoring-spec) once the sub-course is spec'd
 
-The sub-course detail is the contract between the maintainer (S5/S2) and the language specialist (S6-S10). When a sub-course is approved at this level, implementation is execution.
+Existing files that pre-date this split may still carry step-level lesson breakdowns in their index. That's fine — those lines act as a faster reading aid. When a spec file exists, it is the source of truth and the index is a summary.
 
-### 8.1 Worked example: a sub-course detail entry
+### 8.1 Course Authoring Profile
 
-What a single sub-course block looks like inside a language file:
+Each language declares its own course-level voice and authoring decisions. This section is **mandatory** in every language file. It exists because forcing all five language tracks into an identical mold would erase the language's pedagogy — Ruby with metaprogramming has different rhythm from Go with stdlib-first, and the curriculum should say so explicitly rather than have authors infer it.
+
+The profile has four fields. Authors fill all four:
+
+- **Voice & angle.** One paragraph stating the unifying pedagogical conviction of this language track. What is the angle that distinguishes "our Ruby course" from "any Ruby course"? Examples: Ruby = blocks before Rails. Go = stdlib first. Rust = compiler as teacher. TypeScript = types as escape hatches, not default tools. Python = stdlib before libraries.
+- **Step density & rhythm.** Override the framework defaults (~30% explanation / ~55% exercise / ~15% challenge from §4.3, ~200-300 words per `read` step from §5.1) when this language warrants it, with a one-sentence reason. Conceptually dense languages (Rust ownership, Ruby metaprogramming) lean more on prose. Pattern-practice languages (Go stdlib, TS basics) lean more on exercises.
+- **Interactivity menu.** Which `step.type`s from [`INTERACTIVITY-PATTERNS.md`](INTERACTIVITY-PATTERNS.md) this language uses, and which it explicitly excludes. State the exclusion's reason. (Example: Ruby excludes `trace` because Ruby's runtime has no equivalent of "step through the DOM event flow" that would justify the authoring cost — defer until v2 if signal forces it.)
+- **Pedagogical bets.** 2-4 specific commitments this track makes. Each bet states: *what* the commitment is, *which sub-course it appears in first*, and *what the failure mode would be without it*. Examples: "Prediction-before-explanation on the language's surprises" / "Retrieval interleaving from blocks to OOP exercises" / "Footgun awareness, not footgun fear, when introducing metaprogramming primitives".
+
+The profile is **descriptive and prescriptive at once** — it documents what the track already commits to, and it binds future contributors to the same commitments. A sub-course spec that deviates from the profile must say so in its own Authoring Notes (see §8.2) with a reason.
+
+### 8.2 Per-sub-course authoring spec
+
+A sub-course's **executable brief** — enough detail that an author (human or AI agent) can write the full course content without inventing pedagogy decisions on the fly — lives in its own file: `curricula/<lang>/<slug>.md`.
+
+This separation exists because step-level content (prose, starter code, tests, hints, solutions, interactive step data like `predict` options and per-option feedback) does not fit in the language index. A complete spec for a 12-step sub-course is typically 500-1500 lines; bundling all of a language's sub-courses into a single file would make both the index and the specs unreadable.
+
+The canonical template is [`authoring-spec-template.md`](authoring-spec-template.md). Authors copy that file to `curricula/<lang>/<slug>.md` and fill it in. The template defines:
+
+- Header (slug, level, sandbox, prereqs, learner time, status, maintainer experts)
+- Learning outcomes
+- Sub-course Authoring Notes — overrides from the language-level Course Authoring Profile (§8.1), if any
+- Retrieval & cross-references — what identifiers from prior sub-courses or lessons this one re-surfaces
+- Lessons — each with its "what changed in the learner's head" line
+- Steps — fully spec'd per their `step.type` (per the contracts in [`INTERACTIVITY-PATTERNS.md`](INTERACTIVITY-PATTERNS.md))
+- Sandbox notes specific to this sub-course
+- References cited inside the prose
+- Open questions / known gaps
+
+A spec is **complete** when an author can sit down with that file alone — no DM to the maintainer, no spelunking through other docs — and write the actual course content. If the author has to invent something not in the spec, the spec is a draft, not a contract.
+
+### 8.3 Worked example: a sub-course index entry
+
+What a single sub-course block looks like inside a language file once the architecture in §8.2 is applied. The lesson titles communicate the arc; step-level detail (titles, prose, starter code, tests, hints) lives in the spec file linked at the bottom.
 
 ```markdown
 ### Sub-course: Iterators & Generators
@@ -475,25 +527,12 @@ What a single sub-course block looks like inside a language file:
   - Recognise when a generator pipeline is more memory-efficient than a list
   - Avoid the most common iterator foot-guns (consuming a generator twice, mutating during iteration)
 
-#### Lesson 1 — The Iterator Protocol (4 steps)
-- 1.1 explanation: "What `for x in xs` actually does"
-- 1.2 exercise: "Implement `__iter__` and `__next__` on a `Countdown` class"
-- 1.3 exercise: "Make a class iterable using a separate iterator object"
-- 1.4 challenge: "Build a `Cycle` iterator that loops forever"
+#### Lessons
+- **Lesson 1 — The Iterator Protocol.** What `for x in xs` actually does at the protocol level.
+- **Lesson 2 — Generator Functions.** `yield` turns a function into a generator; pipeline composition with `yield from`.
+- **Lesson 3 — Pipelines and Pitfalls.** Lazy-by-construction generator pipelines and the foot-guns that come with them.
 
-#### Lesson 2 — Generator Functions (4 steps)
-- 2.1 explanation: "`yield` turns a function into a generator"
-- 2.2 exercise: "Rewrite the Countdown class as a generator function"
-- 2.3 exercise: "Implement `take(n, gen)` that pulls the first n values"
-- 2.4 exercise: "Use `yield from` to chain two generators"
-
-#### Lesson 3 — Pipelines and Pitfalls (4 steps)
-- 3.1 explanation: "Generator pipelines: lazy by construction"
-- 3.2 exercise: "Build a 3-stage pipeline that filters, maps, and limits"
-- 3.3 exercise: "Detect the bug where a generator is consumed twice"
-- 3.4 challenge: "Rewrite a memory-heavy list-comprehension chain as a generator chain"
-
-#### Piston considerations
+#### Sandbox notes (Piston)
 - Stdlib only. `unittest` test harness.
 - No external libraries. `itertools` is in the stdlib and is fair game.
 - Tests assert on returned values; no async generators in this sub-course (deferred to a future Specific sub-course on `asyncio`).
@@ -502,9 +541,12 @@ What a single sub-course block looks like inside a language file:
 - *Fluent Python* (Luciano Ramalho) — Chapter 17, "Iterators, Generators, and Classic Coroutines"
 - Python docs — `https://docs.python.org/3/howto/functional.html`
 - PEP 234 (the iterator protocol), PEP 255 (generators)
+
+#### Spec file
+- [`curricula/python/python-iterators-generators.md`](curricula/python/python-iterators-generators.md) — the executable authoring brief (see [`authoring-spec-template.md`](authoring-spec-template.md))
 ```
 
-Every sub-course in every language file follows roughly this shape. Length varies; structure does not.
+The index entry is the **summary**. The spec file is the **contract**. A sub-course is only ready to author from when its spec file is complete; the index entry alone is not enough.
 
 ---
 
