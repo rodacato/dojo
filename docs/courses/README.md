@@ -1,8 +1,46 @@
 # Dojo Courses — Design Framework
 
-> Meta document. Every language course file in this directory (`go.md`, `python.md`, `rust.md`, `typescript.md`, `ruby.md`) follows this framework.
+> Meta document. Every language curriculum file in [`curricula/`](curricula/) (`go.md`, `python.md`, `rust.md`, `typescript.md`, `ruby.md`) follows this framework.
 > Maintainer personas: S5 Dr. Elif Yıldız (curriculum architect) + S2 Valentina Cruz (content design) + S6-S10 (language specialists)
-> Last updated: 2026-04-14
+> Last updated: 2026-04-14 · Reorg 2026-06-06 (added `curricula/` subfolder + [INTERACTIVITY-PATTERNS](INTERACTIVITY-PATTERNS.md))
+
+---
+
+## A note on terminology — "course" vs "scroll"
+
+This document uses the word **"course"** throughout. As of Sprint 023's ubiquitous-language pass (see [ADR 020](../adr/020-ubiquitous-language-pass.md)), the **product UI calls them "scrolls"** — the URL is `/scrolls`, the page is `BeltsPage`-adjacent, the brand glossary in [`docs/BRANDING.md`](../BRANDING.md) introduces "scroll" as the on-brand term.
+
+**Why this doc still says "course":**
+
+- **Course design** is the discipline's vocabulary. Curriculum architects, learning scientists, and the literature this framework draws from (Ericsson, Sweller, Bjork, Hattie) all use "course". Rewriting the doc wholesale to "scroll design" loses the link to the field's lexicon.
+- The schema and code use the renamed terms (`Scroll` aggregate, `/scrolls` routes, `ScrollPlayerPage` component). The product surface is fully renamed.
+- The mental model: **"course" is the discipline; "scroll" is the product artifact.** This document is the discipline's framework. The per-language files in [`curricula/`](curricula/) are the artifact plans.
+
+If a reader is confused at first glance, the brand glossary clarifies. The framework's stability matters more than orthographic uniformity.
+
+---
+
+## How this directory is organized
+
+```
+docs/courses/
+├── README.md                    (this — the design framework)
+├── INTERACTIVITY-PATTERNS.md    (step type catalog + animation guidance)
+├── testcode-pattern.md          (iframe testCode contract for browser steps)
+└── curricula/                   (per-language curriculum plans)
+    ├── go.md
+    ├── python.md
+    ├── ruby.md
+    ├── rust.md
+    └── typescript.md
+```
+
+When you arrive here new, read order is:
+
+1. This file (the framework — what a scroll IS)
+2. [`INTERACTIVITY-PATTERNS.md`](INTERACTIVITY-PATTERNS.md) (the step types catalog — how a scroll BEHAVES)
+3. One per-language file in [`curricula/`](curricula/) (a concrete plan)
+4. [`testcode-pattern.md`](testcode-pattern.md) only if you're authoring browser-side (`language: javascript-dom`) steps
 
 ---
 
