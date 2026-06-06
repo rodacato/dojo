@@ -19,6 +19,7 @@ export class SubmitAttempt {
     userResponse: string
     ownerRole: string
     ownerContext: string
+    kataTitle: string
     executionContext?: string // test results injected before LLM evaluation
     category?: string // kata.category — shapes sensei prompt (e.g. debugging)
     rubric?: Rubric // review kata rubric — switches the adapter to the review prompt
@@ -43,6 +44,7 @@ export class SubmitAttempt {
     for await (const token of this.deps.llm.evaluate({
       ownerRole: params.ownerRole,
       ownerContext: params.ownerContext,
+      kataTitle: params.kataTitle,
       sessionBody: session.body,
       userResponse: userResponseWithContext,
       history,

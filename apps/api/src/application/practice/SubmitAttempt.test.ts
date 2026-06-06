@@ -68,6 +68,7 @@ describe('SubmitAttempt', () => {
       userResponse: 'Here is my solution...',
       ownerRole: 'Tech Lead',
       ownerContext: 'Startup context',
+      kataTitle: 'Test kata',
     })) {
       collected.push(token)
     }
@@ -114,6 +115,7 @@ describe('SubmitAttempt', () => {
       userResponse: 'My solution',
       ownerRole: 'Tech Lead',
       ownerContext: 'Context',
+      kataTitle: 'Test kata',
     })) {
       // consume
     }
@@ -135,6 +137,7 @@ describe('SubmitAttempt', () => {
       userResponse: 'My solution',
       ownerRole: 'Tech Lead',
       ownerContext: 'Context',
+      kataTitle: 'Test kata',
     })
 
     await expect(async () => { for await (const _ of stream) { /* consume */ } }).rejects.toThrow(SessionNotFoundError)

@@ -13,6 +13,7 @@ export interface LLMPort {
   evaluate(params: {
     ownerRole: string
     ownerContext: string
+    kataTitle: string
     sessionBody: string
     userResponse: string
     history: ConversationTurn[]

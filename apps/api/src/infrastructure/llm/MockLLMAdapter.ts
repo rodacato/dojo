@@ -43,7 +43,7 @@ export class MockLLMAdapter implements LLMPort {
     return 'Take another look at the part of your code that handles the value you return. Compare it to what the step is asking for — there is a small mismatch there worth re-examining.'
   }
 
-  async *evaluate(params: { rubric?: unknown }): AsyncIterable<EvaluationToken> {
+  async *evaluate(params: { kataTitle: string; rubric?: unknown }): AsyncIterable<EvaluationToken> {
     const delayMs = config.MOCK_LLM_STREAM_DELAY_MS
     const verdict = config.MOCK_LLM_VERDICT
     const tokenCount = config.MOCK_LLM_RESPONSE_TOKENS

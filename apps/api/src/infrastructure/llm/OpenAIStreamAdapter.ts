@@ -23,6 +23,7 @@ export class OpenAIStreamAdapter implements LLMPort {
   async *evaluate(params: {
     ownerRole: string
     ownerContext: string
+    kataTitle: string
     sessionBody: string
     userResponse: string
     history: ConversationTurn[]
@@ -262,6 +263,7 @@ export class OpenAIStreamAdapter implements LLMPort {
 function buildMessages(params: {
   ownerRole: string
   ownerContext: string
+  kataTitle: string
   sessionBody: string
   userResponse: string
   history: ConversationTurn[]
@@ -277,7 +279,7 @@ function buildMessages(params: {
       content: buildReviewPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        kataTitle: '',
+        kataTitle: params.kataTitle,
         diff: params.sessionBody,
         review: params.userResponse,
         rubric: params.rubric,
@@ -292,7 +294,7 @@ function buildMessages(params: {
       content: buildPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        kataTitle: '',
+        kataTitle: params.kataTitle,
         kataDescription: params.sessionBody,
         userResponse: params.userResponse,
         category: params.category,
@@ -305,7 +307,7 @@ function buildMessages(params: {
       content: buildPrompt({
         ownerRole: params.ownerRole,
         ownerContext: params.ownerContext,
-        kataTitle: '',
+        kataTitle: params.kataTitle,
         kataDescription: params.sessionBody,
         userResponse: firstTurn.userResponse,
         category: params.category,

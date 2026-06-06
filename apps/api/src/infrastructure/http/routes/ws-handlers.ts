@@ -104,6 +104,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       userResponse: pending.userResponse,
       ownerRole: variation?.ownerRole ?? '',
       ownerContext: variation?.ownerContext ?? '',
+      kataTitle: kata?.title ?? '',
       executionContext,
       category: kata?.category,
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
