@@ -10,6 +10,7 @@ import { StreamingText } from '../components/ui/StreamingText'
 import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
+import { EnsoLoader } from '../components/ui/EnsoLoader'
 import type { KataType } from '@dojo/shared'
 
 const EVAL_MESSAGES = [
@@ -239,10 +240,10 @@ export function SenseiEvalPage() {
               The sensei has spoken.
             </p>
           ) : (
-            <p className="text-secondary text-sm font-mono text-center inline-flex items-center justify-center w-full">
-              The sensei is evaluating.
-              <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
-            </p>
+            <div className="text-secondary text-sm font-mono text-center inline-flex items-center justify-center gap-3 w-full">
+              <EnsoLoader size={28} label="The sensei is evaluating" />
+              <span>The sensei is evaluating.</span>
+            </div>
           )}
         </div>
       </div>

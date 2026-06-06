@@ -3,6 +3,7 @@ import { api } from '../lib/api'
 import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { EmptyState } from '../components/ui/EmptyState'
 import { HankoBadge } from '../components/ui/HankoBadge'
+import { BrushstrokeUnderline } from '../components/ui/BrushstrokeUnderline'
 import { useAuth } from '../context/AuthContext'
 import { BELT_COLOR } from '../lib/belt-colors'
 import type { BeltDTO, MilestoneDTO } from '@dojo/shared'
@@ -99,7 +100,7 @@ export function BeltsPage() {
         <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-2">
           Your rank
         </p>
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-4 mb-2">
           <span
             aria-label={`${belt.rank} belt`}
             className="inline-block w-12 h-12 rounded-full border border-border"
@@ -109,6 +110,7 @@ export function BeltsPage() {
             {belt.rank} belt
           </h1>
         </div>
+        <BrushstrokeUnderline seed={`belt-${belt.rank}`} className="w-48 h-2 mb-6" />
         <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl">
           <Factor label="Katas completed" value={belt.factors.completed} />
           <Factor label="Topic clusters" value={belt.factors.distinctClusters} />

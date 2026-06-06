@@ -7,6 +7,7 @@ import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
+import { BrushstrokeUnderline } from '../components/ui/BrushstrokeUnderline'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { ErrorState } from '../components/ui/ErrorState'
@@ -99,9 +100,10 @@ export function ResultsPage() {
       <div className="flex items-start justify-between gap-4 mb-6">
         <div className="min-w-0">
           {session.ownerRole && <PersonaEyebrow role={session.ownerRole} className="mb-3 block" />}
-          <h1 className="text-primary text-3xl md:text-2xl font-semibold leading-tight tracking-tight mb-3">
+          <h1 className="text-primary text-3xl md:text-2xl font-semibold leading-tight tracking-tight mb-1">
             {session.kata.title}
           </h1>
+          <BrushstrokeUnderline seed={session.kata.title} className="w-32 h-2 mb-3" />
           <div className="flex items-center gap-2 flex-wrap">
             <TypeBadge type={session.kata.type} />
             <DifficultyBadge difficulty={session.kata.difficulty} />
