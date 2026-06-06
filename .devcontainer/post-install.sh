@@ -32,19 +32,14 @@ if grep -q "^CODE_EXECUTION_ENABLED=false" .env 2>/dev/null; then
   echo "Enabled CODE_EXECUTION_ENABLED in .env"
 fi
 
-# Install Piston runtimes (TypeScript, Python, Go, Ruby, SQL)
+# Install Piston runtimes — delegated to the canonical, idempotent
+# reprovision script so dev and prod share one source-of-truth list
+# of runtimes + pinned versions (see scripts/piston-reprovision.sh).
 echo "Waiting for Piston..."
 until curl -sf http://piston:2000/api/v2/runtimes > /dev/null 2>&1; do
   sleep 2
 done
-echo "Piston is ready. Installing runtimes..."
-
-for pkg in typescript python ruby go sqlite3; do
-  echo "  Installing $pkg..."
-  curl -sf http://piston:2000/api/v2/packages -d "{\"language\":\"$pkg\",\"version\":\"*\"}" \
-    -H "Content-Type: application/json" > /dev/null 2>&1 || echo "  ⚠ $pkg install failed (may already exist)"
-done
-echo "Piston runtimes installed."
+PISTON_URL=http://piston:2000 ./scripts/piston-reprovision.sh
 
 echo "Running database migrations..."
 pnpm --filter=@dojo/api db:migrate
