@@ -1,6 +1,12 @@
-# Dojo — Branding, UX/UI & Design Direction
+# Dojo — Branding, UX & Voice
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-05
+> **Status:** Canonical · **Last reviewed:** 2026-06-06
+>
+> This file owns the brand: name, vocabulary, voice, information architecture, UX principles, microcopy.
+> For the design system itself — tokens, themes, motifs, components, motion specs — see [`DESIGN.md`](DESIGN.md).
+> The two used to overlap; the colors/tokens sections lived here and drifted. Now BRANDING owns the *why* and the *words*, DESIGN owns the *values* and the *renders*.
+
+---
 
 ## El Nombre
 
@@ -34,7 +40,7 @@ The product speaks one vocabulary. Each term below is load-bearing — it does p
 | **Scroll** | A multi-step learning path — read, code, exercise, challenge — followed in order, with instant Piston/iframe feedback. The scroll is the curriculum; the steps are inside it. | *"finish the SQL Deep Cuts scroll"* | *"finish the SQL Deep Cuts course"* |
 | **Belt** | A single rank per user — white / yellow / green / brown / black — computed from session history. Earned, kept (no decay in v1). The sensei does not influence advancement. | *"I'm working toward brown belt"* | *"I unlocked the brown belt trophy"* |
 | **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`, scroll completions). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
-| **Engawa** | The anonymous code playground at `/engawa`. The Japanese veranda — the transitional space between inside and outside. No account required to try a snippet. | *"opened the engawa to test a Ruby idea"* | *"opened the playground" (in our product surface)* |
+| **Engawa** | The transitional veranda. Lives at `/engawa` as the anonymous code playground (no account required to try a snippet), but the *concept* is broader — see §Engawa as a philosophy below. | *"opened the engawa to test a Ruby idea"* | *"opened the playground"* (in our product surface) |
 | **Kumite** | The planned 1v1 sparring feature — paired evaluation, shared kata, side-by-side reasoning compared by the sensei. **Not built yet** — the route exists as an honest placeholder. Not a relabel of the deleted leaderboard. | *"when kumite ships I want to spar against another reviewer"* | *"check the kumite leaderboard"* |
 
 One more that is *not* dojo-flavored on purpose:
@@ -42,6 +48,15 @@ One more that is *not* dojo-flavored on purpose:
 - **Dashboard** — generic post-login orientation surface. The one place we don't translate; the user shouldn't have to learn vocabulary before seeing where they are.
 
 > **Historical note:** an earlier draft kept `/start` + "practice" as a separate nav item. Day-to-day use showed it was a stutter — one extra click between intent and the picks. `/katas` now hosts the full ritual (streak + mood + duration + customize) plus the three picks inline. One surface, one click to commit.
+
+### Engawa as a philosophy
+
+The engawa is the transitional veranda of a Japanese house — neither inside nor outside, a place where things sit while the household decides what to do with them. In Dojo it does double duty:
+
+- **As a surface:** `/engawa` is the anonymous code playground. No account, no tracking, no consequence — just a place to drop a snippet and run it.
+- **As a stance:** it's the explicit home for unfinished work. GSAP experiments that may never ship. Scrolls in draft. Half-formed ideas the creator wants on the site without committing to polish them.
+
+This matters. A product that demands every surface be shipped-quality stagnates — the bar for "good enough to put up" becomes so high that nothing new appears. One with a legitimate home for *"still drying"* stays alive. The engawa is that home. If something is interesting but rough, it lives in `/engawa` until it either earns promotion to a real surface or quietly disappears.
 
 ---
 
@@ -63,97 +78,81 @@ One more that is *not* dojo-flavored on purpose:
 
 ---
 
-## Identidad Visual
+## Arquitectura de información
 
-### Paleta de Color
+Cinco surfaces, plana y expandible. Está optimizada para velocidad de iteración del creator, no para retención de visitantes anónimos — añadir una sexta surface no rompe el patrón, sólo agrega un row en el sidebar.
 
-**Primario:** `#0F172A` — Slate 950. Casi negro, no negro puro. Fondo base.
-**Superficie:** `#1E293B` — Slate 800. Cards, paneles, editores.
-**Borde:** `#334155` — Slate 700. Separadores, bordes de input.
-
-**Accent principal:** `#6366F1` — Indigo 500. CTAs, highlights, elementos activos. Energético pero no agresivo.
-**Accent secundario:** `#10B981` — Emerald 500. Éxito, completado, streaks positivos.
-**Peligro/Fallo:** `#EF4444` — Red 500. Errores, tiempo agotado, failed sessions.
-**Warning:** `#F59E0B` — Amber 500. Alertas, approaching time limit.
-
-**Texto primario:** `#F8FAFC` — Slate 50.
-**Texto secundario:** `#94A3B8` — Slate 400.
-**Texto muted:** `#475569` — Slate 600.
-
-### Design Tokens
-
-Nombres canónicos para usar en CSS y Tailwind config. Siempre referenciar tokens, nunca valores hex directos en componentes.
-
-```css
-/* Surfaces */
---color-bg-base:        #0F172A;   /* page background */
---color-bg-surface:     #1E293B;   /* cards, panels, editors */
---color-bg-elevated:    #253347;   /* hover states, dropdowns */
---color-border:         #334155;   /* all borders and dividers */
-
-/* Accent */
---color-accent-primary:   #6366F1;  /* CTAs, active elements, focus rings */
---color-accent-success:   #10B981;  /* passed verdict, streaks, completion */
---color-accent-danger:    #EF4444;  /* failed sessions, errors, expired timer */
---color-accent-warning:   #F59E0B;  /* timer approaching limit, alerts */
-
-/* Text */
---color-text-primary:     #F8FAFC;  /* main content */
---color-text-secondary:   #94A3B8;  /* descriptions, labels */
---color-text-muted:       #475569;  /* placeholders, disabled, microcopy */
-
-/* Exercise type badges */
---color-type-code:        #64748B;  /* slate-blue-gray */
---color-type-chat:        #7C3AED;  /* purple */
---color-type-whiteboard:  #0D9488;  /* teal */
-```
-
-### Spacing & Grid
-
-Base unit: `4px`. All spacing is a multiple of 4.
-
-| Token | Value | Usage |
+| Surface | Estado | Propósito |
 |---|---|---|
-| `space-1` | 4px | Tight internal padding, icon gaps |
-| `space-2` | 8px | Inline element spacing |
-| `space-3` | 12px | Input padding, compact items |
-| `space-4` | 16px | Card padding, section gaps |
-| `space-6` | 24px | Section separation |
-| `space-8` | 32px | Large section gaps |
-| `space-12` | 48px | Page-level vertical rhythm |
+| **Katas** (`/katas`) | shipped | Práctica de código atómica — Piston ejecuta, sensei evalúa. El corazón del producto. |
+| **Scrolls** (`/scrolls`) | parcial | Catálogos visuales, paths multi-step. Tres prototipos hoy; el "almanaque técnico" del dojo. |
+| **Belts** (`/belts`) | shipped | Progreso transversal — rank + milestones derivados de session history. |
+| **Kumite** (`/kumite`) | placeholder honesto | 1v1 sparring planeado. La ruta existe vacía a propósito; cuando se construya, será PvP donde dos developers atacan el mismo kata y el sensei compara sus razonamientos lado a lado. |
+| **Engawa** (`/engawa`) | shipped (playground) + filosofía | Anonymous code playground + el espacio explícito para lo no terminado. Ver §Engawa as a philosophy. |
 
-Border radius: `4px` for all interactive elements. `6px` for cards. Never `rounded-full` on containers — this is not a consumer app.
+**Plana, no jerárquica.** Cada surface es un destino top-level del sidebar. No hay sub-tabs anidados hasta que la data del propio surface lo exija. **Expandible.** El patrón sobrevive a una sexta surface; lo que no sobrevive es la tentación de mover dos surfaces "bajo" otra para parecer organizado — eso es jerarquía cosmética que termina convirtiendo el sidebar en un árbol de file explorer.
+
+**El Dashboard no es una surface, es la orientación.** Es la pantalla que ves al firmar y de donde sales hacia las cinco. No tiene vocabulario propio (ver Glosario).
+
+---
+
+## Tema y dirección visual
+
+Tokens, hex values y component specs viven en [`DESIGN.md`](DESIGN.md). Esta sección documenta la **dirección** — el por qué visual y hacia dónde se mueve.
+
+### Hoy: Slate Indigo
+
+Dark mode "terminal meets product" — Linear / Raycast / Warp como referencia. Frío, técnico, restraint. Indigo como acento único, slate como base. Es lo que renderea en producción ahora y se mantendrá hasta que la migración sumi-e cierre.
+
+### Mañana: Sumi-e
+
+Tinta japonesa, dos temas bajo el mismo sistema de tokens:
+
+- **Washi** (papel cálido) — para reading: catalogo de scrolls, prosa de los pasos, sensei en modo análisis largo. El light variant cumple un trabajo real, no es modo claro por completionismo.
+- **Sumi** (tinta profunda) — para sesiones largas: dark variant del kata flow, results, share cards.
+
+Un solo acento — **hanko vermillion** (el rojo del sello del nombre japonés). Reemplaza al indigo cuando la migración cierra. Si es interactivo, es vermillion. Si no, no.
+
+**Por qué este pivote:** los catálogos necesitan calma para estudiar; el cyberpunk neón pelearía con el contenido. Sumi-e es distintivo (no es el slop morado-degradado de IA de 2026), ownable (consistente con el vocabulario japonés del dojo), y borrowed-on-purpose — 1,500 años de tradición gráfica son lo opuesto a inventar originalidad falsa.
+
+### Motivos visuales
+
+Cuatro elementos cargan la identidad sumi-e. Cada uno con contrato explícito en [`DESIGN.md`](DESIGN.md) §Brand motifs.
+
+- **Enso** — círculo zen incompleto. Loader, section mark, wash detrás del avatar.
+- **Hanko** — sello cuadrado rojo. Milestone earned badge, verdict stamp en share cards, anillo del black belt.
+- **Brushstroke** — trazo único de pincel. Underline bajo H1, focus indicator en kata-active, hover reveal en cards.
+- **Belt colors** — anillo del avatar y banda en el profile header. Realización visual del rank.
 
 ### Tipografía
 
-**Display/Headers:** `JetBrains Mono` — Monospace. Refuerza el contexto técnico. Para títulos grandes y números de dashboard.
-**Body/UI:** `Inter` — Sans-serif. Limpio, legible, moderno. Para todo el texto de interfaz.
-**Código:** `JetBrains Mono` — Consistente con el header font.
+No cambia entre temas. **JetBrains Mono** para logo, números, verdicts, labels all-caps. **Inter** para body y UI. La identidad terminal es estable — el theme cambia la piel, no la voz tipográfica.
 
-```css
---font-mono: 'JetBrains Mono', monospace;
---font-sans: 'Inter', system-ui, sans-serif;
+### Estilo visual (cross-theme)
 
---text-xs:   11px / 16px;   /* labels, badges, timestamps */
---text-sm:   13px / 20px;   /* secondary content, descriptions */
---text-base: 15px / 24px;   /* body, UI text */
---text-lg:   18px / 28px;   /* section headers */
---text-xl:   24px / 32px;   /* page titles (Inter) */
---text-2xl:  32px / 40px;   /* dashboard numbers (JetBrains Mono) */
---text-4xl:  48px / 56px;   /* verdict (JetBrains Mono, all caps) */
-```
+- Bordes sutiles, `border-radius` pequeño (4-6px). Nunca `rounded-full` en containers.
+- Sombras mínimas. Depth a través de surface color stacking, no de drop shadows.
+- El cursor `_` parpadeando 1Hz como elemento de identidad — único en estados de carga, espera y en el wordmark.
 
-### Estilo Visual
+La migración va detrás de feature flag (`FF_SUMI_THEME_ENABLED`). Sin piecemeal swap. Operativa completa en [`DESIGN.md`](DESIGN.md) §Migration path.
 
-Dark mode por defecto y única opción — los developers trabajan en dark mode, punto.
+---
 
-Estética: **terminal meets product**. No es una app corporativa, no es un juego infantil. Es algo que un developer serio usaría y no se avergonzaría de mostrar. Piensa Linear, Raycast, Warp — pero con más personalidad y menos minimalismo frío.
+## Motion como firma
 
-Elementos de carácter:
-- Bordes sutiles con `border-radius` pequeño (4-6px). No rounded-full, no sharp. Técnico pero no rugoso.
-- Sombras mínimas. Depth a través de color, no de drop-shadows.
-- Animaciones funcionales: transitions de 150-200ms, nada de bouncing o easing dramático.
-- El cursor parpadeante del terminal como elemento de identidad en estados de carga o espera.
+### Slate Indigo (hoy)
+
+Transiciones CSS funcionales 150-200ms. El cursor `_` parpadeando 1Hz como única "animación de identidad". Sin bouncing, sin sparkles, sin celebración. GSAP vive sólo en la landing (orquesta el reveal del hero + el carrusel del terminal demo) — el resto del producto es CSS.
+
+### Sumi-e (mañana)
+
+GSAP + DrawSVG como motion language del sitio. La tinta es el pretexto ideal: el enso se dibuja al cargar, la brushstroke se traza bajo el H1 cuando entra al viewport, el hanko se planta (no rebota) cuando el verdict aterriza, las transiciones entre pasos del scroll fluyen como tinta secándose. GSAP deja de ser experimento suelto y se vuelve la **firma de movimiento del producto**.
+
+Carga lazy en rutas que lo usan (kata flow, scroll player, results, share). Landing, dashboard y admin no pagan el bundle. Contratos completos en [`DESIGN.md`](DESIGN.md) §Motion.
+
+### Prohibido en ambos temas
+
+Confetti, bursts de celebración, parallax, scroll-jacking, slide-ins desde abajo, modal entries con bounce, FLIP rearrangements visibles. **El fail no es dramático, el pass tampoco** — es el principio que rige toda animación del producto.
 
 ---
 
@@ -205,147 +204,15 @@ Elementos de carácter:
 
 ---
 
-## Componentes UI Clave
+## Componentes — voz y comportamiento
 
-### Exercise Card (selección)
-- Fondo `#1E293B`, borde `#334155`
-- Badge de tipo: `CODE` `CHAT` `WHITEBOARD` — colores distintos por tipo
-- Badge de dificultad: `EASY` verde / `MEDIUM` amber / `HARD` rojo
-- Duración prominente en `JetBrains Mono`
-- Tags como chips pequeños en la parte inferior
-- Hover: borde `#6366F1`, transición 150ms
+La forma (radius, padding, color, motion) vive en [`DESIGN.md`](DESIGN.md) §Component vocabulary. Aquí van únicamente las decisiones de *voz* y *comportamiento* que los componentes encarnan.
 
-### Timer
-- Número grande en `JetBrains Mono` en el top del ejercicio
-- Color normal → amber (últimos 20%) → rojo (últimos 10%)
-- Sin opción de pause. Sin extensión.
-
-### Editor de Código
-- Tema dark consistente con la paleta (base: `#0F172A`)
-- Syntax highlighting con colores que no rompan la paleta
-- Sin autocomplete durante el ejercicio — código de honor técnico
-
-### Chat del LLM Experto
-- Mensajes del experto con avatar y rol visible: `[Senior DBA] — 12 años en PostgreSQL`
-- Estilo de respuesta: directo, sin emojis de celebración, con emojis técnicos ocasionales
-- Indicador de "el experto está evaluando..." con cursor parpadeante
-
-### Share Card
-- Proporción 1200×630 (OG image estándar)
-- Fondo oscuro con el accent del tipo de ejercicio
-- Nombre del ejercicio, resultado, tiempo, la línea más memorable del análisis del LLM
-- Logo Dojo + handle de GitHub del usuario
-- Tono: irreverente, honesto, geek
-
----
-
-## Prompts para Google Stitch
-
-Estos prompts generan mockups de referencia visual — no son specs de implementación. Úsalos para explorar dirección visual y comunicar intención. Los valores exactos de spacing, tokens y tipografía son los definidos en este documento, no los que el modelo interprete.
-
-Usa estos prompts en secuencia para generar las pantallas principales:
-
-### Prompt 1 — Dashboard / Home
-```
-Dark mode developer productivity app dashboard. Background #0F172A, cards #1E293B.
-Primary accent color indigo #6366F1. Font: JetBrains Mono for numbers, headers and 
-the logo ("dojo_" with blinking cursor). Inter for body text.
-
-Top left: logo "dojo_" in JetBrains Mono white, small subtitle "dojo.notdefined.dev" 
-in muted slate. Top right: GitHub avatar + username.
-
-Show: streak counter (large monospace number with label "day streak"), today's kata 
-status card ("The dojo was empty today." with a subtle indigo CTA "Enter the dojo"),
-recent activity list (3-4 past kata: title, difficulty badge green/amber/red, time taken,
-verdict badge PASSED/NEEDS WORK). 
-
-Badges for kata types: CODE in blue-gray, CHAT in purple, WHITEBOARD in teal.
-Small, tight border-radius (4px). No drop shadows. Minimal borders. Terminal meets 
-product — like Linear or Raycast but with developer personality and martial arts restraint.
-```
-
-### Prompt 2 — Kata Selection (las 3 opciones)
-```
-Dark mode app screen showing 3 kata selection cards. Background #0F172A.
-Each card: background #1E293B, 1px border #334155, hover state border #6366F1.
-
-Card layout: top-left badge showing type (CODE/CHAT/WHITEBOARD), top-right difficulty 
-badge (EASY green, MEDIUM amber, HARD red). Center: kata title in white Inter bold,
-description in #94A3B8. Bottom: language tags (ruby, python, typescript etc) as small 
-chips, duration in JetBrains Mono (e.g. "23 min").
-
-Below cards: small muted text "These are your kata. No skip. No reroll."
-Top of screen: mood and time filters already submitted, shown as inactive group buttons.
-Minimal, focused. The cards are the only thing that matters on this screen.
-```
-
-### Prompt 3 — Kata Active (split view, tipo code)
-```
-Dark mode split-panel coding kata interface. Left panel (40%): kata context and 
-description, background #1E293B, title in white bold, description in #94A3B8, 
-language/tags chips at bottom. Right panel (60%): code editor with dark theme 
-#0F172A background, line numbers in #475569, syntax highlighting in muted colors.
-
-Top bar: kata title left-aligned, timer center in JetBrains Mono large (showing "18:43"
-in amber — time running low), "Submit" button right in indigo. No other navigation. 
-No sidebar. Completely focused interface.
-
-Small role badge top: "[Staff Engineer — 8 yrs systems design]" as the sensei persona.
-Subtle, authoritative. Bottom of left panel: "Enter the dojo. Leave the AI outside."
-in very muted text — a reminder of the honor code.
-```
-
-### Prompt 4 — Sensei Evaluation (chat)
-```
-Dark mode chat interface for technical evaluation. Background #0F172A.
-Two participants: user (right-aligned bubbles, background #6366F1) and 
-"Senior DBA — PostgreSQL Sensei" (left-aligned, background #1E293B, 
-small avatar with initials, role label above first message).
-
-Conversation: user submitted a SQL answer, sensei asks one sharp follow-up question
-(no praise, no emojis, direct technical tone — like a real senior dev talking).
-User responds. Sensei gives final evaluation.
-
-Final evaluation: larger card, background #0F172A with indigo left border,
-verdict badge "PASSED WITH NOTES" in amber, followed by honest paragraph feedback
-written as prose (not bullet points). Below: "View Full Analysis" button.
-
-Bottom input: disabled, muted text "The sensei has spoken."
-```
-
-### Prompt 5 — Results & Analysis
-```
-Dark mode results screen. Background #0F172A. 
-
-Top: large verdict in JetBrains Mono. "PASSED" in emerald or "NEEDS WORK" in red.
-Kata name below. "Completed in 18:43" in muted text. Small badge: type + difficulty.
-
-Middle: analysis card background #1E293B, left indigo border. Header: "Sensei's Analysis"
-with role. 3-4 paragraphs of honest technical feedback in prose — no bullet points,
-written like a senior dev actually talks. Harsh where needed, specific always.
-
-Below: "Topics to Review" — 3 chip tags in amber.
-
-Bottom: two buttons. "Share" (ghost, indigo border) and "Keep Practicing" (filled indigo).
-Muted text between: "+2 positions in the dojo this week".
-
-Share card preview (right or modal): dark 1200x630, "dojo_" logo top left, 
-exercise name, verdict, one memorable line from the sensei's analysis in quotes,
-github handle bottom right. Minimal, confident, slightly irreverent.
-```
-
-### Prompt 6 — Mobile View
-```
-Mobile dark mode kata selection. Single column. Same colors: #0F172A, #1E293B, #6366F1.
-
-Top: "dojo_" logo left, GitHub avatar right. Below: mood/time filters as horizontal 
-scrollable pill buttons, already submitted state (muted/inactive).
-
-Cards full width, 16px padding, stacked vertically. Same badges. Duration prominent.
-
-Fixed bottom bar: "These are your kata. No skip. No reroll." in muted small text
-above safe area. No bottom navigation — this is a focused dojo, not a social app.
-```
+- **Exercise card (selección):** los 3 picks son los 3 picks. El card no insinúa que podrías cambiarlos. El hover sólo confirma el target — no anima un "preview" del kata.
+- **Timer:** number-first, sin label "minutes". No tiene pause ni extend. El cambio de color (normal → amber → red) es la única narración del tiempo que queda. Nada más se mueve.
+- **Editor de código:** sin autocomplete durante el ejercicio. Código de honor técnico, no enforcement. La sensación es de un editor "limpio", no de uno "limitado".
+- **Sensei chat:** el indicador "el experto está evaluando..." usa el cursor parpadeante, no un spinner ni dots. El expert habla cuando tiene algo que decir; no hay typing indicator continuo.
+- **Share card:** voz irreverente, honesta, geek. La share card que muestra `NEEDS_WORK` se comparte con el mismo orgullo que la `PASSED` — eso es vulnerabilidad celebrada, no consuelo.
 
 ---
 
@@ -415,18 +282,32 @@ Los milestones no tienen puntos ni XP. Son colecciones — están o no están. E
 
 ## Logo
 
-**Concepto principal:** La palabra `dojo` en JetBrains Mono lowercase, con un cursor parpadeante `_` al final. Sin iconos. La tipografía monospace ya comunica "terminal", "técnico", "en proceso". El cursor dice "todavía escribiendo, todavía aprendiendo".
+**Concepto principal — wordmark:** la palabra `dojo` en JetBrains Mono lowercase, con un cursor parpadeante `_` al final. Sin íconos. La tipografía monospace ya comunica "terminal", "técnico", "en proceso". El cursor dice "todavía escribiendo, todavía aprendiendo".
 
 ```
 dojo_
 ```
 
-Simple. No necesita más.
+Simple. No necesita más. Estable a través de la migración de temas — el wordmark no cambia cuando cambia la piel.
 
-**Concepto alternativo:** Un círculo (el enso del Zen, incompleto adrede — símbolo de imperfección y proceso) con `dojo` en el centro en monospace. El círculo incompleto conecta con `notdefined.dev` — nada está del todo cerrado aquí.
+**Concepto sumi-e — enso wordmark (post-migración):** el wordmark vive dentro de un enso (círculo zen incompleto, dibujado con DrawSVG en la primera carga). El enso no rodea cosméticamente — es el motivo principal del sistema visual y el wordmark se convierte en su contenido. El círculo incompleto conecta con `notdefined.dev` — nada está del todo cerrado aquí. Detalles en [`DESIGN.md`](DESIGN.md) §Brand motifs.
 
-**Para el favicon:** Solo el cursor parpadeante `▌` en indigo sobre fondo oscuro. Reconocible en 16x16.
+**Para el favicon:** sólo el cursor parpadeante `▌` sobre fondo oscuro (indigo en Slate, vermillion en Sumi-e). Reconocible en 16×16.
 
-**Para share cards y OG images:** `dojo.notdefined.dev` en monospace completo, el punto entre dojo y notdefined actúa como separador visual natural.
+**Para share cards y OG images:** `dojo.notdefined.dev` en monospace completo. El punto entre `dojo` y `notdefined` actúa como separador visual natural.
 
-Evitar: iconografía de artes marciales literal (katanas, cinturones, dojos físicos), iconos de código genérico (corchetes, `</>`), iconos de robot/AI, cualquier cosa que parezca una startup de 2019.
+**Evitar:**
+- Iconografía de artes marciales literal (katanas, cinturones físicos, dojos de madera)
+- Íconos de código genérico (corchetes, `</>`)
+- Íconos de robot/AI/cerebro/lightbulb
+- Cualquier cosa que parezca una startup de 2019
+
+---
+
+## Related documents
+
+- [`DESIGN.md`](DESIGN.md) — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion specs. Source of truth para todo lo visual/operativo.
+- [`VISION.md`](VISION.md) — product strategy.
+- [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md) — step-type animations within scrolls.
+- [`prd/031-belt-progression-rubric.md`](prd/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
+- [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md) — Sprint 023's rename que introdujo `scroll / kata / belt / milestone` como vocabulario visible.
