@@ -83,16 +83,58 @@
    inside bg-surface section cards. */
 @layer components {
   .admin-input {
-    @apply w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-[13px] font-sans resize-none focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-colors placeholder:text-muted;
+    @apply w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/40 transition-colors placeholder:text-muted;
   }
 }
 
-/* Base — sets the page bg + foreground without depending on Tailwind utilities. */
+/* Base — sets the page bg + foreground via the @theme tokens so theme
+   overrides (data-theme="sumi"/"washi") propagate to the document root. */
 html {
-  background-color: #0F172A;
-  color: #F8FAFC;
+  background-color: var(--color-page);
+  color: var(--color-primary);
   font-family: 'Inter Variable', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ── Sumi-e theme overrides (DESIGN.md §Color tokens) ──────────────────
+   Activated by adding data-theme="sumi" or data-theme="washi" on <html>.
+   When neither is set, the @theme defaults (Slate Indigo) render.
+   Values are v1 draft per DESIGN.md — expect designer calibration. */
+
+[data-theme='sumi'] {
+  --color-page: #0A0908;
+  --color-surface: #13110F;
+  --color-elevated: #1B1815;
+  --color-border: #2A2520;
+  --color-primary: #F2EDE3;
+  --color-secondary: #A39A8C;
+  --color-muted: #5C544A;
+  --color-accent: #B73A2F;
+  --color-success: #7D9B6A;
+  --color-danger: #9C2D24;
+  --color-warning: #D4A547;
+  --color-type-code: #6B5E51;
+  --color-type-chat: #5A4275;
+  --color-type-whiteboard: #3F6B68;
+  --color-type-review: #B73A2F;
+}
+
+[data-theme='washi'] {
+  --color-page: #F5F1E8;
+  --color-surface: #EDE7D9;
+  --color-elevated: #E3DCC9;
+  --color-border: #C9BFA8;
+  --color-primary: #1F1B16;
+  --color-secondary: #5C5448;
+  --color-muted: #8A8071;
+  --color-accent: #B73A2F;
+  --color-success: #5C7A4E;
+  --color-danger: #9C2D24;
+  --color-warning: #BC8E37;
+  --color-type-code: #6B5E51;
+  --color-type-chat: #5A4275;
+  --color-type-whiteboard: #3F6B68;
+  --color-type-review: #B73A2F;
 }
 
 * {
