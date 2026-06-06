@@ -54,26 +54,29 @@ practiceRoutes.post('/access-requests', async (c) => {
 
   const { githubHandle, reason } = parsed.data
 
-  // Notify creator via email (no DB storage — privacy first)
-  if (config.RESEND_API_KEY) {
-    try {
-      const { Resend } = await import('resend')
-      const resend = new Resend(config.RESEND_API_KEY)
-      await resend.emails.send({
-        from: config.RESEND_FROM_EMAIL,
-        to: config.RESEND_FROM_EMAIL.replace(/.*<(.+)>/, '$1'), // extract email from "name <email>"
-        subject: `dojo_ access request: ${githubHandle}`,
-        html: `
-          <div style="font-family: monospace; padding: 20px;">
-            <p><strong>GitHub:</strong> ${githubHandle}</p>
-            <p><strong>Why:</strong> ${reason || '(not provided)'}</p>
-            <p><strong>Profile:</strong> <a href="https://github.com/${githubHandle.replace('@', '')}">github.com/${githubHandle.replace('@', '')}</a></p>
-          </div>
-        `,
-      })
-    } catch (err) {
-      console.error('Failed to send access request notification:', err)
-    }
+  if (!config.RESEND_API_KEY) {
+    console.warn('access-requests: RESEND_API_KEY not configured — dropping request')
+    return c.json({ error: 'Access request channel not available' }, 503)
+  }
+
+  try {
+    const { Resend } = await import('resend')
+    const resend = new Resend(config.RESEND_API_KEY)
+    await resend.emails.send({
+      from: config.RESEND_FROM_EMAIL,
+      to: config.RESEND_FROM_EMAIL.replace(/.*<(.+)>/, '$1'),
+      subject: `dojo_ access request: ${githubHandle}`,
+      html: `
+        <div style="font-family: monospace; padding: 20px;">
+          <p><strong>GitHub:</strong> ${githubHandle}</p>
+          <p><strong>Why:</strong> ${reason || '(not provided)'}</p>
+          <p><strong>Profile:</strong> <a href="https://github.com/${githubHandle.replace('@', '')}">github.com/${githubHandle.replace('@', '')}</a></p>
+        </div>
+      `,
+    })
+  } catch (err) {
+    console.error('access-requests: resend delivery failed:', err)
+    return c.json({ error: 'Email delivery failed' }, 502)
   }
 
   return c.json({ ok: true })
