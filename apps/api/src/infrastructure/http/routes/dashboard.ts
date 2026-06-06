@@ -19,10 +19,16 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
   const userId = user.id
 
+  const today = new Date()
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+  const weekStart = new Date(today)
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay())
+  weekStart.setHours(0, 0, 0, 0)
 
-  // Active session — single joined query instead of 3 cascaded queries
+  // Phase 1: active session check. May UPDATE session status, which changes
+  // the state every subsequent query reads — must finish before Phase 2.
   const [activeRow] = await db
     .select({
       sessionId: sessions.id,
@@ -54,93 +60,114 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     }
   }
 
-  // Heatmap / streak source: only sessions where the learner actually
-  // submitted a final evaluation. A day "counts" when there is real
-  // practice — creating a session and closing the tab does not, and
-  // neither does a session that expired without a submission.
-  const heatmapRows = await db
-    .select({
-      date: sql<string>`DATE(${sessions.startedAt})::text`,
-      count: count(),
-    })
-    .from(sessions)
-    .where(and(
-      eq(sessions.userId, userId),
-      gte(sessions.startedAt, thirtyDaysAgo),
-      sql`EXISTS (
-        SELECT 1 FROM ${attempts}
-        WHERE ${attempts.sessionId} = ${sessions.id}
-          AND ${attempts.isFinalEvaluation} = true
-      )`,
-    ))
-    .groupBy(sql`DATE(${sessions.startedAt})`)
+  // Phase 2: every other read is independent of the others, fan out.
+  const [
+    heatmapRows,
+    recentRows,
+    totalRows,
+    todayRows,
+    topicRows,
+    avgTimeRows,
+    typeCountRows,
+    timedOutRows,
+    weeklyRows,
+    prefs,
+    belt,
+  ] = await Promise.all([
+    db
+      .select({
+        date: sql<string>`DATE(${sessions.startedAt})::text`,
+        count: count(),
+      })
+      .from(sessions)
+      .where(and(
+        eq(sessions.userId, userId),
+        gte(sessions.startedAt, thirtyDaysAgo),
+        sql`EXISTS (
+          SELECT 1 FROM ${attempts}
+          WHERE ${attempts.sessionId} = ${sessions.id}
+            AND ${attempts.isFinalEvaluation} = true
+        )`,
+      ))
+      .groupBy(sql`DATE(${sessions.startedAt})`),
+    db
+      .select({
+        id: sessions.id,
+        status: sessions.status,
+        startedAt: sessions.startedAt,
+        kataTitle: katas.title,
+        kataType: katas.type,
+        difficulty: katas.difficulty,
+        verdict: verdictSubquery(),
+      })
+      .from(sessions)
+      .innerJoin(katas, eq(sessions.kataId, katas.id))
+      .where(and(eq(sessions.userId, userId), sql`${sessions.status} != 'active'`))
+      .orderBy(desc(sessions.startedAt))
+      .limit(5),
+    db
+      .select({ count: count() })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'))),
+    db
+      .select({
+        id: sessions.id,
+        kataTitle: katas.title,
+        verdict: sql<string | null>`(
+          SELECT ${attempts.llmResponse}::jsonb->>'verdict'
+          FROM ${attempts}
+          WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
+          LIMIT 1
+        )`,
+      })
+      .from(sessions)
+      .innerJoin(katas, eq(sessions.kataId, katas.id))
+      .where(and(
+        eq(sessions.userId, userId),
+        sql`${sessions.status} IN ('completed', 'failed')`,
+        gte(sessions.startedAt, todayStart),
+      ))
+      .orderBy(desc(sessions.startedAt))
+      .limit(1),
+    db
+      .select({
+        topic: sql<string>`jsonb_array_elements_text(${attempts.llmResponse}::jsonb->'topicsToReview')`,
+      })
+      .from(attempts)
+      .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
+      .where(and(eq(sessions.userId, userId), eq(attempts.isFinalEvaluation, true))),
+    db
+      .select({
+        avg: sql<number>`ROUND(AVG(EXTRACT(EPOCH FROM (${sessions.completedAt} - ${sessions.startedAt})) / 60))`,
+      })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), sql`${sessions.completedAt} IS NOT NULL`)),
+    db
+      .select({ type: katas.type, count: count() })
+      .from(sessions)
+      .innerJoin(katas, eq(sessions.kataId, katas.id))
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+      .groupBy(katas.type),
+    db
+      .select({ count: count() })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'failed'))),
+    db
+      .select({ count: count() })
+      .from(sessions)
+      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.startedAt, weekStart))),
+    db.query.userPreferences.findFirst({ where: eq(userPreferences.userId, userId) }),
+    useCases.calculateBelt.execute(UserId(userId)),
+  ])
 
-  // Recent sessions with kata info + verdict (last 5 completed/failed)
-  const recentRows = await db
-    .select({
-      id: sessions.id,
-      status: sessions.status,
-      startedAt: sessions.startedAt,
-      kataTitle: katas.title,
-      kataType: katas.type,
-      difficulty: katas.difficulty,
-      verdict: verdictSubquery(),
-    })
-    .from(sessions)
-    .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), sql`${sessions.status} != 'active'`))
-    .orderBy(desc(sessions.startedAt))
-    .limit(5)
-
-  // Total completed sessions (all time)
-  const [totalRow] = await db
-    .select({ count: count() })
-    .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
-  const totalCompleted = Number(totalRow?.count ?? 0)
-
-  // Streak: count consecutive days with any session going back from today
+  const totalCompleted = Number(totalRows[0]?.count ?? 0)
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
-  // Today session — single joined query instead of 3 cascaded queries
-  const today = new Date()
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-  const [todayRow] = await db
-    .select({
-      id: sessions.id,
-      kataTitle: katas.title,
-      verdict: sql<string | null>`(
-        SELECT ${attempts.llmResponse}::jsonb->>'verdict'
-        FROM ${attempts}
-        WHERE ${attempts.sessionId} = ${sessions.id} AND ${attempts.isFinalEvaluation} = true
-        LIMIT 1
-      )`,
-    })
-    .from(sessions)
-    .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(
-      eq(sessions.userId, userId),
-      sql`${sessions.status} IN ('completed', 'failed')`,
-      gte(sessions.startedAt, todayStart),
-    ))
-    .orderBy(desc(sessions.startedAt))
-    .limit(1)
-
+  const todayRow = todayRows[0]
   const todayComplete = !!todayRow
   const todaySession = todayRow
     ? { id: todayRow.id, kataTitle: todayRow.kataTitle, verdict: todayRow.verdict }
     : null
-
-  // --- Extended dashboard data ---
-
-  // "Where you struggle": aggregate topicsToReview across all sessions
-  const topicRows = await db
-    .select({
-      topic: sql<string>`jsonb_array_elements_text(${attempts.llmResponse}::jsonb->'topicsToReview')`,
-    })
-    .from(attempts)
-    .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
-    .where(and(eq(sessions.userId, userId), eq(attempts.isFinalEvaluation, true)))
 
   const topicCounts = new Map<string, number>()
   for (const row of topicRows) {
@@ -151,51 +178,17 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     .slice(0, 8)
     .map(([topic, frequency]) => ({ topic, frequency }))
 
-  // "How you practice": avg time, most avoided type, timed out
-  const [avgTimeRow] = await db
-    .select({
-      avg: sql<number>`ROUND(AVG(EXTRACT(EPOCH FROM (${sessions.completedAt} - ${sessions.startedAt})) / 60))`,
-    })
-    .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), sql`${sessions.completedAt} IS NOT NULL`))
-  const avgTimeMinutes = Number(avgTimeRow?.avg ?? 0)
+  const avgTimeMinutes = Number(avgTimeRows[0]?.avg ?? 0)
 
-  // Most avoided type: type with fewest completions
-  const typeCountRows = await db
-    .select({ type: katas.type, count: count() })
-    .from(sessions)
-    .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
-    .groupBy(katas.type)
   const allTypes = ['CODE', 'CHAT', 'WHITEBOARD']
   const typeCounts = new Map(typeCountRows.map((r) => [r.type, Number(r.count)]))
   const mostAvoided = allTypes
     .map((t) => ({ type: t, count: typeCounts.get(t) ?? 0 }))
     .sort((a, b) => a.count - b.count)[0]
 
-  // Sessions timed out (failed)
-  const [timedOutRow] = await db
-    .select({ count: count() })
-    .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'failed')))
-  const sessionsTimedOut = Number(timedOutRow?.count ?? 0)
-
-  // Weekly goal: completed sessions this week vs target
-  const weekStart = new Date(today)
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay()) // Sunday
-  weekStart.setHours(0, 0, 0, 0)
-  const [weeklyRow] = await db
-    .select({ count: count() })
-    .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.startedAt, weekStart)))
-  const weeklyCompleted = Number(weeklyRow?.count ?? 0)
-
-  const prefs = await db.query.userPreferences.findFirst({
-    where: eq(userPreferences.userId, userId),
-  })
+  const sessionsTimedOut = Number(timedOutRows[0]?.count ?? 0)
+  const weeklyCompleted = Number(weeklyRows[0]?.count ?? 0)
   const weeklyTarget = prefs?.goalWeeklyTarget ?? null
-
-  const belt = await useCases.calculateBelt.execute(UserId(userId))
 
   return c.json({
     streak,
