@@ -108,7 +108,7 @@ A step type that lacks any of these four is incomplete. Authors cannot ship step
 - Snippet always visible during question AND reveal — never collapsed.
 - Selected wrong option: `border-color: var(--color-danger)`. Selected right option: `border-color: var(--color-success)`.
 - Reveal expands in place, not as a modal or new screen.
-- Animation: state machine with three states — `unanswered → reviewing → revealed`. Recommended runtime: Rive (see §[Animation tech](#animation-tech-recommendation)).
+- Animation: Rive state machine with three states — `unanswered → reviewing → revealed`. Author the state machine in the Rive editor; React triggers state transitions via `useStateMachineInput`. See §[Animation tech](#animation-tech-recommendation).
 
 **Voice:**
 - Right-answer feedback: *"correct. and you noticed `B` returns the prototype property — that's the trap most readers fall into."*
@@ -131,7 +131,7 @@ A step type that lacks any of these four is incomplete. Authors cannot ship step
 **Renderer:**
 - The developer controls advancement. No autoplay. No "skip to end".
 - Layout: split — code on one side (with current line highlighted), state panel on the other. The state panel's shape varies by language; see [`curricula/`](curricula/) per language for guidance.
-- Animation: each step transition is a state machine update (Rive) OR a CSS variable update + transition (lighter option for simple variable-flow). Procedural updates driven by `steps[i]`.
+- Animation: a CSS variable update + transition for the common case (line highlight + state panel updates). Reach for Rive only when the step needs choreographed visual state — DOM trace specifically, where a dot moves along the event-propagation path with capture/target/bubbling phase states.
 
 **Voice:**
 - Sensei voice is minimal in trace — only appears as the `hint` field at gotcha steps.
@@ -158,7 +158,7 @@ type Interaction =
 **Renderer:**
 - Inline expansion of reveals (tap to expand). State machine: `collapsed → expanded`.
 - Micro-quizzes: 2 options as buttons. State machine: `unanswered → answered`. Wrong feedback follows the predict voice contract.
-- Animation: lightweight — CSS transitions sufficient for collapse/expand. No Rive needed unless a specific reveal carries a diagram.
+- Animation: lightweight — CSS transitions sufficient for collapse/expand. No Rive needed.
 
 **Voice:**
 - Mini-quiz wrong feedback: same as predict — specific to the wrong answer.
@@ -168,23 +168,47 @@ type Interaction =
 
 ## Animation tech recommendation
 
-S12 Felix's framework. The library picked per step type per use case, not per project.
+Two libraries, scoped by domain:
+
+- **GSAP** for site motion identity (enso loader, brushstroke reveals, hanko stamp on verdicts, page transitions) — declared in [`../DESIGN.md`](../DESIGN.md) §Motion. DrawSVG plugin is load-bearing; nothing else paints brushstrokes.
+- **Rive** for step type interactions (predict state machines, trace step transitions). Rive's state machine editor is genuinely better suited for the predict reveal flow than a hand-written GSAP timeline, and the creator (acting as designer) iterates animations without writing TypeScript.
+
+They co-load only on `/scrolls/*` routes (where step types render). Routes that don't ship step types — `/katas/*`, landing, dashboard, admin — get only GSAP or nothing. Lazy-loaded per route; never both libraries on the same chunk.
 
 ### Decision matrix
 
 | Use case | Recommended | Why | Bundle cost |
 |---|---|---|---|
-| `predict` state machine (unanswered → reviewing → revealed) | **Rive** | Designer-driven states, future cross-platform parity, file size tiny | ~30KB runtime + <5KB per .riv |
-| `trace` step transitions (line highlight, state panel update) | **CSS transitions + React state** | Simple variable-driven UI; doesn't need a state machine | 0 — no new runtime |
-| `read+inline` collapse/expand | **CSS transitions** | One-axis animation; reduced-motion respected by default | 0 |
-| Trace for DOM (dot animating through event flow) | **Rive** OR **motion-one** | Path animation along DOM tree; Rive gives state visualization | ~30KB Rive OR ~3KB motion-one |
+| `predict` state machine (unanswered → reviewing → revealed) | **Rive** | Designer-authored state machine; creator iterates the reveal in Rive editor without code changes; the predict flow is the highest-value pedagogical surface | ~30KB Rive runtime + <5KB per .riv |
+| `trace` step transitions (line highlight, state panel update) | **CSS transitions + React state** | Simple variable-driven UI; binary state change doesn't need a library | 0 — no new runtime |
+| `read+inline` collapse/expand | **CSS transitions** | One-axis animation; reduced-motion respected automatically | 0 |
+| Trace for DOM (dot animating through event flow) | **Rive** | Path animation along the DOM tree visualization; Rive's state model represents capture / target / bubbling phases natively | ~30KB (shared with predict) |
 | Trace for SQL (query plan walk) | **CSS + React state** | Tree nodes are React components with className transitions; no path animation needed | 0 |
 | Decorative animations (header pulses, cursor blinks) | **CSS only** | Already used across the rest of Dojo | 0 |
-| Anything that needs a designer-iterable artifact | **Rive** | Designer ships .riv, code triggers states — the designer-developer contract Felix endorses | per use |
+| Ink-stroke reveal of explanation steps (brushstroke underline on H1) | **GSAP DrawSVG** | Per `DESIGN.md` — site-wide motion signature | ~60KB (shared with all GSAP usage) |
 
-### Felix's rule
+### Combined bundle cost on `/scrolls/*` routes
 
-> "Rive when the animation is a designed artifact with states. CSS when state is binary. Motion-one when bundle size dominates. GSAP only when you need timeline scrubbing or sequenced procedural animations that the other three can't reach — and you have a specific named case, not 'because it's GSAP'."
+GSAP core ~50KB + DrawSVG plugin ~10KB + Rive runtime ~30KB = ~90KB lazy-loaded motion runtime. Comparison frame on the same route:
+
+- CodeMirror already loaded: ~200KB
+- Mermaid (some scrolls): ~400KB
+
+90KB on routes already at ~600KB is signal under the noise floor. Approved.
+
+### Felix's rule (revised)
+
+> "GSAP earns its keep through DrawSVG — the brand can't paint brushstrokes any other way. Rive earns its keep through the designer-author advantage on step type state machines. They are scoped to different jobs and only co-load on `/scrolls/*` routes. CSS handles everything else. Never reach for either when a 200ms CSS transition would do."
+
+### Panel disagreement (resolved)
+
+Earlier this doc recommended Rive only. A subsequent revision pushed toward GSAP-only — the argument was "carry one library, simpler". The creator's reversal restored the two-library model:
+
+- **Maya (S11) supports two libraries:** the designer-author advantage of Rive for step types is real and concrete, not hypothetical. Predict reveal animations are the highest-leverage pedagogical surface — the creator iterating them in the Rive editor without engineer intervention is the right development loop.
+- **Felix (S12) was the GSAP-only voice:** simpler runtime story, one motion mental model, no co-load. He defers to the resolved call but flags: when contributors arrive (Phase 3+), the two-library learning curve becomes real cost. Revisit then.
+- **The decision:** two libraries, scoped by domain. Documented honestly so the reasoning survives future re-litigation.
+
+The cost: one extra mental model for the engineer, ~30KB extra on `/scrolls/*`. Acceptable.
 
 ### Lazy-load boundary
 
@@ -218,7 +242,7 @@ The catalog of mistakes that get a step rejected at review. Each anti-pattern na
 ### Technical failures
 
 - **Animations without `prefers-reduced-motion` support** — automatic reject from Felix S12.
-- **State machine logic in component code instead of Rive** — when the step type uses Rive, the state transitions belong in the .riv file. Engineers shouldn't be re-implementing the state machine in React. (Felix S12)
+- **State machine logic in React component code instead of Rive** — when a step type uses Rive, the state transitions belong in the .riv file. Engineers shouldn't be re-implementing the state machine via React state + className flips. (Felix S12) · Same rule applies if the step uses GSAP: timelines belong in a `useGSAP` hook with stable refs, not constructed inline on each render.
 - **Bundle weight without justification** — adding GSAP for a single fade-in. Use CSS. (Felix S12)
 - **Animations that block the accessibility tree** — `aria-busy` left true after the animation completes. (Felix S12)
 

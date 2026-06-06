@@ -424,15 +424,98 @@ The Sumi-e direction is a sprint of its own. Not a piecemeal sed-and-pray.
 
 ---
 
-## Open questions
+## Decided (was: open questions)
 
-Real ones, not theatre:
+These five were live during the doc's first draft. Each is now resolved. Reasoning kept short — the call goes here, the constraint goes back into the relevant section.
 
-1. **The hanko's Japanese character.** Does the milestone hanko show the milestone slug in monospace English (e.g. `FIRST KATA`) or a stylized Japanese character? The English-only stance from `stitch/DESIGN.md` argues for the former. The cultural integrity of the motif argues for the latter. Decision deferred until first hanko component is in code.
-2. **Theme switcher persistence.** localStorage per-user, or per-account in the user record? Per-account survives device changes but requires a migration. localStorage is simpler.
-3. **Brushstroke library.** Pre-drawn SVG paths in a sprite, or generated procedurally? Pre-drawn looks more intentional; procedural is more flexible. Default plan: pre-drawn library of 8-10 strokes, picked at random for cards to avoid mechanical repetition.
-4. **DrawSVG bundle accounting.** Even when lazy-loaded, the route-level chunk grows by ~60KB. Is that worth it for the motion signature? Felix (S12) wants the per-step type calls measured before the sprint commits.
-5. **Email/share-card rendering of motifs.** Hanko stamp on a share card is a server-rendered PNG, not browser SVG. Decision on whether the hanko is drawn server-side or composited from a pre-rendered asset.
+### 1. Hanko text is English slug, in monospace caps
+
+The milestone hanko shows `FIRST KATA` / `POLYGLOT` / `BLACK BELT` in JetBrains Mono uppercase, not a stylized Japanese character. The "product UI is English only" stance from `BRANDING.md` and `stitch/DESIGN.md` outranks cultural-motif integrity. The hanko stays Japanese in *form* (the square red seal), not in *text*. Legibility for the audience (English-reading developers) wins.
+
+### 2. Theme persistence: localStorage only, defaults to OS preference
+
+No `userPreferences.theme` column. Why:
+
+- Anonymous learners (engawa, public scrolls) need to pick a theme before they have an account — DB sync requires auth
+- For v1, the only user is the creator, on the same machine. Multi-device sync is solving a problem nobody has
+- Pattern: read `prefers-color-scheme` as the default; on user toggle, persist to `localStorage.dojo-theme`; on subsequent loads, localStorage wins over OS default
+- Adding DB sync later is **not breaking** — just promote the localStorage value to the user record when login happens
+
+The toggle lives in `/settings` and as a sidebar icon. The toggle's existence is justified — the same developer might want washi for reading scrolls and sumi for the kata flow on the same day.
+
+### 3. Pre-drawn brushstroke library (~6 strokes, picked by seed)
+
+Procedural sumi-e generation looks fake. Real brushstrokes carry weight that a math function doesn't. The brand promise — "intentional, ownable, not AI slop" — is precisely the opposite of generative randomness.
+
+**Plan:**
+
+- Library of 6 hand-picked strokes stored as SVG paths in a single sprite (`apps/web/public/brushstrokes.svg` when the migration sprint creates it)
+- Each stroke is a single `<path>` ~200×20 viewBox, no fill, vermillion stroke 1.5–2px
+- Use a deterministic seed (e.g., string hash of the card's title or slug) to pick a stroke per usage — so the same card always renders with the same stroke, but different cards visually vary
+- Total sprite size budget: ~3KB
+
+**Sources for the strokes themselves** (acceptable for v1):
+
+- CC0 brush libraries from Wikimedia Commons or Unsplash brush collections
+- Existing Procreate / Adobe brush exports under permissive license
+- Eventually: commissioned strokes from a designer (a half-day's work for a real sumi-e calligrapher)
+
+Avoid AI-generated strokes — they fail the brand test.
+
+### 4. GSAP bundle is approved with route lazy-load
+
+Felix's quantitative test: ~60KB added (GSAP core ~50KB + DrawSVG plugin ~10KB), lazy-loaded on `/katas/*` and `/scrolls/*` routes only. The comparison frame:
+
+- CodeMirror already loaded on those routes: ~200KB
+- Mermaid on scroll-player when used: ~400KB
+- Landing + dashboard + admin: do not import GSAP, no penalty
+
+60KB on routes already at ~600KB is signal under the noise floor. Approved.
+
+**Qualitative rule (Felix's, kept):** use GSAP when:
+- Multiple choreographed steps in sequence (predict reveal — highlight → diff slide → sensei text)
+- DrawSVG paths (enso, brushstroke, hanko) — CSS cannot draw these
+- Procedural transforms with timing that CSS keyframes can't express (verdict stamp anti-bounce)
+
+For everything else (binary state change, opacity transitions, simple translates) — CSS, not GSAP.
+
+### 5. Server-rendered hanko on share cards via Satori
+
+Share cards are PNG, generated server-side. The hanko is composed as inline SVG within the share card's JSX/HTML template, rendered through Satori (the lib behind `@vercel/og`). No pre-rendered asset library.
+
+Why:
+- Verdict color + milestone slug + belt color all vary per user/per-share — a pre-rendered template is rigid
+- Satori renders JSX/HTML to PNG. The hanko component is just `<svg>...<rect>...<text>...</svg>` with dynamic props
+- Server bundle gains ~500KB but only on `/share/*` routes; cache headers are aggressive (share cards rarely change), so cold-start cost amortizes fast
+- The existing `apps/api/src/infrastructure/http/routes/share.ts` already renders PNGs — Satori (if not already used) slots into the same handler
+
+The migration sprint validates whether the current renderer is Satori-compatible. If it's currently using a different lib (Sharp + composite, for example), we either swap to Satori or render the hanko SVG to an inline `<image>` in the existing pipeline.
+
+---
+
+## Motion library scope: GSAP for the site, Rive for scrolls
+
+Two animation libraries, scoped by domain:
+
+- **GSAP (with DrawSVG)** — site motion identity. Owns enso loader, brushstroke reveals on H1, hanko stamp on verdicts, page transitions, the ink-wash between scroll steps. Routes: site-wide where motion ships (kata flow, scroll player, results, share). Bundle: ~60KB lazy-loaded per route, never on landing/dashboard/admin.
+- **Rive** — interactive step types inside scrolls. Owns predict state machines (`unanswered → reviewing → revealed`), trace step transitions when path-along-DOM is required. Routes: `/scrolls/*` only. Bundle: ~30KB runtime + small .riv files per step.
+
+They co-load only on `/scrolls/*`. Combined motion runtime on the scroll player: ~90KB, which sits below CodeMirror (~200KB) and Mermaid (~400KB) that already ship on the same routes.
+
+### Why two libraries, honestly
+
+A panel debate happened. Felix (S12) initially pushed for one library (GSAP-only), citing one mental model and no double runtime. The case was: Rive's designer-tool advantage is hypothetical because Dojo doesn't have a dedicated designer.
+
+The creator's call (Adrian, per Kira's principle "the panel advises, the creator decides"): **the designer-author advantage is concrete, not hypothetical.** Rive's state machine editor is genuinely better for the predict reveal flow than a hand-written GSAP timeline. The creator iterates animations in Rive without writing TypeScript — that's the design loop that matters when the step type is the highest-leverage pedagogical surface of the product.
+
+**The honest trade-off:**
+
+- Extra mental model for the engineer (one library per domain). Acceptable for a one-person team.
+- ~30KB extra on `/scrolls/*`. Below the noise floor on routes already at ~600KB.
+- Two `prefers-reduced-motion` fallbacks to verify. Both libraries respect the OS setting; the testing burden is real but small.
+- When contributors arrive (Phase 3+), the two-library learning curve becomes a cost. **Revisit then** — explicitly flagged for Phase 3 panel review.
+
+The decision is documented here, in [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md), and in Felix's persona update (S12). If the migration sprint discovers either library is poorly suited, this is the section to revise — not the per-step pages.
 
 ---
 
