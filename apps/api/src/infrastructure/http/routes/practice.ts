@@ -43,9 +43,22 @@ practiceRoutes.get('/auth/me', requireAuth, (c) => {
 // ---------------------------------------------------------------------------
 
 const accessRequestSchema = z.object({
-  githubHandle: z.string().min(1).max(100),
+  githubHandle: z
+    .string()
+    .min(1)
+    .max(39)
+    .regex(/^@?[a-zA-Z0-9](?:[a-zA-Z0-9-]){0,38}$/, 'Invalid GitHub handle'),
   reason: z.string().max(1000).optional(),
 })
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
 
 practiceRoutes.post('/access-requests', async (c) => {
   const body = await c.req.json()
@@ -59,6 +72,10 @@ practiceRoutes.post('/access-requests', async (c) => {
     return c.json({ error: 'Access request channel not available' }, 503)
   }
 
+  const safeHandle = escapeHtml(githubHandle)
+  const safeReason = escapeHtml(reason || '(not provided)')
+  const handlePath = githubHandle.replace(/^@/, '')
+
   try {
     const { Resend } = await import('resend')
     const resend = new Resend(config.RESEND_API_KEY)
@@ -68,9 +85,9 @@ practiceRoutes.post('/access-requests', async (c) => {
       subject: `dojo_ access request: ${githubHandle}`,
       html: `
         <div style="font-family: monospace; padding: 20px;">
-          <p><strong>GitHub:</strong> ${githubHandle}</p>
-          <p><strong>Why:</strong> ${reason || '(not provided)'}</p>
-          <p><strong>Profile:</strong> <a href="https://github.com/${githubHandle.replace('@', '')}">github.com/${githubHandle.replace('@', '')}</a></p>
+          <p><strong>GitHub:</strong> ${safeHandle}</p>
+          <p><strong>Why:</strong> ${safeReason}</p>
+          <p><strong>Profile:</strong> <a href="https://github.com/${handlePath}">github.com/${handlePath}</a></p>
         </div>
       `,
     })
