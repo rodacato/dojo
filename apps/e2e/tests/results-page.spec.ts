@@ -36,13 +36,15 @@ const MOCK_SESSION = {
   status: 'completed',
   startedAt: '2026-04-15T10:00:00.000Z',
   completedAt: '2026-04-15T10:12:00.000Z',
-  exercise: {
-    id: 'exercise-1',
+  // Sprint 023 ADR 020 renamed exercise → kata in the API surface.
+  kata: {
+    id: 'kata-1',
     title: 'Fix: Off-by-one in pagination',
     type: 'code',
     difficulty: 'easy',
     language: ['typescript'],
     tags: ['pagination', 'debugging'],
+    duration: 10,
   },
   variationId: 'var-1',
   ownerRole: 'Principal Engineer',
@@ -74,9 +76,12 @@ test.describe('Results page — post-kata insight (Sprint 012)', () => {
 
     await page.goto(`/kata/${SESSION_ID}/result`)
 
-    // Verdict heading — underscores replaced with spaces
+    // h1 is the kata title; the verdict is its own heading inside VerdictBlock.
     await expect(
-      page.getByRole('heading', { level: 1, name: /passed with notes/i }),
+      page.getByRole('heading', { level: 1, name: /off-by-one in pagination/i }),
+    ).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: /^passed with notes$/i }),
     ).toBeVisible()
 
     // Insight card headers

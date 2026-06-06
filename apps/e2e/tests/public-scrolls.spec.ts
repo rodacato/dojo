@@ -2,8 +2,11 @@ import { test, expect } from '@playwright/test'
 
 const API_BASE = 'http://localhost:3001'
 
-const SQL_COURSE_SUMMARY = {
-  id: 'course-sql-1',
+// Sprint 023 ADR 020 renamed "course" → "scroll" across the product UI
+// and the API surface. These tests target the renamed endpoints + routes.
+
+const SQL_SCROLL_SUMMARY = {
+  id: 'scroll-sql-1',
   slug: 'sql-deep-cuts',
   title: 'SQL Deep Cuts',
   description: 'The queries nobody taught you. Window functions, CTEs, and real-world analysis patterns.',
@@ -15,8 +18,8 @@ const SQL_COURSE_SUMMARY = {
   externalReferences: [],
 }
 
-const SQL_COURSE_DETAIL = {
-  id: 'course-sql-1',
+const SQL_SCROLL_DETAIL = {
+  id: 'scroll-sql-1',
   slug: 'sql-deep-cuts',
   title: 'SQL Deep Cuts',
   description: 'The queries nobody taught you.',
@@ -56,17 +59,17 @@ const SQL_COURSE_DETAIL = {
   ],
 }
 
-test.describe('Public courses (anonymous)', () => {
+test.describe('Public scrolls (anonymous)', () => {
   test('anonymous visitor sees SQL Deep Cuts card (no visibility badges)', async ({ page }) => {
-    await page.route(`${API_BASE}/learn/courses`, (route) =>
+    await page.route(`${API_BASE}/scrolls`, (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ courses: [SQL_COURSE_SUMMARY] }),
+        body: JSON.stringify({ scrolls: [SQL_SCROLL_SUMMARY] }),
       }),
     )
 
-    await page.goto('/learn')
+    await page.goto('/scrolls')
 
     await expect(page.getByRole('heading', { level: 2, name: 'SQL Deep Cuts' })).toBeVisible()
     await expect(page.getByText(/3 lessons/)).toBeVisible()
@@ -75,16 +78,16 @@ test.describe('Public courses (anonymous)', () => {
     await expect(page.getByText(/^private$/i)).toHaveCount(0)
   })
 
-  test('course player renders a read step without the code editor', async ({ page }) => {
-    await page.route(`${API_BASE}/learn/courses/sql-deep-cuts`, (route) =>
+  test('scroll player renders a read step without the code editor', async ({ page }) => {
+    await page.route(`${API_BASE}/scrolls/sql-deep-cuts`, (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ course: SQL_COURSE_DETAIL }),
+        body: JSON.stringify({ scroll: SQL_SCROLL_DETAIL }),
       }),
     )
     // GetProgress with anonymousSessionId query — empty response
-    await page.route(`${API_BASE}/learn/progress/*`, (route) =>
+    await page.route(`${API_BASE}/scrolls/progress/*`, (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -92,7 +95,7 @@ test.describe('Public courses (anonymous)', () => {
       }),
     )
 
-    await page.goto('/learn/sql-deep-cuts')
+    await page.goto('/scrolls/sql-deep-cuts')
 
     // The read step's markdown header should render
     await expect(page.getByRole('heading', { name: 'Beyond GROUP BY' })).toBeVisible()
@@ -102,32 +105,32 @@ test.describe('Public courses (anonymous)', () => {
     await expect(page.getByRole('button', { name: /^\s*▶\s*run\s*$/i })).toHaveCount(0)
   })
 
-  test('private course returns 404 for anonymous visitor (Sprint 017 invariant)', async ({ page }) => {
-    await page.route(`${API_BASE}/learn/courses/typescript-fundamentals`, (route) =>
+  test('private scroll returns 404 for anonymous visitor (Sprint 017 invariant)', async ({ page }) => {
+    await page.route(`${API_BASE}/scrolls/typescript-fundamentals`, (route) =>
       route.fulfill({
         status: 404,
         contentType: 'application/json',
-        body: JSON.stringify({ error: 'Course not found' }),
+        body: JSON.stringify({ error: 'Scroll not found' }),
       }),
     )
 
-    await page.goto('/learn/typescript-fundamentals')
+    await page.goto('/scrolls/typescript-fundamentals')
 
-    // CoursePlayerPage surfaces a generic load-failure state (covers 404
+    // ScrollPlayerPage surfaces a generic load-failure state (covers 404
     // and any other fetch error) with a back link to the catalog.
-    await expect(page.getByText(/we couldn't load this course/i)).toBeVisible()
-    await expect(page.getByRole('link', { name: /back to courses/i })).toBeVisible()
+    await expect(page.getByText(/we couldn't load this scroll/i)).toBeVisible()
+    await expect(page.getByRole('link', { name: /back to scrolls/i })).toBeVisible()
   })
 
-  test('anonymous session id is persisted to localStorage on public course', async ({ page }) => {
-    await page.route(`${API_BASE}/learn/courses/sql-deep-cuts`, (route) =>
+  test('anonymous session id is persisted to localStorage on public scroll', async ({ page }) => {
+    await page.route(`${API_BASE}/scrolls/sql-deep-cuts`, (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ course: SQL_COURSE_DETAIL }),
+        body: JSON.stringify({ scroll: SQL_SCROLL_DETAIL }),
       }),
     )
-    await page.route(`${API_BASE}/learn/progress/*`, (route) =>
+    await page.route(`${API_BASE}/scrolls/progress/*`, (route) =>
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -135,9 +138,9 @@ test.describe('Public courses (anonymous)', () => {
       }),
     )
 
-    await page.goto('/learn/sql-deep-cuts')
+    await page.goto('/scrolls/sql-deep-cuts')
 
-    // Wait for the course to load so the anonymous-id effect has run
+    // Wait for the scroll to load so the anonymous-id effect has run
     await expect(page.getByRole('heading', { name: 'Beyond GROUP BY' })).toBeVisible()
 
     const anonId = await page.evaluate(() => localStorage.getItem('dojo-anon-id'))

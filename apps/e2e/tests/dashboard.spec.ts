@@ -25,8 +25,11 @@ const MOCK_DASHBOARD = {
     mostAvoidedType: null,
     sessionsTimedOut: 0,
   },
-  senseiSuggests: [],
   weeklyGoal: { target: 3, completed: 1 },
+  belt: {
+    rank: 'yellow',
+    factors: { completed: 15, distinctClusters: 2, activeDays30: 6, daysAtRank: 8 },
+  },
 }
 
 test.describe('Dashboard', () => {
@@ -46,13 +49,16 @@ test.describe('Dashboard', () => {
 
     await page.goto('/dashboard')
 
-    // Streak number should be visible
+    // StreakCard renders the count + the "Current streak" eyebrow + "days" label
+    await expect(page.getByText('Current streak')).toBeVisible()
     await expect(page.getByText('7')).toBeVisible()
 
-    // "day streak" label should be present
-    await expect(page.getByText('day streak')).toBeVisible()
+    // BeltStrip renders the rank text
+    await expect(page.getByText(/yellow belt/i)).toBeVisible()
 
-    // Today's kata section (TodayCard) should exist
-    await expect(page.getByText(/active_streak/i)).toBeVisible()
+    // TodayCard surfaces the brand microcopy for an existing user
+    await expect(
+      page.getByText(/the dojo opens again whether you show up or not/i),
+    ).toBeVisible()
   })
 })

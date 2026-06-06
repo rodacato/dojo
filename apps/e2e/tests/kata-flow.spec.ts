@@ -25,8 +25,11 @@ const MOCK_DASHBOARD = {
     mostAvoidedType: null,
     sessionsTimedOut: 0,
   },
-  senseiSuggests: [],
   weeklyGoal: { target: 3, completed: 1 },
+  belt: {
+    rank: 'white',
+    factors: { completed: 5, distinctClusters: 1, activeDays30: 3, daysAtRank: 2 },
+  },
 }
 
 const MOCK_PREFERENCES = {
@@ -36,9 +39,10 @@ const MOCK_PREFERENCES = {
   level: 'mid',
   interests: [],
   randomness: 0.3,
+  goalWeeklyTarget: 3,
 }
 
-test.describe('Kata flow (Day Start page)', () => {
+test.describe('Kata flow (Katas page)', () => {
   test('select mood and duration, then "Show my kata" becomes enabled', async ({ page }) => {
     await page.route(`${API_BASE}/auth/me`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
@@ -54,7 +58,8 @@ test.describe('Kata flow (Day Start page)', () => {
     await page.goto('/')
     await page.evaluate(() => localStorage.setItem('dojo_token', 'fake-token'))
 
-    await page.goto('/start')
+    // Sprint 023 merged DayStart + KataSelection into the single /katas page.
+    await page.goto('/katas')
 
     // Mood buttons should be visible
     await expect(page.getByRole('button', { name: /on a roll/i })).toBeVisible()
