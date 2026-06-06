@@ -555,18 +555,14 @@ function GitHubStatsRow() {
   const [stats, setStats] = useState<GitHubStats>({ stars: 0, forks: 0, language: 'TypeScript' })
   useEffect(() => {
     let cancelled = false
-    fetch('https://api.github.com/repos/rodacato/dojo')
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data: Record<string, unknown>) => {
-        if (cancelled) return
-        setStats({
-          stars: (data.stargazers_count as number) ?? 0,
-          forks: (data.forks_count as number) ?? 0,
-          language: (data.language as string) ?? 'TypeScript',
-        })
+    api
+      .getRepoStats()
+      .then((data) => {
+        if (!cancelled) setStats(data)
       })
       .catch(() => {
-        if (!cancelled) setStats({ stars: 12, forks: 3, language: 'TypeScript' })
+        // Endpoint already returns a safe fallback on its own failure path —
+        // if even that round-trip fails, keep the initial zeroed state.
       })
     return () => {
       cancelled = true

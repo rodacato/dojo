@@ -20,6 +20,7 @@ import { beltsRoutes } from './routes/belts'
 import { playgroundRoutes } from './routes/playground'
 import { ogRoutes } from './routes/og'
 import { errorRoutes } from './routes/errors'
+import { landingRoutes } from './routes/landing'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 import { requestIdMiddleware } from './middleware/requestId'
 import { errorReporter } from '../container'
@@ -52,6 +53,7 @@ export function createRouter() {
   app.route('/', playgroundRoutes)
   app.route('/', ogRoutes)
   app.route('/', errorRoutes)
+  app.route('/', landingRoutes)
   app.route('/admin', adminKatasRoutes)
   app.route('/admin/scrolls', adminScrollsRoutes)
   app.route('/admin/errors', adminErrorsRoutes)
