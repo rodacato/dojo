@@ -35,7 +35,8 @@ Edit when reality changes. Always reflects current behavior.
 | [`ROADMAP.md`](ROADMAP.md) | Active phase status, sprint and spec history |
 | [`WORKFLOW.md`](WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
-| [`BRANDING.md`](BRANDING.md) | Colors, typography, tokens, voice |
+| [`BRANDING.md`](BRANDING.md) | Voice, vocabulary, IA, UX principles, microcopy |
+| [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
 | [`scrolls/README.md`](scrolls/README.md) | Scroll content model and authoring conventions |
 | [`scrolls/testcode-pattern.md`](scrolls/testcode-pattern.md) | Active reference for authoring iframe testCode |
 | [`scrolls/{language}.md`](scrolls/) | Per-language scroll design (go, python, ruby, rust, typescript) |

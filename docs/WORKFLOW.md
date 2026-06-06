@@ -29,7 +29,8 @@ For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs
 | `docs/IDENTITY.md` | `docs/IDENTITY.md` | Canonical | Primary build persona — decision style and defaults |
 | `docs/EXPERTS.md` | `docs/EXPERTS.md` | Canonical | Virtual advisory panel — 11 specialist personas (quick reference at top) |
 | `docs/ROADMAP.md` | `docs/ROADMAP.md` | Canonical | Active phase status, sprint and spec history |
-| `docs/BRANDING.md` | `docs/BRANDING.md` | Canonical | Colors, typography, tokens, voice, UI components |
+| `docs/BRANDING.md` | `docs/BRANDING.md` | Canonical | Voice, vocabulary, IA, UX principles, microcopy |
+| `docs/DESIGN.md` | `docs/DESIGN.md` | Canonical | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
 | `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | Canonical | DDD model, bounded contexts, ports, events, decisions |
 | `docs/courses/` | `docs/courses/` | Canonical | Per-language course design + `testcode-pattern.md` authoring reference |
 | `docs/sprints/current.md` | `docs/sprints/current.md` | Live | Active work block — committed items and expected outcome |
