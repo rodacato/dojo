@@ -11,7 +11,7 @@ import { Button, buttonClasses } from '../components/ui/Button'
 import { api } from '../lib/api'
 import { API_URL } from '../lib/config'
 
-gsap.registerPlugin(useGSAP, ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger)
 
 interface GitHubStats {
   stars: number
@@ -40,7 +40,7 @@ export function LandingPage() {
       const mm = gsap.matchMedia()
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.set(reveals, { autoAlpha: 0, y: 16 })
+        gsap.set(reveals, { autoAlpha: 0, y: 40, scale: 0.97 })
         ScrollTrigger.batch(reveals, {
           start: 'top 85%',
           once: true,
@@ -48,16 +48,17 @@ export function LandingPage() {
             gsap.to(els, {
               autoAlpha: 1,
               y: 0,
-              duration: 0.6,
-              ease: 'power2.out',
-              stagger: 0.12,
+              scale: 1,
+              duration: 0.8,
+              ease: 'power3.out',
+              stagger: 0.18,
               overwrite: true,
             }),
         })
       })
 
       mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(reveals, { autoAlpha: 1, y: 0 })
+        gsap.set(reveals, { autoAlpha: 1, y: 0, scale: 1 })
       })
     },
     { scope: rootRef, dependencies: [loading] },
@@ -151,6 +152,7 @@ function Hero() {
   const line1Ref = useRef<HTMLSpanElement>(null)
   const cursorRef = useRef<HTMLSpanElement>(null)
   const line2Ref = useRef<HTMLSpanElement>(null)
+  const brushRef = useRef<SVGPathElement>(null)
   const paragraphRef = useRef<HTMLParagraphElement>(null)
   const ctaRef = useRef<HTMLAnchorElement>(null)
   const terminalRef = useRef<HTMLDivElement>(null)
@@ -160,19 +162,28 @@ function Hero() {
       const mm = gsap.matchMedia()
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], { autoAlpha: 0, y: 12 })
-        gsap.set(terminalRef.current, { autoAlpha: 0, y: 12 })
+        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], { autoAlpha: 0, y: 16 })
+        gsap.set(terminalRef.current, { autoAlpha: 0, y: 24 })
         if (line1Ref.current) line1Ref.current.textContent = ''
 
-        const obj = { n: 0 }
-        const tl = gsap.timeline()
+        // Brushstroke seals the headline once the typewriter completes. Use the
+        // classic stroke-dash technique — works with any single path, no DrawSVG
+        // plugin required for v1.
+        if (brushRef.current) {
+          const length = brushRef.current.getTotalLength()
+          gsap.set(brushRef.current, { strokeDasharray: length, strokeDashoffset: length })
+        }
 
-        tl.to(terminalRef.current, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 0)
+        const obj = { n: 0 }
+        // delay 0.3s — suspense before the typewriter starts.
+        const tl = gsap.timeline({ delay: 0.3 })
+
+        tl.to(terminalRef.current, { autoAlpha: 1, y: 0, duration: 1.0, ease: 'expo.out' }, 0)
           .to(
             obj,
             {
               n: HERO_LINE_1.length,
-              duration: HERO_LINE_1.length * 0.045,
+              duration: HERO_LINE_1.length * 0.035,
               ease: 'none',
               onUpdate: () => {
                 if (line1Ref.current) {
@@ -180,14 +191,19 @@ function Hero() {
                 }
               },
             },
-            0,
+            0.2,
           )
-          .to(cursorRef.current, { autoAlpha: 0, duration: 0.2 }, '>0.1')
+          .to(cursorRef.current, { autoAlpha: 0, duration: 0.25 }, '>0.15')
           .to(line2Ref.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '<')
           .to(
+            brushRef.current,
+            { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' },
+            '>-0.15',
+          )
+          .to(
             [paragraphRef.current, ctaRef.current],
-            { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.1 },
-            '-=0.2',
+            { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.12 },
+            '-=0.15',
           )
       })
 
@@ -198,6 +214,8 @@ function Hero() {
           autoAlpha: 1,
           y: 0,
         })
+        // brushstroke renders fully — no dasharray override, so the path
+        // displays in its final state from t=0.
       })
     },
     { scope: heroRef },
@@ -220,6 +238,24 @@ function Hero() {
           >
             To themselves.
           </span>
+          {/* Brushstroke seals the headline. POC path data — replace with a
+              CC0-sourced ink stroke when the sumi-e migration ships. */}
+          <svg
+            width="180"
+            height="12"
+            viewBox="0 0 180 12"
+            className="block mt-4 -ml-0.5"
+            aria-hidden
+          >
+            <path
+              ref={brushRef}
+              d="M 4 8 Q 50 2 95 6 T 176 9"
+              stroke="var(--color-accent)"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              fill="none"
+            />
+          </svg>
           <p
             ref={paragraphRef}
             className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
@@ -309,11 +345,16 @@ function TerminalDemo() {
 
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        const tl = gsap.timeline({ repeat: -1, delay: 1.5 })
+        const tl = gsap.timeline({ repeat: -1, delay: 1.0 })
         sessions.forEach((current, i) => {
           const next = sessions[(i + 1) % sessions.length]!
-          tl.to(current, { autoAlpha: 0, duration: 0.4, ease: 'power2.in' }, '+=5')
-            .to(next, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' }, '<0.1')
+          tl.to(current, { autoAlpha: 0, x: -30, duration: 0.5, ease: 'power2.in' }, '+=3.5')
+            .fromTo(
+              next,
+              { autoAlpha: 0, x: 30 },
+              { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power2.out' },
+              '<0.1',
+            )
         })
       })
     },
