@@ -15,10 +15,26 @@ export function SenseiBubble({ initials, role, streaming = false, children }: Se
   return (
     <div className="flex gap-3">
       <div
-        className="w-8 h-8 shrink-0 mt-1 bg-surface border border-border flex items-center justify-center font-mono text-xs font-bold text-primary"
+        className="relative w-8 h-8 shrink-0 mt-1 bg-surface border border-border flex items-center justify-center font-mono text-xs font-bold text-primary"
         aria-hidden
       >
-        {initials}
+        {/* Enso wash — faint open brush circle behind the initials.
+            Per DESIGN.md §Component vocabulary §Sensei avatar.
+            Static (not animated) — the avatar isn't a loading state. */}
+        <svg
+          viewBox="0 0 100 100"
+          className="absolute inset-0 w-full h-full text-accent opacity-40 pointer-events-none"
+          aria-hidden
+        >
+          <path
+            d="M 87.6 36.3 A 40 40 0 1 1 87.6 63.7"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={5}
+            strokeLinecap="round"
+          />
+        </svg>
+        <span className="relative">{initials}</span>
       </div>
       <div className="flex-1 min-w-0 max-w-[80%]">
         {role && <PersonaEyebrow role={role} className="mb-1.5 block" />}
