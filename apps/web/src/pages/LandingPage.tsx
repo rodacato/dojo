@@ -138,9 +138,6 @@ function StickyNav() {
           <a href={`${API_URL}/auth/github`} className={buttonClasses({ variant: 'subtle', size: 'sm' })}>
             Log in
           </a>
-          <a href="#access" className={buttonClasses({ variant: 'primary', size: 'sm' })}>
-            Sign up →
-          </a>
         </div>
       </div>
     </nav>
