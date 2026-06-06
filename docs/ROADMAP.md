@@ -174,6 +174,7 @@ Does not start until Phase 0 is in real daily use.
 | 018 | [Piston cgroup namespace host](adr/018-piston-cgroupns-host.md) | `privileged: true` + `cgroupns: host` + named volume on Piston accessory after host kernel upgrade tightened cgroup v2 | ✅ Accepted |
 | 019 | [Piston liveness and reprovision](adr/019-piston-liveness-and-reprovision.md) | GHA liveness probe + idempotent reprovision script as the operational floor for an anonymous-traffic Piston surface | ✅ Accepted |
 | 020 | [Ubiquitous language pass](adr/020-ubiquitous-language-pass.md) | Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object; schema.ts exports dojo-native names while DB tables/columns stay legacy via pgTable arg; /leaderboard deleted (not renamed to /kumite); /kumite reserved as future feature placeholder | ✅ Accepted |
+| 021 | [Sumi-e dual-theme architecture](adr/021-sumi-e-dual-theme-architecture.md) | Two complete palettes (Slate Indigo shipped + Sumi/Washi target) share the same `--color-*` token names; `[data-theme="sumi"\|"washi"]` selectors override `@theme` defaults; user picks via toggle with OS auto-detect default + `localStorage` persistence; no feature flag (single-user constraint, `'slate'` choice is the kill switch); editor-style libraries (CodeMirror, Mermaid) read tokens via `useThemeTokens` MutationObserver hook | ✅ Accepted |
 
 ---
 
