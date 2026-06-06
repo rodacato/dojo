@@ -160,6 +160,26 @@ html {
   animation: slide-in 0.2s ease-out;
 }
 
+/* Vertical brushstroke reveal — used on VerdictBlock to replace the
+   solid left-bar with a drawn ink stroke. Stroke length overestimated
+   so the animation reads as a single down-stroke regardless of the
+   card's actual height. prefers-reduced-motion shows the stroke
+   already drawn (no animation). */
+.brushstroke-path-vertical {
+  stroke-dasharray: 280;
+  stroke-dashoffset: 280;
+  animation: brushstroke-draw 600ms ease-out forwards;
+}
+@keyframes brushstroke-draw {
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brushstroke-path-vertical {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 /* Indeterminate auth-progress bar — 1500ms loop, indigo scanner across an
    elevated track. No spinner per spec. */
 @keyframes auth-progress {

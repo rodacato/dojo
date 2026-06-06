@@ -23,15 +23,15 @@ interface VerdictBlockProps {
   cta?: ReactNode
 }
 
-// Hero verdict block — full-width card with an accent-colored left bar.
-// `md` (32px verdict) lands at the bottom of the eval conversation; `lg`
-// (56px verdict) is the page-hero variant used on Results.
+// Hero verdict block — full-width card with a drawn ink stroke on the
+// left edge. `md` (32px verdict) lands at the bottom of the eval
+// conversation; `lg` (56px verdict) is the page-hero variant used on
+// Results.
 //
-// Left bar is bound to --color-accent so it re-themes automatically:
-// indigo in Slate, vermillion in Sumi/Washi. DESIGN.md §Component
-// vocabulary plans a vermillion brushstroke variant in the Sumi-e
-// pass (drawn with GSAP DrawSVG); deferred until the designer pass
-// validates the stroke shape against printed paper samples.
+// The left stroke is an SVG path drawn vermillion (--color-accent),
+// animated stroke-dashoffset → 0 in 600ms on mount. Pure CSS so this
+// component stays GSAP-free and safe to mount on any surface. Per
+// DESIGN.md §Component vocabulary §Verdict block.
 export function VerdictBlock({
   verdict,
   role,
@@ -41,11 +41,26 @@ export function VerdictBlock({
   cta,
 }: VerdictBlockProps) {
   const verdictSize = size === 'lg' ? 'text-4xl md:text-5xl' : 'text-2xl'
-  const padding = size === 'lg' ? 'p-6 md:p-8' : 'p-6'
+  const padding = size === 'lg' ? 'p-6 md:p-8 pl-8 md:pl-10' : 'p-6 pl-8'
   return (
     <div
-      className={`bg-surface border border-border border-l-4 border-l-accent rounded-md ${padding}`}
+      className={`relative bg-surface border border-border rounded-md ${padding}`}
     >
+      <svg
+        aria-hidden
+        className="absolute left-1.5 top-3 bottom-3 w-3 text-accent"
+        viewBox="0 0 12 200"
+        preserveAspectRatio="none"
+      >
+        <path
+          className="brushstroke-path-vertical"
+          d="M 6 3 C 3 60, 10 130, 6 197"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={3}
+          strokeLinecap="round"
+        />
+      </svg>
       {role && <PersonaEyebrow role={role} className="mb-3 block" />}
       <h2
         className={`font-mono ${verdictSize} font-bold uppercase tracking-tight ${VERDICT_COLORS[verdict]} leading-none mb-4`}
