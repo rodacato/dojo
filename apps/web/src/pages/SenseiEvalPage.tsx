@@ -112,7 +112,7 @@ export function SenseiEvalPage() {
         {session && (
           <>
             <span className="h-4 w-px bg-border hidden sm:block" />
-            <span className="font-mono text-[12px] text-primary truncate hidden sm:inline max-w-[40ch]">
+            <span className="font-mono text-xs text-primary truncate hidden sm:inline max-w-[40ch]">
               {session.kata.title}
             </span>
             <div className="hidden md:flex items-center gap-1.5">
@@ -150,7 +150,7 @@ export function SenseiEvalPage() {
               streaming={isStreaming || isWaiting}
             >
               {isWaiting && !revealedTokens ? (
-                <span className="text-secondary text-[14px] font-sans">{evalMessage}</span>
+                <span className="text-secondary text-sm font-sans">{evalMessage}</span>
               ) : (
                 <StreamingText
                   text={revealedTokens}
@@ -185,7 +185,7 @@ export function SenseiEvalPage() {
               }
             >
               {state.status === 'complete' && (
-                <p className="text-muted text-[11px] font-mono animate-pulse">
+                <p className="text-muted text-xs font-mono animate-pulse">
                   Evaluation complete — opening full analysis...
                 </p>
               )}
@@ -222,7 +222,7 @@ export function SenseiEvalPage() {
                 onChange={(e) => setFollowUpText(e.target.value)}
                 placeholder="Your answer..."
                 rows={2}
-                className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-[14px] font-sans resize-none focus:outline-none focus:border-accent transition-colors"
+                className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
               />
               <Button
                 variant="primary"
@@ -235,11 +235,11 @@ export function SenseiEvalPage() {
               </Button>
             </div>
           ) : result?.isFinalEvaluation ? (
-            <p className="text-muted text-[11px] font-mono uppercase tracking-[0.08em] text-center">
+            <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
               The sensei has spoken.
             </p>
           ) : (
-            <p className="text-secondary text-[13px] font-mono text-center inline-flex items-center justify-center w-full">
+            <p className="text-secondary text-sm font-mono text-center inline-flex items-center justify-center w-full">
               The sensei is evaluating.
               <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
             </p>
@@ -290,7 +290,7 @@ function StatusChip({ kind }: { kind: StatusChipKind }) {
   const s = styles[kind]
   return (
     <span
-      className={`inline-flex items-center font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-1 rounded-sm ${s.color}`}
+      className={`inline-flex items-center font-mono text-xs tracking-[0.08em] uppercase border px-2 py-1 rounded-sm ${s.color}`}
     >
       {s.label}
       {s.cursor && <span className="animate-cursor ml-0.5" aria-hidden>_</span>}

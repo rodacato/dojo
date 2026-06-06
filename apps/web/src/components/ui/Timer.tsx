@@ -10,9 +10,9 @@ interface TimerProps {
 export type TimerSize = 'sm' | 'md' | 'lg'
 
 const SIZE_CLASSES: Record<TimerSize, string> = {
-  sm: 'text-[18px]',
-  md: 'text-[32px]',
-  lg: 'text-[56px]',
+  sm: 'text-lg',
+  md: 'text-2xl',
+  lg: 'text-5xl',
 }
 
 export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: TimerProps) {

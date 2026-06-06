@@ -328,7 +328,7 @@ function SelectablePill({
       <span className={`block uppercase tracking-wider ${size === 'md' ? 'text-xs' : 'text-xs'}`}>
         {label}
       </span>
-      {sub && <span className="block text-[10px] text-muted normal-case mt-0.5">{sub}</span>}
+      {sub && <span className="block text-xs text-muted normal-case mt-0.5">{sub}</span>}
     </button>
   )
 }
@@ -414,7 +414,7 @@ function KataCard({
         </p>
 
         {ex.tags.length > 0 && (
-          <div className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-[11px]">
+          <div className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-xs">
             {ex.tags.slice(0, 4).map((tag) => (
               <span key={tag} className="text-secondary">
                 <span className="text-accent">#</span>
@@ -427,7 +427,7 @@ function KataCard({
 
       <div className="flex flex-col items-end justify-between gap-3 px-5 md:px-6 py-5 md:py-6 border-l border-border/40 min-w-26 md:min-w-30">
         <div className="text-right">
-          <p className="text-muted text-[10px] font-mono uppercase tracking-wider mb-1">Est. time</p>
+          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-1">Est. time</p>
           <p className="text-primary text-xl md:text-2xl font-mono">
             {ex.duration} <span className="text-muted text-sm">min</span>
           </p>
@@ -565,7 +565,7 @@ function CustomizePanel({
                   })}
                 </div>
                 {interests.length === 0 && (
-                  <p className="text-muted text-[11px] font-mono mt-2">None selected = all categories.</p>
+                  <p className="text-muted text-xs font-mono mt-2">None selected = all categories.</p>
                 )}
               </div>
 

@@ -120,13 +120,13 @@ export function AdminErrorsPage() {
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">Error log</h1>
-          <div className="mt-1 text-[13px] text-muted">
+          <h1 className="text-xl font-semibold text-primary leading-tight">Error log</h1>
+          <div className="mt-1 text-sm text-muted">
             Errors logged across api and web. Retention: 30 days.
           </div>
         </div>
         <div className="flex items-center gap-3 mt-2">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-muted flex items-center gap-2">
+          <span className="font-mono text-xs uppercase tracking-wider text-muted flex items-center gap-2">
             <span
               className={`inline-block w-1.5 h-1.5 rounded-full ${
                 refreshing ? 'bg-accent animate-pulse' : 'bg-success/70'
@@ -139,7 +139,7 @@ export function AdminErrorsPage() {
             type="button"
             onClick={() => void fetchRows({ silent: true })}
             disabled={refreshing}
-            className="font-mono text-[11px] uppercase tracking-wider text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-wait"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-wait"
           >
             ↻ Refresh
           </button>
@@ -163,7 +163,7 @@ export function AdminErrorsPage() {
           onChange={resetPageOn((v) => setStatus(v))}
           options={STATUS_OPTIONS}
         />
-        <span className="font-mono text-[11px] uppercase tracking-wider text-muted ml-auto">
+        <span className="font-mono text-xs uppercase tracking-wider text-muted ml-auto">
           {total} total
         </span>
       </div>
@@ -197,7 +197,7 @@ export function AdminErrorsPage() {
       ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-[13px]">
+          <table className="w-full text-sm">
             <colgroup>
               <col className="w-32" />
               <col className="w-20" />
@@ -246,7 +246,7 @@ export function AdminErrorsPage() {
                         <div className="font-mono tabular-nums text-primary">
                           {ts.toISOString().slice(11, 19)}
                         </div>
-                        <div className="font-mono text-[11px] text-muted mt-0.5">
+                        <div className="font-mono text-xs text-muted mt-0.5">
                           {ts.toISOString().slice(5, 10)}
                         </div>
                       </td>
@@ -288,7 +288,7 @@ export function AdminErrorsPage() {
       )}
 
       {!loading && total > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">
           <span>
             Showing {startIdx}–{endIdx} of {total}
           </span>
@@ -321,7 +321,7 @@ function ExpandedDetail({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-4">
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted">
           {row.requestId ? <>request_id: <span className="text-secondary normal-case tracking-normal">{row.requestId}</span></> : 'no request_id'}
           {row.userId && (
             <>
@@ -333,29 +333,29 @@ function ExpandedDetail({
         <button
           type="button"
           onClick={onCopy}
-          className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-primary transition-colors"
+          className="font-mono text-xs uppercase tracking-wider text-muted hover:text-primary transition-colors"
         >
           {copied ? 'Copied' : 'Copy trace'}
         </button>
       </div>
       {row.stack && (
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-1.5">stack</div>
-          <pre className="bg-page border border-border rounded-sm p-3 overflow-x-auto font-mono text-[11px] text-secondary whitespace-pre-wrap">
+          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-1.5">stack</div>
+          <pre className="bg-page border border-border rounded-sm p-3 overflow-x-auto font-mono text-xs text-secondary whitespace-pre-wrap">
             {row.stack}
           </pre>
         </div>
       )}
       {row.context && (
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-1.5">context</div>
-          <pre className="bg-page border border-border rounded-sm p-3 overflow-x-auto font-mono text-[11px] text-secondary whitespace-pre-wrap">
+          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-1.5">context</div>
+          <pre className="bg-page border border-border rounded-sm p-3 overflow-x-auto font-mono text-xs text-secondary whitespace-pre-wrap">
             {JSON.stringify(row.context, null, 2)}
           </pre>
         </div>
       )}
       {!row.stack && !row.context && (
-        <div className="font-mono text-[11px] text-muted">No additional context.</div>
+        <div className="font-mono text-xs text-muted">No additional context.</div>
       )}
     </div>
   )
@@ -363,7 +363,7 @@ function ExpandedDetail({
 
 function Th({ children }: { children?: React.ReactNode }) {
   return (
-    <th className="h-10 px-4 text-left font-mono text-[11px] uppercase tracking-wider text-muted">
+    <th className="h-10 px-4 text-left font-mono text-xs uppercase tracking-wider text-muted">
       {children}
     </th>
   )
@@ -371,7 +371,7 @@ function Th({ children }: { children?: React.ReactNode }) {
 
 function SourcePill({ source }: { source: string }) {
   return (
-    <span className="font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm bg-muted/15 text-secondary border border-border">
+    <span className="font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm bg-muted/15 text-secondary border border-border">
       {source}
     </span>
   )
@@ -408,7 +408,7 @@ function FilterSelect<T extends string>({
 }) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
-    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-[11px] uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
+    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
       <span className="text-muted mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
       <ChevronDownIcon className="w-3 h-3 text-muted" />

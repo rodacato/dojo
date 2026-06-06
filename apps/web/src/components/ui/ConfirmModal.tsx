@@ -93,13 +93,13 @@ export function ConfirmModal(props: ConfirmModalProps) {
     <Modal open onClose={() => !busy && onCancel()} flow={busy}>
       <div className="p-8">
         <div
-          className={`font-mono text-[11px] uppercase tracking-wider mb-2 ${TONE_TEXT[tone]}`}
+          className={`font-mono text-xs uppercase tracking-wider mb-2 ${TONE_TEXT[tone]}`}
         >
           {eyebrow}
         </div>
-        <h2 className="text-[18px] font-semibold text-primary leading-snug">{title}</h2>
+        <h2 className="text-lg font-semibold text-primary leading-snug">{title}</h2>
         {children && (
-          <div className="mt-3 text-[13px] text-secondary leading-relaxed space-y-3">
+          <div className="mt-3 text-sm text-secondary leading-relaxed space-y-3">
             {children}
           </div>
         )}
@@ -108,7 +108,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
           <div className="mt-5">
             <label
               htmlFor="confirm-typed"
-              className="block font-mono text-[11px] uppercase tracking-wider text-muted mb-1.5"
+              className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5"
             >
               {typed.label}
             </label>
@@ -124,7 +124,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
               className="admin-input font-mono"
             />
             {typed.hint && (
-              <div className="font-mono text-[11px] text-muted mt-2">{typed.hint}</div>
+              <div className="font-mono text-xs text-muted mt-2">{typed.hint}</div>
             )}
           </div>
         )}
@@ -138,7 +138,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
               type="button"
               onClick={() => !primaryDisabled && onConfirm()}
               disabled={primaryDisabled}
-              className="inline-flex items-center justify-center gap-2 h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-danger text-primary border border-danger text-[13px] transition-colors hover:bg-danger/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-danger/40 disabled:border-danger/40"
+              className="inline-flex items-center justify-center gap-2 h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-danger text-primary border border-danger text-sm transition-colors hover:bg-danger/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-danger/40 disabled:border-danger/40"
             >
               {busy ? `${primaryLabel}…` : primaryLabel}
             </button>

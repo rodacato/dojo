@@ -12,7 +12,7 @@ const VARIATION_ACCENTS = [
 
 export function AdminBreadcrumb({ trail }: { trail: string[] }) {
   return (
-    <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-4">
+    <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
       {trail.join(' / ')}
     </div>
   )
@@ -31,13 +31,13 @@ export function FormField({
 }) {
   return (
     <div>
-      <label className="block font-mono text-[11px] uppercase tracking-wider text-muted mb-1.5">
+      <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5">
         {label}
       </label>
       {children}
       {(hint || error) && (
         <div
-          className={`text-[11px] mt-1.5 font-mono ${
+          className={`text-xs mt-1.5 font-mono ${
             error ? 'text-danger' : 'text-muted'
           }`}
         >
@@ -60,7 +60,7 @@ export function SectionCard({
   return (
     <section className="rounded-md border border-border bg-surface p-6">
       <div className="flex items-center justify-between mb-5">
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted">
           {eyebrow}
         </div>
         {rightSlot}
@@ -200,14 +200,14 @@ export function VariationCardItem({
   return (
     <div className={`rounded-md border border-border bg-surface border-l-2 ${accent} p-6`}>
       <div className="flex items-center justify-between mb-4">
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted">
           Variation {index + 1}
         </div>
         {onRemove && (
           <button
             type="button"
             onClick={onRemove}
-            className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-danger transition-colors"
+            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-danger transition-colors"
           >
             Remove
           </button>
@@ -239,10 +239,10 @@ export function VariationCardItem({
 export function ValidationBanner({ message }: { message: string }) {
   return (
     <div className="rounded-md border border-danger/40 border-l-4 border-l-danger bg-surface p-4 mb-6">
-      <div className="font-mono text-[11px] uppercase tracking-wider text-danger mb-1">
+      <div className="font-mono text-xs uppercase tracking-wider text-danger mb-1">
         Validation
       </div>
-      <div className="text-[13px] text-secondary">{message}</div>
+      <div className="text-sm text-secondary">{message}</div>
     </div>
   )
 }
@@ -257,7 +257,7 @@ export function StickyFormBar({
   return (
     <div className="sticky bottom-0 -mx-8 mt-8 px-8 py-4 border-t border-border bg-page/95 backdrop-blur z-10">
       <div className="flex items-center justify-between gap-4">
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted">
           {hint}
         </div>
         <div className="flex items-center gap-3">{children}</div>

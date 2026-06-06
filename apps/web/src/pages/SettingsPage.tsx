@@ -93,7 +93,7 @@ export function SettingsPage() {
   return (
     <div className="px-4 md:px-6 py-8 max-w-220 mx-auto">
       <header className="flex items-end justify-between gap-4 mb-8">
-        <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight">
+        <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
           Settings
         </h1>
         <SaveIndicator state={save} />
@@ -111,8 +111,8 @@ export function SettingsPage() {
               />
               <div className="min-w-0">
                 <p className="text-primary text-lg font-semibold truncate">{user.username}</p>
-                <p className="text-muted text-[13px]">@{user.username}</p>
-                <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-1">
+                <p className="text-muted text-sm">@{user.username}</p>
+                <p className="text-muted text-xs font-mono tracking-[0.04em] mt-1">
                   Member since {memberSince}
                 </p>
               </div>
@@ -129,14 +129,14 @@ export function SettingsPage() {
               </Button>
             </div>
           </div>
-          <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-4 truncate">
+          <p className="text-muted text-xs font-mono tracking-[0.04em] mt-4 truncate">
             Your profile is public at{' '}
             <Link to={`/u/${user.username}`} className="text-accent underline">
               dojo.notdefined.dev/u/{user.username}
             </Link>
           </p>
           <div className="border-t border-border mt-4 pt-4 flex items-center justify-between">
-            <p className="text-secondary text-[13px]">Make profile private</p>
+            <p className="text-secondary text-sm">Make profile private</p>
             <Toggle
               checked={false}
               onChange={() => {
@@ -175,7 +175,7 @@ export function SettingsPage() {
                     type="button"
                     onClick={() => toggleInterest(topic)}
                     aria-pressed={active}
-                    className={`font-mono text-[12px] px-3 py-1.5 rounded-sm border transition-colors ${
+                    className={`font-mono text-xs px-3 py-1.5 rounded-sm border transition-colors ${
                       active
                         ? 'border-accent text-accent'
                         : 'border-border text-secondary hover:border-accent/50'
@@ -201,7 +201,7 @@ export function SettingsPage() {
                 className="w-full accent-accent"
                 aria-label="Randomness"
               />
-              <div className="flex justify-between font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              <div className="flex justify-between font-mono text-xs tracking-[0.08em] uppercase text-muted">
                 {RANDOMNESS_STOPS.map((s) => (
                   <span key={s.label}>{s.label}</span>
                 ))}
@@ -217,7 +217,7 @@ export function SettingsPage() {
                   type="button"
                   onClick={() => update({ goalWeeklyTarget: n })}
                   aria-pressed={prefs.goalWeeklyTarget === n}
-                  className={`w-10 h-10 inline-flex items-center justify-center font-mono text-[13px] rounded-sm border transition-colors ${
+                  className={`w-10 h-10 inline-flex items-center justify-center font-mono text-sm rounded-sm border transition-colors ${
                     prefs.goalWeeklyTarget === n
                       ? 'border-accent text-accent'
                       : 'border-border text-secondary hover:border-accent/50'
@@ -242,7 +242,7 @@ export function SettingsPage() {
             <>
               <div className="grid md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-muted text-[11px] font-mono tracking-[0.04em] mb-1">
+                  <label className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
                     Email
                   </label>
                   <input
@@ -250,11 +250,11 @@ export function SettingsPage() {
                     value={prefs.email ?? ''}
                     onChange={(e) => update({ email: e.target.value || null })}
                     placeholder="you@example.com"
-                    className="w-full h-9 px-3 bg-page border border-border rounded-sm text-primary text-[13px] focus:outline-none focus:border-accent transition-colors"
+                    className="w-full h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-muted text-[11px] font-mono tracking-[0.04em] mb-1">
+                  <label className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
                     Hour (0–23 local)
                   </label>
                   <input
@@ -263,11 +263,11 @@ export function SettingsPage() {
                     max={23}
                     value={prefs.reminderHour}
                     onChange={(e) => update({ reminderHour: Number(e.target.value) })}
-                    className="w-full h-9 px-3 bg-page border border-border rounded-sm text-primary text-[13px] tabular-nums focus:outline-none focus:border-accent transition-colors"
+                    className="w-full h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm tabular-nums focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
               </div>
-              <p className="text-muted text-[11px] font-mono tracking-[0.04em]">
+              <p className="text-muted text-xs font-mono tracking-[0.04em]">
                 Sent at the time you pick. Not before. Never weekends if your goal is &lt; 5
                 days/week.
               </p>
@@ -276,7 +276,7 @@ export function SettingsPage() {
         </div>
       </Section>
 
-      <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+      <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
         Changes auto-save.
       </p>
 
@@ -301,7 +301,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <section className="mb-10">
       <div className="flex items-center gap-3 mb-4">
-        <h2 className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted">{title}</h2>
+        <h2 className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{title}</h2>
         <span className="flex-1 h-px bg-border" />
       </div>
       {children}
@@ -321,8 +321,8 @@ function Field({
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <p className="text-primary text-[14px] font-medium">{label}</p>
-        {hint && <p className="text-muted text-[12px] mt-0.5">{hint}</p>}
+        <p className="text-primary text-sm font-medium">{label}</p>
+        {hint && <p className="text-muted text-xs mt-0.5">{hint}</p>}
       </div>
       {children}
     </div>
@@ -343,7 +343,7 @@ function PillButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`font-mono text-[11px] tracking-[0.08em] uppercase px-3 py-1.5 rounded-sm border transition-colors ${
+      className={`font-mono text-xs tracking-[0.08em] uppercase px-3 py-1.5 rounded-sm border transition-colors ${
         active ? 'border-accent text-accent' : 'border-border text-secondary hover:border-accent/50'
       }`}
     >
@@ -355,7 +355,7 @@ function PillButton({
 function SaveIndicator({ state }: { state: SaveState }) {
   if (state === 'idle') return <div className="h-4" aria-hidden />
   return (
-    <div className="font-mono text-[11px] tracking-[0.08em] uppercase">
+    <div className="font-mono text-xs tracking-[0.08em] uppercase">
       {state === 'saving' && (
         <span className="text-secondary inline-flex items-center">
           Saving<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>

@@ -103,8 +103,8 @@ export function AdminInvitationsPage() {
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">Invitations</h1>
-          <div className="mt-1 text-[13px] text-muted">
+          <h1 className="text-xl font-semibold text-primary leading-tight">Invitations</h1>
+          <div className="mt-1 text-sm text-muted">
             Generate invite codes. Track usage. Tokens are single-use and expire after 7 days.
           </div>
         </div>
@@ -114,14 +114,14 @@ export function AdminInvitationsPage() {
         onSubmit={handleCreate}
         className="rounded-md border border-border bg-surface p-6 mb-6"
       >
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-4">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
           Create invitation
         </div>
         <div className="flex gap-3 items-end">
           <div className="flex-1">
             <label
               htmlFor="invite-email"
-              className="block font-mono text-[11px] uppercase tracking-wider text-muted mb-1.5"
+              className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5"
             >
               Recipient email <span className="text-muted/60">(optional)</span>
             </label>
@@ -138,23 +138,23 @@ export function AdminInvitationsPage() {
             Generate
           </Button>
         </div>
-        <div className="font-mono text-[11px] text-muted mt-3">
+        <div className="font-mono text-xs text-muted mt-3">
           Leaving the email blank generates a token without auto-sending.
         </div>
 
         {error && (
-          <div className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-[13px] text-danger">
+          <div className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger">
             {error}
           </div>
         )}
 
         {lastCreated && (
           <div className="mt-5 rounded-md border border-border border-l-4 border-l-accent bg-page p-4">
-            <div className="font-mono text-[11px] uppercase tracking-wider text-accent mb-2">
+            <div className="font-mono text-xs uppercase tracking-wider text-accent mb-2">
               Last created · {lastCreatedAge}
             </div>
             <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-[18px] text-primary tracking-wide">
+              <span className="font-mono text-lg text-primary tracking-wide">
                 {midEllipsis(lastCreated.token)}
               </span>
               <Button
@@ -165,10 +165,10 @@ export function AdminInvitationsPage() {
                 {copiedTokenId === lastCreated.token ? 'Copied' : 'Copy URL'}
               </Button>
             </div>
-            <div className="font-mono text-[11px] text-muted mt-2 break-all">
+            <div className="font-mono text-xs text-muted mt-2 break-all">
               {lastCreated.url}
             </div>
-            <div className="font-mono text-[11px] text-muted mt-2">
+            <div className="font-mono text-xs text-muted mt-2">
               {lastCreated.emailSent ? 'Email sent. ' : ''}Expires{' '}
               {relativeFromNow(now, new Date(lastCreated.expiresAt).getTime(), 'future')}. Single-use.
             </div>
@@ -185,7 +185,7 @@ export function AdminInvitationsPage() {
       ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-[13px]">
+          <table className="w-full text-sm">
             <colgroup>
               <col className="w-44" />
               <col className="w-28" />
@@ -241,7 +241,7 @@ export function AdminInvitationsPage() {
                           <button
                             type="button"
                             onClick={() => copyUrl(inv.id, url)}
-                            className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-primary transition-colors"
+                            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-primary transition-colors"
                           >
                             {copiedTokenId === inv.id ? 'Copied' : 'Copy URL'}
                           </button>
@@ -259,7 +259,7 @@ export function AdminInvitationsPage() {
       )}
 
       {!loading && invitations.length > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">
           <span>
             Showing {startIdx}–{endIdx} of {invitations.length}
           </span>
@@ -279,7 +279,7 @@ export function AdminInvitationsPage() {
 function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
   return (
     <th
-      className={`h-10 px-4 font-mono text-[11px] uppercase tracking-wider text-muted ${
+      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >
@@ -301,7 +301,7 @@ function InviteStatusBadge({ status }: { status: string }) {
   }
   return (
     <span
-      className={`font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
+      className={`font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
         styles[status] ?? styles['pending']
       }`}
     >

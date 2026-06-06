@@ -84,7 +84,7 @@ export function BeltsPage() {
     return (
       <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
         <div className="flex items-end justify-between gap-4 mb-6">
-          <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight">
+          <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
             Belts
           </h1>
         </div>
@@ -102,7 +102,7 @@ export function BeltsPage() {
   return (
     <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
       <header className="mb-10">
-        <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-2">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-2">
           Your rank
         </p>
         <div className="flex items-center gap-4 mb-6">
@@ -111,7 +111,7 @@ export function BeltsPage() {
             className="inline-block w-12 h-12 rounded-full border border-border"
             style={{ backgroundColor: RANK_COLOR[belt.rank] }}
           />
-          <h1 className="text-primary text-3xl md:text-[40px] font-semibold leading-none tracking-tight uppercase font-mono">
+          <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-none tracking-tight uppercase font-mono">
             {belt.rank} belt
           </h1>
         </div>
@@ -130,7 +130,7 @@ export function BeltsPage() {
             <span className="block font-mono text-2xl text-primary tabular-nums leading-none">
               {earnedCount}
             </span>
-            <span className="block text-muted text-[13px] mt-1">of {views.length} earned</span>
+            <span className="block text-muted text-sm mt-1">of {views.length} earned</span>
           </div>
         </div>
 
@@ -149,7 +149,7 @@ export function BeltsPage() {
           return (
             <section key={cat} className="mb-10">
               <div className="flex items-center gap-3 mb-4">
-                <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted">{cat}</p>
+                <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{cat}</p>
                 <span className="flex-1 h-px bg-border" />
               </div>
               {regular.length > 0 && (
@@ -170,7 +170,7 @@ export function BeltsPage() {
           )
         })}
 
-        <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+        <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
           Belts are earned in the dojo. There are no shortcuts.
         </p>
       </section>
@@ -181,7 +181,7 @@ export function BeltsPage() {
 function Factor({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <dt className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
+      <dt className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
       <dd className="font-mono text-2xl text-primary tabular-nums leading-none">{value}</dd>
     </div>
   )
@@ -206,12 +206,12 @@ function MilestoneCard({ milestone }: { milestone: MilestoneView }) {
         >
           {milestone.name}
         </h3>
-        <p className={`text-[13px] leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
+        <p className={`text-sm leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
           {milestone.description}
         </p>
       </div>
       <p
-        className={`font-mono text-[11px] tracking-[0.08em] uppercase mt-4 ${
+        className={`font-mono text-xs tracking-[0.08em] uppercase mt-4 ${
           milestone.earned ? 'text-muted' : 'text-muted/60 text-center'
         }`}
       >
@@ -235,18 +235,18 @@ function PrestigeMilestoneCard({ milestone }: { milestone: MilestoneView }) {
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h3
-            className={`font-mono text-2xl md:text-[32px] font-bold tracking-[0.04em] uppercase leading-none mb-3 ${
+            className={`font-mono text-2xl md:text-2xl font-bold tracking-[0.04em] uppercase leading-none mb-3 ${
               milestone.earned ? 'text-primary' : 'text-muted'
             }`}
           >
             {milestone.name}
           </h3>
-          <p className={`text-[13px] leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
+          <p className={`text-sm leading-relaxed ${milestone.earned ? 'text-secondary' : 'text-muted'}`}>
             {milestone.description}
           </p>
         </div>
         <p
-          className={`font-mono text-[11px] tracking-[0.08em] uppercase shrink-0 ${
+          className={`font-mono text-xs tracking-[0.08em] uppercase shrink-0 ${
             milestone.earned ? 'text-muted' : 'text-muted/60'
           }`}
         >

@@ -102,7 +102,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <LegalCallout>
-          <p className="text-[15px] font-medium leading-relaxed">
+          <p className="text-base font-medium leading-relaxed">
             Sessions are yours. We don't sell them, share them, or use them to train models.
           </p>
         </LegalCallout>

@@ -54,10 +54,10 @@ export function Banner({
   return (
     <div role="status" className={`${wrapperClass} flex items-start justify-between gap-4 ${className}`}>
       <div className="min-w-0">
-        <div className={`font-mono text-[11px] uppercase tracking-wider mb-1 ${TONE_TEXT[tone]}`}>
+        <div className={`font-mono text-xs uppercase tracking-wider mb-1 ${TONE_TEXT[tone]}`}>
           {eyebrow}
         </div>
-        <div className="text-[13px] text-secondary leading-relaxed">{children}</div>
+        <div className="text-sm text-secondary leading-relaxed">{children}</div>
       </div>
       <div className="flex items-center gap-3 shrink-0">
         {action}

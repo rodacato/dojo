@@ -34,7 +34,7 @@ export function PublicPageLayout({ children, hideCta = false }: PublicPageLayout
               <Link
                 key={to}
                 to={to}
-                className={`font-mono text-[12px] transition-colors ${
+                className={`font-mono text-xs transition-colors ${
                   location.pathname === to
                     ? 'text-primary'
                     : 'text-muted hover:text-secondary'
@@ -58,7 +58,7 @@ export function PublicPageLayout({ children, hideCta = false }: PublicPageLayout
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <LogoMark size={14} className="text-muted" />
-            <span className="text-muted text-[11px] font-mono tracking-[0.04em]">
+            <span className="text-muted text-xs font-mono tracking-[0.04em]">
               dojo.notdefined.dev
             </span>
           </div>
@@ -67,7 +67,7 @@ export function PublicPageLayout({ children, hideCta = false }: PublicPageLayout
               <Link
                 key={to}
                 to={to}
-                className="text-muted text-[11px] font-mono tracking-[0.04em] hover:text-secondary transition-colors"
+                className="text-muted text-xs font-mono tracking-[0.04em] hover:text-secondary transition-colors"
               >
                 {label}
               </Link>

@@ -81,7 +81,7 @@ export function ResultsPage() {
           </Button>
         </div>
 
-        <p className="text-center text-muted text-[11px] font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+        <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
           Consistency compounds.
         </p>
       </div>
@@ -91,7 +91,7 @@ export function ResultsPage() {
   return (
     <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
       {/* Breadcrumb */}
-      <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase mb-6">
+      <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-6">
         Dashboard / Recent kata / This result
       </p>
 
@@ -99,23 +99,23 @@ export function ResultsPage() {
       <div className="flex items-start justify-between gap-4 mb-6">
         <div className="min-w-0">
           {session.ownerRole && <PersonaEyebrow role={session.ownerRole} className="mb-3 block" />}
-          <h1 className="text-primary text-3xl md:text-[32px] font-semibold leading-tight tracking-tight mb-3">
+          <h1 className="text-primary text-3xl md:text-2xl font-semibold leading-tight tracking-tight mb-3">
             {session.kata.title}
           </h1>
           <div className="flex items-center gap-2 flex-wrap">
             <TypeBadge type={session.kata.type} />
             <DifficultyBadge difficulty={session.kata.difficulty} />
-            <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted px-2 py-1 border border-border rounded-sm">
+            <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted px-2 py-1 border border-border rounded-sm">
               {session.kata.duration} min
             </span>
           </div>
         </div>
         {completionTime && (
           <div className="shrink-0 text-right">
-            <span className="block font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+            <span className="block font-mono text-xs tracking-[0.08em] uppercase text-muted">
               Completed in
             </span>
-            <span className="block font-mono text-[15px] text-primary tabular-nums">
+            <span className="block font-mono text-base text-primary tabular-nums">
               {completionTime}
             </span>
           </div>
@@ -145,7 +145,7 @@ export function ResultsPage() {
         <div className="grid lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8 mb-8">
           {/* LEFT — share rail */}
           <div className="lg:sticky lg:top-8 self-start flex flex-col gap-3">
-            <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+            <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
               Share this
             </p>
             <ShareCardPreview
@@ -199,7 +199,7 @@ export function ResultsPage() {
         <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
       )}
 
-      <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+      <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
         Consistency compounds.
       </p>
     </div>
@@ -221,8 +221,8 @@ function CollapsibleRow({ title, children }: { title: string; children: React.Re
   return (
     <details className="group bg-surface border border-border rounded-md">
       <summary className="px-4 py-3 cursor-pointer select-none flex items-center justify-between">
-        <span className="text-primary text-[14px]">{title}</span>
-        <span className="text-muted text-[14px] transition-transform group-open:rotate-90" aria-hidden>
+        <span className="text-primary text-sm">{title}</span>
+        <span className="text-muted text-sm transition-transform group-open:rotate-90" aria-hidden>
           ›
         </span>
       </summary>
@@ -243,7 +243,7 @@ function InsightCards({ analysis }: { analysis?: string }) {
     <div className="grid md:grid-cols-3 gap-4">
       {insight.strengths && (
         <InsightCard title="Strengths" tone="success">
-          <ul className="list-disc list-outside ml-4 text-secondary text-[13px] leading-relaxed space-y-1">
+          <ul className="list-disc list-outside ml-4 text-secondary text-sm leading-relaxed space-y-1">
             {insight.strengths.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
@@ -252,7 +252,7 @@ function InsightCards({ analysis }: { analysis?: string }) {
       )}
       {insight.improvements && (
         <InsightCard title="Improvements" tone="warning">
-          <ul className="list-disc list-outside ml-4 text-secondary text-[13px] leading-relaxed space-y-1">
+          <ul className="list-disc list-outside ml-4 text-secondary text-sm leading-relaxed space-y-1">
             {insight.improvements.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
@@ -261,7 +261,7 @@ function InsightCards({ analysis }: { analysis?: string }) {
       )}
       {insight.approachNote && (
         <InsightCard title="Alternative approach" tone="accent">
-          <p className="text-secondary text-[13px] italic leading-relaxed">{insight.approachNote}</p>
+          <p className="text-secondary text-sm italic leading-relaxed">{insight.approachNote}</p>
         </InsightCard>
       )}
     </div>
@@ -285,7 +285,7 @@ function InsightCard({
         : 'text-accent'
   return (
     <div className="bg-surface border border-border rounded-md p-4 flex flex-col gap-3 min-h-50">
-      <p className={`font-mono text-[10px] tracking-[0.08em] uppercase ${toneClass}`}>
+      <p className={`font-mono text-xs tracking-[0.08em] uppercase ${toneClass}`}>
         {title}
       </p>
       <div className="flex-1">{children}</div>
@@ -362,7 +362,7 @@ function ShareActions({
       <Button variant="ghost" size="md" onClick={handleTwitter} className="w-full">
         Share to Twitter
       </Button>
-      <p className="text-muted text-[10px] font-mono tracking-[0.08em] truncate mt-1">
+      <p className="text-muted text-xs font-mono tracking-[0.08em] truncate mt-1">
         {shareUrl.replace(/^https?:\/\//, '')}
       </p>
     </div>
@@ -401,21 +401,21 @@ function ShareCardPreview({
       <p className={`font-mono text-2xl font-bold uppercase tracking-tight leading-none ${verdictColor}`}>
         {verdictLabel}
       </p>
-      <p className="text-primary text-[15px] font-semibold leading-snug line-clamp-2">
+      <p className="text-primary text-base font-semibold leading-snug line-clamp-2">
         {kataTitle}
       </p>
       {pullQuote && (
-        <p className="text-secondary text-[12px] italic leading-relaxed line-clamp-3">
+        <p className="text-secondary text-xs italic leading-relaxed line-clamp-3">
           &ldquo;{pullQuote}&rdquo;
         </p>
       )}
       <div className="mt-auto flex items-end justify-between gap-2">
         {ownerRole && (
-          <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase truncate">
+          <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase truncate">
             sensei — {ownerRole.toLowerCase()}
           </p>
         )}
-        <p className="text-accent text-[10px] font-mono tracking-[0.08em] uppercase shrink-0">
+        <p className="text-accent text-xs font-mono tracking-[0.08em] uppercase shrink-0">
           Find yours →
         </p>
       </div>

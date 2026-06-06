@@ -149,8 +149,8 @@ export function AdminScrollsPage() {
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">Scrolls</h1>
-          <div className="mt-1 text-[13px] text-muted">
+          <h1 className="text-xl font-semibold text-primary leading-tight">Scrolls</h1>
+          <div className="mt-1 text-sm text-muted">
             <span className="text-success">{counts.published} published</span>
             <span className="mx-2">·</span>
             <span>{counts.draft} draft</span>
@@ -174,7 +174,7 @@ export function AdminScrollsPage() {
 
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-[13px]">
+          <table className="w-full text-sm">
             <colgroup>
               <col />
               <col className="w-28" />
@@ -205,7 +205,7 @@ export function AdminScrollsPage() {
               )}
               {scrolls && scrolls.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-muted text-[13px]">
+                  <td colSpan={7} className="px-4 py-10 text-center text-muted text-sm">
                     No scrolls yet. Click <span className="font-mono">Re-seed all</span> to populate from seed files.
                   </td>
                 </tr>
@@ -219,12 +219,12 @@ export function AdminScrollsPage() {
                     className="border-b border-border last:border-b-0 hover:bg-elevated transition-colors"
                   >
                     <td className="px-4 h-14 align-middle">
-                      <div className="text-[15px] font-medium text-primary">{c.title}</div>
-                      <div className="font-mono text-[11px] text-muted mt-0.5">/scrolls/{c.slug}</div>
+                      <div className="text-base font-medium text-primary">{c.title}</div>
+                      <div className="font-mono text-xs text-muted mt-0.5">/scrolls/{c.slug}</div>
                     </td>
                     <td className="px-4 h-14 align-middle">
                       <span
-                        className="inline-block font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm border"
+                        className="inline-block font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm border"
                         style={{
                           color: c.accentColor,
                           borderColor: `${c.accentColor}55`,
@@ -234,10 +234,10 @@ export function AdminScrollsPage() {
                         {c.language}
                       </span>
                     </td>
-                    <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-[15px] text-primary">
+                    <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-base text-primary">
                       {c.lessonCount}
                     </td>
-                    <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-[15px] text-primary">
+                    <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-base text-primary">
                       {c.stepCount}
                     </td>
                     <td className="px-4 h-14 align-middle text-center">
@@ -259,7 +259,7 @@ export function AdminScrollsPage() {
                           })
                         }
                         disabled={patching}
-                        className={`font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm border transition-colors ${
+                        className={`font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm border transition-colors ${
                           c.status === 'published'
                             ? 'bg-success/10 text-success border-success/30 hover:bg-success/15'
                             : 'bg-muted/15 text-secondary border-border hover:border-accent'
@@ -300,7 +300,7 @@ export function AdminScrollsPage() {
         </div>
       </div>
 
-      <div className="mt-4 font-mono text-[11px] uppercase tracking-wider text-muted">
+      <div className="mt-4 font-mono text-xs uppercase tracking-wider text-muted">
         Snapshot diff visible in <Link to="/admin/errors" className="hover:text-secondary transition-colors">Errors</Link>. Re-seeding patches in place; wiping is per-scroll.
       </div>
 
@@ -352,10 +352,10 @@ function NoticeBanner({
       className={`rounded-md border border-border border-l-4 ${accent} bg-surface px-4 py-3 mb-6 flex items-start justify-between gap-4`}
     >
       <div>
-        <div className={`font-mono text-[11px] uppercase tracking-wider mb-1 ${eyebrowColor}`}>
+        <div className={`font-mono text-xs uppercase tracking-wider mb-1 ${eyebrowColor}`}>
           {eyebrow}
         </div>
-        <div className="text-[13px] text-secondary">{body}</div>
+        <div className="text-sm text-secondary">{body}</div>
       </div>
       {onDismiss && (
         <button
@@ -381,7 +381,7 @@ function Th({
 }) {
   const a = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
   return (
-    <th className={`h-10 px-4 font-mono text-[11px] uppercase tracking-wider text-muted ${a}`}>
+    <th className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${a}`}>
       {children}
     </th>
   )

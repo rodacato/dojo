@@ -198,11 +198,11 @@ export function AdminEditKataPage() {
           <button
             type="button"
             onClick={() => navigate('/admin/katas')}
-            className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
+            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
           >
             ← Back to katas
           </button>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">
+          <h1 className="text-xl font-semibold text-primary leading-tight">
             {form.title || 'Untitled kata'}
           </h1>
         </div>
@@ -228,11 +228,11 @@ export function AdminEditKataPage() {
       <div className="space-y-8">
         <div className="rounded-md border border-border bg-surface px-6 py-4 flex items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-muted">Status</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-muted">Status</span>
             <StatusPill status={form.status} />
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-muted">
+            <span className="font-mono text-xs uppercase tracking-wider text-muted">
               Make public
             </span>
             <Toggle
@@ -255,10 +255,10 @@ export function AdminEditKataPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+              <div className="font-mono text-xs uppercase tracking-wider text-muted">
                 Variations · {form.variations.length}
               </div>
-              <div className="font-mono text-[11px] text-muted mt-1">
+              <div className="font-mono text-xs text-muted mt-1">
                 Each variation is a sensei persona. The user gets one per session.
               </div>
             </div>
@@ -266,7 +266,7 @@ export function AdminEditKataPage() {
               <button
                 type="button"
                 onClick={addVariation}
-                className="font-mono text-[11px] uppercase tracking-wider text-accent hover:text-accent/80 transition-colors"
+                className="font-mono text-xs uppercase tracking-wider text-accent hover:text-accent/80 transition-colors"
               >
                 + Add variation
               </button>
@@ -340,7 +340,7 @@ function StatusPill({ status }: { status: string }) {
   }
   return (
     <span
-      className={`font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
+      className={`font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm border ${
         styles[status] ?? styles['draft']
       }`}
     >
@@ -393,10 +393,10 @@ function FeedbackPanel({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted">
           Learner feedback · {feedback.total} sessions
         </div>
-        <div className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-muted">
           Last 30 days
         </div>
       </div>
@@ -409,7 +409,7 @@ function FeedbackPanel({
 
       {variations.length > 0 && (
         <div className="rounded-md border border-border bg-surface overflow-hidden mb-6">
-          <table className="w-full text-[13px]">
+          <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border">
                 <ThSm>Variation</ThSm>
@@ -426,7 +426,7 @@ function FeedbackPanel({
                 const f = score(vData.evaluation, FAIRNESS_WEIGHTS)
                 return (
                   <tr key={vId} className="border-b border-border last:border-b-0">
-                    <td className="px-4 h-12 align-middle font-mono text-[11px] uppercase tracking-wider text-secondary">
+                    <td className="px-4 h-12 align-middle font-mono text-xs uppercase tracking-wider text-secondary">
                       {variationLabels[vId] ?? vId.slice(0, 8)}
                     </td>
                     <td className="px-4 h-12 align-middle text-right font-mono tabular-nums text-primary">
@@ -445,7 +445,7 @@ function FeedbackPanel({
 
       {feedback.notes.length > 0 && (
         <div>
-          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-3">
             Recent notes
           </div>
           <div className="space-y-3">
@@ -454,16 +454,16 @@ function FeedbackPanel({
                 key={i}
                 className="rounded-md border border-border bg-page p-4"
               >
-                <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-2">
+                <div className="font-mono text-xs uppercase tracking-wider text-muted mb-2">
                   Anonymous · {new Date(n.submittedAt).toISOString().slice(0, 10)} ·{' '}
                   {variationLabels[n.variationId] ?? 'VAR ?'}
                 </div>
-                <div className="text-[13px] text-secondary leading-relaxed">{n.note}</div>
+                <div className="text-sm text-secondary leading-relaxed">{n.note}</div>
               </div>
             ))}
           </div>
           {feedback.notes.length > 4 && (
-            <div className="mt-4 font-mono text-[11px] uppercase tracking-wider text-muted">
+            <div className="mt-4 font-mono text-xs uppercase tracking-wider text-muted">
               {feedback.notes.length - 4} more notes
             </div>
           )}
@@ -486,12 +486,12 @@ function SignalCard({
   const valueColor = TONE_VALUE[t]
   return (
     <div className="rounded-md border border-border bg-surface p-4 flex flex-col gap-3 h-30">
-      <div className="font-mono text-[11px] uppercase tracking-wider text-muted">{label}</div>
+      <div className="font-mono text-xs uppercase tracking-wider text-muted">{label}</div>
       <div className="flex items-baseline gap-1">
-        <span className={`font-mono font-bold text-[32px] leading-none ${valueColor}`}>
+        <span className={`font-mono font-bold text-2xl leading-none ${valueColor}`}>
           {score ? score.value.toFixed(1) : '—'}
         </span>
-        <span className="text-[13px] text-muted">/ 5</span>
+        <span className="text-sm text-muted">/ 5</span>
       </div>
       <div className="h-1 rounded-sm bg-page overflow-hidden">
         <div
@@ -499,7 +499,7 @@ function SignalCard({
           style={{ width: `${fill}%` }}
         />
       </div>
-      <div className="font-mono text-[11px] text-muted">
+      <div className="font-mono text-xs text-muted">
         {score ? `${score.votes} votes · last 30d` : 'no votes yet'}
       </div>
     </div>
@@ -525,7 +525,7 @@ const TONE_VALUE: Record<ReturnType<typeof tone>, string> = {
 function ThSm({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
   return (
     <th
-      className={`h-10 px-4 font-mono text-[11px] uppercase tracking-wider text-muted ${
+      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >

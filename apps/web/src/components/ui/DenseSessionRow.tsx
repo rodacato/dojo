@@ -57,24 +57,24 @@ export function DenseSessionRow({
       <div className="w-17 shrink-0">
         <DifficultyBadge difficulty={difficulty} />
       </div>
-      <span className="flex-1 min-w-0 text-primary text-[15px] truncate">{title}</span>
+      <span className="flex-1 min-w-0 text-primary text-base truncate">{title}</span>
       <div className="w-35 shrink-0 flex justify-end">
         {verdict ? (
           <span
-            className={`font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-0.5 rounded-sm ${VERDICT_TONE[verdict]}`}
+            className={`font-mono text-xs tracking-[0.08em] uppercase border px-2 py-0.5 rounded-sm ${VERDICT_TONE[verdict]}`}
           >
             {VERDICT_LABEL[verdict]}
           </span>
         ) : expired ? (
-          <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border px-2 py-0.5 rounded-sm">
+          <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border px-2 py-0.5 rounded-sm">
             Expired
           </span>
         ) : null}
       </div>
-      <span className="w-15 shrink-0 text-right font-mono text-[13px] text-muted tabular-nums hidden md:block">
+      <span className="w-15 shrink-0 text-right font-mono text-sm text-muted tabular-nums hidden md:block">
         {time}
       </span>
-      <span className="w-22 shrink-0 text-right text-muted text-[13px] hidden lg:block">
+      <span className="w-22 shrink-0 text-right text-muted text-sm hidden lg:block">
         {rel}
       </span>
     </button>

@@ -19,13 +19,13 @@ export function InviteRedeemPage() {
         </div>
 
         {/* Eyebrow + headline + body */}
-        <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-3">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-3">
           Invitation
         </p>
-        <h1 className="text-primary text-[28px] font-semibold leading-tight tracking-tight mb-6">
+        <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight mb-6">
           You&apos;ve been invited to the dojo.
         </h1>
-        <p className="text-secondary text-[15px] leading-relaxed mb-6">
+        <p className="text-secondary text-base leading-relaxed mb-6">
           Daily practice for developers who still have something to prove. To themselves. The
           dojo runs on your reasoning, not your tools — no AI inside the kata, no skip, no
           reroll.
@@ -34,19 +34,19 @@ export function InviteRedeemPage() {
         {/* CTA */}
         <a
           href={`${API_URL}/auth/invite/${token ?? ''}`}
-          className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-primary font-mono text-[13px] tracking-[0.04em] rounded-sm hover:bg-accent/90 transition-colors"
+          className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-primary font-mono text-sm tracking-[0.04em] rounded-sm hover:bg-accent/90 transition-colors"
         >
           <GitHubIcon className="w-4 h-4" />
           Enter the dojo. →
         </a>
 
         {/* Microcopy */}
-        <p className="text-muted text-[11px] text-center mt-4">
+        <p className="text-muted text-xs text-center mt-4">
           Sign in with GitHub. We don&apos;t email you. We don&apos;t track you.
         </p>
 
         {/* Divider + fine print */}
-        <div className="border-t border-border mt-6 pt-3 flex flex-col gap-2 text-[11px]">
+        <div className="border-t border-border mt-6 pt-3 flex flex-col gap-2 text-xs">
           <p className="text-muted font-mono">
             Token: <span className="text-secondary">{truncated}</span> (expires in 7 days)
           </p>
@@ -65,7 +65,7 @@ export function InviteRedeemPage() {
       </div>
 
       {/* Outside card */}
-      <p className="text-muted text-[11px] mt-8 text-center px-4">
+      <p className="text-muted text-xs mt-8 text-center px-4">
         Not invited?{' '}
         <Link to="/" className="text-accent underline hover:text-accent/80">
           Read what dojo is.

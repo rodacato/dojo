@@ -35,7 +35,7 @@ export function VerdictBlock({
   topics,
   cta,
 }: VerdictBlockProps) {
-  const verdictSize = size === 'lg' ? 'text-4xl md:text-[56px]' : 'text-[32px]'
+  const verdictSize = size === 'lg' ? 'text-4xl md:text-5xl' : 'text-2xl'
   const padding = size === 'lg' ? 'p-6 md:p-8' : 'p-6'
   return (
     <div
@@ -48,20 +48,20 @@ export function VerdictBlock({
         {VERDICT_LABELS[verdict]}
       </h2>
       {children && (
-        <div className="text-primary text-[15px] leading-relaxed font-sans space-y-3 whitespace-pre-wrap">
+        <div className="text-primary text-base leading-relaxed font-sans space-y-3 whitespace-pre-wrap">
           {children}
         </div>
       )}
       {topics && topics.length > 0 && (
         <div className="mt-5">
-          <p className="text-muted text-[10px] font-mono uppercase tracking-[0.08em] mb-2">
+          <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] mb-2">
             Topics to review
           </p>
           <div className="flex flex-wrap gap-1.5">
             {topics.map((t) => (
               <span
                 key={t}
-                className="text-warning text-[11px] font-mono px-2 py-1 border border-warning/30 bg-warning/10 rounded-sm"
+                className="text-warning text-xs font-mono px-2 py-1 border border-warning/30 bg-warning/10 rounded-sm"
               >
                 {t}
               </span>

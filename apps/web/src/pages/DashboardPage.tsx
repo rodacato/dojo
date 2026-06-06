@@ -124,7 +124,7 @@ function BeltStrip({ belt }: { belt: BeltDTO }) {
 function BeltFactor({ label, value }: { label: string; value: number }) {
   return (
     <div>
-      <dt className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
+      <dt className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
       <dd className="font-mono text-xl text-primary tabular-nums leading-none">{value}</dd>
     </div>
   )
@@ -165,7 +165,7 @@ function StreakCard({
               className={`h-2 w-full rounded-sm ${active ? 'bg-success' : 'bg-page border border-border/40'}`}
               aria-hidden
             />
-            <span className="text-muted text-[10px] font-mono uppercase">{WEEKDAY_LABELS[i]}</span>
+            <span className="text-muted text-xs font-mono uppercase">{WEEKDAY_LABELS[i]}</span>
           </div>
         ))}
       </div>
@@ -196,7 +196,7 @@ function PracticePatternsCard({ practicePatterns }: { practicePatterns: Dashboar
     rows.push({
       label: 'Most avoided',
       value: (
-        <span className="font-mono text-accent text-[11px] uppercase tracking-wider bg-accent/10 px-2 py-0.5 rounded-sm">
+        <span className="font-mono text-accent text-xs uppercase tracking-wider bg-accent/10 px-2 py-0.5 rounded-sm">
           {practicePatterns.mostAvoidedType}
         </span>
       ),
@@ -276,7 +276,7 @@ function WeakAreasCard({ weakAreas }: { weakAreas: DashboardData['weakAreas'] })
         {weakAreas.map((a) => (
           <span
             key={a.topic}
-            className="font-mono text-[11px] text-warning bg-warning/10 border border-warning/30 rounded-sm px-2.5 py-1 inline-flex items-center gap-1.5"
+            className="font-mono text-xs text-warning bg-warning/10 border border-warning/30 rounded-sm px-2.5 py-1 inline-flex items-center gap-1.5"
           >
             <span className="text-primary lowercase">{a.topic}</span>
             <span className="text-warning/70">({a.frequency})</span>

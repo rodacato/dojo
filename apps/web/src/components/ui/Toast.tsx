@@ -118,17 +118,17 @@ export function ToastContainer() {
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
-              <div className={`font-mono text-[11px] uppercase tracking-wider mb-1 ${TONE_TEXT[t.kind]}`}>
+              <div className={`font-mono text-xs uppercase tracking-wider mb-1 ${TONE_TEXT[t.kind]}`}>
                 {t.eyebrow}
               </div>
               {t.body && (
-                <div className="text-[13px] text-secondary leading-relaxed">{t.body}</div>
+                <div className="text-sm text-secondary leading-relaxed">{t.body}</div>
               )}
               {t.action && (
                 <button
                   type="button"
                   onClick={t.action.onClick}
-                  className="mt-2 font-mono text-[11px] uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+                  className="mt-2 font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
                 >
                   {t.action.label}
                 </button>
@@ -165,7 +165,7 @@ export function badgeUnlockToast({ badgeName, description, onView }: BadgeUnlock
     durationMs: 6000,
     body: (
       <div className="space-y-1">
-        <div className="font-mono uppercase tracking-wider font-bold text-primary text-[20px] leading-tight">
+        <div className="font-mono uppercase tracking-wider font-bold text-primary text-xl leading-tight">
           {badgeName}
         </div>
         <div className="text-secondary">{description}</div>

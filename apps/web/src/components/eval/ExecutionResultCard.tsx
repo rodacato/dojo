@@ -26,7 +26,7 @@ export function ExecutionResultCard({ result }: Props) {
             {statusLabel}
           </span>
         </div>
-        <span className="text-muted text-[10px] font-mono">
+        <span className="text-muted text-xs font-mono">
           {result.executionTimeMs}ms
           <span className="ml-2">{expanded ? '▴' : '▾'}</span>
         </span>
@@ -36,7 +36,7 @@ export function ExecutionResultCard({ result }: Props) {
         <div className="px-4 py-3 border-t border-border/30 space-y-2">
           {result.stdout && (
             <div>
-              <p className="text-muted text-[10px] font-mono uppercase mb-1">stdout</p>
+              <p className="text-muted text-xs font-mono uppercase mb-1">stdout</p>
               <pre className="text-xs text-secondary bg-page rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
                 {result.stdout}
               </pre>
@@ -44,13 +44,13 @@ export function ExecutionResultCard({ result }: Props) {
           )}
           {result.stderr && (
             <div>
-              <p className="text-danger text-[10px] font-mono uppercase mb-1">stderr</p>
+              <p className="text-danger text-xs font-mono uppercase mb-1">stderr</p>
               <pre className="text-xs text-danger/80 bg-page rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
                 {result.stderr}
               </pre>
             </div>
           )}
-          <p className="text-muted text-[10px] font-mono">exit code: {result.exitCode}</p>
+          <p className="text-muted text-xs font-mono">exit code: {result.exitCode}</p>
         </div>
       )}
     </div>

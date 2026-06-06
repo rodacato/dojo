@@ -39,12 +39,12 @@ export function HistoryPage() {
 
   return (
     <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
-      <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase mb-6">
+      <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-6">
         Dashboard / Kata history
       </p>
 
       <div className="flex items-end justify-between gap-4 mb-8">
-        <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight">
+        <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
           Kata history
         </h1>
         {total > 0 && (
@@ -52,7 +52,7 @@ export function HistoryPage() {
             <span className="block font-mono text-2xl text-primary tabular-nums leading-none">
               {total}
             </span>
-            <span className="block text-muted text-[13px] mt-1">completed kata</span>
+            <span className="block text-muted text-sm mt-1">completed kata</span>
           </div>
         )}
       </div>
@@ -99,7 +99,7 @@ export function HistoryPage() {
         </div>
       )}
 
-      <p className="text-center text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+      <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
         Every session is a receipt.
       </p>
     </div>

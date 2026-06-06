@@ -36,7 +36,7 @@ export function AuthCallbackPage() {
 
         {failed ? (
           <div className="flex flex-col items-center gap-4">
-            <p className="font-mono text-[13px] text-danger">
+            <p className="font-mono text-sm text-danger">
               Auth_Failed: handshake timeout.
             </p>
             <Button
@@ -49,7 +49,7 @@ export function AuthCallbackPage() {
           </div>
         ) : (
           <div className="flex flex-col items-center gap-10 w-full">
-            <p className="font-mono text-[15px] text-secondary inline-flex items-center">
+            <p className="font-mono text-base text-secondary inline-flex items-center">
               Completing sign-in.
               <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
             </p>
@@ -64,7 +64,7 @@ export function AuthCallbackPage() {
         )}
       </div>
 
-      <p className="absolute bottom-8 font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+      <p className="absolute bottom-8 font-mono text-xs tracking-[0.08em] uppercase text-muted">
         {failed ? 'Connection terminated' : 'GitHub OAuth — state: verifying nonce'}
       </p>
     </div>

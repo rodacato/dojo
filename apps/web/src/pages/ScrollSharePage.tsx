@@ -88,19 +88,19 @@ export function ScrollSharePage() {
         <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
           <article className="bg-surface border border-border rounded-md p-6 md:p-12 text-center flex flex-col items-center">
             {/* Eyebrow */}
-            <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-1 rounded-sm">
+            <p className="font-mono text-xs tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-1 rounded-sm">
               Scroll complete
             </p>
 
             {/* Title */}
-            <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight mt-5 md:mt-6">
+            <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight mt-5 md:mt-6">
               {data.scrollTitle}
             </h1>
 
             {/* Badges row */}
             <div className="flex items-center gap-2 flex-wrap justify-center mt-3">
               <span
-                className="font-mono text-[10px] tracking-[0.08em] uppercase border px-2 py-1 rounded-sm"
+                className="font-mono text-xs tracking-[0.08em] uppercase border px-2 py-1 rounded-sm"
                 style={{
                   color: data.scrollAccentColor,
                   borderColor: `${data.scrollAccentColor}66`,
@@ -109,7 +109,7 @@ export function ScrollSharePage() {
               >
                 {data.scrollLanguage}
               </span>
-              <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border px-2 py-1 rounded-sm">
+              <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border px-2 py-1 rounded-sm">
                 {data.totalSteps} steps
               </span>
             </div>
@@ -120,7 +120,7 @@ export function ScrollSharePage() {
               aria-hidden
             >
               <span
-                className="font-mono text-3xl md:text-[40px] font-bold tracking-[0.04em]"
+                className="font-mono text-3xl md:text-4xl font-bold tracking-[0.04em]"
                 style={{ color: data.scrollAccentColor }}
               >
                 {langGlyph}
@@ -142,9 +142,9 @@ export function ScrollSharePage() {
                   aria-hidden
                   className="w-8 h-8 rounded-full bg-elevated"
                 />
-                <span className="text-secondary text-[15px]">@{data.username}</span>
+                <span className="text-secondary text-base">@{data.username}</span>
               </div>
-              <p className="font-mono text-[11px] tracking-[0.04em] text-muted">
+              <p className="font-mono text-xs tracking-[0.04em] text-muted">
                 Completed {completedDate}
               </p>
             </div>
@@ -156,7 +156,7 @@ export function ScrollSharePage() {
             >
               Start the scroll →
             </Link>
-            <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-3">
+            <p className="text-muted text-xs font-mono tracking-[0.04em] mt-3">
               Free. No account required to begin.
             </p>
           </article>

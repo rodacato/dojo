@@ -41,13 +41,13 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
     <PublicPageLayout>
       <article className="max-w-[720px] mx-auto px-4 md:px-6 pt-16 pb-24">
         <header className="mb-8">
-          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-3">
             Legal
           </div>
-          <h1 className="text-primary text-3xl sm:text-[32px] font-semibold leading-tight">
+          <h1 className="text-primary text-3xl sm:text-2xl font-semibold leading-tight">
             {title}
           </h1>
-          <p className="font-mono text-[13px] text-muted mt-2">
+          <p className="font-mono text-sm text-muted mt-2">
             Last updated {lastUpdated}
           </p>
         </header>
@@ -56,7 +56,7 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
           aria-label="On this page"
           className="rounded-md border border-border bg-surface px-4 py-4 mb-12"
         >
-          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-3">
             On this page
           </div>
           <ol className="space-y-1.5">
@@ -67,7 +67,7 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className={`block font-mono text-[13px] uppercase tracking-wider transition-colors ${
+                    className={`block font-mono text-sm uppercase tracking-wider transition-colors ${
                       isActive ? 'text-accent' : 'text-muted hover:text-accent'
                     }`}
                   >
@@ -85,11 +85,11 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
             const num = String(i + 1).padStart(2, '0')
             return (
               <section key={section.id} id={section.id} className="scroll-mt-20">
-                <h2 className="text-primary text-[18px] font-semibold leading-snug mb-4 flex items-baseline gap-3">
+                <h2 className="text-primary text-lg font-semibold leading-snug mb-4 flex items-baseline gap-3">
                   <span className="font-mono text-muted">§{num}</span>
                   <span>{section.label}</span>
                 </h2>
-                <div className="legal-prose text-secondary text-[15px] leading-relaxed space-y-4">
+                <div className="legal-prose text-secondary text-base leading-relaxed space-y-4">
                   {section.body}
                 </div>
               </section>
@@ -98,10 +98,10 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
         </div>
 
         <aside className="mt-16 rounded-md border border-border bg-surface p-4">
-          <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-2">
+          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-2">
             Questions?
           </div>
-          <p className="text-secondary text-[13px] leading-relaxed">
+          <p className="text-secondary text-sm leading-relaxed">
             We don't have a legal team. Open an issue at{' '}
             <Link to="/open-source" className="text-accent hover:underline">
               /open-source
@@ -137,7 +137,7 @@ export function LegalCallout({ children }: { children: ReactNode }) {
 
 export function LegalCode({ children }: { children: ReactNode }) {
   return (
-    <code className="font-mono text-[13px] text-accent bg-surface border border-border rounded-sm px-1.5 py-0.5">
+    <code className="font-mono text-sm text-accent bg-surface border border-border rounded-sm px-1.5 py-0.5">
       {children}
     </code>
   )

@@ -118,16 +118,16 @@ export function ScrollPlayerPage() {
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <Link
           to="/scrolls"
-          className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
+          className="font-mono text-xs tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
         >
           ← Learn
         </Link>
         <span className="h-4 w-px bg-border hidden sm:block" />
-        <span className="text-primary text-[14px] font-medium truncate hidden sm:inline">
+        <span className="text-primary text-sm font-medium truncate hidden sm:inline">
           {scroll.title}
         </span>
         <span
-          className={`ml-auto font-mono text-[11px] tracking-[0.08em] uppercase ${
+          className={`ml-auto font-mono text-xs tracking-[0.08em] uppercase ${
             scrollComplete ? 'text-success' : 'text-muted'
           }`}
         >
@@ -137,7 +137,7 @@ export function ScrollPlayerPage() {
           type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-label="Toggle sidebar"
-          className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors hidden md:inline"
+          className="font-mono text-xs tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors hidden md:inline"
         >
           {sidebarOpen ? 'Hide nav' : 'Show nav'}
         </button>
@@ -151,7 +151,7 @@ export function ScrollPlayerPage() {
           }`}
         >
           <div className="px-4 pt-5 pb-3">
-            <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+            <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
               Lessons · {scroll.lessons.length}
             </p>
           </div>
@@ -232,12 +232,12 @@ function LessonNav({
         className="w-full px-4 h-8 flex items-center gap-2 hover:bg-elevated/50 transition-colors text-left"
         aria-expanded={expanded}
       >
-        <span className="font-mono text-[10px] text-muted shrink-0">{expanded ? '▾' : '▸'}</span>
-        <span className="font-mono text-[13px] text-primary truncate">
+        <span className="font-mono text-xs text-muted shrink-0">{expanded ? '▾' : '▸'}</span>
+        <span className="font-mono text-sm text-primary truncate">
           <span className="text-muted">{lessonNumber} ·</span> {lesson.title}
         </span>
         <span
-          className={`ml-auto font-mono text-[10px] tracking-[0.04em] shrink-0 ${
+          className={`ml-auto font-mono text-xs tracking-[0.04em] shrink-0 ${
             allDone ? 'text-success' : 'text-muted'
           }`}
         >
@@ -254,7 +254,7 @@ function LessonNav({
                 key={step.id}
                 type="button"
                 onClick={() => onSelectStep(step.id)}
-                className={`w-full pl-9 pr-4 h-7 flex items-center gap-2 transition-colors text-left text-[12px] ${
+                className={`w-full pl-9 pr-4 h-7 flex items-center gap-2 transition-colors text-left text-xs ${
                   isActive
                     ? 'bg-accent/8 border-l-2 border-accent text-primary'
                     : 'border-l-2 border-transparent text-secondary hover:text-primary hover:bg-elevated/30'
@@ -279,20 +279,20 @@ function LessonNav({
 function StepStatusIcon({ complete, active }: { complete: boolean; active: boolean }) {
   if (complete) {
     return (
-      <span className="font-mono text-[11px] text-success shrink-0" aria-hidden>
+      <span className="font-mono text-xs text-success shrink-0" aria-hidden>
         ✓
       </span>
     )
   }
   if (active) {
     return (
-      <span className="font-mono text-[11px] text-accent shrink-0" aria-hidden>
+      <span className="font-mono text-xs text-accent shrink-0" aria-hidden>
         ▸
       </span>
     )
   }
   return (
-    <span className="font-mono text-[11px] text-muted shrink-0" aria-hidden>
+    <span className="font-mono text-xs text-muted shrink-0" aria-hidden>
       ○
     </span>
   )
@@ -851,7 +851,7 @@ function TestsTab({ result }: { result: ExecuteStepResponse }) {
           <div className="min-w-0 flex-1">
             <div className="break-words">{tr.name}</div>
             {tr.message && !tr.passed && (
-              <div className="text-muted text-[11px] mt-0.5 break-words">{tr.message}</div>
+              <div className="text-muted text-xs mt-0.5 break-words">{tr.message}</div>
             )}
           </div>
         </div>
@@ -874,7 +874,7 @@ function OutputTab({ result }: { result: ExecuteStepResponse }) {
     <div className="space-y-3">
       {hasStdout && (
         <div>
-          <p className="text-[10px] font-mono text-muted uppercase tracking-widest mb-1">stdout</p>
+          <p className="text-xs font-mono text-muted uppercase tracking-widest mb-1">stdout</p>
           <pre className="text-xs font-mono text-secondary whitespace-pre-wrap break-words">
             {result.stdout}
           </pre>
@@ -882,7 +882,7 @@ function OutputTab({ result }: { result: ExecuteStepResponse }) {
       )}
       {hasStderr && (
         <div>
-          <p className="text-[10px] font-mono text-danger/80 uppercase tracking-widest mb-1">stderr</p>
+          <p className="text-xs font-mono text-danger/80 uppercase tracking-widest mb-1">stderr</p>
           <pre className="text-xs font-mono text-danger/90 whitespace-pre-wrap break-words">
             {result.stderr}
           </pre>
@@ -909,7 +909,7 @@ function ErrorCard({
       </p>
       <p className="text-sm text-secondary mb-2">{message}</p>
       {trimmed && (
-        <pre className="text-[11px] font-mono text-muted/80 whitespace-pre-wrap break-words border-t border-warning/20 pt-2 mt-2 max-h-32 overflow-y-auto">
+        <pre className="text-xs font-mono text-muted/80 whitespace-pre-wrap break-words border-t border-warning/20 pt-2 mt-2 max-h-32 overflow-y-auto">
           {trimmed}
         </pre>
       )}
@@ -936,7 +936,7 @@ function FurtherReading({ refs }: { refs: ExternalReference[] }) {
         onClick={() => setOpen((v) => !v)}
         className="w-full text-left text-xs font-mono text-muted uppercase tracking-wider hover:text-secondary transition-colors flex items-center gap-1"
       >
-        <span className="text-[10px]">{open ? '▼' : '▶'}</span>
+        <span className="text-xs">{open ? '▼' : '▶'}</span>
         Further reading
       </button>
       {open && (
@@ -1067,22 +1067,22 @@ function ScrollCompleteBanner({
 
   return (
     <section className="px-4 md:px-8 py-10 md:py-12 max-w-3xl mx-auto text-center">
-      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-success">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-success">
         Scroll · Complete
       </p>
       <h2 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight mt-4">
         {scrollTitle}
       </h2>
-      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mt-3">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mt-3">
         {lessonCount} lessons · {stepCount} steps
       </p>
 
       {/* Verdict-style block — emerald LEFT BORDER for completion (NOT indigo). */}
       <div className="bg-surface border border-border border-l-4 border-l-success rounded-md p-6 md:p-8 mt-8 text-left">
-        <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-secondary">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
           [Sensei]
         </p>
-        <p className="text-primary text-[15px] leading-relaxed mt-3">
+        <p className="text-primary text-base leading-relaxed mt-3">
           You pulled apart everything you swore you understood. Some answers were elegant. Some
           you brute-forced. Both worked. The cursor disagrees and keeps blinking.
         </p>
@@ -1091,20 +1091,20 @@ function ScrollCompleteBanner({
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center sm:justify-center gap-2 mt-8">
         <Link
           to="/scrolls"
-          className="font-mono text-[11px] tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
+          className="font-mono text-xs tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
           ← Back to scrolls
         </Link>
         <button
           type="button"
           onClick={handleShare}
-          className="font-mono text-[11px] tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
+          className="font-mono text-xs tracking-[0.08em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
           {copied ? 'Link copied!' : 'Share completion'}
         </button>
         <Link
           to="/"
-          className="font-mono text-[11px] tracking-[0.08em] uppercase bg-accent text-primary hover:bg-accent/90 transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
+          className="font-mono text-xs tracking-[0.08em] uppercase bg-accent text-primary hover:bg-accent/90 transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
           Try the dojo →
         </Link>

@@ -111,7 +111,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: FeedbackSection
           rows={2}
           className="w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted/40 focus:outline-none focus:border-accent transition-colors resize-none"
         />
-        <p className="text-muted/30 text-[10px] font-mono text-right mt-1">{note.length}/280</p>
+        <p className="text-muted/30 text-xs font-mono text-right mt-1">{note.length}/280</p>
       </div>
 
       <div className="flex gap-2">

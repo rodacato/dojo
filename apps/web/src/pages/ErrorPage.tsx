@@ -32,7 +32,7 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
         </span>
 
         <div className="relative z-10 text-center max-w-xl w-full">
-          <div className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-danger mb-6 px-2 py-1 rounded-sm bg-surface/80 border border-danger/40">
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-danger mb-6 px-2 py-1 rounded-sm bg-surface/80 border border-danger/40">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-danger" aria-hidden />
             ERR · 5xx
           </div>
@@ -43,12 +43,12 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
           <p className="mt-3 font-mono text-muted text-lg sm:text-xl">
             The dojo is still here.<span className="text-accent animate-cursor">_</span>
           </p>
-          <p className="mt-6 text-secondary text-[15px] leading-relaxed">
+          <p className="mt-6 text-secondary text-base leading-relaxed">
             An unexpected error occurred while loading this page. We've recorded it. The kata loop is unaffected if you're already in a session — refresh and continue.
           </p>
 
           {message && (
-            <pre className="mt-5 mx-auto max-w-md font-mono text-[12px] text-secondary bg-surface/60 border border-border rounded-sm px-3 py-2 text-left whitespace-pre-wrap wrap-break-word">
+            <pre className="mt-5 mx-auto max-w-md font-mono text-xs text-secondary bg-surface/60 border border-border rounded-sm px-3 py-2 text-left whitespace-pre-wrap wrap-break-word">
               {message}
             </pre>
           )}
@@ -56,7 +56,7 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
           {requestId && (
             <div className="mt-6 mx-auto max-w-md rounded-md border border-border bg-surface/80 p-4 text-left">
               <div className="flex items-center justify-between gap-3 mb-1">
-                <span className="font-mono text-[11px] uppercase tracking-wider text-muted">
+                <span className="font-mono text-xs uppercase tracking-wider text-muted">
                   Request ID
                 </span>
                 <button
@@ -68,12 +68,12 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
                   <ClipboardIcon className="w-4 h-4" />
                 </button>
               </div>
-              <div className="font-mono text-[15px] text-primary tracking-wide break-all">
+              <div className="font-mono text-base text-primary tracking-wide break-all">
                 {requestId}
               </div>
               <div
                 aria-live="polite"
-                className={`font-mono text-[11px] uppercase tracking-wider text-success mt-2 transition-opacity ${
+                className={`font-mono text-xs uppercase tracking-wider text-success mt-2 transition-opacity ${
                   copied ? 'opacity-100' : 'opacity-0'
                 }`}
               >
@@ -92,7 +92,7 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
       </section>
 
       <div className="border-t border-border/40 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto py-5 text-center font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-muted">
           If the error persists — share the request ID via{' '}
           <Link to="/open-source" className="text-accent hover:underline">
             /open-source

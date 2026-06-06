@@ -9,7 +9,7 @@ interface PaginationProps {
 export function Pagination({ page, totalPages, onChange, ariaLabel = 'Pagination', size = 'md' }: PaginationProps) {
   if (totalPages <= 1) return null
   const pages = pageWindow(page, totalPages)
-  const text = size === 'sm' ? 'text-[11px]' : 'text-[13px]'
+  const text = size === 'sm' ? 'text-xs' : 'text-sm'
   const cell = size === 'sm' ? 'w-7 h-7' : 'w-8 h-8'
   const upperLabel = size === 'sm' ? 'uppercase tracking-wider' : ''
   return (

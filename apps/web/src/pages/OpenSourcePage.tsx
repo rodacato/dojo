@@ -60,7 +60,7 @@ export function OpenSourcePage() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 flex flex-col gap-16">
         {/* Hero */}
         <section>
-          <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-4">
+          <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-4">
             Transparency
           </p>
           <h1 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight max-w-2xl">
@@ -105,8 +105,8 @@ export function OpenSourcePage() {
                   <p className="font-mono text-lg font-bold text-primary">{card.name}</p>
                   <span aria-hidden className="text-muted text-lg leading-none">↗</span>
                 </div>
-                <p className="text-secondary text-[13px] leading-relaxed">{card.body}</p>
-                <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-accent mt-auto">
+                <p className="text-secondary text-sm leading-relaxed">{card.body}</p>
+                <span className="font-mono text-xs tracking-[0.08em] uppercase text-accent mt-auto">
                   Open in github →
                 </span>
               </a>
@@ -118,7 +118,7 @@ export function OpenSourcePage() {
         <section>
           <SectionHeader eyebrow="Logic" title="How the sensei works" />
           <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-            <div className="text-secondary text-[15px] leading-relaxed space-y-3">
+            <div className="text-secondary text-base leading-relaxed space-y-3">
               <p>
                 The sensei is not a chatbot. It&apos;s a structured evaluation system with a
                 persona, a rubric, and a tight feedback loop. The prompt template is in the
@@ -126,19 +126,19 @@ export function OpenSourcePage() {
               </p>
               <p>
                 Every kata carries an{' '}
-                <code className="text-accent font-mono text-[13px]">owner_role</code> (who the
+                <code className="text-accent font-mono text-sm">owner_role</code> (who the
                 sensei pretends to be) and an{' '}
-                <code className="text-accent font-mono text-[13px]">owner_context</code> (what
+                <code className="text-accent font-mono text-sm">owner_context</code> (what
                 they know). The verdict is one of three values. There is no score.
               </p>
             </div>
             <div className="bg-page border border-border rounded-md overflow-hidden">
               <div className="h-9 px-4 border-b border-border bg-surface flex items-center">
-                <span className="font-mono text-[11px] tracking-[0.04em] text-muted">
+                <span className="font-mono text-xs tracking-[0.04em] text-muted">
                   sensei_system_prompt.json
                 </span>
               </div>
-              <pre className="p-4 font-mono text-[12px] text-primary leading-relaxed overflow-x-auto">
+              <pre className="p-4 font-mono text-xs text-primary leading-relaxed overflow-x-auto">
                 {SAMPLE_PROMPT}
               </pre>
             </div>
@@ -157,7 +157,7 @@ export function OpenSourcePage() {
         {/* Architecture */}
         <section>
           <SectionHeader eyebrow="Architecture" title="Boring on purpose." />
-          <div className="text-secondary text-[15px] leading-relaxed space-y-3 max-w-3xl">
+          <div className="text-secondary text-base leading-relaxed space-y-3 max-w-3xl">
             <p>
               Turborepo monorepo. Hexagonal architecture with DDD on the API. Domain events
               for decoupling bounded contexts. PostgreSQL. Self-hosted on Hetzner with Kamal 2
@@ -165,7 +165,7 @@ export function OpenSourcePage() {
             </p>
             <p>
               Decisions are written down as ADRs in{' '}
-              <code className="text-accent font-mono text-[13px]">docs/adr/</code>.{' '}
+              <code className="text-accent font-mono text-sm">docs/adr/</code>.{' '}
               <a
                 href={`${REPO_URL}/blob/main/docs/adr/015-bounded-contexts.md`}
                 target="_blank"
@@ -185,7 +185,7 @@ export function OpenSourcePage() {
 function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-6">
-      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-2">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-2">
         {eyebrow}
       </p>
       <h2 className="text-primary text-2xl md:text-3xl font-semibold leading-tight tracking-tight">
@@ -199,7 +199,7 @@ function RepoStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="px-4 md:px-6 py-3 md:py-4 flex-1 first:md:pl-6 flex items-baseline gap-2">
       <span className="font-mono text-lg md:text-xl text-primary">{value}</span>
-      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
         {label}
       </span>
     </div>
@@ -222,7 +222,7 @@ function BulletList({
       <h3 className="text-primary text-base font-semibold mb-4">{title}</h3>
       <ul className="flex flex-col gap-2.5">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-3 text-secondary text-[14px]">
+          <li key={item} className="flex items-start gap-3 text-secondary text-sm">
             <span className={`font-mono leading-none mt-1 shrink-0 ${color}`} aria-hidden>
               {glyph}
             </span>

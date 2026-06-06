@@ -67,18 +67,18 @@ export function MermaidEditor({ value, onChange }: MermaidEditorProps) {
           onChange={(e) => onChange(e.target.value)}
           placeholder={PLACEHOLDER}
           spellCheck={false}
-          className="w-full h-full bg-page text-primary text-[13px] font-mono leading-relaxed resize-none focus:outline-none px-4 py-3 placeholder:text-muted"
+          className="w-full h-full bg-page text-primary text-sm font-mono leading-relaxed resize-none focus:outline-none px-4 py-3 placeholder:text-muted"
         />
       </div>
 
       {/* Preview pane */}
       <div className="flex-1 min-h-0 flex flex-col">
         <div className="h-7 shrink-0 border-b border-border bg-surface flex items-center px-4">
-          <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+          <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
             Preview
           </span>
           {error && (
-            <span className="ml-3 font-mono text-[10px] text-danger uppercase tracking-[0.08em]">
+            <span className="ml-3 font-mono text-xs text-danger uppercase tracking-[0.08em]">
               · {error}
             </span>
           )}

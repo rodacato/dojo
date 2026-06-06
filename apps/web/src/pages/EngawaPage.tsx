@@ -244,7 +244,7 @@ export function EngawaPage() {
       {/* Header. Authed users get chrome from the sidebar, so the logo
           + Dashboard chip collapse into a single inline CTA line. */}
       {user ? (
-        <header className="flex items-center justify-between gap-4 px-4 py-1.5 border-b border-border/30 shrink-0 text-[11px] font-mono text-muted">
+        <header className="flex items-center justify-between gap-4 px-4 py-1.5 border-b border-border/30 shrink-0 text-xs font-mono text-muted">
           <span className="text-muted/70">playground</span>
           <Link
             to={ctaHref}
@@ -263,14 +263,14 @@ export function EngawaPage() {
           <Link
             to={ctaHref}
             onClick={() => handleCtaClick('banner')}
-            className="text-muted text-[11px] font-mono hover:text-secondary transition-colors hidden md:inline truncate"
+            className="text-muted text-xs font-mono hover:text-secondary transition-colors hidden md:inline truncate"
           >
             like running code? <span className="text-accent">practice with a kata →</span>
           </Link>
           <Link
             to={ctaHref}
             onClick={() => handleCtaClick('topbar')}
-            className="text-[11px] font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-accent/50 shrink-0"
+            className="text-xs font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-accent/50 shrink-0"
           >
             Sign in
           </Link>
@@ -284,7 +284,7 @@ export function EngawaPage() {
             aria-label="Language"
             value={selectedLanguage}
             onChange={(e) => changeLanguage(e.target.value)}
-            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-[12px] font-mono focus:outline-none focus:border-accent transition-colors"
+            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-xs font-mono focus:outline-none focus:border-accent transition-colors"
           >
             {RUNTIMES.map((r) => (
               <option key={r.language} value={r.language}>
@@ -298,7 +298,7 @@ export function EngawaPage() {
             aria-label="Version"
             value={selectedVersion}
             onChange={(e) => setSelectedVersion(e.target.value)}
-            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-[12px] font-mono tabular-nums focus:outline-none focus:border-accent transition-colors"
+            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-xs font-mono tabular-nums focus:outline-none focus:border-accent transition-colors"
           >
             {availableVersions.map((v) => (
               <option key={v} value={v}>
@@ -311,7 +311,7 @@ export function EngawaPage() {
           <button
             type="button"
             onClick={() => setShowAdvanced((s) => !s)}
-            className="font-mono text-[10px] tracking-[0.04em] text-muted hover:text-secondary transition-colors"
+            className="font-mono text-xs tracking-[0.04em] text-muted hover:text-secondary transition-colors"
           >
             {showAdvanced ? '— hide older' : '+ older'}
           </button>
@@ -323,7 +323,7 @@ export function EngawaPage() {
             <button
               type="button"
               onClick={() => setAsk((a) => ({ ...a, open: true }))}
-              className="font-mono text-[11px] tracking-[0.04em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-3 h-7 inline-flex items-center rounded-sm"
+              className="font-mono text-xs tracking-[0.04em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-3 h-7 inline-flex items-center rounded-sm"
             >
               Ask the sensei
             </button>
@@ -332,7 +332,7 @@ export function EngawaPage() {
             type="button"
             onClick={handleRun}
             disabled={runDisabled}
-            className="font-mono text-[11px] tracking-[0.04em] uppercase bg-accent text-primary hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-3 h-7 inline-flex items-center gap-1.5 rounded-sm"
+            className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-primary hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-3 h-7 inline-flex items-center gap-1.5 rounded-sm"
           >
             {run.status === 'running' ? (
               <>
@@ -430,7 +430,7 @@ export function EngawaPage() {
               className="w-full bg-surface/40 border border-border/40 rounded-sm p-2 font-mono text-xs text-primary focus:outline-none focus:border-accent resize-none"
             />
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted/60 text-[10px] font-mono">
+              <span className="text-muted/60 text-xs font-mono">
                 {ask.question.length}/2000
               </span>
               <button
@@ -458,7 +458,7 @@ export function EngawaPage() {
                 )}
               </div>
             )}
-            <p className="text-muted/60 text-[10px] font-mono leading-snug border-t border-border/30 pt-2">
+            <p className="text-muted/60 text-xs font-mono leading-snug border-t border-border/30 pt-2">
               free exploration tool, not graded practice. kata is where the sensei actually evaluates.
             </p>
           </div>
@@ -467,7 +467,7 @@ export function EngawaPage() {
 
       {/* Anonymous footer only; authed users already get the sidebar. */}
       {!user && (
-        <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-muted/50 text-[10px] font-mono">
+        <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-muted/50 text-xs font-mono">
           <span>sandbox · not graded</span>
           <Link
             to={ctaHref}
@@ -485,7 +485,7 @@ export function EngawaPage() {
 function DropdownLabel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="inline-flex items-center gap-2">
-      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">{label}</span>
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{label}</span>
       {children}
     </label>
   )
@@ -494,14 +494,14 @@ function DropdownLabel({ label, children }: { label: string; children: React.Rea
 function RunStatusChip({ run }: { run: RunState }) {
   if (run.status === 'idle') {
     return (
-      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted border border-border bg-elevated px-2 py-0.5 rounded-sm">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border bg-elevated px-2 py-0.5 rounded-sm">
         Ready
       </span>
     )
   }
   if (run.status === 'running') {
     return (
-      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
         Running
         <span className="animate-cursor ml-0.5" aria-hidden>_</span>
       </span>
@@ -509,14 +509,14 @@ function RunStatusChip({ run }: { run: RunState }) {
   }
   if (run.status === 'ok') {
     return (
-      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-0.5 rounded-sm tabular-nums">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-0.5 rounded-sm tabular-nums">
         OK · exit {run.exitCode ?? 0}
         {run.runtimeMs != null && ` · ${run.runtimeMs}ms`}
       </span>
     )
   }
   return (
-    <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-danger border border-danger/40 bg-danger/10 px-2 py-0.5 rounded-sm tabular-nums">
+    <span className="font-mono text-xs tracking-[0.08em] uppercase text-danger border border-danger/40 bg-danger/10 px-2 py-0.5 rounded-sm tabular-nums">
       Error · exit {run.exitCode ?? 1}
     </span>
   )

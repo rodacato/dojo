@@ -97,7 +97,7 @@ export function PublicProfilePage() {
         {/* Header band */}
         <section className="relative bg-surface border border-border rounded-md p-6 md:p-8">
           {profile.streak > 0 && (
-            <span className="absolute top-4 right-4 font-mono text-[11px] tracking-[0.08em] uppercase text-accent border border-accent/40 bg-accent/10 px-2 py-1 rounded-sm">
+            <span className="absolute top-4 right-4 font-mono text-xs tracking-[0.08em] uppercase text-accent border border-accent/40 bg-accent/10 px-2 py-1 rounded-sm">
               {profile.streak} day streak
             </span>
           )}
@@ -110,11 +110,11 @@ export function PublicProfilePage() {
                 className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-elevated shrink-0"
               />
               <div className="min-w-0">
-                <h1 className="text-primary text-2xl md:text-[32px] font-semibold leading-tight tracking-tight truncate">
+                <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight truncate">
                   {profile.username}
                 </h1>
-                <p className="text-secondary text-[15px]">@{profile.username}</p>
-                <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-1">
+                <p className="text-secondary text-base">@{profile.username}</p>
+                <p className="text-muted text-xs font-mono tracking-[0.04em] mt-1">
                   Member since {memberSince}
                 </p>
               </div>
@@ -132,7 +132,7 @@ export function PublicProfilePage() {
         <section className="bg-surface border border-border rounded-md p-6 md:p-8">
           <SectionEyebrow title="Activity" />
           <Heatmap data={profile.heatmapData} />
-          <div className="flex items-center justify-between mt-3 font-mono text-[11px] text-muted">
+          <div className="flex items-center justify-between mt-3 font-mono text-xs text-muted">
             <span>Each square is one day. Darker = more kata.</span>
             <HeatmapLegend />
           </div>
@@ -185,10 +185,10 @@ export function PublicProfilePage() {
 function StatCell({ label, value, colorClass }: { label: string; value: string; colorClass?: string }) {
   return (
     <div className="md:px-6 first:md:pl-0 last:md:pr-0">
-      <p className={`font-mono text-2xl md:text-[32px] tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
+      <p className={`font-mono text-2xl md:text-2xl tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
         {value}
       </p>
-      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mt-2">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mt-2">
         {label}
       </p>
     </div>
@@ -198,7 +198,7 @@ function StatCell({ label, value, colorClass }: { label: string; value: string; 
 function SectionEyebrow({ title }: { title: string }) {
   return (
     <div className="flex items-center gap-3 mb-4">
-      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted">{title}</p>
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{title}</p>
       <span className="flex-1 h-px bg-border" />
     </div>
   )
@@ -208,10 +208,10 @@ function BadgeMiniCard({ name, earnedAt }: { name: string; earnedAt: string }) {
   const earnedLabel = new Date(earnedAt).toISOString().slice(0, 10)
   return (
     <div className="bg-page border border-border rounded-md px-4 py-3 min-w-50 shrink-0">
-      <p className="font-mono text-[13px] font-bold tracking-[0.04em] uppercase text-primary">
+      <p className="font-mono text-sm font-bold tracking-[0.04em] uppercase text-primary">
         {name}
       </p>
-      <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted mt-1">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mt-1">
         Earned {earnedLabel}
       </p>
     </div>

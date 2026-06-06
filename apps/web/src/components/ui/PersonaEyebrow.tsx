@@ -9,7 +9,7 @@ interface PersonaEyebrowProps {
 export function PersonaEyebrow({ role, className = '' }: PersonaEyebrowProps) {
   return (
     <span
-      className={`font-mono text-[11px] tracking-[0.08em] uppercase text-secondary ${className}`}
+      className={`font-mono text-xs tracking-[0.08em] uppercase text-secondary ${className}`}
     >
       [{role}]
     </span>

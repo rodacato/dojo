@@ -38,7 +38,7 @@ export function Toggle({ checked, onChange, label, ariaLabel, disabled, id }: To
   if (!label) return button
 
   return (
-    <label className="flex items-center gap-3 cursor-pointer text-secondary text-[13px]">
+    <label className="flex items-center gap-3 cursor-pointer text-secondary text-sm">
       <span className="flex-1">{label}</span>
       {button}
     </label>

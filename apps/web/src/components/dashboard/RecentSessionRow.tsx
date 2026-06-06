@@ -35,7 +35,7 @@ export function RecentSessionRow({ session, onClick, isLast }: RecentSessionRowP
       </span>
       {verdict && (
         <span
-          className={`shrink-0 font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm ${verdict.classes}`}
+          className={`shrink-0 font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm ${verdict.classes}`}
         >
           {verdict.label}
         </span>

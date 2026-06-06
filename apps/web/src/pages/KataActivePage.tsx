@@ -228,10 +228,10 @@ export function KataActivePage() {
             dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
           <span className="h-4 w-px bg-border hidden sm:block" />
-          <span className="font-mono text-[10px] tracking-wider text-success border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
+          <span className="font-mono text-xs tracking-wider text-success border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
             READY
           </span>
-          <span className="font-mono text-[11px] text-secondary truncate hidden md:inline">
+          <span className="font-mono text-xs text-secondary truncate hidden md:inline">
             Active Task
           </span>
         </div>
@@ -263,7 +263,7 @@ export function KataActivePage() {
           <div className="h-full flex flex-col bg-surface">
             <div className="flex-1 overflow-y-auto px-6 py-6">
               <div className="mb-4">
-                <span className="inline-block font-mono text-[11px] tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm mb-3">
+                <span className="inline-block font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm mb-3">
                   [{session.ownerRole.toUpperCase()}]
                 </span>
                 <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-3">
@@ -275,7 +275,7 @@ export function KataActivePage() {
                   {isWhiteboard && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-warning text-[10px] font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
+                      className="text-warning text-xs font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
                     >
                       #{tag}
                     </span>
@@ -285,7 +285,7 @@ export function KataActivePage() {
               <KataBody body={session.body} />
             </div>
             <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
-              <p className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted text-center opacity-70">
+              <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted text-center opacity-70">
                 Enter the dojo. Leave the AI outside.
               </p>
             </div>
@@ -302,15 +302,15 @@ export function KataActivePage() {
           <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
             {isCode || isWhiteboard ? (
               <>
-                <span className="font-mono text-[12px] text-primary">
+                <span className="font-mono text-xs text-primary">
                   {filename ?? 'architecture.md'}
                 </span>
                 <span className="h-3 w-px bg-border" />
-                <span className="font-mono text-[11px] text-muted">{editorLabel}</span>
+                <span className="font-mono text-xs text-muted">{editorLabel}</span>
               </>
             ) : (
               <>
-                <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+                <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
                   {isReview ? 'Code Review' : 'Your Response'}
                 </span>
                 <FontToggle value={responseFont} onChange={setResponseFont} className="ml-auto" />
@@ -380,14 +380,14 @@ function ChatEditor({
         placeholder={placeholder ?? 'Think out loud. The sensei reads everything.'}
         spellCheck={false}
         className={`flex-1 bg-page text-primary resize-none focus:outline-none px-6 py-5 placeholder:text-muted leading-relaxed ${
-          font === 'mono' ? 'font-mono text-[13px]' : 'font-sans text-[15px]'
+          font === 'mono' ? 'font-mono text-sm' : 'font-sans text-base'
         }`}
       />
       <div className="h-9 shrink-0 border-t border-border bg-surface/60 flex items-center justify-between px-4">
-        <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+        <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
           ⌘+Enter to submit
         </span>
-        <span className="font-mono text-[10px] text-muted">{wordCount} words</span>
+        <span className="font-mono text-xs text-muted">{wordCount} words</span>
       </div>
     </div>
   )
@@ -404,7 +404,7 @@ function FontToggle({
 }) {
   return (
     <div
-      className={`inline-flex items-center font-mono text-[10px] uppercase tracking-[0.08em] border border-border rounded-sm overflow-hidden ${className}`}
+      className={`inline-flex items-center font-mono text-xs uppercase tracking-[0.08em] border border-border rounded-sm overflow-hidden ${className}`}
       role="group"
       aria-label="Response font"
     >

@@ -1,10 +1,10 @@
 export function KumitePlaceholderPage() {
   return (
     <div className="px-4 md:px-6 py-16 max-w-3xl mx-auto">
-      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-4">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-4">
         Coming soon
       </p>
-      <h1 className="text-primary text-3xl md:text-[40px] font-semibold leading-tight tracking-tight mb-6">
+      <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight mb-6">
         Kumite
       </h1>
       <p className="text-secondary text-lg leading-relaxed mb-4">
@@ -16,7 +16,7 @@ export function KumitePlaceholderPage() {
         for the leaderboard. When the matchmaking and the paired evaluation are ready, this page
         will host them.
       </p>
-      <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted opacity-70">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted opacity-70">
         Until then — practice solo.
       </p>
     </div>

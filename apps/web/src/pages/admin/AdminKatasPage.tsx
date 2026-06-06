@@ -82,14 +82,14 @@ export function AdminKatasPage() {
 
   return (
     <div>
-      <div className="font-mono text-[11px] uppercase tracking-wider text-muted mb-4">
+      <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
         ADMIN / EXERCISES
       </div>
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-[24px] font-semibold text-primary leading-tight">Katas</h1>
-          <div className="mt-1 text-[13px] text-muted">
+          <h1 className="text-xl font-semibold text-primary leading-tight">Katas</h1>
+          <div className="mt-1 text-sm text-muted">
             <span className="text-success">{counts.published} published</span>
             <span className="mx-2">·</span>
             <span>{counts.draft} draft</span>
@@ -111,7 +111,7 @@ export function AdminKatasPage() {
               setPage(1)
             }}
             placeholder="Search title..."
-            className="w-full h-8 pl-9 pr-3 rounded-sm border border-border bg-page text-[13px] text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+            className="w-full h-8 pl-9 pr-3 rounded-sm border border-border bg-page text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
           />
         </div>
         <FilterSelect
@@ -191,7 +191,7 @@ export function AdminKatasPage() {
       ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-[13px]">
+          <table className="w-full text-sm">
             <colgroup>
               <col className="w-16" />
               <col className="w-22" />
@@ -213,7 +213,7 @@ export function AdminKatasPage() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-muted font-mono text-[13px]">
+                  <td colSpan={6} className="px-4 py-10 text-center text-muted font-mono text-sm">
                     Loading_
                   </td>
                 </tr>
@@ -235,18 +235,18 @@ export function AdminKatasPage() {
                       </td>
                       <td className="px-4 h-14 align-middle">
                         <span
-                          className={`text-[15px] font-medium text-primary ${
+                          className={`text-base font-medium text-primary ${
                             archived ? 'line-through opacity-60' : ''
                           }`}
                         >
                           {ex.title}
                         </span>
                       </td>
-                      <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-[15px] text-primary">
+                      <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-base text-primary">
                         {ex.sessionCount.toLocaleString()}
                       </td>
                       <td
-                        className={`px-4 h-14 align-middle text-right font-mono tabular-nums text-[15px] ${avgScoreClass(
+                        className={`px-4 h-14 align-middle text-right font-mono tabular-nums text-base ${avgScoreClass(
                           ex.avgScore,
                         )}`}
                       >
@@ -265,7 +265,7 @@ export function AdminKatasPage() {
       )}
 
       {!loading && sorted.length > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-[11px] uppercase tracking-wider text-muted">
+        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">
           <span>
             Showing {startIdx}–{endIdx} of {sorted.length}
           </span>
@@ -300,7 +300,7 @@ function activeFilters(state: {
 function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
   return (
     <th
-      className={`h-10 px-4 font-mono text-[11px] uppercase tracking-wider text-muted ${
+      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >
@@ -317,7 +317,7 @@ function StatusBadge({ status }: { status: string }) {
   }
   return (
     <span
-      className={`font-mono text-[11px] uppercase tracking-wider px-2 py-0.5 rounded-sm ${
+      className={`font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm ${
         styles[status] ?? styles['draft']
       }`}
     >
@@ -351,7 +351,7 @@ function FilterSelect<T extends string>({
 }) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
-    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-[11px] uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
+    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
       <span className="text-muted mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
       <ChevronDownIcon className="w-3 h-3 text-muted" />

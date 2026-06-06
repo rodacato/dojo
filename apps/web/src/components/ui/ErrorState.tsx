@@ -79,15 +79,15 @@ export function ErrorState({
     <div className={wrapper}>
       <div className="max-w-xl w-full text-center">
         <div
-          className={`inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider mb-4 ${TONE_TEXT[tone]}`}
+          className={`inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider mb-4 ${TONE_TEXT[tone]}`}
         >
           <span aria-hidden className={`inline-block w-1.5 h-1.5 rounded-full ${TONE_DOT[tone]}`} />
           {finalEyebrow}
         </div>
-        <h1 className="text-primary text-2xl sm:text-[28px] font-semibold leading-tight">
+        <h1 className="text-primary text-2xl sm:text-2xl font-semibold leading-tight">
           {finalTitle}
         </h1>
-        <p className="mt-3 text-secondary text-[15px] leading-relaxed">{message}</p>
+        <p className="mt-3 text-secondary text-base leading-relaxed">{message}</p>
 
         {requestId && <RequestIdCard id={requestId} />}
 
@@ -99,7 +99,7 @@ export function ErrorState({
         )}
 
         {microcopy && (
-          <p className="mt-4 font-mono text-[11px] text-muted">{microcopy}</p>
+          <p className="mt-4 font-mono text-xs text-muted">{microcopy}</p>
         )}
       </div>
     </div>
@@ -114,8 +114,8 @@ function ErrorAction({ action, kind }: { action: Action; kind: 'primary' | 'seco
         to={action.to}
         className={
           variant === 'primary'
-            ? 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-accent text-primary border border-accent text-[13px] transition-colors hover:bg-accent/90'
-            : 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-transparent text-primary border border-border text-[13px] transition-colors hover:border-accent'
+            ? 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-accent text-primary border border-accent text-sm transition-colors hover:bg-accent/90'
+            : 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-transparent text-primary border border-border text-sm transition-colors hover:border-accent'
         }
       >
         {action.label}
@@ -139,19 +139,19 @@ function RequestIdCard({ id }: { id: string }) {
   return (
     <div className="mt-6 mx-auto max-w-md rounded-md border border-border bg-surface px-4 py-3 text-left">
       <div className="flex items-center justify-between gap-3 mb-1">
-        <span className="font-mono text-[11px] uppercase tracking-wider text-muted">
+        <span className="font-mono text-xs uppercase tracking-wider text-muted">
           Request ID
         </span>
         <button
           type="button"
           onClick={copy}
           aria-label="Copy request ID"
-          className="font-mono text-[11px] uppercase tracking-wider text-muted hover:text-primary transition-colors"
+          className="font-mono text-xs uppercase tracking-wider text-muted hover:text-primary transition-colors"
         >
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
-      <div className="font-mono text-[15px] text-primary tracking-wide break-all">{id}</div>
+      <div className="font-mono text-base text-primary tracking-wide break-all">{id}</div>
     </div>
   )
 }

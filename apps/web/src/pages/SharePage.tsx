@@ -99,14 +99,14 @@ export function SharePage() {
 
       <PublicPageLayout>
         <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
-          <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted text-center mb-6">
+          <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted text-center mb-6">
             Shared kata
           </p>
 
           <article className="bg-surface border border-border rounded-md p-6 md:p-12 text-center flex flex-col items-center">
             {/* Verdict */}
             <h1
-              className={`font-mono text-4xl md:text-[56px] font-bold tracking-tight uppercase leading-none ${verdictColor}`}
+              className={`font-mono text-4xl md:text-5xl font-bold tracking-tight uppercase leading-none ${verdictColor}`}
             >
               {verdictLabel}
             </h1>
@@ -115,7 +115,7 @@ export function SharePage() {
             <h2 className="text-primary text-2xl font-semibold leading-tight tracking-tight mt-4 md:mt-6">
               {data.kataTitle}
             </h2>
-            <div className="mt-2 flex items-center gap-3 font-mono text-[11px] tracking-[0.08em] uppercase text-muted">
+            <div className="mt-2 flex items-center gap-3 font-mono text-xs tracking-[0.08em] uppercase text-muted">
               <span>{data.kataType}</span>
               <span aria-hidden>·</span>
               <span>{data.difficulty}</span>
@@ -136,7 +136,7 @@ export function SharePage() {
                 >
                   &ldquo;
                 </span>
-                <p className="text-primary text-lg md:text-[22px] italic leading-relaxed">
+                <p className="text-primary text-lg md:text-xl italic leading-relaxed">
                   {data.pullQuote}
                 </p>
                 <span
@@ -161,7 +161,7 @@ export function SharePage() {
                 aria-hidden
                 className="w-8 h-8 rounded-full bg-elevated"
               />
-              <span className="text-secondary text-[15px]">@{data.username}</span>
+              <span className="text-secondary text-base">@{data.username}</span>
             </div>
 
             {/* CTA */}
@@ -171,12 +171,12 @@ export function SharePage() {
             >
               Find yours. Enter the dojo →
             </Link>
-            <p className="text-muted text-[11px] font-mono tracking-[0.04em] mt-3">
+            <p className="text-muted text-xs font-mono tracking-[0.04em] mt-3">
               Daily practice. Invite-only. dojo.notdefined.dev
             </p>
           </article>
 
-          <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase text-center mt-10 opacity-60">
+          <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase text-center mt-10 opacity-60">
             kata_id: {sessionId?.slice(0, 6) ?? ''}
           </p>
         </div>

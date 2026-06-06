@@ -58,13 +58,13 @@ export function ChangelogPage() {
   return (
     <PublicPageLayout>
       <div className="max-w-180 mx-auto px-4 md:px-6 py-12 md:py-20">
-        <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-muted mb-3">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-3">
           Changelog
         </p>
-        <h1 className="text-primary text-3xl md:text-[32px] font-semibold leading-tight tracking-tight">
+        <h1 className="text-primary text-3xl md:text-2xl font-semibold leading-tight tracking-tight">
           What we shipped.
         </h1>
-        <p className="text-secondary text-[15px] mt-2 mb-12">
+        <p className="text-secondary text-base mt-2 mb-12">
           Sprint by sprint. No marketing. Just done.
         </p>
 
@@ -74,7 +74,7 @@ export function ChangelogPage() {
           ))}
         </div>
 
-        <p className="font-mono text-[11px] text-muted mt-12 inline-flex items-center">
+        <p className="font-mono text-xs text-muted mt-12 inline-flex items-center">
           More history coming.
           <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
         </p>
@@ -88,21 +88,21 @@ function Entry({ entry, divider }: { entry: ChangelogEntry; divider: boolean }) 
   return (
     <article className={`py-8 ${divider ? 'border-b border-border/40' : ''}`}>
       <div className="flex items-center gap-3 mb-3">
-        <time className="font-mono text-[13px] text-secondary tabular-nums">{entry.date}</time>
-        <span className={`font-mono text-[10px] tracking-[0.08em] uppercase ${phaseColor}`}>
+        <time className="font-mono text-sm text-secondary tabular-nums">{entry.date}</time>
+        <span className={`font-mono text-xs tracking-[0.08em] uppercase ${phaseColor}`}>
           {entry.phase}
         </span>
       </div>
       <h2 className="text-primary text-lg font-semibold leading-tight tracking-tight mb-2">
         {entry.title}
       </h2>
-      <p className="text-secondary text-[15px] leading-relaxed">{entry.description}</p>
+      <p className="text-secondary text-base leading-relaxed">{entry.description}</p>
       {entry.commitUrl && entry.commitHash && (
         <a
           href={entry.commitUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block mt-3 font-mono text-[10px] tracking-[0.08em] uppercase text-accent hover:text-accent/80 transition-colors"
+          className="inline-block mt-3 font-mono text-xs tracking-[0.08em] uppercase text-accent hover:text-accent/80 transition-colors"
         >
           → view commit {entry.commitHash.slice(0, 7)}
         </a>

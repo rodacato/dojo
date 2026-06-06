@@ -48,13 +48,13 @@ export function OnboardingOverlay({ onDismiss }: OnboardingOverlayProps) {
           </span>
         </div>
 
-        <p className="font-mono text-[11px] tracking-[0.08em] uppercase text-accent mb-3">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-accent mb-3">
           Invited by the dojo
         </p>
         <h2 id="onboarding-headline" className="text-primary text-2xl font-semibold leading-tight tracking-tight mb-3">
           Welcome to the dojo.
         </h2>
-        <p className="text-secondary text-[14px] leading-relaxed mb-6">
+        <p className="text-secondary text-sm leading-relaxed mb-6">
           You&apos;ve been invited to a daily practice. There&apos;s no tour. There&apos;s no
           tutorial. You&apos;ll start with one kata. The sensei will evaluate it. Then
           you&apos;ll know if this is for you or not.
@@ -66,10 +66,10 @@ export function OnboardingOverlay({ onDismiss }: OnboardingOverlayProps) {
               key={stage.n}
               className="border border-border bg-page rounded-sm px-2.5 py-2 flex flex-col gap-0.5"
             >
-              <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-muted">
+              <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
                 {stage.n}
               </span>
-              <span className="text-primary text-[12px] leading-tight">{stage.label}</span>
+              <span className="text-primary text-xs leading-tight">{stage.label}</span>
             </div>
           ))}
         </div>
@@ -83,7 +83,7 @@ export function OnboardingOverlay({ onDismiss }: OnboardingOverlayProps) {
           </Button>
         </div>
 
-        <p className="text-muted text-[10px] font-mono tracking-[0.08em] uppercase mt-4 text-center">
+        <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mt-4 text-center">
           This message appears once. It won&apos;t be back tomorrow.
         </p>
       </div>

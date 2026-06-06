@@ -32,7 +32,7 @@ export function OfflineBanner() {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="font-mono text-[11px] uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
           >
             Retry now
           </button>

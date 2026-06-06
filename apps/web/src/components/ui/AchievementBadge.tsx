@@ -42,7 +42,7 @@ export function AchievementBadge({ name, description, earned, earnedAt, prestige
       <p className={`font-mono text-sm mb-1 ${earned ? 'text-primary' : 'text-muted'}`}>{name}</p>
       <p className={`text-xs leading-relaxed ${earned ? 'text-secondary' : 'text-muted/60'}`}>{description}</p>
       {earned && earnedAt && (
-        <p className="text-muted text-[10px] font-mono mt-2">{new Date(earnedAt).toLocaleDateString()}</p>
+        <p className="text-muted text-xs font-mono mt-2">{new Date(earnedAt).toLocaleDateString()}</p>
       )}
     </div>
   )
