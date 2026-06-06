@@ -23,10 +23,15 @@ interface VerdictBlockProps {
   cta?: ReactNode
 }
 
-// Hero verdict block — full-width card with an indigo left accent border.
+// Hero verdict block — full-width card with an accent-colored left bar.
 // `md` (32px verdict) lands at the bottom of the eval conversation; `lg`
-// (56px verdict) is the page-hero variant used on Results. Color is on the
-// verdict label, not the border (per spec: border is always indigo).
+// (56px verdict) is the page-hero variant used on Results.
+//
+// Left bar is bound to --color-accent so it re-themes automatically:
+// indigo in Slate, vermillion in Sumi/Washi. DESIGN.md §Component
+// vocabulary plans a vermillion brushstroke variant in the Sumi-e
+// pass (drawn with GSAP DrawSVG); deferred until the designer pass
+// validates the stroke shape against printed paper samples.
 export function VerdictBlock({
   verdict,
   role,
