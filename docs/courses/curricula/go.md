@@ -1,7 +1,9 @@
 # Go Course Track
 
+> **Pre-pivot draft.** Re-scope to a single Go language scroll per [ADR 022](../../adr/022-crash-course-pivot.md) pending. The multi-sub-course model below is the old direction; the canonical shape going forward is one ~90-minute Go crash course (see [`ruby.md`](ruby.md) for the post-pivot example). Specialist sign-off (S6 Kenji) required before re-scope.
+>
 > Maintainer persona: S6 Kenji Watanabe (Go educator) + S5 Dr. Elif Yıldız (curriculum architect)
-> Last researched: 2026-04-14
+> Last researched: 2026-04-14 · Pre-pivot draft flagged 2026-06-06
 
 ---
 

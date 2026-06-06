@@ -1,8 +1,12 @@
 # TypeScript Course Track
 
+> **Pre-pivot draft.** Re-scope to a single TypeScript language scroll per [ADR 022](../../adr/022-crash-course-pivot.md) pending. The multi-sub-course model below is the old direction; the canonical shape going forward is one ~90-minute TS crash course (see [`ruby.md`](ruby.md) for the post-pivot example). Specialist sign-off (S9 Leo) required before re-scope.
+>
+> A `typescript-fundamentals` scroll is already seeded in DB from Sprint 014 (pre-pivot content). It stays live as-is until the re-scope ships; the new crash course will replace it under the bare `typescript` slug per the ADR 022 slug convention.
+>
 > Maintainer persona: S9 Leo Barros (TS educator) + S5 Dr. Elif Yıldız (curriculum architect)
 > Infrastructure adjacency: C3 Tomás Ríos (TS in monorepo/infra contexts)
-> Last researched: 2026-04-14
+> Last researched: 2026-04-14 · Pre-pivot draft flagged 2026-06-06
 
 ---
 
