@@ -1093,7 +1093,12 @@ async function seedOneScroll(
   db: ReturnType<typeof drizzle>,
   { courseData, lessonsData, stepsData }: ScrollConfig,
 ) {
-  await db
+  // Insert/update by slug. RETURNING the actual id is load-bearing — pre-existing
+  // rows can have an id that differs from the seed-computed UUID (slug is the
+  // identity contract, id is whatever happened to get inserted first). Re-mapping
+  // lessons to use the actual id below prevents the FK violation that bit
+  // pre-ADR-022 (TS scroll's id drifted, lessons insert crashed).
+  const inserted = await db
     .insert(scrolls)
     .values({ ...courseData, isPublic: courseData.isPublic ?? false })
     .onConflictDoUpdate({
@@ -1108,18 +1113,27 @@ async function seedOneScroll(
         externalReferences: courseData.externalReferences ?? [],
       },
     })
+    .returning({ id: scrolls.id })
+
+  const actualScrollId = inserted[0]?.id ?? courseData.id
   console.log(`  ✓ Scroll: ${courseData.title}`)
 
-  // Lessons: upsert by id so title/order edits propagate. Deletions still
-  // require a wipe (see POST /admin/scrolls/:id/wipe) because re-seeding
-  // never removes orphan lessons.
+  // Lessons: upsert by id so title/order edits propagate. Re-map scrollId
+  // to the actual scroll id from the DB (see comment above) and propagate it
+  // on update so a previously-orphaned lesson reattaches to the right scroll.
+  // Deletions still require a wipe (see POST /admin/scrolls/:id/wipe) because
+  // re-seeding never removes orphan lessons.
   for (const lesson of lessonsData) {
     await db
       .insert(lessons)
-      .values(lesson)
+      .values({ ...lesson, scrollId: actualScrollId })
       .onConflictDoUpdate({
         target: lessons.id,
-        set: { title: lesson.title, order: lesson.order },
+        set: {
+          title: lesson.title,
+          order: lesson.order,
+          scrollId: actualScrollId,
+        },
       })
   }
   console.log(`  ✓ Lessons: ${lessonsData.length}`)
