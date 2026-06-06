@@ -1,24 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import mermaid from 'mermaid'
-
-// Mermaid theme aligned to the dojo brand surface (#0F172A page,
-// #1E293B elevated, indigo accents). Keeps line/text legible against
-// the dark page bg without bright defaults.
-mermaid.initialize({
-  startOnLoad: false,
-  theme: 'dark',
-  themeVariables: {
-    background: '#0F172A',
-    primaryColor: '#1E293B',
-    primaryTextColor: '#F8FAFC',
-    primaryBorderColor: '#334155',
-    lineColor: '#64748B',
-    secondaryColor: '#1E293B',
-    tertiaryColor: '#0F172A',
-    fontFamily: 'JetBrains Mono Variable, monospace',
-    fontSize: '12px',
-  },
-})
+import { useThemeTokens, type ThemeTokens } from '../../hooks/useThemeTokens'
 
 interface MermaidEditorProps {
   value: string
@@ -30,10 +12,39 @@ const PLACEHOLDER = `graph TD
     B -->|Yes| C[Result]
     B -->|No| D[Alternative]`
 
+// mermaid.initialize uses literal hex strings — it doesn't read CSS
+// variables. So we re-initialize on every theme change and re-render
+// the current diagram against the new palette.
+function initMermaid(t: ThemeTokens): void {
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: t.isDark ? 'dark' : 'default',
+    themeVariables: {
+      background: t.page,
+      primaryColor: t.surface,
+      primaryTextColor: t.primary,
+      primaryBorderColor: t.border,
+      lineColor: t.muted,
+      secondaryColor: t.surface,
+      tertiaryColor: t.page,
+      fontFamily: 'JetBrains Mono Variable, monospace',
+      fontSize: '12px',
+    },
+  })
+}
+
 export function MermaidEditor({ value, onChange }: MermaidEditorProps) {
   const [svg, setSvg] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const renderCounter = useRef(0)
+  const tokens = useThemeTokens()
+
+  // Initialize / re-initialize mermaid whenever the resolved tokens
+  // change. The render effect below depends on `tokens` too, so the
+  // current diagram repaints with the new palette right after.
+  useEffect(() => {
+    initMermaid(tokens)
+  }, [tokens])
 
   const renderDiagram = useCallback(async (code: string) => {
     if (!code.trim()) {
@@ -53,10 +64,11 @@ export function MermaidEditor({ value, onChange }: MermaidEditorProps) {
 
   // Debounce so each keystroke doesn't flicker the diagram while the
   // user is mid-edit. 250ms feels live without thrashing the parser.
+  // Adding `tokens` to deps re-renders the active diagram on theme switch.
   useEffect(() => {
     const handle = setTimeout(() => renderDiagram(value), 250)
     return () => clearTimeout(handle)
-  }, [value, renderDiagram])
+  }, [value, renderDiagram, tokens])
 
   return (
     <div className="flex flex-col h-full bg-page">

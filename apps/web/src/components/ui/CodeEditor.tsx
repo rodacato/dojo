@@ -3,10 +3,11 @@ import { EditorState } from '@codemirror/state'
 import { EditorView, keymap, lineNumbers } from '@codemirror/view'
 import { defaultKeymap } from '@codemirror/commands'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
-import { tags as t } from '@lezer/highlight'
+import { tags } from '@lezer/highlight'
 import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
 import { sql } from '@codemirror/lang-sql'
+import { useThemeTokens, hexToRgba, type ThemeTokens } from '../../hooks/useThemeTokens'
 
 interface CodeEditorProps {
   value: string
@@ -15,87 +16,94 @@ interface CodeEditorProps {
   placeholder?: string
 }
 
-// Dojo brand palette for CodeMirror — soft syntax on the page surface.
-// Keywords muted indigo, strings success green, numbers warning amber,
-// comments muted slate. Default text uses primary slate-50 so prose-heavy
-// code (variables, identifiers) stays calm.
-const dojoHighlightStyle = HighlightStyle.define([
-  { tag: [t.keyword, t.controlKeyword, t.modifier, t.operatorKeyword], color: '#818CF8' },
-  { tag: [t.string, t.special(t.string), t.regexp], color: '#10B981' },
-  { tag: [t.number, t.bool, t.null, t.atom], color: '#F59E0B' },
-  { tag: [t.comment, t.lineComment, t.blockComment, t.docComment], color: '#475569', fontStyle: 'italic' },
-  { tag: [t.function(t.variableName), t.function(t.propertyName)], color: '#F8FAFC' },
-  { tag: [t.typeName, t.className, t.namespace], color: '#94A3B8' },
-  { tag: [t.propertyName, t.attributeName], color: '#94A3B8' },
-  { tag: [t.tagName, t.angleBracket], color: '#6366F1' },
-  { tag: [t.variableName, t.labelName], color: '#F8FAFC' },
-  { tag: [t.punctuation, t.separator, t.bracket], color: '#94A3B8' },
-  { tag: [t.heading, t.strong], color: '#F8FAFC', fontWeight: 'bold' },
-  { tag: t.emphasis, fontStyle: 'italic' },
-  { tag: [t.link, t.url], color: '#6366F1', textDecoration: 'underline' },
-  { tag: t.invalid, color: '#EF4444' },
-])
+// CodeMirror's theming API only accepts literal color strings, so we
+// can't bind the editor styles to CSS variables. Instead the brand
+// tokens are read at mount + on every theme switch (useThemeTokens)
+// and the EditorView is re-built. State (cursor, scroll, selection)
+// resets on switch — acceptable because theme switching is rare.
 
-const dojoEditorTheme = EditorView.theme(
-  {
-    '&': {
-      height: '100%',
-      fontSize: '13px',
-      backgroundColor: '#0F172A',
-      color: '#F8FAFC',
+function buildHighlightStyle(t: ThemeTokens): HighlightStyle {
+  return HighlightStyle.define([
+    { tag: [tags.keyword, tags.controlKeyword, tags.modifier, tags.operatorKeyword], color: t.accent },
+    { tag: [tags.string, tags.special(tags.string), tags.regexp], color: t.success },
+    { tag: [tags.number, tags.bool, tags.null, tags.atom], color: t.warning },
+    { tag: [tags.comment, tags.lineComment, tags.blockComment, tags.docComment], color: t.muted, fontStyle: 'italic' },
+    { tag: [tags.function(tags.variableName), tags.function(tags.propertyName)], color: t.primary },
+    { tag: [tags.typeName, tags.className, tags.namespace], color: t.secondary },
+    { tag: [tags.propertyName, tags.attributeName], color: t.secondary },
+    { tag: [tags.tagName, tags.angleBracket], color: t.accent },
+    { tag: [tags.variableName, tags.labelName], color: t.primary },
+    { tag: [tags.punctuation, tags.separator, tags.bracket], color: t.secondary },
+    { tag: [tags.heading, tags.strong], color: t.primary, fontWeight: 'bold' },
+    { tag: tags.emphasis, fontStyle: 'italic' },
+    { tag: [tags.link, tags.url], color: t.accent, textDecoration: 'underline' },
+    { tag: tags.invalid, color: t.danger },
+  ])
+}
+
+function buildEditorTheme(t: ThemeTokens) {
+  return EditorView.theme(
+    {
+      '&': {
+        height: '100%',
+        fontSize: '13px',
+        backgroundColor: t.page,
+        color: t.primary,
+      },
+      '.cm-scroller': {
+        fontFamily: "'JetBrains Mono Variable', monospace",
+        lineHeight: '1.6',
+      },
+      '.cm-content': {
+        caretColor: t.accent,
+        padding: '16px 0',
+      },
+      '.cm-line': {
+        padding: '0 16px',
+      },
+      '&.cm-focused': {
+        outline: 'none',
+      },
+      '&.cm-focused .cm-cursor': {
+        borderLeftColor: t.accent,
+        borderLeftWidth: '2px',
+      },
+      '.cm-gutters': {
+        backgroundColor: t.page,
+        borderRight: `1px solid ${t.border}`,
+        color: t.muted,
+      },
+      '.cm-lineNumbers .cm-gutterElement': {
+        padding: '0 12px 0 8px',
+        minWidth: '32px',
+      },
+      '.cm-activeLine': {
+        backgroundColor: hexToRgba(t.accent, 0.06),
+      },
+      '.cm-activeLineGutter': {
+        backgroundColor: 'transparent',
+        color: t.secondary,
+      },
+      '&.cm-focused .cm-selectionBackground, ::selection': {
+        backgroundColor: hexToRgba(t.accent, 0.25),
+      },
+      '.cm-selectionMatch': {
+        backgroundColor: hexToRgba(t.accent, 0.15),
+      },
+      '.cm-matchingBracket, &.cm-focused .cm-matchingBracket': {
+        backgroundColor: hexToRgba(t.accent, 0.2),
+        color: t.primary,
+        outline: 'none',
+      },
     },
-    '.cm-scroller': {
-      fontFamily: "'JetBrains Mono Variable', monospace",
-      lineHeight: '1.6',
-    },
-    '.cm-content': {
-      caretColor: '#6366F1',
-      padding: '16px 0',
-    },
-    '.cm-line': {
-      padding: '0 16px',
-    },
-    '&.cm-focused': {
-      outline: 'none',
-    },
-    '&.cm-focused .cm-cursor': {
-      borderLeftColor: '#6366F1',
-      borderLeftWidth: '2px',
-    },
-    '.cm-gutters': {
-      backgroundColor: '#0F172A',
-      borderRight: '1px solid #334155',
-      color: '#475569',
-    },
-    '.cm-lineNumbers .cm-gutterElement': {
-      padding: '0 12px 0 8px',
-      minWidth: '32px',
-    },
-    '.cm-activeLine': {
-      backgroundColor: 'rgba(99, 102, 241, 0.06)',
-    },
-    '.cm-activeLineGutter': {
-      backgroundColor: 'transparent',
-      color: '#94A3B8',
-    },
-    '&.cm-focused .cm-selectionBackground, ::selection': {
-      backgroundColor: 'rgba(99, 102, 241, 0.25)',
-    },
-    '.cm-selectionMatch': {
-      backgroundColor: 'rgba(99, 102, 241, 0.15)',
-    },
-    '.cm-matchingBracket, &.cm-focused .cm-matchingBracket': {
-      backgroundColor: 'rgba(99, 102, 241, 0.2)',
-      color: '#F8FAFC',
-      outline: 'none',
-    },
-  },
-  { dark: true },
-)
+    { dark: t.isDark },
+  )
+}
 
 export function CodeEditor({ value, onChange, language = 'javascript', placeholder }: CodeEditorProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
+  const tokens = useThemeTokens()
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -112,8 +120,8 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
       state: EditorState.create({
         doc: value,
         extensions: [
-          dojoEditorTheme,
-          syntaxHighlighting(dojoHighlightStyle),
+          buildEditorTheme(tokens),
+          syntaxHighlighting(buildHighlightStyle(tokens)),
           lineNumbers(),
           keymap.of(defaultKeymap),
           langExtension,
@@ -135,7 +143,7 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
 
     viewRef.current = view
     return () => view.destroy()
-  }, [language])
+  }, [language, tokens])
 
   return (
     <div
