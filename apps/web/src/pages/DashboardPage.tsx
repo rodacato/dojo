@@ -59,7 +59,7 @@ export function DashboardPage() {
       <div className="grid md:grid-cols-12 gap-4 md:gap-6">
         <StreakCard
           streak={dashboard.streak}
-          recentSessions={dashboard.recentSessions}
+          heatmapData={dashboard.heatmapData}
           weeklyGoal={dashboard.weeklyGoal}
         />
         <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />
@@ -69,11 +69,8 @@ export function DashboardPage() {
         <RecentActivity sessions={dashboard.recentSessions} onView={(id) => navigate(`/kata/${id}/result`)} onAll={() => navigate('/history')} />
       )}
 
-      {dashboard.totalCompleted >= 3 && (
-        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
-          <WeakAreasCard weakAreas={dashboard.weakAreas} />
-          <SenseiSuggestsCard suggestions={dashboard.senseiSuggests} />
-        </div>
+      {dashboard.totalCompleted >= 3 && dashboard.weakAreas.length > 0 && (
+        <WeakAreasCard weakAreas={dashboard.weakAreas} />
       )}
     </div>
   )
@@ -132,14 +129,14 @@ function BeltFactor({ label, value }: { label: string; value: number }) {
 
 function StreakCard({
   streak,
-  recentSessions,
+  heatmapData,
   weeklyGoal,
 }: {
   streak: number
-  recentSessions: DashboardData['recentSessions']
+  heatmapData: DashboardData['heatmapData']
   weeklyGoal?: { target: number; completed: number }
 }) {
-  const week = useMemo(() => weekActivity(recentSessions), [recentSessions])
+  const week = useMemo(() => weekActivity(heatmapData), [heatmapData])
   return (
     <section className="md:col-span-7 bg-surface border border-border/40 rounded-md p-6">
       <div className="flex items-center justify-between mb-4">
@@ -275,53 +272,21 @@ function WeakAreasCard({ weakAreas }: { weakAreas: DashboardData['weakAreas'] })
   )
 }
 
-function SenseiSuggestsCard({ suggestions }: { suggestions: string[] }) {
-  if (suggestions.length === 0) return null
-  return (
-    <section className="bg-surface border border-border/40 rounded-md p-6">
-      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">Sensei suggests</p>
-      <ul className="space-y-3">
-        {suggestions.map((topic) => (
-          <li key={topic} className="flex items-start gap-3 text-secondary text-sm leading-relaxed">
-            <span className="text-accent shrink-0 mt-0.5" aria-hidden>→</span>
-            <span>
-              Revisit <span className="text-primary lowercase">{topic}</span>.
-            </span>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
 /* ------------------------------------------------------------------ */
 
-/**
- * Derive a Mon-Sun activity boolean array for the current week from the
- * sessions we already have client-side. Marks a weekday true if at least
- * one session started on that day.
- *
- * NOTE: recentSessions is capped server-side (typically the last 5-10),
- * so this is a best-effort derivation. A dedicated `weekHeatmap` field
- * on DashboardData would be more accurate — see stitch/TODO.md G-029.
- */
-function weekActivity(sessions: DashboardData['recentSessions']): boolean[] {
+function weekActivity(heatmap: DashboardData['heatmapData']): boolean[] {
+  const active = new Set(heatmap.filter((d) => d.count > 0).map((d) => d.date))
   const today = new Date()
-  const day = today.getDay() // 0=Sun, 1=Mon, ..., 6=Sat
+  const day = today.getDay()
   const monday = new Date(today)
   monday.setDate(today.getDate() + (day === 0 ? -6 : 1 - day))
-  monday.setHours(0, 0, 0, 0)
 
   return Array.from({ length: 7 }, (_, i) => {
-    const start = new Date(monday)
-    start.setDate(monday.getDate() + i)
-    const end = new Date(start)
-    end.setDate(start.getDate() + 1)
-    return sessions.some((s) => {
-      const ts = new Date(s.startedAt)
-      return ts >= start && ts < end
-    })
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
+    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    return active.has(iso)
   })
 }

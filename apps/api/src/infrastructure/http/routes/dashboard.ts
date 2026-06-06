@@ -219,7 +219,6 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       mostAvoidedType: mostAvoided?.type ?? null,
       sessionsTimedOut,
     },
-    senseiSuggests: weakAreas.slice(0, 3).map((a) => a.topic),
     weeklyGoal: {
       target: weeklyTarget,
       completed: weeklyCompleted,
