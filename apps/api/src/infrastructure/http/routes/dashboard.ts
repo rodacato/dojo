@@ -193,7 +193,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const prefs = await db.query.userPreferences.findFirst({
     where: eq(userPreferences.userId, userId),
   })
-  const weeklyTarget = prefs?.goalWeeklyTarget ?? 3
+  const weeklyTarget = prefs?.goalWeeklyTarget ?? null
 
   const belt = await useCases.calculateBelt.execute(UserId(userId))
 

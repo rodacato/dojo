@@ -24,7 +24,7 @@ export interface DashboardData {
     mostAvoidedType: string | null
     sessionsTimedOut: number
   }
-  weeklyGoal: { target: number; completed: number }
+  weeklyGoal: { target: number | null; completed: number }
   belt: BeltDTO
 }
 
