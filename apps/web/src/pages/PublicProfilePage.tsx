@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError, type PublicProfileData } from '../lib/api'
 import { PublicPageLayout } from '../components/PublicPageLayout'
 import { ErrorState } from '../components/ui/ErrorState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
+import { Heatmap, heatmapIntensity } from '../components/ui/Heatmap'
 import { BELT_COLOR } from '../lib/belt-colors'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
@@ -139,7 +140,7 @@ export function PublicProfilePage() {
         {/* Activity */}
         <section className="bg-surface border border-border rounded-md p-6 md:p-8">
           <SectionEyebrow title="Activity" />
-          <Heatmap data={profile.heatmapData} />
+          <Heatmap data={profile.heatmapData} days={90} />
           <div className="flex items-center justify-between mt-3 font-mono text-xs text-muted">
             <span>Each square is one day. Darker = more kata.</span>
             <HeatmapLegend />
@@ -226,52 +227,16 @@ function BadgeMiniCard({ name, earnedAt }: { name: string; earnedAt: string }) {
   )
 }
 
-function Heatmap({ data }: { data: Array<{ date: string; count: number }> }) {
-  const dateMap = useMemo(() => new Map(data.map((d) => [d.date, d.count])), [data])
-  const days = useMemo(() => {
-    const out: Array<{ date: string; count: number }> = []
-    const end = new Date()
-    end.setHours(0, 0, 0, 0)
-    const start = new Date(end)
-    start.setDate(start.getDate() - 89)
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const key = d.toISOString().slice(0, 10)
-      out.push({ date: key, count: dateMap.get(key) ?? 0 })
-    }
-    return out
-  }, [dateMap])
-
-  return (
-    <div className="grid grid-cols-18 gap-0.5">
-      {days.map((d) => (
-        <div
-          key={d.date}
-          title={`${d.date}: ${d.count} ${d.count === 1 ? 'session' : 'sessions'}`}
-          className={`aspect-square rounded-sm ${heatmapColor(d.count)}`}
-        />
-      ))}
-    </div>
-  )
-}
-
 function HeatmapLegend() {
   return (
     <div className="inline-flex items-center gap-1">
       <span>less</span>
       {[0, 1, 2, 3, 4].map((n) => (
-        <span key={n} className={`w-2.5 h-2.5 rounded-sm ${heatmapColor(n)}`} aria-hidden />
+        <span key={n} className={`w-2.5 h-2.5 rounded-sm ${heatmapIntensity(n)}`} aria-hidden />
       ))}
       <span>more</span>
     </div>
   )
-}
-
-function heatmapColor(count: number): string {
-  if (count <= 0) return 'bg-page border border-border'
-  if (count === 1) return 'bg-accent/30'
-  if (count === 2) return 'bg-accent/55'
-  if (count === 3) return 'bg-accent/75'
-  return 'bg-accent'
 }
 
 function formatAvgTime(minutes: number): string {
