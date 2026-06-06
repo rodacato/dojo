@@ -28,6 +28,7 @@
   --color-type-code:        #64748B;
   --color-type-chat:        #7C3AED;
   --color-type-whiteboard:  #0D9488;
+  --color-type-review:      #6366F1;
 
   /* Fonts */
   --font-sans: 'Inter Variable', system-ui, sans-serif;
