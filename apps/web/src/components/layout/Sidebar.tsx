@@ -22,7 +22,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   return (
     <aside
       className={`hidden md:flex flex-col h-screen sticky top-0 bg-surface border-r border-border/40 transition-all duration-200 ${
-        collapsed ? 'w-16' : 'w-48'
+        collapsed ? 'w-12' : 'w-48'
       }`}
     >
       {/* Logo */}
