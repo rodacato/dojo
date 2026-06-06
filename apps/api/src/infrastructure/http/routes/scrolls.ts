@@ -184,7 +184,7 @@ scrollRoutes.post('/scrolls/progress/merge', requireAuth, async (c) => {
 
 // ── Reference solution (post-pass) ──────────────────────────────────
 //
-// GET /learn/scrolls/:slug/steps/:stepId/solution
+// GET /scrolls/:slug/steps/:stepId/solution
 //   ?anonymousSessionId=<uuid>   (only used when no Bearer is present)
 //
 // Returns 403 until the caller has the step in their completedSteps for
@@ -234,7 +234,7 @@ scrollRoutes.get('/scrolls/:slug/steps/:stepId/solution', optionalAuth, async (c
 
 // ── Ask the sensei — scroll-player nudge ───────────────────────────
 //
-// POST /learn/nudge
+// POST /scrolls/nudge
 //   { scrollSlug, stepId, userCode, stdout?, stderr? }
 //
 // Gated by FF_COURSE_NUDGE_ENABLED so the feature can be killed without a
@@ -276,7 +276,7 @@ scrollRoutes.post('/scrolls/nudge', nudgeLimiter, optionalAuth, async (c) => {
   }
 })
 
-// POST /learn/nudge/:id/feedback — thumbs up / down for prompt iteration.
+// POST /scrolls/nudge/:id/feedback — thumbs up / down for prompt iteration.
 const nudgeFeedbackSchema = z.object({
   feedback: z.enum(['up', 'down']),
 })
