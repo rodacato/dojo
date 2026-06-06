@@ -218,3 +218,29 @@ export interface MilestoneDTO {
   earnedAt: string   // ISO
   contextRef: string | null  // session id or scroll slug
 }
+
+// ── Activity heatmap ─────────────────────────────────────────────────
+
+/** One day in the activity heatmap. Date is YYYY-MM-DD (ISO date only). */
+export interface HeatmapDayDTO {
+  date: string
+  count: number
+}
+
+// ── Session row projections shared across surfaces ───────────────────
+
+/** Compact session row used by /dashboard (last 5) and /history (paged). */
+export interface SessionSummaryDTO {
+  id: string
+  kataTitle: string
+  kataType: string
+  difficulty: string
+  verdict: string | null
+  startedAt: string
+}
+
+/** Public-profile session row — adds status + completedAt on top of summary. */
+export interface PublicSessionDTO extends SessionSummaryDTO {
+  status: string
+  completedAt: string | null
+}

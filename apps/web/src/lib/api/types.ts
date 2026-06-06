@@ -1,4 +1,11 @@
-import type { KataDTO, AttemptDTO, BeltDTO } from '@dojo/shared'
+import type {
+  KataDTO,
+  AttemptDTO,
+  BeltDTO,
+  HeatmapDayDTO,
+  SessionSummaryDTO,
+  PublicSessionDTO,
+} from '@dojo/shared'
 
 export { type AttemptDTO }
 
@@ -8,15 +15,8 @@ export interface DashboardData {
   todayComplete: boolean
   todaySession: { id: string; kataTitle: string; verdict: string | null } | null
   activeSessionId: string | null
-  heatmapData: Array<{ date: string; count: number }>
-  recentSessions: Array<{
-    id: string
-    kataTitle: string
-    kataType: string
-    difficulty: string
-    verdict: string | null
-    startedAt: string
-  }>
+  heatmapData: HeatmapDayDTO[]
+  recentSessions: SessionSummaryDTO[]
   // Extended dashboard (Phase 2)
   weakAreas: Array<{ topic: string; frequency: number }>
   practicePatterns: {
@@ -82,17 +82,8 @@ export interface PublicProfileData {
     languages: string[]
   }
   streak: number
-  heatmapData: Array<{ date: string; count: number }>
-  recentSessions: Array<{
-    id: string
-    kataTitle: string
-    kataType: string
-    difficulty: string
-    verdict: string | null
-    status: string
-    startedAt: string
-    completedAt: string | null
-  }>
+  heatmapData: HeatmapDayDTO[]
+  recentSessions: PublicSessionDTO[]
   badges: Array<{
     slug: string
     earnedAt: string
