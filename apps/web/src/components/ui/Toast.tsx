@@ -114,7 +114,7 @@ export function ToastContainer() {
         <div
           key={t.id}
           role="status"
-          className={`bg-surface border border-border border-l-4 ${TONE_BORDER[t.kind]} rounded-md px-4 py-3 animate-slide-in shadow-lg`}
+          className={`bg-surface border border-border border-l-4 ${TONE_BORDER[t.kind]} rounded-md px-4 py-3 animate-slide-in`}
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
