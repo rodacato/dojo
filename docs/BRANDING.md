@@ -146,9 +146,20 @@ Transiciones CSS funcionales 150-200ms. El cursor `_` parpadeando 1Hz como únic
 
 ### Sumi-e (mañana)
 
-GSAP + DrawSVG como motion language del sitio. La tinta es el pretexto ideal: el enso se dibuja al cargar, la brushstroke se traza bajo el H1 cuando entra al viewport, el hanko se planta (no rebota) cuando el verdict aterriza, las transiciones entre pasos del scroll fluyen como tinta secándose. GSAP deja de ser experimento suelto y se vuelve la **firma de movimiento del producto**.
+GSAP + DrawSVG + ScrollTrigger como motion language del sitio. La tinta es el pretexto ideal: el enso se dibuja al cargar, la brushstroke se traza bajo el H1 cuando entra al viewport, el hanko se planta (no rebota) cuando el verdict aterriza, las transiciones entre pasos del scroll fluyen como tinta secándose. GSAP deja de ser experimento suelto y se vuelve la **firma de movimiento del producto**.
 
-Carga lazy en rutas que lo usan (kata flow, scroll player, results, share). Landing, dashboard y admin no pagan el bundle. Contratos completos en [`DESIGN.md`](DESIGN.md) §Motion.
+Carga lazy en rutas que lo usan: kata flow, scroll player, results, share. Dashboard y admin no pagan el bundle. Contratos completos en [`DESIGN.md`](DESIGN.md) §Motion.
+
+### Rive — interactividad pedagógica dentro de scrolls
+
+**GSAP no es el único library de motion**. Para los pasos interactivos dentro de un scroll — predict reveals, trace step transitions, state machines tipo `unanswered → reviewing → revealed` — la responsabilidad es de **Rive**. La razón es operativa: el state-machine editor de Rive permite iterar animaciones pedagógicas sin escribir TypeScript, y el step type es la superficie de mayor leverage didáctico del producto.
+
+División de dominios:
+
+- **GSAP** — motion de identidad del sitio (loaders, reveals, transitions, brand motifs). Cualquier movimiento que sea estructural o expresivo.
+- **Rive** — motion interactiva dentro de scrolls. Cualquier movimiento que responda a estado del learner (predict answered, trace path drawn).
+
+Las dos librerías co-cargan solo en `/scrolls/*`. Bundle combinado ~90KB — abajo del noise floor en rutas que ya cargan CodeMirror (200KB) o Mermaid (400KB).
 
 ### Prohibido en ambos temas
 

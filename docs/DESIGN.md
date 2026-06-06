@@ -286,9 +286,19 @@ Base unit `4px`. All margins, padding, gap are multiples of 4.
 - The cursor `_` blinks at 1Hz on the logo and on streaming/loading states. The only "fun" animation.
 - Skeleton shimmer for loads >200ms.
 
+### Landing motion (shipped today)
+
+GSAP **is already in the landing page** (`apps/web/src/pages/LandingPage.tsx`) as a deliberate exception to the "CSS only on product surfaces" rule. The landing is the only marketing surface in the product, and orchestrated motion earns its place there:
+
+- Hero timeline (typewriter + cursor fade + second-line reveal + CTA stagger) consolidates three ad-hoc CSS/setTimeout animations into a single declarative timeline
+- `ScrollTrigger.batch` drives the section reveals (one wrapper instead of four IntersectionObservers)
+- TerminalDemo cycles three sample sessions with cross-fade — not possible cleanly without a timeline
+
+This is the marketing exception, not a precedent. Cost: ~60KB gzipped, isolated to the landing chunk. Tradeoffs and decision rationale: see [`.kwik-e/memory/project_animation_scope.md`](../.kwik-e/memory/project_animation_scope.md) if present.
+
 ### Ink motion (Sumi-e direction)
 
-GSAP becomes the motion library. **DrawSVG** is the load-bearing plugin — free since 2024 when Webflow acquired GSAP. The library is lazy-loaded with the scroll player and kata flow routes only; landing page and dashboard don't pay for it.
+When Sumi-e ships, GSAP becomes the motion language of the product itself. **DrawSVG** is the load-bearing plugin — free since 2024 when Webflow acquired GSAP. The library is lazy-loaded with the scroll player and kata flow routes only.
 
 **Signature interactions:**
 
@@ -301,7 +311,11 @@ GSAP becomes the motion library. **DrawSVG** is the load-bearing plugin — free
 | Sensei message streaming | Cursor stays; replaces skeleton shimmer | unchanged (CSS) |
 | Page transitions between scroll steps | Ink-wash fade — the outgoing content's opacity decays bottom-up like wet ink lifting | GSAP timeline |
 
-**Felix's (S12) constraint:** GSAP core (~50KB) + DrawSVG plugin (~10KB) only loads on the routes that use them. The route split is non-negotiable. Landing, dashboard, and admin do not import GSAP.
+**Felix's (S12) constraint, updated:** GSAP core (~50KB) + ScrollTrigger / DrawSVG plugins load only on the routes that use them. The route split is non-negotiable.
+
+- **Landing (`/`)** — GSAP is in use today. See §Landing motion.
+- **Kata flow + scroll player + results + share** — will import GSAP when Sumi-e ships (DrawSVG for motifs).
+- **Dashboard + admin** — never. These surfaces stay CSS-only by brand contract (no orchestrated motion on post-login orientation or creator tooling).
 
 **Predicted reduced-motion behavior:** with `prefers-reduced-motion: reduce` set by the OS, all GSAP animations resolve to their final state instantly. The enso appears fully drawn. The brushstroke appears fully drawn. The hanko appears already stamped. The cursor blink can stay (1Hz blink is below the seizure-risk threshold). Tested via Playwright with reduced-motion mode active.
 
@@ -464,13 +478,22 @@ Avoid AI-generated strokes — they fail the brand test.
 
 ### 4. GSAP bundle is approved with route lazy-load
 
-Felix's quantitative test: ~60KB added (GSAP core ~50KB + DrawSVG plugin ~10KB), lazy-loaded on `/katas/*` and `/scrolls/*` routes only. The comparison frame:
+Felix's quantitative test: ~60KB added (GSAP core ~50KB + DrawSVG plugin ~10KB), lazy-loaded per route. The comparison frame:
 
-- CodeMirror already loaded on those routes: ~200KB
+- CodeMirror already loaded on `/katas/*` and `/scrolls/*`: ~200KB
 - Mermaid on scroll-player when used: ~400KB
-- Landing + dashboard + admin: do not import GSAP, no penalty
 
 60KB on routes already at ~600KB is signal under the noise floor. Approved.
+
+**Where GSAP lives today + planned:**
+
+| Route | Status | Reason |
+|---|---|---|
+| `/` (landing) | shipped | Marketing surface — orchestrated hero + scroll reveals + rotating terminal demo. The exception that earns its keep by consolidating three ad-hoc animations into one declarative timeline. |
+| `/katas/*` | planned (post-Sumi-e) | Brushstroke focus indicator, hanko verdict stamp, ink-wash transitions. |
+| `/scrolls/*` | planned (post-Sumi-e) | Enso loader, brushstroke H1 underlines, ink-wash between steps. **Note:** Rive owns the per-step interactivity inside scrolls (see §Motion library scope below); GSAP owns the scaffold motion around them. |
+| `/results/*`, `/share/*` | planned (post-Sumi-e) | Hanko verdict stamp animation. |
+| `/dashboard`, `/admin/*` | never | Brand restraint — these surfaces stay CSS-only forever. |
 
 **Qualitative rule (Felix's, kept):** use GSAP when:
 - Multiple choreographed steps in sequence (predict reveal — highlight → diff slide → sensei text)
@@ -497,7 +520,7 @@ The migration sprint validates whether the current renderer is Satori-compatible
 
 Two animation libraries, scoped by domain:
 
-- **GSAP (with DrawSVG)** — site motion identity. Owns enso loader, brushstroke reveals on H1, hanko stamp on verdicts, page transitions, the ink-wash between scroll steps. Routes: site-wide where motion ships (kata flow, scroll player, results, share). Bundle: ~60KB lazy-loaded per route, never on landing/dashboard/admin.
+- **GSAP (with DrawSVG + ScrollTrigger)** — site motion identity. Owns the landing marketing motion today (hero timeline, scroll reveals, terminal demo carousel). Post-Sumi-e: enso loader, brushstroke reveals on H1, hanko stamp on verdicts, page transitions, the ink-wash between scroll steps. Routes: landing today + (kata flow, scroll player, results, share) post-migration. Bundle: ~60KB lazy-loaded per route, never on dashboard/admin.
 - **Rive** — interactive step types inside scrolls. Owns predict state machines (`unanswered → reviewing → revealed`), trace step transitions when path-along-DOM is required. Routes: `/scrolls/*` only. Bundle: ~30KB runtime + small .riv files per step.
 
 They co-load only on `/scrolls/*`. Combined motion runtime on the scroll player: ~90KB, which sits below CodeMirror (~200KB) and Mermaid (~400KB) that already ship on the same routes.
