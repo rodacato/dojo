@@ -677,6 +677,14 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - When `prefers-reduced-motion` and accessibility tree behaviour need a sign-off
 - When an animation works in Chrome but fails in mobile Safari — he's debugged enough of these to know the gotchas
 
+**Activation cadence note (Sprint 026+):** With GSAP-default reaffirmed on `/scrolls/*` and Rive parked indefinitely (see [`docs/courses/INTERACTIVITY-PATTERNS.md`](../courses/INTERACTIVITY-PATTERNS.md) §Animation tech), Felix is consulted **episodically**, not in the regular per-sprint rotation:
+- When a new motion-heavy step type or scroll surface is about to ship (idiom comparisons, future `trace` step, etc.)
+- When the `/scrolls/*` bundle budget changes or a new GSAP plugin is proposed
+- When a `prefers-reduced-motion` or accessibility-tree regression surfaces
+- When Rive is reconsidered (would only happen if a separate designer with a Rive editor practice enters the team)
+
+Default expectation per language scroll work: zero Felix consultations needed; the CSS state machines + the shared GSAP runtime cover the format. Skip his lens unless a concrete motion question arises.
+
 **Relationship with Tomás (C3):** Tomás owns the application-level frontend architecture (routing, state management, WebSocket lifecycle). Felix owns the animation runtime layer inside that — the state machines, the timelines, the perf budget for motion. They collaborate on lazy-loading boundaries (Tomás owns the route split; Felix declares which animation libs each route may pull in).
 
 **Communication style:** Will quote a bundle-size delta for every animation library suggestion. Won't recommend the most powerful tool — recommends the one that solves the named problem with the smallest runtime tax. Skeptical of "designer experience" arguments that haven't been priced in milliseconds.

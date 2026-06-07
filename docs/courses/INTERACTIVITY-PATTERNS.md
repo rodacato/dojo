@@ -168,53 +168,54 @@ type Interaction =
 
 ## Animation tech recommendation
 
-**Per ADR 022 (Sprint 025): on `/scrolls/*` routes the motion runtime budget is Rive + CSS only. GSAP is explicitly excluded from scroll routes.** The previous two-library model (GSAP + Rive co-loaded on scrolls) was simplified after the crash-course pivot — the creator's policy is one motion runtime per surface, and on scrolls that runtime is Rive when (and only when) a state machine truly justifies the cost. Everything else is CSS.
+**Per Sprint 026 reversal: on `/scrolls/*` routes the motion runtime budget is GSAP + CSS. Rive is parked indefinitely** — reopen only if a real designer enters the picture with a separate iteration loop (Phase 3+). The Sprint 025 "Rive + CSS only on scrolls" policy didn't survive a second look: the Rive value proposition is the designer-iterates-without-engineer loop, which doesn't exist in Phase 0 where the creator is also the designer and the engineer. GSAP is JS-declarative, already loaded for other surfaces, versionable in code, and shipped without a separate editor or binary asset format. Cleaner choice for the one-person-team reality.
 
 The route-scoped rule:
 
-- **`/scrolls/*` (scroll player + catalog):** Rive when a step type needs a designer-authored state machine (`predict` reveals; future `trace` for DOM). CSS for everything else (step transitions, status reveal, button feedback, focus accents, hover states). **GSAP is not loaded on these routes.**
-- **`/katas/*`, `/belts`, `/sensei-eval`, landing, dashboard:** GSAP for site motion identity (enso loader, brushstroke reveals, hanko stamp on verdicts) per [`../DESIGN.md`](../DESIGN.md) §Motion. CSS for everything else. No Rive on these routes — they ship no step types.
+- **`/scrolls/*` (scroll player + catalog):** GSAP when motion needs a real timeline or scroll-driven choreography (idiom comparisons, sequence reveals, future `trace` step animations). CSS for everything else (step transitions, status reveal, button feedback, focus accents, hover states, binary state machines like `predict`). **Rive is not loaded on these routes.**
+- **`/katas/*`, `/belts`, `/sensei-eval`, landing, dashboard:** GSAP for site motion identity (enso loader, brushstroke reveals, hanko stamp on verdicts) per [`../DESIGN.md`](../DESIGN.md) §Motion. CSS for everything else. Same GSAP runtime as scrolls — shared lazy-load chunk.
 
 ### Decision matrix
 
 | Use case | Recommended | Why | Bundle cost |
 |---|---|---|---|
-| `predict` state machine (unanswered → revealed) | **CSS state machine in React (v1) → Rive (v2 when a designer authors the .riv)** | v1: the creator is the only user and the only designer; CSS state in React handles three states cleanly and ships without a new runtime. v2: when a real designer enters the picture, the same React component swaps internal state → `useStateMachineInput` driving a Rive `.riv`, contract unchanged. | v1: 0. v2: ~30KB Rive runtime + <5KB per .riv |
-| `trace` step transitions (line highlight, state panel update) | **CSS transitions + React state** | Simple variable-driven UI; binary state change doesn't need a library | 0 — no new runtime |
+| `predict` state machine (unanswered → revealed) | **CSS state machine in React** | 3-state binary transition; CSS handles it cleanly without a runtime; the PredictStep component shipped in Sprint 025 stays as-is | 0 |
+| `trace` step transitions (line highlight, state panel update) | **CSS transitions + React state** | Simple variable-driven UI; binary state change doesn't need a library | 0 |
 | `read+inline` collapse/expand | **CSS transitions** | One-axis animation; reduced-motion respected automatically | 0 |
-| Trace for DOM (dot animating through event flow) | **Rive** *(when shipped)* | Path animation along the DOM tree visualization; Rive's state model represents capture / target / bubbling phases natively | ~30KB |
+| Trace for DOM (dot animating through event flow, when shipped) | **GSAP timeline** | Path animation along the DOM tree visualization with capture/target/bubbling phase markers; GSAP timelines model the phased choreography in code | shared GSAP runtime |
 | Trace for SQL (query plan walk) | **CSS + React state** | Tree nodes are React components with className transitions; no path animation needed | 0 |
 | Step transition between `activeStepId` changes | **CSS keyframe** (`step-fade-in`) | Triggered on remount via `key={step.id}` — no JS animation needed | 0 |
 | Status chip reveal on test result arrival | **CSS keyframe** (`status-reveal`) | Triggered on component mount | 0 |
 | Test result row stagger | **CSS keyframe + per-row `animation-delay`** | Index-based delay; no library | 0 |
+| Idiom comparison reveals (side-by-side Python vs Ruby, etc.) | **GSAP timeline** | Sequenced reveal needs declarative timeline — fade-in left, then right, then highlight differences; CSS keyframes scale poorly here | shared GSAP runtime |
+| Ink-stroke reveal of H1 on scroll player | **GSAP DrawSVG** | Same brand motion signature as `/katas/*` and `/belts`; consistent across the product | shared GSAP runtime |
 | Decorative animations (header pulses, cursor blinks) | **CSS only** | Already used across the rest of Dojo | 0 |
-| Ink-stroke reveal of H1 on scroll player | **NOT IMPLEMENTED on scrolls** | Per the GSAP exclusion above; the brushstroke H1 lives on `/katas/*` and `/belts` only. If a scroll wants a brushstroke equivalent, it's a CSS `@keyframes stroke-dashoffset` over an inline SVG path — no DrawSVG, no GSAP. | 0 |
 
 ### Combined bundle cost on `/scrolls/*` routes
 
-Pre-policy projection (GSAP + Rive co-load): ~90KB motion runtime.
-Post-policy reality: **0 bytes of motion runtime in v1**. Rive (~30KB) loads when v2 swaps the CSS state machine for an authored `.riv`. GSAP never loads on scrolls.
+GSAP core ~50KB + DrawSVG plugin ~10KB = ~60KB lazy-loaded motion runtime — but **shared** with the rest of the product (landing, katas, belts), so the marginal cost on scrolls is roughly the cost of evicting unused tree-shakeable code, not the full library.
 
-CodeMirror (~200KB) and Mermaid (~400KB on some scrolls) remain the dominant route-cost drivers; motion is now a marginal concern on scrolls.
+CodeMirror (~200KB) and Mermaid (~400KB on some scrolls) remain the dominant route-cost drivers; motion is a marginal concern.
 
-### Felix's rule (post-ADR-022)
+### Felix's rule (post-S026 reversal)
 
-> "On `/scrolls/*`: CSS first, Rive when there's a state machine that earns its 30KB. GSAP is for site motion identity and lives on the routes that ship it — never `/scrolls/*`. When you reach for a runtime on a scroll, you owe an answer to 'what state machine does this drive?' If the answer is 'a fade', use CSS."
+> "GSAP earns its keep through DrawSVG and timelines that real motion needs. CSS handles binary state and simple transitions. Rive earns its keep when a designer iterates animations as files; in a one-person team that loop doesn't exist, so Rive doesn't earn anything. When motion is being added, ask: 'Is this a timeline, a state machine, or a transition?' Timeline → GSAP. State machine → CSS in React. Transition → CSS. Never reach for Rive unless a separate designer with a Rive editor practice has actually appeared."
 
 ### Panel disagreement history
 
-Three rounds of debate on this surface:
+Five rounds on this surface — the doc has been re-litigated more than it should have, kept honestly so the reasoning survives the next re-litigation:
 
 1. **Original:** Rive-only on scrolls.
 2. **Revision:** GSAP-only on everything ("one mental model").
-3. **Counter-revision (the two-library era):** GSAP + Rive co-load on scrolls, scoped by domain.
-4. **Post-ADR-022 (current):** Rive + CSS only on scrolls; GSAP excluded from scroll routes entirely.
+3. **Counter-revision (the two-library era, Sprint 024):** GSAP + Rive co-load on scrolls, scoped by domain.
+4. **Sprint 025 simplification (ADR 022):** Rive + CSS only on scrolls; GSAP excluded from scroll routes.
+5. **Sprint 026 reversal (current):** GSAP + CSS on scrolls; Rive parked indefinitely.
 
-Maya (S11) defended Rive on scrolls because of the designer-iterates-without-engineer property. **In v1 with one user/designer/engineer (Adrian), that property is vapor** — there is no designer↔engineer loop to optimise. CSS state machine is the honest v1 choice; Rive comes back when a real designer or a 5+ state machine arrives.
+What flipped between 4 and 5: realising the Rive value prop is the designer-iteration loop, which is vapor in Phase 0. CSS state machine for predict already shipped and stays. GSAP returns to scrolls because timelines + DrawSVG are useful and don't carry the binary-asset-format friction Rive does.
 
-Felix (S12) defended a single runtime per surface from the start. The current policy is his preferred shape, route-scoped.
+Maya (S11) is unchanged across all five rounds — her domain is pedagogy of interaction (does this teach or decorate), runtime-agnostic. Felix (S12) was the GSAP-only voice from round 2 onward; round 5 is finally his preferred shape codified.
 
-The PredictStep component is built so the swap from CSS state machine → Rive is mechanical: the same three-state contract (`unanswered`, `selected`, `revealed`), the same per-option feedback render, the same `onComplete` callback. Only the runtime that drives the transition changes.
+The PredictStep component shipped in Sprint 025 is **stays CSS** — no Rive swap was ever necessary and isn't now. Future timeline-heavy motion uses GSAP from this sprint forward.
 
 ### Lazy-load boundary
 
