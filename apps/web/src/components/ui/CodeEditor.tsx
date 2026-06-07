@@ -1,18 +1,27 @@
 import { useEffect, useRef } from 'react'
-import { EditorState } from '@codemirror/state'
+import { EditorState, type Extension } from '@codemirror/state'
 import { EditorView, keymap, lineNumbers } from '@codemirror/view'
 import { defaultKeymap } from '@codemirror/commands'
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { HighlightStyle, StreamLanguage, syntaxHighlighting } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
 import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
 import { sql } from '@codemirror/lang-sql'
+import { ruby } from '@codemirror/legacy-modes/mode/ruby'
 import { useThemeTokens, hexToRgba, type ThemeTokens } from '../../hooks/useThemeTokens'
+
+export type CodeEditorLanguage =
+  | 'javascript'
+  | 'typescript'
+  | 'python'
+  | 'sql'
+  | 'javascript-dom'
+  | 'ruby'
 
 interface CodeEditorProps {
   value: string
   onChange: (value: string) => void
-  language?: 'javascript' | 'typescript' | 'python' | 'sql' | 'javascript-dom'
+  language?: CodeEditorLanguage
   placeholder?: string
 }
 
@@ -108,13 +117,20 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
   useEffect(() => {
     if (!containerRef.current) return
 
-    const langExtension = {
+    // Map every supported language to a CodeMirror language extension. Ruby is
+    // routed through StreamLanguage + the legacy-modes Ruby stream parser
+    // because CodeMirror has no first-party `@codemirror/lang-ruby`. Any
+    // language not in the map falls back to a plain editor (no syntax
+    // highlighting) instead of crashing inside CodeMirror's extension flatten.
+    const langExtensions: Record<CodeEditorLanguage, Extension> = {
       javascript: javascript({ typescript: false }),
       'javascript-dom': javascript({ typescript: false }),
       typescript: javascript({ typescript: true }),
       python: python(),
       sql: sql(),
-    }[language]
+      ruby: StreamLanguage.define(ruby),
+    }
+    const langExtension = langExtensions[language] ?? []
 
     const view = new EditorView({
       state: EditorState.create({

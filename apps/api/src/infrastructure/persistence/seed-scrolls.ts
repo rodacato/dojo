@@ -1,7 +1,8 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
+import { eq, inArray } from 'drizzle-orm'
 import postgres from 'postgres'
 import * as schema from './drizzle/schema'
-import { scrolls, lessons, steps } from './drizzle/schema'
+import { scrolls, lessons, steps, scrollProgress, stepNudges } from './drizzle/schema'
 import {
   SQL_DEEP_CUTS_COURSE,
   SQL_DEEP_CUTS_LESSONS,
@@ -1169,6 +1170,51 @@ async function seedOneScroll(
   console.log(`  ✓ Steps: ${stepsData.length}`)
 }
 
+/**
+ * Remove a scroll (and everything that hangs off it) whose slug is no longer
+ * authoritative. Used to retire pre-pivot slugs that lived in DB after a
+ * rename — e.g. the S025 pivot renamed `ruby-fundamentals` → `ruby`, and the
+ * old row was never cleaned up, so the catalog and any cached links kept
+ * pointing at it.
+ *
+ * The schema has no ON DELETE CASCADE, so this walks the FK chain manually:
+ * stepNudges (step_id → steps.id) → steps → scrollProgress (course_id) →
+ * lessons → scrolls. Idempotent: if the slug is already gone, this is a no-op.
+ */
+async function removeLegacyScrollBySlug(
+  db: ReturnType<typeof drizzle>,
+  legacySlug: string,
+): Promise<void> {
+  const [legacyScroll] = await db
+    .select({ id: scrolls.id })
+    .from(scrolls)
+    .where(eq(scrolls.slug, legacySlug))
+  if (!legacyScroll) return
+
+  const legacyLessons = await db
+    .select({ id: lessons.id })
+    .from(lessons)
+    .where(eq(lessons.scrollId, legacyScroll.id))
+  const legacyLessonIds = legacyLessons.map((l) => l.id)
+
+  if (legacyLessonIds.length > 0) {
+    const legacySteps = await db
+      .select({ id: steps.id })
+      .from(steps)
+      .where(inArray(steps.lessonId, legacyLessonIds))
+    const legacyStepIds = legacySteps.map((s) => s.id)
+    if (legacyStepIds.length > 0) {
+      await db.delete(stepNudges).where(inArray(stepNudges.stepId, legacyStepIds))
+      await db.delete(steps).where(inArray(steps.id, legacyStepIds))
+    }
+    await db.delete(lessons).where(inArray(lessons.id, legacyLessonIds))
+  }
+
+  await db.delete(scrollProgress).where(eq(scrollProgress.scrollId, legacyScroll.id))
+  await db.delete(scrolls).where(eq(scrolls.id, legacyScroll.id))
+  console.log(`  ✓ Removed legacy scroll: ${legacySlug}`)
+}
+
 export interface SeedReport {
   seeded: Array<{ slug: string; title: string; lessonCount: number; stepCount: number }>
 }
@@ -1208,6 +1254,13 @@ export async function seedAllScrolls(db: ReturnType<typeof drizzle>): Promise<Se
       stepCount: c.stepsData.length,
     })
   }
+
+  // Retired pre-pivot slugs. The S025 crash-course pivot renamed
+  // `ruby-fundamentals` → `ruby`, but never cleaned the old row, so a stale
+  // catalog entry kept appearing at /scrolls/ruby-fundamentals. Wipe it once;
+  // subsequent runs are no-ops via removeLegacyScrollBySlug's existence check.
+  await removeLegacyScrollBySlug(db, 'ruby-fundamentals')
+
   return report
 }
 

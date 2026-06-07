@@ -2,8 +2,8 @@
 // Ruby — scroll seed. The dojo's Ruby crash course for polyglot developers.
 //
 // Direction: ADR 022 (crash-course pivot). Slug `ruby` (was `ruby-fundamentals`
-// pre-pivot — the old slug is removed from DB by the cleanup script that runs
-// alongside this seed).
+// pre-pivot — the old slug is removed from DB by `removeLegacyScrollBySlug`
+// invoked at the tail of `seedAllScrolls` in seed-scrolls.ts).
 //
 // Polyglot-first lesson order (S026):
 //   order 1 — Lesson 0 (Contexto)         — 3 steps (read, read, predict)

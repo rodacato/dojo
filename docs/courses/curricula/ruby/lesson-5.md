@@ -194,7 +194,7 @@ end
 
 ### `hint`
 
-> The signature is already given to you in the starter code — your job is the one-line body that interpolates the two parameters into the return string. The reason this kata exists is to write a method whose signature couldn't be called positionally; the body itself is one line of interpolation.
+> Two parts. **Signature:** in Ruby, a trailing colon on a parameter name (`name:`) makes that parameter keyword-only — positional calls won't reach it. Defaults work the same as for positionals (`greeting: "Hello"`). **Body:** one line, string interpolation. The signature is what the tests are really checking.
 
 ### `solution`
 

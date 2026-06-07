@@ -8,7 +8,7 @@ import {
   getOrCreateAnonymousId,
 } from '../lib/anonymousId'
 import { PageLoader } from '../components/PageLoader'
-import { CodeEditor } from '../components/ui/CodeEditor'
+import { CodeEditor, type CodeEditorLanguage } from '../components/ui/CodeEditor'
 import { ErrorState } from '../components/ui/ErrorState'
 import type { ScrollDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, ExternalReference, ExternalReferenceKind } from '@dojo/shared'
 import { isPlaygroundData } from '@dojo/shared'
@@ -667,8 +667,7 @@ function StepEditor({
     }
   }
 
-  const editorLanguage = (isIframeLang ? 'javascript-dom' : language) as
-    'javascript' | 'typescript' | 'python' | 'sql' | 'javascript-dom'
+  const editorLanguage = (isIframeLang ? 'javascript-dom' : language) as CodeEditorLanguage
 
   return (
     <div className="flex flex-col h-[calc(100vh-48px)]">
