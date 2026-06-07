@@ -13,6 +13,16 @@ The honest framing on size: a single complete crash scroll (spec + content + int
 
 Closing the sprint with two production-grade language scrolls + clean specs for the remaining three is success. All five shipped is the celebration outcome.
 
+### Mid-sprint scope adjustment (2026-06-07)
+
+After re-opening Ruby with the panel under the lens *"crash course for experienced programmers — idioms and peculiarities, not fundamentals"*, three changes land before Ruby authoring resumes:
+
+1. **Lesson order flipped to polyglot-first.** New order: Lesson 0 (Contexto) → Lesson 1 (Blocks) → Lesson 2 (Literales que sorprenden) → Lesson 3 (Object model) → Lesson 4 (Control flow + truthiness) → Lesson 5 (Methods). Reason: a polyglot exits this scroll having to read Ruby code on Friday; what they will encounter first is `do |x| ... end` and symbol-key hashes, not `1.+(2)`. The object model becomes the explanation *behind* the idioms, not the entry gate. The current `Lesson 1 (Object model)` shipped in the seed becomes Lesson 3 in the new order.
+2. **Lesson 0 added — "Ruby en contexto".** 3 steps (read + read + predict): what Ruby is for, where it doesn't fit, RubyGems/Bundler, `bundle exec`, how to run Ruby in real life. Not padding — orienting information the polyglot can't get from the official docs without burning hours. Voice gate: every paragraph must remove one decision the polyglot would have made in another browser tab.
+3. **Playgrounds as `kata` variant (Option B2).** Two playground steps in the Ruby scroll: one after the `&:method` kata in Lesson 1 (Blocks), one after the read in Lesson 3 (Object model). Implemented as `kata` steps with `data.kind: "playground"` flag; frontend reads the flag and renders without verdict UI. Scoped to Ruby for now; promote to canonical step type only if 2-3 lessons validate the pattern. Doc decision lives in `curricula/ruby/ruby.md`, NOT in `INTERACTIVITY-PATTERNS.md` — that doc updates only after the pattern proves itself across scrolls.
+
+**Honest cost:** ~7-8 extra hours (Lesson 0 authoring + playground frontend B2 + 2 playground steps). Ruby budget moves from 8-15h to 14-18h. **Python remains mandatory** but with explicit fallback: *if Ruby exceeds 16 hours, Python downgrades to stretch without sprint-admin debt.* No re-opening this decision mid-authoring — the trigger is the clock.
+
 ## Working method
 
 For each language, two distinct blocks:
@@ -36,8 +46,8 @@ This order is final for the sprint plan. Re-order only on a real surprise (e.g.,
 
 ## Mandatory (sprint blockers if not done)
 
-- **Ruby crash scroll ships end-to-end.** Lessons 2-5 spec-complete + content authored + seeded + smoke verified through Piston. One hint per kata. Reviewed through Rhea (S10) + Elif (S5) + Valentina (S2) lenses.
-- **Python crash scroll ships end-to-end.** Full scope-then-authoring loop. Reviewed through Nadia (S7) + Elif (S5) + Valentina (S2).
+- **Ruby crash scroll ships end-to-end** with the new polyglot-first structure. Lesson 0 + Lessons 1-5 spec-complete + content authored + seeded + smoke verified through Piston. The seed of the old `Object model` lesson (currently Lesson 1 in DB) gets re-positioned to Lesson 3 and re-tightened against the "idioms-not-fundamentals" lens. One hint per kata. Reviewed through Rhea (S10) + Elif (S5) + Valentina (S2) + Maya (S11) lenses. Two playground steps with B2 frontend flag.
+- **Python crash scroll ships end-to-end.** Full scope-then-authoring loop. Reviewed through Nadia (S7) + Elif (S5) + Valentina (S2). *Fallback:* if Ruby exceeds 16 hours, Python downgrades to stretch — no admin debt, no sprint re-open.
 - **Sprint admin discipline holds.** Sprint closes with `current.md` cleared, retro filled, archive moved, CHANGELOG entry, the next sprint's `current.md` rewritten — no more multi-sprint gaps.
 
 ## Stretch (ship if Ruby + Python close cleanly)
@@ -79,12 +89,12 @@ This order is final for the sprint plan. Re-order only on a real surprise (e.g.,
 
 | Block | Work |
 |---|---|
-| W1 | Ruby Lessons 2-5 authored + seeded + smoke. Ruby end-to-end demo. |
-| W2 | Python scope block (Authoring Profile + spec). Python authoring block (lessons + content + seed + smoke). End-to-end demo. |
-| W3 | Sprint midpoint retro: format calibration check. Rust scope block. Rust authoring block if capacity holds. |
-| W4 | TS scope block + slug swap. TS authoring block. Go scope block + authoring if anything remains. Sprint close. |
+| W1 | Ruby spec re-skeleton (polyglot-first reorder + Lesson 0). Lesson 0 + Lesson 1 (Blocks) authored + seeded + smoke. Playground frontend B2 implemented when first playground step lands. |
+| W2 | Ruby Lessons 2-5 authored + seeded + smoke. Old Lesson 1 (Object model) re-tightened and re-seeded as Lesson 3. Ruby end-to-end demo. **Time check:** if Ruby cumulative > 16h at end of W2, Python downgrades to stretch per fallback. |
+| W3 | Python scope block (Authoring Profile + spec). Python authoring block (lessons + content + seed + smoke). End-to-end demo. Sprint midpoint retro: format calibration check + playground pattern validation (promote to canonical step type if signal holds, drop otherwise). |
+| W4 | TS scope block + slug swap. TS authoring block. Go scope block + authoring if anything remains. Rust deferred to S027 by default. Sprint close. |
 
-Real timing depends on how cleanly the format scales from Ruby. If Python's authoring block takes 8 hours, all five fit. If it takes 15, two more are stretch.
+Real timing depends on how cleanly the format scales from Ruby. The polyglot-first reorder + Lesson 0 + playground infra are the new tax; rest stays per original estimate.
 
 ## Reading order if you're picking this up cold
 

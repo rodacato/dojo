@@ -1,19 +1,21 @@
 # Ruby Scroll Track
 
 > Maintainer persona: S10 Rhea Kapoor (Ruby steward) + S5 Dr. Elif Yıldız (curriculum architect) + S2 Valentina Cruz (content quality) + S11 Maya Lindqvist (interactive learning UX).
-> Last researched: 2026-04-14 · Re-scoped 2026-06-06 under [ADR 022](../../adr/022-crash-course-pivot.md).
+> Last researched: 2026-04-14 · Re-scoped 2026-06-06 under [ADR 022](../../adr/022-crash-course-pivot.md) · **Re-ordered polyglot-first 2026-06-07** under Sprint 026 mid-sprint adjustment.
 
 ## 1. Learning Philosophy for Ruby
 
 Ruby has a cultural identity problem for teaching: most learners arrive via Rails and never learn the language itself. They write `has_many :posts` before they have ever written a method that takes a block. They debug N+1 queries before they understand `Enumerable`. They use `attr_accessor` as a magical incantation rather than a deliberate decision about object boundaries. This track is about **Ruby as a language** — the small, opinionated, block-centric object language designed by Matz — not Ruby-the-framework-host. Rails is explicitly out of scope here. A polyglot developer who finishes the Ruby scroll has learned a powerful, expressive language they can read and write idiomatically, whether or not they ever touch Rails.
 
-The core mental model is **blocks, procs, and lambdas**. Almost every Ruby idiom that surprises a Python or Java developer reduces to "this method takes a block." `each`, `map`, `inject`, `tap`, `Array.new(5) { ... }`, `File.open(path) { |f| ... }`, `define_method`, `Module#class_eval`, and the entire Rails routing DSL are all the same idea. The crash scroll teaches blocks early and on their own terms — not as a footnote to `each`. By the end, a learner should understand what `yield` does, why `&block` exists in a parameter list, and why `Symbol#to_proc` is the same idea in disguise. The metaprogramming-grade depth (Proc vs lambda semantics, `Proc#curry`, `class_eval` vs `instance_eval`) is deferred to deep-dive scrolls — see §3.
+The core mental model is **blocks, procs, and lambdas**. Almost every Ruby idiom that surprises a Python or Java developer reduces to "this method takes a block." `each`, `map`, `inject`, `tap`, `Array.new(5) { ... }`, `File.open(path) { |f| ... }`, `define_method`, `Module#class_eval`, and the entire Rails routing DSL are all the same idea. The crash scroll teaches blocks **first** — not as a footnote to `each`, and not as the closing teaser of an object-model tour. The polyglot will encounter `do |x|` and `&:method` in the first Ruby file they read on Friday; the scroll respects that. By the end, a learner should understand what `yield` does, why `&block` exists in a parameter list, and why `Symbol#to_proc` is the same idea in disguise. The metaprogramming-grade depth (Proc vs lambda semantics, `Proc#curry`, `class_eval` vs `instance_eval`) is deferred to deep-dive scrolls — see §3.
 
-"Everything is an object" is taught as a **property of the object model**, not as a slogan. The crash scroll demonstrates it by calling methods on integers, by showing that `nil.respond_to?(:to_s)` is `true` for a reason, by surfacing `:foo == "foo"` as a predict-step surprise. Symbols are introduced when they have a job to do (immutable identifiers, hash keys, method references via `&:method`) — not as a trivia bullet on slide 3. Footgun awareness is built in: every idiom that looks magical (`method_missing`, eigenclasses, `class_eval`) gets named in this scroll and deferred to a deep-dive — never silently elided.
+"Everything is an object" is taught as a **property of the object model** — and it lands in Lesson 3, *after* blocks and literal idioms have made the learner curious about *why* `5.times { ... }` and `[1,2,3].map(&:to_s)` even parse. Surfacing the object model after the idioms exposes is the difference between "tour the model" and "explain the mechanism behind what you just used." The crash scroll demonstrates it by calling methods on integers, by showing that `nil.respond_to?(:to_s)` is `true` for a reason, by surfacing `:foo == "foo"` as a predict-step surprise. Symbols are introduced when they have a job to do (immutable identifiers, hash keys, method references via `&:method`) — in the literals lesson, not as a trivia bullet on slide 3. Footgun awareness is built in: every idiom that looks magical (`method_missing`, eigenclasses, `class_eval`) gets named in this scroll and deferred to a deep-dive — never silently elided.
 
-Dead ends we explicitly avoid: teaching symbols as a trivia bullet ("strings are mutable, symbols are not — moving on"); teaching `each` without showing why `map` / `select` / `inject` are usually the right answer; teaching metaprogramming as spectacle ("look, we can build Rails!"); letting learners conflate Ruby idioms with Rails magic (`scope`, `belongs_to`, `before_action` are not Ruby — they are Rails-specific DSL methods built on Ruby).
+Before any lesson on the language proper, **Lesson 0 orients the polyglot in Ruby's ecosystem** — what Ruby is for, where it doesn't fit, the version landscape, RubyGems and Bundler, how Ruby actually gets run in real projects. This is not padding and it is not a tutorial preamble. It is information the polyglot would have to assemble from five browser tabs on a Friday morning, surfaced in one place so they can decide whether Ruby earns their attention before they invest in syntax.
 
-A note on tone: the Dojo voice is direct and **assumes the reader already programs in another language**. We do not pad with "Welcome to your Ruby journey!" preambles. Every step exists because it teaches a concrete, testable thing or names a surprise the polyglot will hit. When an exercise is hard, we say so. When the Piston sandbox forces a compromise (no `async` gem, no Rails, no `pry` REPL during a step), we say that too — explicitly, in the lesson body, not buried in a footnote. The learner deserves to know what is the language, what is the framework, and what is the sandbox getting in the way.
+Dead ends we explicitly avoid: teaching symbols as a trivia bullet ("strings are mutable, symbols are not — moving on"); teaching `each` without showing why `map` / `select` / `inject` are usually the right answer; teaching metaprogramming as spectacle ("look, we can build Rails!"); letting learners conflate Ruby idioms with Rails magic (`scope`, `belongs_to`, `before_action` are not Ruby — they are Rails-specific DSL methods built on Ruby); using `read` steps as tour-guide prose that explains what the polyglot already knows about strings and integers.
+
+A note on tone: the Dojo voice is direct and **assumes the reader already programs in another language**. We do not pad with "Welcome to your Ruby journey!" preambles. Every `read` step passes the test: *if I delete this paragraph, does the polyglot lose something Ruby-specific? If no, the paragraph doesn't exist.* When an exercise is hard, we say so. When the Piston sandbox forces a compromise (no `async` gem, no Rails, no `pry` REPL during a step), we say that too — explicitly, in the lesson body, not buried in a footnote. The learner deserves to know what is the language, what is the framework, and what is the sandbox getting in the way.
 
 ## 2. Course Authoring Profile
 
@@ -41,9 +43,11 @@ A note on tone: the Dojo voice is direct and **assumes the reader already progra
 
 | Slug | Kind | Steps (target) | Time (target) | Status |
 |---|---|---|---|---|
-| `ruby` | Language scroll (crash course) | 14-18 | ~90 min | **active** — Lesson 1 spec-complete, Lessons 2-5 stubbed |
+| `ruby` | Language scroll (crash course) | 22-24 | ~110 min | **active** — re-scoped polyglot-first 2026-06-07; Lesson 0 + Lesson 1 (Blocks) being drafted, old Lesson 1 (Object model) seeded in DB but pending re-tighten + re-position to Lesson 3 |
 
 That is the whole catalog for Ruby in v1. Per [ADR 022](../../adr/022-crash-course-pivot.md), one language scroll per language is the anchored set. Deep-dive scrolls on Ruby-specific topics are deferred — see §3.1.
+
+The step count rose from 14-18 to 22-24 to accommodate Lesson 0 (3 steps) and two playground steps. The time budget rose to ~110 min from ~90 min, still in the 60-120 acceptable range for a crash scroll.
 
 ### 3.1 Future deep-dive candidates (not in scope for v1)
 
@@ -64,27 +68,31 @@ None of these are committed. They are listed so the crash scroll's lesson author
 **Slug:** `ruby`
 **Kind:** Language scroll (crash course)
 **Audience:** Developer who already programs in at least one other language. No Ruby experience required.
-**Learner time:** ~90 minutes real work (60-120 range).
+**Learner time:** ~110 minutes real work (60-120 range).
 **Spec file:** [`ruby/ruby.md`](ruby/ruby.md) — the executable authoring brief (see [`../authoring-spec-template.md`](../authoring-spec-template.md)).
 
 **Learning outcomes.** After this scroll, the learner can:
 
-- Predict the result of common Ruby expressions that surprise a polyglot (`nil.class`, `0` as truthy, `:foo == "foo"`, `[].max`) and explain why.
-- Read and write idiomatic Ruby across the core literals — integers, floats, strings, arrays, hashes, symbols — including the idioms that distinguish Ruby from the polyglot's prior language (string interpolation, `Hash#fetch` with a default block, symbol keys, `Array#tally`).
-- Use Ruby's control flow with confidence in the surprises that bite: only `false` and `nil` are falsy, `case/when` uses `===`, `unless`/`until` are first-class.
-- Define methods with positional, default, keyword, and splat arguments, and recognise implicit return.
-- Pass a block to a method, accept one with `yield`, and recognise the `&:symbol` shorthand. Read a method that uses `Symbol#to_proc`. (Depth on Proc vs lambda is deferred to the blocks deep-dive.)
-- Name the Ruby-specific footguns the polyglot will eventually hit (`method_missing`, eigenclasses, monkey-patching) and know where to find the depth when they need it.
+- Locate Ruby on their internal language map: what it is for, where it does and doesn't fit, what RubyGems/Bundler do, how a Ruby project is run in practice (`ruby`, `irb`, `bundle exec`), and why `Gemfile.lock` matters.
+- Read and write Ruby blocks: pass a block to a method, accept one with `yield`, recognise `&:symbol` and `&block`, explain the "block-as-API-shape" pattern (`File.open(path) { |f| ... }`). Depth on `Proc` / lambda mechanics deferred to the blocks deep-dive.
+- Read and write idiomatic Ruby across the core literals — strings (single vs double quotes, interpolation), hashes (symbol keys, `Hash#fetch` with a default block), symbols as immutable identifiers, `Array#tally`, `&:method` shorthand.
+- Predict the result of common Ruby expressions that surprise a polyglot (`nil.class`, `0` as truthy, `:foo == "foo"`, `[].max`, `5.+(2)`) and explain *why* each result holds in terms of Ruby's object model.
+- Use Ruby's control flow with confidence in the surprises that bite: only `false` and `nil` are falsy, `case/when` uses `===`, `unless`/`until` are first-class, postfix forms read clearer for guards.
+- Define methods with positional, default, keyword (`name:`), and splat (`*args`, `**opts`) arguments, and recognise implicit return.
+- Name the Ruby-specific footguns the polyglot will eventually hit (`method_missing`, eigenclasses, monkey-patching, `attr_accessor` as encapsulation cost) and know where to find the depth when they need it.
 
-**Lessons.**
+**Lessons (polyglot-first order).**
 
-- **Lesson 1 — First contact with the object model.** Everything is an object. Operators are method calls. `nil` has a class. Introspection is first-class.
-- **Lesson 2 — Literals you'll use daily.** Strings (single vs double quotes, interpolation), numbers (integer division gotcha), arrays, hashes (symbol keys, `fetch` vs `[]`), symbols (identity, `&:method`).
-- **Lesson 3 — Control flow and truthiness.** Only `false` and `nil` are falsy. `case/when` with `===`. `unless`, `until`, and when they read clearer than `if`/`while`.
-- **Lesson 4 — Methods.** `def`, positional + default + keyword + splat arguments, implicit return.
-- **Lesson 5 — Blocks: the central idea (teaser).** `each` with a block, `yield`, `&:method`, the "block-as-API-shape" pattern via `File.open(path) { |f| ... }`. Flags `Proc` / `lambda` / closures as deep-dive territory.
+- **Lesson 0 — Ruby en contexto.** What Ruby is for, where it doesn't fit, RubyGems / Bundler, how Ruby actually gets executed in real projects. 3 steps: 2 `read` + 1 `predict`. No `kata` here — this lesson orients, it doesn't drill syntax.
+- **Lesson 1 — Blocks: lo que ves en todos lados.** `do |x| ... end`, `yield`, `&:method`, the execute-around pattern. Frames blocks as the language's central idea on entry, not as an aside. Includes the first playground step (after the `&:method` kata) for exploring `Symbol#to_proc` variants.
+- **Lesson 2 — Literales que sorprenden.** Single vs double quotes, `#{}` interpolation, symbol identity, `Hash#fetch` with a block. The "five literals" tour from the pre-pivot scope is gone — only the idioms the polyglot's prior language doesn't have.
+- **Lesson 3 — Object model: la razón por la que blocks y literals funcionan así.** Everything is an object. Operators are method calls. `nil` has a class. Introspection (`.class`, `respond_to?`, `inspect` vs `to_s`). Includes the second playground step (after the read) for poking `5.+(2)`, `nil.respond_to?(...)`, etc. *Inherits the seed content currently in DB as Lesson 1, re-tightened.*
+- **Lesson 4 — Control flow + truthiness.** Only `false` and `nil` are falsy. `case/when` with `===`. `unless` / `until`. Postfix `if`/`unless` as guards. The `case`-on-class idiom.
+- **Lesson 5 — Methods.** `def`, positional + default + keyword + splat arguments, implicit return, `Method#parameters` for introspection. Closes with the named-and-deferred list (`attr_*`, `method_missing`, eigenclasses) pointing at the deep-dive scrolls.
 
-The full step-by-step authoring (prose, starter code, tests, hints, solutions, predict options + feedback) lives in [`ruby/ruby.md`](ruby/ruby.md). The lesson titles here are the index summary, not the spec.
+The full step-by-step authoring (prose, starter code, tests, hints, solutions, predict options + feedback, playground starter code + suggestions) lives in [`ruby/ruby.md`](ruby/ruby.md). The lesson titles here are the index summary, not the spec.
+
+**Polyglot-first reordering rationale.** The canonical textbook order would teach the object model first because it is the foundation everything else stands on. That order is right for an absolute beginner. For a polyglot — who already has the concept of a method call, the concept of a string, the concept of `if/else` — the right order is *surprise-priority*: lead with what they will encounter first when they read Ruby code on Friday. That is blocks (`do |x|`, `&:method`, `tap { }`) and hash/symbol idioms. The object model is the *explanation* of why those idioms behave as they do, and it lands stronger after the learner has been surprised twice. Rhea (S10) signed off on this with the constraint that the object model gets a full lesson (not a callback), which Lesson 3 honors.
 
 **Sandbox notes.** Piston Ruby 3.0.1. Stdlib only. Manual test harness (not Minitest — Minitest is deferred to its own deep-dive scroll). Deterministic only — no `Time.now`, no `rand` without seeding, no `sleep`. STDIN is not exercised; inputs come as method arguments.
 
@@ -155,12 +163,15 @@ Pitfalls the Ruby scroll specifically defends against:
 
 ## 8. Implementation order
 
-There is one Ruby scroll to ship. Order applies to the lessons within it:
+There is one Ruby scroll to ship. Order applies to the lessons within it, in the post-2026-06-07 polyglot-first scope:
 
-1. **Lesson 1 — Object model.** Establishes voice, scroll-level exercise shape, the `predict` step pattern, and the Piston Ruby harness conventions. **Status: spec-complete; 3 of 4 steps seeded in DB (1.1 read, 1.3 type_of, 1.4 describe). 1.2 `predict` deferred until step type ships.**
-2. **Lesson 2 — Literals.** Strings, numbers, arrays, hashes, symbols. Status: stub.
-3. **Lesson 3 — Control flow and truthiness.** Status: stub.
-4. **Lesson 4 — Methods.** Status: stub.
-5. **Lesson 5 — Blocks teaser.** Status: stub.
+1. **Lesson 0 — Ruby en contexto.** Orients the polyglot. Establishes the voice gate (every paragraph removes a decision the polyglot would make in another browser tab). Status: drafting, target W1.
+2. **Lesson 1 — Blocks: lo que ves en todos lados.** Establishes the scroll-level kata shape (Piston Ruby harness, predict pattern) and ships the first playground step. Status: drafting, target W1.
+3. **Lesson 2 — Literales que sorprenden.** Strings (interpolation), hashes (symbol keys, `fetch` with block), `&:method` (mechanism deferred to Lesson 3's object-model explanation). Status: stub, target W2.
+4. **Lesson 3 — Object model.** Inherits the DB-seeded content currently labelled Lesson 1, re-tightened against the "idioms-not-fundamentals" gate. Ships the second playground step. **The seed will be re-positioned from `order: 1` to `order: 4` in the DB**, with the lessonId staying stable. Status: re-tightening required, target W2.
+5. **Lesson 4 — Control flow + truthiness.** Status: stub, target W2.
+6. **Lesson 5 — Methods.** Closes the scroll with the named-and-deferred list pointing at deep-dives. Status: stub, target W2.
 
 After the Ruby scroll ships end-to-end, deep-dive scrolls become candidates for prioritisation. The order suggested in §3.1 is not committed — that's a separate decision per future sprint.
+
+**Playground frontend (Option B2):** before the first playground step in Lesson 1 can be smoke-tested, the scroll player needs the `data.kind === "playground"` branch — hide verdict UI, render single "Ejecutar" button, no test result list. ~4-6 hours of frontend work. Lands as part of W1, immediately before seeding Lesson 1.
