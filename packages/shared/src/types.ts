@@ -121,6 +121,27 @@ export interface PredictData {
   feedback: Record<string, string>
 }
 
+// `playground` variant data — shipped on the `data` field of a kata step when
+// the step is a free-explore zone (no verdict, no pass/fail). Backend stays
+// uniform (a kata with a trivially-true harness); the frontend reads the kind
+// flag and renders without verdict UI. Scoped to Ruby as a local experiment
+// per docs/courses/curricula/ruby/ruby.md §2.3. Promote to a canonical step
+// type with an ADR + INTERACTIVITY-PATTERNS.md update only if the pattern
+// survives 2-3 lessons across at least 2 scrolls.
+export interface PlaygroundData {
+  kind: 'playground'
+}
+
+export type StepData = PredictData | PlaygroundData
+
+export function isPredictData(data: StepData | null): data is PredictData {
+  return data !== null && 'snippet' in data && 'options' in data
+}
+
+export function isPlaygroundData(data: StepData | null): data is PlaygroundData {
+  return data !== null && 'kind' in data && data.kind === 'playground'
+}
+
 export interface StepDTO {
   id: string
   order: number
@@ -132,9 +153,10 @@ export interface StepDTO {
   starterCode: string | null
   testCode: string | null
   hint: string | null
-  // Variant-shaped data for Tier 2 step types (currently only `predict`).
-  // The renderer parses this per step.type. Null for kata/read.
-  data: PredictData | null
+  // Variant-shaped data for Tier 2 step types and step variants.
+  // Discriminated by structural fields — use isPredictData / isPlaygroundData
+  // to narrow. Null for plain kata/read steps without a variant.
+  data: StepData | null
   // Solution is intentionally NOT in StepDTO — it ships only via
   // GET /scrolls/:slug/steps/:id/solution after pass.
 }

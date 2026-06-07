@@ -11,6 +11,7 @@ import { PageLoader } from '../components/PageLoader'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { ErrorState } from '../components/ui/ErrorState'
 import type { ScrollDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, ExternalReference, ExternalReferenceKind } from '@dojo/shared'
+import { isPlaygroundData } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
 import { renderSlots, type SlotHeading } from '../lib/slots'
 
@@ -555,6 +556,11 @@ function StepEditor({
   const [nudgeFeedback, setNudgeFeedback] = useState<'up' | 'down' | null>(null)
 
   const isIframeLang = language === 'javascript-dom'
+  // Playground variant: a kata with `data.kind === "playground"`. The backend
+  // runs the always-pass harness; the frontend hides verdict UI so the learner
+  // experiences free exploration, not a graded exercise. See
+  // docs/courses/curricula/ruby/ruby.md §2.3 for the local-experiment scope.
+  const isPlayground = isPlaygroundData(step.data)
   const stepTitle = extractStepTitle(step)
   // The markdown still contains the H1; strip it so it isn't rendered twice.
   const instructionBody = stripLeadingH1(step.instruction)
@@ -638,7 +644,10 @@ function StepEditor({
         ? await runInIframe({ starterCode: code, testCode: step.testCode })
         : await api.executeStep({ code, testCode: step.testCode, language })
       setResult(res)
-      setTab(res.errorKind ? 'output' : 'tests')
+      // For playgrounds the Tests / Solution tabs are hidden — always show
+      // Output. For katas, jump to Output on error so the learner sees the
+      // failure, otherwise to Tests for the pass/fail breakdown.
+      setTab(isPlayground || res.errorKind ? 'output' : 'tests')
       if (res.passed && !isCompleted) {
         onComplete()
       }
@@ -692,14 +701,14 @@ function StepEditor({
                 : 'bg-accent text-bg hover:bg-accent/90'
             }`}
           >
-            {running ? 'Running...' : '▶ Run'}
+            {running ? 'Running...' : isPlayground ? '↻ Try it' : '▶ Run'}
           </button>
           {isIframeLang && (
             <span className="text-xs text-muted font-mono">Runs in browser</span>
           )}
-          {result && <StatusChip result={result} />}
+          {result && (isPlayground ? <ExploredChip /> : <StatusChip result={result} />)}
           <div className="ml-auto flex items-center gap-3">
-            {result && !nudgeDisabled && (
+            {result && !nudgeDisabled && !isPlayground && (
               <button
                 onClick={askSensei}
                 disabled={nudgeLoading}
@@ -784,6 +793,7 @@ function StepEditor({
           alternativeApproach={alternativeApproach}
           solutionError={solutionError}
           editorLanguage={editorLanguage}
+          isPlayground={isPlayground}
         />
       </div>
     </div>
@@ -832,6 +842,7 @@ function OutputPanel({
   alternativeApproach,
   solutionError,
   editorLanguage,
+  isPlayground,
 }: {
   result: ExecuteStepResponse | null
   tab: OutputTab
@@ -841,9 +852,36 @@ function OutputPanel({
   alternativeApproach: string | null
   solutionError: string | null
   editorLanguage: string
+  isPlayground: boolean
 }) {
+  // Playgrounds: only the Output tab. No Tests (the harness is trivially-true
+  // so the test list is noise), no Solution (no canonical answer to a free
+  // exploration). The current `tab` may carry an outdated value if the step
+  // changed, but the render forces Output anyway.
+  if (isPlayground) {
+    return (
+      <div className="border-t border-border/40 bg-surface/50 flex flex-col min-h-48 max-h-[34vh]">
+        <div className="flex items-center gap-1 px-3 pt-2 border-b border-border/30">
+          <TabButton active={true} onClick={() => onTabChange('output')}>
+            Output
+            {result && result.errorKind && <span className="ml-1.5 text-warning">●</span>}
+          </TabButton>
+        </div>
+        <div className="flex-1 overflow-y-auto px-4 py-3">
+          {!result ? (
+            <p className="text-xs font-mono text-muted/60">
+              Try the code above. Change things. Watch the output.
+            </p>
+          ) : (
+            <OutputTab result={result} />
+          )}
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="border-t border-border/40 bg-surface/50 flex flex-col min-h-[12rem] max-h-[34vh]">
+    <div className="border-t border-border/40 bg-surface/50 flex flex-col min-h-48 max-h-[34vh]">
       <div className="flex items-center gap-1 px-3 pt-2 border-b border-border/30">
         <TabButton active={tab === 'tests'} onClick={() => onTabChange('tests')}>
           Tests
@@ -886,6 +924,18 @@ function OutputPanel({
         )}
       </div>
     </div>
+  )
+}
+
+// Replaces StatusChip in the playground variant. Verdict is irrelevant here
+// (the harness is trivially-true) but Maya's interaction-teaches contract
+// requires *some* feedback that the run registered — otherwise the learner
+// runs code and sees no acknowledgement, which reads as broken.
+function ExploredChip() {
+  return (
+    <span className="text-sm font-mono text-secondary animate-status-reveal">
+      ↻ explored
+    </span>
   )
 }
 
