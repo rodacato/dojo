@@ -188,6 +188,8 @@ correct: b
 
 **b — `bundle install`:**
 > Correct. Any cloned Ruby project has a Gemfile (and usually a `.ruby-version` file too). `bundle install` reads the Gemfile, resolves the dependency graph, downloads the gems into the project, and respects (or generates) the `Gemfile.lock`. Without it, the first `require` of an external dependency fails.
+>
+> Next up: you start writing Ruby. Blocks come first — they're in every Ruby file you'll read.
 
 **c — `irb`:**
 > `irb` opens a REPL isolated from the project. It's useful for trying language expressions (`5.times { |i| puts i }`) but doesn't load the project's Gemfile or its code. For a REPL with the project loaded, most projects ship a `bin/console` (Rails) or you'd use `pry -r ./lib/whatever.rb`.

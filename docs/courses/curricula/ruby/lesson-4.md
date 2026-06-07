@@ -130,7 +130,7 @@ end
 - id: c
   text: "Raises `TypeError` — `if` needs a boolean, not an integer"
 - id: d
-  text: "Depends on the Ruby version"
+  text: "`falsy` — Ruby implicitly coerces `0` to `false` via `Integer#to_b` (like Python's `bool(0)`)"
 correct: a
 ```
 
@@ -145,8 +145,8 @@ correct: a
 **c — `TypeError`:**
 > The static-typing reflex (Go, Rust). Those languages require a `bool` in conditional position. Ruby — and Python, JS, Lua — accept any value and check truthiness at runtime. No `TypeError` here.
 
-**d — `Depends on the Ruby version`:**
-> It doesn't. The two-falsy rule has been stable since Ruby 1.0. The language inherits it from Smalltalk's design (where `false` and `nil` are the only falsy objects), and the rule has never been relaxed.
+**d — `falsy` via implicit `Integer#to_b` coercion:**
+> Ruby has no implicit boolean coercion. There's no `Integer#to_b` method — you can confirm with `5.respond_to?(:to_b)` (returns `false`). The truthiness check is direct on the object: anything other than `false` or `nil` is truthy, regardless of class or value. Python's `bool(0) == False` has no Ruby analogue. If you want to test for zero specifically, use `n.zero?` explicitly.
 
 ---
 
@@ -283,12 +283,11 @@ bucketize([])
 ## Constraints
 
 - Use `case/when` with `Class === instance` somewhere in your solution.
-- Use **postfix `if`** somewhere (or the equivalent `unless`) — this is a constraint to force you to read it back and decide whether the line reads naturally.
 - Keep the body under 10 lines (not counting `def` / `end`).
 
 ## What this exercises
 
-This kata combines three things from this lesson: dispatch on class, an `Enumerable` build-up (you'll likely reach for `each_with_object` or `group_by`), and the postfix style.
+This kata combines two things from this lesson: dispatch on class via `case/when Class`, and an `Enumerable` build-up (you'll likely reach for `each_with_object` or `group_by`). The postfix `if` from the read step is natural to reach for when you need a one-line guard — use it if it fits, don't force it if it doesn't.
 
 The 15-minute budget is real — if you're still wrestling after 15, look at the alternative approach for the shape.
 ```

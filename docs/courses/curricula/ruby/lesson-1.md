@@ -278,7 +278,7 @@ Implement `map_keys(hash)` that takes a hash and a block, and returns a new hash
 
 ## How `&block` works in the signature
 
-When you declare a parameter as `&block`, you capture the block passed by the caller as a `Proc` object named `block`. You invoke it with `block.call(arg)` or pass it on to another method using `&block` (same sigil — `&` unwraps a Proc into a block on the way out and rewraps a block as a Proc on the way in).
+When you declare a parameter as `&block`, you capture the block passed by the caller as a `Proc` object named `block`. You invoke it with `block.call(arg)`, or pass it on to another method using `&block` (same sigil). The `&` is the operator that **converts between block syntax and `Proc` objects in both directions** — that's the whole rule. At the call site, `&proc` turns a `Proc` into a block; in a signature, `&block` turns the incoming block into a `Proc`.
 
 ## Force the signature to accept both forms
 

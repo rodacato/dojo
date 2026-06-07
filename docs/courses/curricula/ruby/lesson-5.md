@@ -59,6 +59,8 @@ def request(url, *headers, method: "GET", **extras)
 end
 ```
 
+**Python developers:** `**opts` is essentially Ruby's `**kwargs` — same mechanism, same shape. `*nums` is Ruby's `*args`. For the splats, the analogy holds. Where Ruby diverges from Python is in how it handles a *block* — captured as a separate single-slot argument with `&block` (Lesson 1), with no Python equivalent. The splats: same model. The block: Ruby-only.
+
 This pattern is how every Ruby DSL turns method calls into data — Rails' `has_many :posts, dependent: :destroy` is `has_many(:posts, dependent: :destroy)`, with `:posts` as positional and `dependent: :destroy` as a keyword. The framework receives the data as method parameters and decides what to do with it.
 
 ## Implicit return — the last expression is the value
@@ -94,9 +96,9 @@ This is how introspection libraries — and metaprogramming-heavy frameworks —
 
 ## What we didn't cover
 
-`attr_accessor` (encapsulation cost vs syntax), `method_missing` (dynamic dispatch via missing-message hook), eigenclasses (singleton class on every object), monkey-patching (reopening core classes). All real, all powerful, all foot-gun-shaped. They belong to the OOP and metaprogramming deep-dive scrolls — not the 90-minute polyglot crash.
+Four things you'll encounter in real Ruby that aren't in this scroll: `attr_accessor` (encapsulation cost vs syntax), `method_missing` (dynamic dispatch via missing-message hook), eigenclasses (singleton class on every object), and monkey-patching (reopening core classes). All real, all powerful, all foot-gun-shaped. They live in the OOP and metaprogramming deep-dive scrolls — not in a 90-minute polyglot crash.
 
-You now know enough Ruby to read most code in any decent gem. When one of the four listed above shows up, you'll see it named — and you'll know which scroll to look up.
+**You don't need to memorise the names now.** When one of these shows up in production Ruby — and one will — you'll recognise that you're looking at a named, deferred topic and you'll know there's a deep-dive scroll for it. That's the goal: *recognise, don't memorise*. Reach for the deep-dive when the footgun fires.
 ```
 
 ### Paragraph-test audit
@@ -124,25 +126,38 @@ Cut from draft: a paragraph on default-value evaluation timing (`def f(x = some_
 ```markdown
 ## Your task
 
-Implement `greet(name:, greeting: "Hello")` that returns `"<greeting>, <name>!"`. Both parameters are keyword arguments. `name` is required; `greeting` defaults to `"Hello"`.
+Write a method `greet` whose **signature** matches all of the following:
+
+- `name` is a **keyword-only required** parameter.
+- `greeting` is a **keyword-only optional** parameter, defaulting to `"Hello"`.
+- Positional calls must raise `ArgumentError`.
+- Calls missing `name` must raise `ArgumentError`.
+
+The body is one line of string interpolation returning `"<greeting>, <name>!"`.
 
 ## Examples
 
 ```ruby
-greet(name: "Ada")                   # => "Hello, Ada!"
+greet(name: "Ada")                    # => "Hello, Ada!"
 greet(name: "Linus", greeting: "Hej") # => "Hej, Linus!"
-greet()                              # raises ArgumentError
+greet()                               # raises ArgumentError
+greet("Ada")                          # raises ArgumentError (positional)
 ```
 
-## The trap (which the tests catch)
+## Why this kata exists
 
-Don't accept positional arguments. The third test calls `greet("Ada")` (positional) and expects an `ArgumentError`. The signature must be keyword-only on both parameters.
+**The body is trivial — one line. The kata is the signature.** Writing `def greet(name, greeting = "Hello")` (positional with default) makes the first two tests pass but breaks the fourth — Ruby happily accepts `greet("Ada")`. The keyword-only signature (trailing colons on the parameter names) is what the tests are checking. Get the signature right, and the body is one line of `"#{greeting}, #{name}!"`.
 ```
 
 ### `starterCode`
 
 ```ruby
-def greet(name:, greeting: "Hello")
+# Write the signature so `greet` is keyword-only:
+#   - name: required (no default)
+#   - greeting: defaults to "Hello"
+# Then write the one-line body.
+
+def greet
   # Your code here.
 end
 ```

@@ -65,11 +65,15 @@ nil.respond_to?(:upcase) # => false  (nil doesn't speak uppercase)
 
 `respond_to?` is the Ruby idiom for "ask before you tell". It's used in libraries to gracefully handle duck-typed inputs ("if the object knows how to `each`, treat it like a collection"). The next kata builds the muscle.
 
-## What this means for `nil` and `Symbol#to_proc`
+## What this means for `nil`
 
 The `predict` next will test the `nil.class` reflex. The thing to internalise before that: **`nil` is the single instance of `NilClass`**, fully an object, with methods (`nil.to_s`, `nil.inspect`, `nil.nil?`). It's not absence — it's a specific object with a small but real interface. Treating it like JavaScript's `null` or Java's `null` (a thing that errors on any method call) misleads.
 
-And `Symbol#to_proc` — the mechanism behind `&:method` from Lesson 1 — is `Symbol` itself being an object with a method named `to_proc`. The `&` sigil calls `to_proc` on whatever follows it, then passes the resulting Proc as the block. Everything composes because everything is an object.
+Because `nil` is an object with methods, **`nil.to_s` returns the empty string `""`** and `nil.inspect` returns the literal text `"nil"`. The next two katas exercise both: the first one specifically tests that calling `:to_s` on `nil` succeeds and returns `""` — and that succeeds *because* `nil` is an object, not despite it.
+
+## What this means for `Symbol#to_proc`
+
+`Symbol#to_proc` — the mechanism behind `&:method` from Lesson 1 — is `Symbol` itself being an object with a method named `to_proc`. The `&` sigil calls `to_proc` on whatever follows it, then passes the resulting Proc as the block. Everything composes because everything is an object — including symbols, methods, and Procs themselves.
 ```
 
 ### Paragraph-test audit (delta from original seed)
