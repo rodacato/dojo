@@ -26,6 +26,8 @@ If a reader is confused at first glance, the brand glossary clarifies. The frame
 docs/courses/
 ├── README.md                    (this — the design framework)
 ├── INTERACTIVITY-PATTERNS.md    (step type catalog + animation guidance)
+├── AUDIENCE.md                  (target personas — who scrolls are written for)
+├── AUTHORING.md                 (reference flow for authoring a new scroll, retrospective)
 ├── testcode-pattern.md          (iframe testCode contract for browser steps)
 └── curricula/                   (per-language curriculum plans)
     ├── go.md
@@ -39,8 +41,10 @@ When you arrive here new, read order is:
 
 1. This file (the framework — what a scroll IS)
 2. [`INTERACTIVITY-PATTERNS.md`](INTERACTIVITY-PATTERNS.md) (the step types catalog — how a scroll BEHAVES)
-3. One per-language file in [`curricula/`](curricula/) (a concrete plan)
-4. [`testcode-pattern.md`](testcode-pattern.md) only if you're authoring browser-side (`language: javascript-dom`) steps
+3. [`AUDIENCE.md`](AUDIENCE.md) (the personas — who a scroll is WRITTEN FOR)
+4. One per-language file in [`curricula/`](curricula/) (a concrete plan)
+5. [`AUTHORING.md`](AUTHORING.md) (reference flow for authoring — only if you're starting a new scroll; canonical docs above come first)
+6. [`testcode-pattern.md`](testcode-pattern.md) only if you're authoring browser-side (`language: javascript-dom`) steps
 
 ---
 
