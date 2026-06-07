@@ -112,7 +112,9 @@ A Ruby project's dependencies live in two files:
 
 **`bundle exec <command>`** runs `<command>` using *only* the gems Bundler resolved for this project. If your machine has multiple versions of `rspec` installed globally, `rspec` invokes whichever one your shell finds; `bundle exec rspec` invokes the exact version your `Gemfile.lock` pinned. **In any modern Ruby project, prefix is the default:** `bundle exec rspec`, `bundle exec rake db:migrate`, `bundle exec rubocop`.
 
-**Different from Python's venv:** Bundler doesn't "activate" a shell environment the way `venv` does. Each command stays isolated through the `bundle exec` prefix. Same per-project isolation as venv, but the mental model is per-command instead of per-shell-session.
+:figure[before-after]{id="npm-vs-bundle"}
+
+The figure above is the venv comparison in one glance: the per-command isolation via `bundle exec` replaces `venv activate`'s per-shell-session isolation. Same outcome (gems pinned to the project), different shell discipline.
 
 ## Version managers
 
@@ -131,7 +133,8 @@ You don't need to install anything for this scroll — every kata runs in the sa
 | "The commands you need" | "What's the equivalent of `python` / `ipython` / `node` / `npm`?" | KEEP |
 | "Bundler" + Gemfile / Gemfile.lock | "What are these files and which one do I commit?" | KEEP |
 | `bundle install` | "First command after cloning — what is it?" | KEEP — answers 0.3 predict's setup |
-| `bundle exec` + venv comparison | "Why does every Ruby README say `bundle exec` everywhere?" — and Esteban's flagged concern | KEEP |
+| `bundle exec` paragraph | "Why does every Ruby README say `bundle exec` everywhere?" — and Esteban's flagged concern | KEEP |
+| `:figure[before-after]` + caption | replaces the prior venv prose paragraph; same payload at a glance | KEEP (figure carries the venv comparison) |
 | Version managers + `.ruby-version` | "How does the team know what version I should run?" | KEEP |
 | "Sandbox honesty" | "Will the sandbox lie to me about what Ruby is actually like?" | KEEP |
 
@@ -212,11 +215,11 @@ Pending until panel + audience review: tone calibration as a suite (all 6 lesson
 
 ---
 
-## Pending figure proposals (2026-06-07)
+## Figure data spec
 
-Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime landing in `apps/web/src/scrolls/figures/`. Until then, the prose above stands alone.
+The step prose above embeds `:figure[...]{id:"..."}` directives. This section is the source-of-truth for the data that populates each figure when the runtime renders them. See [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures) for the schema.
 
-### Proposal 0.A — `before-after` figure inside Step 0.2 "How Ruby actually runs"
+### `npm-vs-bundle` (`before-after`) — embedded in Step 0.2
 
 - **Slot:** after the "Bundler" paragraph, before "Version managers".
 - **Left pane (the polyglot reflex, JS):**

@@ -37,6 +37,10 @@ File.open("path.txt") { |f| f.read }
 
 `each`, `map`, `times`, `File.open`, `tap` — none of them are language keywords. They are stdlib methods that happen to accept a block as an extra argument.
 
+:figure[before-after]{id="foreach-vs-each-block"}
+
+The contrast above is the polyglot reflex: callback-as-stranded-function-expression on the left, block-as-part-of-the-call-shape on the right. Same iteration; blocks make the per-item code feel like an argument to the method, not a separate thing.
+
 ## What a block is, technically
 
 A block is **syntax** — a chunk of code passed to a method call as a special extra argument. Two equivalent forms:
@@ -106,6 +110,7 @@ Procs and lambdas behave differently around `return` and around arity strictness
 |---|---|---|
 | "Why this matters" | "Should I treat blocks as special or as a callback?" | KEEP |
 | "What blocks look like in the wild" | "What does Ruby code *look* like when blocks are present?" | KEEP |
+| `:figure[before-after]` + caption | "How does Ruby's block call shape compare to my JS `forEach` callback?" | KEEP (figure carries the polyglot-reflex contrast) |
 | "What a block is" | "Are blocks objects, callbacks, lambdas, or what?" | KEEP — answers the contradiction Mariana caught |
 | "Convention" | "Should I always use `do/end`? Why two syntaxes?" — and the precedence bug | KEEP |
 | "`yield`" + Python disclaimer | The #1 Python-dev trap. Without this, Esteban derails | KEEP |
@@ -435,11 +440,11 @@ _t('explored') { _eq true, true }
 
 ---
 
-## Pending figure proposals (2026-06-07)
+## Figure data spec
 
-Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime; until then, the prose above stands alone.
+The step prose above embeds `:figure[...]{id:"..."}` directives. This section is the source-of-truth for the data that populates each figure when the runtime renders them. See [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures) for the schema.
 
-### Proposal 1.A — `before-after` figure inside Step 1.1 "Blocks: the syntax you see everywhere"
+### `foreach-vs-each-block` (`before-after`) — embedded in Step 1.1
 
 - **Slot:** after the "What blocks look like in the wild" code block, before "What a block is, technically".
 - **Left pane (the polyglot reflex, JS):**
@@ -457,7 +462,7 @@ Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual fi
 - **Caption:** *"Same call (`each` and `forEach` both iterate). Blocks make the per-item code feel like an argument to the method, not a stranded function expression."*
 - **Why this earns embedding:** the polyglot reads "the language's central abstraction for 'pass behaviour into a method'" and needs to *see* the contrast against the verbose-callback version they wrote yesterday. One figure replaces ~80 words that would otherwise summarise the same point.
 
-### Proposal 1.B — `disambiguation` figure (named-and-deferred, *not* in v1)
+### `block-vs-proc-vs-lambda` (`disambiguation`) — deferred, *not* in v1
 
 - **Concept:** `block { } vs do/end vs &:method` — same intent (pass behaviour to a method), three shapes, three idiomatic homes.
 - **Decision:** **defer to the future `ruby-blocks-procs-lambdas` deep-dive scroll.** Rhea's call: the crash scroll already names the convention (do/end multi-line, {} single-line, &:method as sugar) in prose; the disambiguation table would over-explain at crash-scroll depth. Re-evaluate when the deep-dive ships.

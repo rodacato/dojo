@@ -61,7 +61,9 @@ If either operand is a Float, the result is a Float. If both are Integers, the r
 :foo == "foo"           # => false     (different types, not just different objects)
 ```
 
-Symbols are the identifier-like values Ruby uses for hash keys, method names, and configuration keys. They're cheap to compare (just compare the underlying integer ID) and they're never garbage collected once created in modern Ruby. Use them for *names of things*; use strings for *content the user sees*.
+:figure[disambiguation]{id="string-vs-symbol"}
+
+The figure highlights the single dimension that matters — *identity*. Every other difference (mutability, hash-key cost, garbage collection) cascades from it. Use symbols for *names of things* (hash keys, method names, config keys); use strings for *content the user sees*.
 
 The hash literal shorthand `{ name: "Ada" }` uses symbol keys: it's equivalent to `{ :name => "Ada" }`. You'll see the shorthand everywhere; the rocket form (`=>`) appears when keys aren't symbols (e.g. `{ "Foo" => 1 }`).
 
@@ -92,6 +94,7 @@ flags.fetch(:other) { "default" } # => "default"
 | "Single vs double quotes" | "Which quote do I use? Are they really the same?" | KEEP |
 | "Integer division" | "Will `5 / 2` give me `2.5` like Python?" | KEEP |
 | "Symbols" | "What's `:foo`? Why use it over strings?" | KEEP |
+| `:figure[disambiguation]` + caption (inside Symbols) | "Is Symbol just an interned String?" — the single dimension that matters is identity | KEEP (figure kills the "two string types" reflex) |
 | "`Hash#fetch` with block" | "What's the idiomatic way to handle missing keys?" | KEEP |
 | "What this lesson is NOT teaching" | Forecloses the tour-guide expectation | KEEP |
 
@@ -383,11 +386,11 @@ end
 
 ---
 
-## Pending figure proposals (2026-06-07)
+## Figure data spec
 
-Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime; until then, the prose above stands alone.
+The step prose above embeds `:figure[...]{id:"..."}` directives. This section is the source-of-truth for the data that populates each figure when the runtime renders them. See [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures) for the schema.
 
-### Proposal 2.A — `disambiguation` figure inside Step 2.1 "Literals that surprise"
+### `string-vs-symbol` (`disambiguation`) — embedded in Step 2.1
 
 - **Slot:** inside the surprise paragraph about symbols (`:foo == "foo"` is `false`), replacing the inline contrast.
 - **Entries (both presented in identical skeletons):**
@@ -404,7 +407,7 @@ Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual fi
 - **Caption:** *"Same look at a glance, opposite roles. Symbol identity is why `:foo` is a hash key and `"foo"` is data."*
 - **Why this earns embedding:** the polyglot's first reflex is "Ruby has two string types, weird." The figure replaces that wrong reflex with the right model — they are not two string types, they are *data* and *identifier*. Three sentences of prose can land the same point; the figure lets the eye do the work in one beat.
 
-### Proposal 2.B — `array-track` figure inside Step 2.1 (alternative to Proposal 2.A; pick one — see decision below)
+### `enumerable-each-map-select` (`array-track`) — deferred to the future `ruby-enumerable-mastery` deep-dive
 
 - **Slot:** as a teaser for Enumerable, embedded after the `Hash#fetch` paragraph (before the lookup kata).
 - **Input:** `[1, 2, 3, 4, 5]`.

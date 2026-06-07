@@ -39,15 +39,17 @@ This is **why** `[1, 2, 3].map(&:to_s)` works on each integer — the integer is
 
 ## Operators are methods in disguise
 
+:figure[two-by-two]{id="operators-as-messages"}
+
+The diagonal move in the figure above is the mental model the lesson is after: from *operators as syntax* (the JS/Python reflex, correct in those languages) to *operators as messages* (the Ruby reality, where `5.+(2)` is the real call shape and `5 + 2` is parser sugar for it).
+
 ```ruby
 1 + 2          # => 3
 1.+(2)         # => 3     (same thing — `+` is a method named `+`)
 1.send(:+, 2)  # => 3     (sending the message `:+` with argument 2)
 ```
 
-Ruby's parser rewrites `1 + 2` as the method call `1.+(2)`. The `+` is not an operator — it's a method on `Integer`, written with a name that happens to be a single character. Same for `-`, `*`, `==`, `<<`, `[]`, even comparison: `5 < 10` is `5.<(10)`.
-
-This is the property that makes Ruby small. There's very little "language" — most of what looks like syntax is a method you can find in the docs, override in your own class, or invoke via `send`. The blocks of Lesson 1 are the same pattern: `5.times { ... }` is a method on `Integer` that happens to take a block.
+The same rewrite applies to `-`, `*`, `==`, `<<`, `[]`, even comparison: `5 < 10` is `5.<(10)`. This is the property that makes Ruby small. There's very little "language" — most of what looks like syntax is a method you can find in the docs, override in your own class, or invoke via `send`. The blocks of Lesson 1 are the same pattern: `5.times { ... }` is a method on `Integer` that happens to take a block.
 
 ## Introspection is first-class
 
@@ -83,6 +85,7 @@ Because `nil` is an object with methods, **`nil.to_s` returns the empty string `
 | "Why this matters" | NEW framing | Anchors the lesson as the *explanation* for Lessons 1 and 2 — polyglot-first order |
 | "Every value has a class" | KEEP, tightened | Cuts the `.class` walk-through; references Lesson 1 `&:to_s` to make the property *useful* |
 | "Operators are methods" | KEEP, expanded | The biggest Ruby-specific surprise — gets more space |
+| `:figure[two-by-two]` (top of section) | NEW | Replaces ~80 words of cross-language prose with the diagonal "syntax → message" move; the code block then proves it |
 | "Introspection is first-class" | REPLACED | Original talked about `.ancestors`; replaced with `respond_to?` because the next kata uses it |
 | ".ancestors" paragraph | CUT | Generic; relocated to playground starter code |
 | "What this means for nil + Symbol#to_proc" | NEW | Bridges to the predict (`nil.class`) and back to Lesson 1's `&:method` |
@@ -409,11 +412,11 @@ _t('explored') { _eq true, true }
 
 ---
 
-## Pending figure proposals (2026-06-07)
+## Figure data spec
 
-Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime; until then, the prose above stands alone.
+The step prose above embeds `:figure[...]{id:"..."}` directives. This section is the source-of-truth for the data that populates each figure when the runtime renders them. See [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures) for the schema.
 
-### Proposal 3.A — `two-by-two` figure inside Step 3.1 "Object model: why blocks and literals work this way"
+### `operators-as-messages` (`two-by-two`) — embedded in Step 3.1
 
 - **Slot:** at the top of the section that introduces "operators are method calls" — *replaces* approximately 80 words of the corresponding prose, leaving the prose to expand only on what the figure cannot show.
 - **Row axis label:** "How the reader thinks operators work"
