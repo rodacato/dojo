@@ -41,7 +41,6 @@ const AdminEditKataPage = lazyWithRetry(() => import('./pages/admin/AdminEditKat
 const AdminInvitationsPage = lazyWithRetry(() => import('./pages/admin/AdminInvitationsPage').then(m => ({ default: m.AdminInvitationsPage })))
 const AdminScrollsPage = lazyWithRetry(() => import('./pages/admin/AdminScrollsPage').then(m => ({ default: m.AdminScrollsPage })))
 const AdminErrorsPage = lazyWithRetry(() => import('./pages/admin/AdminErrorsPage').then(m => ({ default: m.AdminErrorsPage })))
-const AdminFiguresPreviewPage = lazyWithRetry(() => import('./pages/admin/AdminFiguresPreviewPage').then(m => ({ default: m.AdminFiguresPreviewPage })))
 const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })))
 const EngawaPage = lazyWithRetry(() => import('./pages/EngawaPage').then(m => ({ default: m.EngawaPage })))
 import { OptionalSidebarLayout } from './components/layout/OptionalSidebarLayout'
@@ -115,7 +114,6 @@ export function App() {
               <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
               <Route path="scrolls" element={<LazyRoute><AdminScrollsPage /></LazyRoute>} />
               <Route path="errors" element={<LazyRoute><AdminErrorsPage /></LazyRoute>} />
-              <Route path="figures-preview" element={<LazyRoute><AdminFiguresPreviewPage /></LazyRoute>} />
             </Route>
           </Route>
 

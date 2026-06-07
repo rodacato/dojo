@@ -160,15 +160,17 @@ This is **why** \`[1, 2, 3].map(&:to_s)\` works on each integer — the integer 
 
 ## Operators are methods in disguise
 
+:figure[two-by-two]{id="operators-as-messages"}
+
+The diagonal move in the figure above is the mental model the lesson is after: from *operators as syntax* (the JS/Python reflex, correct in those languages) to *operators as messages* (the Ruby reality, where \`5.+(2)\` is the real call shape and \`5 + 2\` is parser sugar for it).
+
 \`\`\`ruby
 1 + 2          # => 3
 1.+(2)         # => 3     (same thing — \`+\` is a method named \`+\`)
 1.send(:+, 2)  # => 3     (sending the message \`:+\` with argument 2)
 \`\`\`
 
-Ruby's parser rewrites \`1 + 2\` as the method call \`1.+(2)\`. The \`+\` is not an operator — it's a method on \`Integer\`, written with a name that happens to be a single character. Same for \`-\`, \`*\`, \`==\`, \`<<\`, \`[]\`, even comparison: \`5 < 10\` is \`5.<(10)\`.
-
-This is the property that makes Ruby small. There's very little "language" — most of what looks like syntax is a method you can find in the docs, override in your own class, or invoke via \`send\`. The blocks of Lesson 1 are the same pattern: \`5.times { ... }\` is a method on \`Integer\` that happens to take a block.
+The same rewrite applies to \`-\`, \`*\`, \`==\`, \`<<\`, \`[]\`, even comparison: \`5 < 10\` is \`5.<(10)\`. This is the property that makes Ruby small. There's very little "language" — most of what looks like syntax is a method you can find in the docs, override in your own class, or invoke via \`send\`. The blocks of Lesson 1 are the same pattern: \`5.times { ... }\` is a method on \`Integer\` that happens to take a block.
 
 ## Introspection is first-class
 
@@ -524,7 +526,9 @@ A Ruby project's dependencies live in two files:
 
 **\`bundle exec <command>\`** runs \`<command>\` using *only* the gems Bundler resolved for this project. If your machine has multiple versions of \`rspec\` installed globally, \`rspec\` invokes whichever one your shell finds; \`bundle exec rspec\` invokes the exact version your \`Gemfile.lock\` pinned. **In any modern Ruby project, prefix is the default:** \`bundle exec rspec\`, \`bundle exec rake db:migrate\`, \`bundle exec rubocop\`.
 
-**Different from Python's venv:** Bundler doesn't "activate" a shell environment the way \`venv\` does. Each command stays isolated through the \`bundle exec\` prefix. Same per-project isolation as venv, but the mental model is per-command instead of per-shell-session.
+:figure[before-after]{id="npm-vs-bundle"}
+
+The figure above is the venv comparison in one glance: the per-command isolation via \`bundle exec\` replaces \`venv activate\`'s per-shell-session isolation. Same outcome (gems pinned to the project), different shell discipline.
 
 ## Version managers
 
@@ -642,7 +646,9 @@ If either operand is a Float, the result is a Float. If both are Integers, the r
 :foo == "foo"           # => false     (different types, not just different objects)
 \`\`\`
 
-Symbols are the identifier-like values Ruby uses for hash keys, method names, and configuration keys. They're cheap to compare (just compare the underlying integer ID) and they're never garbage collected once created in modern Ruby. Use them for *names of things*; use strings for *content the user sees*.
+:figure[disambiguation]{id="string-vs-symbol"}
+
+The figure highlights the single dimension that matters — *identity*. Every other difference (mutability, hash-key cost, garbage collection) cascades from it. Use symbols for *names of things* (hash keys, method names, config keys); use strings for *content the user sees*.
 
 The hash literal shorthand \`{ name: "Ada" }\` uses symbol keys: it's equivalent to \`{ :name => "Ada" }\`. You'll see the shorthand everywhere; the rocket form (\`=>\`) appears when keys aren't symbols (e.g. \`{ "Foo" => 1 }\`).
 
@@ -1655,6 +1661,10 @@ File.open("path.txt") { |f| f.read }
 \`\`\`
 
 \`each\`, \`map\`, \`times\`, \`File.open\`, \`tap\` — none of them are language keywords. They are stdlib methods that happen to accept a block as an extra argument.
+
+:figure[before-after]{id="foreach-vs-each-block"}
+
+The contrast above is the polyglot reflex: callback-as-stranded-function-expression on the left, block-as-part-of-the-call-shape on the right. Same iteration; blocks make the per-item code feel like an argument to the method, not a separate thing.
 
 ## What a block is, technically
 
