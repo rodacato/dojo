@@ -219,8 +219,10 @@ type Figure =
       highlightCell?: [0 | 1, 0 | 1];          // the cell that names the confusion
       caption?: string }
   | { type: 'disambiguation'; id: string;
-      entries: Array<{ title: string; structure: string; divergent: { attribute: string; value: string } }>;
       sharedSkeletonLabel: string;
+      attributes: string[];                            // ordered attribute names
+      entries: Array<{ title: string; values: Record<string, string> }>;
+      highlightAttribute: string;                      // must be one of attributes[]
       caption?: string }
   | { type: 'array-track'; id: string;
       input: Array<string | number>;

@@ -14,6 +14,7 @@ import type { ScrollDetailDTO, LessonDTO, StepDTO, ExecuteStepResponse, External
 import { isPlaygroundData } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
 import { renderSlots, type SlotHeading } from '../lib/slots'
+import { FigureRenderer, splitOnFigureDirectives } from '../scrolls/figures/FigureRenderer'
 
 // ── Main component ──────────────────────────────────────────────
 
@@ -1266,7 +1267,22 @@ function MarkdownContent({ content }: { content: string }) {
       </div>
     )
   }
-  return <PlainMarkdown content={content} />
+  const segments = splitOnFigureDirectives(content)
+  const only = segments[0]
+  if (segments.length === 1 && only && only.kind === 'text') {
+    return <PlainMarkdown content={only.content} />
+  }
+  return (
+    <>
+      {segments.map((seg, i) =>
+        seg.kind === 'text' ? (
+          <PlainMarkdown key={i} content={seg.content} />
+        ) : (
+          <FigureRenderer key={i} id={seg.id} />
+        ),
+      )}
+    </>
+  )
 }
 
 // ── ScrollCompleteBanner ────────────────────────────────────────

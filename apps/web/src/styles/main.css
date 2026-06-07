@@ -39,6 +39,17 @@
   --color-belt-brown:   #7A5A3F;
   --color-belt-black:   #0A0908;
 
+  /* Semantic state tokens (per DESIGN.md §Semantic state tokens). Used by
+     embeddable visual figures inside scrolls. Each is paired with a shape
+     or label in the figure renderer for daltonism safety. */
+  --color-state-neutral: #94A3B8;
+  --color-state-cand:    #3E7CB1;
+  --color-state-active:  #F59E0B;
+  --color-state-out:     #EF4444;
+  --color-state-done:    #10B981;
+  --color-state-path:    #0D9488;
+  --color-state-goal:    #7C3AED;
+
   /* Fonts */
   --font-sans: 'Inter Variable', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono Variable', monospace;
@@ -126,6 +137,13 @@ html {
   --color-type-chat: #5A4275;
   --color-type-whiteboard: #3F6B68;
   --color-type-review: #B73A2F;
+  --color-state-neutral: #7D7568;
+  --color-state-cand:    #5C7FA8;
+  --color-state-active:  #E0A93B;
+  --color-state-out:     #B05B4D;
+  --color-state-done:    #4C9A6A;
+  --color-state-path:    #2E8B8B;
+  --color-state-goal:    #7B5EA7;
 }
 
 [data-theme='washi'] {
@@ -144,6 +162,13 @@ html {
   --color-type-chat: #5A4275;
   --color-type-whiteboard: #3F6B68;
   --color-type-review: #B73A2F;
+  --color-state-neutral: #B9B2A6;
+  --color-state-cand:    #5C7FA8;
+  --color-state-active:  #E0A93B;
+  --color-state-out:     #B05B4D;
+  --color-state-done:    #4C9A6A;
+  --color-state-path:    #2E8B8B;
+  --color-state-goal:    #7B5EA7;
 }
 
 * {
