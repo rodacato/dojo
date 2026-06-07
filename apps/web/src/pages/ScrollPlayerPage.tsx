@@ -1212,8 +1212,8 @@ function stripLeadingH1(md: string): string {
 
 // ── Simple markdown renderer ────────────────────────────────────
 
-function PlainMarkdown({ content }: { content: string }) {
-  const html = content
+function markdownToInnerHtml(text: string): string {
+  return text
     .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-bg/50 rounded p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-secondary">$2</code></pre>')
     .replace(/`([^`]+)`/g, '<code class="bg-bg/50 px-1.5 py-0.5 rounded text-accent text-xs font-mono">$1</code>')
     .replace(/^### (.+)$/gm, '<h3 class="text-base font-mono text-primary mt-5 mb-2">$1</h3>')
@@ -1222,12 +1222,36 @@ function PlainMarkdown({ content }: { content: string }) {
     .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary">$1</strong>')
     .replace(/^- (.+)$/gm, '<li class="text-sm text-muted ml-4 list-disc">$1</li>')
     .replace(/\n\n/g, '</p><p class="text-sm text-muted mb-3">')
+}
 
+function PlainMarkdown({ content }: { content: string }) {
+  const segments = splitOnFigureDirectives(content)
+  const only = segments[0]
+  if (segments.length === 1 && only && only.kind === 'text') {
+    return (
+      <div
+        className="text-sm text-muted leading-relaxed"
+        dangerouslySetInnerHTML={{
+          __html: `<p class="text-sm text-muted mb-3">${markdownToInnerHtml(only.content)}</p>`,
+        }}
+      />
+    )
+  }
   return (
-    <div
-      className="text-sm text-muted leading-relaxed"
-      dangerouslySetInnerHTML={{ __html: `<p class="text-sm text-muted mb-3">${html}</p>` }}
-    />
+    <div className="text-sm text-muted leading-relaxed">
+      {segments.map((seg, i) =>
+        seg.kind === 'text' ? (
+          <div
+            key={i}
+            dangerouslySetInnerHTML={{
+              __html: `<p class="text-sm text-muted mb-3">${markdownToInnerHtml(seg.content)}</p>`,
+            }}
+          />
+        ) : (
+          <FigureRenderer key={i} id={seg.id} />
+        ),
+      )}
+    </div>
   )
 }
 
@@ -1267,22 +1291,7 @@ function MarkdownContent({ content }: { content: string }) {
       </div>
     )
   }
-  const segments = splitOnFigureDirectives(content)
-  const only = segments[0]
-  if (segments.length === 1 && only && only.kind === 'text') {
-    return <PlainMarkdown content={only.content} />
-  }
-  return (
-    <>
-      {segments.map((seg, i) =>
-        seg.kind === 'text' ? (
-          <PlainMarkdown key={i} content={seg.content} />
-        ) : (
-          <FigureRenderer key={i} id={seg.id} />
-        ),
-      )}
-    </>
-  )
+  return <PlainMarkdown content={content} />
 }
 
 // ── ScrollCompleteBanner ────────────────────────────────────────
