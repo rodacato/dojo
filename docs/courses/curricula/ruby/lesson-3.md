@@ -406,3 +406,28 @@ _t('explored') { _eq true, true }
 - [x] Playground 3.5 has concrete things to try, not "explore freely". Includes ancestor-chain exploration (which the read deferred).
 - [x] DB inheritance preserved: `lessonId` stable, step UUIDs stable. Only `order`, `title`, and content fields change.
 - [x] Content in English; meta-notes in Spanish.
+
+---
+
+## Pending figure proposals (2026-06-07)
+
+Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime; until then, the prose above stands alone.
+
+### Proposal 3.A — `two-by-two` figure inside Step 3.1 "Object model: why blocks and literals work this way"
+
+- **Slot:** at the top of the section that introduces "operators are method calls" — *replaces* approximately 80 words of the corresponding prose, leaving the prose to expand only on what the figure cannot show.
+- **Row axis label:** "How the reader thinks operators work"
+- **Row values:** "as syntax (built into the parser)" / "as messages (method calls on the left operand)"
+- **Column axis label:** "Language"
+- **Column values:** "JS / Python (polyglot's prior reflex)" / "Ruby"
+- **Cells:**
+
+  | | JS / Python | Ruby |
+  |---|---|---|
+  | **As syntax** | `5 + 2` is parser-level addition; you cannot override it for `Integer`. *(correct mental model for these langs)* | `5 + 2` *looks* like syntax — that's the trap. |
+  | **As messages** | Operator overloading exists but is opt-in via `__add__` / `valueOf`; not the default model. | `5.+(2)` is the *real* call shape. `+` is a method on `Integer`; `5 + 2` is sugar for it. **← the model the lesson wants** |
+
+- **Highlighted cell:** bottom-right (Ruby × As messages). The cell carries the eyebrow `THE MENTAL MODEL` and the body is two short sentences: *"Operators in Ruby are method calls. `5.+(2)` is the real shape; the infix `5 + 2` is sugar."*
+- **Caption:** *"The trap is assuming Ruby works like JS or Python. The fix is one diagonal move on this grid — from 'as syntax in JS/Python' to 'as messages in Ruby'."*
+- **Why this earns embedding:** The "operators are method calls" claim is the single biggest object-model surprise for the polyglot. Prose-only, it takes 3-4 careful sentences to land without sounding like trivia. The 2×2 makes the trap geometric: the polyglot can *see* the wrong cell they reflexively occupy and the right cell the lesson points to. The diagonal move is the pedagogical event.
+- **Authoring cost:** ~25 minutes once the `two-by-two` renderer exists, of which ~15 is on the cell copy (each cell needs to be one short, sharp sentence — no qualifiers).

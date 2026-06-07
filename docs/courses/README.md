@@ -191,7 +191,7 @@ For a typical 16-step language scroll we aim for roughly:
 | `predict` | ~10-15% | 2 | Hypothesis activation at a real surprise (per `INTERACTIVITY-PATTERNS.md` §predict) |
 | `exercise` | ~55% | 8-9 | Pass/fail Piston (or iframe) — the load-bearing learning surface |
 | `challenge` | ~5-10% | 1-2 | Optional stretch; harder, longer time budget |
-| `read+inline` | use as `read` substitute | (0-2) | A `read` step with embedded reveals or micro-quizzes; counts against the read budget |
+| `read+inline` | use as `read` substitute | (0-2) | A `read` step with embedded reveals, micro-quizzes, or **embeddable figures** (see [`INTERACTIVITY-PATTERNS.md`](INTERACTIVITY-PATTERNS.md) §Embeddable visual figures); counts against the read budget |
 
 These ratios are **starting heuristics, not laws**. Hard-edged constraints (Elif S5):
 
@@ -239,6 +239,7 @@ These are the rules that govern individual step authoring. Every language file i
 - **Hard ceiling: ~400 words of prose.** Code blocks don't count toward the budget. If the prose exceeds this, the explanation is doing too much; split it.
 - **Show, don't summarise.** Every concept introduced in prose has a runnable code example next to it. "Tuples are immutable" by itself is not allowed; it ships with the two lines that demonstrate immutability.
 - **Open with the "why care" in one sentence.** Then the "how". Learners reading on a tired Tuesday evening need the payoff up front.
+- **Lead with the pain when the concept is a *resolution*.** For any step that introduces an idiom, pattern, or technique whose job is to solve a recurring developer ache (telescoping constructors, conditional explosion, callback verbosity, etc.), the first paragraph names the pain in the polyglot's vocabulary — *before* naming the resolution. The framing "this hurts because X — Ruby's `do |x|` makes it stop hurting because Y" lands harder than "Ruby has blocks. Here's the syntax." Not all steps qualify — pure-mechanism steps (e.g. operator precedence) have no pain to lead with; force the framing and it sounds theatrical. Use when the step's whole reason for existing is the pain.
 - **End with a forward prompt.** The last sentence of an explanation step should explicitly set up the next exercise: *"In the next step you'll write a function that does exactly this."*
 - **No "we'll see why later" hedges.** If the concept isn't justified now, cut it. Forward references are debt.
 - **Markdown depth: `###` is the deepest heading inside a step.** Anything deeper means the step has become a chapter.

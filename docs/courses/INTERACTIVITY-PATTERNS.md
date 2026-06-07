@@ -166,6 +166,127 @@ type Interaction =
 
 ---
 
+## Embeddable visual figures
+
+> A figure is a *visual atom* — a layout convention or small interactive component that embeds **inside** a `read` or `read+inline` step. Figures are not step types. They do not own the screen, they break up prose. The container (the step) supplies the pedagogical purpose; the figure supplies the visual relief.
+
+This catalog exists because a Sprint 026 review of external interactive-learning prototypes surfaced a class of visual elements — before/after panes, look-alike disambiguation strips, 2×2 confusion grids, iteration tracks — that are *valuable individually* but *do not earn their own step type*. They land as figures.
+
+### Why this section exists
+
+A scroll authored from canon today has one tool to break a prose wall: split the `read` step and insert an `exercise`. That works when the next concept can be exercised. It does not work when the next concept is *clarifying a misconception* or *contrasting two near-look-alikes* — those moments want a visual, not a kata. The catalog below names the visuals authors can reach for without inventing a new step type each time.
+
+### Figure catalog
+
+Five figures are canon. Each one passes the Maya test (interaction-teaches-or-distracts) **as a layout**, not as an animation — the pedagogy lives in the *contrast* or *correspondence* the figure makes visible. Three are universal (Tier S — embed wherever they help). Two are concept-bound (Tier A — embed when the concept fits).
+
+#### Tier S — universal (embed wherever the prose needs a break)
+
+| Figure | Markdown directive | Pedagogical job |
+|---|---|---|
+| **`before-after`** | `:figure[before-after]{id:"slug"}` | Two code panes side-by-side: left = the smell / verbose / wrong-feeling version, right = the idiomatic / fixed version. Per-line annotations (`✕` on the culprit, `✓` on the fix). Pedagogy lives in the *contrast*. |
+| **`two-by-two`** | `:figure[two-by-two]{id:"slug"}` | A 2×2 grid that surfaces an orthogonal-axes confusion (e.g. *Monorepo × Microservices*: runtime style and code organisation are independent). One axis label per row, one per column; one statement per cell. The cell that names the confusion is highlighted. |
+| **`disambiguation`** | `:figure[disambiguation]{id:"slug"}` | Two (or three) near-look-alikes presented in identical skeletons. Color-token `--color-state-active` (amber) highlights only the divergent attribute. The reader's eye is forced to the difference. Example: *Strategy vs State*, *String vs Symbol*, *each vs map vs inject*. |
+
+#### Tier A — concept-bound (embed only when the concept fits)
+
+| Figure | Markdown directive | Pedagogical job |
+|---|---|---|
+| **`array-track`** | `:figure[array-track]{id:"slug" data:"yaml"}` | A horizontal track of N cells representing a sequence (array, hash entries, iteration steps). Each cell carries a state token from the semantic-state palette (`neutral / cand / active / out / done`). Used for any "iterate over a collection" concept; especially powerful when comparing the same input under *different* methods (`each` vs `map` vs `select`). |
+| **`tabbed-card`** | `:figure[tabbed-card]{id:"slug"}` | A single concept presented through 2-4 tabs that switch lenses without changing the artifact (e.g. *Estructura* / *Antes→Después* / *En acción*). Tab switch is the interaction; no animation library needed. Best when a concept has *one identity* but *multiple useful views*. |
+
+#### Deliberately not in v1 (raised, rejected)
+
+- **`sequence-play`** (dot animating along a sequence diagram). Approved-on-paper for `algo-trace` (see §[Embeddable figures and `algo-trace`](#embeddable-figures-and-algo-trace) below), out of scope as a standalone figure until that step type ships.
+- **`grid-canvas`** (BFS/DFS/A* maze). Joya pedagogical for algorithms scrolls; meaningless for language scrolls. Defer to the future algorithms deep-dive.
+- **`recursion-stack`** (visible call frames). Same — defer.
+- **`filter-chips`** (recovery-by-context with highlighted matches). Only earns embedding when content is reference-shaped (a catalog) — language scrolls are sequence-shaped. Defer to any future `/atlas` surface.
+
+### Schema (per figure)
+
+Figures embed via a markdown directive (`:figure[name]{attrs}`) in the markdown body of a `read` step or via the `interactions` array of a `read+inline` step. Each figure type has its own data shape:
+
+```ts
+type Figure =
+  | { type: 'before-after'; id: string; language: string;
+      left:  { title: string; code: string; annotations?: Array<{ line: number; mark: '✕' | '✓'; text?: string }> };
+      right: { title: string; code: string; annotations?: Array<{ line: number; mark: '✕' | '✓'; text?: string }> };
+      caption?: string }
+  | { type: 'two-by-two'; id: string;
+      rowAxis: { label: string; values: [string, string] };
+      colAxis: { label: string; values: [string, string] };
+      cells: [[Cell, Cell], [Cell, Cell]];   // [row][col]
+      highlightCell?: [0 | 1, 0 | 1];          // the cell that names the confusion
+      caption?: string }
+  | { type: 'disambiguation'; id: string;
+      entries: Array<{ title: string; structure: string; divergent: { attribute: string; value: string } }>;
+      sharedSkeletonLabel: string;
+      caption?: string }
+  | { type: 'array-track'; id: string;
+      input: Array<string | number>;
+      tracks: Array<{ label: string;
+                      states: Array<'neutral' | 'cand' | 'active' | 'out' | 'done'>;
+                      output?: string }>;
+      caption?: string }
+  | { type: 'tabbed-card'; id: string;
+      tabs: Array<{ label: string; body: string /* markdown */ }>;
+      defaultTab?: number;
+      caption?: string };
+
+type Cell = { eyebrow: string; title: string; body: string };
+```
+
+The `id` is stable across renders — used for analytics, deep-linking, and contributor-side reuse search.
+
+### Authoring rules
+
+- **Each figure earns its caption.** One sentence under the figure naming what the reader should now be able to do. If you cannot write the caption, the figure is decoration — remove it.
+- **Maximum 2 figures per `read` step.** A third figure means the step is overloaded. Split.
+- **Figures do not replace exercises.** A figure breaks a wall; a `kata` proves the learner internalised the concept. A scroll that ships 8 figures and 2 katas has degraded into a brochure.
+- **Tier S figures pass the paragraph test the same way prose does** (per [`README.md`](README.md) §5.1). Ask: *if I delete this figure, does the polyglot lose something language-specific?* If no, the figure does not ship.
+- **`array-track` with identical state sequences across tracks is forbidden.** The whole point is the *contrast* between methods. If `each` and `map` produce identical state arrays, you are not teaching `map`.
+- **`disambiguation` requires the divergent attribute to be a *single* dimension** (intent, mutability, ownership, etc.). Multi-axis differences belong in a `two-by-two`, not a side-by-side.
+
+### Anti-patterns (auto-reject at review)
+
+- **Decorative `before-after`** — left and right are syntactic variants of the same idiom (e.g. `puts x` vs `print x`). No pedagogical contrast. *(Valentina S2)*
+- **`two-by-two` with no highlighted cell** — if the grid doesn't name a confusion, it's a matrix, not a figure. Use a table. *(Maya S11)*
+- **`disambiguation` with three entries that share *no* attribute** — those aren't look-alikes, they're a list. *(Rhea S10 / language specialists)*
+- **`array-track` with > 10 cells** — at that scale the cells become unreadable and the figure becomes a stunt. Split or pick a smaller input. *(Felix S12)*
+- **`tabbed-card` with a tab the reader cannot motivate to open** — every tab must be answer to a question the reader has. A "References" tab is metadata, not a lens. *(Soren C6)*
+
+### Renderer contract
+
+- All figures live under `apps/web/src/scrolls/figures/<FigureName>.tsx`, one file per type. They are pure presentational components — props in, JSX out, no fetching, no global state.
+- State tokens come from the semantic-state palette defined in [`../DESIGN.md`](../DESIGN.md) §Semantic state tokens. No inline hex.
+- Tab switches in `tabbed-card`, hover reveals on `before-after` annotations, and any other intra-figure interaction use **CSS only**. No GSAP, no motion library inside the figure layer. (See §Animation tech.)
+- All figures respect `prefers-reduced-motion` by virtue of being CSS-only.
+- Each figure carries a server-rendered fallback that displays correctly without JavaScript (the `tabbed-card` falls back to a series of `<details>` blocks, `before-after` falls back to two stacked code blocks, etc.). The scroll catalog should be readable in `noscript`.
+
+### Embeddable figures and `algo-trace`
+
+If a future `algo-trace` step type ships — a pure-function frame generator driving a scrubber, motivated by the same Sprint 026 review but deferred indefinitely — several of the visual primitives behind the Tier B figures above (sequence-play, grid-canvas, recursion-stack) become *components of `algo-trace`* rather than standalone embeddable figures. The scoping rule:
+
+- If the visual is **embedded in a `read` step to break a prose wall**, it is a figure (this section).
+- If the visual is **the entire surface of a step** with frame-by-frame playback, it is an `algo-trace` step (not yet shipped).
+
+This split keeps the figure schema small and the step-type schema honest. A future `algo-trace` decision does not require revisiting the figure catalog.
+
+### Cross-references from existing step type contracts
+
+The `read+inline` step's `interactions` array (see §read+inline) accepts a third kind alongside `reveal` and `micro-quiz`:
+
+```ts
+type Interaction =
+  | { kind: 'reveal'; after: string; prompt: string; answer: string }
+  | { kind: 'micro-quiz'; after: string; question: string; options: [string, string]; correct: 0 | 1; feedback: [string, string] }
+  | { kind: 'figure'; after: string; figure: Figure };  // new — references the Figure union above
+```
+
+A `read` step that wants to embed a figure can do so directly in its markdown body via the `:figure[name]{...}` directive — no schema change required, the markdown renderer resolves the directive at render time.
+
+---
+
 ## Animation tech recommendation
 
 **Per Sprint 026 reversal: on `/scrolls/*` routes the motion runtime budget is GSAP + CSS. Rive is parked indefinitely** — reopen only if a real designer enters the picture with a separate iteration loop (Phase 3+). The Sprint 025 "Rive + CSS only on scrolls" policy didn't survive a second look: the Rive value proposition is the designer-iterates-without-engineer loop, which doesn't exist in Phase 0 where the creator is also the designer and the engineer. GSAP is JS-declarative, already loaded for other surfaces, versionable in code, and shipped without a separate editor or binary asset format. Cleaner choice for the one-person-team reality.

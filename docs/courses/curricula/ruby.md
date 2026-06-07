@@ -30,6 +30,18 @@ A note on tone: the Dojo voice is direct and **assumes the reader already progra
 - **IN:** `read`, `exercise`, `challenge`, `predict`, `read+inline`.
 - **OUT (deliberate exclusion):** `trace`. Ruby's runtime has no equivalent of "step through the DOM event flow" (JS DOM trace) or "watch the query plan walk" (SQL trace) that would justify the per-step authoring cost. The mental model is already in the code, not the runtime — tracing would be decoration, not pedagogy. Defer until v2 only if signal forces it (per [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) §Anti-patterns "One-off step types").
 
+**Figures menu** *(added 2026-06-07).* Embeddable visual figures (see [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) §Embeddable visual figures) authors of this scroll reach for, with each one's Ruby-specific landing zone:
+
+- **IN, recommended:**
+  - **`before-after`** — for any idiom whose pedagogical point is the contrast with a verbose equivalent in the polyglot's prior language. *First landing: Lesson 1 (the JS-callback `forEach` chain vs Ruby's `each do |x| ... end`).* Reach for it anywhere the polyglot reflex produces noisy code that Ruby's idiom collapses.
+  - **`disambiguation`** — for near-look-alikes the polyglot will conflate. Ruby has many: *String vs Symbol* (Lesson 2), *each vs map vs inject* (Lesson 1 or 2), *block vs Proc vs lambda* (named-and-deferred in Lesson 1, mentioned in Lesson 5's closing). The deep-dive scroll on blocks (§3.1) is the natural home for the full Proc/lambda disambiguation; the crash scroll only embeds the String/Symbol one.
+  - **`two-by-two`** — for an orthogonal-axes confusion. The strongest Ruby fit is **Lesson 3 (Object model)**: "*Operators as syntax × Operators as messages*" crossed with "*JS/Python × Ruby*" makes "operators are method calls" visible in a single grid, replacing two paragraphs of prose.
+- **IN, situational (use when a lesson genuinely benefits):**
+  - **`array-track`** — for Enumerable comparisons. Strongest fit: **Lesson 2**, a single figure with input `[1, 2, 3, 4, 5]` and three tracks (`each` / `map { n * 2 }` / `select { n.even? }`) showing how state transitions differ. Teaches three methods in one figure.
+  - **`tabbed-card`** — only if a single idiom genuinely needs multiple lenses. Default: do not embed. The crash scroll's prose budget is too tight to justify three-tab artifacts on most concepts.
+- **OUT (deliberate exclusion):**
+  - **`sequence-play`**, **`grid-canvas`**, **`recursion-stack`** — none of Ruby's polyglot-first content earns these. They belong in algorithms or DOM scrolls, not in the Ruby crash. If the future `ruby-blocks-procs-lambdas` deep-dive ships, `sequence-play` becomes a candidate for visualising `yield` — *not before*.
+
 **Pedagogical bets.**
 
 1. **Prediction-before-explanation on Ruby surprises.** Use `predict` steps for the "guess what this returns" moments that define Ruby's surprise surface — `nil.class`, `[1,2,3].max`, `:foo == "foo"`, `Proc.new { return 1 }` evaluated outside its enclosing method, `5.class.ancestors`, `"hello".frozen?`. Each `predict` step's wrong-answer feedback addresses the **specific** wrong mental model the option encodes (per [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) §predict voice contract). *First lesson to use this:* Lesson 1 of the Ruby scroll. *Failure mode without it:* learners memorise idioms as trivia instead of building a model of the object system.

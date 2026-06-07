@@ -380,3 +380,45 @@ end
 - [x] `tally_words` exercises the modern Ruby `Array#tally` while showing the older `each_with_object` and `group_by` forms in `alternativeApproach`.
 - [x] Hints discipline §2.4: 2.2's hint points at the *block form* of fetch without writing it; 2.3 names the shape without writing the chain; 2.4 names the English word ("tally") without writing the method.
 - [x] Content in English; meta-notes in Spanish.
+
+---
+
+## Pending figure proposals (2026-06-07)
+
+Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime; until then, the prose above stands alone.
+
+### Proposal 2.A — `disambiguation` figure inside Step 2.1 "Literals that surprise"
+
+- **Slot:** inside the surprise paragraph about symbols (`:foo == "foo"` is `false`), replacing the inline contrast.
+- **Entries (both presented in identical skeletons):**
+
+  | Attribute | `String` | `Symbol` |
+  |---|---|---|
+  | Syntax | `"hello"` | `:hello` |
+  | Mutable | `true` | `false` |
+  | Identity | new object per literal | one object per symbol, forever |
+  | Typical use | data the program manipulates | identifier the program references |
+  | Hash key implication | allocated each lookup | reused, faster lookup |
+
+- **Highlighted divergent attribute:** *Identity* (`new object per literal` vs `one object per symbol, forever`). This is the single dimension the figure makes visible — all other differences cascade from it.
+- **Caption:** *"Same look at a glance, opposite roles. Symbol identity is why `:foo` is a hash key and `"foo"` is data."*
+- **Why this earns embedding:** the polyglot's first reflex is "Ruby has two string types, weird." The figure replaces that wrong reflex with the right model — they are not two string types, they are *data* and *identifier*. Three sentences of prose can land the same point; the figure lets the eye do the work in one beat.
+
+### Proposal 2.B — `array-track` figure inside Step 2.1 (alternative to Proposal 2.A; pick one — see decision below)
+
+- **Slot:** as a teaser for Enumerable, embedded after the `Hash#fetch` paragraph (before the lookup kata).
+- **Input:** `[1, 2, 3, 4, 5]`.
+- **Three parallel tracks:**
+
+  | Track | Method | States after evaluation | Output |
+  |---|---|---|---|
+  | 1 | `arr.each { \|n\| n * 2 }` | all `neutral` (each visits but returns the input) | `[1, 2, 3, 4, 5]` |
+  | 2 | `arr.map { \|n\| n * 2 }` | all `done` with values `2, 4, 6, 8, 10` | `[2, 4, 6, 8, 10]` |
+  | 3 | `arr.select { \|n\| n.even? }` | `2` and `4` as `done`, `1`, `3`, `5` as `out` (dashed) | `[2, 4]` |
+
+- **Caption:** *"Same input, three blocks, three return shapes. `each` is for side effects; `map` transforms 1→1; `select` filters."*
+- **Why this earns embedding:** teaches three methods in one figure, leans on the polyglot's "I already know what a loop does" reflex without re-explaining it. Maximum lesson-density for minimum prose.
+
+### Decision pending (Rhea + Valentina)
+
+The lesson's prose budget (~380 words for read 2.1) likely accommodates **one** figure, not both. Recommendation when both runners exist: **Proposal 2.A (`disambiguation`) for v1**, because it attacks the *most-common polyglot misconception* (String vs Symbol). Proposal 2.B (`array-track`) lands stronger in the future `ruby-enumerable-mastery` deep-dive scroll where Enumerable has a whole scroll's worth of prose backing it. Crash-scroll context makes 2.A the higher-leverage call.

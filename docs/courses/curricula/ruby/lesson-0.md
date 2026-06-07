@@ -209,3 +209,28 @@ correct: b
 - [x] Lesson 0 has no kata — the lesson orients, doesn't drill. Voice intact.
 
 Pending until panel + audience review: tone calibration as a suite (all 6 lessons together), possible cuts if any paragraph is found wanting.
+
+---
+
+## Pending figure proposals (2026-06-07)
+
+Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime landing in `apps/web/src/scrolls/figures/`. Until then, the prose above stands alone.
+
+### Proposal 0.A — `before-after` figure inside Step 0.2 "How Ruby actually runs"
+
+- **Slot:** after the "Bundler" paragraph, before "Version managers".
+- **Left pane (the polyglot reflex, JS):**
+  ```sh
+  npm install                  # reads package.json
+  node bin/app.js              # runs anything, anywhere
+  ```
+  Annotations: `✓` on `npm install` (the right reflex), `✕` on `node bin/app.js` (silently uses *global* node + *global* installed packages — not what most projects expect).
+- **Right pane (Ruby idiom):**
+  ```sh
+  bundle install               # reads Gemfile, writes Gemfile.lock
+  bundle exec ruby bin/app.rb  # runs with the project's pinned gems
+  ```
+  Annotations: `✓` on both lines.
+- **Caption:** *"Same shape (install, then run), different shell discipline. The `bundle exec` prefix is the per-command isolation that replaces `venv activate`."*
+- **Why this earns embedding:** every paragraph in Step 0.2 already does pedagogical work; the figure replaces nothing — it *condenses* the venv comparison into a single glance. The polyglot's eyes go to the right pane and immediately see the difference is one extra prefix, not a new mental model.
+- **Authoring cost estimate:** ~15 minutes once the `before-after` renderer exists.

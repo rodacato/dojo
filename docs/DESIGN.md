@@ -134,6 +134,31 @@ Used for the belt rank avatar ring and the share-card belt variant. Same across 
 
 See `BRANDING.md` §Belts & Milestones for the rubric and visibility rules. The colors above are the visual realization.
 
+### Semantic state tokens (figures inside scrolls)
+
+A separate palette for the **inside** of embeddable figures inside scroll content (see [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md) §Embeddable visual figures). These are *not* verdict colors (`PASSED` / `FAILED`) and *not* surface or accent colors. They label a cell, a track segment, or an annotated line according to its role in an instructional figure.
+
+The contract is **color + shape + label** — accessibility for daltonism by construction. A figure renderer that uses color alone fails review.
+
+| Token | Slate Indigo (shipped) | Sumi-e (both variants) | Shape / label | Used for |
+|---|---|---|---|---|
+| `--color-state-neutral` | `#94A3B8` | `#B9B2A6` (papel) / `#7D7568` (sumi) | no mark | Inactive / not yet visited |
+| `--color-state-cand` | `#3E7CB1` | `#5C7FA8` | `◆ comparando` | Candidate, being compared |
+| `--color-state-active` | `#F59E0B` | `#E0A93B` | `▸ actual` | Currently examined / focus of the step |
+| `--color-state-out` | `#EF4444` | `#B05B4D` | `✕ descartado`, dashed border | Discarded, ruled out, the *culprit* in `before-after` |
+| `--color-state-done` | `#10B981` | `#4C9A6A` | `✓ resuelto`, solid border | Confirmed, correct, the *fix* in `before-after` |
+| `--color-state-path` | `#0D9488` | `#2E8B8B` | solid double border | Visited / part of the chosen path (graph-shaped figures only) |
+| `--color-state-goal` | `#7C3AED` | `#7B5EA7` | `◎ objetivo` | The target the figure aims at |
+
+These tokens render identically across the slate-indigo theme (today) and both sumi-e variants (target). They live in the same `@theme` block as the rest of the color tokens.
+
+**Usage rules:**
+
+- A figure may use **at most four** of these tokens simultaneously. More than four states in one visual is cognitive overload; refactor the figure or split into two.
+- `--color-state-active` is for *what the reader is examining right now*. There is only one active cell per figure-frame. Two simultaneous active cells means the figure is conflating two concepts.
+- `--color-state-out` doubles as the "wrong / culprit" mark on `before-after` annotations and as "discarded element" on `array-track`. Both meanings are *"this is the side the lesson rejects"* — same semantic, two surfaces.
+- Never use these tokens for live product state (e.g. a real-time `cand` indicator on the kata-active screen). They are figure-internal vocabulary; surface state has its own tokens above.
+
 ### Verdict mapping
 
 Verdict colors reuse the accent palette so visual code stays compact.
@@ -520,7 +545,9 @@ The migration sprint validates whether the current renderer is Satori-compatible
 
 ## Motion library scope: GSAP for the site, Rive for scrolls
 
-Two animation libraries, scoped by domain:
+> **2026-06-07 status note:** Sprint 026's reversal in [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md) §Animation tech parked Rive indefinitely on `/scrolls/*` (GSAP + CSS only). This section's two-library framing is preserved as **history** while the migration sprint is still ahead; the canonical motion contract for scrolls today is the one in INTERACTIVITY-PATTERNS.md. When the Sumi-e migration ships, fold this section into a single "GSAP for site motion" subsection and drop Rive from the matrix.
+
+Two animation libraries, scoped by domain (historical framing, see status note above):
 
 - **GSAP (with DrawSVG + ScrollTrigger)** — site motion identity. Owns the landing marketing motion today (hero timeline, scroll reveals, terminal demo carousel). Post-Sumi-e: enso loader, brushstroke reveals on H1, hanko stamp on verdicts, page transitions, the ink-wash between scroll steps. Routes: landing today + (kata flow, scroll player, results, share) post-migration. Bundle: ~60KB lazy-loaded per route, never on dashboard/admin.
 - **Rive** — interactive step types inside scrolls. Owns predict state machines (`unanswered → reviewing → revealed`), trace step transitions when path-along-DOM is required. Routes: `/scrolls/*` only. Bundle: ~30KB runtime + small .riv files per step.

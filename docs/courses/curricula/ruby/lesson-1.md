@@ -432,3 +432,32 @@ _t('explored') { _eq true, true }
 - [x] Block-as-syntax / `&block`-as-object contradiction resolved by ordering — syntax first, capture-as-object explicit when `&block` is introduced.
 - [x] Playground 1.5 has a concrete instruction with three explorable questions, not "play around".
 - [x] Content in English; meta-notes in Spanish.
+
+---
+
+## Pending figure proposals (2026-06-07)
+
+Embeddable visual figures (see [INTERACTIVITY-PATTERNS.md §Embeddable visual figures](../../INTERACTIVITY-PATTERNS.md#embeddable-visual-figures)) proposed for this lesson but **not yet authored**. Implementation depends on the figures runtime; until then, the prose above stands alone.
+
+### Proposal 1.A — `before-after` figure inside Step 1.1 "Blocks: the syntax you see everywhere"
+
+- **Slot:** after the "What blocks look like in the wild" code block, before "What a block is, technically".
+- **Left pane (the polyglot reflex, JS):**
+  ```js
+  [1, 2, 3].forEach(function (x) {
+    console.log(x);
+  });
+  ```
+  Annotations: `✕` on the `function` keyword, `✕` on the trailing `;`, `✕` on `console.log` (verbose chain for a one-liner).
+- **Right pane (Ruby idiom):**
+  ```ruby
+  [1, 2, 3].each { |x| puts x }
+  ```
+  Annotations: `✓` on `|x|` (the block parameter is part of the call shape), `✓` on `puts x` (one expression, no ceremony).
+- **Caption:** *"Same call (`each` and `forEach` both iterate). Blocks make the per-item code feel like an argument to the method, not a stranded function expression."*
+- **Why this earns embedding:** the polyglot reads "the language's central abstraction for 'pass behaviour into a method'" and needs to *see* the contrast against the verbose-callback version they wrote yesterday. One figure replaces ~80 words that would otherwise summarise the same point.
+
+### Proposal 1.B — `disambiguation` figure (named-and-deferred, *not* in v1)
+
+- **Concept:** `block { } vs do/end vs &:method` — same intent (pass behaviour to a method), three shapes, three idiomatic homes.
+- **Decision:** **defer to the future `ruby-blocks-procs-lambdas` deep-dive scroll.** Rhea's call: the crash scroll already names the convention (do/end multi-line, {} single-line, &:method as sugar) in prose; the disambiguation table would over-explain at crash-scroll depth. Re-evaluate when the deep-dive ships.
