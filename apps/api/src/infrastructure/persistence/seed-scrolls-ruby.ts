@@ -5,26 +5,29 @@
 // pre-pivot — the old slug is removed from DB by the cleanup script that runs
 // alongside this seed).
 //
-// Lesson 1: First contact with the object model. Seeded scope — 4 steps:
-// 1.1 `read` "Everything is an object"
-// 1.2 `predict` "What does nil.class return?" (CSS state machine renderer)
-// 1.3 `kata`    `type_of(value)`
-// 1.4 `kata`    `describe(obj)`
+// Polyglot-first lesson order (S026):
+//   order 1 — Lesson 0 (Contexto)         — 3 steps (read, read, predict)
+//   order 2 — Lesson 1 (Blocks)           — 5 steps (read, predict, 2 katas, playground)
+//   order 3 — Lesson 2 (Literales)        — 4 steps (read, 3 katas)
+//   order 4 — Lesson 3 (Object model)     — 5 steps (read, predict, 2 katas, playground)
+//   order 5 — Lesson 4 (Control flow)     — 4 steps (read, predict, kata, challenge)
+//   order 6 — Lesson 5 (Methods)          — 4 steps (read, 2 katas, challenge)
+// Total: 25 steps. ~110 min target. Audience: polyglot dev (see AUDIENCE.md).
 //
-// The predict step shipped in Sprint 025 alongside the ADR 022 pivot:
-// schema migration 0022_typical_slipstream.sql added the `data` jsonb column,
-// and ScrollPlayerPage now dispatches `predict` to the PredictStep CSS state
-// machine. Rive will swap in here when an authored .riv state machine lands
-// (deferred to Capa D of the ADR 022 work).
+// Const naming: the legacy seed used `LESSON_1_ID` / `STEP_1_*_ID` for what
+// was the only lesson at the time (Object model). That lesson became Lesson 3
+// in the polyglot-first reorder. The const names stay (`LESSON_1_*` /
+// `STEP_1_*`) for UUID stability — the seedUuid args still reference 'l1' /
+// 's1' even though the lesson now lives at order 4. New lessons (Blocks, 0, 2,
+// 4, 5) use semantic naming: `LESSON_BLOCKS_*`, `LESSON_0_*`, etc.
 //
-// Lessons 2-5 are stubbed in the spec, not in this seed yet. They land per the
-// implementation order in docs/courses/curricula/ruby.md §8.
+// Predict step (CSS state machine renderer) and playground variant (kata with
+// data.kind === 'playground') are both wired in ScrollPlayerPage. The
+// playground scope decision lives in docs/courses/curricula/ruby/ruby.md §2.3.
 //
 // Status: draft. isPublic: false. Ruby execution requires auth — the
 // /scrolls/execute endpoint (apps/api/src/infrastructure/http/routes/scrolls.ts)
 // only allows anonymous calls for sql/typescript/python/javascript-dom.
-// The POC eval pass briefly flipped both to anonymous for ease of review;
-// restored to authed-only at Sprint 025 close per Marta's security stance.
 //
 // Test harness: manual (mirrors the Python pattern — _t + _eq helpers, JSON
 // emitted on a __DOJO_RESULT__ line that ExecuteStep parses). Minitest is
@@ -115,21 +118,36 @@ export const RUBY_COURSE_DATA = {
 }
 
 
+// =============================================================================
+// Lesson 3 (polyglot-first reorder) — Object model: why blocks and literals
+//                                     work the way they do
+// =============================================================================
+//
+// Migrates the legacy Lesson 1 (Object model) to its polyglot-first position
+// as conceptual Lesson 3. Read 3.1 tightened (~620w → ~350w); predict 3.2
+// feedback tightened; katas 3.3 and 3.4 replaced (type_of → safe_call,
+// describe → compare_views) per the Option-B decision in ruby.md; new
+// playground 3.5 added. lessonId and the first two step UUIDs are stable;
+// the kata UUIDs are re-used semantically since content fully changed.
+//
+// The LESSON_1 entry in RUBY_LESSONS gets its title updated by the
+// orchestrator alongside this content replacement.
+
+const STEP_1_5_ID = seedUuid('ruby-s3-5-playground')
+
 const STEP_1_1 = {
   id: STEP_1_1_ID,
   lessonId: LESSON_1_ID,
   order: 1,
   type: 'read' as const,
-  title: 'Everything is an object',
+  title: 'Everything is an object — and what that buys you',
   instruction: `## Why this matters
 
-Ruby's surprises start here. \`5.times { puts "hi" }\`, \`nil.to_s\`, \`1 + 2\` — all three are method calls on objects, not language keywords. Once you see this, half the language stops being weird.
+You've spent two lessons writing Ruby that takes blocks, transforms hashes, and uses symbols as identifiers. Each of those works because of a single underlying property: **everything in Ruby is an object, and what looks like syntax is usually a method call.** This lesson makes the property explicit. Once you see it, the parts of Ruby that felt weird stop feeling weird.
 
-## Everything has a class
+## Every value has a class
 
-In Ruby, every value is an object — including the values that other languages treat as primitives. Integers are objects. Strings are objects. \`nil\` is an object. \`true\` and \`false\` are objects. There is no "primitive type" exception.
-
-You can ask any value what class it belongs to with \`.class\`:
+Integers, strings, \`nil\`, \`true\`, \`false\` — every value in Ruby is an object with a class. No primitive-type exception.
 
 \`\`\`ruby
 5.class       # => Integer
@@ -138,35 +156,45 @@ nil.class     # => NilClass
 true.class    # => TrueClass
 \`\`\`
 
-And because they're objects, they respond to messages:
-
-\`\`\`ruby
-nil.to_s            # => ""
-nil.inspect         # => "nil"
-5.respond_to?(:+)   # => true
-\`\`\`
+This is **why** \`[1, 2, 3].map(&:to_s)\` works on each integer — the integer is an object, \`to_s\` is a method on \`Integer\`, the symbol \`:to_s\` knows how to be a block (Lesson 1's preview), so the whole expression composes cleanly. None of it is special syntax for collections.
 
 ## Operators are methods in disguise
 
-Ruby parses \`1 + 2\` and rewrites it as \`1.+(2)\` — a method call on the integer \`1\` with \`2\` as the argument. The \`+\` is just syntactic sugar. You can confirm this directly:
-
 \`\`\`ruby
-1.+(2)          # => 3
-1.send(:+, 2)   # => 3
+1 + 2          # => 3
+1.+(2)         # => 3     (same thing — \`+\` is a method named \`+\`)
+1.send(:+, 2)  # => 3     (sending the message \`:+\` with argument 2)
 \`\`\`
 
-This is the property that makes Ruby small. There are very few "special" things in the language — most of what looks like syntax is actually a method somewhere you can find and read. \`5.times { ... }\` is a method on \`Integer\`. \`[1, 2, 3].each\` is a method on \`Array\`. \`"hi".upcase\` is a method on \`String\`. The language isn't telling you what to do; you are sending messages to objects.
+Ruby's parser rewrites \`1 + 2\` as the method call \`1.+(2)\`. The \`+\` is not an operator — it's a method on \`Integer\`, written with a name that happens to be a single character. Same for \`-\`, \`*\`, \`==\`, \`<<\`, \`[]\`, even comparison: \`5 < 10\` is \`5.<(10)\`.
+
+This is the property that makes Ruby small. There's very little "language" — most of what looks like syntax is a method you can find in the docs, override in your own class, or invoke via \`send\`. The blocks of Lesson 1 are the same pattern: \`5.times { ... }\` is a method on \`Integer\` that happens to take a block.
 
 ## Introspection is first-class
 
-One immediate consequence: every object can tell you about itself. Every object knows its class (\`.class\`), every class knows its ancestors (\`.ancestors\`), every object can be asked which messages it responds to (\`.respond_to?\`). When you're stuck — and at the start, you will be — interrogate the value in front of you to learn what it can do. This is faster than guessing.
+Every object knows things about itself. The two most useful at this stage:
+
+- **\`obj.class\`** — which class the object belongs to.
+- **\`obj.respond_to?(:method_name)\`** — whether the object handles the named message. Use this to ask before you tell, instead of catching \`NoMethodError\`.
 
 \`\`\`ruby
-nil.class.ancestors
-# => [NilClass, Object, Kernel, BasicObject]
+nil.respond_to?(:to_s)   # => true   (nil has a to_s — it's the empty string)
+nil.respond_to?(:upcase) # => false  (nil doesn't speak uppercase)
+"hi".respond_to?(:+)     # => true   (String has a + method for concatenation)
+42.respond_to?(:+)       # => true   (Integer has a + method for addition)
 \`\`\`
 
-In the next two steps you'll write code that leans on this — getting back the class name of a value, and combining the class with the value's \`inspect\` form to describe any object.`,
+\`respond_to?\` is the Ruby idiom for "ask before you tell". It's used in libraries to gracefully handle duck-typed inputs ("if the object knows how to \`each\`, treat it like a collection"). The next kata builds the muscle.
+
+## What this means for \`nil\`
+
+The \`predict\` next will test the \`nil.class\` reflex. The thing to internalise before that: **\`nil\` is the single instance of \`NilClass\`**, fully an object, with methods (\`nil.to_s\`, \`nil.inspect\`, \`nil.nil?\`). It's not absence — it's a specific object with a small but real interface. Treating it like JavaScript's \`null\` or Java's \`null\` (a thing that errors on any method call) misleads.
+
+Because \`nil\` is an object with methods, **\`nil.to_s\` returns the empty string \`""\`** and \`nil.inspect\` returns the literal text \`"nil"\`. The next two katas exercise both: the first one specifically tests that calling \`:to_s\` on \`nil\` succeeds and returns \`""\` — and that succeeds *because* \`nil\` is an object, not despite it.
+
+## What this means for \`Symbol#to_proc\`
+
+\`Symbol#to_proc\` — the mechanism behind \`&:method\` from Lesson 1 — is \`Symbol\` itself being an object with a method named \`to_proc\`. The \`&\` sigil calls \`to_proc\` on whatever follows it, then passes the resulting Proc as the block. Everything composes because everything is an object — including symbols, methods, and Procs themselves.`,
   starterCode: null,
   testCode: null,
   hint: null,
@@ -179,8 +207,8 @@ const STEP_1_2 = {
   lessonId: LESSON_1_ID,
   order: 2,
   type: 'predict' as const,
-  title: 'What does nil.class return?',
-  instruction: `Before you write any code, predict one thing. The answer is more interesting than it looks — and once you see it, half of Ruby's "weird" surface stops being weird.`,
+  title: 'Predict: what does nil.class return?',
+  instruction: `Before the next kata, predict one thing.`,
   starterCode: null,
   testCode: null,
   hint: null,
@@ -196,10 +224,10 @@ const STEP_1_2 = {
     ],
     correct: 'b',
     feedback: {
-      a: "You treated `nil` as a sentinel with no methods — common reflex from languages where `null` isn't an object. In Ruby, `nil` is the single instance of `NilClass`, and like every object it knows which class it belongs to. `nil.class` returns the class itself (`NilClass`), not the value (`nil`).",
-      b: "Correct. `nil` is the single instance of `NilClass`. Because it's an object, it responds to the same introspection messages every other object responds to — `class`, `inspect`, `respond_to?`, `is_a?`. You'll lean on this in the next two exercises.",
-      c: "You expected `nil` to be a non-receiver — common reflex from JavaScript or Java, where `null.method()` raises. In Ruby, `nil` is an actual object, so `nil.class` is a perfectly valid message send. The class it returns is `NilClass`.",
-      d: "Close to the right intuition — `nil`'s ancestor chain does include `Object` — but `.class` returns the most specific class, not an ancestor. `Object` is two steps up the chain (`NilClass → Object → Kernel → BasicObject`). Try `nil.class.ancestors` to see the chain.",
+      a: "You treated `nil` as a value with no methods. In Ruby, `nil` is the single instance of `NilClass`, and like every object it knows which class it belongs to. `nil.class` returns the class (`NilClass`), not the value (`nil`).",
+      b: "Correct. `nil` is the only instance of `NilClass`. Because it's an object, it answers the same introspection messages every object answers — `class`, `inspect`, `respond_to?`, `is_a?`. The next kata builds on this.",
+      c: "The JavaScript / Java reflex: `null.method()` raises. In Ruby, `nil` is an object — `nil.class` is a perfectly valid method call. The returned class is `NilClass`.",
+      d: "Close to the right intuition — `nil`'s ancestor chain does include `Object` — but `.class` returns the most specific class, not an ancestor. `Object` is two steps up: `NilClass → Object → Kernel → BasicObject`. Try `nil.class.ancestors` in the playground later to see the chain.",
     },
   },
 }
@@ -209,44 +237,63 @@ const STEP_1_3 = {
   lessonId: LESSON_1_ID,
   order: 3,
   type: 'kata' as const,
-  title: "Return the name of an object's class",
-  instruction: `## Why this matters
+  title: 'safe_call(obj, method_name) — ask before you tell',
+  instruction: `## Your task
 
-The simplest possible use of "everything is an object": ask any value what class it belongs to. Useful for debugging, type-aware logging, and the first introspection muscle to build.
+Implement \`safe_call(obj, method_name)\` that returns the result of calling \`method_name\` on \`obj\` if \`obj\` responds to it, or \`nil\` if it doesn't.
 
-## Your task
+This is the Ruby idiom for "ask before you tell" — check that an object handles a message before sending it, instead of catching \`NoMethodError\` after the fact.
 
-Write a method \`type_of(value)\` that returns the **name** of \`value\`'s class as a string.
-
-Examples:
+## Examples
 
 \`\`\`ruby
-type_of(5)         # => "Integer"
-type_of("hello")   # => "String"
-type_of(nil)       # => "NilClass"
-type_of([1, 2])    # => "Array"
-type_of({ a: 1 })  # => "Hash"
-type_of(true)      # => "TrueClass"
+safe_call("hello", :upcase)  # => "HELLO"
+safe_call(nil, :upcase)      # => nil       (NilClass doesn't have upcase)
+safe_call(42, :to_s)         # => "42"      (Integer has to_s)
+safe_call(42, :nope)         # => nil       (Integer has no method :nope)
+safe_call(nil, :to_s)        # => ""        (NilClass#to_s exists, returns "")
 \`\`\`
 
-You should not handle any exceptions — there is nothing to handle. Every value in Ruby has a class.`,
-  starterCode: `def type_of(value)
-  # Your code here
+You'll use exactly two methods from \`Object\`: \`respond_to?\` and \`send\`. Both work on any object, including \`nil\`.`,
+  starterCode: `def safe_call(obj, method_name)
+  # Your code here.
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
-_t('returns Integer for a number') { _eq type_of(5), 'Integer' }
-_t('returns String for a string') { _eq type_of('hello'), 'String' }
-_t('returns NilClass for nil') { _eq type_of(nil), 'NilClass' }
-_t('returns Array for an array') { _eq type_of([1, 2, 3]), 'Array' }
-_t('returns Hash for a hash') { _eq type_of({ a: 1 }), 'Hash' }
-_t('returns TrueClass for true') { _eq type_of(true), 'TrueClass' }
+_t('calls the method when present (String#upcase)') do
+  _eq safe_call("hello", :upcase), "HELLO"
+end
+
+_t('returns nil when nil does not respond to the method') do
+  _eq safe_call(nil, :upcase), nil
+end
+
+_t('calls the method when present (Integer#to_s)') do
+  _eq safe_call(42, :to_s), "42"
+end
+
+_t('returns nil when Integer does not respond to the method') do
+  _eq safe_call(42, :nope), nil
+end
+
+_t('calls the method on nil when nil DOES respond to it') do
+  _eq safe_call(nil, :to_s), ""
+end
 ${RB_HARNESS_FOOTER}`,
-  hint: 'Every object responds to `.class`. Every class object responds to `.name`. Compose them: `.class` first to get the class object, then `.name` on that to get the string.',
-  solution: `def type_of(value)
-  value.class.name
+  hint: 'Two `Object` methods get you there. One asks "does this object handle this message?" — its name is a yes/no question. The other actually sends the message — its name is what you call the action ("sending a message to an object").',
+  solution: `def safe_call(obj, method_name)
+  obj.respond_to?(method_name) ? obj.send(method_name) : nil
 end`,
-  alternativeApproach: `If you only need the string for logging or display, \`value.class.to_s\` produces the same result as \`.name\` for ordinary classes — \`Integer.to_s\` is \`"Integer"\`. The difference shows up for anonymous classes (\`Class.new.name\` is \`nil\`; \`Class.new.to_s\` is something like \`"#<Class:0x000...>"\`). \`.name\` is the right call when you want the canonical name and are willing to get \`nil\` for unnamed classes; \`.to_s\` is the right call when you want a string no matter what.`,
+  alternativeApproach: `Ruby 2.3+ has the safe navigation operator \`&.\` — but it solves a *different* problem. \`obj&.method\` is shorthand for \`obj.nil? ? nil : obj.method\` — it guards against \`obj\` being \`nil\`, but it does **not** check whether \`obj\` has the method:
+
+\`\`\`ruby
+nil&.upcase   # => nil       (safe — nil short-circuits)
+42&.nope      # NoMethodError (42 isn't nil — \`&.\` doesn't help here)
+\`\`\`
+
+\`safe_call\` is broader: it works whether or not \`obj\` is \`nil\`, and it never raises. The \`&.\` operator is the right answer when the only failure mode you fear is \`nil\`; \`respond_to?\` + \`send\` is the right answer when you genuinely don't know whether the object speaks the message.
+
+A third path is \`obj.public_send(method_name)\` wrapped in a \`rescue NoMethodError\` — fewer characters, but exception-driven control flow is slower and more surprising to readers. \`respond_to?\` + \`send\` reads cleanest.`,
 }
 
 const STEP_1_4 = {
@@ -254,42 +301,123 @@ const STEP_1_4 = {
   lessonId: LESSON_1_ID,
   order: 4,
   type: 'kata' as const,
-  title: 'Implement describe(obj)',
-  instruction: `## Why this matters
+  title: 'compare_views(obj) — to_s vs inspect',
+  instruction: `## Your task
 
-Combining the class with the value into a single debug-readable string is the shape of a thousand log lines you'll write. Doing it idiomatically the first time means \`inspect\` (debug-readable) instead of \`to_s\` (display).
+Implement \`compare_views(obj)\` that returns a two-element Array: \`[obj.to_s, obj.inspect]\`.
 
-## Your task
+Most objects' \`to_s\` and \`inspect\` look similar — for \`42\`, both return \`"42"\`; for \`[1, 2, 3]\`, both return \`"[1, 2, 3]"\`. But they're philosophically distinct:
 
-Write a method \`describe(obj)\` that returns a string of the form \`"<ClassName>: <inspect-of-obj>"\`. Use \`obj.class.name\` for the class portion and \`obj.inspect\` for the value portion — \`inspect\`, not \`to_s\`. \`inspect\` returns a debug-readable form: strings get quotes, arrays get brackets, \`nil\` becomes the literal text \`"nil"\`.
+- **\`to_s\`** produces a *display* form — what you'd want to show a user or splice into another string.
+- **\`inspect\`** produces a *debug* form — what you'd want in a log line or a REPL session, with enough detail to reconstruct what the object is.
+
+The places they diverge tell you the most about Ruby's object model.
 
 ## Examples
 
 \`\`\`ruby
-describe("hi")        # => 'String: "hi"'
-describe(42)          # => "Integer: 42"
-describe([1, 2, 3])   # => "Array: [1, 2, 3]"
-describe({ a: 1 })    # => "Hash: {:a=>1}"
-describe(nil)         # => "NilClass: nil"
+compare_views(42)        # => ["42", "42"]
+compare_views([1, 2, 3]) # => ["[1, 2, 3]", "[1, 2, 3]"]
+
+compare_views("hi")      # => ["hi", "\\"hi\\""]
+# String#to_s gives the string itself (no quotes).
+# String#inspect adds quotes so you can tell a string apart from a number in logs.
+
+compare_views(nil)       # => ["", "nil"]
+# NilClass#to_s is the empty string — that's why "#{nil}" interpolates to "".
+# NilClass#inspect is the literal text "nil" — that's what you want in a log line.
 \`\`\`
 
-Notice the first example carefully: the expected string contains literal quotes around \`hi\` because \`"hi".inspect\` is the four-character string \`"hi"\` (with embedded quotes), not the two-character \`hi\`.`,
-  starterCode: `def describe(obj)
-  # Your code here
+Pay attention to the third and fourth examples — those are the ones that catch you out in production logs.`,
+  starterCode: `def compare_views(obj)
+  # Your code here.
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
-_t('describes a string') { _eq describe('hi'), 'String: "hi"' }
-_t('describes an integer') { _eq describe(42), 'Integer: 42' }
-_t('describes an array') { _eq describe([1, 2, 3]), 'Array: [1, 2, 3]' }
-_t('describes a hash') { _eq describe({ a: 1 }), 'Hash: {:a=>1}' }
-_t('describes nil') { _eq describe(nil), 'NilClass: nil' }
+_t('integer: to_s and inspect match') do
+  _eq compare_views(42), ["42", "42"]
+end
+
+_t('array: to_s and inspect match') do
+  _eq compare_views([1, 2, 3]), ["[1, 2, 3]", "[1, 2, 3]"]
+end
+
+_t('string: inspect adds quotes, to_s does not') do
+  _eq compare_views("hi"), ["hi", "\\"hi\\""]
+end
+
+_t('nil: to_s is empty string, inspect is "nil"') do
+  _eq compare_views(nil), ["", "nil"]
+end
+
+_t('hash: to_s and inspect match') do
+  _eq compare_views({ a: 1 }), ["{:a=>1}", "{:a=>1}"]
+end
 ${RB_HARNESS_FOOTER}`,
-  hint: 'String interpolation with `#{...}` is the cleanest way to join the two pieces. The embedded quotes in `\'String: "hi"\'` come from `inspect`, not from your code — you don\'t need to add them yourself.',
-  solution: `def describe(obj)
-  "#{obj.class.name}: #{obj.inspect}"
+  hint: 'Every object responds to both `to_s` and `inspect`. The kata is literally calling each one and returning the pair. The interesting part isn\'t writing the method — it\'s reading the test expectations and noticing where the two strings differ.',
+  solution: `def compare_views(obj)
+  [obj.to_s, obj.inspect]
 end`,
-  alternativeApproach: `If you find yourself reaching for string concatenation (\`obj.class.name + ": " + obj.inspect\`), interpolation is almost always cleaner in Ruby — fewer quotes, fewer plus signs, and it works uniformly when the value is anything but a string. For format-heavy strings you'll also see \`format("%s: %s", obj.class.name, obj.inspect)\` (or its alias \`sprintf\`), which is what you'd reach for if the format string came from outside the code — e.g. user-supplied or i18n-loaded. For two interpolations into a string literal, interpolation wins.`,
+  alternativeApproach: `The kata is intentionally a one-liner — the pedagogy is in the test expectations, not the code. The thing to take away: when you write log lines, reach for \`inspect\` so \`nil\` shows up as \`"nil"\` and strings show up with their quotes. When you splice a value into user-facing text, reach for \`to_s\` (or just use \`"#{value}"\`, which calls \`to_s\` for you).
+
+A common idiom in Ruby debugging code:
+
+\`\`\`ruby
+puts "got: #{value.inspect}"  # always readable, even if value is nil
+\`\`\`
+
+versus
+
+\`\`\`ruby
+puts "got: #{value}"           # value is silently coerced via to_s
+\`\`\`
+
+The first line is the one that survives "wait, was that nil or an empty string?".`,
+}
+
+const STEP_1_5 = {
+  id: STEP_1_5_ID,
+  lessonId: LESSON_1_ID,
+  order: 5,
+  type: 'kata' as const,
+  title: 'Playground: object model in action',
+  instruction: `## What this is
+
+A playground. No tests, no pass/fail — run the code, watch the output, and form intuition about how far "everything is an object" goes.
+
+## Starter code
+
+The starter calls \`.+\`, \`.send\`, \`.respond_to?\`, \`.class\`, and \`.ancestors\` on different values. Run it once and read the output before changing anything.
+
+## Things to try
+
+1. **Inspect the ancestor chains:** \`Integer.ancestors\`, \`String.ancestors\`, \`Array.ancestors\`. Notice \`Enumerable\` appearing on \`Array\`. That's how \`Array#each_with_index\`, \`Array#group_by\`, \`Array#sort_by\` are all the same method, defined once on \`Enumerable\` and mixed into every collection.
+2. **Try send with arguments:** \`[1, 2, 3].send(:map) { |x| x * 2 }\`. Block plus arguments work with \`send\` the same way they work with direct calls.
+3. **Confirm \`Symbol#to_proc\`:** \`:upcase.to_proc.call("hello")\`. This is the underlying mechanic that makes \`&:upcase\` work from Lesson 1.
+4. **Define your own class:** \`class Foo; def greet; "hi"; end; end\`. Then \`Foo.new.greet\` and \`Foo.new.respond_to?(:greet)\`. The same object-model property applies to your own code — your methods are messages, sendable and introspectable.
+
+The harness has a single placeholder test that always passes. The point isn't to write tests — it's to wander through Ruby's reflection surface.`,
+  starterCode: `# Operators as methods
+puts 5.+(2)
+puts 5.send(:+, 2)
+puts (5 < 10).inspect    # => true
+
+# Introspection on nil and on a value
+puts nil.respond_to?(:to_s).inspect
+puts nil.respond_to?(:upcase).inspect
+puts "hi".class
+puts :foo.class
+
+# Ancestor chains — start here, then try String, Array, Hash
+puts Integer.ancestors.inspect
+`,
+  testCode: `${RB_HARNESS_HEADER}
+_t('explored') { _eq true, true }
+${RB_HARNESS_FOOTER}`,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: { kind: 'playground' as const },
 }
 
 // =============================================================================
@@ -1823,11 +1951,12 @@ export const RUBY_LESSONS = [
   LESSON_0,
   LESSON_BLOCKS,
   LESSON_2,
-  // Lesson 1 (the existing Object model seed) is re-positioned to order 4 as
-  // part of the polyglot-first reorder. Full migration to Lesson 3 (re-tightened
-  // read, safe_call + compare_views katas, playground) lands when the rename
-  // pass arrives — title and katas are unchanged in this commit.
-  { id: LESSON_1_ID, scrollId: COURSE_ID, order: 4, title: 'First contact with the object model' },
+  // Lesson 3 (conceptual) inherits LESSON_1_ID for UUID stability. Content has
+  // been fully migrated to the polyglot-first form: read tightened to ~350
+  // words, safe_call replaces type_of, compare_views replaces describe, and
+  // playground 3.5 added. The const name stays LESSON_1_* in code because the
+  // seedUuid args (and therefore the DB UUIDs) carry the legacy 'l1' prefix.
+  { id: LESSON_1_ID, scrollId: COURSE_ID, order: 4, title: 'Object model: why blocks and literals work the way they do' },
   LESSON_4,
   LESSON_5,
 ]
@@ -1836,7 +1965,7 @@ export const RUBY_STEPS = [
   STEP_0_1, STEP_0_2, STEP_0_3,
   STEP_BLOCKS_1, STEP_BLOCKS_2, STEP_BLOCKS_3, STEP_BLOCKS_4, STEP_BLOCKS_5,
   STEP_2_1, STEP_2_2, STEP_2_3, STEP_2_4,
-  STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4,
+  STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4, STEP_1_5,
   STEP_4_1, STEP_4_2, STEP_4_3, STEP_4_4,
   STEP_5_1, STEP_5_2, STEP_5_3, STEP_5_4,
 ]
