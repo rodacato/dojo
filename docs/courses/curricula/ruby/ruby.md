@@ -188,6 +188,9 @@ body: |
     pueden fallar por razones que no tienen nada que ver con el código. **En
     cualquier proyecto Ruby moderno, el prefix `bundle exec` es default:**
     `bundle exec rspec`, `bundle exec rake db:migrate`, `bundle exec rubocop`.
+    *Distinto de Python's venv:* Bundler no "activa" un environment global
+    de la shell; cada comando se aísla con `bundle exec`. Mismo aislamiento
+    por proyecto, mental model per-command.
   - **`.ruby-version`** — archivo de una línea con la version de Ruby que el
     proyecto espera. Herramientas como `rbenv` y `asdf` lo leen para
     auto-switchear. Si no usás un version manager, `ruby -v` te dice qué
@@ -276,10 +279,13 @@ body: |
   - **Lo que ves en cualquier código Ruby:** `[1,2,3].each do |x| puts x end`,
     `[1,2,3].map { |x| x * 2 }`, `5.times { puts "hi" }`,
     `File.open("path") { |f| f.read }`, `[1,2,3].tap { |arr| puts arr.size }`.
-  - **Qué es un bloque, técnicamente:** un chunk sintáctico que se le pasa a
-    una llamada de método. Dos formas equivalentes: `do |args| ... end`
-    (multilínea), `{ |args| ... }` (una línea). Convención: `do...end` para
-    side effects / multi-línea; `{...}` para expresiones que retornan valor.
+  - **Qué es un bloque, técnicamente:** por sí mismo es sintaxis — un chunk
+    que se le pasa a una llamada de método como argumento especial. Dos
+    formas equivalentes: `do |args| ... end` (multilínea), `{ |args| ... }`
+    (una línea). Convención: `do...end` para side effects / multi-línea;
+    `{...}` para expresiones que retornan valor. Por sí solo no es un
+    objeto que puedas guardar en una variable; **solo existe como objeto
+    cuando un método lo captura con `&block`** (más abajo en este read).
   - **No son keywords:** `each`, `map`, `times`, `File.open` son métodos
     definidos en stdlib (no syntax especial del lenguaje) que aceptan un
     bloque opcional. Esto es lo que el polyglot debe internalizar: la
@@ -294,9 +300,17 @@ body: |
     ```
     El bloque retorna `"hello"` (última expresión, return implícito), `yield`
     devuelve eso al método, el método lo procesa, retorna el resultado.
+    *Si venís de Python:* Ruby's `yield` **no** es Python's `yield`. Python's
+    emite valores desde un generator; Ruby's invoca el bloque que el caller
+    pasó. Misma palabra, semántica distinta — es la trampa #1 para el dev
+    Python aterrizando en Ruby.
   - **`&:method` shorthand:** `[1,2,3].map(&:to_s)` ≡ `[1,2,3].map { |x| x.to_s }`.
     Es azúcar que convierte un símbolo en un bloque. Por qué funciona se
-    explica en Lesson 3 (objet model); por ahora usalo como patrón.
+    explica en Lesson 3 (object model); por ahora usalo como patrón.
+  - **Notación rápida que vas a ver ya:** `#{expression}` adentro de comillas
+    dobles evalúa el expression e inserta el resultado en el string —
+    Lesson 2 lo cubre a fondo. `puts` imprime a STDOUT con un newline al
+    final; lo que el método `puts` *retorna* es `nil`, no el texto impreso.
   - **`&block` parameter:** un método puede capturar el bloque como un
     objeto Proc:
     ```ruby
@@ -318,40 +332,42 @@ voice_check: |
   cosa que un método puede recibir, además de positional y keyword args.
 ```
 
-#### Step 1.2 — `predict` — "¿Qué imprime `with_timer { 1 + 1 }`?"
+#### Step 1.2 — `predict` — "¿Qué retorna `with_timer { 1 + 1 }`?"
 
 ```yaml
-title: "Predict: ¿qué imprime este código?"
+title: "Predict: ¿qué retorna este código?"
 type: predict
-question: "Considerando que `Process.clock_gettime(Process::CLOCK_MONOTONIC)` devuelve un Float con segundos, ¿qué imprime esta llamada?"
+question: "Considerando que `Process.clock_gettime(Process::CLOCK_MONOTONIC)` devuelve un Float con segundos, ¿qué **retorna** esta llamada?"
 snippet: |
   def with_timer
     start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     result = yield
     elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
-    puts "result: #{result}, elapsed: #{elapsed.round(2)}s"
+    [result, elapsed.round(2)]
   end
 
   with_timer { 1 + 1 }
 options:
   - id: a
-    text: "`result: 2, elapsed: 0.0s`"
+    text: "`[2, 0.0]`"
   - id: b
-    text: "`result: , elapsed: 0.0s`  (el bloque no devuelve nada)"
+    text: "`[nil, 0.0]`  (el bloque no devuelve nada útil)"
   - id: c
     text: "`LocalJumpError` — yield falla porque no se le pasaron argumentos"
   - id: d
-    text: "Nada — el método no imprime porque `puts` adentro de un `def` no funciona"
+    text: "`2` solamente (el método retorna lo que retorna el bloque)"
 correct: a
 feedback:
   a: |
     Correcto. El bloque `{ 1 + 1 }` retorna `2` por return implícito (la
     última expresión es el valor del bloque, igual que en cualquier método
     Ruby). `yield` devuelve ese `2` al método llamante, que lo asigna a
-    `result`. El tiempo entre las dos llamadas a `clock_gettime` es ~0
-    segundos para una suma trivial — `round(2)` lo redondea a `0.0`.
+    `result`. La última expresión de `with_timer` es `[result, elapsed.round(2)]`,
+    ese es el valor que el método retorna al caller. El tiempo entre las dos
+    llamadas a `clock_gettime` es ~0s para una suma trivial — `round(2)` lo
+    redondea a `0.0`.
   b: |
-    El reflejo C/Java: "bloques pequeños no retornan implícitamente". En Ruby
+    Reflejo C/Java: "bloques pequeños no retornan implícitamente". En Ruby
     todo lo que es chunk de código — método o bloque — retorna la última
     expresión por default. Si quisieras que el bloque retorne nada útil
     explícitamente, escribís `{ 1 + 1; nil }`.
@@ -361,10 +377,11 @@ feedback:
     invoca limpio. `yield` con o sin argumentos siempre invoca al bloque que
     se pasó; los argumentos son para el bloque, no para `yield` mismo.
   d: |
-    `puts` es un método de `Kernel` (mezclado en `Object`); cualquier objeto
-    puede llamarlo, adentro o afuera de un `def`. El output va a STDOUT. Si
-    el método no imprimiera sería porque algo más arriba en la cadena
-    intercepta STDOUT — no por estar adentro de un `def`.
+    Casi — `yield` sí retorna `2` al método. Pero `with_timer` continúa
+    después: calcula `elapsed`, y su última expresión es `[result, elapsed.round(2)]`.
+    El valor del bloque va al método; el valor del método (su última
+    expresión) va al caller. Son dos hops distintos: bloque → método, método
+    → caller.
 ```
 
 #### Step 1.3 — `kata` — `repeat(n) { ... }`
@@ -386,8 +403,7 @@ instruction: |
   # no levanta — el bloque no se invocó
   ```
 
-  Pista: `Integer` ya tiene un método que invoca un bloque N veces. Si
-  encontrás cuál es, este kata es una línea.
+  La solución idiomática es de una sola línea. Pensá Ruby, no C.
 starter_code: |
   def repeat(n)
     # Tu código acá.
@@ -409,9 +425,9 @@ tests:
       repeat(5) { counter += 1 }
       _eq counter, 5
 hint: |
-  `Integer#times` invoca un bloque tantas veces como el integer. `n.times { yield }`
-  es una solución de una línea: cada iteración de `times` invoca el bloque
-  que se pasó a `repeat`.
+  Pensá en qué objeto ya sabe iterar N veces. En Ruby los integers no son
+  un tipo primitivo — son objetos con métodos. ¿Cuál de esos métodos invoca
+  un bloque?
 solution: |
   def repeat(n)
     n.times { yield }
@@ -443,6 +459,12 @@ instruction: |
   nuevo hash donde cada key fue transformada por el bloque. Los values se
   mantienen sin cambios.
 
+  **Cómo funciona `&block` en la firma:** capturás el bloque pasado como un
+  objeto Proc nombrado `block`. Lo invocás con `block.call(arg)`, o lo
+  re-pasás a otro método con `&block` (la misma sigil; el `&` "deshace" el
+  Proc a bloque cuando va de salida, "rehace" el bloque a Proc cuando va de
+  entrada).
+
   Forzá la firma para que acepte **tanto** la forma `do...end` como la forma
   `&:method` shorthand:
 
@@ -457,6 +479,10 @@ instruction: |
   El segundo ejemplo es la prueba de que la firma del método capturó el
   bloque correctamente — si el método usa solo `yield`, el `&:downcase`
   llamante no se va a aplicar.
+
+  Nota sobre colisiones: si dos keys originales colapsan al transformarse
+  (ej. `"Foo"` y `"FOO"` ambos a `"foo"` con `&:downcase`), `transform_keys`
+  mantiene la última. Los tests no exercen este caso.
 starter_code: |
   def map_keys(hash, &block)
     # Tu código acá.
