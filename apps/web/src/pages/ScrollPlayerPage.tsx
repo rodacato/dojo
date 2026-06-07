@@ -190,10 +190,8 @@ export function ScrollPlayerPage() {
                 scrollSlug={scroll.slug}
                 language={scroll.language}
                 isCompleted={completedSteps.includes(activeStep.id)}
-                onComplete={() => {
-                  markStepComplete(activeStep.id)
-                  advanceToNextStep()
-                }}
+                onMarkComplete={() => markStepComplete(activeStep.id)}
+                onAdvance={advanceToNextStep}
               />
             </div>
           ) : (
@@ -331,21 +329,31 @@ function StepContent({
   scrollSlug,
   language,
   isCompleted,
-  onComplete,
+  onMarkComplete,
+  onAdvance,
 }: {
   step: StepDTO
   scrollSlug: string
   language: string
   isCompleted: boolean
-  onComplete: () => void
+  onMarkComplete: () => void
+  onAdvance: () => void
 }) {
+  // Read steps: the Continue button both marks-and-advances. There's nothing
+  // to unlock on a read step (no solution tab), so the chained behaviour is
+  // the right UX.
+  const continueRead = () => {
+    if (!isCompleted) onMarkComplete()
+    onAdvance()
+  }
+
   if (step.type === 'read') {
     return (
       <div className="max-w-3xl mx-auto px-6 py-8">
         <MarkdownContent content={step.instruction} />
         <div className="mt-8">
           <button
-            onClick={onComplete}
+            onClick={continueRead}
             className="px-6 py-2.5 bg-accent text-bg font-mono text-sm rounded transition-all duration-150 hover:bg-accent/90 active:scale-95"
           >
             {isCompleted ? 'Next →' : 'Continue →'}
@@ -361,7 +369,8 @@ function StepContent({
         step={step}
         language={language}
         isCompleted={isCompleted}
-        onComplete={onComplete}
+        onMarkComplete={onMarkComplete}
+        onAdvance={onAdvance}
       />
     )
   }
@@ -372,7 +381,8 @@ function StepContent({
       scrollSlug={scrollSlug}
       language={language}
       isCompleted={isCompleted}
-      onComplete={onComplete}
+      onMarkComplete={onMarkComplete}
+      onAdvance={onAdvance}
     />
   )
 }
@@ -392,13 +402,23 @@ function PredictStep({
   step,
   language,
   isCompleted,
-  onComplete,
+  onMarkComplete,
+  onAdvance,
 }: {
   step: StepDTO
   language: string
   isCompleted: boolean
-  onComplete: () => void
+  onMarkComplete: () => void
+  onAdvance: () => void
 }) {
+  // Predict: revealing the answer is what marks the step complete (so the
+  // learner gets credit for engaging with the prediction even before they hit
+  // Next). Continue advances. Splitting the two means the reveal stays on
+  // screen at full opacity until the learner is ready to move on.
+  const continuePredict = () => {
+    if (!isCompleted) onMarkComplete()
+    onAdvance()
+  }
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const data = step.data as {
     snippet: string
@@ -503,7 +523,7 @@ function PredictStep({
 
       <div className="flex items-center gap-3 pt-2">
         <button
-          onClick={onComplete}
+          onClick={continuePredict}
           disabled={!revealed}
           className="px-6 py-2.5 bg-accent text-bg font-mono text-sm rounded transition-all duration-150 hover:bg-accent/90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
         >
@@ -528,13 +548,15 @@ function StepEditor({
   scrollSlug,
   language,
   isCompleted,
-  onComplete,
+  onMarkComplete,
+  onAdvance,
 }: {
   step: StepDTO
   scrollSlug: string
   language: string
   isCompleted: boolean
-  onComplete: () => void
+  onMarkComplete: () => void
+  onAdvance: () => void
 }) {
   const [code, setCode] = useState(step.starterCode ?? '')
   const [running, setRunning] = useState(false)
@@ -648,8 +670,12 @@ function StepEditor({
       // Output. For katas, jump to Output on error so the learner sees the
       // failure, otherwise to Tests for the pass/fail breakdown.
       setTab(isPlayground || res.errorKind ? 'output' : 'tests')
+      // Mark the step complete on pass — but DO NOT advance. The learner
+      // stays on this step so the Solution tab (now unlocked) is reachable
+      // before they hit Next. Auto-advancing here was hiding the solution
+      // behind the next step.
       if (res.passed && !isCompleted) {
-        onComplete()
+        onMarkComplete()
       }
     } catch {
       setResult({
@@ -706,6 +732,14 @@ function StepEditor({
             <span className="text-xs text-muted font-mono">Runs in browser</span>
           )}
           {result && (isPlayground ? <ExploredChip /> : <StatusChip result={result} />)}
+          {isCompleted && (
+            <button
+              onClick={onAdvance}
+              className="px-4 py-2 bg-success/15 text-success border border-success/40 font-mono text-sm rounded transition-all duration-150 hover:bg-success/25 active:scale-95"
+            >
+              Next →
+            </button>
+          )}
           <div className="ml-auto flex items-center gap-3">
             {result && !nudgeDisabled && !isPlayground && (
               <button
