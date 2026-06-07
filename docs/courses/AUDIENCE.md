@@ -188,11 +188,13 @@ If a step accidentally lands for a junior or a refresher, that's a bonus. If a s
 | **Go** | No inheritance (composition only via embedding). No exceptions — error values everywhere. Interface satisfaction is structural (no `implements` keyword). Goroutines as lightweight, channels as language-level. Simple stdlib (no Spring-equivalent). `gofmt` mandatory removes a class of bikeshedding. |
 | **Rust** | Ownership has no JVM analogue (GC has always existed for her). Traits ≈ Java interfaces but with state via `impl` blocks. No null — `Option<T>` everywhere. Lifetimes when borrows escape. `Result<T, E>` instead of exceptions. The borrow checker as a teaching tool. |
 | **TypeScript** | Structural typing instead of nominal. Type erasure at runtime (worse than Java's — TS types literally don't exist). The runtime is JS, not a sophisticated VM. Generics without runtime reflection. tsconfig as the equivalent of pom.xml: too many knobs. |
+| **Python** *(scripting lane only)* | Indentation IS syntax. Dynamic typing after living with JPMS modules and final classes — anything can be reassigned. `self` as explicit first parameter on every instance method. The GIL as a concurrency truth, not a bug. Decorators as syntax sugar over higher-order functions. Type hints as opt-in checked-by-mypy, not the JVM-level guarantee she's used to. `pip` ecosystem fragmentation vs Maven Central's single source. |
 
 **Communication style:** Precise, with care. Will name the pattern she's mapping the idiom against ("this is the Decorator pattern but smaller"). Asks the same clarifying question twice if the first answer was vague. English with occasional Japanese terms for concepts that don't translate (`mendoukusai` for "fiddly in a way that signals bad design"). Patient with explanations of why a language made the trade-off it did.
 
 **When to consult Yui:**
 - Every step of Go and Rust crash scrolls.
+- The Python and TypeScript scrolls as a secondary check — Java seniors learning Python for scripting or TS for the backend they're migrating toward are a real audience cluster.
 - When a step uses inheritance or DI analogies — she will tell you what changes when those scaffolds are gone.
 - When the language's stdlib is sufficient where Spring would have a framework — she finds the comparison genuinely interesting and will tell you if the read step makes it land.
 

@@ -208,7 +208,7 @@ These are honestly open — Adrian decides per scroll:
 1. **Do we always do the full Phase A (5 stages)?** Ruby was the first scroll under the polyglot-first pivot, so stakes were high. Python may compress stages 2-5 into one panel pass.
 2. **Do `lesson-N.md` drafts persist in the repo, or move to an archive after seed?** Currently they stay (useful for reviewers); they do add ~2000 lines per scroll to the repo.
 3. **When a subagent catches a flaw** (e.g., the stale hint phrasing in Ruby 5.2), should it auto-fix or flag? Ruby's subagents flagged. Worked because the orchestrator was in the loop.
-4. **At what scroll do we promote `playground` from kata-variant to canonical step type?** Per [INTERACTIVITY-PATTERNS.md](INTERACTIVITY-PATTERNS.md) §"Authoring checklist", ≥20 instances across the catalog. Ruby ships 2. We need 2-3 more lessons across at least one other scroll to validate.
+4. **At what scroll do we promote `playground` from kata-variant to canonical step type?** Per [INTERACTIVITY-PATTERNS.md](INTERACTIVITY-PATTERNS.md) §"Authoring checklist", new step types need ≥20 instances. Honest math: 5 language scrolls × 2 playgrounds each = ~10. We won't hit 20 from language scrolls alone. The reframe — the ≥20 gate was written for net-new step types with their own authoring overhead; the playground reuses the kata pipeline entirely, so the cost-to-promote is much lower. Realistic gate for THIS variant: 3 scrolls + sustained engagement signal (the playground steps actually get run, not skipped). Cleared once Python and one other scroll ship playgrounds and we have telemetry. Until then it stays as `data.kind: "playground"` and never collides with the schema.
 
 ## Starting the next scroll — what you need beyond this doc
 
@@ -217,7 +217,7 @@ To pick this up cold and start, say, Python:
 1. **Read the canonical docs in order:** [README.md](README.md) → [INTERACTIVITY-PATTERNS.md](INTERACTIVITY-PATTERNS.md) → [AUDIENCE.md](AUDIENCE.md) → [`../EXPERTS.md`](../EXPERTS.md) → this doc.
 2. **Decide the lens** (stage 1). For Python it might be *"crash course for polyglots who already know what a dict is — go straight to context managers, asyncio mental model, and the EAFP/LBYL choice."*
 3. **Pick the panel** (from [`../EXPERTS.md`](../EXPERTS.md)). For Python: Nadia (S7, language steward) + Elif (S5, curriculum) + Valentina (S2, content) + Maya (S11, interactive).
-4. **Pick the audience matrix** (from [AUDIENCE.md](AUDIENCE.md)). For Python: A1 Mariana + A3 Diego (refresher) + A4 Felipe primary; A2 Esteban out-of-scope (he's already a Python mid-senior, not a learner here).
+4. **Pick the audience matrix** (from [AUDIENCE.md](AUDIENCE.md)). For Python: A1 Mariana + A4 Felipe primary, A3 Yui secondary; A2 Esteban out-of-scope (he's already a Python mid-senior, not a learner here).
 5. **Define the scroll's §2 gates** in `curricula/python/python.md`. Python's failure modes are different from Ruby's — tour-guide on dict iteration probably less likely, but Pythonic-vs-non-Pythonic confusion is real (EAFP vs LBYL, list comp vs `for` loop). Define the gates that catch *those* failure modes.
 6. **Open the sprint** with the lens explicit.
 7. **Run the flow** — borrow stages, skip stages, adapt as needed.
