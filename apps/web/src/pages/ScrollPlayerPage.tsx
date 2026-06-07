@@ -26,6 +26,7 @@ export function ScrollPlayerPage() {
   const [error, setError] = useState<string | null>(null)
   const [retryTick, setRetryTick] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<string[]>([])
+  const [progressLoaded, setProgressLoaded] = useState(false)
   const [activeStepId, setActiveStepId] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
@@ -38,15 +39,58 @@ export function ScrollPlayerPage() {
       .then((c) => {
         if (cancelled) return
         setScroll(c)
-        const firstLesson = c.lessons[0]
-        const firstStep = firstLesson?.steps[0]
-        if (firstStep) {
-          setActiveStepId(firstStep.id)
-        }
       })
       .catch(() => { if (!cancelled) setError('We couldn\'t load this scroll.') })
     return () => { cancelled = true }
   }, [slug, retryTick])
+
+  // navigateToStep — single source of truth for changing the active step.
+  // Updates state AND URL hash so refresh/back/forward preserve position.
+  const navigateToStep = useCallback((stepId: string) => {
+    setActiveStepId(stepId)
+    const target = `#step-${stepId}`
+    if (window.location.hash !== target) {
+      window.history.pushState(null, '', target)
+    }
+  }, [])
+
+  // Initial step resolution: hash first, then first incomplete step from
+  // progress, then first step. Hash wins immediately when present so refresh
+  // is exact; progress fills in for new tabs without a hash.
+  useEffect(() => {
+    if (!scroll || activeStepId) return
+    const allSteps = scroll.lessons.flatMap((l) => l.steps)
+    if (allSteps.length === 0) return
+
+    const hashMatch = window.location.hash.match(/^#step-([a-f0-9-]+)$/i)
+    const hashStepId = hashMatch?.[1]
+    if (hashStepId && allSteps.some((s) => s.id === hashStepId)) {
+      setActiveStepId(hashStepId)
+      return
+    }
+    if (!progressLoaded) return
+    const firstIncomplete = allSteps.find((s) => !completedSteps.includes(s.id))
+    const target = firstIncomplete ?? allSteps[0]
+    if (target) {
+      setActiveStepId(target.id)
+      window.history.replaceState(null, '', `#step-${target.id}`)
+    }
+  }, [scroll, progressLoaded, completedSteps, activeStepId])
+
+  // Browser back/forward syncs the active step from the URL.
+  useEffect(() => {
+    if (!scroll) return
+    const allSteps = scroll.lessons.flatMap((l) => l.steps)
+    const handleHashChange = () => {
+      const match = window.location.hash.match(/^#step-([a-f0-9-]+)$/i)
+      const hashStepId = match?.[1]
+      if (hashStepId && allSteps.some((s) => s.id === hashStepId)) {
+        setActiveStepId(hashStepId)
+      }
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [scroll])
 
   // When the user logs in and there's leftover anonymous progress, merge it.
   useEffect(() => {
@@ -63,17 +107,21 @@ export function ScrollPlayerPage() {
   // to track progress on a public scroll without auth.
   useEffect(() => {
     if (!scroll) return
+    const settle = (steps: string[]) => {
+      setCompletedSteps(steps)
+      setProgressLoaded(true)
+    }
     if (user) {
       api.getProgress(scroll.id)
-        .then((r) => setCompletedSteps(r.completedSteps))
-        .catch(() => setCompletedSteps([]))
+        .then((r) => settle(r.completedSteps))
+        .catch(() => settle([]))
     } else if (scroll.isPublic) {
       const anonId = getOrCreateAnonymousId()
       api.getProgress(scroll.id, anonId)
-        .then((r) => setCompletedSteps(r.completedSteps))
-        .catch(() => setCompletedSteps([]))
+        .then((r) => settle(r.completedSteps))
+        .catch(() => settle([]))
     } else {
-      setCompletedSteps([])
+      settle([])
     }
   }, [scroll, user])
 
@@ -93,9 +141,9 @@ export function ScrollPlayerPage() {
     const currentIdx = allSteps.findIndex((s) => s.id === activeStepId)
     const nextStep = allSteps[currentIdx + 1]
     if (nextStep) {
-      setActiveStepId(nextStep.id)
+      navigateToStep(nextStep.id)
     }
-  }, [scroll, activeStepId])
+  }, [scroll, activeStepId, navigateToStep])
 
   if (error) {
     return (
@@ -165,7 +213,7 @@ export function ScrollPlayerPage() {
                 index={i + 1}
                 activeStepId={activeStepId}
                 completedSteps={completedSteps}
-                onSelectStep={setActiveStepId}
+                onSelectStep={navigateToStep}
               />
             ))}
             <FurtherReading refs={scroll.externalReferences} />
