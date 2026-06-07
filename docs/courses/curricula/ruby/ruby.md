@@ -80,11 +80,25 @@ This is a deliberate **local experiment**, not a framework decision. Per [`../..
 
 **Playground voice contract:** the instruction text gives the learner specific things to try, with motivation. Not "explorá libremente" — that produces an empty editor. The starter code pre-loads 3-5 expressions tied to the read/kata the playground follows; the learner runs them, observes output, then is invited to vary them. Maya (S11) will block any playground whose instruction reduces to "play around."
 
-### 2.4 Footgun deferral discipline
+### 2.4 Hint discipline
+
+A hint reduces the learner's search space; it does not eliminate it. The rule:
+
+> *A hint must NOT name the exact method or operator that solves the kata. If removing the hint would not change which Ruby identifier the learner types, the hint is the solution.*
+
+Examples of the failure mode (from drafts before review):
+- ❌ `Integer#times invoca un bloque tantas veces como el integer. n.times { yield } es una solución de una línea.` — names the method *and* shows the call site. Solution in disguise.
+- ✅ `Pensá en qué objeto ya sabe iterar N veces. En Ruby los integers no son un tipo primitivo — son objetos con métodos. ¿Cuál de esos métodos invoca un bloque?` — points at where to look, makes the learner find the method.
+
+Same rule for `instruction`: avoid "Pista: ..." lines that reveal the answer under the guise of guidance. The kata's instruction states what to build; the hint helps a learner who is stuck after trying. A learner who got the answer just from reading the instruction never wrote any Ruby.
+
+This rule applies to all kata steps across Lessons 1-5. Authoring Lessons 2-5 against this gate is a precondition for their seeding.
+
+### 2.5 Footgun deferral discipline
 
 When a topic that belongs in a future deep-dive surfaces (e.g. `Proc.new { return 1 }` semantics, eigenclasses, `method_missing`), the scroll **names it explicitly** and points to the deep-dive — does not silently elide. This is the difference between honest crash and superficial cheat sheet.
 
-### 2.5 No Minitest
+### 2.6 No Minitest
 
 The crash scroll uses the manual `_t` / `_eq` harness defined in §5. Minitest belongs to its own deep-dive scroll; teaching it here would steal pedagogy budget from the language.
 
@@ -282,10 +296,17 @@ body: |
   - **Qué es un bloque, técnicamente:** por sí mismo es sintaxis — un chunk
     que se le pasa a una llamada de método como argumento especial. Dos
     formas equivalentes: `do |args| ... end` (multilínea), `{ |args| ... }`
-    (una línea). Convención: `do...end` para side effects / multi-línea;
-    `{...}` para expresiones que retornan valor. Por sí solo no es un
-    objeto que puedas guardar en una variable; **solo existe como objeto
+    (una línea). Los args entre `|...|` matchean con lo que el método
+    yieldea; pueden ser varios: `[[1,2],[3,4]].map { |a, b| a + b }` produce
+    `[3, 7]`, los hashes iteran con `|k, v|`. Por sí solo el bloque no es
+    un objeto que puedas guardar en una variable; **solo existe como objeto
     cuando un método lo captura con `&block`** (más abajo en este read).
+  - **Convención `do...end` vs `{...}`:** `do...end` para side effects /
+    multi-línea; `{...}` para expresiones que retornan valor. Hay además
+    una diferencia de precedencia real entre los dos — en `foo bar { ... }`
+    el bloque se asocia a `bar`; en `foo bar do ... end` se asocia a `foo`.
+    Por eso la convención no es solo estética; cuando importa, el bug es
+    silencioso. Profundidad en el deep-dive de blocks.
   - **No son keywords:** `each`, `map`, `times`, `File.open` son métodos
     definidos en stdlib (no syntax especial del lenguaje) que aceptan un
     bloque opcional. Esto es lo que el polyglot debe internalizar: la
@@ -323,6 +344,10 @@ body: |
     ```
     Equivalente a usar `yield` pero ahora el bloque es un objeto que podés
     pasar, guardar, llamar varias veces.
+  - **`block_given?`** — un método puede chequear si el caller le pasó un
+    bloque y ajustar comportamiento. Caso canónico: `[1,2,3].each` sin
+    bloque retorna un `Enumerator` (chainable, lazy); con bloque itera y
+    retorna el array. Lo vas a ver en cualquier gem decente.
   - **Footgun named-and-deferred:** `Proc` vs `lambda` se comportan distinto
     con `return` y arity. Eso es el deep-dive de blocks; acá lo nombramos y
     seguimos.
