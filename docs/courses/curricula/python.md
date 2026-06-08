@@ -55,11 +55,11 @@ A note on tone: the Dojo voice is direct and **assumes the reader already progra
 
 | Slug | Kind | Steps (target) | Time (target) | Status |
 |---|---|---|---|---|
-| `python` | Language scroll (crash course) | 21-24 | ~100 min | **spec-in-progress, polyglot-first re-scope 2026-06-07; panel + audience review applied 2026-06-08** — outer + inner spec drafted; lesson prose stubs only |
+| `python` | Language scroll (crash course) | 22 | ~100 min | **W2 authoring complete 2026-06-08; suite voice audit applied** — outer + inner spec finalised; all 22 step prose drafts in `lesson-{0..5}.md`; figures registered in `apps/web/src/scrolls/figures/data/python-figures.ts`; pending W3 seeding into `seed-scrolls-python.ts` and Piston smoke |
 
 That is the whole catalog for Python in v1. Per [ADR 022](../../adr/022-crash-course-pivot.md), one language scroll per language is the anchored set. Deep-dive scrolls on Python-specific topics are deferred — see §3.1.
 
-The step count target is slightly under Ruby's (22-24) — Lesson 0 adds 2 steps (the audience review collapsed the orientation reads, since all three primary personas already operate `venv`/`pip` in their day-to-day), and the decorator + context-manager lessons each benefit from a predict-then-implement pair. The time budget is **~100 minutes** rather than Ruby's 110 because Python's surface lands faster for the polyglot once the protocol-surface lens is set: less re-framing per idiom, since the polyglot already has the function/method/object model.
+The step count lands at **22** — Lesson 0 has 2 (the audience review collapsed the orientation reads, since all three primary personas already operate `venv`/`pip` in their day-to-day); Lesson 1 has 3; Lessons 2-4 have 4 each; Lesson 5 has 5 (the suite voice audit split the original 5.1 read into 5.1a + 5.1b per the spec §7 600-word threshold). The time budget is **~100 minutes** rather than Ruby's 110 because Python's surface lands faster for the polyglot once the protocol-surface lens is set: less re-framing per idiom, since the polyglot already has the function/method/object model.
 
 ### 3.1 Future deep-dive candidates (not in scope for v1)
 

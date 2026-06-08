@@ -202,6 +202,10 @@ safe_get({"a": 1}, "b")                         # None  (default default)
 safe_get({"a": 1}, "b", default="missing")      # "missing"
 safe_get({"a": None}, "a", default="missing")   # None  (value IS None, not missing)
 ```
+
+### Realistic input — the `tally`-shaped dict
+
+One of the tests below uses a dict shaped like `{"a": 2, "b": 1}` — **exactly the output shape your `tally` function from Lesson 2 produced.** That's not coincidence: `safe_get` over a count dictionary is a common production shape (look up a word's count; return `0` if the word never appeared). The retrieval interleaving is deliberate — the lesson-2 muscle compounds here, and you'll see this dict shape again in Lesson 5's decorator wrappers.
 ```
 
 ### `starterCode`
@@ -258,6 +262,14 @@ def _():
     _eq(safe_get({}, "anything", default=42), 42)
 
 
+@_t("works over a tally-shaped count dict (Lesson 2 callback)")
+def _():
+    # Same shape `tally(["a", "b", "a"])` produced in Lesson 2.
+    counts = {"a": 2, "b": 1}
+    _eq(safe_get(counts, "a", default=0), 2)
+    _eq(safe_get(counts, "missing", default=0), 0)
+
+
 import json, sys
 sys.stdout.write("__DOJO_RESULT__ " + json.dumps({"tests": _tests}) + "\n")
 ```
@@ -298,6 +310,7 @@ def safe_get(d: dict, key, default=None):
 | Returns explicit default when missing | The explicit-default path. |
 | `None` value returned as `None` | The trap — catches `return d.get(key) or default` (a wrong but plausible one-liner). |
 | Empty dict + any key | Smallest missing-key case. |
+| Works over a tally-shaped count dict | Retrieval interleaving with Lesson 2 (same dict shape `tally` produces); also rehearses the "lookup with sensible default for missing" pattern the polyglot will reach for in real code. |
 
 ---
 

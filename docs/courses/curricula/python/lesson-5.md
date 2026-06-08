@@ -3,19 +3,18 @@
 > **Status:** Draft (prose, pre-seed) · **Drafted:** 2026-06-08
 > **Spec:** [python.md §4 Lesson 5](python.md#lesson-5--decorators--closures) · [python/python.md §Lesson 5](python.md#lesson-5--decorators--closures)
 > **Primary audience:** A1 Mariana (JS Senior) + A4 Felipe (TS Modernizer). Secondary: A3 Yui (Java Senior).
-> **Step count:** 4 (1 `read` + 1 `predict` + 2 `kata`).
+> **Step count:** 5 (2 `read` + 1 `predict` + 2 `kata`). *(Original draft had 4 with a single ~970-word 5.1 read; the suite voice audit 2026-06-08 measured the draft at ~970 words against the spec §7 600-word split threshold and applied the planned mitigation — split into 5.1a + 5.1b. Scroll total: 21 → 22.)*
 > **What changes in the learner's head:** "A decorator is a function that takes a function and returns a function — `@d` is sugar for `f = d(f)`. Once I see that, `@property`, `@dataclass`, `@cache`, `@contextmanager` are all the same shape applied to different inputs. Closures capture *names*, not values — which is why `[lambda: i for i in range(3)]` doesn't do what I thought. And Python's class system has no dedicated lesson here on purpose — the closer explains why."
-> **Density flag (per spec §7):** the read at 5.1 carries closures + L1 back-ref + plain decorator + `@wraps` + single-arg bridge framing + three-layer onion + the unification + named-and-deferred + the Java-reflex closer. ~450-500 words. If a suite voice audit flags it past 600, split into 5.1a (closures + plain decorator + `@wraps`) and 5.1b (parametrised + unification + closers), bumping the step count to 22.
 
 This file holds the **production prose** for each step's `instruction` / `feedback` / etc. fields. Content is in English; meta-notes in Spanish where helpful.
 
 ---
 
-## Step 5.1 — `read` — "Closures y decorators: la misma idea, dos shapes"
+## Step 5.1a — `read` — "Closures y decorators: el mecanismo"
 
-**Title:** `Closures and decorators: same idea, two shapes`
+**Title:** `Closures and decorators: the mechanism`
 **Type:** `read`
-**Word count target:** ~450. Pythonic test §2.1 applied. Embeds the **situational `tabbed-card` figure** for the unification — Felipe flagged this as "the visual money shot" in the 2026-06-08 audience review, so it earns embedding rather than defer-to-suite-audit.
+**Word count target:** ~500. Pythonic test §2.1 applied. **First half of the split** (the original 5.1 was ~970 words, past the spec §7 600-word threshold). 5.1a carries the load-bearing mechanics — closures recap with the late-binding example, the L1 mutable-default back-reference, the decorator definition, and the `functools.wraps` rule. The unification framing + figure + closers live in 5.1b.
 
 ### `instruction` (markdown body)
 
@@ -108,9 +107,43 @@ def flaky():
 
 Three layers because: outer takes the decorator's arg (`3`); middle takes the function (`flaky`); inner is the wrapper that runs at call time. `@retry(3)` calls `retry(3)`, which returns `decorator`. `decorator` is then applied to `flaky` — `flaky = decorator(flaky)`. **This trips up every polyglot the first time they read it.** Once you see the shape, every parametrised decorator (`@app.route("/")`, `@pytest.fixture(scope="session")`, `@cache(maxsize=128)`) is the same pattern.
 
+Next: the *reframe* — once you see the shape, four of Python's most-common decorators stop looking like four separate things. 5.1b makes that family visible.
+```
+
+### Paragraph-test audit (5.1a — Valentina §2.1 gate)
+
+| Paragraph | Removes what polyglot decision? | Verdict |
+|---|---|---|
+| "Why this matters" | "Is `@` worth learning if I'm just reading Python?" — answers yes, *and* names the failure mode if you don't | KEEP |
+| "Closures recap" + late-binding example | "What does this loop-of-lambdas actually return?" — and primes the 5.2 predict | KEEP |
+| Back-reference to L1 Counter trap | Closes the loop on the L1 predict's promise; names the shared mechanism (`def`-time evaluation) | KEEP (audience review 2026-06-08 confirmed one back-ref is enough) |
+| "What a decorator IS" | "Why is there an `@` symbol? What does it do?" — the load-bearing definition | KEEP |
+| "`functools.wraps`" | "Why does my decorated function show up as `wrapper` in tracebacks?" — and prevents the polyglot from writing every decorator without it | KEEP |
+| "Single-arg first, parametrised second" | Bridge framing — promotes 5.3 as the friendly entry; defends against learners feeling lost at 5.4 | KEEP (audience review 2026-06-08) |
+| "Three-layer onion" | "Why does `@retry(3)` have an extra layer of `def` inside `def`?" — load-bearing for 5.4 | KEEP |
+
+**What got cut from 5.1a:** a tour of `functools` (out of scope; named-and-deferred lives in 5.1b's deferral list), the C-level implementation of decorators (deep-dive material), an extra worked example between `@trace`-shape and three-layer onion (covered by 5.3 kata, no need to pre-walk).
+
+---
+
+## Step 5.1b — `read` — "La familia: por qué `@property`, `@dataclass`, `@cache`, `@contextmanager` son la misma idea"
+
+**Title:** `The family: why @property, @dataclass, @cache, @contextmanager are the same idea`
+**Type:** `read`
+**Word count target:** ~470. Pythonic test §2.1 applied. **Second half of the split** — the unification figure (Felipe's "visual money shot" per the 2026-06-08 audience review), the named-and-deferred list, and the Java-reflex closer (Yui's audience-review concern). Opens with the explicit L4 → L5 bridge sentence the inner spec §3 committed to (surfaced by the suite voice audit as a gap in the unsplit 5.1).
+
+### `instruction` (markdown body)
+
+```markdown
+## Why this matters
+
+5.1a landed the mechanics: `@d` is sugar for `f = d(f)`; `@wraps` rescues introspection; the three-layer onion gives parametrised decorators. **This step lands the reframe.** Once you see decorators as "callable transforming callable," four of Python's most-common decorators stop feeling like four separate things and start feeling like one shape applied four ways.
+
+**Remember how `@contextmanager` turned a generator into a context manager in Lesson 4?** That's the same shape as a plain decorator — a callable transforming another callable. The decorator family is wider than `@contextmanager` and `@trace`, and the next subsection makes that visible across the four decorators you'll see most often in production Python.
+
 ## The unification — `@property`, `@dataclass`, `@cache`, `@contextmanager`
 
-All five of the decorators listed above are *callables transforming callables (or classes)*. They differ only in what they take and what they return.
+All four of these are *callables transforming callables (or classes)*. They differ only in what they take and what they return.
 
 :figure[tabbed-card]{id="decorators-and-friends"}
 
@@ -136,25 +169,19 @@ If you're coming from Java and noticed this scroll has no dedicated OOP lesson, 
 
 Everything else about classes — inheritance hierarchies, abstract base classes, descriptors at depth, `__slots__`, `__init_subclass__` as the lightweight metaclass alternative — lives in `python-descriptors-and-protocols`. **The polyglot reflex that produces `class TaskRunner: def run(self): ...` for a three-line script is the failure mode this scroll most actively defends against** (see Lesson 1's anti-class beat). Reach for a class when you have **state + behaviour that belong together**, or when you're implementing a protocol Python expects (a context manager, an iterator, a callable). Reach for a function otherwise. Reach for a `@dataclass` when the answer is "I want a typed record." That is the lens; the depth waits.
 
-Next: a predict on the late-binding closure trap (the snippet from the closures recap above), then two katas — `@trace` (single-arg with `@wraps`), then `@retry(times=N)` (three-layer onion).
+Next: a predict on the late-binding closure trap (the snippet from 5.1a's closures recap), then two katas — `@trace` (single-arg with `@wraps`), then `@retry(times=N)` (three-layer onion).
 ```
 
-### Paragraph-test audit (Valentina §2.1 gate)
+### Paragraph-test audit (5.1b — Valentina §2.1 gate)
 
 | Paragraph | Removes what polyglot decision? | Verdict |
 |---|---|---|
-| "Why this matters" | "Is `@` worth learning if I'm just reading Python?" — answers yes, *and* names the failure mode if you don't | KEEP |
-| "Closures recap" + late-binding example | "What does this loop-of-lambdas actually return?" — and primes the 5.2 predict | KEEP |
-| Back-reference to L1 Counter trap | Closes the loop on the L1 predict's promise; names the shared mechanism (`def`-time evaluation) | KEEP (audience review 2026-06-08 confirmed one back-ref is enough) |
-| "What a decorator IS" | "Why is there an `@` symbol? What does it do?" — the load-bearing definition | KEEP |
-| "`functools.wraps`" | "Why does my decorated function show up as `wrapper` in tracebacks?" — and prevents the polyglot from writing every decorator without it | KEEP |
-| "Single-arg first, parametrised second" | Bridge framing — promotes 5.3 as the friendly entry; defends against learners feeling lost at 5.4 | KEEP (audience review 2026-06-08) |
-| "Three-layer onion" | "Why does `@retry(3)` have an extra layer of `def` inside `def`?" — load-bearing for 5.4 | KEEP |
-| "The unification" + `:figure[tabbed-card]` | The "they're all the same idea" reframe; figure makes it visible across four decorators | KEEP (Felipe explicitly asked for this in audience review) |
+| "Why this matters" + L4 bridge sentence | "Why a second step? What changes between 5.1a and 5.1b?" — and lands the L4 → L5 explicit cross-reference inner spec §3 committed to | KEEP (audit-resolved gap from 2026-06-08) |
+| "The unification" + `:figure[tabbed-card]` | The "they're all the same idea" reframe; figure makes it visible across four decorators | KEEP (Felipe's "visual money shot" per audience review) |
 | "Named-and-deferred" | Four trapdoors the polyglot would otherwise discover by stumbling | KEEP |
 | "Closer (the Java-class question)" | Yui's load-bearing question — "where is the OOP lesson?" — answered directly | KEEP (audience review 2026-06-08) |
 
-**What got cut:** what a higher-order function is in functional programming theory (assumed), a tour of every `functools` function (out of scope; named-and-deferred to a future scroll), the C-level implementation of decorators (deep-dive material at most), `__call__` as the class-decorator variant (mentioned in passing in the unification figure tabs; not a paragraph), `@staticmethod` (rarely the right tool — usually a module-level function is correct, and Lesson 1's anti-class beat already framed why).
+**What got cut from 5.1b:** what a higher-order function is in functional programming theory (assumed), the C-level implementation of decorators (deep-dive material at most), `__call__` as the class-decorator variant (mentioned in passing in the unification figure tabs; not a paragraph), `@staticmethod` (rarely the right tool — usually a module-level function is correct, and Lesson 1's anti-class beat already framed why).
 
 ---
 
