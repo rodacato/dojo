@@ -241,10 +241,17 @@ export function AdminScrollsPage() {
                       {c.stepCount}
                     </td>
                     <td className="px-4 h-14 align-middle text-center">
-                      <div className="inline-flex">
+                      <div
+                        className="inline-flex"
+                        title={
+                          c.status === 'draft'
+                            ? 'Publish the scroll first — the public toggle has no effect while the scroll is in draft.'
+                            : undefined
+                        }
+                      >
                         <Toggle
                           checked={c.isPublic}
-                          disabled={patching}
+                          disabled={patching || c.status === 'draft'}
                           onChange={(v) => onPatch(c.id, { isPublic: v })}
                           ariaLabel={`${c.isPublic ? 'Make private' : 'Make public'} ${c.title}`}
                         />

@@ -26,8 +26,11 @@ export const scrollRoutes = new Hono<AppEnv>()
 // ── Scroll discovery ────────────────────────────────────────────────
 
 scrollRoutes.get('/scrolls', optionalAuth, async (c) => {
-  const user = c.get('user')
-  const scrolls = await useCases.getScrollList.execute({ publicOnly: !user })
+  // The catalog is the same for anon and authed users — published AND public.
+  // /admin/scrolls is the only path to drafts and private scrolls; mixing
+  // them into /scrolls based on auth state (the prior behavior) leaked
+  // private scrolls into authed users' catalog views inconsistently.
+  const scrolls = await useCases.getScrollList.execute({ publicOnly: true })
   return c.json({ scrolls })
 })
 
