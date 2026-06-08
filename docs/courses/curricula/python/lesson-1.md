@@ -309,7 +309,7 @@ class Counter:
 |---|---|
 | `Counter()` defaults to `value=0` | The default-argument path. (Distinct from the predict's `items=[]` trap because `0` is immutable.) |
 | `Counter(5)` reflects the passed value | The non-default path — the parameter binding works. |
-| `Counter(0)` is explicit zero | Catches an `or 0` shortcut in the solution that would conflate "not provided" with "provided as zero". The polyglot writing `self.value = start or 0` passes the first two tests and fails this one. |
+| `Counter(0)` is explicit zero | Validates the parameter binding accepts an explicit `0` (not just the default). Honest framing: in the `int` domain, `self.value = start or 0` is functionally indistinguishable from `self.value = start` (both produce `0` for `start=0`), so this test does not *discriminate* the `or` shortcut — it just validates the explicit-zero path lands. Panel pass-2 review (2026-06-08) flagged an earlier draft that claimed the `or 0` discriminator; correction kept here as a record. |
 
 ---
 

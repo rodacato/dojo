@@ -21,7 +21,7 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 ```markdown
 ## Why this matters
 
-The polyglot will see `@retry`, `@cache`, `@app.route`, `@property`, `@dataclass`, `@contextmanager` in the first non-trivial Python file. Knowing what `@` actually does = readable code. **Not knowing = decorators feel like magic, and you write code that decorates wrong (`functools.wraps` missing, three-layer onion confused) and debugs slowly.** This lesson lands the mechanism, then lets the kata at 5.3 and 5.4 force you to write one.
+The polyglot will see `@retry`, `@cache`, `@app.route`, `@property`, `@dataclass`, `@contextmanager` in the first non-trivial Python file. Knowing what `@` actually does = readable code. **Not knowing = decorators feel like magic, you write code that decorates wrong (`functools.wraps` missing, three-layer onion confused), and the wrong code is slow to debug.** This lesson lands the mechanism, then lets the kata at 5.3 and 5.4 force you to write one.
 
 ## Closures recap — capture is by *name*, not by value
 
@@ -258,7 +258,7 @@ Write a decorator `trace` that wraps any function and records each call into a l
 **Two requirements:**
 
 1. The wrapped function must work normally — calling `add(1, 2)` returns `3`, plus a record gets appended to `trace.calls`.
-2. The wrapped function's `__name__` must be preserved — `add.__name__` is `"add"`, not `"wrapper"`. This is what `functools.wraps` is for.
+2. The wrapped function's `__name__` must be preserved — `add.__name__` is `"add"`, not `"wrapper"`. The stdlib has a decorator for this — see the hint.
 
 ### What's expected
 
@@ -442,12 +442,18 @@ If 5.3 felt solid, this is **5.3 wrapped in one more layer** that takes `times`.
 ### What's expected
 
 ```python
-@retry(times=3)
-def succeeds_third_time():
-    ...
+attempts = {"n": 0}
 
-result = succeeds_third_time()                  # tries 3x, succeeds on attempt 3
-assert result is not None
+@retry(times=3)
+def flaky():
+    attempts["n"] += 1
+    if attempts["n"] < 3:
+        raise RuntimeError("not yet")
+    return "ok"
+
+flaky()                                         # attempts 1 (raise), 2 (raise), 3 (return) → "ok"
+assert flaky.__name__ == "flaky"                # @wraps preserved the name
+
 
 @retry(times=3)
 def always_fails():

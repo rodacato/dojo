@@ -21,7 +21,7 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 ```markdown
 ## Why this matters
 
-EAFP — *"Easier to Ask Forgiveness than Permission"* — is the cultural reflex that determines whether you write Python that reads Pythonic or Python that reads Java-with-different-syntax. A polyglot writing Python with Java reflexes writes `if hasattr(x, "value"): return x.value` everywhere; the Pythonic answer is `try: return x.value except AttributeError: return default`. Same outcome, opposite intent. This lesson is **the highest-value read step in the scroll for the primary personas** — if it lands, the rest of your Python reads idiomatically; if it doesn't, you'll spend two years writing LBYL-in-Python before your reviewer catches it.
+EAFP — *"Easier to Ask Forgiveness than Permission"* — is the cultural reflex that determines whether you write Python that reads Pythonic or Python that reads Java-with-different-syntax. A polyglot writing Python with Java reflexes writes `if hasattr(x, "value"): return x.value` everywhere; the Pythonic answer is `try: return x.value except AttributeError: return default`. Same outcome, opposite intent. **Get this lesson wrong and the rest of your Python reads Java-with-different-syntax**; get it right and the patterns the next two lessons teach (`with`, decorators) compose cleanly on top of the same try-and-catch reflex.
 
 ## The two reflexes
 
