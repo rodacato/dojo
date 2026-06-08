@@ -1,5 +1,7 @@
+import { ArrayTrack } from './ArrayTrack'
 import { BeforeAfter } from './BeforeAfter'
 import { Disambiguation } from './Disambiguation'
+import { TabbedCard } from './TabbedCard'
 import { TwoByTwo } from './TwoByTwo'
 import { RUBY_FIGURES, type FigureData } from './data/ruby-figures'
 
@@ -17,10 +19,14 @@ export function FigureRenderer({ id }: { id: string }) {
     )
   }
   switch (figure.type) {
+    case 'array-track':
+      return <ArrayTrack data={figure} />
     case 'before-after':
       return <BeforeAfter data={figure} />
     case 'disambiguation':
       return <Disambiguation data={figure} />
+    case 'tabbed-card':
+      return <TabbedCard data={figure} />
     case 'two-by-two':
       return <TwoByTwo data={figure} />
   }

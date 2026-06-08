@@ -1,8 +1,15 @@
+import type { ArrayTrackData } from '../ArrayTrack'
 import type { BeforeAfterData } from '../BeforeAfter'
 import type { DisambiguationData } from '../Disambiguation'
+import type { TabbedCardData } from '../TabbedCard'
 import type { TwoByTwoData } from '../TwoByTwo'
 
-export type FigureData = BeforeAfterData | DisambiguationData | TwoByTwoData
+export type FigureData =
+  | ArrayTrackData
+  | BeforeAfterData
+  | DisambiguationData
+  | TabbedCardData
+  | TwoByTwoData
 
 const npmVsBundle: BeforeAfterData = {
   type: 'before-after',

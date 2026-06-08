@@ -17,21 +17,29 @@ describe('splitOnFigureDirectives', () => {
     ])
   })
 
-  it('extracts every Ruby figure type from a realistic body', () => {
+  it('extracts every canon figure type from a realistic body', () => {
     const md = [
       ':figure[before-after]{id="foreach-vs-each-block"}',
       'mid prose',
       ':figure[disambiguation]{id="string-vs-symbol"}',
       'more prose',
       ':figure[two-by-two]{id="operators-as-messages"}',
+      'still more',
+      ':figure[array-track]{id="each-vs-map-vs-select"}',
+      'almost done',
+      ':figure[tabbed-card]{id="block-anatomy"}',
     ].join('\n\n')
     const segments = splitOnFigureDirectives(md)
     const figures = segments.filter((s) => s.kind === 'figure')
-    expect(figures).toHaveLength(3)
-    expect(figures.map((f) => (f.kind === 'figure' ? f.id : ''))).toEqual([
-      'foreach-vs-each-block',
-      'string-vs-symbol',
-      'operators-as-messages',
+    expect(figures).toHaveLength(5)
+    expect(
+      figures.map((f) => (f.kind === 'figure' ? [f.figureType, f.id] : [])),
+    ).toEqual([
+      ['before-after', 'foreach-vs-each-block'],
+      ['disambiguation', 'string-vs-symbol'],
+      ['two-by-two', 'operators-as-messages'],
+      ['array-track', 'each-vs-map-vs-select'],
+      ['tabbed-card', 'block-anatomy'],
     ])
   })
 
