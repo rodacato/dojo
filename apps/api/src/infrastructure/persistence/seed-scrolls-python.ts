@@ -44,6 +44,8 @@ const COURSE_ID = seedUuid('python')
 
 const LESSON_0_ID = seedUuid('py-l0-context')
 const LESSON_1_ID = seedUuid('py-l1-surprises')
+const LESSON_2_ID = seedUuid('py-l2-literals')
+const LESSON_3_ID = seedUuid('py-l3-eafp')
 
 const STEP_0_1_ID = seedUuid('py-s0-1-context-and-run')
 const STEP_0_2_ID = seedUuid('py-s0-2-predict-install-dance')
@@ -51,6 +53,16 @@ const STEP_0_2_ID = seedUuid('py-s0-2-predict-install-dance')
 const STEP_1_1_ID = seedUuid('py-s1-1-surprises')
 const STEP_1_2_ID = seedUuid('py-s1-2-predict-mutable-default')
 const STEP_1_3_ID = seedUuid('py-s1-3-kata-counter')
+
+const STEP_2_1_ID = seedUuid('py-s2-1-literals')
+const STEP_2_2_ID = seedUuid('py-s2-2-kata-tally')
+const STEP_2_3_ID = seedUuid('py-s2-3-kata-flatten')
+const STEP_2_4_ID = seedUuid('py-s2-4-playground-comp-vs-gen')
+
+const STEP_3_1_ID = seedUuid('py-s3-1-eafp')
+const STEP_3_2_ID = seedUuid('py-s3-2-predict-except-comma')
+const STEP_3_3_ID = seedUuid('py-s3-3-kata-safe-get')
+const STEP_3_4_ID = seedUuid('py-s3-4-kata-parse-int-or')
 
 const PY_HARNESS_HEADER = `# ── dojo harness ──────────────────────────────────
 _tests = []
@@ -473,13 +485,613 @@ const LESSON_1 = {
 }
 
 // =============================================================================
+// Lesson 2 — Literales y comprehensions que vas a leer
+// =============================================================================
+//
+// 4 steps (read + 2 kata + playground). The read embeds the array-track
+// figure (situational per the figures menu — earns embedding because the
+// playground at 2.4 makes the eager-vs-lazy distinction concrete after the
+// figure makes it visible at a glance). The flatten kata uses the one-deep
+// nested comprehension shape the 2.1 read step excused explicitly.
+
+const STEP_2_1 = {
+  id: STEP_2_1_ID,
+  lessonId: LESSON_2_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'Five literals you’ll read all day',
+  instruction: `## Why this matters
+
+Open any non-trivial Python file Friday and you'll see five literal shapes in the first hundred lines: comprehensions (list, dict, set), generator expressions, f-strings, slicing, unpacking. Knowing them on sight = readable code. Not knowing them = three Stack Overflow tabs per function. This lesson lands all five, then the katas force you to write the two that have the most pedagogical weight (\`tally\` for choosing between idioms, \`flatten\` for nested-comprehension shape).
+
+## List comprehension
+
+\`\`\`python
+squares = [x * x for x in range(10)]
+evens   = [x for x in xs if x % 2 == 0]
+\`\`\`
+
+Reads as "the list of \`expr\` for each \`x\` in \`xs\` (where \`p(x)\`)." Replaces \`xs.map(...)\` and \`xs.map(...).filter(...)\` from JS reflex. **One level of nesting is OK** — \`[item for sublist in nested for item in sublist]\` reads left-to-right as the equivalent nested \`for\` loops, and it lands cleanly for the polyglot at one depth (exactly the shape Lesson 2's \`flatten\` kata uses). **Two levels is a code smell, three is wrong** — at that point use named intermediate variables or a \`for\` loop, the polyglot you're sending the PR to will thank you.
+
+## Dict and set comprehensions
+
+\`\`\`python
+by_upper = {k.upper(): v for k, v in d.items()}    # dict comprehension
+unique   = {x.lower() for x in names}              # set comprehension
+\`\`\`
+
+Same shape, different output container. Dict comprehensions pair with \`dict.items()\` constantly — that's how you transform a dict's keys or values in one line.
+
+## Generator expression — same shape, lazy
+
+\`\`\`python
+total   = sum(x * x for x in range(1_000_000))
+peek    = next(line for line in file if line.startswith("ERROR"))
+\`\`\`
+
+Same syntax as the list comprehension but with **parens** instead of square brackets. **Lazy** — produces values on demand, doesn't materialise the whole sequence. Pass to \`sum\`, \`max\`, \`min\`, \`any\`, \`all\`, \`next\`, or any function that iterates once. The parens are optional when the generator is the sole argument to a function: \`sum(x * x for x in xs)\` works without an extra \`()\`.
+
+The cost: a generator can only be consumed **once**. After \`next(gen)\` exhausts it, you can't iterate again. If you need to iterate twice, you wanted a list.
+
+:figure[array-track]{id="comp-vs-filter-vs-gen"}
+
+The figure above is the same input under three shapes: list comprehension materialises the doubled values eagerly; the filter version drops the cells the predicate rejects (marked \`✕\`); the generator expression produces the same logical result as the list but lazily — \`list(...)\` is what materialises it. **The eager-vs-lazy distinction is the one the playground at the end of this lesson explores; the figure here makes it visible in a glance.**
+
+## f-strings
+
+\`\`\`python
+msg   = f"hello {name}, you have {count} messages"
+price = f"{value:.2f}"            # format spec — two decimals
+debug = f"{x=}"                   # debug form — prints "x=42"
+\`\`\`
+
+Modern way to interpolate. Expressions inside \`{}\`, format specs after \`:\`, the \`=\` debug form is gold for prints. **The polyglot's reflex from JS template literals (\`\` \`\${name}\` \`\`) transfers cleanly** — same idea, different sigil. **No \`%\`-formatting, no \`.format()\` taught here:** they're legacy, f-strings are the modern default, every later read step in this scroll uses them.
+
+## Slicing recap
+
+\`\`\`python
+xs[1:5]      # indices 1..4
+xs[::-1]     # reversed
+xs[::2]      # every other
+xs[:-1]      # all but last
+\`\`\`
+
+You likely know this from JS. Named here once so the katas don't surprise.
+
+## Unpacking
+
+\`\`\`python
+first, *rest = [1, 2, 3, 4]      # rest = [2, 3, 4]
+a, *_, last  = "hello"            # a='h', last='o', middle ignored
+merged       = {**defaults, **overrides}    # dict merge
+def f(*args, **kwargs): ...                  # collect into positional / keyword
+\`\`\`
+
+Argument unpacking (\`*args\`, \`**kwargs\`) is how Python functions receive variable arguments. Dict unpacking (\`{**d1, **d2}\`) merges. The starred-target pattern (\`first, *rest = xs\`) is the destructuring equivalent of JS's \`const [first, ...rest] = xs\`.
+
+Next: two katas. \`tally\` is small but forces an idiom choice (manual dict comp vs stdlib \`Counter\`). \`flatten\` is the nested-comprehension shape — the one-deep nesting the rule above excuses. Then a playground for lazy-vs-eager exploration.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+const STEP_2_2 = {
+  id: STEP_2_2_ID,
+  lessonId: LESSON_2_ID,
+  order: 2,
+  type: 'kata' as const,
+  title: 'Build a tally function — choose your idiom',
+  instruction: `## Your task
+
+Given a list of strings, return a dict mapping each unique string to the number of times it appears.
+
+**Two solutions are idiomatic:**
+
+1. A **dict comprehension** over the unique words, using \`list.count\` for each — the "do it with what you just learned" answer.
+2. **\`collections.Counter\`** from the stdlib — the "use the right tool" answer.
+
+Both pass the tests. Pick the one whose Pythonic-ness you can defend out loud in a code review. The hint nudges if you're stuck.
+
+### What's expected
+
+\`\`\`python
+tally(["hi", "bye", "hi"])    # {"hi": 2, "bye": 1}
+tally([])                     # {}
+tally(["a"])                  # {"a": 1}
+\`\`\``,
+  starterCode: `def tally(words: list[str]) -> dict[str, int]:
+    # your code
+    ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("counts duplicates correctly")
+def _():
+    _eq(tally(["hi", "bye", "hi"]), {"hi": 2, "bye": 1})
+
+
+@_t("empty input returns empty dict")
+def _():
+    _eq(tally([]), {})
+
+
+@_t("single word maps to count 1")
+def _():
+    _eq(tally(["a"]), {"a": 1})
+
+
+@_t("preserves all unique keys")
+def _():
+    result = tally(["a", "b", "c", "a", "b", "a"])
+    _eq(result, {"a": 3, "b": 2, "c": 1})
+${PY_HARNESS_FOOTER}`,
+  hint: "Two paths:\n\n1. **Stdlib path.** There's a module in Python's standard library specifically designed for counting hashable things. It lives in the `collections` module. Look at what its constructor accepts — it takes an iterable and returns the counted dict-like object directly. One line.\n\n2. **Comprehension path.** You can build the dict yourself with a comprehension. The trick: iterate over the **unique** words (turn the list into a set first), and for each unique word, use a list method that returns how many times an element appears. The shape is `{word: <count of word in words> for word in <unique words>}`.\n\nBoth are correct. The first is what a senior Pythonista would write; the second is what someone who just learned comprehensions would write and what your reviewer will gently rewrite during PR review.",
+  solution: `from collections import Counter
+
+def tally(words: list[str]) -> dict[str, int]:
+    return dict(Counter(words))`,
+  alternativeApproach: `The comprehension shape works and is worth seeing once:
+
+\`\`\`python
+def tally(words: list[str]) -> dict[str, int]:
+    return {w: words.count(w) for w in set(words)}
+\`\`\`
+
+It's O(n²) — \`words.count(w)\` scans the whole list for each unique word — so a real reviewer prefers \`Counter\` (single pass, hash-based). The lesson here is that comprehension-as-default is right *until* a stdlib type is purpose-built for the job. \`Counter\` is one of those types; reach for it whenever the question is "how many of each."`,
+}
+
+const STEP_2_3 = {
+  id: STEP_2_3_ID,
+  lessonId: LESSON_2_ID,
+  order: 3,
+  type: 'kata' as const,
+  title: 'Flatten a list of lists',
+  instruction: `## Your task
+
+Given a list of lists of integers, return a single flat list containing every integer in order.
+
+\`\`\`python
+flatten([[1, 2], [3], [4, 5]])    # [1, 2, 3, 4, 5]
+flatten([])                       # []
+flatten([[]])                     # []
+\`\`\`
+
+**The idiomatic answer is a one-deep nested comprehension.** The 2.1 read step named the rule: one level of nesting reads cleanly left-to-right; two is a code smell. This is the one-level case the rule excuses.
+
+If you find yourself reaching for \`sum(nested, [])\` or \`functools.reduce(...)\`, stop. The comprehension shape is what a Python reviewer expects and what the next reader will understand fastest. (\`itertools.chain.from_iterable\` is also acceptable and arguably more idiomatic at scale; it does not appear in the hint because the comprehension is the lesson.)`,
+  starterCode: `def flatten(nested: list[list[int]]) -> list[int]:
+    # your code
+    ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("flattens a typical nested list")
+def _():
+    _eq(flatten([[1, 2], [3], [4, 5]]), [1, 2, 3, 4, 5])
+
+
+@_t("empty outer list returns empty list")
+def _():
+    _eq(flatten([]), [])
+
+
+@_t("list of empties returns empty list")
+def _():
+    _eq(flatten([[]]), [])
+
+
+@_t("preserves order across sublists")
+def _():
+    _eq(flatten([[3, 1], [2], [4]]), [3, 1, 2, 4])
+
+
+@_t("handles a single-element list of one sublist")
+def _():
+    _eq(flatten([[42]]), [42])
+${PY_HARNESS_FOOTER}`,
+  hint: "Nested comprehensions read **left-to-right in the order you'd write the nested `for` loops**. The first `for` clause is the outer loop; the second is the inner loop.\n\nTry the shape `[? for ? in nested for ? in ?]` and figure out what to put in each blank:\n\n- What are you iterating *over* in the outer loop? (The thing the parameter holds.)\n- What's the inner loop iterating over? (Each element of the outer loop.)\n- What do you want in the result list? (Each element of the inner loop.)\n\nIf the result is `[]`, you've put the loops in the wrong order or used the wrong variable in the output position.",
+  solution: `def flatten(nested: list[list[int]]) -> list[int]:
+    return [item for sublist in nested for item in sublist]`,
+  alternativeApproach: `For \`flatten\` at scale or when you want a generator (lazy, no intermediate list), \`itertools.chain.from_iterable\` is the senior Python answer:
+
+\`\`\`python
+from itertools import chain
+
+def flatten(nested: list[list[int]]) -> list[int]:
+    return list(chain.from_iterable(nested))
+\`\`\`
+
+\`chain.from_iterable\` returns an iterator that yields elements from each sublist in turn — no comprehension, no materialising intermediate lists. For large \`nested\` inputs it has a measurable memory win over the comprehension form. The reason this scroll teaches the comprehension first: \`itertools\` literacy is its own surface area (\`chain\`, \`groupby\`, \`accumulate\`, \`pairwise\`, \`takewhile\`) and earning it deserves a dedicated lesson — the deferred \`python-iterators-and-generators\` deep-dive.`,
+}
+
+const STEP_2_4 = {
+  id: STEP_2_4_ID,
+  lessonId: LESSON_2_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: 'Playground: comprehension vs generator expression',
+  instruction: `## Play around
+
+This step is a **playground**, not a kata. There's no verdict to pass — there's a runner button that executes whatever you write and shows the output. The harness runs a trivially-true assertion so the backend stays uniform, but the focus is on your output, not on a green checkmark.
+
+The starter code below sets up the same logic in three shapes: a list comprehension (eager), a generator expression (lazy), and a second iteration over the generator. Run it as-is first to see what each prints, then change the input and see what breaks.
+
+Specific things worth trying:
+
+- What is the **type** of each (\`type(list_comp)\`, \`type(gen_exp)\`) and what does that tell you about the API surface?
+- What happens when you call \`next(gen_exp)\` once? Twice? After exhaustion?
+- What does \`list(gen_exp)\` return the **first** time? The **second** time?
+- When would you reach for a generator over a list comprehension in real code? (Hint: memory, or a stream you can't materialise.)
+
+This step prints to the console because it's a playground — the runner shows stdout instead of test verdicts. In \`kata\` steps the harness captures \`print\` output so it doesn't drown the assertions; here it's the whole point. If you copy this pattern into a kata and your \`print\` "disappears", that's why.`,
+  starterCode: `xs = range(5)
+
+# Same logic, two different shapes:
+list_comp = [x ** 2 for x in xs]
+gen_exp   = (x ** 2 for x in xs)
+
+print("list_comp:", list_comp)
+print("type(list_comp):", type(list_comp).__name__)
+
+print("gen_exp:", gen_exp)
+print("type(gen_exp):", type(gen_exp).__name__)
+
+# Try this:
+print("first materialisation:", list(gen_exp))
+print("second materialisation:", list(gen_exp))
+`,
+  testCode: `${PY_HARNESS_HEADER}
+@_t("explored")
+def _():
+    _eq(True, True)
+${PY_HARNESS_FOOTER}`,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: { kind: 'playground' as const },
+}
+
+const LESSON_2 = {
+  id: LESSON_2_ID,
+  scrollId: COURSE_ID,
+  order: 3,
+  title: 'Literales y comprehensions que vas a leer',
+}
+
+// =============================================================================
+// Lesson 3 — EAFP vs LBYL — el reflejo Pythonic
+// =============================================================================
+//
+// 4 steps (read + predict + 2 kata). The read embeds the MANDATORY
+// disambiguation figure per S027 sprint contract — EAFP vs LBYL with
+// "Intent" as the divergent attribute. The safe_get kata includes a
+// tally-shaped retrieval-interleaving test (suite voice audit 2026-06-08
+// fix; the same dict shape Lesson 2's tally produces).
+
+const STEP_3_1 = {
+  id: STEP_3_1_ID,
+  lessonId: LESSON_3_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'The Pythonic reflex: try the operation',
+  instruction: `## Why this matters
+
+EAFP — *"Easier to Ask Forgiveness than Permission"* — is the cultural reflex that determines whether you write Python that reads Pythonic or Python that reads Java-with-different-syntax. A polyglot writing Python with Java reflexes writes \`if hasattr(x, "value"): return x.value\` everywhere; the Pythonic answer is \`try: return x.value except AttributeError: return default\`. Same outcome, opposite intent. **Get this lesson wrong and the rest of your Python reads Java-with-different-syntax**; get it right and the patterns the next two lessons teach (\`with\`, decorators) compose cleanly on top of the same try-and-catch reflex.
+
+## The two reflexes
+
+**EAFP — Easier to Ask Forgiveness than Permission.** Try the operation. Catch the specific exception if it fails. This is the cultural default in Python — \`try\` is **not** the escape hatch it is in Java; it's the *primary* control-flow shape for "this might not work."
+
+**LBYL — Look Before You Leap.** Check preconditions first; then do the operation. This is the cultural default in C, Java, Go.
+
+:figure[disambiguation]{id="eafp-vs-lbyl"}
+
+The figure above shows the two reflexes on the same skeleton — same shape on the page, opposite intent. **Intent** is the single divergent attribute the polyglot has to internalise: every other difference (race-safety, common-case cost, what the reader infers about your familiarity with the language) cascades from that one decision.
+
+## Why EAFP in Python specifically
+
+Three reasons, in order of importance:
+
+1. **Duck typing.** Python doesn't enforce nominal interfaces at the type system — an object behaves like a duck if it quacks. The only honest test is to try the quack and see what happens. \`if hasattr(x, "read"):\` is a weak claim about the object (the attribute might not be callable, might raise, might lie); \`try: x.read()\` is the actual test.
+2. **Performance in the common case.** In CPython, an exception **not raised** is cheap (≈50 ns). An exception **raised** has cost (≈10 μs), but if your common case is "no exception," EAFP is faster than LBYL because LBYL does the check AND the operation, while EAFP does only the operation.
+3. **Race conditions.** \`if os.path.exists(p): open(p)\` has a race window — the file can be deleted between the check and the open. \`try: open(p) except FileNotFoundError:\` doesn't. The check-then-act pattern is **structurally** unsafe in any concurrent context; EAFP eliminates the window.
+
+## \`try / except / else / finally\` — the full shape
+
+\`\`\`python
+try:
+    result = do_thing()
+except SpecificError as e:
+    handle(e)
+else:
+    # runs only if the try block did NOT raise
+    post_process(result)
+finally:
+    # runs always — exception or not, return or not
+    cleanup()
+\`\`\`
+
+The \`else\` clause is the part most polyglots have never seen. It runs if the \`try\` block did not raise. Useful for **separating "the operation succeeded" from "do the operation"** — keeping the \`try\` block as small as possible (only the line that might raise) and putting the success path in \`else\`. This is a real discipline difference; \`try: x = parse(); use(x) except ValueError: ...\` accidentally catches a \`ValueError\` from \`use(x)\` too. \`try: x = parse() except ValueError: ... else: use(x)\` doesn't.
+
+## When LBYL is correct
+
+Not always wrong. Three cases:
+
+- **Cheap check, common no-op case.** \`if not items: return\` before iterating is cheaper than catching nothing (which doesn't exist anyway). Trivial guards are LBYL by nature.
+- **No race risk.** Checking a constant, a local variable, or your own data structure is fine.
+- **Avoiding "exception as control flow for the dominant case."** If 95% of calls raise the same exception, your "exception" is actually the normal case — restructure. EAFP assumes the common case is *not* the exception path.
+
+## The footgun: EAFP misused as LBYL-in-a-try
+
+\`\`\`python
+# anti-pattern
+try:
+    if hasattr(x, "foo"):
+        y = x.foo
+except AttributeError:
+    y = None
+\`\`\`
+
+That's not EAFP — that's LBYL with extra steps. EAFP is "try **the operation that's the actual work**," not "try a check disguised as an operation." The Pythonic shape is:
+
+\`\`\`python
+try:
+    y = x.foo
+except AttributeError:
+    y = None
+\`\`\`
+
+If you find a \`try\` block that contains a \`hasattr\` / \`in\` / \`is not None\` check, you wrote LBYL in a \`try\`. Strip the check; the \`try\` does the work.
+
+Next: a predict on a syntactic trap that bites every polyglot who learned Python before 3.0. Then two katas — \`safe_get\` (which forces the LBYL-vs-EAFP-vs-\`dict.get\` choice) and \`parse_int_or\` (the dominant EAFP shape with a specific exception type).`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+const STEP_3_2 = {
+  id: STEP_3_2_ID,
+  lessonId: LESSON_3_ID,
+  order: 2,
+  type: 'predict' as const,
+  title: 'Predict: what does this syntax do?',
+  instruction: `One predict on \`except\`-clause syntax before the katas. The trap here is real legacy code you'll see in old tutorials and pre-2010 codebases.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: {
+    question: 'What does this code do in Python 3?',
+    snippet: `try:
+    x = parse(data)
+except ValueError, KeyError:
+    x = None`,
+    options: [
+      {
+        id: 'a',
+        text: 'Catches both `ValueError` and `KeyError`, sets `x = None` on either',
+      },
+      {
+        id: 'b',
+        text: 'Catches only `ValueError`, binds the exception to a variable named `KeyError`',
+      },
+      {
+        id: 'c',
+        text: '`SyntaxError` — modern Python requires `except (ValueError, KeyError):` with parens',
+      },
+      {
+        id: 'd',
+        text: 'Catches `ValueError`, binds the exception to `KeyError`, then catches `KeyError` separately',
+      },
+    ],
+    correct: 'c',
+    feedback: {
+      a: "The intent reads that way, and it's what you'd want in production code. But the syntax is wrong in Python 3 — you'd need parens: `except (ValueError, KeyError):`. Without parens, in Python 2 this meant \"catch `ValueError`, bind it to a variable named `KeyError`\" — wildly different from the comma-as-tuple reading. Python 3 made the parenless form a hard `SyntaxError` exactly so this ambiguity stops biting.",
+      b: 'That was the Python 2 meaning of the syntax — ambiguous and surprising enough that Python 3 rejected it at parse time. **You won\'t see this run** in Python 3; you\'ll see `SyntaxError`. The correct binding form in Python 3 is `except ValueError as e:` (`as` instead of `,`).',
+      c: "Correct. Python 3 made this a `SyntaxError` to remove the Python 2 ambiguity once and for all. The two modern forms are:\n\n- `except (ValueError, KeyError):` — multi-exception catch (tuple of exception types).\n- `except ValueError as e:` — single catch with the exception bound to a variable.\n\nIf you see the bare-comma form in a tutorial or a codebase, you're reading Python 2. Update or distrust the source.",
+      d: "Python doesn't chain `except` clauses with commas. Each `except` is its own clause, on its own line. Multi-exception catch requires the tuple-with-parens form (`except (ValueError, KeyError):`).",
+    },
+  },
+}
+
+const STEP_3_3 = {
+  id: STEP_3_3_ID,
+  lessonId: LESSON_3_ID,
+  order: 3,
+  type: 'kata' as const,
+  title: 'safe_get — handle a missing key without LBYL',
+  instruction: `## Your task
+
+Build \`safe_get(d, key, default=None)\` that returns \`d[key]\` if the key exists, else returns \`default\`.
+
+**Three solutions are correct.** The lesson is in noticing why one is best:
+
+1. **EAFP shape.** \`try: return d[key] except KeyError: return default\`. Lands the cultural reflex.
+2. **\`dict.get(key, default)\`.** One-liner. The right answer when the operation IS the missing-key check.
+3. **LBYL shape.** \`if key in d: return d[key] else: return default\`. **Works.** **Has a race window in concurrent contexts** (another thread can delete the key between the check and the read). For a single-threaded function it's fine; the discipline reason to avoid it is that the polyglot who writes LBYL here writes LBYL everywhere, including where it bites.
+
+### The \`None\`-vs-missing trap
+
+What about \`safe_get({"a": None}, "a", default="missing")\`? The key \`"a"\` **exists**; its value is \`None\`. The function should return \`None\` (the actual value), not \`"missing"\` (the default for a missing key).
+
+A solution that does \`return d.get(key) or default\` fails this test — \`None or default\` evaluates to \`default\`. **\`None\` is a legitimate value, not absence.** The fix: use \`d.get(key, default)\` (which only falls back on missing key) or the EAFP shape (which only catches \`KeyError\`).
+
+### What's expected
+
+\`\`\`python
+safe_get({"a": 1}, "a")                         # 1
+safe_get({"a": 1}, "b")                         # None  (default default)
+safe_get({"a": 1}, "b", default="missing")      # "missing"
+safe_get({"a": None}, "a", default="missing")   # None  (value IS None, not missing)
+\`\`\`
+
+### Realistic input — the \`tally\`-shaped dict
+
+One of the tests below uses a dict shaped like \`{"a": 2, "b": 1}\` — **exactly the output shape your \`tally\` function from Lesson 2 produced.** That's not coincidence: \`safe_get\` over a count dictionary is a common production shape (look up a word's count; return \`0\` if the word never appeared). The retrieval interleaving is deliberate — the lesson-2 muscle compounds here, and you'll see this dict shape again in Lesson 5's decorator wrappers.`,
+  starterCode: `def safe_get(d: dict, key, default=None):
+    # your code
+    ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("returns the value when key exists")
+def _():
+    _eq(safe_get({"a": 1}, "a"), 1)
+
+
+@_t("returns default None when key is missing")
+def _():
+    _eq(safe_get({"a": 1}, "b"), None)
+
+
+@_t("returns explicit default when key is missing")
+def _():
+    _eq(safe_get({"a": 1}, "b", default="missing"), "missing")
+
+
+@_t("None value is returned as None — NOT replaced by default")
+def _():
+    _eq(safe_get({"a": None}, "a", default="missing"), None)
+
+
+@_t("empty dict + any key returns default")
+def _():
+    _eq(safe_get({}, "anything", default=42), 42)
+
+
+@_t("works over a tally-shaped count dict (Lesson 2 callback)")
+def _():
+    # Same shape \`tally(["a", "b", "a"])\` produced in Lesson 2.
+    counts = {"a": 2, "b": 1}
+    _eq(safe_get(counts, "a", default=0), 2)
+    _eq(safe_get(counts, "missing", default=0), 0)
+${PY_HARNESS_FOOTER}`,
+  hint: "Two paths land all six tests cleanly:\n\n1. **EAFP shape.** `try` the dictionary access; `except` the **specific** exception type Python raises when a dict key is missing. Return the default in the `except` branch. The `None`-vs-missing test passes for free because `KeyError` is only raised when the key isn't there — not when the value is `None`.\n\n2. **`dict.get(key, default)` shape.** Dicts have a built-in method that does exactly this: returns the value if the key exists, else the second argument. **Not the same as `dict[key] or default`** — `or` falls back on any falsy value (including `None` and `0`), which breaks the `None`-vs-missing test.\n\nWhat to avoid: `if key in d: return d[key] else: return default` (LBYL — works but trains the wrong reflex). `return d.get(key) or default` (fails the `None` test).",
+  solution: `def safe_get(d: dict, key, default=None):
+    return d.get(key, default)`,
+  alternativeApproach: `The explicit EAFP form is also correct, and worth seeing once because it's what \`dict.get\` desugars to under the hood:
+
+\`\`\`python
+def safe_get(d: dict, key, default=None):
+    try:
+        return d[key]
+    except KeyError:
+        return default
+\`\`\`
+
+For a single dict lookup, \`dict.get\` is the senior answer — same behaviour, one line, no \`try\` block. For an operation that's *not* a built-in convenience method (parsing a string, opening a file, hitting an attribute that may not exist), the explicit \`try / except\` shape is what you reach for. The discipline transfers; the syntax is per-case.`,
+}
+
+const STEP_3_4 = {
+  id: STEP_3_4_ID,
+  lessonId: LESSON_3_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: 'parse_int_or — dominant EAFP shape with a specific exception',
+  instruction: `## Your task
+
+Build \`parse_int_or(s, default)\` that returns \`int(s)\` if \`s\` parses as an integer, else returns \`default\`.
+
+This is the **EAFP shape in its purest form**: the \`try\` block does the work; the \`except\` clause catches the specific exception type Python raises on failure; nothing else. No \`hasattr\`, no \`isdigit\` check, no regex pre-validation. Try, catch, return.
+
+### What's expected
+
+\`\`\`python
+parse_int_or("42", 0)        # 42
+parse_int_or("nope", 0)      # 0
+parse_int_or("", -1)         # -1
+parse_int_or("3.14", 0)      # 0   ← int() doesn't parse floats from strings
+parse_int_or("  7  ", 0)     # 7   ← int() strips whitespace
+parse_int_or("-5", 0)        # -5  ← negative ints parse fine
+\`\`\`
+
+### Why a specific exception
+
+The temptation is \`except:\` (bare except). **Don't.** A bare \`except\` catches \`KeyboardInterrupt\` (user hits Ctrl-C), \`SystemExit\` (the interpreter shutting down), and \`GeneratorExit\` (a generator being closed) — none of which you want to swallow. Catch the **specific** exception type \`int()\` raises when a string isn't a valid integer.
+
+If you're not sure which exception type that is, try \`int("nope")\` in a REPL and read the error class name. (The hint nudges if needed.)`,
+  starterCode: `def parse_int_or(s: str, default: int) -> int:
+    # your code
+    ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("parses a valid integer string")
+def _():
+    _eq(parse_int_or("42", 0), 42)
+
+
+@_t("returns default on non-numeric string")
+def _():
+    _eq(parse_int_or("nope", 0), 0)
+
+
+@_t("returns default on empty string")
+def _():
+    _eq(parse_int_or("", -1), -1)
+
+
+@_t("returns default on float-shaped string")
+def _():
+    # int() doesn't parse "3.14" — it raises ValueError, not 3
+    _eq(parse_int_or("3.14", 0), 0)
+
+
+@_t("handles leading/trailing whitespace")
+def _():
+    _eq(parse_int_or("  7  ", 0), 7)
+
+
+@_t("handles negative integers")
+def _():
+    _eq(parse_int_or("-5", 0), -5)
+${PY_HARNESS_FOOTER}`,
+  hint: "The shape is three lines:\n\n```\ntry:\n    return <int conversion of s>\nexcept <specific exception>:\n    return default\n```\n\nTo find the specific exception type:\n\n- `int()` raises a specific exception when the string isn't a valid integer.\n- The exception name describes the problem: it's not about *type* (the input IS a string), it's about *value* — the string's value isn't a parseable integer.\n- The class name follows that pattern.\n\nWhat to avoid: `except:` (catches too much, including Ctrl-C); `except Exception:` (still too broad — masks bugs in the calling code); `isdigit()`-based LBYL (fails on negative numbers, fails on whitespace-padded input, and is exactly the LBYL anti-pattern Lesson 3.1 named).",
+  solution: `def parse_int_or(s: str, default: int) -> int:
+    try:
+        return int(s)
+    except ValueError:
+        return default`,
+  alternativeApproach: `For a parser that needs to *also* accept floats and round / truncate, the shape generalises:
+
+\`\`\`python
+def parse_int_or(s: str, default: int) -> int:
+    try:
+        return int(float(s))    # "3.14" → 3.14 → 3
+    except (ValueError, TypeError):
+        return default
+\`\`\`
+
+That's a different contract — silently accepting non-integer-shaped input. Don't add it unless the call site actually wants it. The narrow \`except ValueError:\` is the right default; widen only when the use case justifies it. The discipline is "match the exception clause to the contract you want," not "catch broadly to be safe."`,
+}
+
+const LESSON_3 = {
+  id: LESSON_3_ID,
+  scrollId: COURSE_ID,
+  order: 4,
+  title: 'EAFP vs LBYL — el reflejo Pythonic',
+}
+
+// =============================================================================
 // PYTHON_LESSONS + PYTHON_STEPS exports
 // =============================================================================
 //
-// Only L0 + L1 ship in this commit. L2-L5 land in subsequent W3 batches —
-// when each lesson's STEP_N_* constants land, the LESSON_N entry joins
-// PYTHON_LESSONS and the STEP_N_* IDs join PYTHON_STEPS.
+// W3 batch 2 ships L0 through L3. L4 + L5 land in batch 3.
 
-export const PYTHON_LESSONS = [LESSON_0, LESSON_1]
+export const PYTHON_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3]
 
-export const PYTHON_STEPS = [STEP_0_1, STEP_0_2, STEP_1_1, STEP_1_2, STEP_1_3]
+export const PYTHON_STEPS = [
+  STEP_0_1, STEP_0_2,
+  STEP_1_1, STEP_1_2, STEP_1_3,
+  STEP_2_1, STEP_2_2, STEP_2_3, STEP_2_4,
+  STEP_3_1, STEP_3_2, STEP_3_3, STEP_3_4,
+]
