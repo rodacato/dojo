@@ -46,6 +46,8 @@ const LESSON_0_ID = seedUuid('py-l0-context')
 const LESSON_1_ID = seedUuid('py-l1-surprises')
 const LESSON_2_ID = seedUuid('py-l2-literals')
 const LESSON_3_ID = seedUuid('py-l3-eafp')
+const LESSON_4_ID = seedUuid('py-l4-context-managers')
+const LESSON_5_ID = seedUuid('py-l5-decorators')
 
 const STEP_0_1_ID = seedUuid('py-s0-1-context-and-run')
 const STEP_0_2_ID = seedUuid('py-s0-2-predict-install-dance')
@@ -63,6 +65,17 @@ const STEP_3_1_ID = seedUuid('py-s3-1-eafp')
 const STEP_3_2_ID = seedUuid('py-s3-2-predict-except-comma')
 const STEP_3_3_ID = seedUuid('py-s3-3-kata-safe-get')
 const STEP_3_4_ID = seedUuid('py-s3-4-kata-parse-int-or')
+
+const STEP_4_1_ID = seedUuid('py-s4-1-with-protocol')
+const STEP_4_2_ID = seedUuid('py-s4-2-kata-temp-state')
+const STEP_4_3_ID = seedUuid('py-s4-3-kata-capture')
+const STEP_4_4_ID = seedUuid('py-s4-4-playground-tracer')
+
+const STEP_5_1A_ID = seedUuid('py-s5-1a-mechanism')
+const STEP_5_1B_ID = seedUuid('py-s5-1b-family')
+const STEP_5_2_ID = seedUuid('py-s5-2-predict-late-binding')
+const STEP_5_3_ID = seedUuid('py-s5-3-kata-trace')
+const STEP_5_4_ID = seedUuid('py-s5-4-kata-retry')
 
 const PY_HARNESS_HEADER = `# ── dojo harness ──────────────────────────────────
 _tests = []
@@ -1082,16 +1095,928 @@ const LESSON_3 = {
 }
 
 // =============================================================================
+// Lesson 4 — Context managers
+// =============================================================================
+//
+// 4 steps (read + 2 kata + playground). The read embeds the primary
+// before-after figure (try-finally-vs-with) per the figures menu. Kata
+// order is the post-audience-review swap (2026-06-08): 4.2 is the
+// @contextmanager generator form (lands first for the polyglot), 4.3 is
+// the class Capture form (state-bearing form second).
+
+const STEP_4_1 = {
+  id: STEP_4_1_ID,
+  lessonId: LESSON_4_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'with: the shape for resources',
+  instruction: `## Why this matters
+
+Every non-trivial Python codebase opens files, acquires locks, manages database connections, redirects stdout. **\`with\` is the shape Python provides for all of these.** Reading \`with engine.connect() as conn:\` without knowing the protocol means guessing what it does. And not being able to *write* one means you eventually invent worse shapes (a wrapper function, a context dict, a \`__del__\` finaliser you shouldn't trust) for problems \`with\` solves cleanly.
+
+## The \`with\` block syntax
+
+\`\`\`python
+with expr as name:
+    # block runs here; \`name\` is what \`expr.__enter__()\` returned
+    ...
+# block exited (with or without exception); expr.__exit__(...) ran
+\`\`\`
+
+\`expr\` evaluates to a **context manager** — an object with \`__enter__\` and \`__exit__\` dunders. \`__enter__\` runs first; its return value is bound to \`name\`. The block executes. \`__exit__\` runs, **regardless of whether the block raised**.
+
+## Why this exists
+
+Acquired resources need release. \`try / finally\` works but is verbose and easy to skip — and acquired-outside-the-block resources leak when humans forget the cleanup.
+
+:figure[before-after]{id="try-finally-vs-with"}
+
+The figure above is the contrast in one glance: the four-line \`try/finally\` pattern on the left (acquired-outside-the-block, manual cleanup, easy to forget the \`close\`) vs the three-line \`with\` on the right (acquired *inside* the \`as\` clause, cleanup implicit, lifetime visually scoped to the block). **Same outcome, opposite discipline.** The polyglot's reflex from C, Java pre-\`try-with-resources\`, or hand-rolled JS is the left column; the Pythonic answer is the right.
+
+## The protocol — \`__enter__\` / \`__exit__\`
+
+\`\`\`python
+class FileOpener:
+    def __init__(self, path):
+        self.path = path
+
+    def __enter__(self):
+        self.f = open(self.path)
+        return self.f
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.f.close()
+        # return True to suppress the exception; None (or False) to propagate
+        return None
+\`\`\`
+
+- **\`__enter__(self)\`** runs when the \`with\` block starts. Its return value is what \`as name\` binds.
+- **\`__exit__(self, exc_type, exc_val, exc_tb)\`** runs when the block exits. If the block raised, the three args carry the exception info; if not, all three are \`None\`. **Returning truthy from \`__exit__\` swallows the exception**; returning \`None\` (the default) lets it propagate. **Default to returning \`None\`** unless you have a specific reason to swallow — silent exception-swallowing is a maintenance nightmare.
+
+## \`contextlib.contextmanager\` — the shortcut
+
+Writing the class is verbose. The stdlib gives you a decorator that turns a generator into a context manager:
+
+\`\`\`python
+from contextlib import contextmanager
+
+@contextmanager
+def file_opener(path):
+    f = open(path)
+    try:
+        yield f                # everything before yield = __enter__
+    finally:
+        f.close()              # everything after yield = __exit__
+\`\`\`
+
+The function **yields exactly once**. Before the \`yield\` is \`__enter__\`; the yielded value is bound to \`as name\`; after the \`yield\` is \`__exit__\`. The \`try / finally\` around the yield ensures cleanup runs even when the \`with\` block raises. **This is the shape Pythonic code reaches for first** — only drop to the class form when you need state across multiple \`with\` blocks, or you're implementing a context manager that's part of a larger class's surface (Lesson 4.3's \`Capture\` kata is the latter).
+
+## The bridge to Lesson 5
+
+\`@contextmanager\` is a decorator. A decorator is a function that takes a function and returns a new object — here, a context manager. Lesson 5 unpacks the decorator shape itself; for now, **recognise that \`@contextmanager\` and \`@property\` and \`@dataclass\` are all callable transformations applied at definition time.** The next lesson makes that family visible.
+
+## Sandbox honesty
+
+In production Python you'll see context managers around database connections (\`with engine.connect() as conn:\`), lock acquisition (\`with self.lock:\`), temporary-directory creation (\`with tempfile.TemporaryDirectory() as d:\`), stdout/stderr redirection (\`with contextlib.redirect_stdout(buf):\`). In this scroll, the katas use in-memory state and dicts because Piston is single-process and stateless — but **the protocol is identical regardless of what's being managed.** Once you write one, you can read them all.
+
+Next: two katas. 4.2 writes a \`@contextmanager\` generator (the friendly shape). 4.3 writes the class form. Then a playground for \`__enter__\` / \`__exit__\` ordering under nested \`with\` and exceptions.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+const STEP_4_2 = {
+  id: STEP_4_2_ID,
+  lessonId: LESSON_4_ID,
+  order: 2,
+  type: 'kata' as const,
+  title: 'temp_state — a generator-based context manager',
+  instruction: `## Your task
+
+Write \`temp_state(d, key, value)\` — a context manager that:
+
+1. Sets \`d[key] = value\` when the \`with\` block starts.
+2. Restores the **original** value when the block exits — *or removes the key entirely if it wasn't there before*.
+3. Restores correctly **even if the block raises an exception**.
+
+Use the \`@contextmanager\` decorator from \`contextlib\`. The function yields exactly once.
+
+### What's expected
+
+\`\`\`python
+from contextlib import contextmanager
+
+# Key existed before
+d = {"a": 1}
+with temp_state(d, "a", 999):
+    assert d["a"] == 999
+assert d["a"] == 1               # original restored
+
+# Key did NOT exist before
+d = {}
+with temp_state(d, "a", 999):
+    assert d["a"] == 999
+assert "a" not in d              # key removed because it wasn't there
+
+# Block raises — cleanup still runs
+d = {"a": 1}
+try:
+    with temp_state(d, "a", 999):
+        assert d["a"] == 999
+        raise RuntimeError("boom")
+except RuntimeError:
+    pass
+assert d["a"] == 1               # restored despite the raise
+\`\`\`
+
+### The yield-once contract
+
+\`@contextmanager\` requires **exactly one** \`yield\` in the function body. The code before it runs on \`__enter__\`; the yielded value is what gets bound to \`as name\`; the code after runs on \`__exit__\`. Wrap the body in \`try / finally\` so the cleanup runs even when the \`with\` block raises.`,
+  starterCode: `from contextlib import contextmanager
+
+
+@contextmanager
+def temp_state(d: dict, key, value):
+    # your code (yield once)
+    ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("sets value inside the block")
+def _():
+    d = {"a": 1}
+    with temp_state(d, "a", 999):
+        _eq(d["a"], 999)
+
+
+@_t("restores original value after the block")
+def _():
+    d = {"a": 1}
+    with temp_state(d, "a", 999):
+        pass
+    _eq(d["a"], 1)
+
+
+@_t("removes the key on exit when it did not exist before")
+def _():
+    d = {}
+    with temp_state(d, "a", 999):
+        _eq(d["a"], 999)
+    _eq("a" in d, False)
+
+
+@_t("restores correctly even when the block raises")
+def _():
+    d = {"a": 1}
+    try:
+        with temp_state(d, "a", 999):
+            raise RuntimeError("boom")
+    except RuntimeError:
+        pass
+    _eq(d["a"], 1)
+
+
+@_t("removes key on exit when block raises and key did not pre-exist")
+def _():
+    d = {}
+    try:
+        with temp_state(d, "a", 999):
+            raise RuntimeError("boom")
+    except RuntimeError:
+        pass
+    _eq("a" in d, False)
+${PY_HARNESS_FOOTER}`,
+  hint: "The shape is:\n\n```\n@contextmanager\ndef temp_state(d, key, value):\n    # 1. Remember whether the key existed (and if so, its old value).\n    # 2. Set d[key] = value.\n    # 3. yield\n    # 4. Restore: if the key existed before, put the old value back; else delete it.\n```\n\nTo pass the \"restores even when the block raises\" test, wrap the `yield` in `try / finally` so the restore step (4) runs regardless of whether the block exits cleanly.\n\nTwo specific traps:\n\n- **Don't use `try / except`** — you don't want to catch the exception, you want the cleanup to run *and* the exception to propagate. `try / finally` does that.\n- **Don't `del d[key]` unconditionally on exit.** The key may have legitimately existed before you set it; in that case you restore the original value, not delete it. Track the pre-existence with a sentinel (`MISSING = object()` is the standard pattern) or with `key in d` checked once at the start.",
+  solution: `from contextlib import contextmanager
+
+_MISSING = object()
+
+
+@contextmanager
+def temp_state(d: dict, key, value):
+    sentinel = d.get(key, _MISSING)
+    d[key] = value
+    try:
+        yield
+    finally:
+        if sentinel is _MISSING:
+            del d[key]
+        else:
+            d[key] = sentinel`,
+  alternativeApproach: `The class form of the same context manager is verbose but instructive:
+
+\`\`\`python
+class TempState:
+    def __init__(self, d, key, value):
+        self.d, self.key, self.value = d, key, value
+
+    def __enter__(self):
+        self.had_key = self.key in self.d
+        self.old = self.d.get(self.key)
+        self.d[self.key] = self.value
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.had_key:
+            self.d[self.key] = self.old
+        else:
+            del self.d[self.key]
+        return None  # propagate exceptions
+\`\`\`
+
+Four times the lines for the same behaviour. The class form earns its place when you need methods on the bound object (Lesson 4.3's \`Capture\` kata) or persistent state across multiple \`with\` blocks. For a transient set-and-restore like \`temp_state\`, \`@contextmanager\` is what a reviewer expects.`,
+}
+
+const STEP_4_3 = {
+  id: STEP_4_3_ID,
+  lessonId: LESSON_4_ID,
+  order: 3,
+  type: 'kata' as const,
+  title: 'Capture — context manager as a class',
+  instruction: `## Your task
+
+Implement \`Capture\` as a class with \`__enter__\` and \`__exit__\`. The class also has a \`record(value)\` method that appends to an instance list.
+
+The shape is the same \`__enter__\` / \`__exit__\` protocol Step 4.2's \`@contextmanager\` desugared into — written as a class instead of a generator. Two reasons to reach for the class form (vs \`@contextmanager\`):
+
+1. **You need methods on the object** the \`with\` block binds. \`c.record(value)\` is a method call on \`c\`; a generator-based context manager can yield values, not callable surfaces.
+2. **You need state across multiple entries** of the same context manager. A class instance preserves its \`recorded\` list between \`with\` blocks; a generator function rebuilds state every call.
+
+### What's expected
+
+\`\`\`python
+with Capture() as c:
+    c.record(1)
+    c.record(2)
+assert c.recorded == [1, 2]
+
+# Same instance can be re-entered — appends across blocks
+c = Capture()
+with c:
+    c.record(1)
+with c:
+    c.record(2)
+assert c.recorded == [1, 2]
+\`\`\`
+
+### \`__enter__\` returns what \`as name\` binds
+
+If you want the block to call methods on the context manager itself, **return \`self\` from \`__enter__\`**. (If you returned, say, \`self.recorded\`, then \`c\` in \`with Capture() as c:\` would be the list, not the instance, and \`c.record(1)\` would fail.)
+
+### \`__exit__\` does nothing special for this kata
+
+\`__exit__\` is called even if the block raises; for this kata you don't need to handle the exception — just return \`None\` (or omit the return, same thing). Returning truthy from \`__exit__\` would *suppress* the exception, which is almost never what you want and definitely not what this kata wants.`,
+  starterCode: `class Capture:
+    def __init__(self):
+        self.recorded: list = ...
+
+    def __enter__(self):
+        # your code
+        ...
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # your code
+        ...
+
+    def record(self, value):
+        # your code
+        ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("records calls inside the with block")
+def _():
+    with Capture() as c:
+        c.record(1)
+        c.record(2)
+    _eq(c.recorded, [1, 2])
+
+
+@_t("__enter__ returns the instance (as name binds to self)")
+def _():
+    c = Capture()
+    with c as bound:
+        _eq(bound is c, True)
+
+
+@_t("recorded list starts empty")
+def _():
+    c = Capture()
+    _eq(c.recorded, [])
+
+
+@_t("same instance appends across multiple with blocks")
+def _():
+    c = Capture()
+    with c:
+        c.record(1)
+    with c:
+        c.record(2)
+    _eq(c.recorded, [1, 2])
+
+
+@_t("does not suppress exceptions raised inside the block")
+def _():
+    c = Capture()
+    raised = False
+    try:
+        with c:
+            c.record(1)
+            raise RuntimeError("boom")
+    except RuntimeError:
+        raised = True
+    _eq(raised, True)
+    _eq(c.recorded, [1])
+${PY_HARNESS_FOOTER}`,
+  hint: "Four pieces:\n\n1. **`__init__`** initialises `self.recorded` to an empty list.\n2. **`__enter__`** returns the value the `with ... as name:` clause should bind. Read the second test if you're stuck on what to return.\n3. **`__exit__`** has nothing meaningful to do for this kata. The signature has three exception parameters; you don't need to inspect them. Return value of `None` (or no explicit return) lets exceptions propagate, which is what the last test expects.\n4. **`record(self, value)`** appends to `self.recorded`.\n\nThe two methods together are the same `__enter__` / `__exit__` shape `@contextmanager` desugared into in 4.2 — written as a class because we need a method (`record`) on the object the block binds, which a generator can't provide.",
+  solution: `class Capture:
+    def __init__(self):
+        self.recorded: list = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return None  # let exceptions propagate
+
+    def record(self, value):
+        self.recorded.append(value)`,
+  alternativeApproach: `The generator equivalent of \`Capture\` is awkward — generators yield values, not callable surfaces:
+
+\`\`\`python
+@contextmanager
+def capture():
+    recorded = []
+    def record(v): recorded.append(v)
+    yield record         # yield the record function (not the list)
+    # caller can't access \`recorded\` after the block
+\`\`\`
+
+That doesn't compose — the caller has the \`record\` function but no way to read \`recorded\` after the \`with\` block exits. You could yield a tuple \`(record, lambda: recorded)\` and have the caller unpack, but you've already invented worse ergonomics than the class form. **This is the case the spec named** in Step 4.2's intro: when the bound object needs to be a callable surface, \`@contextmanager\` doesn't compose; reach for the class.`,
+}
+
+const STEP_4_4 = {
+  id: STEP_4_4_ID,
+  lessonId: LESSON_4_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: 'Playground: __enter__ / __exit__ ordering under nesting and exceptions',
+  instruction: `## Play around
+
+This step is a **playground**, not a kata. The runner button executes whatever you write and shows the output; the harness runs a trivially-true assertion so the backend stays uniform.
+
+The starter code below defines a \`Tracer\` context manager that prints on \`__enter__\` and \`__exit__\`, then nests two of them inside a \`with\`. Run it as-is to see the order; then vary it.
+
+Specific things worth trying:
+
+- **What's the print order if no exception is raised?** The \`__enter__\` lines go top-down (outer, then inner); the \`__exit__\` lines go bottom-up (inner first, then outer). Confirm by reading the output.
+- **What changes if you \`raise RuntimeError("boom")\` inside the inner \`with\`?** Both \`__exit__\` methods still run. The \`exc_type\` arg they receive is no longer \`None\`.
+- **What happens if the inner \`__exit__\` returns \`True\`?** Truthy from \`__exit__\` **swallows** the exception. The outer \`__exit__\` then runs with \`exc_type=None\` because the exception is considered handled.
+- **What if you wrap the outer \`with\` in a \`try / except\`?** If neither \`__exit__\` returns \`True\`, the exception propagates out to the \`try\` and you catch it. If the inner does return \`True\`, the \`try\` never sees the exception.
+
+This step prints to the console because it's a playground — the runner shows stdout instead of test verdicts. In \`kata\` steps the harness captures \`print\` output so it doesn't drown the assertions; here it's the whole point.`,
+  starterCode: `class Tracer:
+    def __init__(self, name):
+        self.name = name
+
+    def __enter__(self):
+        print(f"enter {self.name}")
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print(f"exit  {self.name}  exc_type={exc_type.__name__ if exc_type else None}")
+        # return None — let exceptions propagate
+        return None
+
+
+with Tracer("outer"):
+    with Tracer("inner"):
+        print("inside both")
+`,
+  testCode: `${PY_HARNESS_HEADER}
+@_t("explored")
+def _():
+    _eq(True, True)
+${PY_HARNESS_FOOTER}`,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: { kind: 'playground' as const },
+}
+
+const LESSON_4 = {
+  id: LESSON_4_ID,
+  scrollId: COURSE_ID,
+  order: 5,
+  title: 'Context managers',
+}
+
+// =============================================================================
+// Lesson 5 — Decorators + closures
+// =============================================================================
+//
+// 5 steps after the 2026-06-08 suite voice audit applied the spec §7
+// split — the original 5.1 measured ~970 words past the 600-word
+// threshold. 5.1a carries the mechanics (closures, L1 back-reference,
+// plain decorator, @wraps, single-arg bridge, three-layer onion).
+// 5.1b carries the reframe (unification figure, named-and-deferred,
+// Java-reflex closer) and opens with the explicit L4 → L5 bridge
+// sentence the inner spec §3 committed to.
+
+const STEP_5_1A = {
+  id: STEP_5_1A_ID,
+  lessonId: LESSON_5_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'Closures and decorators: the mechanism',
+  instruction: `## Why this matters
+
+The polyglot will see \`@retry\`, \`@cache\`, \`@app.route\`, \`@property\`, \`@dataclass\`, \`@contextmanager\` in the first non-trivial Python file. Knowing what \`@\` actually does = readable code. **Not knowing = decorators feel like magic, you write code that decorates wrong (\`functools.wraps\` missing, three-layer onion confused), and the wrong code is slow to debug.** This lesson lands the mechanism, then lets the kata at 5.3 and 5.4 force you to write one.
+
+## Closures recap — capture is by *name*, not by value
+
+A function that references a variable from its enclosing scope captures that variable's **name binding**, not its current value. In Python this matters:
+
+\`\`\`python
+fns = [lambda: i for i in range(3)]
+[f() for f in fns]                    # [2, 2, 2], NOT [0, 1, 2]
+\`\`\`
+
+Each lambda captures the *name* \`i\`, which by the time the lambdas are called has been bound to \`2\` (the last iteration). The standard fix is a default argument that captures the value at lambda-creation time:
+
+\`\`\`python
+fns = [lambda i=i: i for i in range(3)]    # default arg = value snapshot
+[f() for f in fns]                          # [0, 1, 2]
+\`\`\`
+
+This is **the late-binding closure trap**, the canonical Python-closure surprise. The predict at 5.2 is exactly this snippet.
+
+## Back-reference to Lesson 1's \`Counter(items=[])\` predict
+
+The Lesson 1 predict planted a hook: \`Counter(items=[])\` shares the same list across instances. **Same family of bug, different surface.** The mechanism behind both is that **function objects are constructed once at \`def\` time** — defaults are evaluated and bound then (Lesson 1's trap); closure variables are name references *resolved* at call (this lesson's trap). The \`def __init__(self, items=[])\` reuses the same list across calls; the \`lambda: i\` resolves \`i\` whenever it runs. Two surfaces, one evaluation model. Naming the mechanism here closes the loop.
+
+## What a decorator IS
+
+A **callable that takes a callable and returns a callable.** \`@d\` is *sugar* for \`f = d(f)\`. Nothing more.
+
+\`\`\`python
+def trace(fn):
+    def wrapper(*args, **kwargs):
+        print(f"calling {fn.__name__}")
+        return fn(*args, **kwargs)
+    return wrapper
+
+@trace
+def add(a, b):
+    return a + b
+# Exactly equivalent to: add = trace(add)
+\`\`\`
+
+Calling \`add(1, 2)\` now goes through \`wrapper(1, 2)\`, which prints \`"calling add"\` then calls the original \`add\`. The \`@trace\` line is *syntax sugar*; what's executing is plain function-takes-function-returns-function.
+
+## The \`functools.wraps\` rule
+
+By default, the wrapper has its own \`__name__\` (\`"wrapper"\`), its own \`__doc__\` (\`None\`), its own \`__module__\`. That breaks introspection — \`pytest\` looks at \`__name__\`, \`inspect.signature\` looks at the function metadata, IDE tooltips read the docstring. The fix:
+
+\`\`\`python
+from functools import wraps
+
+def trace(fn):
+    @wraps(fn)                          # copies fn's metadata onto wrapper
+    def wrapper(*args, **kwargs):
+        ...
+    return wrapper
+\`\`\`
+
+**Every decorator you write in production needs \`@wraps(fn)\`.** A decorator without it is broken — sometimes silently, sometimes loudly. The 5.3 kata's tests assert on \`__name__\`, so a missing \`@wraps\` is a visible failure.
+
+## Single-arg decorator first, parametrised second
+
+Before the three-layer onion below: the kata at 5.3 (\`@trace\`) walks the **single-arg** shape — function in, function out, plus \`@wraps\`. **That's the bridge.** Write the plain decorator first; add the parametrisation layer on top in 5.4. If 5.3 feels solid, 5.4's \`@retry(times=N)\` is just "wrap 5.3 in another function that takes the arg." If you find yourself confused inside 5.4, the gap is at 5.3, not at three-layer semantics.
+
+## Decorators with arguments — the three-layer onion
+
+\`\`\`python
+def retry(times):                      # outer: takes the decorator's argument
+    def decorator(fn):                  # middle: takes the function (this IS the decorator)
+        @wraps(fn)
+        def wrapper(*args, **kw):       # inner: the actual call-time wrapper
+            for _ in range(times):
+                try:
+                    return fn(*args, **kw)
+                except Exception:
+                    continue
+            raise
+        return wrapper
+    return decorator
+
+@retry(3)
+def flaky():
+    ...
+\`\`\`
+
+Three layers because: outer takes the decorator's arg (\`3\`); middle takes the function (\`flaky\`); inner is the wrapper that runs at call time. \`@retry(3)\` calls \`retry(3)\`, which returns \`decorator\`. \`decorator\` is then applied to \`flaky\` — \`flaky = decorator(flaky)\`. **This trips up every polyglot the first time they read it.** Once you see the shape, every parametrised decorator (\`@app.route("/")\`, \`@pytest.fixture(scope="session")\`, \`@cache(maxsize=128)\`) is the same pattern.
+
+Next: the *reframe* — once you see the shape, four of Python's most-common decorators stop looking like four separate things. 5.1b makes that family visible.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+const STEP_5_1B = {
+  id: STEP_5_1B_ID,
+  lessonId: LESSON_5_ID,
+  order: 2,
+  type: 'read' as const,
+  title: 'The family: why @property, @dataclass, @cache, @contextmanager are the same idea',
+  instruction: `## Why this matters
+
+5.1a landed the mechanics: \`@d\` is sugar for \`f = d(f)\`; \`@wraps\` rescues introspection; the three-layer onion gives parametrised decorators. **This step lands the reframe.** Once you see decorators as "callable transforming callable," four of Python's most-common decorators stop feeling like four separate things and start feeling like one shape applied four ways.
+
+**Remember how \`@contextmanager\` turned a generator into a context manager in Lesson 4?** That's the same shape as a plain decorator — a callable transforming another callable. The decorator family is wider than \`@contextmanager\` and \`@trace\`, and the next subsection makes that visible across the four decorators you'll see most often in production Python.
+
+## The unification — \`@property\`, \`@dataclass\`, \`@cache\`, \`@contextmanager\`
+
+All four of these are *callables transforming callables (or classes)*. They differ only in what they take and what they return.
+
+:figure[tabbed-card]{id="decorators-and-friends"}
+
+The figure above is the same shape applied to four different decorators. Tab through them — every one is "callable in, callable (or transformed class) out," differing only in the *kind* of input and output. **Once you see this, Python's decorator surface stops feeling magical and starts feeling consistent.** The decorator shape is the language's primary "modify what a callable does at definition time" mechanism, and it earns the syntax sugar because it's used everywhere — production code, web framework routing, ORM column declarations, type-checking, caching.
+
+## Named-and-deferred
+
+Four topics this lesson **does not** teach, but that the polyglot will encounter:
+
+- **The descriptor protocol** behind \`@property\` — \`__get__\`, \`__set__\`, \`__delete__\`. \`@property\` is "just" a descriptor; understanding the protocol is the depth \`python-descriptors-and-protocols\` (deep-dive) earns.
+- **Metaclasses and \`__init_subclass__\`** — Tim Peters' rule: "if you have to ask, you don't need them." Named here so the polyglot recognises the words; depth in \`python-descriptors-and-protocols\`.
+- **Async decorators and the event loop** — \`async def\`, \`await\`, \`asyncio.run\`, \`TaskGroup\`. All of this needs the event-loop model *before* the syntax; depth in \`python-asyncio-deep\`.
+- **\`functools.lru_cache\` invalidation on methods** — \`lru_cache\`'s \`cache_clear()\` exists, but applied to a method it caches \`self\` and prevents garbage collection. Real production issue; depth in a future \`python-functools-deep\`.
+
+You know they exist, roughly what shape they have, and where to find depth — that's enough to read idiomatic Python. When one of them bites you in production, you'll know which deep-dive to open.
+
+## Closer (the Java-class question)
+
+If you're coming from Java and noticed this scroll has no dedicated OOP lesson, **that's deliberate, not an omission.** Python's class system contributes two things to a polyglot the language doesn't already have:
+
+1. **The protocol surface.** Lesson 1 named the five dunders; Lesson 4 wrote \`__enter__\` / \`__exit__\`; this lesson recognises \`@property\` / \`@dataclass\` / \`@classmethod\` as decorators applied to classes. That's how Python's classes earn their pages.
+2. **The \`@dataclass\` "I just want a record" answer.** One decorator, zero boilerplate, get \`__init__\` / \`__repr__\` / \`__eq__\` / typed fields for free.
+
+Everything else about classes — inheritance hierarchies, abstract base classes, descriptors at depth, \`__slots__\`, \`__init_subclass__\` as the lightweight metaclass alternative — lives in \`python-descriptors-and-protocols\`. **The polyglot reflex that produces \`class TaskRunner: def run(self): ...\` for a three-line script is the failure mode this scroll most actively defends against** (see Lesson 1's anti-class beat). Reach for a class when you have **state + behaviour that belong together**, or when you're implementing a protocol Python expects (a context manager, an iterator, a callable). Reach for a function otherwise. Reach for a \`@dataclass\` when the answer is "I want a typed record." That is the lens; the depth waits.
+
+Next: a predict on the late-binding closure trap (the snippet from 5.1a's closures recap), then two katas — \`@trace\` (single-arg with \`@wraps\`), then \`@retry(times=N)\` (three-layer onion).`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+const STEP_5_2 = {
+  id: STEP_5_2_ID,
+  lessonId: LESSON_5_ID,
+  order: 3,
+  type: 'predict' as const,
+  title: 'Predict: what does this loop-of-lambdas return?',
+  instruction: `One predict on closure capture before the katas. This is the snippet the read step's closures recap warned about.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: {
+    question: 'What does this print?',
+    snippet: `fns = [lambda: i for i in range(3)]
+print([f() for f in fns])`,
+    options: [
+      { id: 'a', text: '`[0, 1, 2]`' },
+      { id: 'b', text: '`[2, 2, 2]`' },
+      { id: 'c', text: "`[None, None, None]` (lambdas don't capture)" },
+      { id: 'd', text: '`[0, 0, 0]` (lambdas capture initial value)' },
+    ],
+    correct: 'b',
+    feedback: {
+      a: "The JS reflex from `let`-loop bindings. In modern JavaScript, `for (let i = 0; i < 3; i++)` creates a **new** `i` per iteration, so a closure inside the loop captures a distinct binding each time. In Python, `for i in range(3)` reuses the *same* `i` — there's one binding, rebound on each iteration. Each lambda captures the **name** `i`; by the time you call them, `i` is `2` (the last value the loop assigned). To get `[0, 1, 2]`, snapshot the value at lambda-creation time with a default arg: `[lambda i=i: i for i in range(3)]`.",
+      b: "Correct. **Late binding.** Python closures capture the *name binding*, not the value. All three lambdas reference the same `i`, which after the loop is `2`. The fix is `[lambda i=i: i for i in range(3)]` — the default argument is evaluated at lambda-creation time and binds the current value to the parameter `i`, which then shadows the loop variable inside the lambda body.\n\n**This is the canonical Python-closure trap** and the reason you'll see `lambda i=i:` patterns scattered through production code. It's the same `def`-time vs call-time evaluation model behind Lesson 1's `Counter(items=[])` mutable-default trap — different surface, same mechanism.",
+      c: "Lambdas **do** capture — they capture the enclosing scope's name bindings, exactly like nested `def` functions. `[None, None, None]` would require the lambdas to return nothing, which they don't (they return `i`). The lambda mechanism isn't the trap; the trap is *what gets captured* (name, not value).",
+      d: "Closures capture **references**, not snapshots. The \"capture initial value\" model is what `lambda i=i:` simulates explicitly via default-argument evaluation at lambda-creation time — but without that pattern, the lambda holds a reference to the same `i` that the loop is rebinding. After the loop, `i` is `2`, and all three lambdas read `2`.",
+    },
+  },
+}
+
+const STEP_5_3 = {
+  id: STEP_5_3_ID,
+  lessonId: LESSON_5_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: '@trace — a single-arg decorator with @wraps',
+  instruction: `## Your task
+
+Write a decorator \`trace\` that wraps any function and records each call into a list \`trace.calls\`. The tuple shape is \`(args, kwargs, return_value)\`.
+
+**Two requirements:**
+
+1. The wrapped function must work normally — calling \`add(1, 2)\` returns \`3\`, plus a record gets appended to \`trace.calls\`.
+2. The wrapped function's \`__name__\` must be preserved — \`add.__name__\` is \`"add"\`, not \`"wrapper"\`. The stdlib has a decorator for this — see the hint.
+
+### What's expected
+
+\`\`\`python
+trace.calls = []
+
+@trace
+def add(a, b):
+    return a + b
+
+add(1, 2)               # returns 3, appends ((1, 2), {}, 3) to trace.calls
+add(3, 4)               # returns 7, appends ((3, 4), {}, 7)
+assert trace.calls == [((1, 2), {}, 3), ((3, 4), {}, 7)]
+assert add.__name__ == "add"      # @wraps preserved the name
+\`\`\`
+
+### About \`trace.calls\`
+
+\`trace.calls\` is a list attached to the \`trace\` function itself — \`trace.calls = []\` *outside* the function. Functions are objects in Python (a fact this lesson is built around); they can carry attributes. The decorator's wrapper appends to \`trace.calls\` on every call.`,
+  starterCode: `from functools import wraps
+
+
+def trace(fn):
+    # your code — return a wrapper that records each call into trace.calls,
+    # and preserve fn's metadata onto the wrapper.
+    ...
+
+
+trace.calls = []
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("wrapped function returns the same value as the original")
+def _():
+    trace.calls = []
+
+    @trace
+    def add(a, b):
+        return a + b
+
+    _eq(add(1, 2), 3)
+
+
+@_t("each call appends (args, kwargs, result) to trace.calls")
+def _():
+    trace.calls = []
+
+    @trace
+    def add(a, b):
+        return a + b
+
+    add(1, 2)
+    add(3, 4)
+    _eq(trace.calls, [((1, 2), {}, 3), ((3, 4), {}, 7)])
+
+
+@_t("@wraps preserves __name__")
+def _():
+    trace.calls = []
+
+    @trace
+    def add(a, b):
+        return a + b
+
+    _eq(add.__name__, "add")
+
+
+@_t("kwargs are recorded correctly")
+def _():
+    trace.calls = []
+
+    @trace
+    def greet(name, *, greeting="hi"):
+        return f"{greeting}, {name}"
+
+    greet("Adrian", greeting="hola")
+    _eq(trace.calls, [(("Adrian",), {"greeting": "hola"}, "hola, Adrian")])
+${PY_HARNESS_FOOTER}`,
+  hint: "The decorator's shape:\n\n```\ndef trace(fn):\n    @<the stdlib decorator that copies metadata>(fn)\n    def wrapper(*args, **kwargs):\n        result = <call the original function with the args>\n        <append the tuple (args, kwargs, result) to the list>\n        return result\n    return wrapper\n```\n\nThree specific things to land:\n\n1. **Forward `*args` and `**kwargs`** so the wrapper accepts any call shape — single positional, kwargs only, mix.\n2. **Record before returning.** Compute `result` first, then append `(args, kwargs, result)` to `trace.calls`, then return. If you append before the call, you don't have the result yet; if you `return` before appending, the record never lands.\n3. **Use the stdlib decorator that copies metadata.** It lives in `functools`. The third test (`__name__`) is what catches you if you skipped it — the wrapper's name without it is `\"wrapper\"`.",
+  solution: `from functools import wraps
+
+
+def trace(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        result = fn(*args, **kwargs)
+        trace.calls.append((args, kwargs, result))
+        return result
+    return wrapper
+
+
+trace.calls = []`,
+  alternativeApproach: `For decorators that need to share state *between* instances (a global trace log across multiple decorated functions, for instance), \`trace.calls\` as a function attribute is the right pattern. For decorators that own per-decoration state (one log per decorated function), the closure form holds it:
+
+\`\`\`python
+def trace_per_fn(fn):
+    calls = []
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        result = fn(*args, **kwargs)
+        calls.append((args, kwargs, result))
+        return result
+    wrapper.calls = calls    # expose for inspection
+    return wrapper
+\`\`\`
+
+Now each \`@trace_per_fn\` decoration has its own \`calls\` list, accessible as \`decorated_fn.calls\`. Pick the shape that matches the contract — *one log* for the whole program (function attribute on the decorator) vs *one log per decorated function* (closure attribute on the wrapper).`,
+}
+
+const STEP_5_4 = {
+  id: STEP_5_4_ID,
+  lessonId: LESSON_5_ID,
+  order: 5,
+  type: 'kata' as const,
+  title: '@retry(times=N) — the three-layer onion',
+  instruction: `## Your task
+
+Write \`retry(times=N)\` — a parametrised decorator that wraps a function and retries it up to \`N\` times if it raises. On the first success, return the result. After \`N\` failures, re-raise the last exception.
+
+This is the **three-layer onion** the 5.1 read step described:
+
+- **Outer:** takes the decorator's argument (\`times\`).
+- **Middle:** takes the function. This is the actual decorator.
+- **Inner:** the wrapper that runs at call time, retrying the function.
+
+If 5.3 felt solid, this is **5.3 wrapped in one more layer** that takes \`times\`. If 5.4 feels confusing, the gap is at 5.3 — go back, make sure the single-arg shape is locked in, then return.
+
+### What's expected
+
+\`\`\`python
+attempts = {"n": 0}
+
+@retry(times=3)
+def flaky():
+    attempts["n"] += 1
+    if attempts["n"] < 3:
+        raise RuntimeError("not yet")
+    return "ok"
+
+flaky()                                         # attempts 1 (raise), 2 (raise), 3 (return) → "ok"
+assert flaky.__name__ == "flaky"                # @wraps preserved the name
+
+
+@retry(times=3)
+def always_fails():
+    raise ValueError("never works")
+
+try:
+    always_fails()                              # tries 3x, all raise, re-raises ValueError
+except ValueError as e:
+    assert str(e) == "never works"
+\`\`\`
+
+### Re-raise discipline
+
+After exhausting \`times\` attempts, **re-raise the last exception** — don't silently return \`None\`, don't return a sentinel, don't swallow. The caller asked for the result; if there isn't one, they need to know why. Use bare \`raise\` (no argument) inside the \`except\` to re-raise the exception just caught — Python preserves the original traceback.
+
+### Preserve \`__name__\` with \`@wraps\`
+
+Same rule as 5.3 — wrap the innermost wrapper with \`@wraps(fn)\`. The tests assert on \`__name__\`.`,
+  starterCode: `from functools import wraps
+
+
+def retry(times: int):
+    # your code — three layers:
+    #   outer: takes times
+    #   middle: takes fn (this is the decorator)
+    #   inner: the wrapper that runs at call time
+    ...
+`,
+  testCode: `${PY_HARNESS_HEADER}
+# === learner code runs above this line ===
+
+@_t("retries up to N times and returns on first success")
+def _():
+    attempts = {"n": 0}
+
+    @retry(times=3)
+    def flaky():
+        attempts["n"] += 1
+        if attempts["n"] < 3:
+            raise RuntimeError("not yet")
+        return "ok"
+
+    _eq(flaky(), "ok")
+    _eq(attempts["n"], 3)
+
+
+@_t("succeeds on first attempt does not retry")
+def _():
+    attempts = {"n": 0}
+
+    @retry(times=3)
+    def always_ok():
+        attempts["n"] += 1
+        return "ok"
+
+    _eq(always_ok(), "ok")
+    _eq(attempts["n"], 1)
+
+
+@_t("re-raises the last exception after exhausting attempts")
+def _():
+    @retry(times=3)
+    def always_fails():
+        raise ValueError("never works")
+
+    raised = None
+    try:
+        always_fails()
+    except ValueError as e:
+        raised = str(e)
+    _eq(raised, "never works")
+
+
+@_t("times=1 means one attempt total")
+def _():
+    attempts = {"n": 0}
+
+    @retry(times=1)
+    def fails_once():
+        attempts["n"] += 1
+        raise RuntimeError("nope")
+
+    try:
+        fails_once()
+    except RuntimeError:
+        pass
+    _eq(attempts["n"], 1)
+
+
+@_t("@wraps preserves __name__")
+def _():
+    @retry(times=2)
+    def flaky():
+        return 1
+
+    _eq(flaky.__name__, "flaky")
+${PY_HARNESS_FOOTER}`,
+  hint: "The shape, with the three layers labelled:\n\n```\ndef retry(times):              # OUTER — receives the decorator's arg\n    def decorator(fn):          # MIDDLE — receives the function (THIS is the decorator)\n        @<stdlib-metadata-copier>(fn)\n        def wrapper(*args, **kw):    # INNER — runs at call time\n            <try the function up to `times` times>\n            <on success: return the result>\n            <on failure: re-raise the last exception>\n        return wrapper\n    return decorator\n```\n\nTwo specific traps:\n\n1. **Where does `times` live?** It's a parameter of the OUTER function. The INNER wrapper references it via closure. If you wrote it as two layers (just `decorator` + `wrapper`), `times` has no scope. The third layer (outer) exists *because* the decorator needs to take an argument.\n\n2. **The retry loop.** A `for _ in range(times)` loop with `try: return fn(*args, **kw) except Exception: continue` covers the retry-and-return-on-success path. After the loop exits without a return, you've exhausted attempts — `raise` (bare, no argument) re-raises the last caught exception. Python remembers it.",
+  solution: `from functools import wraps
+
+
+def retry(times: int):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kw):
+            last_exc = None
+            for _ in range(times):
+                try:
+                    return fn(*args, **kw)
+                except Exception as e:
+                    last_exc = e
+                    continue
+            raise last_exc
+        return wrapper
+    return decorator`,
+  alternativeApproach: `For production retries, the three-layer onion gets one more layer: a **backoff strategy** (constant delay, exponential, jittered) and a **predicate** for which exceptions to retry on (don't retry on \`KeyboardInterrupt\`, don't retry on \`ValueError\` if the input is invalid). Libraries like \`tenacity\` give you both:
+
+\`\`\`python
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=1, max=10),
+    retry=retry_if_exception_type(TransientError),
+)
+def fetch(url): ...
+\`\`\`
+
+The shape generalises: parametrised decorators with multiple kwargs, each contributing one composable concern. **For the scroll's purpose, the three-layer onion is the load-bearing pattern** — once you can write \`@retry(times=N)\` from first principles, reading \`@tenacity.retry(...)\` is just naming the additional parameters. \`tenacity\` and friends are deferred to a future \`python-resilience-patterns\` deep-dive.`,
+}
+
+const LESSON_5 = {
+  id: LESSON_5_ID,
+  scrollId: COURSE_ID,
+  order: 6,
+  title: 'Decorators + closures',
+}
+
+// =============================================================================
 // PYTHON_LESSONS + PYTHON_STEPS exports
 // =============================================================================
 //
-// W3 batch 2 ships L0 through L3. L4 + L5 land in batch 3.
+// W3 batch 3 closes out authoring with L4 + L5. All 22 steps now seeded.
 
-export const PYTHON_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3]
+export const PYTHON_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3, LESSON_4, LESSON_5]
 
 export const PYTHON_STEPS = [
   STEP_0_1, STEP_0_2,
   STEP_1_1, STEP_1_2, STEP_1_3,
   STEP_2_1, STEP_2_2, STEP_2_3, STEP_2_4,
   STEP_3_1, STEP_3_2, STEP_3_3, STEP_3_4,
+  STEP_4_1, STEP_4_2, STEP_4_3, STEP_4_4,
+  STEP_5_1A, STEP_5_1B, STEP_5_2, STEP_5_3, STEP_5_4,
 ]
