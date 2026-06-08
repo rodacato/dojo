@@ -1,498 +1,205 @@
-# Python Course Track
+# Python Scroll Track
 
-> **Pre-pivot draft.** Re-scope to a single Python language scroll per [ADR 022](../../adr/022-crash-course-pivot.md) pending. The multi-sub-course model below is the old direction; the canonical shape going forward is one ~90-minute Python crash course (see [`ruby.md`](ruby.md) for the post-pivot example). Specialist sign-off (S7 Nadia) required before re-scope.
->
-> Maintainer persona: S7 Nadia Petrov (Python educator) + S5 Dr. Elif Yıldız (curriculum architect)
-> Last researched: 2026-04-14 · Pre-pivot draft flagged 2026-06-06
-
----
+> Maintainer persona: S7 Nadia Petrov (Python educator) + S5 Dr. Elif Yıldız (curriculum architect) + S2 Valentina Cruz (content quality) + S11 Maya Lindqvist (interactive learning UX).
+> Last researched: 2026-04-14 · Re-scoped 2026-06-06 under [ADR 022](../../adr/022-crash-course-pivot.md) · **Re-scoped polyglot-first 2026-06-07** under Sprint 026, mirroring the Ruby re-scope · **Promoted to canon 2026-06-08** under Sprint 027.
 
 ## 1. Learning Philosophy for Python
 
-Python is the rare language where the official tutorial is good enough that most learners *think* they know the language after reading it. They don't. They know the syntax. The actual job of a Python course on Dojo is to drag the learner from "I can write a `for` loop" to "I can read a `collections.abc` source file and not panic" — and to do that without burying them in jargon or pretending that `__metaclass__` is a beginner topic. The "batteries included" stdlib is the pedagogical core: every exercise that can be solved with `itertools`, `collections`, `functools`, `dataclasses`, `pathlib`, or `contextlib` *should* be, because the stdlib is the idiom dictionary. A learner who finishes our track should reach for `Counter` before `dict.get(k, 0) + 1`, and for a context manager before `try/finally`.
+Python has a different teaching pathology than Ruby. Ruby's pathology is Rails — most learners arrive via the framework and never meet the language. Python's pathology is the *opposite*: every learner arrives via the language (the official tutorial is good enough that they think they know it after a weekend), but most never internalise the idioms that separate a Python *user* from a Python *thinker*. They write `try/except` only when forced. They reach for `if x in d: ... else: ...` instead of `d.get(x, default)`. They write `for i in range(len(xs))` six months into the job. They learn `async def` syntax before they can explain what the event loop does. This track is about **Python the language, not Django/Flask, not pandas/numpy/PyTorch, not the bootcamp arc that ends with a Streamlit dashboard.** A polyglot developer who finishes the Python scroll has learned a small, opinionated, expressive language whose protocol surface (dunders, iterables, context managers, decorators) *is* the language — whether or not they ever touch a web framework or a notebook.
 
-Idioms we reinforce explicitly: **EAFP over LBYL** (try the operation, catch the exception — it's faster and more honest about Python's duck typing), **comprehensions over `map`/`filter` chains** (with a hard exception for generator expressions in pipelines), **context managers for any acquired resource**, **dunder methods as the protocol surface** (an object *is* what its dunders say it is), and **type hints introduced gradually but never abandoned**. We treat type hints the way Brett Slatkin does in *Effective Python*: optional in the first lessons, mandatory by the OOP course, treated as documentation-with-teeth by the testing course.
+The core mental model is **the protocol surface plus EAFP**. Almost every Python idiom that surprises a JS or Java developer reduces to one of: "this object behaves like X because it implements the X dunder" or "we tried the operation rather than checking preconditions first." `for x in xs` works because of `__iter__`; `with open(p) as f` works because of `__enter__` / `__exit__`; `@decorator` works because functions are objects and `@x` is sugar for `f = x(f)`; `[x for x in xs if p(x)]` is the Pythonic answer to `xs.filter(p).map(...)`; `try: d[k] except KeyError:` is the cultural default over `if k in d`. The crash scroll teaches **context managers and EAFP first** — not as a footnote to "exception handling" and not buried at the end of an OOP tour. The polyglot will read `with engine.connect() as conn:` and `try: ... except StopIteration:` in the first Python file they open on Friday; the scroll respects that. By the end, a learner should recognise that `@property`, `@dataclass`, `@contextmanager`, and `@cache` are all the same idea (a callable transforming another callable / class), and that `with` and `try` are the two control-flow shapes a real Python codebase reaches for first.
 
-Dead ends to avoid: **don't teach OOP before functions feel natural** — a learner who reaches for a class to add two numbers has been mis-taught. **Don't teach `asyncio` before sync Python is solid** — async is a concurrency model, not a syntax flourish, and learners who meet `async def` before they understand the event loop will cargo-cult `await` everywhere. **Don't teach metaclasses early, or at all unless the learner asks** — Python's most quoted aphorism on the topic ("if you have to ask, you don't need them" — Tim Peters) is correct. **Don't conflate `==` with `is`**, and don't let the learner walk away thinking mutable default arguments are a "fun gotcha"; they're a consequence of how function objects are constructed, and we teach the *why*.
+**Indentation as syntax** and **`self` as explicit first parameter** are taught as Lesson 1 surprises — not because they are deep, but because they are the *first thing* a JS/Java/Ruby developer notices, and refusing to name them up front is gaslighting. They land in 10 minutes. The polyglot then forgets they ever surprised them and moves on to the actually interesting Python: comprehensions as the dominant data-transform shape, EAFP as the cultural reflex, context managers as the resource-acquisition shape, decorators as the callable-modifier shape, type hints as a *design tool* (Mariana's TS reflex transfers cleanly here — Python's `Protocol` is structural, like TS, not nominal, like Java). Async, descriptors, metaclasses, the asyncio mental model at depth, and the C-extension surface are explicitly **named-and-deferred** to deep-dive scrolls.
 
-Finally, Python is taught poorly when it's taught as "the easy first language." Our voice assumes the learner is already a developer (Dojo's audience). We skip the "what is a variable" explanations and we don't apologize for using terms like *callable*, *iterable*, *protocol*, or *descriptor* once they've been defined. The track's intentional friction: every sub-course ends with a challenge step that is harder than the lessons preceding it. If the learner finishes without struggling, we built the course wrong.
+Dead ends we explicitly avoid: **teaching OOP before functions feel natural** (a learner who reaches for a class to add two numbers has been mis-taught — Lesson 1's `self` mention is calibration, not full OOP); **teaching `asyncio` syntax before the event loop mental model** (Nadia S7's veto — `async def` before "what does `await` actually do" produces cargo-culted `await` sprinkled at random; full async lives in the deep-dive scroll); **teaching pandas / numpy / Django / Flask as "Python"** (they are libraries and frameworks, not the language — confusing them is the single biggest disservice this track exists to undo, mirror of Ruby-not-Rails); **teaching metaclasses at all in the crash** (Tim Peters' "if you have to ask, you don't need them" — named in Lesson 5's closer, full treatment in a deep-dive); **teaching the mutable-default-argument trap as a "fun gotcha"** (it's a *consequence* of how function objects are constructed at `def` time — we teach the *why*, not the meme); **using `read` steps as tour-guide prose that explains what the polyglot already knows about strings, lists, and `if/else`**.
 
----
+Before any lesson on the language proper, **Lesson 0 orients the polyglot in Python's ecosystem** — what Python is for and what it isn't, `python` vs `python3` and why the answer depends on your OS, the CPython / PyPy distinction (named and deferred), `pip` vs `venv` vs `poetry` vs `uv` vs `conda` (the package-manager landscape is famously fragmented; the polyglot needs a map), `pyproject.toml` as the modern entry point, and what a Python project actually looks like when you `git clone` it. This is not padding. It is the information the polyglot would have to assemble from five browser tabs on a Friday morning, surfaced once so they can decide whether Python earns their attention before they invest in syntax.
 
-## 2. Course Tree Overview
+A note on tone: the Dojo voice is direct and **assumes the reader already programs in another language**. We do not pad with "Welcome to your Python journey!" preambles. Every `read` step passes the test: *if I delete this paragraph, does the polyglot lose something Python-specific? If no, the paragraph doesn't exist.* When an exercise is hard, we say so. When the Piston sandbox forces a compromise (no `pytest` by default, no `requests`, no `numpy`, no `mypy` runtime, no real async I/O), we say that too — explicitly, in the lesson body, not buried in a footnote. The learner deserves to know what is the language, what is the library ecosystem, and what is the sandbox getting in the way.
 
-| Course | Level | Prereqs | Steps (approx) | Status |
+## 2. Course Authoring Profile
+
+> Course-level voice and authoring decisions for the Python track. Per [`docs/courses/README.md`](../README.md) §8.1. The Python scroll inherits these defaults; each lesson's spec deviations are declared in the spec's §2 Authoring Notes.
+
+**Voice & angle.** Python-the-language, not Django/Flask/pandas/PyTorch. The unifying angle is "the protocol surface (dunders + iterables + context managers + decorators) and EAFP are the language; everything else is library." Web frameworks are named only to be excluded. The data-science stack is named only to be excluded. The audience is the polyglot developer who needs confidence reading and writing Python by Friday, not the first-time programmer learning what a function is. Voice is direct and assumes a literate developer — no "Welcome to Python!" preambles, no apologising for indentation, no softening when an idiom is genuinely Pythonic-and-only-Pythonic.
+
+**Step density & rhythm.** Slightly lower prose-per-step than Ruby. Target for Python: **250-350 words per `read` step**, with one additional `read` step in Lessons 4 (context managers) and 5 (decorators) where the mechanism behind the syntax is the lesson. Reason: Python's surface is more familiar to the polyglot than Ruby's (no blocks-as-syntax oddity, no `do...end` precedence, no symbols), so individual reads need less re-framing. But the *mechanisms* under decorators (closures, late binding, three-layer onion for parametrised decorators) and context managers (`__enter__` / `__exit__` choreography, `contextlib.contextmanager` as generator-as-protocol) deserve longer reads when they land. The framework default (~200-300 words) is fine for Lessons 0-3; Lessons 4-5 push to ~350-400.
+
+**Interactivity menu.**
+
+- **IN:** `read`, `exercise`, `challenge`, `predict`, `read+inline`, and the `playground` local-experiment variant (inherited as `kata` with `data.kind: "playground"` from Ruby — see [ruby/ruby.md §2.3](../ruby/ruby.md)).
+- **OUT (deliberate exclusion):** `trace`. Although [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) Tier 2 lists Python as a `trace` target (third after JS DOM and SQL), the crash scroll defers it. The reason: `trace`'s pedagogical value in Python is concentrated in two places — generator/iterator stepping and the event-loop yield points — and **both are deep-dive territory** in the polyglot-first scope. Lifting `trace` into the crash would either decorate a lesson where it's unnecessary (basic control flow, comprehensions) or force a topic into the crash that doesn't belong there (asyncio internals). Defer to `python-asyncio-deep` and `python-iterators-and-generators` where the per-step authoring cost actually amortises.
+
+**Figures menu** *(added 2026-06-08 alongside promotion).* Embeddable visual figures (see [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) §Embeddable visual figures) authors of this scroll reach for, with each one's Python-specific landing zone:
+
+- **IN, recommended:**
+  - **`disambiguation`** — for near-look-alikes the polyglot will conflate. *First landing: Lesson 3 (the EAFP-vs-LBYL pair with **Intent** as the divergent attribute — same shape on the page, opposite cultural reflexes).* Strong secondary candidate: Lesson 2's *list vs tuple vs set* with **Mutability** as the divergent dimension cascading to ordering, hashability, and use-case. Per Sprint 027's mandate, at least one `disambiguation` ships in this scroll; Lesson 3 is the primary commitment, Lesson 2 the optional second if the read step needs the visual relief.
+  - **`before-after`** — for any idiom whose pedagogical point is the contrast with a verbose equivalent the polyglot would default to. *First landing: Lesson 4 (`try / finally + close()` vs `with open(p) as f:` — the manual-resource-management shape the polyglot writes from C/Java reflex, replaced by Python's `with`-block protocol).* Reach for it anywhere the polyglot reflex produces noisy code that Python's idiom collapses; another fit is Lesson 0 (the `node`-and-`npm` reflex vs `python3 -m venv .venv && pip install -e .`).
+- **IN, situational (use when a lesson genuinely benefits):**
+  - **`array-track`** — for comprehension-shape comparisons. Strongest fit: **Lesson 2**, a single figure with input `[1, 2, 3, 4, 5]` and three tracks (`[x*2 for x in xs]` / `[x for x in xs if x > 2]` / `(x*2 for x in xs)` then `list(...)`) showing how cell states differ across list-comp, filter, and generator-then-materialise. Teaches three comprehension shapes in one figure. A secondary candidate sits in Lesson 3 (EAFP-vs-LBYL walk on a mixed input list), but the Lesson 2 use is stronger.
+  - **`tabbed-card`** — only if Lesson 5's "decorators-and-friends" read step needs the multi-lens framing. Strong fit: **Lesson 5** with 2-4 tabs (`@property` / `@dataclass` / `@cache` / `@contextmanager`) — same shape, different inputs — making Lesson 5's central insight ("they're all the same idea") visible without three paragraphs of prose. Default: do not embed unless the read step pulls toward it.
+- **OUT (deliberate exclusion):**
+  - **`two-by-two`** — Python lacks the crisp orthogonal-axes confusion Ruby has with "operators as syntax × operators as messages." No obvious fit pre-authoring; do not force one. If authoring surfaces a real candidate (e.g. Lesson 5: "decorator parametrisation × wrapped-target kind"), revisit — but parametrisation is not orthogonal to target, so expect this to stay out.
+  - **`sequence-play`**, **`grid-canvas`**, **`recursion-stack`** — none of Python's polyglot-first content earns these. They belong in algorithms or async-iterator scrolls, not the Python crash. If the future `python-asyncio-deep` or `python-iterators-and-generators` deep-dive ships, `sequence-play` becomes a candidate for visualising generator stepping or event-loop yield points — *not before*.
+
+**Pedagogical bets.**
+
+1. **Prediction-before-explanation on Python's quiet surprises.** Use `predict` steps for the moments where Python *quietly* diverges from polyglot reflexes — `is` vs `==` on small ints (the interned-int trap), mutable default arguments evaluated at `def` time (the `def f(x, acc=[]):` trap), late binding in closures inside loops (the `[lambda: i for i in range(3)]` trap), truthiness of empty collections (`if []` is falsy, distinct from Ruby). Each `predict`'s wrong-answer feedback addresses the **specific** wrong mental model the option encodes (per [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) §predict voice contract). *First lesson to use this:* Lesson 1 (the two surprising syntaxes). *Failure mode without it:* learners memorise idioms as trivia, never building the protocol-surface model that decoders + context managers + dunders all share.
+2. **Retrieval interleaving from comprehensions to EAFP to context managers.** Identifiers introduced in Lesson 2 (`tally`, `flatten`) reappear in Lesson 3's EAFP exercises and Lesson 5's decorator wrappers. testCode references prior identifiers by name — the learner must remember the signature. *First lesson to use this:* Lesson 2. *Failure mode without it:* each lesson feels like a hermetic universe; the learner never builds the layered intuition that "Python's killer features stack."
+3. **Footgun awareness, not footgun fear.** When the crash scroll names `__init_subclass__`, descriptors, metaclasses, the GIL, or the asyncio event loop at depth — and it must, because the polyglot will encounter them in real codebases — every mention ends with the specific failure mode the technique introduces, plus a pointer to the future deep-dive scroll that earns the depth. *First lesson to use this:* Lesson 5 (decorators) — closes with the deferred list (`functools.wraps` subtleties, descriptors as the mechanism behind `@property`, metaclasses, async decorators). *Failure mode without it:* learners write `@decorator` everywhere because the scroll taught the syntax but never named the boundary.
+4. **Sandbox-honesty markers.** When Piston's constraints force a teaching compromise (no `pytest` available by default, no `requests`, no `numpy`/`pandas`, no real async I/O, no real network, `unittest` as test harness or manual `_t`/`_eq`), the `read` step's body acknowledges this explicitly — not in a footnote — and tells the learner what the next step (in their career, not in the scroll) is. *First lesson to use this:* Lesson 4 (context managers — when the temptation to teach `requests.get(...) as r` is real and we deflect to file/lock context managers). *Failure mode without it:* learners assume the gap is the language's, not the sandbox's, and walk away thinking Python is somehow incomplete.
+
+**Maintainer experts.** S7 Nadia Petrov (language), S5 Elif Yıldız (curriculum), S2 Valentina Cruz (content quality), S11 Maya Lindqvist (interactive steps — predict + playground + read+inline reviews). S12 Felix Park only if a lesson proposes a new animation runtime; default expectation is no new runtime (the Python scroll ships with CSS-only motion, shared GSAP runtime available if a future lesson needs an idiom-comparison reveal).
+
+## 3. Scroll Catalog
+
+| Slug | Kind | Steps (target) | Time (target) | Status |
 |---|---|---|---|---|
-| python-fundamentals | Basic | — | ~18 | proposed |
-| python-idioms-data-structures | Intermediate | python-fundamentals | ~16 | proposed |
-| python-oop-dunders | Intermediate | python-fundamentals | ~17 | proposed |
-| python-testing-packaging | Intermediate | python-oop-dunders | ~15 | proposed |
-| python-async | Advanced | python-idioms-data-structures | ~14 | proposed |
-| python-decorators-metaprogramming | Advanced / Specific | python-oop-dunders | ~16 | proposed |
-| python-type-hints-in-practice | Specific / Intermediate | python-oop-dunders | ~12 | proposed (optional Phase 2) |
-| python-concurrency-decision-guide | Specific / Advanced | python-async | ~10 | proposed (optional Phase 2) |
-
-Total proposed: 6 core sub-courses + 2 optional deep-dives. ~118 steps across the core six.
-
----
-
-## 3. Sub-courses
-
-### 3.1 Python Fundamentals — Basic
-
-**Slug:** `python-fundamentals`
-**Prereqs:** none (assumes general programming literacy — variables, loops, functions in *some* language)
-**Learner time:** ~6 hours
-**Learning outcomes:**
-- Read and write idiomatic Python 3.11+ for control flow, collections, and string manipulation.
-- Choose the right built-in collection (`list`, `tuple`, `dict`, `set`) for a given problem.
-- Use truthy/falsy semantics, slicing, and unpacking without surprise.
-- Write small pure functions with type hints and docstrings.
-- Handle errors with `try/except/else/finally` using the EAFP mindset.
-
-**Lesson 1: Values, types, and the REPL mindset**
-- Step 1 (explanation): Python is dynamically typed but strongly typed — `1 + "2"` raises, doesn't coerce. The interactive model.
-- Step 2 (exercise): Implement `is_odd(n: int) -> bool` so the test calls it across a range. Test shape: `unittest.TestCase` with `assertEqual`.
-- Step 3 (exercise): Implement `to_fahrenheit(c: float) -> float` rounded to 2 decimals.
-
-**Lesson 2: Strings as a first-class data type**
-- Step 1 (explanation): Immutability, f-strings, `.split/.join/.strip`, why string concatenation in a loop is a smell.
-- Step 2 (exercise): `normalize_name(s: str) -> str` — strip, collapse internal whitespace, title-case.
-- Step 3 (exercise): `count_vowels(s: str) -> int` using a generator expression and `sum`.
-- Step 4 (challenge): `is_palindrome(s: str) -> bool` ignoring case and non-alphanumeric characters.
-
-**Lesson 3: Lists, tuples, and slicing**
-- Step 1 (explanation): When tuples, when lists, what slicing actually does (creates a new list), negative indices.
-- Step 2 (exercise): `chunks(xs: list, n: int) -> list[list]` returning consecutive n-sized slices.
-- Step 3 (exercise): `rotate(xs: list, k: int) -> list` — rotate left by k positions.
-
-**Lesson 4: Dicts and sets**
-- Step 1 (explanation): Hash semantics, why dict keys must be hashable, set algebra.
-- Step 2 (exercise): `word_count(text: str) -> dict[str, int]` (no `Counter` yet — that's Lesson 2 of next course).
-- Step 3 (exercise): `unique_preserving_order(xs: list) -> list` using a set as a seen-tracker.
-
-**Lesson 5: Functions, defaults, and the mutable-default trap**
-- Step 1 (explanation): Positional vs. keyword args, `*args`/`**kwargs`, default evaluation timing.
-- Step 2 (exercise): Write `add_item(item, basket=None)` correctly (sentinel pattern).
-- Step 3 (challenge): A failing test reveals a buggy `accumulate(x, history=[])` — the learner must fix it.
-
-**Lesson 6: Errors, EAFP, and control flow**
-- Step 1 (explanation): EAFP vs. LBYL with a concrete benchmark in prose. `try/except/else/finally`.
-- Step 2 (exercise): `safe_div(a, b) -> float | None` — return `None` on `ZeroDivisionError`.
-- Step 3 (exercise): `parse_int_or(s, default) -> int` using EAFP.
-
-**Piston considerations:** Pure stdlib, all functions return values rather than printing — testCode asserts return values. Avoid any exercise that depends on `input()` (Piston can be configured to provide stdin but it's a setup tax). For lessons that need to demonstrate `print` output, capture via `io.StringIO` redirection in the test rather than asking learners to read stdout.
-
-**Reference material:**
-- Book: *Python Crash Course* (Eric Matthes) — solid sequencing for fundamentals, but skip the "build a game" finale for Dojo's format.
-- Book: *Automate the Boring Stuff with Python* (Al Sweigart) — for the *tone* of "treat the learner as someone who wants to ship things, not pass quizzes."
-- Docs: <https://docs.python.org/3/tutorial/> sections 3–5.
-- Community: Real Python's "Python Basics" series, particularly the article on string methods and the f-string deep-dive.
-
----
-
-### 3.2 Pythonic Idioms & Data Structures — Intermediate
-
-**Slug:** `python-idioms-data-structures`
-**Prereqs:** `python-fundamentals`
-**Learner time:** ~6 hours
-**Learning outcomes:**
-- Reach for comprehensions, generator expressions, and `itertools` before writing imperative loops.
-- Use `collections.Counter`, `defaultdict`, `deque`, and `namedtuple` in their natural habitats.
-- Write generators with `yield` and `yield from`, and reason about lazy evaluation.
-- Sort with `key=` functions and understand stable sort guarantees.
-- Unpack structures (including nested) without intermediate variables.
-
-**Lesson 1: Comprehensions vs. loops**
-- Step 1 (explanation): List, set, dict comprehensions; when a generator expression is preferable; the readability ceiling (no nested triple-comprehension stunts).
-- Step 2 (exercise): `squares_of_evens(xs)` using a single comprehension.
-- Step 3 (exercise): `invert_dict(d)` swap keys and values, handling collisions deterministically (last-writer-wins).
-
-**Lesson 2: The `collections` module**
-- Step 1 (explanation): Tour of `Counter`, `defaultdict`, `deque`, `OrderedDict` (and why it's mostly historical post-3.7), `ChainMap`, `namedtuple`.
-- Step 2 (exercise): `most_common_word(text, n)` using `Counter`.
-- Step 3 (exercise): `group_by_first_letter(words)` returning a `defaultdict(list)`.
-- Step 4 (challenge): Implement a fixed-size LRU using `OrderedDict.move_to_end`.
-
-**Lesson 3: Iterators and generators**
-- Step 1 (explanation): The iterator protocol (`__iter__`/`__next__`), what `for` actually does, lazy evaluation, `StopIteration`.
-- Step 2 (exercise): Write a `countdown(n)` generator.
-- Step 3 (exercise): Write a `take(n, iterable)` generator using `itertools.islice` indirectly — implement it without using `islice` so the learner internalizes the protocol.
-
-**Lesson 4: `itertools` and pipelines**
-- Step 1 (explanation): `chain`, `groupby`, `accumulate`, `combinations`, `pairwise` (3.10+). Why `itertools` is a pipeline language.
-- Step 2 (exercise): `running_total(xs)` using `accumulate`.
-- Step 3 (exercise): `consecutive_pairs(xs)` using `pairwise` (with a polyfill explanation for older Python).
-
-**Lesson 5: Sorting and key functions**
-- Step 1 (explanation): `sorted(key=...)`, `operator.itemgetter`/`attrgetter`, stable sort and how to leverage it for multi-key sorts.
-- Step 2 (exercise): `sort_by_length_then_alpha(words)`.
-- Step 3 (challenge): Sort a list of `(name, score, timestamp)` tuples by score desc, then timestamp asc. Single sorted call.
-
-**Lesson 6: Unpacking and structural patterns**
-- Step 1 (explanation): Iterable unpacking, `*rest` in assignment, dict unpacking with `**`, intro to `match`/`case` (PEP 634).
-- Step 2 (exercise): `first_last(xs) -> tuple` using `first, *_, last = xs`.
-- Step 3 (exercise): A `match`-based dispatcher for a tagged dict (`{"type": "circle", "r": 3}` etc.) returning an area.
-
-**Piston considerations:** All exercises are pure-function. `itertools` and `collections` ship in stdlib, no concerns. `match` requires Python 3.10+ — confirm Piston image version before publishing Lesson 6.
-
-**Reference material:**
-- Book: *Fluent Python* (Luciano Ramalho), 2nd ed. — chapters 2–4 (sequences, dicts, sets) and chapter 17 (iterators/generators) are the gold standard. Borrow exercise *patterns*, not text.
-- Book: *Effective Python* (Brett Slatkin), 2nd ed. — items 11–27 on comprehensions, generators, and iteration.
-- Book: *Python Cookbook* (Beazley & Jones) — chapter 1 (data structures) for exercise inspiration.
-- Docs: <https://docs.python.org/3/library/itertools.html> (the "recipes" section is exercise gold).
-- Community: Trey Hunner's "Python Morsels" blog — particularly on comprehensions and unpacking. Exercism's Python track uses comprehension-heavy "tally" and "scrabble-score" exercises that map well to our format.
-
----
-
-### 3.3 Python OOP & Dunder Methods — Intermediate
-
-**Slug:** `python-oop-dunders`
-**Prereqs:** `python-fundamentals`
-**Learner time:** ~7 hours
-**Learning outcomes:**
-- Design small classes with `__init__`, `__repr__`, `__eq__`, `__hash__`.
-- Choose between regular classes, `@dataclass`, and `NamedTuple` based on problem shape.
-- Implement the iterator and context manager protocols on a custom class.
-- Use `@classmethod` and `@staticmethod` correctly (and know when *not* to).
-- Read inheritance hierarchies and resolve method resolution order (MRO) without panic.
-
-**Lesson 1: Classes are namespaces with rituals**
-- Step 1 (explanation): `class` syntax, `self` is a convention (and an explicit first parameter), instance vs. class attributes, the bound method dance.
-- Step 2 (exercise): Build a `Counter`-like `Tally` class with `add(item)` and `total()` methods.
-- Step 3 (exercise): Add a `__repr__` that produces `Tally({'a': 2, 'b': 1})`.
-
-**Lesson 2: The dunder surface**
-- Step 1 (explanation): `__eq__`, `__hash__`, `__lt__`, `__len__`, `__bool__`, `__str__` vs. `__repr__`. The contract: `__eq__` and `__hash__` move together.
-- Step 2 (exercise): `Money(amount, currency)` with `__eq__` and `__hash__` so it works in sets and as dict keys.
-- Step 3 (exercise): Add `__add__` that raises on currency mismatch (EAFP again).
-- Step 4 (challenge): Make `Money` totally ordered using `@functools.total_ordering`.
-
-**Lesson 3: `@dataclass` and when not to use it**
-- Step 1 (explanation): `@dataclass` generates dunders for you; `frozen=True`, `slots=True` (3.10+), `field(default_factory=...)`. When a `NamedTuple` or a plain dict is enough.
-- Step 2 (exercise): Convert the previous `Money` class into a `@dataclass(frozen=True)`.
-- Step 3 (exercise): A `Point` dataclass with a computed `distance(other)` method.
-
-**Lesson 4: Iteration and context manager protocols**
-- Step 1 (explanation): `__iter__` and `__next__`; `__enter__` and `__exit__`; why `contextlib.contextmanager` is usually nicer.
-- Step 2 (exercise): `Range(start, stop, step)` reimplementing `range` as an iterable class.
-- Step 3 (exercise): A `Timer` context manager class that records elapsed seconds (deterministic test: monkey-patch `time.monotonic`).
-
-**Lesson 5: Inheritance, MRO, and composition**
-- Step 1 (explanation): Single inheritance, `super()`, multiple inheritance and the C3 linearization in plain English, "favor composition" as a default.
-- Step 2 (exercise): A small `Animal` → `Dog`/`Cat` hierarchy with overridden `speak()`.
-- Step 3 (challenge): Given a diamond hierarchy, predict the MRO before running and verify with `Cls.__mro__`.
-
-**Lesson 6: `@classmethod`, `@staticmethod`, and alternative constructors**
-- Step 1 (explanation): What `cls` is, the alternative-constructor pattern (`from_string`, `from_dict`), why `@staticmethod` is rare and often a hint to make it a module function.
-- Step 2 (exercise): `Date.from_iso(s)` classmethod returning a `Date` instance.
-- Step 3 (exercise): Refactor a misused `@staticmethod` into a module-level function.
-
-**Piston considerations:** Pure stdlib. `dataclasses`, `functools`, `contextlib` all ship. For the `Timer` exercise we monkey-patch `time.monotonic` in testCode rather than relying on actual elapsed time (non-deterministic).
-
-**Reference material:**
-- Book: *Fluent Python* (Ramalho), part III on object-oriented idioms — chapters 11–14 are foundational, especially the dunder method tables.
-- Book: *Python Cookbook* (Beazley & Jones), chapter 8 (classes and objects).
-- Book: *Architecture Patterns with Python* (Percival & Gregory) — for the "composition over inheritance" framing applied at module scale; aspirational reading for learners who finish this course.
-- Docs: <https://docs.python.org/3/reference/datamodel.html> — the canonical dunder reference.
-- Community: Real Python's "Python Data Classes" guide and Raymond Hettinger's PyCon talks on class design (search "Beyond PEP 8" and "Super considered super").
-
----
-
-### 3.4 Python Testing & Packaging Fundamentals — Intermediate
-
-**Slug:** `python-testing-packaging`
-**Prereqs:** `python-oop-dunders`
-**Learner time:** ~5 hours
-**Learning outcomes:**
-- Write tests with `unittest` and (if available) `pytest` idioms.
-- Use fixtures, parametrization, and `monkeypatch` to isolate behavior.
-- Mock at the boundary (filesystem, time, subprocess) without over-mocking.
-- Lay out a small package with `pyproject.toml` and understand `__init__.py` semantics.
-- Know what `python -m pytest` actually does and why it differs from `pytest`.
-
-**Lesson 1: `unittest` baseline**
-- Step 1 (explanation): `TestCase`, `setUp`/`tearDown`, common assertions, why `assertEqual(a, b)` order matters for diff messages.
-- Step 2 (exercise): Given a buggy `is_leap_year(year)`, the learner adds the missing test cases that catch the bug, then fixes the function.
-- Step 3 (exercise): Write a `TestCase` for a `BankAccount.deposit/withdraw` class with at least one negative test (overdraft raises).
-
-**Lesson 2: `pytest` idioms (if Piston ships pytest)**
-- Step 1 (explanation): Plain functions, plain `assert`, fixtures via `@pytest.fixture`, parametrization via `@pytest.mark.parametrize`. The `conftest.py` boundary.
-- Step 2 (exercise): Convert a `unittest.TestCase` from Lesson 1 into pytest style.
-- Step 3 (exercise): Parametrize a `Roman.to_int` test across 8 cases.
-
-**Lesson 3: Mocking and the boundary**
-- Step 1 (explanation): `unittest.mock.patch`, `MagicMock`, "mock at the boundary, never the unit under test." Time, randomness, filesystem.
-- Step 2 (exercise): Test a function `today_label()` by patching `datetime.date.today`.
-- Step 3 (exercise): Test a `read_config(path)` by patching `pathlib.Path.read_text`.
-
-**Lesson 4: Fixtures and test data hygiene**
-- Step 1 (explanation): Fixture scopes (function/module/session), `tmp_path`, why shared mutable fixtures hurt.
-- Step 2 (exercise): Use `tmp_path` to write a file, read it back with the function under test, assert content.
-
-**Lesson 5: Packaging fundamentals**
-- Step 1 (explanation): The `src/` layout, `pyproject.toml` with `[project]` and `[build-system]`, what `pip install -e .` does, the import-vs.-script distinction.
-- Step 2 (exercise): Given a broken `pyproject.toml` (missing `[project] name`), the learner fixes it — testCode parses the TOML and asserts validity.
-- Step 3 (challenge): Given a flat-layout package that breaks on `python -m`, the learner restructures it to `src/` and updates `pyproject.toml` accordingly.
-
-**Piston considerations:** The big open question — *does our Piston image ship `pytest`?* The community Piston images include it for some language packages but not all. **Tradeoff:** if pytest is unavailable, drop Lesson 2 and rewrite Lessons 3–4 in `unittest` style (fully possible, slightly more verbose). The "packaging" lesson runs by parsing `pyproject.toml` with `tomllib` (3.11+ stdlib) — no actual install required. Mocking lessons use `unittest.mock`, which is stdlib regardless.
-
-**Reference material:**
-- Book: *Python Testing with pytest* (Brian Okken), 2nd ed. — the canonical pytest book; chapters 1–4 inform our structure.
-- Book: *Effective Python* (Slatkin), items 109–112 on testing.
-- Book: *Architecture Patterns with Python* (Percival & Gregory) — for "mock at the boundary" as a design discipline rather than a syntax tip.
-- Docs: <https://docs.python.org/3/library/unittest.mock.html>, <https://packaging.python.org/en/latest/tutorials/packaging-projects/>.
-- Community: Real Python's pytest guides; Hynek Schlawack's blog posts on packaging (especially "Python Application Management with pip-tools" and his `pyproject.toml`-only argument).
-
----
-
-### 3.5 Async Python — Advanced
-
-**Slug:** `python-async`
-**Prereqs:** `python-idioms-data-structures`
-**Learner time:** ~5 hours
-**Learning outcomes:**
-- Explain the event loop in their own words (single-threaded cooperative multitasking).
-- Write coroutines with `async def` and compose them with `await`, `asyncio.gather`, `asyncio.TaskGroup`.
-- Distinguish CPU-bound from I/O-bound work and pick the right concurrency tool.
-- Implement async iterators and async context managers.
-- Recognize and avoid the most common async pitfalls (sync calls inside coroutines, fire-and-forget tasks, blocking the loop).
-
-**Lesson 1: The event loop, in plain English**
-- Step 1 (explanation): Concurrency vs. parallelism; cooperative multitasking; what `await` *actually does* (yields control to the loop). Why `asyncio.run` is the front door, not the foundation.
-- Step 2 (exercise): Given a `sleep_then_return(n)` coroutine using `asyncio.sleep`, write `gather_all(coros)` that runs them concurrently and returns results in order. Test asserts total elapsed time is closer to `max(n)` than `sum(n)` — *we monkey-patch a fake clock to keep this deterministic in Piston*.
-
-**Lesson 2: Coroutines and `await`**
-- Step 1 (explanation): A coroutine is an object until awaited. The "you forgot to await" footgun. `RuntimeWarning` as a teacher.
-- Step 2 (exercise): Fix a snippet where a coroutine is called without `await` — test asserts the return value is the awaited result, not a coroutine object.
-
-**Lesson 3: Composing concurrency**
-- Step 1 (explanation): `asyncio.gather`, `asyncio.wait`, `asyncio.TaskGroup` (3.11+), exception propagation differences.
-- Step 2 (exercise): Use `TaskGroup` to run three coroutines and aggregate their results.
-- Step 3 (challenge): Demonstrate the difference: with `gather(return_exceptions=False)` one failure cancels nothing, with `TaskGroup` one failure cancels siblings. The test asserts both behaviors with two different functions.
-
-**Lesson 4: Async iteration and async context managers**
-- Step 1 (explanation): `async for` and `__aiter__`/`__anext__`; `async with` and `__aenter__`/`__aexit__`; `contextlib.asynccontextmanager`.
-- Step 2 (exercise): Write an `AsyncCountdown` class supporting `async for`.
-- Step 3 (exercise): Write an `async_timer` async context manager that records duration (again, monkey-patched clock).
-
-**Lesson 5: Pitfalls**
-- Step 1 (explanation): Blocking the loop with sync I/O, mixing threads and asyncio, fire-and-forget tasks getting GC'd, the "asyncio is contagious" problem.
-- Step 2 (exercise): Refactor a coroutine that calls `time.sleep` (blocking) to use `asyncio.sleep`. Test asserts that two such tasks complete concurrently (fake clock).
-
-**Piston considerations:** This is the course where Piston's *no network* constraint hurts the most — async is most naturally taught against HTTP. We compensate with `asyncio.sleep` (fake-clocked in tests), in-memory queue/producer-consumer exercises, and CPU-yielding patterns. This is honest pedagogy — the *mental model* is what matters, and HTTP can be added in a learner's own project. **Flag for human reviewer:** consider whether to caveat this in the course intro ("we teach the model with simulated I/O; apply to real I/O on your own"). `TaskGroup` requires 3.11+; confirm Piston image.
-
-**Reference material:**
-- Book: *Using Asyncio in Python* (Caleb Hattingh) — short, sharp, opinionated; the best single-source intro.
-- Book: *Fluent Python* (Ramalho), 2nd ed., chapters 19–21 — async iteration and the loop model.
-- Book: *Python Concurrency with asyncio* (Matthew Fowler) — broader, more example-heavy than Hattingh.
-- Docs: <https://docs.python.org/3/library/asyncio.html> — start with "Coroutines and Tasks," skip "Low-level API" for course purposes.
-- Community: Łukasz Langa's PyCon talks on async; David Beazley's "Python Concurrency from the Ground Up" talk (mandatory viewing for any course author here, even if learners never see it).
-
----
-
-### 3.6 Python Deep Cuts: Decorators & Metaprogramming — Specific / Advanced
-
-**Slug:** `python-decorators-metaprogramming`
-**Prereqs:** `python-oop-dunders`
-**Learner time:** ~6 hours
-**Learning outcomes:**
-- Write decorators (function and class), with and without arguments, preserving metadata via `functools.wraps`.
-- Use closures intentionally and understand the late-binding closure trap.
-- Apply `functools.lru_cache`, `functools.partial`, `functools.reduce` in their natural habitats.
-- Implement a descriptor and explain when one is the right tool.
-- Use `__init_subclass__` and class decorators as lighter-weight alternatives to metaclasses.
-- Read (not write) a metaclass and understand why most metaclasses should not exist.
-
-**Lesson 1: Closures, in detail**
-- Step 1 (explanation): What a closure captures (names, not values), the late-binding loop trap, when closures replace small classes.
-- Step 2 (exercise): Write `make_adder(n)` returning a function that adds `n`.
-- Step 3 (challenge): Fix a buggy `[lambda: i for i in range(3)]` — call each, observe, then fix using a default argument or comprehension scope.
-
-**Lesson 2: Decorators 101**
-- Step 1 (explanation): A decorator is a function that takes a function and returns a function. `@d` is sugar for `f = d(f)`. Why `functools.wraps` matters.
-- Step 2 (exercise): Write `@trace` that records calls into a list and returns the wrapped function's result.
-- Step 3 (exercise): Add `functools.wraps` to fix `__name__`/`__doc__` preservation; test asserts `traced_fn.__name__ == "fn"`.
-
-**Lesson 3: Decorators with arguments**
-- Step 1 (explanation): Three-layer onion: decorator factory → decorator → wrapper. Why this trips everyone up the first time.
-- Step 2 (exercise): `@retry(times=3)` that retries on exception up to N times.
-- Step 3 (challenge): `@cache_for(seconds=N)` time-bound memoization (fake clock for determinism).
-
-**Lesson 4: `functools` toolbox**
-- Step 1 (explanation): `lru_cache`, `cache` (3.9+), `partial`, `reduce` (and why it's mostly avoided), `singledispatch`.
-- Step 2 (exercise): Memoize a recursive `fib` with `lru_cache` and assert the cache info reports hits.
-- Step 3 (exercise): Use `singledispatch` to write a `describe(value)` that handles `int`, `str`, `list` separately.
-
-**Lesson 5: Descriptors**
-- Step 1 (explanation): The descriptor protocol (`__get__`, `__set__`, `__delete__`); how `@property` is just a descriptor; when to write your own (validators, lazy attrs).
-- Step 2 (exercise): Write a `Positive` descriptor that raises on assignment of a non-positive number.
-
-**Lesson 6: Class decorators and `__init_subclass__`**
-- Step 1 (explanation): Class decorators modify a class after creation; `__init_subclass__` hooks subclass creation. Both cover ~95% of metaclass use cases without metaclasses.
-- Step 2 (exercise): A `@register` class decorator that adds the class to a registry dict.
-- Step 3 (challenge): Use `__init_subclass__` to enforce that every subclass defines a `name` class attribute; test creates an offending subclass and asserts `TypeError`.
-
-**Lesson 7: Metaclasses (read-only lesson)**
-- Step 1 (explanation): What a metaclass *is* (the class of a class), why `type` is the default, the canonical use case (ABCs, ORMs). Plain prose, no exercise — the takeaway is "you now know enough to read this code if you encounter it; don't write one unless you've exhausted the alternatives in Lesson 6."
-
-**Piston considerations:** All stdlib. `functools.cache` is 3.9+, `lru_cache` exists earlier. Time-bound decorator exercises monkey-patch `time.monotonic`/`time.time` in testCode for determinism.
-
-**Reference material:**
-- Book: *Fluent Python* (Ramalho), 2nd ed., chapters 9–10 (decorators, closures) and 23 (attribute descriptors). The single best treatment in print.
-- Book: *Python Cookbook* (Beazley & Jones), chapter 9 (metaprogramming) — every example is a potential exercise.
-- Book: *Effective Python* (Slatkin), items 38–48 on metaclasses, descriptors, and class customization.
-- Docs: <https://docs.python.org/3/howto/descriptor.html> (Raymond Hettinger's HOWTO is the reference).
-- Community: Real Python's "Primer on Python Decorators"; David Beazley's "Python 3 Metaprogramming" tutorial (PyCon 2013, dated but unmatched).
-
----
-
-### 3.7 Type Hints in Practice — Specific / Intermediate (optional Phase 2)
-
-**Slug:** `python-type-hints-in-practice`
-**Prereqs:** `python-oop-dunders`
-**Learner time:** ~3 hours
-**Learning outcomes:** Use `typing` constructs (`Optional`, `Union`/`|`, `Literal`, `TypedDict`, `Protocol`, `TypeVar`, `Self`, `ParamSpec` overview); read mypy/pyright errors; understand structural typing via `Protocol`.
-
-**Lesson sketch:** 4 lessons — basic annotations & built-in generics (3.9+ `list[int]` syntax); `Optional` and `Union` semantics with `None`; `Protocol` and structural typing as Python's answer to interfaces; `TypedDict` and `Literal` for JSON-shaped data.
-
-**Piston considerations:** mypy is *not* in stdlib. We can either ship a minimal type-checking pass via `mypy` if Piston's image includes it (unlikely default — would require a custom image), or assert *behavior* (e.g., `Protocol` runtime-checkable with `@runtime_checkable`) instead of static-type-error detection. Honest tradeoff: this course is weaker without mypy, but still teaches the mental model. **Flag for reviewer.**
-
-**Reference material:** *Robust Python* (Patrick Viafore) — the best book on the *strategy* of type hints; *Fluent Python* 2nd ed. chapter 8 and 15.
-
----
-
-### 3.8 Concurrency Beyond Asyncio: threading vs. multiprocessing — Specific / Advanced (optional Phase 2)
-
-**Slug:** `python-concurrency-decision-guide`
-**Prereqs:** `python-async`
-**Learner time:** ~3 hours
-**Learning outcomes:** Decide between `asyncio`, `threading`, `multiprocessing`, and `concurrent.futures` based on workload (I/O-bound vs. CPU-bound, GIL implications, process-startup cost). Use `concurrent.futures.ThreadPoolExecutor` and `ProcessPoolExecutor` for embarrassingly parallel work.
-
-**Lesson sketch:** 3 lessons — the GIL in plain English (and what 3.13's free-threaded build changes); `ThreadPoolExecutor` for I/O-bound; `ProcessPoolExecutor` for CPU-bound (with a deterministic prime-counting exercise).
-
-**Piston considerations:** `multiprocessing` *may* be restricted by the sandbox (process spawning). **Flag for reviewer:** validate against the actual Piston image before publishing. If `multiprocessing` is blocked, demote to a "read-only" lesson with thorough prose and a thread-only exercise.
-
-**Reference material:** *High Performance Python* (Gorelick & Ozsvald), 2nd ed. — chapters 9–11; *Python Concurrency with asyncio* (Fowler) for the comparison framing.
-
----
-
-## 4. Cross-course exercise patterns
-
-The following patterns recur across sub-courses. Course authors should reach for them before inventing new shapes.
-
-| Pattern | Description | Where it fits |
-|---|---|---|
-| **Pure function under test** | `def f(args) -> result`; testCode imports and asserts. | All courses; default. |
-| **Doctest-style demonstration** | Function carries a docstring with `>>>` examples; testCode also runs `doctest.testmod`. | Fundamentals, Idioms — to build a habit. |
-| **Comprehension transformation** | Input collection → output collection via comprehension/generator. | Idioms, OOP. |
-| **Generator pipeline** | Two or three generators composed; testCode collects results into a list. | Idioms, Async (sync analog before async). |
-| **Class-with-protocol** | Implement a class so that an external protocol check (iteration, context manager, comparison) passes. | OOP, Decorators (descriptors). |
-| **Fake-clock monkey-patch** | Test patches `time.monotonic` / `time.time` / `asyncio.sleep` so timing assertions are deterministic. | Async, Decorators, OOP (Timer). |
-| **Buggy-then-fix** | Lesson opens with a snippet that fails the test; learner diagnoses and fixes. Higher pedagogical density. | Fundamentals (mutable defaults), Testing, Decorators (late binding). |
-| **Read-and-explain (no exercise)** | Pure explanation step where the learner reads code and the test is implicit (next exercise builds on it). | Async (event loop), Metaprogramming (metaclass lesson). |
-
-**Piston-driven constraints flagged:**
-
-- **No network.** All HTTP-shaped exercises become in-memory simulations. Async course is most affected; we compensate with `asyncio.sleep` and queues. Document the compromise in the course intro rather than hide it.
-- **No external packages.** `numpy`, `pandas`, `requests`, `httpx`, `pydantic`, `mypy`, `black`, `ruff` — none assumed. If Sprint planning ever wants a "Data with pandas" sub-course, it requires a *separate Piston image* or a different runner. Flag at PRD time.
-- **Stateless per execution.** No multi-step exercises that share memory across submissions. Each step's `testCode` includes everything needed to validate.
-- **Deterministic output required.** Anything involving real time, real randomness, real I/O timing must be monkey-patched in `testCode`. Course authors should template this once and reuse.
-- **Async testing requires care.** Wrap async test bodies with `asyncio.run` inside the test function; or, if pytest-asyncio is available in Piston, use `@pytest.mark.asyncio`. **Open question for reviewer.**
-
----
-
-## 5. Known pedagogical pitfalls
-
-These are the failure modes we have seen in other Python curricula. Course authors should review this list before drafting any new lesson.
-
-1. **Mutable default arguments taught as a "fun gotcha."** It's a *consequence* of how function objects are constructed at definition time. Teach the *why*, then the workaround (`None` sentinel). Lesson 5 of Fundamentals does this; do not regress.
-2. **Conflating `@classmethod` with `@staticmethod`.** They are not interchangeable. `@staticmethod` is rarely the right answer; if a method doesn't need `self` or `cls`, ask whether it should be a module function. OOP Lesson 6 teaches the distinction explicitly.
-3. **Teaching `asyncio.run` without explaining the event loop.** Learners then sprinkle `await` randomly. The Async course intro must teach the model first; syntax second. Don't reorder.
-4. **Type hints introduced as optional then forgotten.** They appear in Fundamentals (Lesson 1), become mandatory in OOP, and are assumed everywhere after. Reviewers: if you see an exercise after Sub-course 3 without type hints, that's a defect.
-5. **Teaching `list.append` in a loop instead of comprehensions.** First time, fine. Past Lesson 1 of Idioms, it should be flagged in hints.
-6. **Over-mocking in tests.** "Mock the function under test" is the textbook anti-pattern. Testing Lesson 3 explicitly teaches "mock at the boundary." Do not let mocking exercises drift toward mocking the unit.
-7. **Metaclasses as a showcase.** The Metaprogramming course explicitly demotes metaclasses to a read-only lesson. Do not promote them.
-8. **`for i in range(len(xs))` instead of `enumerate`.** Idiomatic Python uses `enumerate`. Catch this in hints, not just review.
-9. **String concatenation in a loop.** `''.join(...)` exists. Fundamentals Lesson 2 teaches the smell.
-10. **`if x == None`.** It's `if x is None`. Catch in linting and in hints.
-11. **Catching bare `except:`.** Catches `KeyboardInterrupt` and `SystemExit`. Always specify exception type. Fundamentals Lesson 6 teaches this.
-12. **Teaching `__init__` before functions feel natural.** OOP requires Fundamentals as a prereq for a reason. Don't let course reordering break this.
-13. **Async-everywhere disease.** After the Async course, learners want to make every function `async`. The Pitfalls lesson must close with "async is contagious — and that's a cost, not a feature."
-
----
-
-## 6. External references
+| `python` | Language scroll (crash course) | 21-24 | ~100 min | **spec-in-progress, polyglot-first re-scope 2026-06-07; panel + audience review applied 2026-06-08** — outer + inner spec drafted; lesson prose stubs only |
+
+That is the whole catalog for Python in v1. Per [ADR 022](../../adr/022-crash-course-pivot.md), one language scroll per language is the anchored set. Deep-dive scrolls on Python-specific topics are deferred — see §3.1.
+
+The step count target is slightly under Ruby's (22-24) — Lesson 0 adds 2 steps (the audience review collapsed the orientation reads, since all three primary personas already operate `venv`/`pip` in their day-to-day), and the decorator + context-manager lessons each benefit from a predict-then-implement pair. The time budget is **~100 minutes** rather than Ruby's 110 because Python's surface lands faster for the polyglot once the protocol-surface lens is set: less re-framing per idiom, since the polyglot already has the function/method/object model.
+
+### 3.1 Future deep-dive candidates (not in scope for v1)
+
+When deep-dive scrolls become a real shape (after the five language scrolls ship), Python has at least these candidates. Listed here so the crash scroll knows what it can defer without losing the topic:
+
+- **`python-asyncio-deep`** — event loop mental model from first principles (selectors, cooperative yielding, `Future` vs `Task`), `asyncio.gather` vs `TaskGroup`, async iterators and async context managers, the "you forgot to await" footgun catalog, the contagion problem, `asyncio.run` as front door not foundation. Framed as "the language inside the language."
+- **`python-typing-deep`** — `Protocol` (structural typing as Python's answer to interfaces, the TS analogue), `TypedDict`, `Literal`, `TypeVar` with constraints, `ParamSpec`, `Self` (3.11+), `assert_type`, the mypy / pyright mental model, when to reach for `cast` vs `assert isinstance`. The "types as design tool" scroll.
+- **`python-iterators-and-generators`** — the iterator protocol at depth, `yield` mechanics, `yield from`, generator pipelines, lazy evaluation, `itertools` (`chain`, `groupby`, `accumulate`, `pairwise`), generator-based coroutines (the pre-asyncio shape — historical but explains why `await` is what it is).
+- **`python-descriptors-and-protocols`** — descriptor protocol (`__get__` / `__set__` / `__delete__`), `@property` demystified as a descriptor, `__init_subclass__` as the lightweight alternative to metaclasses, class decorators, dunder methods at depth (`__call__`, `__getattr__` vs `__getattribute__`, `__slots__`). The "objects as protocols" scroll.
+- **`python-c-extensions`** — `ctypes`, `cffi`, the CPython C API at a literacy level, the GIL in detail and what 3.13's free-threaded build changes, when a C extension is justified vs when it's premature optimisation. Carries the largest Piston-vs-reality gap (no compiler in sandbox); ship last if at all, possibly as a no-exercise "read-and-explain" scroll.
+- **`python-testing-deep`** — `pytest` at depth (fixtures, parametrize, conftest, plugins), `unittest.mock` and the "mock at the boundary" discipline, property-based testing with `hypothesis`, doctest as documentation-with-teeth. Currently the crash scroll uses a manual `_t`/`_eq` harness specifically to avoid teaching `pytest` before the learner needs it.
+- **`python-packaging-and-tooling`** — `pyproject.toml` at depth, `src/` layout, `pip` vs `pipx` vs `pip install -e`, build backends (`hatchling`, `setuptools`, `poetry-core`), the modern `uv` story, what `python -m foo` actually does. Currently the crash scroll teaches just enough in Lesson 0 to read a `pyproject.toml`.
+
+None of these are committed. They are listed so the crash scroll's lesson authors know what surface they can name-and-defer without inventing it on the spot.
+
+## 4. The Python Scroll
+
+**Slug:** `python`
+**Kind:** Language scroll (crash course)
+**Audience:** Developer who already programs in at least one other language. No Python experience required. **Primary:** A1 Mariana (JS senior) + A4 Felipe (TS modernizer). **Secondary:** A3 Yui (Java senior, Python as scripting). **Out-of-scope:** A2 Esteban (already a Python mid-senior; not a learner here per [`AUDIENCE.md`](../AUDIENCE.md)).
+**Learner time:** ~100 minutes real work (60-120 range).
+**Spec file:** [`python/python.md`](python/python.md) — the executable authoring brief (see [`../authoring-spec-template.md`](../authoring-spec-template.md)).
+
+**Learning outcomes.** After this scroll, the learner can:
+
+- Locate Python on their internal language map: what it is for, where it does and doesn't fit, why `python` vs `python3` is sometimes a question, what `pip`/`venv`/`poetry`/`uv` do (and which one to reach for first), what a `pyproject.toml`-shaped project looks like, and how to run a Python project they just cloned.
+- Read Python's two surprising syntactic facts without friction: indentation as syntax (not convention), and `self` as explicit first parameter of instance methods. Recognise `__dunder__` methods as the protocol surface.
+- Read and write idiomatic Python across the dominant data-transform shapes — list / dict / set comprehensions, generator expressions, f-strings, slicing, unpacking. Choose the right shape (comprehension vs generator vs `for` loop) for the problem.
+- Reach for EAFP (`try/except`) as the cultural default over LBYL (`if hasattr(...)`) and explain when each is appropriate. Predict the result of common Python expressions that surprise a polyglot (`is` vs `==` on small ints, `[] == False`, mutable default arguments).
+- Use context managers (`with` blocks) as the resource-acquisition shape: read the protocol (`__enter__` / `__exit__`), use `contextlib.contextmanager` to write one from a generator, recognise when to reach for `with` over `try/finally`.
+- Write decorators: understand `@d` as sugar for `f = d(f)`, write a plain decorator, use `functools.wraps`, write a parametrised decorator (the three-layer onion), and recognise that `@property`, `@classmethod`, `@dataclass`, and `@cache` are all the same idea applied to different inputs.
+- Name the Python-specific footguns the polyglot will eventually hit (mutable default arguments, late binding in closures, `is` vs `==`, EAFP misused as LBYL-disguise, decorators that lose metadata without `wraps`) and know where to find the depth when they need it.
+- Name what's deferred (asyncio at depth, descriptors, metaclasses, the GIL, `Protocol` typing, packaging beyond `pyproject.toml` literacy) and know which deep-dive scroll covers each.
+
+**Lessons (polyglot-first order).**
+
+- **Lesson 0 — Python en contexto.** What Python is for, where it doesn't fit, `python3` vs `python`, the `pip`/`venv`/`poetry`/`uv` landscape, what a `pyproject.toml` project looks like, how to run one. 2 steps: 1 `read` + 1 `predict`. No `kata` here — this lesson orients, it doesn't drill syntax. *(Audience review 2026-06-08 collapsed two reads into one tight ecosystem read; all three primary personas already operate `venv`/`pip` in their day-to-day.)*
+- **Lesson 1 — Las dos sintaxis que sorprenden.** Indentation as syntax (not convention), `self` as explicit first parameter of instance methods, the `__dunder__` surface at a glance (named: `__init__`, `__repr__`, `__iter__`, `__enter__`/`__exit__`, `__call__` — explained at depth in Lessons 4-5). Lands the polyglot's "first surprises" in 10 minutes so they don't trip on syntax for the next 90.
+- **Lesson 2 — Literales y comprehensions que vas a leer.** List / dict / set comprehensions, generator expressions, f-strings, slicing, unpacking (`a, b, *rest = xs`). The "five literal forms" the polyglot will read on the first Python file they open Friday. Includes the first playground step (after the comprehension kata) for exploring nested comprehensions vs generator expressions.
+- **Lesson 3 — EAFP vs LBYL — el reflejo Pythonic.** Try the operation, catch the exception. `try/except/else/finally`. When LBYL (`if k in d`) is correct (cheap check, common case) and when it's a race condition or a duck-typing violation (most other times). The cultural rule and its limits.
+- **Lesson 4 — Context managers.** `with open(p) as f:` as the protocol, `__enter__` / `__exit__`, writing a context manager class, `contextlib.contextmanager` as generator-as-protocol shortcut, when to reach for `with` over `try/finally`. Includes the second playground step (after the contextmanager kata) for poking `__enter__` / `__exit__` ordering and exception propagation.
+- **Lesson 5 — Decorators + closures.** Closure mechanics (what's captured, the late-binding trap), `@d` desugaring, `functools.wraps`, parametrised decorators (the three-layer onion), and the recognition that `@property`, `@classmethod`, `@dataclass`, `@cache` are all the same idea. Closes with the named-and-deferred list (descriptors, metaclasses, async decorators) pointing at deep-dive scrolls.
+
+The full step-by-step authoring (prose, starter code, tests, hints, solutions, predict options + feedback, playground starter code + suggestions) lives in [`python/python.md`](python/python.md). The lesson titles here are the index summary, not the spec.
+
+**Polyglot-first reordering rationale.** The canonical textbook order would teach Python as: variables → control flow → data structures → functions → OOP → modules → (advanced). That order is right for an absolute beginner. For a polyglot — who already has the concept of an integer, a list, a dict, an `if/else`, a function — the right order is *surprise-priority* and *idiom-density*: lead with what they will encounter first when they read Python code on Friday. That is indentation, `self`, dunders (Lesson 1), comprehensions (Lesson 2), `try/except` as control flow (Lesson 3), `with` (Lesson 4), and `@decorator` (Lesson 5). OOP is implicit — `self` is named in Lesson 1, `__init__` and other dunders surface in Lessons 4-5 — but is *not given its own lesson*. A polyglot doesn't need to be taught what a class is; they need to be shown what Python's class system contributes (protocols via dunders, decorators that transform classes, `@dataclass` as the "I just want a record" answer). Nadia (S7) signed off on this with the constraint that the dunder surface gets named explicitly in Lesson 1 (the calibration moment), then earned through Lessons 4 and 5; Elif (S5) signed off with the constraint that the lesson count stays ≤6 and the protocol-surface thread is visible across Lessons 1, 4, 5.
+
+The most aggressive cut vs the pre-pivot draft (overwritten by this file; see commit `57f6cee` for the prior multi-sub-course shape): **OOP is no longer its own course.** The pre-pivot draft had `python-oop-dunders` as 17 steps across 6 lessons. The polyglot-first lens reduces this to: dunders are introduced as Lesson 1 calibration, used in Lesson 4 (`__enter__` / `__exit__`), and named at depth in the descriptors-and-protocols deep-dive. The polyglot does not need a class-design course — they need to know what *Python's* class system contributes that theirs doesn't (the protocol surface).
+
+**Sandbox notes.** Piston Python 3.11+ (required for `tomllib`, `TaskGroup` reference in deep-dive, modern `Self` typing reference). Stdlib only. Manual test harness (`_t` / `_eq` pattern adapted from Ruby — see [§5 below](#5-cross-lesson-exercise-patterns) and the inner spec) rather than `pytest` or `unittest` introduction. Deterministic only — no `time.time()`, no `random.random()` without seeding, no `asyncio.sleep` (asyncio is deferred entirely). STDIN is not exercised; inputs come as function arguments.
+
+**Reference material for this scroll specifically.**
+
+- *Fluent Python*, 2nd ed. (Luciano Ramalho) — Chapters 2-4 (sequences, dicts, sets), 9 (decorators and closures), 17 (context managers and else blocks). The spine.
+- *Effective Python*, 2nd ed. (Brett Slatkin) — Items 11-27 on comprehensions and iteration, 38-43 on decorators and closures, 66-69 on context managers and `try/except`.
+- *Python Cookbook*, 3rd ed. (Beazley & Jones) — Chapter 1 (data structures) and Chapter 9 (metaprogramming) for exercise inspiration.
+- Python docs — <https://docs.python.org/3/reference/datamodel.html> (the dunder bible), <https://docs.python.org/3/library/contextlib.html>, <https://docs.python.org/3/library/functools.html>.
+- *Robust Python* (Patrick Viafore) — type hints framing for Lesson 1's calibration on `self` and the named-and-deferred typing depth.
+- PEP 8, PEP 20 ("Zen of Python"), PEP 343 (`with` statement), PEP 318 (decorators) — named in the relevant lesson reads, not summarised.
+
+## 5. Cross-lesson exercise patterns
+
+Across the Python scroll's lessons, exercises lean on a small set of repeatable shapes that are well-suited to Piston's stateless, stdlib-only sandbox:
+
+- **Pure functions.** Input → output, no side effects. Easiest to test deterministically. Default for Lessons 1-3.
+- **Comprehension-as-solution.** Where Ruby's idiom is `[1,2,3].map(&:to_s)`, Python's is `[str(x) for x in [1,2,3]]`. Lessons 2 and 3 default to comprehension shapes; the test asserts on the returned collection, not on intermediate state.
+- **EAFP-as-solution.** A function that tries the operation and catches the specific exception, returning a sentinel or default. Lesson 3's dominant shape. Tests assert that the function returns the default on the expected exception type and that it does NOT swallow the wrong exception.
+- **Context-manager-as-class.** A class with `__enter__` and `__exit__` methods, plus the `contextlib.contextmanager` generator variant. Lesson 4. Tests assert on side-effect order (e.g. resource acquired before yield, released after, even on exception).
+- **Decorator-as-callable.** A function that takes a function and returns a function. Lesson 5. Tests assert on the wrapped function's `__name__` (with and without `functools.wraps`) and on the wrapper's behavior (call count, retry, cache hit/miss).
+- **Predict-then-implement pairs.** A `predict` step's snippet often becomes the starter code of the next exercise. The learner forms a hypothesis, sees the answer, then writes code that depends on the model. Core to Lessons 1, 3, and 5.
+- **Surprise-named-explicitly.** Where Python diverges from JS/Java/Ruby reflexes (truthiness of empty collections, `is` vs `==`, mutable default arguments, EAFP cultural preference), the read step names the polyglot reflex and corrects it before the exercise.
+
+**Piston constraint reminder:** stdlib only. **No pytest, no requests, no httpx, no pydantic, no numpy/pandas, no mypy at runtime, no Django/Flask/FastAPI, no async I/O.** No external HTTP, no filesystem assumptions beyond `/tmp`. Every exercise must be reproducible from a single Python file. Test harness is the manual `_t` / `_eq` pattern documented in [`python/python.md`](python/python.md) §5; `unittest` and `pytest` are not introduced in the crash scroll (`unittest` is the runner-of-last-resort; `pytest` is deferred to the testing deep-dive).
+
+## 6. Known pedagogical pitfalls
+
+Pitfalls the Python scroll specifically defends against:
+
+- **Teaching mutable default arguments as a "fun gotcha."** It's a *consequence* of how function objects are constructed at `def` evaluation time. *Lesson 5's closure read step names the mechanism (default values evaluated once at definition time, bound to the function object) and the workaround (the `None` sentinel pattern). Treating it as trivia would be miseducation.*
+- **Teaching `asyncio.run` before the event loop mental model.** Nadia (S7) has a hard veto. *The crash scroll does not teach asyncio. Lesson 5's closer names `async def` as deferred to the asyncio-deep scroll where the event-loop model gets a full lesson before any syntax. Mentioning `await` in passing without the model is the failure mode.*
+- **Conflating Python with Django / Flask / FastAPI.** Web framework idioms (`@app.route`, dependency injection, ORMs) are framework-specific, not Python. *Lesson 5's read step on decorators uses `functools.wraps` and `functools.cache` as the canonical decorator examples — never `@app.route`. Calling framework idioms "Python" is the single biggest disservice this track exists to undo. Mirror of Ruby-not-Rails.*
+- **Conflating Python with pandas / numpy / PyTorch.** The data-science stack is not Python; it's an ecosystem on top of Python. *No exercise in the crash scroll touches `DataFrame`, `ndarray`, or tensor operations. If a learner wants the data-science arc, that's a different scroll family — not a stretch of this one. Cut explicitly per [`AUDIENCE.md`](../AUDIENCE.md)'s out-of-scope list.*
+- **Treating dunder methods as advanced.** They are the language's protocol surface — `for` and `with` and `[]` and `()` all dispatch through dunders. *Lesson 1 names them as Python's protocol surface in the calibration moment (10 lines, no depth). Lesson 4 earns `__enter__` / `__exit__` by writing one. The "advanced" framing is wrong for a polyglot — dunders are how the language works.*
+- **`for i in range(len(xs)):` instead of `enumerate`.** The Java/C reflex. *Lesson 2's comprehension read step names `enumerate` and `zip` alongside the comprehension forms. A polyglot writing `range(len(...))` is signal that Lesson 2 didn't land.*
+- **EAFP misused as LBYL-in-a-`try`.** Wrapping a `hasattr` check in a `try: ... except AttributeError:` is not EAFP — it's LBYL with extra steps. *Lesson 3's read step names both the rule and the limit: EAFP is "try the operation that's the actual work"; if the `try` block is just a check, that's LBYL.*
+- **Decorators taught without `functools.wraps`.** A decorator that drops `__name__` / `__doc__` / `__module__` is broken in production (anything that introspects the function — `pytest`, `inspect`, IDE tooltips — sees the wrapper, not the original). *Lesson 5's kata #1 writes a decorator without `wraps`, the test asserts on `__name__`, the test fails, the hint points at `functools.wraps`, the second kata uses it.*
+- **Metaclasses as spectacle.** *The crash scroll does not teach metaclasses. Lesson 5's closer names them as deferred. The pre-pivot draft had a "metaclasses (read-only lesson)" step; cut entirely from the polyglot-first scope. Spectacle was the dead end of the old long-curriculum format.*
+- **Type hints introduced and abandoned.** *Lesson 1 names type hints in the `self` discussion (as design tool, not runtime check). Lessons 2-5 use hints in starter code consistently. Not introduced as homework — used as scaffolding the polyglot's TS reflex (A4 Felipe) will reward.*
+- **Comprehensions nested past readability.** *Lesson 2's read step names the rule: one level of nesting OK, two levels is a code smell, three is wrong. The playground in Lesson 2 lets the learner see why.*
+
+## 7. External references
 
 ### Books
 
-| Title | Author(s) | Use for |
-|---|---|---|
-| *Fluent Python*, 2nd ed. | Luciano Ramalho | The single most-cited reference across this curriculum. Sub-courses 2, 3, 5, 6 lean on it heavily. |
-| *Effective Python*, 2nd ed. | Brett Slatkin | Item-by-item idioms; great as a "next read" recommendation at the end of Fundamentals. |
-| *Python Cookbook*, 3rd ed. | David Beazley & Brian K. Jones | Exercise inspiration across all intermediate/advanced courses. |
-| *Python Crash Course*, 3rd ed. | Eric Matthes | Sequencing reference for Fundamentals only. |
-| *Automate the Boring Stuff*, 2nd ed. | Al Sweigart | Tone reference for "treat the learner as someone who wants to ship." |
-| *Python Tricks* | Dan Bader | Light, pattern-by-pattern; useful for hint-text inspiration. |
-| *High Performance Python*, 2nd ed. | Micha Gorelick & Ian Ozsvald | Concurrency course, GIL discussion. |
-| *Architecture Patterns with Python* | Harry Percival & Bob Gregory | Mock-at-the-boundary discipline; aspirational reading. |
-| *Using Asyncio in Python* | Caleb Hattingh | Async course backbone. |
-| *Python Concurrency with asyncio* | Matthew Fowler | Async course companion. |
-| *Python Testing with pytest*, 2nd ed. | Brian Okken | Testing course backbone. |
-| *Robust Python* | Patrick Viafore | Type Hints deep-dive course. |
-| *Serious Python* | Julien Danjou | Advanced reference; less for direct course use, more for course-author leveling. |
-| *CPython Internals* | Anthony Shaw | Course-author reference for explaining the GIL, the bytecode, and the eval loop honestly. |
+- *Fluent Python*, 2nd ed. — Luciano Ramalho. The single best modern Python reference that respects the reader. Chapters 9 (closures + decorators), 17 (context managers), 21 (async). The spine for this scroll's depth references.
+- *Effective Python*, 2nd ed. — Brett Slatkin. Item-by-item idioms. Items 11-27 (comprehensions, iteration), 38-43 (decorators, closures), 66-69 (`try/except`, context managers).
+- *Python Cookbook*, 3rd ed. — David Beazley & Brian K. Jones. Recipe-style; exercise inspiration across all lessons.
+- *Python Crash Course*, 3rd ed. — Eric Matthes. Sequencing reference for absolute beginners — useful as a "what NOT to do for a polyglot" baseline.
+- *Robust Python* — Patrick Viafore. The best book on the *strategy* of type hints; reference for the named-and-deferred typing depth.
+- *Using Asyncio in Python* — Caleb Hattingh. Short and sharp; reference for the deferred async scroll.
+- *Architecture Patterns with Python* — Harry Percival & Bob Gregory. The "ports and adapters" lens applied to Python; aspirational reading.
+- *CPython Internals* — Anthony Shaw. Course-author reference for GIL and bytecode honesty.
 
-### Online platforms (Udemy / Exercism / Real Python / Coursera)
+### Online platforms
 
-| Platform | What to borrow / observe |
-|---|---|
-| **Exercism — Python track** | Exercise *shapes* (single pure function, hidden tests, mentor-style hints). Closest analog to Dojo's exercise step. Specific exercises worth modeling: `tally`, `scrabble-score`, `pangram`, `allergies`, `clock`. |
-| **Real Python** | Tutorials are the highest-quality free Python writing on the open web. Use as a "further reading" link from explanation steps; never copy. Standout pieces: dataclasses guide, decorators primer, asyncio walkthrough, type-checking guide. |
-| **Boot.dev — Python tracks** | Closest spiritual predecessor to Dojo's Code School-inspired format. Step density and test-feedback model are worth studying for Piston UX parity. |
-| **Coursera — *Python for Everybody* (Charles Severance, U-Mich)** | Classic introductory sequencing. Useful for what *not* to do at Dojo's level — too gentle for our audience, but the teaching arc is sound. |
-| **Udemy — Jose Portilla's Python bootcamps** | Massive market presence; useful for understanding the gap between "popular" and "rigorous." Reference, don't emulate. |
-| **CS50P (Harvard, David Malan / Brian Yu)** | High-quality intro with a strong testing emphasis. Borrow the "writing tests is part of the assignment" framing. |
-| **Platzi — Python ruta** | Spanish-speaking audience reference; sequencing benchmark for our Spanish-speaking learners (founder is Spanish-speaking; our audience may be too). |
-| **Talk Python Training (Michael Kennedy)** | Strong on async, packaging, and modern Python (3.11+). Useful for advanced course leveling. |
+- **Exercism Python track** — maintained by a strong volunteer team. Exercise *shapes* (single pure function, hidden tests, mentor hints) are the closest analogue to Dojo's exercise step. Standout exercises to study: `tally`, `pangram`, `allergies`, `clock`, `scrabble-score`. <https://exercism.org/tracks/python>
+- **Real Python** — the highest-quality free Python writing on the open web. Use as "further reading" link from explanation steps; never copy. Standout pieces: decorators primer, context managers walk-through, dataclasses guide. <https://realpython.com>
+- **Trey Hunner's Python Morsels** — short exercises with thoughtful hints; the *hint structure* is worth studying before writing our own. <https://www.pythonmorsels.com>
+- **Talk Python Training** (Michael Kennedy) — strong on modern Python (3.11+), async, packaging. Reference for advanced leveling.
+- **Raymond Hettinger's PyCon talks** — "Beyond PEP 8," "Transforming Code into Beautiful, Idiomatic Python," "Super considered super." Mandatory background for course authors on this track.
+- **David Beazley's PyCon tutorials** — generators, concurrency, metaprogramming. Gold-standard explanations; not for direct copy but for calibrating the depth bar.
+- **CS50P (Harvard)** — high-quality intro with strong testing emphasis. Flagged: too gentle for our audience, useful for the "writing tests is part of the work" framing.
 
 ### Official documentation
 
-- **Tutorial:** <https://docs.python.org/3/tutorial/> — surprisingly good; reference from Fundamentals lesson intros.
-- **Library reference:** <https://docs.python.org/3/library/> — link directly to relevant modules from each lesson.
-- **Language reference / data model:** <https://docs.python.org/3/reference/datamodel.html> — *the* dunder bible. Mandatory link from OOP and Metaprogramming.
-- **HOWTOs:** <https://docs.python.org/3/howto/> — Hettinger's descriptor HOWTO and the logging HOWTO are particularly good.
-- **PEP index:** <https://peps.python.org/> — link specific PEPs (8 style, 20 zen, 484 type hints, 492 coroutines, 634 match, 657 fine-grained errors) where they motivate a lesson.
-- **Packaging User Guide:** <https://packaging.python.org/> — reference from Testing & Packaging course.
+- <https://docs.python.org/3/reference/datamodel.html> — the dunder bible. Mandatory link from Lessons 1, 4, 5.
+- <https://docs.python.org/3/library/contextlib.html> — Lesson 4's reference.
+- <https://docs.python.org/3/library/functools.html> — Lesson 5's reference.
+- <https://docs.python.org/3/howto/descriptor.html> — Raymond Hettinger's HOWTO. Reference for the deferred descriptors scroll.
+- <https://peps.python.org/> — link specific PEPs (8, 20, 343, 318, 484, 492, 634) where they motivate a lesson.
+- <https://packaging.python.org/> — reference for Lesson 0's `pip` / `venv` / `pyproject.toml` orientation.
 
 ### Community learning resources
 
-- **Trey Hunner's Python Morsels** (<https://www.pythonmorsels.com>) — short exercises with thoughtful hints; closest spiritual sibling to Dojo's exercise step. Worth reviewing the *hint structure* before writing our own.
-- **Raymond Hettinger's PyCon talks** — "Beyond PEP 8," "Transforming Code into Beautiful, Idiomatic Python," "Super considered super." Mandatory background for any course author writing the OOP or Idioms course.
-- **David Beazley's PyCon tutorials** — concurrency, generators, metaprogramming. Gold-standard explanations.
-- **Łukasz Langa's talks** — async, modern Python, performance.
-- **Anthony Shaw's blog and talks** — CPython internals; useful for grounding "why is this slow / why does the GIL matter" answers.
-- **Hynek Schlawack's blog** — packaging, attrs/dataclasses lineage, structlog. Reference for the Testing & Packaging course.
-- **Ned Batchelder's blog** — test coverage, mocking, general Python craft.
-- **Brett Cannon's blog** — Python language internals and packaging history.
-- **PyVideo.org** — searchable archive of PyCon talks; primary research tool for course authors.
+- *Python Weekly* (Rahul Chaudhary) — newsletter, good for tracking what working Pythonistas actually use.
+- The official Python release notes (3.10+) — pattern matching, `TaskGroup`, `Self`, generic syntax (PEP 695) all best understood from the release-note rationale.
+- PyCon and PyData talk archives on YouTube — Raymond Hettinger, David Beazley, Łukasz Langa, Brett Cannon, Ned Batchelder, Hynek Schlawack.
+- Hynek Schlawack's blog — packaging, attrs/dataclasses lineage, structlog. Reference for the deferred packaging scroll.
 
----
+## 8. Implementation order
 
-## 7. Suggested implementation order
+There is one Python scroll to ship. Order applies to the lessons within it, in the post-2026-06-07 polyglot-first scope:
 
-**Build first: `python-fundamentals`.** Largest target audience, lowest Piston risk (everything is `unittest` and pure functions), highest leverage as a prerequisite gate. Validates the Python runner end-to-end before any sub-course depends on async or pytest.
+1. **Lesson 0 — Python en contexto.** Orients the polyglot. Establishes the voice gate (every paragraph removes a decision the polyglot would make in another browser tab). Status: stub, target W1 of the Python authoring sprint.
+2. **Lesson 1 — Las dos sintaxis que sorprenden.** Establishes the scroll-level kata shape (Piston Python harness, predict pattern). Lands the "first surprises" so syntax doesn't trip the learner for the rest of the scroll. Status: stub, target W1.
+3. **Lesson 2 — Literales y comprehensions.** Comprehensions as the dominant data-transform shape. Ships the first playground step. Status: stub, target W1.
+4. **Lesson 3 — EAFP vs LBYL.** The cultural reflex. Status: stub, target W2.
+5. **Lesson 4 — Context managers.** The protocol surface earns its first depth. Ships the second playground step. Status: stub, target W2.
+6. **Lesson 5 — Decorators + closures.** Closes the scroll with the named-and-deferred list pointing at deep-dives (asyncio, descriptors, metaclasses, typing). Status: stub, target W2.
 
-**Build second: `python-idioms-data-structures`.** This is where Python *becomes* Python for the learner; it's also the course most likely to generate organic shares ("look at this slick `Counter` solution"). Pure stdlib, no Piston risk.
+After the Python scroll ships end-to-end, deep-dive scrolls become candidates for prioritisation. The order suggested in §3.1 is not committed — that's a separate decision per future sprint. The strong candidates (per audience reach + author leverage) are `python-asyncio-deep` (highest audience-pull) and `python-typing-deep` (highest "TS modernizer transfer" for Felipe).
 
-**Build third: `python-oop-dunders`.** Required prereq for two more sub-courses (Testing, Metaprogramming). Stdlib only. Some content density risk — keep lessons short, push complexity into challenge steps.
-
-**Build fourth: `python-testing-packaging`.** Resolves the open Piston question (does the image ship pytest?) early enough to inform later courses. If pytest is unavailable, this course still ships using `unittest` only — the Piston-facing risk is real but bounded. Packaging lessons are inherently safe (TOML parsing).
-
-**Build fifth: `python-decorators-metaprogramming`.** High audience interest, highest "I learned something new" rate per lesson. Stdlib only. Save for later because it's the highest authoring effort per step (the explanation density is brutal — closures and decorators are easy to *use* and hard to *teach*).
-
-**Build sixth: `python-async`.** Last of the core six because (a) it's the most exposed to Piston constraints (no network), and (b) writing deterministic async tests is non-trivial — we want our test-authoring patterns mature first. By the time this ships, the fake-clock monkey-patch pattern will be muscle memory across the team.
-
-**Optional Phase 2:** `python-type-hints-in-practice` and `python-concurrency-decision-guide` ship after the core six if learner data shows demand. Type Hints ships only if we can resolve the mypy-in-Piston question; Concurrency ships only if `multiprocessing` works in the sandbox.
-
-**Cross-cutting recommendation:** before authoring Course 1, run a Piston spike on `unittest`, `asyncio`, `time` monkey-patching, and `tomllib` parsing — five small validation programs, half a day of work, retire the four largest open questions before the curriculum locks.
+**Playground frontend reuse:** the `data.kind === "playground"` branch ships with Ruby per [ruby/ruby.md §2.3](../ruby/ruby.md). Python's two playground steps reuse the same frontend contract — no additional frontend work needed for this scroll if Ruby ships first. If Python ships first (unlikely given Sprint 026's Ruby focus), the ~4-6 hour frontend work lands before Lesson 2's playground seeds.
