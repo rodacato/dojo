@@ -1259,7 +1259,10 @@ export async function seedAllScrolls(db: ReturnType<typeof drizzle>): Promise<Se
   // `ruby-fundamentals` → `ruby`, but never cleaned the old row, so a stale
   // catalog entry kept appearing at /scrolls/ruby-fundamentals. Wipe it once;
   // subsequent runs are no-ops via removeLegacyScrollBySlug's existence check.
+  // S027 W3 added the same cleanup for the pre-pivot `python-for-the-practiced`
+  // slug, replaced by `python` (polyglot-first scroll, see seed-scrolls-python.ts).
   await removeLegacyScrollBySlug(db, 'ruby-fundamentals')
+  await removeLegacyScrollBySlug(db, 'python-for-the-practiced')
 
   return report
 }

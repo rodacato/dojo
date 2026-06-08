@@ -32,7 +32,7 @@ import {
 
 type StepLike = {
   id: string
-  type: 'read' | 'code' | 'kata' | 'challenge'
+  type: 'read' | 'code' | 'kata' | 'challenge' | 'predict'
   title?: string | null
   instruction: string
   starterCode: string | null
