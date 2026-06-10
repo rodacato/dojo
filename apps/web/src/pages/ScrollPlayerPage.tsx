@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { runInIframe } from '../lib/iframeSandboxRunner'
@@ -29,7 +29,10 @@ export function ScrollPlayerPage() {
   const [completedSteps, setCompletedSteps] = useState<string[]>([])
   const [progressLoaded, setProgressLoaded] = useState(false)
   const [activeStepId, setActiveStepId] = useState<string | null>(null)
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(
+    () => window.matchMedia('(min-width: 768px)').matches,
+  )
+  const mainRef = useRef<HTMLElement>(null)
 
   // Load scroll
   useEffect(() => {
@@ -54,6 +57,19 @@ export function ScrollPlayerPage() {
       window.history.pushState(null, '', target)
     }
   }, [])
+
+  // On narrow viewports the sidebar overlays most of the screen — picking a
+  // step is the signal the learner is done navigating.
+  const selectStepFromSidebar = useCallback((stepId: string) => {
+    navigateToStep(stepId)
+    if (!window.matchMedia('(min-width: 768px)').matches) {
+      setSidebarOpen(false)
+    }
+  }, [navigateToStep])
+
+  useEffect(() => {
+    mainRef.current?.scrollTo(0, 0)
+  }, [activeStepId])
 
   // Initial step resolution: hash first, then first incomplete step from
   // progress, then first step. Hash wins immediately when present so refresh
@@ -188,7 +204,8 @@ export function ScrollPlayerPage() {
           type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-label="Toggle sidebar"
-          className="font-mono text-xs tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors hidden md:inline"
+          aria-expanded={sidebarOpen}
+          className="font-mono text-xs tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
         >
           {sidebarOpen ? 'Hide nav' : 'Show nav'}
         </button>
@@ -197,6 +214,8 @@ export function ScrollPlayerPage() {
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Sidebar */}
         <aside
+          inert={!sidebarOpen}
+          aria-hidden={!sidebarOpen}
           className={`bg-surface border-r border-border transition-[width] duration-200 flex flex-col shrink-0 overflow-hidden ${
             sidebarOpen ? 'w-70' : 'w-0'
           }`}
@@ -214,7 +233,7 @@ export function ScrollPlayerPage() {
                 index={i + 1}
                 activeStepId={activeStepId}
                 completedSteps={completedSteps}
-                onSelectStep={navigateToStep}
+                onSelectStep={selectStepFromSidebar}
               />
             ))}
             <FurtherReading refs={scroll.externalReferences} />
@@ -222,7 +241,7 @@ export function ScrollPlayerPage() {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 min-w-0 overflow-y-auto">
+        <main ref={mainRef} className="flex-1 min-w-0 overflow-y-auto">
           {scrollComplete && user && (
             <ScrollCompleteBanner
               scrollTitle={scroll.title}
@@ -470,6 +489,7 @@ function PredictStep({
     onAdvance()
   }
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([])
   const data = step.data as {
     snippet: string
     options: { id: string; text: string }[]
@@ -489,6 +509,20 @@ function PredictStep({
 
   const revealed = selectedId !== null
   const isCorrect = revealed && selectedId === data.correct
+
+  // Arrow keys move focus between options without selecting — selection
+  // reveals the answer and can't be undone, so Enter/Space stays the commit.
+  const handleOptionKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const delta =
+      e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1
+      : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1
+      : 0
+    if (delta === 0) return
+    e.preventDefault()
+    const count = data.options.length
+    optionRefs.current[(index + delta + count) % count]?.focus()
+  }
+
   const stepTitle = step.title ?? `Step ${step.order}`
   const instructionBody = step.instruction
     .replace(new RegExp(`^# +${stepTitle}\\s*\\n+`), '')
@@ -541,11 +575,13 @@ function PredictStep({
           return (
             <button
               key={opt.id}
+              ref={(el) => { optionRefs.current[i] = el }}
               type="button"
               role="radio"
               aria-checked={isSelected}
               disabled={revealed}
               onClick={() => setSelectedId(opt.id)}
+              onKeyDown={(e) => handleOptionKeyDown(e, i)}
               className={`w-full text-left px-4 py-3 rounded border transition-all duration-200 font-mono text-sm flex items-start gap-3 ${stateClass} ${revealed ? 'cursor-default' : 'cursor-pointer active:scale-[0.99]'}`}
             >
               <span className="shrink-0 w-6 h-6 rounded border border-current/40 flex items-center justify-center text-xs">
@@ -875,6 +911,7 @@ function StepEditor({
           solutionCode={solutionCode}
           alternativeApproach={alternativeApproach}
           solutionError={solutionError}
+          onSolutionRetry={() => setSolutionError(null)}
           editorLanguage={editorLanguage}
           isPlayground={isPlayground}
         />
@@ -924,6 +961,7 @@ function OutputPanel({
   solutionCode,
   alternativeApproach,
   solutionError,
+  onSolutionRetry,
   editorLanguage,
   isPlayground,
 }: {
@@ -934,6 +972,7 @@ function OutputPanel({
   solutionCode: string | null
   alternativeApproach: string | null
   solutionError: string | null
+  onSolutionRetry: () => void
   editorLanguage: string
   isPlayground: boolean
 }) {
@@ -994,6 +1033,7 @@ function OutputPanel({
             solutionCode={solutionCode}
             alternativeApproach={alternativeApproach}
             solutionError={solutionError}
+            onRetry={onSolutionRetry}
             language={editorLanguage}
           />
         ) : !result ? (
@@ -1027,12 +1067,14 @@ function SolutionTab({
   solutionCode,
   alternativeApproach,
   solutionError,
+  onRetry,
   language,
 }: {
   isCompleted: boolean
   solutionCode: string | null
   alternativeApproach: string | null
   solutionError: string | null
+  onRetry: () => void
   language: string
 }) {
   if (!isCompleted) {
@@ -1044,9 +1086,17 @@ function SolutionTab({
   }
   if (solutionError) {
     return (
-      <p className="text-xs font-mono text-danger/80">
-        Couldn&apos;t load the solution: {solutionError}
-      </p>
+      <div className="flex items-center gap-3">
+        <p className="text-xs font-mono text-danger/80">
+          Couldn&apos;t load the solution: {solutionError}
+        </p>
+        <button
+          onClick={onRetry}
+          className="text-xs font-mono text-accent hover:text-accent/80 transition-colors shrink-0"
+        >
+          ↻ Retry
+        </button>
+      </div>
     )
   }
   if (solutionCode === null) {
