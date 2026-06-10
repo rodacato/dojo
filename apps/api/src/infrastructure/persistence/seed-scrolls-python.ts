@@ -6,13 +6,13 @@
 // `removeLegacyScrollBySlug` invoked at the tail of `seedAllScrolls` in
 // seed-scrolls.ts).
 //
-// Polyglot-first lesson order (S027 W2 authoring; W3 seeding in progress):
+// Polyglot-first lesson order (S027 W2 authoring; W3 seeding complete):
 //   order 1 — Lesson 0 (Python en contexto)               — 2 steps (read, predict)
 //   order 2 — Lesson 1 (Las dos sintaxis que sorprenden)  — 3 steps (read, predict, kata)
-//   order 3 — Lesson 2 (Literales y comprehensions)       — 4 steps (TODO W3 batch 2)
-//   order 4 — Lesson 3 (EAFP vs LBYL)                     — 4 steps (TODO W3 batch 2)
-//   order 5 — Lesson 4 (Context managers)                 — 4 steps (TODO W3 batch 3)
-//   order 6 — Lesson 5 (Decorators + closures)            — 5 steps (TODO W3 batch 3)
+//   order 3 — Lesson 2 (Literales y comprehensions)       — 4 steps (read, 2 kata, playground)
+//   order 4 — Lesson 3 (EAFP vs LBYL)                     — 4 steps (read, predict, 2 kata)
+//   order 5 — Lesson 4 (Context managers)                 — 4 steps (read, 2 kata, playground)
+//   order 6 — Lesson 5 (Decorators + closures)            — 5 steps (2 read, predict, 2 kata)
 // Total: 22 steps. ~100 min target. Audience: polyglot dev (see AUDIENCE.md).
 // Authoring drafts live in docs/courses/curricula/python/lesson-{0..5}.md;
 // figures registered in apps/web/src/scrolls/figures/data/python-figures.ts.
@@ -199,7 +199,7 @@ The modern declaration file (PEP 518 + PEP 621). Replaces \`setup.py\` and (most
 
 - **\`pip\` + \`venv\`** — stdlib. The baseline you use to read older projects.
 - **\`poetry\`** — mature, opinionated, lockfile-based (\`poetry.lock\`). Popular through the late 2010s.
-- **\`uv\`** (Astral, 2024) — Rust-fast drop-in \`pip\` replacement, increasingly the **modern default for new projects**. Pin \`uv\` if you're starting fresh in 2026.
+- **\`uv\`** (Astral, 2024) — Rust-fast drop-in \`pip\` replacement, **increasingly preferred for new projects**. Pin \`uv\` if you're starting fresh in 2026 — but expect \`pip\` and \`poetry\` in most codebases you'll inherit.
 - **\`conda\`** — scientific-computing default; manages non-Python dependencies (C libraries, CUDA) too.
 
 For a polyglot today: **\`uv\` for new projects, \`pip\` + \`venv\` to read older ones.** That's the whole map.
