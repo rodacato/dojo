@@ -1,5 +1,13 @@
-export function markdownToInnerHtml(text: string): string {
+function escapeHtml(text: string): string {
   return text
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+}
+
+export function markdownToInnerHtml(text: string): string {
+  return escapeHtml(text)
     .replace(
       /```(\w+)?\n([\s\S]*?)```/g,
       '<pre class="bg-bg/50 rounded p-3 my-3 overflow-x-auto"><code class="text-xs font-mono text-secondary">$2</code></pre>',
