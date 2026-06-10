@@ -3,6 +3,14 @@ set -e
 
 cd /workspaces/dojo
 
+# The devcontainer image ships some global node_modules subdirs (pnpm,
+# @anthropic-ai/claude-code) as root-owned, which blocks `npm i -g X` and
+# in-place upgrades (e.g. `npm i -g @anthropic-ai/claude-code`) from the
+# vscode user with EACCES. Chown the whole global node_modules tree back
+# to vscode:nvm so subsequent `npm i -g` works without sudo. Idempotent —
+# subsequent rebuilds with already-correct ownership are no-ops.
+sudo chown -R vscode:nvm /usr/local/share/nvm/current/lib/node_modules 2>/dev/null || true
+
 # Enable corepack for pnpm
 corepack enable
 corepack prepare pnpm@latest --activate
