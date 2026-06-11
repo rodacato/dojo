@@ -62,6 +62,7 @@ The table that authors actually consult while planning a lesson.
 | Break a long prose passage | `read+inline` (with embedded tap-to-reveal or 2-option quizzes) | Keep prose long. ~400 words is the hard ceiling per `README.md` §5.1 |
 | Have the learner write code that produces a specific output | `code` / `exercise` | `predict` — predict is hypothesis; exercise is production |
 | Stretch the learner at the end of a lesson | `challenge` | Multiple consecutive challenges — that's a problem set, not a course |
+| Prove the scroll's promise at the very end | the capstone `challenge` — one per scroll, integrates ≥3 lessons ([`README.md`](README.md) §5.3) | A recap quiz or summary read — recognition isn't demonstration |
 | Make abstract concepts feel concrete | `trace` (if runtime) OR `read+inline` (if conceptual) | Decorative animation that doesn't change the learner's actions |
 
 ### When NOT to interactivate at all

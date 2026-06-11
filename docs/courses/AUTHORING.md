@@ -200,6 +200,7 @@ Bug fixes from smoke go in their own commits, not bundled with the main pipeline
 2. **Smoke after the first lesson seed**, not after all of them (stage D).
 3. **Decide naming conventions up front** when there's a legacy lesson (stage 13 — saved hours).
 4. **The 6-persona AUDIENCE.md draft** was overkill; we cut to 4. For next-scroll AUDIENCE updates, start from 4.
+5. **Plan the capstone at outline stage** (added 2026-06-11). Ruby and Python both shipped without a final integrative challenge, and the gap surfaced in the first real smoke as "did I actually learn this?" — the scroll never made the learner prove it. The fix is structural, not remedial: the outline (stage 3) includes the capstone, and the outline-stage audience test asks the personas to sketch an attack on it using only the outlined lessons. Same stage catches the production-gesture audit (does the learner ever *write* a class / decorator / module, or only read about the mechanism?). Rules in [`README.md`](README.md) §5.3 *The scroll capstone* and §4.4 *production-gesture rule*.
 
 ## Open questions for the next scroll
 

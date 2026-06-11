@@ -216,6 +216,7 @@ A lesson is a *coherent sequence* of steps inside a sub-course. Ordering matters
 - **Last exercise of a lesson (excluding challenges) is 40% confidence.** Stretch, not wall. Failure here is expected and not punished — there's no progress regression for failing an exercise; you simply re-run.
 - **Challenges are *terrain markers*, not progression gates.** A learner who skips a challenge moves on. A learner who beats one knows they've learnt the lesson.
 - **Avoid recall-without-warning.** If Lesson 3 expects you to remember a function name from Lesson 1, the explanation step in Lesson 3 must re-surface that name explicitly — never assume the learner remembers something we didn't help them rehearse.
+- **The production-gesture rule (added 2026-06-11).** Every crash scroll makes the learner *perform* the language's basic production gestures at least once in a kata — define a class in Ruby, write a decorator in Python — not just read about the mechanism behind them. A scroll where the object model is understood but `class` was never typed leaves the polyglot fluent in theory and mute in practice. Audit at outline stage: list the 2-3 gestures a working developer performs daily in this language; each must appear as something the learner writes.
 
 ### 4.5 Catalog and discovery
 
@@ -263,6 +264,15 @@ These are the rules that govern individual step authoring. Every language file i
 - **Hints: zero, OR exactly one high-level hint.** No hint-laddering on challenges. If the hint isn't enough, the learner is *meant* to go look something up — that's part of the design.
 - **Failure is fine.** Challenges are not gates. Skipping or failing them does not block the next lesson. They mark terrain; they don't fence it.
 - **Phrase the prompt as a real problem, not a contrived puzzle.** "Fix this event delegation bug" beats "complete the function so all tests pass".
+
+#### The scroll capstone (added 2026-06-11)
+
+Every crash scroll **ends with exactly one capstone challenge** — the last step of the last lesson. The capstone is the scroll's promise made verifiable: a learner who finishes the lessons should be able to attempt it, and a learner who beats it has demonstrated — not just read — the scroll's core mechanisms.
+
+- **Integrates at least three lessons.** A capstone that exercises one lesson is that lesson's challenge wearing a hat. The instruction names which lessons it leans on, so a stuck learner knows where to go back.
+- **One small, real deliverable.** A function or small class a working developer would plausibly write — not a tour ("use each feature once") and not a puzzle. If the integration feels forced, the capstone is testing the author's cleverness, not the learner's competence.
+- **Regular challenge rules apply** (2× budget, ≤1 hint, not a gate). The capstone differs only in scope (whole-scroll) and position (always last).
+- **It's also the scroll's own test.** If outline-stage audience personas can't sketch an attack on the capstone using only the outlined lessons, the scroll's lesson set is incomplete — fix the lessons, not the capstone. Plan it at outline stage for exactly this reason (see [`AUTHORING.md`](AUTHORING.md)).
 
 ### 5.4 Anatomy of a well-formed exercise step
 
