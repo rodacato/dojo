@@ -12,8 +12,8 @@
 //   order 3 — Lesson 2 (Literals + comprehensions)       — 4 steps (read, 2 kata, playground)
 //   order 4 — Lesson 3 (EAFP vs LBYL)                     — 4 steps (read, predict, 2 kata)
 //   order 5 — Lesson 4 (Context managers)                 — 4 steps (read, 2 kata, playground)
-//   order 6 — Lesson 5 (Decorators + closures)            — 5 steps (read+inline, read, predict, 2 kata)
-// Total: 22 steps. ~100 min target. Audience: polyglot dev (see AUDIENCE.md).
+//   order 6 — Lesson 5 (Decorators + closures)            — 6 steps (read+inline, read, predict, 2 kata, capstone)
+// Total: 23 steps. ~105 min target. Audience: polyglot dev (see AUDIENCE.md).
 // Authoring drafts live in docs/courses/curricula/python/lesson-{0..5}.md;
 // figures registered in apps/web/src/scrolls/figures/data/python-figures.ts.
 //
@@ -2026,7 +2026,125 @@ const LESSON_5 = {
 // PYTHON_LESSONS + PYTHON_STEPS exports
 // =============================================================================
 //
-// W3 batch 3 closes out authoring with L4 + L5. All 22 steps now seeded.
+// W3 batch 3 closed out authoring with L4 + L5; the capstone (2026-06-11)
+// brings the scroll to 23 steps.
+
+// Scroll capstone (docs/courses/README.md §5.3): one challenge, last step of
+// the last lesson, integrating comprehensions (L2), EAFP (L3) and decorators
+// (L5). Solution validated against CPython 3.11 before seeding.
+const STEP_5_5_ID = seedUuid('py-s5-5-capstone-parse-prices')
+
+const STEP_5_5 = {
+  id: STEP_5_5_ID,
+  lessonId: LESSON_5_ID,
+  order: 6,
+  type: 'challenge' as const,
+  title: 'Capstone: parse_prices — comprehensions, EAFP, and a decorator together',
+  instruction: `## Your task
+
+**This is the scroll's capstone — budget ~20 minutes.** It leans on Lesson 2 (comprehensions), Lesson 3 (EAFP), and Lesson 5 (decorators). If one piece resists, that lesson is the place to look back.
+
+A CSV export from a legacy billing system mixes valid price strings with garbage — empty cells, \`"n/a"\`, free-text notes. Build the small pipeline that survives it:
+
+1. **\`skip_on(exc)\`** — a parametrised decorator: the decorated function returns \`None\` instead of raising when \`exc\` is raised. Metadata must survive decoration.
+2. **\`to_cents(raw)\`** — already written and decorated in the starter. Converts \`"12.50"\` to \`1250\`. Leave it as-is; make \`skip_on\` good enough that it just works.
+3. **\`parse_prices(lines)\`** — takes a list of raw strings, returns a tuple: the list of cents for the valid ones, and the count of skipped ones.
+
+## Examples
+
+\`\`\`python
+parse_prices(["1.00", "oops", "2.25", ""])   # ([100, 225], 2)
+parse_prices([])                              # ([], 0)
+\`\`\`
+
+Beating this step means you can write the Python this scroll set out to teach. Failing it tells you exactly which lesson to revisit — that's the point.`,
+  starterCode: `from functools import wraps
+
+
+def skip_on(exc):
+    # Your code here. Three layers: skip_on(exc) -> decorator(fn) -> wrapper(*args).
+    pass
+
+
+@skip_on(ValueError)
+def to_cents(raw):
+    return round(float(raw) * 100)
+
+
+def parse_prices(lines):
+    # Your code here. Return (list_of_cents, skipped_count).
+    pass
+`,
+  testCode: `${PY_HARNESS_HEADER}
+@_t("to_cents converts a valid price string to cents")
+def _():
+    _eq(to_cents("12.50"), 1250)
+    _eq(to_cents("0.99"), 99)
+
+@_t("to_cents returns None instead of raising on garbage")
+def _():
+    _eq(to_cents("n/a"), None)
+    _eq(to_cents(""), None)
+
+@_t("to_cents keeps its metadata — @wraps is not optional")
+def _():
+    _eq(to_cents.__name__, "to_cents")
+
+@_t("parse_prices returns the converted values and the skip count")
+def _():
+    _eq(parse_prices(["1.00", "oops", "2.25", ""]), ([100, 225], 2))
+    _eq(parse_prices([]), ([], 0))
+
+@_t("skip_on is a general factory — it works for other exceptions")
+def _():
+    @skip_on(KeyError)
+    def pick(d):
+        return d["k"]
+    _eq(pick({}), None)
+    _eq(pick({"k": 3}), 3)
+${PY_HARNESS_FOOTER}`,
+  hint: "skip_on is 5.4's three-layer onion with Lesson 3's try/except as the wrapper body. parse_prices is two comprehensions from Lesson 2 — one converting, one dropping the Nones (count the gap between them).",
+  solution: `from functools import wraps
+
+
+def skip_on(exc):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            try:
+                return fn(*args, **kwargs)
+            except exc:
+                return None
+        return wrapper
+    return decorator
+
+
+@skip_on(ValueError)
+def to_cents(raw):
+    return round(float(raw) * 100)
+
+
+def parse_prices(lines):
+    cents = [to_cents(raw) for raw in lines]
+    good = [c for c in cents if c is not None]
+    return good, len(cents) - len(good)
+`,
+  alternativeApproach: `A single pass with an explicit loop also works and avoids holding the intermediate list:
+
+\`\`\`python
+def parse_prices(lines):
+    good, skipped = [], 0
+    for raw in lines:
+        c = to_cents(raw)
+        if c is None:
+            skipped += 1
+        else:
+            good.append(c)
+    return good, skipped
+\`\`\`
+
+The two-comprehension version reads closer to the spec; the loop wins when you need the skip count without materialising the intermediate list. Both are idiomatic — the anti-pattern would be counting inside a comprehension via side effects.`,
+}
 
 export const PYTHON_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3, LESSON_4, LESSON_5]
 
@@ -2036,5 +2154,5 @@ export const PYTHON_STEPS = [
   STEP_2_1, STEP_2_2, STEP_2_3, STEP_2_4,
   STEP_3_1, STEP_3_2, STEP_3_3, STEP_3_4,
   STEP_4_1, STEP_4_2, STEP_4_3, STEP_4_4,
-  STEP_5_1A, STEP_5_1B, STEP_5_2, STEP_5_3, STEP_5_4,
+  STEP_5_1A, STEP_5_1B, STEP_5_2, STEP_5_3, STEP_5_4, STEP_5_5,
 ]

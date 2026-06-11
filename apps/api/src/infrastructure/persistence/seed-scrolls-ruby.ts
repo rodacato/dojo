@@ -6,13 +6,13 @@
 // invoked at the tail of `seedAllScrolls` in seed-scrolls.ts).
 //
 // Polyglot-first lesson order (S026):
-//   order 1 — Lesson 0 (Contexto)         — 3 steps (read, read, predict)
+//   order 1 — Lesson 0 (Context)          — 3 steps (read, read, predict)
 //   order 2 — Lesson 1 (Blocks)           — 5 steps (read, predict, 2 katas, playground)
-//   order 3 — Lesson 2 (Literales)        — 4 steps (read, 3 katas)
-//   order 4 — Lesson 3 (Object model)     — 5 steps (read+inline, predict, 2 katas, playground)
+//   order 3 — Lesson 2 (Literals)         — 4 steps (read, 3 katas)
+//   order 4 — Lesson 3 (Object model)     — 6 steps (read+inline, predict, 3 katas, playground)
 //   order 5 — Lesson 4 (Control flow)     — 4 steps (read, predict, kata, challenge)
-//   order 6 — Lesson 5 (Methods)          — 4 steps (read, 2 katas, challenge)
-// Total: 25 steps. ~110 min target. Audience: polyglot dev (see AUDIENCE.md).
+//   order 6 — Lesson 5 (Methods)          — 5 steps (read, 2 katas, challenge, capstone)
+// Total: 27 steps. ~115 min target. Audience: polyglot dev (see AUDIENCE.md).
 //
 // Const naming: the legacy seed used `LESSON_1_ID` / `STEP_1_*_ID` for what
 // was the only lesson at the time (Object model). That lesson became Lesson 3
@@ -55,6 +55,7 @@ const STEP_1_1_ID = seedUuid('ruby-s1-1-everything-is-object')
 const STEP_1_2_ID = seedUuid('ruby-s1-2-predict-nil-class')
 const STEP_1_3_ID = seedUuid('ruby-s1-3-type-of')
 const STEP_1_4_ID = seedUuid('ruby-s1-4-describe')
+const STEP_3_5_ID = seedUuid('ruby-s3-5-kata-money-class')
 
 const RB_HARNESS_HEADER = `# ── dojo harness ──────────────────────────────────
 $tests = []
@@ -397,10 +398,91 @@ puts "got: #{value}"           # value is silently coerced via to_s
 The first line is the one that survives "wait, was that nil or an empty string?".`,
 }
 
+// The production-gesture kata (docs/courses/README.md §4.4): the learner has
+// read that operators are messages — here they define one. First `class` the
+// scroll makes them write.
+const STEP_3_5 = {
+  id: STEP_3_5_ID,
+  lessonId: LESSON_1_ID,
+  order: 5,
+  type: 'kata' as const,
+  title: 'Money — define + and == as the methods they are',
+  instruction: `## Your task
+
+This lesson said operators are messages. Prove it to yourself: write your first Ruby class and give it two "operators" — which, you now know, are just methods with punctuation names.
+
+Define a \`Money\` class:
+
+- \`Money.new(cents)\` stores the amount; expose it with \`attr_reader :cents\`
+- \`+\` returns a **new** \`Money\` whose cents are the sum — no mutation
+- \`==\` compares by value: two \`Money\` objects with equal cents are equal
+
+## Examples
+
+\`\`\`ruby
+total = Money.new(250) + Money.new(150)
+total.cents                        # => 400
+Money.new(300) == Money.new(300)   # => true
+Money.new(1).send(:+, Money.new(2)).cents  # => 3  (same method, no sugar)
+\`\`\`
+
+The last test calls your \`+\` through \`send(:+)\`. If that works without any extra code on your part, you've understood the lesson: there is no "operator overloading" feature — there are only methods.`,
+  starterCode: `class Money
+  attr_reader :cents
+
+  def initialize(cents)
+    @cents = cents
+  end
+
+  # Define + and == here.
+end
+`,
+  testCode: `${RB_HARNESS_HEADER}
+_t('Money#+ returns a new Money with the summed cents') do
+  total = Money.new(250) + Money.new(150)
+  _eq total.cents, 400
+end
+
+_t('+ does not mutate either operand') do
+  a = Money.new(100)
+  a + Money.new(1)
+  _eq a.cents, 100
+end
+
+_t('== compares by value, not identity') do
+  _eq Money.new(300) == Money.new(300), true
+  _eq Money.new(300) == Money.new(301), false
+end
+
+_t('the operator is just a method — send(:+) reaches it') do
+  _eq Money.new(1).send(:+, Money.new(2)).cents, 3
+end
+${RB_HARNESS_FOOTER}`,
+  hint: '`def +(other)` is a regular method definition — the name just happens to be punctuation. Build and return `Money.new(...)`; never touch `@cents` of either operand.',
+  solution: `class Money
+  attr_reader :cents
+
+  def initialize(cents)
+    @cents = cents
+  end
+
+  def +(other)
+    Money.new(cents + other.cents)
+  end
+
+  def ==(other)
+    other.is_a?(Money) && cents == other.cents
+  end
+end`,
+  alternativeApproach: `For a full comparison protocol (\`<\`, \`>\`, \`between?\`, sorting), define \`<=>\` and \`include Comparable\` instead of hand-writing each operator — \`Comparable\` derives them all from the one method. Deferred to the object-model deep-dive; for value equality alone, \`==\` is the honest minimum.`,
+}
+
+// Order 5 is the Money class kata (STEP_3_5 above — the production-gesture
+// kata per docs/courses/README.md §4.4); the playground closes the lesson.
 const STEP_1_5 = {
   id: STEP_1_5_ID,
   lessonId: LESSON_1_ID,
-  order: 5,
+  order: 6,
   type: 'kata' as const,
   title: 'Playground: object model in action',
   instruction: `## What this is
@@ -1983,6 +2065,103 @@ ${RB_HARNESS_FOOTER}`,
 // Exports
 // =============================================================================
 
+// Scroll capstone (docs/courses/README.md §5.3): one challenge, last step of
+// the last lesson, integrating blocks (L1), Hash#fetch (L2), truthiness (L4)
+// and keyword arguments (L5). The scroll's promise made verifiable.
+const STEP_5_5_ID = seedUuid('ruby-s5-5-capstone-roster')
+
+const STEP_5_5 = {
+  id: STEP_5_5_ID,
+  lessonId: LESSON_5_ID,
+  order: 5,
+  type: 'challenge' as const,
+  title: 'Capstone: roster — blocks, fetch, truthiness, and keywords in one function',
+  instruction: `## Your task
+
+**This is the scroll's capstone — budget ~20 minutes.** It leans on Lesson 1 (blocks), Lesson 2 (\`Hash#fetch\`), Lesson 4 (truthiness), and Lesson 5 (keyword arguments). If one piece resists, that lesson is the place to look back.
+
+You're handed sign-up rows from a form that never validated anything. Build the roster report:
+
+\`roster(rows, default_role: :guest)\`
+
+- each row is a Hash like \`{ name: "Ada", role: :admin }\`
+- skip rows whose \`:name\` is \`nil\` or empty — they're noise, not people
+- group the remaining names by role; a row **without** a \`:role\` key falls back to the \`default_role\` keyword
+- each role's name list comes out sorted
+
+## Examples
+
+\`\`\`ruby
+rows = [
+  { name: "Ada", role: :admin },
+  { name: "Bob" },
+  { name: "", role: :user },
+]
+
+roster(rows)                        # => { admin: ["Ada"], guest: ["Bob"] }
+roster(rows, default_role: :member) # => { admin: ["Ada"], member: ["Bob"] }
+\`\`\`
+
+Beating this step means you can write the Ruby this scroll set out to teach. Failing it tells you exactly which lesson to revisit — that's the point.`,
+  starterCode: `def roster(rows, default_role: :guest)
+  # Your code here.
+end
+`,
+  testCode: `${RB_HARNESS_HEADER}
+ROWS = [
+  { name: "Ada", role: :admin },
+  { name: "Bob" },
+  { name: "", role: :user },
+  { name: nil, role: :user },
+  { name: "Eve", role: :admin },
+  { name: "Cal" },
+].freeze
+
+_t('groups names under their role') do
+  _eq roster(ROWS)[:admin], ["Ada", "Eve"]
+end
+
+_t('rows without a role fall back to the default keyword') do
+  _eq roster(ROWS)[:guest], ["Bob", "Cal"]
+end
+
+_t('the default role is configurable by keyword') do
+  result = roster(ROWS, default_role: :member)
+  _eq result[:member], ["Bob", "Cal"]
+  _eq result.key?(:guest), false
+end
+
+_t('nil and empty names are skipped, not grouped') do
+  _eq roster(ROWS).key?(:user), false
+end
+
+_t('names inside each role come out sorted') do
+  rows = [{ name: "Zoe", role: :dev }, { name: "Amy", role: :dev }]
+  _eq roster(rows)[:dev], ["Amy", "Zoe"]
+end
+${RB_HARNESS_FOOTER}`,
+  hint: "If `||` feels tempting for the missing role, Lesson 2's fetch kata explains why it will burn you. The rest is blocks all the way down: filter, group, transform.",
+  solution: `def roster(rows, default_role: :guest)
+  named = rows.select { |row| row[:name] && !row[:name].empty? }
+  named
+    .group_by { |row| row.fetch(:role) { default_role } }
+    .transform_values { |group| group.map { |row| row[:name] }.sort }
+end`,
+  alternativeApproach: `A single-pass shape with \`each_with_object\` also works:
+
+\`\`\`ruby
+def roster(rows, default_role: :guest)
+  rows.each_with_object(Hash.new { |h, k| h[k] = [] }) { |row, acc|
+    name = row[:name]
+    next unless name && !name.empty?
+    acc[row.fetch(:role) { default_role }] << name
+  }.transform_values(&:sort)
+end
+\`\`\`
+
+The chained \`select → group_by → transform_values\` reads closer to the spec; the single pass wins when rows number in the millions. Both are idiomatic.`,
+}
+
 export const RUBY_LESSONS = [
   LESSON_0,
   LESSON_BLOCKS,
@@ -2001,7 +2180,7 @@ export const RUBY_STEPS = [
   STEP_0_1, STEP_0_2, STEP_0_3,
   STEP_BLOCKS_1, STEP_BLOCKS_2, STEP_BLOCKS_3, STEP_BLOCKS_4, STEP_BLOCKS_5,
   STEP_2_1, STEP_2_2, STEP_2_3, STEP_2_4,
-  STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4, STEP_1_5,
+  STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4, STEP_3_5, STEP_1_5,
   STEP_4_1, STEP_4_2, STEP_4_3, STEP_4_4,
-  STEP_5_1, STEP_5_2, STEP_5_3, STEP_5_4,
+  STEP_5_1, STEP_5_2, STEP_5_3, STEP_5_4, STEP_5_5,
 ]
