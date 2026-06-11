@@ -1,6 +1,6 @@
 # Dojo — Target Audience Profiles
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-07
+> **Status:** Canonical · **Last reviewed:** 2026-06-11
 
 Four personas the crash scrolls are designed to serve. Each one has a stack they live in today, a list of things they already know cold (so the scroll doesn't re-teach them), and a list of what surprises them in each of the five scroll target languages (so the scroll knows what to lead with).
 
@@ -32,7 +32,7 @@ The personas a given crash scroll is built to serve. When authoring or reviewing
 | `ruby` | A1 Mariana · A2 Esteban | A4 Felipe ("need to read Ruby at new job") | A3 Yui (Ruby is parallel to her modernization path, not on it) |
 | `python` | A1 Mariana · A4 Felipe | A3 Yui (Python as scripting language) | A2 Esteban (already a Python mid-senior; not a learner here) |
 | `rust` | A1 Mariana · A3 Yui · A4 Felipe | A2 Esteban | — |
-| `typescript` | A4 Felipe (the scroll's defining shape per the S028 audience decision: knows JS, wants TS and its benefits) | A2 Esteban (JS from his fullstack years; TS adjacent, not his path) · A3 Yui (TS for the backend she's migrating toward) | A1 Mariana (already a TS senior; reviews the benefit claims, not a learner) |
+| `typescript` | A4 Felipe (the scroll's defining shape per the S028 audience decision: knows JS, wants TS and its benefits) | A3 Yui (TS is her target track; the JS-delta framing only partially serves her) | A2 Esteban (Python-first, no JS background — the JS-fluency contract excludes him) · A1 Mariana (already a TS senior; reviews the benefit claims, not a learner) |
 | `go` | A1 Mariana · A2 Esteban · A3 Yui | — | A4 Felipe (TS is his path; Go is parallel, not next) |
 
 **Reading the matrix:**

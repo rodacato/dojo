@@ -25,10 +25,10 @@ maintainers:
 primary_audience:
   - A4 Felipe Reyes              # 5yr JS, "TS-strict" with more `any` than he'd admit — the scroll exists for him
 secondary_audience:
-  - A1 Mariana Vargas            # TS senior — reviewer lens: keeps the claimed benefits honest
+  - A3 Yui Tanaka                # TS is her modernization target track; Java-first, so the JS-delta framing only partially serves her — flag at review, don't author for her
 out_of_scope_audience:
-  - A2 Esteban Morales           # Python-first; JS fluency not assumed for him (S028 audience pivot — see §7)
-  - A3 Yui Tanaka                # Java-first; same reason
+  - A2 Esteban Morales           # Python-first, no JS background; the scroll's JS-fluency contract excludes him
+  - A1 Mariana Vargas            # TS senior — not a learner; reviewer lens that keeps the claimed benefits honest
 ```
 
 ---
@@ -79,14 +79,13 @@ This absorbs and tightens the S026 draft's "type-pays-off test." Enforcement is 
 
 ### 2.3 `predict` placement
 
-Four predicts, one each in Lessons 0-3 — each targeting a specific wrong mental model the JS developer brings:
+Three predicts — Lessons 0, 1, and 3 — each targeting a specific wrong mental model the JS developer brings:
 
-- **Lesson 0 — "Which command catches the bug?"** — a TS file with a type error; only `tsc --noEmit` reports it, while `tsx`, `esbuild`, and modern `node` happily strip-and-run. Wrong model targeted: *"if it runs TypeScript, it checks TypeScript."* This is the orientation predict (Ruby/Python L0 precedent) and the lens's foundation: the benefit only exists if the checking pass runs.
+- **Lesson 0 — "Which command catches the bug?"** — a TS file with a type error; only `tsc --noEmit` reports it, while `tsx`, `esbuild`, and modern `node` happily strip-and-run. Wrong model targeted: *"if it runs TypeScript, it checks TypeScript."* This is the orientation predict (Ruby/Python L0 precedent) and the lens's foundation: the benefit only exists if the checking pass runs. **The predict owns the tool-by-tool reveal** — read 0.1 establishes that checking is a separate pass and stops there, so the predict stays a genuine prediction.
 - **Lesson 1 — "What type is `total`?"** — un-annotated `reduce` chain. Wrong model targeted: *"no annotation = no type (it's all `any`)"* — Felipe's annotation-maximalism in predicate form.
-- **Lesson 2 — Structural assignment surprise** — two identically-shaped, unrelated type aliases; the assignment compiles. Wrong models targeted: *"type names matter for compatibility"* (the semi-nominal folk model), *"you'd need a cast,"* and *"it compiles but fails at runtime"* (the erasure misunderstanding).
-- **Lesson 3 — Narrowing reveal** — `x: string | number` inside `if (typeof x === "string")`. Wrong model targeted: *"the static type can't change inside a branch."* The daily-driver model of the whole lesson.
+- **Lesson 3 — Narrowing reveal** — `x: string | number` inside `if (typeof x === "string")`. Wrong model targeted: *"the static type can't change inside a branch."* The daily-driver model of the whole lesson. **Opens the lesson (step 3.1), before the narrowing read:** Felipe holds this folk model with commitment, so predict-first is the honest order — a read-first sequence would spoil the reveal.
 
-Lessons 4 and 5 carry no predict: Lesson 4's payoff is *choosing* between escape hatches (kata-shaped), and Lesson 5's call-site-inference reveal lives in the kata's `Equal` assertions at multiple call sites (the S026 draft had a fifth predict here; folded into the kata to hold the step budget). 4 predicts of 21 steps ≈ 19% — above the framework's 10-15% heuristic, same count (4) and same defense as Ruby and Python: the surprise surface is concentrated in exactly four canonical wrong models, and a fifth would be theatre.
+Lessons 2, 4, and 5 carry no predict: Lesson 2's structural-assignment surprise is owned by its playground (the S028 panel review cut a fourth predict there — its reveal overlapped the playground's); Lesson 4's payoff is *choosing* between escape hatches (kata-shaped); Lesson 5's call-site-inference reveal lives in the kata's `Equal` assertions at multiple call sites (the S026 draft had a fifth predict here; folded into the kata to hold the step budget). 3 predicts of 20 steps = 15% — at the top of the framework's 10-15% heuristic. Exercise share after the cut: hands-on is 9/20 = 45% (11/20 = 55% counting the two challenges) — meets the floor.
 
 ### 2.4 Playgrounds as `kata` variant (inherited from Ruby)
 
@@ -133,8 +132,8 @@ The 2-3 gestures a working TypeScript developer performs daily — each one **wr
 | # | Gesture | Written in | Re-performed in |
 |---|---|---|---|
 | G1 | Type a function signature (params, optional param, return) | Kata 1.3 | Katas 3.3, 5.2-5.3, capstone |
-| G2 | Type an object shape with optional fields and consume it safely | Kata 2.3 | Kata 4.2, capstone |
-| G3 | Define a discriminated union and narrow it exhaustively (`switch` + `assertNever`) | Kata 3.4 (+ challenge 3.5) | Capstone (fresh domain, from scratch) |
+| G2 | Type an object shape with optional fields and consume it safely | Kata 2.2 | Kata 4.2, capstone |
+| G3 | Define a discriminated union and narrow it exhaustively (`switch` + `assertNever`) | Kata 3.4 — starter gives 2 of the 4 variants; the learner writes the other 2 plus the full `switch` (+ challenge 3.5) | Capstone (fresh domain, from scratch) |
 
 Audit result: no gesture is read-only; all three recur in the capstone with a new domain so the re-performance isn't copy-paste.
 
@@ -144,7 +143,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 - **From prior scrolls:** none — entry scroll of the TypeScript track.
 - **Within this scroll:**
-  - **`User`** (`{ id: string; name?: string; email?: string }`), defined by the learner in kata 2.3, reappears as Lesson 4's boundary target (kata 4.2's `isUser` guard) and in Lesson 5's `pickKeys` test fixtures. The learner reads `User` in later starters without re-explanation.
+  - **`User`** (`{ id: string; name?: string; email?: string }`), defined by the learner in kata 2.2, reappears as Lesson 4's boundary target (kata 4.2's `isUser` guard) and in Lesson 5's `pickKeys` test fixtures. The learner reads `User` in later starters without re-explanation.
   - **`PaymentStatus`** (the discriminated union from kata 3.4) reappears in challenge 3.5 (new variant) and in the Lesson 4 playground's `assertNever` example. The retrieval builds the intuition that discriminated unions are the default state-modeling tool, not a one-lesson curiosity.
   - **`assertNever`** (starter prelude from Lesson 3 on) reappears in the Lesson 4 playground and the capstone, reused silently.
   - **`Equal<A, B>`** (starter prelude from Lesson 1's kata tests on) is the type-only assertion channel throughout; by Lesson 5 the learner reads `type _t1 = Equal<…>` lines as normal test code.
@@ -168,15 +167,15 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **why_care topics:** Felipe has shipped "TS-strict" code for a year without being sold the delta. One read: what the type system actually buys him, the erasure truth, and the check-vs-strip split that decides whether he's getting the benefit at all.
 - **body topic outline (~300 words):**
   - **The one-sentence contract:** TypeScript is your JavaScript plus a static second reader. It catches shape mistakes before runtime, documents intent at function boundaries, powers refactors (rename, add-a-variant, change-a-signature) — and then **erases completely**: no runtime cost, no runtime guarantee. `function add(a: number, b: number)` ships as `function add(a, b)`.
-  - **Check vs strip — the 2026 toolchain truth:** `tsc --noEmit` type-checks (the benefit lives here, and in the editor's equivalent). `tsx` runs TS fast by *deliberately skipping the check*. `esbuild` and bundlers strip types; they are transpilers, not checkers. Modern `node` (≥23) runs `.ts` files natively by — same story — stripping. The production pattern: fast strip-tool for dev/build + `tsc --noEmit` in CI. A pipeline without the checking pass is paying TS's annotation cost for none of its benefit.
+  - **Check vs strip — the 2026 toolchain truth:** checking is a **separate pass** from running. Much of the modern toolchain that runs or builds TypeScript deliberately skips the check — that's where its speed comes from — which means a pipeline can execute `.ts` files all day while the benefit Felipe is paying for never runs once. The read establishes the split and stops there: **which tools check and which only strip is predict 0.2's reveal, not this read's** (no tool-by-tool verdict list here). A pipeline without a checking pass is paying TS's annotation cost for none of its benefit.
   - **`tsconfig.json`:** the file exists; `strict` is the first flag that matters (and the scroll assumes it). The flag-by-flag tour belongs to a deep-dive, not to day one.
   - **Sandbox honesty:** "This scroll runs single-file TypeScript in the sandbox: no DOM, no React, no `npm install`. The compile pass runs before your code — a type error here fails the step, which is exactly the behavior you want from CI."
-  - **NO incluir:** what static typing is (the reader can guess); JS features of any kind; Flow comparison (dead); the tsconfig flag tour; bundler comparison; `module`/`moduleResolution` mechanics.
+  - **Do NOT include:** what static typing is (the reader can guess); JS features of any kind; Flow comparison (dead); the tsconfig flag tour; bundler comparison; `module`/`moduleResolution` mechanics.
 - **closer:** forward prompt into the predict — "Next: a file with a bug. Which command actually catches it?"
 
 #### Step 0.2 — `predict` — "Which command catches the bug?"
 
-- **snippet:** a small TS file with a real type error (`const port: number = process.env.PORT` style — wait, keep sandbox-shaped: `const retries: number = "3";`) plus a couple of innocent lines.
+- **snippet:** a small TS file with a real type error (`const retries: number = "3";`) plus a couple of innocent lines.
 - **question:** "Four commands. Which one warns you about the bug *before* the code runs?"
 - **options (4):**
   - `a`: `tsc --noEmit file.ts` — **correct**: the type-check pass; reports the error, emits nothing.
@@ -204,9 +203,9 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **body topic outline (~300 words):**
   - **Inference is the default, not a fallback:** `const items = ["a", "b"]` is `string[]` with zero annotations; return types flow out of bodies; callbacks get parameter types from context (`items.map(s => s.length)` knows `s: string`). Annotation-free ≠ untyped.
   - **`const` vs `let` — literal vs widened:** `const status = "shipped"` is type `"shipped"`; `let status = "shipped"` is `string` (it must stay reassignable). First sighting of literal types — Lesson 2 builds unions out of them. `as const` named in one sentence (freeze the literal inference on objects), not exercised.
-  - **The rule: annotate the signature, infer the rest.** Function parameters can't be inferred from thin air — they ARE the contract, and annotating them is documentation the compiler enforces. Return-type annotation: optional; worth it on public/exported functions (locks the contract; turns a body mistake into an error at the function, not at fifty call sites).
+  - **The rule: annotate the signature, infer the rest.** Function parameters can't be inferred from thin air — they ARE the contract, and annotating them is documentation the compiler enforces. Return-type annotation: optional; worth it on public/exported functions (locks the contract; turns a body mistake into an error at the function, not at fifty call sites). One sentence names the async spelling: an `async` function's return annotation is `Promise<T>` — the one signature form that surprises a JS dev on day one.
   - **Figure:** `:figure[before-after]{id:"ts-annotation-maximalism"}` — left: every local annotated (✕ on the noise); right: signature-only + inference (✓ on the contract line). The lens, drawn.
-  - **NO incluir:** what type inference is conceptually (the reader gets it from the examples); Hindley-Milner trivia; `satisfies` (Lesson 5 closer); JS variable semantics.
+  - **Do NOT include:** what type inference is conceptually (the reader gets it from the examples); Hindley-Milner trivia; `satisfies` (Lesson 5 closer); JS variable semantics.
 - **closer:** forward prompt into the predict — "Before you write a signature, predict what the compiler already knows."
 
 #### Step 1.2 — `predict` — "What type is `total`?"
@@ -238,20 +237,21 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
   ```
   The learner adds: `price: number`, `percent: number`, `code?: string`, `): number`.
 - **test shape:** `_t`/`_eq` runtime assertions on the three behaviors (no code, VIP code, non-VIP code); `@ts-expect-error` assertions on `applyDiscount("120", 10)` and on `applyDiscount()` (missing required args); `Equal<ReturnType<typeof applyDiscount>, number>` type-only assertion.
+- **instruction note (test furniture — read, don't write):** one line in the instruction: the test block's `Equal` / `ReturnType` / type-level `typeof` lines are harness furniture — read them as assertions, don't write them; the scroll teaches the underlying operators later. Keep `Equal`'s definition out of the visible starter if the harness allows (prelude injection).
 - **hint sketch:** *"The third argument sometimes does not arrive. TypeScript has a way to mark a parameter as optional in the signature itself — what happens to `code`'s type inside the function once you mark it that way?"* (points at `?` and at `string | undefined` without naming either).
 - **why this kata:** 80%-confidence opener that lands gesture G1 and quietly plants `string | undefined` — Lesson 3's narrowing has a hook back to it.
 
 ---
 
-### Lesson 2 — Shapes: el sistema es estructural
+### Lesson 2 — Shapes: the type system is structural
 
 > *What changes in the learner's head:* "The compiler reads *shape*, not name — this is the duck typing I already practice in JS, now checked. Optional fields are part of the shape. `type` by default, `interface` for one specific job. And a fixed set of named values is a literal union, not a string and not an `enum`."
 
-**Step distribution:** 1 `read`, 1 `predict`, 1 `kata`, 1 `playground` = 4 steps.
+**Step distribution:** 1 `read`, 1 `kata`, 1 `playground` = 3 steps. *(The S026 draft's structural-assignment predict was cut at S028 panel review: its reveal overlapped the playground's, and read 2.1 spoiled its answer. The surprise is owned by playground 2.3 — see §2.3.)*
 
 **Status:** outlined.
 
-#### Step 2.1 — `read` — "Shapes: el compilador lee estructura, no nombres"
+#### Step 2.1 — `read` — "Shapes: the compiler reads structure, not names"
 
 - **why_care topics:** pain first: a `string` field that should only ever hold three values, and the typo (`"shiped"`) that sails through review and breaks at runtime. Shapes + literal unions are the fix.
 - **body topic outline (~350 words):**
@@ -260,28 +260,10 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
   - **Excess-property checking on literals:** the asymmetry that bites everyone in week one — `const u: User = { id: "1", age: 3 }` errors, but the same object passed through an intermediate variable doesn't. Named with one example; the playground pokes it.
   - **`type` vs `interface` — one rule:** `type` by default; `interface` only when you need declaration merging or are extending external module types (both rare). One sentence; never revisited. *(No figure — a figure would re-dignify the flame war.)*
   - **Literal unions over strings and over `enum`:** `type Status = "idle" | "loading" | "ready"` beats `string` (typo = compile error) and beats `enum` (which emits a runtime object). **Figure:** `:figure[disambiguation]{id:"ts-union-vs-enum"}` — identical skeletons (a set of named values); divergent attribute: **runtime footprint** (union erases to nothing; `enum` compiles to a JS object). `enum` flagged legacy/interop, deferred per §2.6.
-  - **NO incluir:** classes (out of crash scope); nominal-typing comparative theory (Felipe has no nominal reflexes — one sentence of contrast is plenty); mapped/conditional types; `readonly`/index signatures beyond a naming mention.
-- **closer:** forward prompt into the predict — "Two types you never wrote together. Does the assignment compile?"
+  - **Do NOT include:** classes (out of crash scope); nominal-typing comparative theory (Felipe has no nominal reflexes — one sentence of contrast is plenty); mapped/conditional types; `readonly`/index signatures beyond a naming mention.
+- **closer:** forward prompt into the kata — "You've read the shape rules; now write a shape and survive its optional fields."
 
-#### Step 2.2 — `predict` — "Does this assignment compile?"
-
-- **snippet:**
-  ```ts
-  type User = { id: string; name: string };
-  type Contact = { id: string; name: string };
-
-  const c: Contact = { id: "1", name: "Ada" };
-  const u: User = c;
-  ```
-- **options (4):**
-  - `a`: Compila — **correct**: shapes match; names are irrelevant to compatibility
-  - `b`: Error: `Contact` no es `User` *(the semi-nominal folk model — "the names must match")*
-  - `c`: Compila solo con `const u = c as User` *(the cast model — `as` as the compatibility tool; feedback: casts are for overriding the compiler, not for satisfying it; here there's nothing to override)*
-  - `d`: Compila pero truena en runtime *(the erasure misunderstanding — feedback: types are erased; there is nothing at runtime to "fail." If it compiles, the assignment is just a JS assignment)*
-- **correct:** `a`
-- Feedback for `a` extends the model: this is why typing third-party data works at all — your `User` matches *any* object of that shape, wherever it came from.
-
-#### Step 2.3 — `kata` — Define the shape and consume it *(production gesture G2)*
+#### Step 2.2 — `kata` — Define the shape and consume it *(production gesture G2)*
 
 - **1-line task:** Define `type User = { id: string; name?: string; email?: string }` and implement `getDisplayName(user: User): string` — return `name` if present, else `email`, else `id`.
 - **starter shape:** usage examples in comments; the learner writes both the type and the function (the gesture is *writing the shape*, so the starter does not pre-define it).
@@ -289,7 +271,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **hint sketch:** *"Two of the three fields may be missing — the shape has to say so, and the body has to survive it. Which JS operator you already use every day collapses 'the first one that exists' into a single expression?"* (points at `??`/`||` from his JS fluency, not at new syntax — the TS content is the shape).
 - **why this kata:** gesture G2; first 40%-stretch is mild (the JS body is trivial; the type is the work). `User` becomes the recurring fixture (§3).
 
-#### Step 2.4 — `playground` — "Explore structural compatibility"
+#### Step 2.3 — `playground` — "Explore structural compatibility"
 
 - **starter code sketch:** three type pairs (compatible same-shape; incompatible missing-field; compatible-with-extra-field via variable), assignment lines for each, and the excess-property pair: direct literal (errors) vs through a variable (doesn't).
 - **invite-variation prompts (Maya contract — specific things to try):** "Remove `id` from `Contact` — what does the compiler say, and on which line? Add an extra field to the direct literal vs to an intermediate variable — why does one fail and the other not? Make `name` optional on one side only — in which direction does the assignment break?"
@@ -297,30 +279,31 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 ---
 
-### Lesson 3 — Narrowing: el compilador lee tu control flow
+### Lesson 3 — Narrowing: the compiler reads your control flow
 
 > *What changes in the learner's head:* "Every `if (typeof x === …)` I've written for years is load-bearing now — the compiler re-types the variable inside the branch. A discriminated union plus an exhaustive `switch` turns 'did I handle every case?' from a code-review prayer into a compile error. Adding a variant and following the red squiggles IS the refactor workflow."
 
-**Step distribution:** 1 `read`, 1 `predict`, 2 `kata`, 1 `challenge` = 5 steps.
+**Step distribution:** 1 `predict`, 1 `read`, 2 `kata`, 1 `challenge` = 5 steps. **The predict opens the lesson, before the read** (S028 panel review): Felipe holds the "static types can't change in a branch" folk model with commitment — read-first would spoil the reveal; predict-first is honest.
 
 **Status:** outlined.
 
-#### Step 3.1 — `read` — "Narrowing: every `if` teaches the compiler something"
+#### Step 3.1 — `predict` — "Inside the `if`, what type does `x` have?"
 
-- **why_care topics:** pain first: the `string | undefined` from kata 1.3's optional param — how does code *use* a value that might not be there? Answer: the checks Felipe already writes, now understood by the compiler.
+- **Lesson opener — no explanation precedes it** (see step-distribution note and §2.3).
+- **snippet:** `function format(x: string | number) { if (typeof x === "string") { /* type of x here? */ } … }`
+- **options (4):** `string` (**correct**); `string | number` *(the "static types don't move" model — the polyglot/JS reflex)*; `string & number` *(the intersection confusion)*; `any` *(the "checks are runtime-only, the compiler can't know" model)*.
+- **correct:** `string`. Feedback for the correct answer extends: and in the `else`, `x` is `number` — the compiler subtracts what it learned.
+
+#### Step 3.2 — `read` — "Narrowing: every `if` teaches the compiler something"
+
+- **why_care topics:** pain first: the `string | undefined` from kata 1.3's optional param — how does code *use* a value that might not be there? Answer: the checks Felipe already writes, now understood by the compiler (the predict the learner just took is the proof they hold the old model).
 - **body topic outline (~350 words):**
   - **The narrowing toolbox, priority order:** `typeof` (primitives), equality against a literal, `in` (property presence), `Array.isArray`. Each shown narrowing a union in two lines. These are JS idioms the reader has written for a decade — the delta is that the *static type changes* inside the branch.
   - **Discriminated unions:** the tag field. `type PaymentStatus = { kind: "pending" } | { kind: "authorized"; auth: string } | { kind: "captured"; tx: string } | { kind: "failed"; reason: string }` — `switch (s.kind)` narrows each case to its variant. Why the tag beats a bag of optionals (`{ status: string; auth?: string; tx?: string; reason?: string }` — the shape that lies).
   - **Exhaustiveness via `assertNever`:** `function assertNever(x: never): never` in the default case; if every variant is handled, the value reaching `default` is `never` and the call compiles; add a variant and it doesn't. **This is the "compiler as second reader during refactors" benefit, mechanism revealed** — the challenge makes it physical.
   - **User-defined type guards:** `function isUser(x: unknown): x is User` — for when built-in narrowing can't see the shape. One example; Lesson 4's boundary kata exercises it.
-  - **NO incluir:** `instanceof`/class narrowing (no classes in this scroll); the full control-flow-analysis table; `unknown` at depth (next lesson — named here only as the guard's parameter type).
-- **closer:** forward prompt — "First, predict what the compiler knows inside the branch."
-
-#### Step 3.2 — `predict` — "Inside the `if`, what type does `x` have?"
-
-- **snippet:** `function format(x: string | number) { if (typeof x === "string") { /* type of x here? */ } … }`
-- **options (4):** `string` (**correct**); `string | number` *(the "static types don't move" model — the polyglot/JS reflex)*; `string & number` *(the intersection confusion)*; `any` *(the "checks are runtime-only, the compiler can't know" model)*.
-- **correct:** `string`. Feedback for the correct answer extends: and in the `else`, `x` is `number` — the compiler subtracts what it learned.
+  - **Do NOT include:** `instanceof`/class narrowing (no classes in this scroll); the full control-flow-analysis table; `unknown` at depth (next lesson — named here only as the guard's parameter type).
+- **closer:** forward prompt into the kata — "Chain the whole toolbox on a three-way union."
 
 #### Step 3.3 — `kata` — `describe(x: string | number | string[]): string`
 
@@ -329,22 +312,23 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **hint sketch:** *"One of the three union members is not a primitive — `typeof` will tell you something unhelpful about it. Which stdlib function you already know distinguishes that case, and why does it have to come first?"*
 - **why this kata:** 80%-confidence opener for the toolbox; the union input keeps `unknown` out (it isn't taught yet).
 
-#### Step 3.4 — `kata` — Dispatch a discriminated union *(production gesture G3)*
+#### Step 3.4 — `kata` — Complete and dispatch a discriminated union *(production gesture G3)*
 
-- **1-line task:** Given `PaymentStatus` (provided: `pending | authorized | captured | failed`, fields per 3.1), implement `nextStates(s: PaymentStatus): PaymentStatus["kind"][]` with a `switch` on `s.kind`, closed by `assertNever` (provided in prelude).
+- **1-line task:** The starter defines two of `PaymentStatus`'s four variants (`pending`, `authorized` — fields per 3.2); write the other two (`captured`, `failed`), then implement `nextStates` with a `switch` on `s.kind`, closed by `assertNever` (provided in prelude). Defining the union is part of the gesture, not just consuming it.
+- **starter note (untaught syntax, glossed):** `nextStates`'s signature is provided in the starter — `nextStates(s: PaymentStatus): PaymentStatus["kind"][]` — with a one-line gloss: `PaymentStatus["kind"]` is indexed access, "the type of the `kind` field"; Lesson 5 teaches it properly.
 - **test shape:** runtime per variant (legal transitions per a transitions table in the instruction); `@ts-expect-error` on `nextStates({ kind: "shipped" })`; the `assertNever` default case is required by a test that strips a case and expects the compile to fail (authoring note: implemented as a commented illustration + the 3.5 challenge does it for real).
 - **hint sketch:** *"Your `switch` default should never be able to run — and there is a way to have the compiler *guarantee* that instead of you promising it at code review. What type does a value have once it can no longer be any of the variants?"*
 
 #### Step 3.5 — `challenge` — Add the `disputed` variant *(the second-reader moment)*
 
-- **prompt:** Add `{ kind: "disputed"; case: string }` to `PaymentStatus`. The `switch` in `nextStates` stops compiling — `assertNever` sees a non-`never` value. Follow the compiler to every site that needs updating; encode the new transitions (instruction supplies the business rule: `captured → disputed → refunded | captured`).
-- **framing in instruction:** this is the benefit the scroll's lens promised — *the compiler as a second reader during refactors*. In JS this change is a grep and a prayer; here it's a checklist the compiler writes for you.
+- **prompt:** Add `{ kind: "disputed"; case: string }` to `PaymentStatus`. The starter ships **three pre-written consumers** of the union, each closed with `assertNever`: `nextStates` (the 3.4 shape), `labelFor(s: PaymentStatus): string`, and `isTerminal(s: PaymentStatus): boolean`. Adding the variant breaks all three at once — **three sites the learner didn't write in this step**. Follow the compiler to every one; encode the new transitions (instruction supplies the business rule: `captured → disputed → captured | failed` — a dispute resolves back to captured or reverses to failed; every named kind is a real variant) and the new label/terminality.
+- **framing in instruction:** this is the benefit the scroll's lens promised — *the compiler as a second reader during refactors*. In JS this change is a grep and a prayer over code you've never read; here the compiler hands you the checklist of every site.
 - **budget:** ~15 min (2× kata). ≤1 hint. Not a gate.
-- **test shape:** runtime for the new variant's transitions + all old variants unchanged; the pre-fix compile failure is demonstrated via the step's instruction narrative (the learner experiences it live on first run).
+- **test shape:** runtime for the new variant's transitions + `labelFor`/`isTerminal` outputs for `disputed` + all old variants unchanged across all three consumers; the pre-fix compile failure is demonstrated via the step's instruction narrative (the learner experiences it live on first run — three errors, three sites).
 
 ---
 
-### Lesson 4 — `any`, `unknown` y la frontera
+### Lesson 4 — `any`, `unknown`, and the boundary
 
 > *What changes in the learner's head:* "`any` isn't a type, it's an off-switch — and it spreads. `unknown` is the honest type for data crossing a boundary: the compiler refuses to let me touch it until a guard proves the shape. `never` is 'this can't happen', and it's how exhaustiveness checks work under the hood. My `JSON.parse` habit just changed."
 
@@ -361,7 +345,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
   - **Figure:** `:figure[disambiguation]{id:"ts-unknown-vs-any"}` — identical skeletons (a value from outside, an attempted property access); divergent attribute: **what the compiler lets you do before narrowing** (`any`: everything, silently; `unknown`: nothing, loudly).
   - **`never` third:** the bottom type — no value inhabits it. Where the reader has already met it: `assertNever`'s parameter (Lesson 3). Also: functions that only `throw`, and unions that narrowing has emptied. `T | never` collapses to `T` — named for the playground.
   - **Closer:** `as` named-and-bounded with one worked example (a wrong cast over a parse result → runtime crash the compiler could no longer prevent): "a cast is a promise to the compiler; a guard is proof. Prefer proof." Zod-shaped schema-first boundaries named-and-deferred (§2.6). No kata exercises `as`.
-  - **NO incluir:** `as const` (named in L1, not exercised); double-cast `as unknown as T` (deep-dive); `satisfies` (Lesson 5 closer).
+  - **Do NOT include:** `as const` (named in L1, not exercised); double-cast `as unknown as T` (deep-dive); `satisfies` (Lesson 5 closer).
 - **closer:** forward prompt into the boundary kata.
 
 #### Step 4.2 — `kata` — `parseUser(input: string): User | string`
@@ -375,7 +359,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 #### Step 4.3 — `playground` — "Explore `any`, `unknown`, `never` at the boundary"
 
 - **starter code sketch:** the same parsed value typed as `any` (a dangerous deep chain that compiles) and as `unknown` (the same chain, refused); a `never`-returning `fail()`; `type Collapsed = string | never`.
-- **invite-variation prompts:** "Chain two more accesses onto the `any` version — at what point does the compiler warn you? (spoiler: never). Change `any` to `unknown` — which exact line lights up? Add a branch that calls `fail()` and watch what the compiler infers for the return type. What type is left in `Collapsed`, and why does that make `assertNever` work?"
+- **invite-variation prompts:** "Chain two more accesses onto the `any` version — at what point does the compiler warn you? Change `any` to `unknown` — which exact line lights up? Add a branch that calls `fail()` and watch what the compiler infers for the return type. What type is left in `Collapsed`, and why does that make `assertNever` work?"
 - **data.kind:** `"playground"`; compile errors are the lesson, per §2.4.
 
 ---
@@ -390,12 +374,13 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 #### Step 5.1 — `read` — "Motivated generics — and the map of what comes next"
 
-- **why_care topics:** opens by reproducing duplication from the learner's own scroll: `firstString` / `firstNumber` / `firstUser` (fixtures echo katas 2.3 and 3.3 — retrieval). Name the duplication; `<T>` enters as the parameter you'd have written for the type.
+- **why_care topics:** opens by reproducing duplication from the learner's own scroll: `firstString` / `firstNumber` / `firstUser` (fixtures echo katas 2.2 and 3.3 — retrieval). Name the duplication; `<T>` enters as the parameter you'd have written for the type.
 - **body topic outline (~350 words, the scroll's longest read):**
-  - **`<T>` motivated;** inference at the call site (you almost never write `first<string>(…)` — the compiler reads the argument). **`extends` constraints** with one concrete case: `<T extends { id: string }>` — "T must at least have an `id`". **`keyof` + indexed access:** `<T, K extends keyof T>(obj: T, key: K): T[K]` — the typed-helper shape; mistyped keys become compile errors.
+  - **`<T>` motivated;** inference at the call site (you almost never write `first<string>(…)` — the compiler reads the argument). **`extends` constraints** with one concrete case: `<T extends { id: string }>` — "T must at least have an `id`". **`keyof` + indexed access:** `<T, K extends keyof T>(obj: T, key: K): T[K]` — the typed-helper shape; mistyped keys become compile errors. Re-surface, recall-without-warning: *you already read `T[K]` in the wild — kata 3.4's provided `nextStates` signature was `PaymentStatus["kind"][]`.*
+  - **One function-type annotation shown in passing** (a parameter spelled `guard: (x: unknown) => x is T` in an example), so the capstone's pre-written `parseWith` signature is readable when it arrives — shown, not drilled.
   - **When NOT to be generic:** a function used with one type isn't generic; speculative `<T>` is annotation-maximalism wearing a costume (callback to Lesson 1's rule).
   - **The named-and-deferred closer (recognition, not writing — one concrete use case each, per the §2.2 gate):** conditional types (`NonNullable<T>` as type-level `if`), mapped types (`Partial<T>` as a loop over keys), `infer` (`ReturnType<F>` names a matched part), template literal types (event-name remapping), brand types (nominal islands in a structural sea), `satisfies` (constrain without widening). Each with its deep-dive pointer per §2.6. Felipe's recognition bar: he follows Pocock — he's *seen* these; now he can place them.
-  - **NO incluir:** `<T, U, V>` cascades; writing any conditional/mapped type; React generic components (`<T,>` oddity deferred with them).
+  - **Do NOT include:** `<T, U, V>` cascades; writing any conditional/mapped type; React generic components (`<T,>` oddity deferred with them).
 - **closer:** sets up the two katas and names the capstone explicitly: "Last step of the scroll: everything at once, on purpose."
 
 #### Step 5.2 — `kata` — `first<T>(arr: T[]): T | undefined`
@@ -418,13 +403,13 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **Deliverable:** a typed webhook processor — the function a working JS dev writes the week they adopt TS. Domain: shipment events (Felipe works at a logistics scale-up; deliberately *not* Lesson 3's payments domain, so G2/G3 are re-performed, not pasted). The learner writes:
   1. `type ShipmentEvent = { kind: "created"; id: string } | { kind: "scanned"; id: string; location: string } | { kind: "delivered"; id: string; signedBy?: string } | { kind: "lost"; id: string; lastSeen?: string }` — shapes with optional fields (L2) + discriminated union (L3).
   2. `isShipmentEvent(x: unknown): x is ShipmentEvent` — the boundary guard (L3 guard shape + L4 `unknown`), validating the tag and per-variant required fields.
-  3. `parseWith<T>(raw: string, guard: (x: unknown) => x is T): T | null` — generic boundary helper (L5): `JSON.parse` in `try/catch`, guard the result.
+  3. `parseWith<T>(raw: string, guard: (x: unknown) => x is T): T | null` — generic boundary helper (L5): `JSON.parse` in `try/catch`, guard the result. **Its signature is pre-written in the starter** (function-type + type-guard-parameter syntax is read in 5.1, never drilled); **the body is the work**: `try/catch`, call the guard, `null` on failure.
   4. `describeShipment(e: ShipmentEvent): string` — exhaustive `switch` + `assertNever` (L3), output varying with the optional fields (e.g. `"delivered #id (signed by X)"` vs `"delivered #id"`).
   5. `handleShipmentWebhook(raw: string): string` — the composition; `"invalid payload"` on `null`.
-- **starter shape:** `assertNever` and the `_t`/`_eq` + `Equal` prelude provided; function skeletons with signatures *not* pre-written for 1-2 (the gestures are the work) and pre-written for 5 (the composition contract is given so tests can anchor).
-- **test shape:** runtime: one valid payload per `kind`, optional-field present/absent variants for `delivered` and `lost`, malformed JSON, valid JSON wrong shape (missing tag, wrong tag, missing per-variant field). Type-only: `Equal<ReturnType<typeof parseWith<ShipmentEvent>>, ShipmentEvent | null>`-shaped assertion (exact spelling resolved at W2 against the harness); `@ts-expect-error` on a `describeShipment` call with an un-guarded `unknown`.
+- **starter shape:** `assertNever` and the `_t`/`_eq` + `Equal` prelude provided; function skeletons with signatures *not* pre-written for 1, 2, and 4 (the gestures are the work), **pre-written for 3** (`parseWith` — the signature's function-type + type-guard-parameter syntax is beyond the drilled surface; the body is the work) and for 5 (the composition contract is given so tests can anchor).
+- **test shape:** runtime: one valid payload per `kind`, optional-field present/absent variants for `delivered` and `lost`, malformed JSON, valid JSON wrong shape (missing tag, wrong tag, missing per-variant field). **The malformed and wrong-shape fixtures must flow through the composed `handleShipmentWebhook`, not only through `isShipmentEvent` directly** — a guard shortcut-ed with `as` then gets caught at runtime where it lies, not just at the guard's own call site (Felipe attack analysis, S028 panel). Type-only: `Equal<ReturnType<typeof parseWith<ShipmentEvent>>, ShipmentEvent | null>`-shaped assertion (exact spelling resolved at W2 against the harness; instantiation expression — TS ≥4.7, §7; the shape is load-bearing — it forces the generic); `@ts-expect-error` on a `describeShipment` call with an un-guarded `unknown`.
 - **budget:** 20-25 min (2× kata). **Hints:** exactly one, high-level: *"The flow is `string → unknown → ShipmentEvent | null → string`. Each arrow is a function you already wrote once in Lessons 3-5 — here you write them again over a fresh domain and compose them."* Not a gate; failure is fine.
-- **Outline-stage persona attack test (per README §5.3, recorded):** Felipe, having done katas 2.3 / 3.4 / 4.2 / 5.2, sketches: define the union like `PaymentStatus`, guard like `isUser` plus a tag check, switch like `nextStates` with `assertNever`, wrap parse like `parseUser` but generic like `first`. Every move maps to an outlined step → the lesson set covers its own capstone. Mariana's review question for W2: "is `parseWith` forced?" — resolution: it's the same wrap-the-boundary move Felipe ships weekly; if W2 smoke says it walls, the fallback is providing `parseWith` in starter and keeping 1-2-4-5 as the work (capstone still integrates L2/L3/L4).
+- **Outline-stage persona attack test (per README §5.3, recorded):** Felipe, having done katas 2.2 / 3.4 / 4.2 / 5.2, sketches: define the union like `PaymentStatus`, guard like `isUser` plus a tag check, switch like `nextStates` with `assertNever`, wrap parse like `parseUser` but generic like `first` — with `parseWith`'s signature already on the page, only its body to fill. Every move maps to an outlined step → the lesson set covers its own capstone. Felipe's shortcut attack (`as ShipmentEvent` inside the guard) is caught because the wrong-shape fixtures run through the composed `handleShipmentWebhook` (see test shape). Mariana's review question for W2: "is `parseWith` forced?" — resolution: it's the same wrap-the-boundary move Felipe ships weekly, and the signature is already starter-provided; if W2 smoke says it walls, the fallback is providing `parseWith` in full and keeping 1-2-4-5 as the work (capstone still integrates L2/L3/L4).
 
 ---
 
@@ -461,9 +446,7 @@ To fill with exact item/chapter citations when prose lands (W2). Placeholder str
 ## 7. Open questions / known gaps
 
 - **Piston adapter on TS compile-error exit codes.** Lessons 1-5 lean on `Equal` lines and `@ts-expect-error`; "passing" sometimes means "the file compiled." The adapter must surface a compile failure as a readable test failure. The legacy scroll never exercised this path. **Verify before seeding Lesson 1** (deliberately failing `Equal` + violated `@ts-expect-error` smoke). If the adapter only inspects the runtime stream, the runner needs a small change — same open question the S026 draft carried; still unresolved.
-- **TypeScript version pin.** Confirm via Piston `/runtimes` at seed time. Nothing in the scroll *requires* 5.x (`satisfies` and `const` type params are named-and-deferred only), but Lesson 0's read must reflect the actual sandbox version, and the `catch`-is-`unknown` claim needs TS ≥4.4 — safe, but verify.
+- **TypeScript version pin.** Confirm via Piston `/runtimes` at seed time. Nothing in the scroll *requires* 5.x (`satisfies` and `const` type params are named-and-deferred only), but Lesson 0's read must reflect the actual sandbox version. Two floors to verify: the `catch`-is-`unknown` claim needs **TS ≥4.4**, and the capstone's `Equal<ReturnType<typeof parseWith<ShipmentEvent>>, …>` assertion uses an instantiation expression — **TS ≥4.7**. That assertion shape is load-bearing (it's what forces the generic to actually be exercised); W2 must keep it, not simplify it away.
 - **Legacy kata salvage (decide at W2, per-kata).** Sprint 028 decision is rebuild; salvage only what survives the paragraph test (Ruby L3 precedent). MVP kata inventory: `greet`, `add`, `sum`, `fullname`, `fizzbuzz`, `palindrome`, `memoize`. Honest expectation: **most fail the new lens** — they are JS exercises with annotations, the exact frame the scroll replaces. `memoize` is the only one with a plausible re-skin (generic constraint exercise), and Lesson 5 already has stronger katas. Default: salvage nothing; revisit only if a W2 slot proves weak.
-- **AUDIENCE.md matrix is stale for this scroll.** The matrix row (`typescript`: primary A2 Esteban + A4 Felipe, secondary A3 Yui, out-of-scope A1 Mariana) predates the 2026-06-11 audience decision (Felipe primary, Mariana secondary-as-reviewer, JS fluency assumed — which moves Esteban and Yui out of primary, since their JS is not assumed-fluent). `AUDIENCE.md` needs a same-sprint update commit; this spec records the decided state and does not edit the matrix itself.
-- **Capstone difficulty.** Five functions in 20-25 min is the top of the 2× budget. Smoke with Felipe + Mariana walks after the first W2 pass; declared fallback (recorded in §4 / 5.4): provide `parseWith` in starter, keep the union + guard + exhaustive switch + composition as the work — the capstone still integrates L2/L3/L4 and stays canon-compliant (≥3 lessons).
+- **Capstone difficulty.** Five functions in 20-25 min is the top of the 2× budget. Smoke with Felipe + Mariana walks after the first W2 pass; declared fallback (recorded in §4 / 5.4): provide `parseWith` in full (its signature is already starter-provided), keep the union + guard + exhaustive switch + composition as the work — the capstone still integrates L2/L3/L4 and stays canon-compliant (≥3 lessons).
 - **Hard-delete cascade.** `removeLegacyScrollBySlug` (used for `ruby-fundamentals`) deletes "everything that hangs off" the scroll; verify at W3 that learner-progress rows from Phase-0 smoke users are included in the cascade (or cascade-deleted explicitly) so the seed doesn't foreign-key-fail. Phase 0: cost of being wrong is one re-seed.
-- **Predict share.** 4 of 21 ≈ 19%, above the 10-15% heuristic. Defended in §2.3 (same absolute count and same concentration argument as Ruby and Python). If W2 review trims a predict, Lesson 2's is the only candidate (its reveal partially overlaps the playground) — default is keep.

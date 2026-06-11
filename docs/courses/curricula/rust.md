@@ -34,7 +34,7 @@ Dead ends we actively avoid: dumping the ownership rules as a memorized triple b
 **Figures menu** *(per the S028 mandate: figures where they earn their place, ≥1 `disambiguation`; max 2 figures per read step).*
 
 - **IN, committed:** **`disambiguation`** — *primary landing: Lesson 2, `String` vs `&str`* with **Ownership** as the divergent attribute (owns-the-heap-buffer vs borrowed-view, cascading to mutability, function-signature defaults, and the `.to_string()` boundary). This is the pair every polyglot conflates in week one. Satisfies the ≥1 mandate.
-- **IN, proposed (not committed):** second `disambiguation` in Lesson 1 — `Copy` vs `Clone`, divergent attribute **Explicitness** (implicit bitwise duplication vs explicit, possibly-expensive call); **`before-after`** in Lesson 3 — `match`-on-`Result` ladder vs `?` propagation, the verbose-collapses-to-idiom contrast; **`tabbed-card`** in Lesson 4 — `<T: Trait>` / `impl Trait` / `Box<dyn Trait>` as three tabs over the same behavior contract, dispatch strategy as the per-tab delta.
+- **IN, committed (promoted from proposed at the Phase A panel review, 2026-06-11):** second `disambiguation` in Lesson 1 — `Copy` vs `Clone`, divergent attribute **Explicitness** (implicit bitwise duplication vs explicit, possibly-expensive call); **`before-after`** in Lesson 3 — `match`-on-`Result` ladder vs `?` propagation, the verbose-collapses-to-idiom contrast; **`tabbed-card`** in Lesson 4 — `<T: Trait>` / `impl Trait` / `Box<dyn Trait>` as three tabs over the same behavior contract, dispatch strategy as the per-tab delta.
 - **OUT:** `array-track` (no comprehension-shaped content), `two-by-two` (a "dispatch × position" grid was considered for Lesson 4 and rejected — the tabbed-card covers it without forcing orthogonality), `sequence-play` / `grid-canvas` / `recursion-stack` (none earned; `sequence-play` becomes a candidate in a future async deep-dive for executor stepping, not before).
 
 **Pedagogical bets.**
@@ -55,7 +55,7 @@ Dead ends we actively avoid: dumping the ownership rules as a memorized triple b
 
 That is the whole catalog for Rust in v1. Per [ADR 022](../../adr/022-crash-course-pivot.md), one language scroll per language is the anchored set.
 
-**Why 120 min, not 90-100.** Rust is the only scroll where the central difficulty is a from-scratch mental model rather than an idiom delta. Compressing ownership/borrowing to 90 min produces either three-rules-memorize pedagogy or undersized kata practice. Björn (S8) signed off with the constraint that the extra time is spent on ownership/borrowing/`Result` katas, not on surveying more syntax. If post-authoring the time creeps past 120, first cuts: Lesson 1's playground, then Lesson 5's `first_even` kata. Don't cut Lessons 1-2 — the scroll exists for them.
+**Why 120 min, not 90-100.** Rust is the only scroll where the central difficulty is a from-scratch mental model rather than an idiom delta. Compressing ownership/borrowing to 90 min produces either three-rules-memorize pedagogy or undersized kata practice. Björn (S8) signed off with the constraint that the extra time is spent on ownership/borrowing/`Result` katas, not on surveying more syntax. If post-authoring the time creeps past 120, the cut order (panel-corrected, 2026-06-11) is: Lesson 1's playground first, then fold predict 4.2 into read 4.1 as a `read+inline` micro-quiz, then trim read 6.1. **Katas are exempt from the cut list** — cutting a written gesture would contradict the exercise-share defense (inner spec §7); every cut candidate is a non-writing step. Don't cut Lessons 1-2 — the scroll exists for them.
 
 ### 3.1 Future deep-dive candidates (not in scope for v1)
 
@@ -83,7 +83,7 @@ None of these are committed.
 **Learning outcomes.** After this scroll, the learner can:
 
 - Locate Rust on their language map: what it's for, `rustup`/`cargo`/`crates.io`, how a project is structured, and why the compiler is the primary feedback channel. Predict the first command to run on a cloned Rust project.
-- **Read compiler errors confidently** — the load-bearing outcome. Recognise `E0382` (move after use), `E0499` (second mutable borrow), `E0502` (mutable+immutable conflict), `E0277` in its `?`-operator form, and `E0004` (non-exhaustive match). Predict which error a snippet produces before running it; apply the `help:` suggestions.
+- **Read compiler errors confidently** — the load-bearing outcome. Recognise `E0382` (move after use), `E0499` (second mutable borrow), `E0502` (mutable+immutable conflict), `E0277` as an error family (its `?`-operator form and its unsized-`dyn`-argument form), and `E0004` (non-exhaustive match). Predict which error a snippet produces before running it; apply the `help:` suggestions.
 - Reason about ownership: predict moved/borrowed/copied at a function boundary; explain why `String` is not `Copy`; fix a use-after-move without reflexive `.clone()`.
 - Read and write borrowing: `&T`, `&mut T`, the aliasing-XOR-mutation rule. Recognise the lifetime annotation `'a` when elision can't infer it, and know its depth is a deep-dive (lifetimes-lite).
 - Use `Result<T, E>` and `?` as the error model; hand-write a custom error enum with `From` (sandbox-honest: `thiserror` named-and-deferred); treat `unwrap`/`expect` as invariant assertions, not shortcuts.
@@ -141,7 +141,7 @@ The full step-by-step authoring lives in [`rust/rust.md`](rust/rust.md).
 - **Treating compile errors as failures.** *They are the curriculum — fail-by-design katas are structurally central per the format exception, and the voice never apologises for an error.*
 - **Letting the format exception leak.** The exception covers ownership/borrowing/lifetimes-lite only. *A traits or enums paragraph that teaches from scratch instead of as a delta is out of contract — the inner spec's §2.2 gate rejects it. And Go/TS authors citing "Rust did it" get pointed at the sprint decision: the exception is Rust-scoped.*
 - **`expect("this should never happen")` as anxiety.** *`expect` strings are invariant claims ("non-empty by construction"), modeled in Lesson 3.*
-- **Teaching `?` before `match` on `Result`.** *`?` is sugar; Lesson 3 shows the `match` form first, then collapses it — the desugaring is the lesson (and the proposed `before-after` figure).*
+- **Teaching `?` before `match` on `Result`.** *`?` is sugar; Lesson 3 shows the `match` form first, then collapses it — the desugaring is the lesson (and the committed `before-after` figure).*
 - **Asking learners to fight the borrow checker before they trust it.** *Each compiler-error reveal is preceded by a predict that makes the error the expected answer to a hypothesis, not an ambush.*
 
 ## 7. External references
