@@ -30,7 +30,7 @@ _Good ideas, not urgent. Not in the next block._
 **Hard carry-forward from S022:**
 
 - **First friend invite dispatch + audit doc fill-in** — code surface ready since S021. Audit doc scaffolded at [docs/audits/2026-04-friend-feedback.md](../audits/2026-04-friend-feedback.md) with the rule that it gets populated within 7 days of dispatch or the doc is cut and the slot rotates.
-- **Smoke-suite staging environment** — S022 shipped `complete-kata.smoke.spec.ts` and `playground-anon-run.smoke.spec.ts`, both gated on operator-set env vars (`SMOKE_USE_MOCK_LLM`, `SMOKE_PLAYGROUND_ENABLED`). On prod runs both skip, so the post-deploy safety net misses two of the surfaces this sprint built. Stand up a staging deploy with `LLM_ADAPTER_FORMAT=mock` + Turnstile dummy keys so the full suite runs on every deploy.
+- **Smoke-suite staging environment** — *retired from carry tables at S027 close (2026-06-11) after three sprints without a trigger.* Original case: S022 shipped `complete-kata.smoke.spec.ts` and `playground-anon-run.smoke.spec.ts`, both gated on operator-set env vars, so prod runs skip them. Re-promote only if/when the friend-invite dispatch makes remote smoke a real need; until then the full-set local-Piston smoke gate (S027 retro carry #3) is the smoke story.
 - **Piston runtime bumps for Go / Ruby / Rust** — upstream-blocked. `engineer-man/piston` ships only Go 1.16.2, Ruby up to 3.0.1, Rust up to 1.68.2. Promote when there's a concrete pedagogical need; resolution requires either adopting a maintained fork or building a custom package layer.
 
 **Carry-forward from earlier sprints (still valid):**
