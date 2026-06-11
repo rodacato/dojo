@@ -1,6 +1,6 @@
 # Scroll Interactivity Patterns
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-06
+> **Status:** Canonical · **Last reviewed:** 2026-06-11
 >
 > Catalog of step types and the interaction patterns they ship with. This is the **how the screen behaves** side of scroll design. The **what the curriculum teaches** side lives in [`README.md`](README.md) (the design framework) and [`curricula/`](curricula/) (per-language plans).
 >
@@ -194,13 +194,15 @@ Five figures are canon. Each one passes the Maya test (interaction-teaches-or-di
 |---|---|---|
 | **`array-track`** | `:figure[array-track]{id:"slug" data:"yaml"}` | A horizontal track of N cells representing a sequence (array, hash entries, iteration steps). Each cell carries a state token from the semantic-state palette (`neutral / cand / active / out / done`). Used for any "iterate over a collection" concept; especially powerful when comparing the same input under *different* methods (`each` vs `map` vs `select`). |
 | **`tabbed-card`** | `:figure[tabbed-card]{id:"slug"}` | A single concept presented through 2-4 tabs that switch lenses without changing the artifact (e.g. *Estructura* / *Antes→Después* / *En acción*). Tab switch is the interaction; no animation library needed. Best when a concept has *one identity* but *multiple useful views*. |
+| **`metric-pair`** | `:figure[metric-pair]{id:"slug"}` | The same measured cost under 2-3 conditions, side by side (*without memo: 177 calls / with memo: 13*; *list comp: O(n) memory / generator: O(1)*). Pedagogy lives in the **magnitude gap** — the number replaces the adjective. Embed when prose is about to say "much faster" or "way fewer allocations": show the count instead. |
 
-#### Deliberately not in v1 (raised, rejected)
+#### Deliberately not in v1 (raised, rejected or deferred with a trigger)
 
 - **`sequence-play`** (dot animating along a sequence diagram). Approved-on-paper for `algo-trace` (see §[Embeddable figures and `algo-trace`](#embeddable-figures-and-algo-trace) below), out of scope as a standalone figure until that step type ships.
 - **`grid-canvas`** (BFS/DFS/A* maze). Joya pedagogical for algorithms scrolls; meaningless for language scrolls. Defer to the future algorithms deep-dive.
 - **`recursion-stack`** (visible call frames). Same — defer.
 - **`filter-chips`** (recovery-by-context with highlighted matches). Only earns embedding when content is reference-shaped (a catalog) — language scrolls are sequence-shaped. Defer to any future `/atlas` surface.
+- **`tradeoff-bars`** (2-3 options compared over fixed, named axes as paired horizontal bars — never radar charts, which distort perception). Strong for decision-shaped content; language crash scrolls haven't shipped a genuine multi-axis decision yet. **Trigger:** the first architecture/design deep-dive scroll, or the first language lesson that compares tools across ≥3 named axes. Axis values are curated opinions — each bar needs a one-line "how we scored this" footnote.
 
 ### Schema (per figure)
 
@@ -233,6 +235,11 @@ type Figure =
   | { type: 'tabbed-card'; id: string;
       tabs: Array<{ label: string; body: string /* markdown */ }>;
       defaultTab?: number;
+      caption?: string }
+  | { type: 'metric-pair'; id: string;
+      metric: string;                                  // what is measured: "calls", "objects allocated", "comparisons"
+      entries: Array<{ label: string; value: string; detail?: string }>;  // 2-3 conditions, same metric
+      highlight?: number;                              // index of the entry that makes the point
       caption?: string };
 
 type Cell = { eyebrow: string; title: string; body: string };
@@ -248,6 +255,7 @@ The `id` is stable across renders — used for analytics, deep-linking, and cont
 - **Tier S figures pass the paragraph test the same way prose does** (per [`README.md`](README.md) §5.1). Ask: *if I delete this figure, does the polyglot lose something language-specific?* If no, the figure does not ship.
 - **`array-track` with identical state sequences across tracks is forbidden.** The whole point is the *contrast* between methods. If `each` and `map` produce identical state arrays, you are not teaching `map`.
 - **`disambiguation` requires the divergent attribute to be a *single* dimension** (intent, mutability, ownership, etc.). Multi-axis differences belong in a `two-by-two`, not a side-by-side.
+- **`metric-pair` values must be real.** Run the code, count the thing. An invented number teaches a lie with confidence. When the metric depends on input size, name the input in the caption (*"fib(12), counted calls"*).
 
 ### Anti-patterns (auto-reject at review)
 
@@ -256,6 +264,7 @@ The `id` is stable across renders — used for analytics, deep-linking, and cont
 - **`disambiguation` with three entries that share *no* attribute** — those aren't look-alikes, they're a list. *(Rhea S10 / language specialists)*
 - **`array-track` with > 10 cells** — at that scale the cells become unreadable and the figure becomes a stunt. Split or pick a smaller input. *(Felix S12)*
 - **`tabbed-card` with a tab the reader cannot motivate to open** — every tab must be answer to a question the reader has. A "References" tab is metadata, not a lens. *(Soren C6)*
+- **`metric-pair` where the gap is unimpressive** — "11 vs 13 calls" is a rounding error, not an aha. If the ratio isn't roughly ≥3×, pick a bigger input or drop the figure. *(Elif S5)*
 
 ### Renderer contract
 
@@ -286,6 +295,55 @@ type Interaction =
 ```
 
 A `read` step that wants to embed a figure can do so directly in its markdown body via the `:figure[name]{...}` directive — no schema change required, the markdown renderer resolves the directive at render time.
+
+---
+
+## Acceleration principles — what earns "aha per minute"
+
+> Distilled 2026-06-11 from the 101 prototypes (Algorithms / Architectures / Design Patterns; workspace-local review at `.kwik-e/local/scrolls/PROTOTYPES-101-REVIEW.md`). The step types and figures in this document are *implementations* of these principles. The principles outlive any single component: when authoring, apply each one with the cheapest tool available — most have a prose-only or existing-figure version today. A device that embodies none of them is decoration.
+
+1. **Prediction before revelation.** The aha doesn't happen on seeing the answer; it happens when a committed prediction turns out wrong. Any surface that can ask for commitment before showing the result should.
+   *Today:* `predict` step, `micro-quiz` in `read+inline`, or a plain prose prompt before a code block ("what does this print? decide before reading on").
+   *Full version:* predict-gates at decision frames inside `algo-trace` (deferred).
+
+2. **Make cost visible — the number, not the adjective.** "Much faster" teaches nothing; "177 calls vs 13" teaches magnitude. Counting beats labeling.
+   *Today:* `metric-pair` figure; kata feedback that names the measured difference (the Python `tally` kata's O(n²)-vs-O(n) note is this principle in prose).
+   *Full version:* live comparison/swap counters during `algo-trace` playback.
+
+3. **Make invariants visible over time.** An invariant stated once in prose evaporates; an invariant *seen holding* across three snapshots sticks ("everything left of `lo` is already discarded").
+   *Today:* `array-track` with 2-3 rows as time snapshots; name the invariant in the caption.
+   *Full version:* the frame player — the invariant holds visibly on every frame while scrubbing.
+
+4. **Dual representation.** A concept understood from two models simultaneously anchors better than from one (heap: tree + array; graph: picture + adjacency table; closure: code + captured-scope diagram). The correspondence *is* the lesson.
+   *Today:* `tabbed-card` is the weak sequential version (lenses one at a time); a `two-by-two` can name the correspondence statically.
+   *Full version:* synchronized dual-view (one `activeId`, two views) inside `algo-trace`.
+
+5. **Break it on purpose (fail-by-design).** Every precondition deserves its violation demo. Seeing binary search fail on an unsorted array beats reading "requires sorted input". **Authoring rule, effective now:** when a lesson teaches something with a precondition, the nearest playground invites breaking it ("now remove the sort and run it again"), or the `read` shows one snapshot of the failure. A named precondition with no visible failure is a missed aha.
+
+6. **Agency over abstraction.** When the learner must *assume* something works, give them a control that performs the assumption instead of narrating it. The prototypes' "trust the recursion" button (collapses a subtree, seeks past its frames) is the canonical example: the leap of faith becomes a click.
+   *Today:* limited — playgrounds approximate it ("change this and see").
+   *Full version:* collapse-subtree control in `algo-trace`.
+
+**Transversal:** the semantic-state palette (`neutral / cand / active / out / done / path / goal`, always color + shape + label — [`../DESIGN.md`](../DESIGN.md) §Semantic state tokens) compounds only if *every* device respects it. The learner pays the vocabulary cost once; every later figure and step type gets it for free. A component that invents its own state colors breaks the compounding and fails review.
+
+---
+
+## Deferred device kit — the 101 prototypes backlog
+
+The interaction architecture from the 101 prototypes that is **not** being built yet, recorded here so the next decision starts from the design, not from zero. Decision of record: 2026-06-07 review (`algo-trace` deferred until an algorithms-style course is a real sprint commitment) — reaffirmed 2026-06-11.
+
+| Device | What it is | Adoption trigger |
+|---|---|---|
+| **`algo-trace` step type** | Pure-function frame generator → immutable snapshot array; UI moves a cursor (play/pause/scrub/step, keyboard nav). The engine everything below plugs into. | First 101-style course (sorting, data structures, graphs) enters a sprint. GSAP enters the repo with it (continuous-playback timeline; single-frame advance stays CSS). |
+| **Predict-gates** | Playback pauses at frames marked `decision`; learner predicts before reveal. Per-decision-frame only — per-frame everywhere fails Maya's gate. | Ships inside `algo-trace`. |
+| **Practice-mode toggle** | Gates on/off switch: passive watch vs forced prediction. | Ships inside `algo-trace`. |
+| **Live metric counters** | Comparisons/swaps/calls counting up during playback (principle 2, live version). | Ships inside `algo-trace`. |
+| **Dual-view sync** | Two representations of the same frame, one `activeId` highlighting both (tree+array, graph+table). | Ships inside `algo-trace`; not a standalone figure. |
+| **Collapse-subtree** ("trust the recursion") | Button on a non-leaf call node that seeks to its exit frame. One `seek()` — trivial once frames exist. | Ships inside `algo-trace` for any recursive trace. |
+| **Parameter controls + fail toggles** | Inputs (size, target, strategy, "break the precondition") that rebuild frames deterministically (seeded). | Ships inside `algo-trace`. The *principle* (fail-by-design) applies today via playgrounds — see Acceleration principles §5. |
+| **Kill-a-node cascade** | Topology diagram where the learner kills a service and watches failure propagate; resilience patterns (circuit breaker, bulkhead) as toggles. Specified in the architectures prototype docs; never prototyped. | Architectures deep-dive scroll only. High effort — needs failure-propagation simulation. |
+
+**Deliberately not adopted from the prototypes** (assessed and rejected, so they don't get re-proposed): pseudocode toggle (near-zero engagement — the trace already explained the algorithm; ship pseudocode as prose if needed), decorative state badges redundant with cell color (keep glyphs only for milestone states), recursion trees *without* a collapse action (visual confirmation, not teaching — principle 6 unfulfilled).
 
 ---
 
