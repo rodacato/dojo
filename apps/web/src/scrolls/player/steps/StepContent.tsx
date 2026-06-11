@@ -2,6 +2,7 @@ import type { ComponentType } from 'react'
 import type { StepDTO } from '@dojo/shared'
 import type { StepComponentProps } from './types'
 import { ReadStep } from './ReadStep'
+import { ReadInlineStep } from './ReadInlineStep'
 import { PredictStep } from './PredictStep'
 import { StepEditor } from './StepEditor'
 
@@ -10,6 +11,7 @@ import { StepEditor } from './StepEditor'
 // the shared schema refuses to compile until it has a renderer.
 export const STEP_RENDERERS: Record<StepDTO['type'], ComponentType<StepComponentProps>> = {
   read: ReadStep,
+  'read+inline': ReadInlineStep,
   predict: PredictStep,
   code: StepEditor,
   exercise: StepEditor,

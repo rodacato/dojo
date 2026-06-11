@@ -97,7 +97,7 @@ export interface FeedbackDTO {
 
 // ── Learning (Scrolls) ──────────────────────────────────────────────
 
-export type StepType = 'read' | 'code' | 'exercise' | 'challenge' | 'predict'
+export type StepType = 'read' | 'code' | 'exercise' | 'challenge' | 'predict' | 'read+inline'
 export type ScrollStatus = 'draft' | 'published'
 export type ExternalReferenceKind = 'book' | 'docs' | 'talk' | 'article'
 
@@ -132,7 +132,28 @@ export interface PlaygroundData {
   kind: 'playground'
 }
 
-export type StepData = PredictData | PlaygroundData
+// `read+inline` step variant data — shipped on the `data` field of StepDTO
+// when step.type === 'read+inline'. Each interaction anchors to a
+// `<!-- interact:<after> -->` marker in the instruction markdown; the
+// renderer splits the prose on markers and inserts the matching interaction.
+// Figures don't need an interaction kind — the `:figure[...]` markdown
+// directive already resolves inside the prose segments. Contract in
+// docs/courses/INTERACTIVITY-PATTERNS.md §read+inline.
+export type ReadInlineInteraction =
+  | { kind: 'reveal'; after: string; prompt: string; answer: string }
+  | {
+      kind: 'micro-quiz'
+      after: string
+      question: string
+      options: [string, string]
+      correct: 0 | 1
+      feedback: [string, string]
+    }
+export interface ReadInlineData {
+  interactions: ReadInlineInteraction[]
+}
+
+export type StepData = PredictData | PlaygroundData | ReadInlineData
 
 export function isPredictData(data: StepData | null): data is PredictData {
   return data !== null && 'snippet' in data && 'options' in data
@@ -140,6 +161,10 @@ export function isPredictData(data: StepData | null): data is PredictData {
 
 export function isPlaygroundData(data: StepData | null): data is PlaygroundData {
   return data !== null && 'kind' in data && data.kind === 'playground'
+}
+
+export function isReadInlineData(data: StepData | null): data is ReadInlineData {
+  return data !== null && 'interactions' in data && Array.isArray(data.interactions)
 }
 
 export interface StepDTO {

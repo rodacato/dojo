@@ -3,6 +3,7 @@ import type { StepDTO } from '@dojo/shared'
 export function stepTypeLabel(type: StepDTO['type']): string {
   switch (type) {
     case 'read': return 'Read'
+    case 'read+inline': return 'Read+'
     case 'challenge': return 'Challenge'
     case 'exercise': return 'Exercise'
     case 'code': return 'Code'

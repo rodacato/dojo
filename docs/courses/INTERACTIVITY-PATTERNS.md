@@ -39,9 +39,9 @@ These types are pedagogical bets. Each must justify its authoring cost and its i
 
 | `step.type` | Pedagogical job | What earns its existence | Status |
 |---|---|---|---|
-| **`predict`** | Activate the learner's hypothesis before reading the answer | The reveal is the moment of learning. The wrong-answer feedback addresses the *specific* wrong answer's mental model. | Approved — v1 for TS scroll |
+| **`predict`** | Activate the learner's hypothesis before reading the answer | The reveal is the moment of learning. The wrong-answer feedback addresses the *specific* wrong answer's mental model. | **Shipped** (Sprint 025, CSS state machine) |
 | **`trace`** | Make runtime visible. Step through execution and watch state. | Only meaningful for languages where execution is observable. Skip for TypeScript pure (defer to type-inference walk in v2). | Approved — v1 for JS DOM, SQL, Python |
-| **`read+inline`** | A `read` step with embedded mini-interactions to break the prose wall | Cognitive load: the developer cannot skim because they have to decide something every 150-200 words | Approved — v1 across all scrolls |
+| **`read+inline`** | A `read` step with embedded mini-interactions to break the prose wall | Cognitive load: the developer cannot skim because they have to decide something every 150-200 words | **Shipped** (2026-06-11 — schema + player renderer; no seeded content yet) |
 | **`spot-the-bug`** | Identify the buggy line in a snippet | Predict covers ~60% of the overlap. Defer until v1 measures real engagement signal. | Deferred — v2 reconsideration |
 | **`build`** (drag tokens) | Construct a valid expression by ordering tokens | Tests recognition, not production. The learner who drags may not type from scratch (Elif). | Rejected — v2 only if signal forces it |
 | **`match`** (concept ↔ definition) | Pair related items | Association is shallow for code concepts. Drag-with-lines is fragile on mobile (Soren). | Rejected — v2 only if signal forces it |
@@ -140,7 +140,7 @@ A step type that lacks any of these four is incomplete. Authors cannot ship step
 
 #### `read+inline` (read with mini-interactions)
 
-**Schema:** the existing `read` step plus an `interactions: Array<Interaction>` field where each `Interaction` is one of two shapes:
+**Schema:** `step.type === 'read+inline'`, with `step.data = { interactions: Interaction[] }` where each `Interaction` is one of two shapes (Zod: `readInlineDataSchema` in `@dojo/shared`):
 
 ```ts
 type Interaction =
@@ -148,7 +148,7 @@ type Interaction =
   | { kind: 'micro-quiz'; after: string; question: string; options: [string, string]; correct: 0 | 1; feedback: [string, string] }
 ```
 
-`after` is a marker in the prose (e.g. a `<!-- INTERACT -->` HTML comment) telling the renderer where to insert the interaction.
+`after` names a marker in the prose: the instruction markdown contains `<!-- interact:<after> -->` where the interaction should render. A marker with no matching interaction renders as plain prose; an interaction whose marker never appears renders at the end of the step — a typo degrades visibly instead of silently. Figures need no interaction kind: the `:figure[...]` markdown directive resolves inside the prose segments as it does in plain `read` steps.
 
 **Authoring:**
 - Maximum 4 interactions per `read+inline` step.
@@ -285,16 +285,7 @@ This split keeps the figure schema small and the step-type schema honest. A futu
 
 ### Cross-references from existing step type contracts
 
-The `read+inline` step's `interactions` array (see §read+inline) accepts a third kind alongside `reveal` and `micro-quiz`:
-
-```ts
-type Interaction =
-  | { kind: 'reveal'; after: string; prompt: string; answer: string }
-  | { kind: 'micro-quiz'; after: string; question: string; options: [string, string]; correct: 0 | 1; feedback: [string, string] }
-  | { kind: 'figure'; after: string; figure: Figure };  // new — references the Figure union above
-```
-
-A `read` step that wants to embed a figure can do so directly in its markdown body via the `:figure[name]{...}` directive — no schema change required, the markdown renderer resolves the directive at render time.
+An earlier draft of this section proposed a third `Interaction` kind (`{ kind: 'figure'; figure: Figure }`) for embedding figures in `read+inline` steps. The shipped implementation (2026-06-11) dropped it: the `:figure[name]{...}` markdown directive resolves inside `read+inline` prose segments exactly as it does in plain `read` steps, so a dedicated interaction kind would duplicate the directive path for no gain. Figures embed via the directive everywhere; the `interactions` array stays two-kinded (`reveal`, `micro-quiz`).
 
 ---
 

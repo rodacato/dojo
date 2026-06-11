@@ -95,7 +95,7 @@ export const kataFiltersSchema = z.object({
 
 // ── Learning (Scrolls) ──────────────────────────────────────────────
 
-export const stepTypeSchema = z.enum(['read', 'code', 'exercise', 'challenge', 'predict'])
+export const stepTypeSchema = z.enum(['read', 'code', 'exercise', 'challenge', 'predict', 'read+inline'])
 export const scrollStatusSchema = z.enum(['draft', 'published'])
 
 // `predict` step data — variant-shaped JSONB column per ADR 022 + the
@@ -112,6 +112,29 @@ export const predictDataSchema = z.object({
   options: z.array(predictOptionSchema).min(2).max(4),
   correct: z.string().min(1),
   feedback: z.record(z.string(), z.string()),
+})
+
+// `read+inline` step data — interactions anchored to `<!-- interact:<after> -->`
+// markers in the instruction markdown. Max 4 per step per the authoring
+// contract in docs/courses/INTERACTIVITY-PATTERNS.md §read+inline.
+export const readInlineInteractionSchema = z.discriminatedUnion('kind', [
+  z.object({
+    kind: z.literal('reveal'),
+    after: z.string().min(1),
+    prompt: z.string().min(1),
+    answer: z.string().min(1),
+  }),
+  z.object({
+    kind: z.literal('micro-quiz'),
+    after: z.string().min(1),
+    question: z.string().min(1),
+    options: z.tuple([z.string().min(1), z.string().min(1)]),
+    correct: z.union([z.literal(0), z.literal(1)]),
+    feedback: z.tuple([z.string().min(1), z.string().min(1)]),
+  }),
+])
+export const readInlineDataSchema = z.object({
+  interactions: z.array(readInlineInteractionSchema).min(1).max(4),
 })
 
 export const scrollSlugSchema = z.object({

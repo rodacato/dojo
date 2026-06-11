@@ -3,7 +3,7 @@ import type { StepDTO } from '@dojo/shared'
 import { STEP_RENDERERS } from '../steps/StepContent'
 import { extractStepTitle, stepTypeLabel } from '../steps/stepMeta'
 
-const ALL_STEP_TYPES: StepDTO['type'][] = ['read', 'code', 'exercise', 'challenge', 'predict']
+const ALL_STEP_TYPES: StepDTO['type'][] = ['read', 'read+inline', 'code', 'exercise', 'challenge', 'predict']
 
 describe('STEP_RENDERERS', () => {
   it('registers a callable renderer for every step type', () => {
