@@ -12,7 +12,7 @@
 //   order 3 — Lesson 2 (Literales y comprehensions)       — 4 steps (read, 2 kata, playground)
 //   order 4 — Lesson 3 (EAFP vs LBYL)                     — 4 steps (read, predict, 2 kata)
 //   order 5 — Lesson 4 (Context managers)                 — 4 steps (read, 2 kata, playground)
-//   order 6 — Lesson 5 (Decorators + closures)            — 5 steps (2 read, predict, 2 kata)
+//   order 6 — Lesson 5 (Decorators + closures)            — 5 steps (read+inline, read, predict, 2 kata)
 // Total: 22 steps. ~100 min target. Audience: polyglot dev (see AUDIENCE.md).
 // Authoring drafts live in docs/courses/curricula/python/lesson-{0..5}.md;
 // figures registered in apps/web/src/scrolls/figures/data/python-figures.ts.
@@ -550,6 +550,10 @@ The cost: a generator can only be consumed **once**. After \`next(gen)\` exhaust
 
 The figure above is the same input under three shapes: list comprehension materialises the doubled values eagerly; the filter version drops the cells the predicate rejects (marked \`✕\`); the generator expression produces the same logical result as the list but lazily — \`list(...)\` is what materialises it. **The eager-vs-lazy distinction is the one the playground at the end of this lesson explores; the figure here makes it visible in a glance.**
 
+Lazy is not a style preference — it's a memory budget. The same million results, measured:
+
+:figure[metric-pair]{id="list-vs-gen-memory"}
+
 ## f-strings
 
 \`\`\`python
@@ -738,6 +742,7 @@ Specific things worth trying:
 - What is the **type** of each (\`type(list_comp)\`, \`type(gen_exp)\`) and what does that tell you about the API surface?
 - What happens when you call \`next(gen_exp)\` once? Twice? After exhaustion?
 - What does \`list(gen_exp)\` return the **first** time? The **second** time?
+- Reproduce the lesson's numbers: \`import sys\`, then compare \`sys.getsizeof([x * 2 for x in range(1_000_000)])\` against \`sys.getsizeof(x * 2 for x in range(1_000_000))\`. Don't take the figure's word for it.
 - When would you reach for a generator over a list comprehension in real code? (Hint: memory, or a stream you can't materialise.)
 
 This step prints to the console because it's a playground — the runner shows stdout instead of test verdicts. In \`kata\` steps the harness captures \`print\` output so it doesn't drown the assertions; here it's the whole point. If you copy this pattern into a kata and your \`print\` "disappears", that's why.`,
@@ -1531,7 +1536,7 @@ const STEP_5_1A = {
   id: STEP_5_1A_ID,
   lessonId: LESSON_5_ID,
   order: 1,
-  type: 'read' as const,
+  type: 'read+inline' as const,
   title: 'Closures and decorators: the mechanism',
   instruction: `## Why this matters
 
@@ -1577,6 +1582,8 @@ def add(a, b):
 \`\`\`
 
 Calling \`add(1, 2)\` now goes through \`wrapper(1, 2)\`, which prints \`"calling add"\` then calls the original \`add\`. The \`@trace\` line is *syntax sugar*; what's executing is plain function-takes-function-returns-function.
+
+<!-- interact:wraps-reveal -->
 
 ## The \`functools.wraps\` rule
 
@@ -1627,6 +1634,17 @@ Next: the *reframe* — once you see the shape, four of Python's most-common dec
   hint: null,
   solution: null,
   alternativeApproach: null,
+  data: {
+    interactions: [
+      {
+        kind: 'reveal' as const,
+        after: 'wraps-reveal',
+        prompt: 'Before reading on — after the @trace above, what does add.__name__ return?',
+        answer:
+          '`"wrapper"`. The name `add` is now bound to the inner function `trace` returned; the original metadata is gone. That silently breaks `pytest` (which reads `__name__`), `inspect.signature`, and IDE tooltips. The next section is the one-line fix — and the 5.3 kata fails its tests without it.',
+      },
+    ],
+  },
 }
 
 const STEP_5_1B = {

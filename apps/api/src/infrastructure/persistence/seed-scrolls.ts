@@ -1069,7 +1069,7 @@ type StepSeed = {
   id: string
   lessonId: string
   order: number
-  type: 'read' | 'code' | 'kata' | 'challenge' | 'predict'
+  type: 'read' | 'read+inline' | 'code' | 'kata' | 'challenge' | 'predict'
   // Optional in the type because Sprint 018 backfills incrementally —
   // every new step authored from now on must set it.
   title?: string | null

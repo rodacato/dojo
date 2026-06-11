@@ -134,9 +134,31 @@ const operatorsAsMessages: TwoByTwoData = {
     'The trap is assuming Ruby works like JS or Python. The fix is one diagonal move on this grid — from "as syntax in JS/Python" to "as messages in Ruby".',
 }
 
+const stringVsSymbolAllocation: MetricPairData = {
+  type: 'metric-pair',
+  id: 'string-vs-symbol-allocation',
+  metric: 'distinct objects after 1,000 literals of the same name',
+  entries: [
+    {
+      label: '"name" × 1,000',
+      value: '1,000',
+      detail: 'every string literal allocates a fresh object',
+    },
+    {
+      label: ':name × 1,000',
+      value: '1',
+      detail: 'one interned object — every appearance is the same id',
+    },
+  ],
+  highlight: 1,
+  caption:
+    'Verify it in the sandbox: Array.new(1000) { "name" }.map(&:object_id).uniq.size versus the same with :name. Identity is the dimension everything else (mutability, hash-key cost, GC) cascades from.',
+}
+
 export const RUBY_FIGURES: Record<string, FigureData> = {
   'npm-vs-bundle': npmVsBundle,
   'foreach-vs-each-block': foreachVsEachBlock,
   'string-vs-symbol': stringVsSymbol,
+  'string-vs-symbol-allocation': stringVsSymbolAllocation,
   'operators-as-messages': operatorsAsMessages,
 }

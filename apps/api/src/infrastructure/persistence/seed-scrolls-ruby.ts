@@ -9,7 +9,7 @@
 //   order 1 — Lesson 0 (Contexto)         — 3 steps (read, read, predict)
 //   order 2 — Lesson 1 (Blocks)           — 5 steps (read, predict, 2 katas, playground)
 //   order 3 — Lesson 2 (Literales)        — 4 steps (read, 3 katas)
-//   order 4 — Lesson 3 (Object model)     — 5 steps (read, predict, 2 katas, playground)
+//   order 4 — Lesson 3 (Object model)     — 5 steps (read+inline, predict, 2 katas, playground)
 //   order 5 — Lesson 4 (Control flow)     — 4 steps (read, predict, kata, challenge)
 //   order 6 — Lesson 5 (Methods)          — 4 steps (read, 2 katas, challenge)
 // Total: 25 steps. ~110 min target. Audience: polyglot dev (see AUDIENCE.md).
@@ -139,7 +139,7 @@ const STEP_1_1 = {
   id: STEP_1_1_ID,
   lessonId: LESSON_1_ID,
   order: 1,
-  type: 'read' as const,
+  type: 'read+inline' as const,
   title: 'Everything is an object — and what that buys you',
   instruction: `## Why this matters
 
@@ -172,6 +172,8 @@ The diagonal move in the figure above is the mental model the lesson is after: f
 
 The same rewrite applies to \`-\`, \`*\`, \`==\`, \`<<\`, \`[]\`, even comparison: \`5 < 10\` is \`5.<(10)\`. This is the property that makes Ruby small. There's very little "language" — most of what looks like syntax is a method you can find in the docs, override in your own class, or invoke via \`send\`. The blocks of Lesson 1 are the same pattern: \`5.times { ... }\` is a method on \`Integer\` that happens to take a block.
 
+<!-- interact:operators-quiz -->
+
 ## Introspection is first-class
 
 Every object knows things about itself. The two most useful at this stage:
@@ -202,6 +204,24 @@ Because \`nil\` is an object with methods, **\`nil.to_s\` returns the empty stri
   hint: null,
   solution: null,
   alternativeApproach: null,
+  data: {
+    interactions: [
+      {
+        kind: 'micro-quiz' as const,
+        after: 'operators-quiz',
+        question: 'Your own class defines nothing special. Can `a + b` ever work for its instances?',
+        options: [
+          'No — + is reserved for numeric and string types',
+          'Yes — define a method named + and the operator works',
+        ] as [string, string],
+        correct: 1 as const,
+        feedback: [
+          "That's the operators-as-syntax model — correct in JS, where you can't touch `+`. In Ruby `+` isn't reserved for anything: `a + b` is `a.+(b)` no matter what `a` is, so any class that defines a method named `+` gets the operator.",
+          "Right — `a + b` desugars to `a.+(b)` everywhere. Operator overloading isn't a special feature bolted on; it's plain method definition.",
+        ] as [string, string],
+      },
+    ],
+  },
 }
 
 const STEP_1_2 = {
@@ -650,6 +670,10 @@ If either operand is a Float, the result is a Float. If both are Integers, the r
 
 The figure highlights the single dimension that matters — *identity*. Every other difference (mutability, hash-key cost, garbage collection) cascades from it. Use symbols for *names of things* (hash keys, method names, config keys); use strings for *content the user sees*.
 
+Identity made a number — the same name written a thousand times:
+
+:figure[metric-pair]{id="string-vs-symbol-allocation"}
+
 The hash literal shorthand \`{ name: "Ada" }\` uses symbol keys: it's equivalent to \`{ :name => "Ada" }\`. You'll see the shorthand everywhere; the rocket form (\`=>\`) appears when keys aren't symbols (e.g. \`{ "Foo" => 1 }\`).
 
 ## 4. \`Hash#fetch\` with a block is the right way to handle missing keys
@@ -707,7 +731,9 @@ records = { ghost: nil }
 lookup(records, :ghost)   # MUST return nil, NOT "unknown person"
 \`\`\`
 
-\`records[:ghost]\` is \`nil\`. \`records[:ghost] || "unknown person"\` would wrongly return \`"unknown person"\`. \`Hash#fetch\` distinguishes "key absent" from "key present with \`nil\` value".`,
+\`records[:ghost]\` is \`nil\`. \`records[:ghost] || "unknown person"\` would wrongly return \`"unknown person"\`. \`Hash#fetch\` distinguishes "key absent" from "key present with \`nil\` value".
+
+Don't take the trap on faith: submit \`records[name] || "unknown person"\` first and watch the third test fail. *Then* write the \`fetch\` form.`,
   starterCode: `def lookup(records, name)
   # Your code here.
 end

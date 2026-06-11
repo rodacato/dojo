@@ -1,8 +1,30 @@
 import type { ArrayTrackData } from '../ArrayTrack'
 import type { BeforeAfterData } from '../BeforeAfter'
 import type { DisambiguationData } from '../Disambiguation'
+import type { MetricPairData } from '../MetricPair'
 import type { TabbedCardData } from '../TabbedCard'
 import type { FigureData } from './ruby-figures'
+
+const listVsGenMemory: MetricPairData = {
+  type: 'metric-pair',
+  id: 'list-vs-gen-memory',
+  metric: 'bytes held by the container — same million results, two shapes',
+  entries: [
+    {
+      label: '[x*2 for x in range(1_000_000)]',
+      value: '8,448,728 B',
+      detail: 'all million results resident before the first one is used',
+    },
+    {
+      label: '(x*2 for x in range(1_000_000))',
+      value: '208 B',
+      detail: 'one paused frame; values produced on demand',
+    },
+  ],
+  highlight: 1,
+  caption:
+    'sys.getsizeof of the container, CPython 3.11. The list figure counts the container alone — the million int objects it holds add more on top. The generator never holds them. The playground at the end of this lesson lets you reproduce both numbers.',
+}
 
 const compVsFilterVsGen: ArrayTrackData = {
   type: 'array-track',
@@ -133,6 +155,7 @@ const decoratorsAndFriends: TabbedCardData = {
 }
 
 export const PYTHON_FIGURES: Record<string, FigureData> = {
+  'list-vs-gen-memory': listVsGenMemory,
   'comp-vs-filter-vs-gen': compVsFilterVsGen,
   'eafp-vs-lbyl': eafpVsLbyl,
   'try-finally-vs-with': tryFinallyVsWith,
