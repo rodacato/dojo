@@ -1,577 +1,204 @@
-# TypeScript Course Track
+# TypeScript Scroll Track
 
-> **Pre-pivot draft.** Re-scope to a single TypeScript language scroll per [ADR 022](../../adr/022-crash-course-pivot.md) pending. The multi-sub-course model below is the old direction; the canonical shape going forward is one ~90-minute TS crash course (see [`ruby.md`](ruby.md) for the post-pivot example). Specialist sign-off (S9 Leo) required before re-scope.
->
-> A `typescript-fundamentals` scroll is already seeded in DB from Sprint 014 (pre-pivot content). It stays live as-is until the re-scope ships; the new crash course will replace it under the bare `typescript` slug per the ADR 022 slug convention.
->
-> Maintainer persona: S9 Leo Barros (TS educator) + S5 Dr. Elif Yıldız (curriculum architect)
-> Infrastructure adjacency: C3 Tomás Ríos (TS in monorepo/infra contexts)
-> Last researched: 2026-04-14 · Pre-pivot draft flagged 2026-06-06
-
----
+> Maintainer persona: S9 Leo Barros (TypeScript steward) + S5 Dr. Elif Yıldız (curriculum architect) + S2 Valentina Cruz (content quality) + S11 Maya Lindqvist (interactive learning UX).
+> Infrastructure adjacency: C3 Tomás Ríos (TS in monorepo/infra contexts — *not* the language pedagogy lens).
+> Last researched: 2026-04-14 · Re-scoped 2026-06-06 under [ADR 022](../../adr/022-crash-course-pivot.md) · Polyglot-first draft 2026-06-07 (Sprint 026) · **Audience pivot + promoted to canon 2026-06-11** under Sprint 028 W1: primary reader is the JS developer adopting TypeScript (A4 Felipe), lens is "what TypeScript adds to the JavaScript you already write — benefits forward."
 
 ## 1. Learning Philosophy for TypeScript
 
-Teaching TypeScript is not teaching a language. It is teaching a **second skill grafted onto a language the learner usually already speaks**. Almost everyone who shows up at a TS course can already write `arr.map(x => x * 2)` and crash a Node process. What they cannot do is *think in types*: reason about the shape of a value at a layer above the value itself, and trust the compiler enough to let it be a collaborator instead of a nag. The course track is built around that single shift. Every sub-course is one step further from "annotate what you already wrote in JS" and one step closer to "design with types first, then let the implementation fall out."
+TypeScript has a specific teaching pathology for its actual audience — the working JavaScript developer. They arrive treating TS as paperwork: they annotate every parameter and every local (`const total: number = 0`), hit a real modeling problem in week three, reach for `any` to make the squiggles go away, and conclude TypeScript is a verbose JavaScript that occasionally yells. Felipe — five years of JS, two of "TS-strict" with more `any` than he'd admit — is not confused about JavaScript; he's never been *sold the delta*. This scroll is about **what TypeScript adds to the JavaScript you already write**: inference over annotation, narrowing as control-flow analysis, structural shapes, unions and literal types as design vocabulary, and the compiler as a second reader during refactors. It is NOT a JS reteach (the reader writes JS for a living), NOT framework typings (React props, `ChangeEventHandler` — out of scope), and NOT advanced type-level programming (conditional/mapped types are named and deferred to a deep-dive, never drilled here).
 
-The hardest pedagogical trap in TS is the **generics-too-early bait**. Generics look like the impressive-looking part of the language, so courses tend to introduce `<T>` in the second hour and lose 60% of their audience by the end of the day. We refuse that. Generics are introduced only after the learner has felt the *pain of a type that should have been parametric*. Same rule for conditional types, `infer`, mapped types, and template literal types: the lesson must first manufacture a real situation where the simpler tool falls short. No party tricks. No `type IsNever<T> = [T] extends [never] ? true : false` until the learner has hit a `never` in production and asked why.
+The core mental model is **the type system as a second reader of the JavaScript you already write** — a static layer that runs alongside the program and disappears before it runs (types are erased), reads structure rather than names (two unrelated shapes that match are compatible), infers far more than the newcomer annotates (annotation-free is not untyped), and re-reads the entire codebase every time you change a union (adding a variant breaks every unhandled `switch` — that's the feature, not the error). Every benefit this scroll sells reduces to that frame. The polyglot-first order for a JS developer is *delta-priority*: lead with the surprises they hit on day one of real TypeScript. Day one, Felipe over-annotates — so **inference is Lesson 1**, before any other type syntax, because "the compiler already knows" is the single biggest behavior change available to him. Day two he types his first object shape and meets structural compatibility (Lesson 2). Day three every `if (typeof x === "string")` he's written for years turns out to be load-bearing (narrowing, Lesson 3). Week one he reaches for `any` at a JSON boundary and needs `unknown` instead (Lesson 4). Generics arrive last among the daily drivers (Lesson 5), only after the duplication that motivates `<T>` has been felt in his own katas.
 
-The second axis is **gradual vs. strict**. Real TS codebases live on a spectrum from "JS with sprinkles" to "the type system is a compiler-enforced spec." We name this spectrum explicitly in the fundamentals and let the learner navigate it on purpose. `any` is not the enemy — *unmotivated* `any` is. We teach the cost of `any` (it propagates and silences) alongside the legitimate uses (`unknown` boundary, third-party type holes, intentional escape hatch with a TODO). Same for `as`: a cast is a promise to the compiler, and breaking the promise is a runtime bug the compiler can no longer catch.
+"Types are erased at runtime" lands in Lesson 0 as a property of the system, because every other lesson depends on it: `as` and type guards and discriminated unions read correctly only as compile-time tools that vanish before execution. Lesson 0 also lands the 2026 toolchain fact most JS developers half-know: almost everything that "runs TypeScript" (`tsx`, `esbuild`, modern `node` with type stripping) **strips types without checking them** — the benefit Felipe is paying for only exists if `tsc --noEmit` (or his editor's equivalent) actually runs. A learner who internalises "erased; inferred; structural; narrowed by control flow" can read any TS file on Friday. A learner who memorises `interface` vs `type` trivia without that frame can read none of it.
 
-A third axis the curriculum treats explicitly: **TS for JS refugees vs. TS for people who think in types**. These are two real audiences with different needs. The JS refugee already ships software, has muscle memory for `Array.prototype` methods, and wants to know "what do I sprinkle on top of what I already write so it stops crashing in production?" The type-thinker — often a developer arriving from Rust, Haskell, F#, OCaml, or just a JS developer who's read enough Vanderkam — wants the type system to *carry weight*, to encode invariants, to fail to compile when the model is wrong. The fundamentals course speaks to the JS refugee directly. Course 3 (functional patterns), course 4 (Node/API), and especially course 5 (type-level) speak to the type-thinker. Course 2 (advanced types) is the bridge: it takes the JS refugee and walks them across, one motivated example at a time. Mixing the two audiences in a single lesson is the fastest way to lose both — we don't.
+Dead ends we explicitly avoid: **annotation-maximalism as implicit pedagogy** (a scroll whose examples annotate every local teaches Felipe to keep doing the thing the scroll exists to stop); **teaching `any` without naming its cost** (it propagates and silences — Lesson 4 makes the cost felt, not lectured); **the `interface` vs `type` flame war** (one rule, one exception, move on); **`enum` as a default** (literal unions first; `enum` named as legacy/interop with its runtime footprint shown); **`as` as the way to silence errors** (a cast is a promise; a broken promise is a runtime bug the compiler can no longer catch); **generics as a `<T, U, V, W>` tour** (Lesson 5 opens with duplication the learner just wrote); **framing structural typing against Java/C# nominal reflexes** (the S026 draft did this — wrong enemy: Felipe has no nominal-typing reflexes; for him structural typing is "the duck typing you already practice, now checked"); **teaching React/Node API typings or the tsconfig flag tour** (deep-dive territory, named only to be excluded); **type-system flexing** (any type that can't be motivated by a bug it prevents in the reader's day job is cut — see the inner spec §2.2 gate).
 
-Dead ends we explicitly avoid: (1) treating `interface` vs `type` as a stylistic flame war — we pick one rule, explain when the other matters, and move on; (2) teaching decorators before they're standardized enough to matter (parked into a clearly-flagged optional sub-course); (3) building exercises that reward "make the red squiggle go away" instead of "model the domain"; (4) teaching `enum` as a default — we teach union literals first and treat `enum` as a legacy/interop topic; (5) reaching for OOP class hierarchies because TS supports them — we teach discriminated unions and ADT-style modeling as the default tool for state; (6) treating `satisfies` as a beginner-friendly replacement for explicit annotations — it's a precise tool with a specific job (preserve narrow inference while constraining shape) and we introduce it only after the learner has felt the inference-vs-annotation trade-off in their own code.
+Before any lesson on the type system proper, **Lesson 0 orients the reader in what TypeScript actually is and how it executes** — the JS-superset truth, type erasure, the check-vs-strip toolchain split (`tsc --noEmit` checks; `tsx`/`esbuild`/modern `node` strip), and `tsconfig.json` as a file that exists without the flag tour. This is short (2 steps) because Felipe already operates a JS toolchain daily — he needs the one fact he's likely wrong about (running ≠ checking), not a build-tools tour.
 
----
+A note on tone: the Dojo voice is direct and assumes the reader **writes JavaScript fluently** — closures, async/await, array methods, destructuring are never explained. Every `read` step passes the test: *if I delete this paragraph, does a fluent JS developer lose something TypeScript-specific? If no, the paragraph doesn't exist.* When Piston's sandbox forces a compromise (no DOM, no `npm install`, single-file execution), the lesson body says so explicitly and names the real-world equivalent.
 
-## 2. Course Tree Overview
+## 2. Course Authoring Profile
 
-| Course | Level | Prereqs | Sandbox | Steps (approx) | Status |
-|---|---|---|---|---|---|
-| `typescript-fundamentals` | Basic | JS familiarity | Piston | ~18 | extends Sprint 014 MVP (see §7) |
-| `typescript-advanced-types` | Intermediate | fundamentals | Piston | ~22 | new |
-| `typescript-functional-patterns` | Intermediate | fundamentals | Piston | ~16 | new |
-| `typescript-node-api` | Intermediate | fundamentals + async JS | Piston | ~20 | new |
-| `typescript-type-level` | Advanced / specific | advanced-types | Piston (type-only) | ~24 | new |
-| `typescript-react-primer` | Specific | fundamentals + React basics | iframe-sandbox | ~14 | new |
-| `typescript-tsconfig-for-humans` | Specific (optional) | fundamentals | Piston (compile-only) | ~8 | proposed |
-| `typescript-zod-as-type-design` | Specific (optional) | fundamentals + node-api | Piston (with bundled mini-Zod) | ~10 | proposed, scope-flag |
+> Course-level voice and authoring decisions for the TypeScript track. Per [`docs/courses/README.md`](../README.md) §8.1. The TypeScript scroll inherits these defaults; each lesson's spec deviations are declared in the spec's §2 Authoring Notes.
 
-The first six are the required spine. The last two are proposed deep-dives — a reviewer should green-light or cut them before content production.
-
-**Total spine target:** ~114 steps across six courses, roughly 25–30 hours of focused learner time.
+**Voice & angle.** Benefits forward: "what TypeScript adds to the JavaScript you already write." The unifying angle is "inference over annotation, narrowing, structural shapes, unions/literal types, and the compiler as a second reader during refactors — annotations are the contract you write at function boundaries; everything else the compiler reads for you." React/Vue/Angular are named only to be excluded. tsconfig flags are named only to be deferred. Advanced type-level programming is named only to be recognised. The audience is the JS developer with zero TS (or TS-with-`any` habits to unlearn) — never the absolute beginner, never the Java/Python polyglot needing JS explained. No "Welcome to TypeScript!" preambles, no apologising for the compiler, no softening when an `any` habit gets named.
 
----
-
-## 3. Sub-courses
+**Step density & rhythm.** Framework default (~200-300 words per `read` step) for Lessons 0-2; **250-350 words** for Lessons 3-5 where the mechanism needs unpacking (control-flow analysis, the escape-hatch triad, generic inference). TypeScript's syntax IS JavaScript, so the prose budget goes to *semantics* — what the compiler concludes and why — not to syntax re-framing. Reads that restate what a JS developer sees on the page fail review.
 
-### 3.1 TypeScript Fundamentals (Extended) — Basic
+**Interactivity menu.**
 
-**Slug:** `typescript-fundamentals`
-**Prereqs:** Comfortable with modern JS (arrow functions, destructuring, `const`/`let`, array methods, basic Promises). No prior TS required.
-**Sandbox:** Piston (`typescript`)
-**Learner time:** ~3–4 hours
-**Learning outcomes:**
-- Annotate any plain JS function with accurate parameter and return types.
-- Read and explain a structural type error (the `Property 'x' is missing in type 'A' but required in type 'B'` family).
-- Choose between `type`, `interface`, and inline object types using a stated rule.
-- Distinguish `any`, `unknown`, and `never` and pick the right one at an I/O boundary.
-- Narrow a union type using `typeof`, `in`, equality, and a user-defined type guard.
+- **IN:** `read`, `kata` (≡ `exercise`), `challenge`, `predict`, `read+inline`, and the `playground` local-experiment variant (`kata` with `data.kind: "playground"`, inherited from Ruby — see [ruby/ruby.md §2.3](ruby/ruby.md)).
+- **OUT (deliberate exclusion):** `trace`. TypeScript's runtime is JavaScript; runtime tracing belongs to the JS DOM scroll. A "type inference walk" trace (the compiler narrowing a value step-by-step) would need a custom renderer no other scroll uses — fails the ≥20-step amortization gate in [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md). Defer to the advanced-types deep-dive if it ever proves load-bearing.
+- **High-ROI for TypeScript specifically:** `predict` (the type-system reveal — guess the inferred type, see the answer, update the model) and `read+inline` (reveals are type signatures, small enough to live inline). Lesson 1's inference read is the first `read+inline` candidate.
 
-**Lesson 1: Why types** *(extends Sprint 014 Lesson 1)*
-- Step 1 (explanation): "JS lies to you at runtime." Concrete scenario: a function that crashes on `undefined.foo`. We rewrite with TS and show the compile-time error. Frame TS as a *linter that understands shapes*, not a new language.
-- Step 2 (exercise): Annotate three pre-written JS functions (`greet`, `add`, `pickRandom`) so they pass strict mode. testCode imports them and checks runtime behavior + uses `@ts-expect-error` on intentionally wrong calls.
-- Step 3 (exercise): Given a function `parseAge(input: string): number`, fix the four bugs the type checker surfaces. Tests assert behavior on edge cases.
-
-**Lesson 2: Primitives, literals, unions**
-- Step 1 (explanation): Primitive types vs literal types. Why `type Status = "idle" | "loading" | "ready"` beats `type Status = string`. Width vs. specificity.
-- Step 2 (exercise): Type a function `transition(current: Status, event: Event): Status` where `Status` and `Event` are literal unions. Tests check exhaustive transitions.
-- Step 3 (exercise): A `formatBytes(n: number, unit: "B" | "KB" | "MB" | "GB"): string` — the test checks both runtime output and `@ts-expect-error` on `"TB"`.
-
-**Lesson 3: Objects, interfaces, structural typing**
-- Step 1 (explanation): Structural typing in 90 seconds. "If it walks like a duck, the compiler accepts it as a duck." Show two unrelated types satisfying the same shape. Pick rule for `type` vs `interface`: `type` by default, `interface` when extending or merging.
-- Step 2 (exercise): Define a `User` type and a `getDisplayName(user: User): string` that handles optional fields. Tests cover missing-field cases.
-- Step 3 (exercise): Refactor a function that currently takes `(id, name, email, age)` into one that takes a single `UserInput` object. Tests verify call sites.
-
-**Lesson 4: Functions, overloads, and `this`**
-- Step 1 (explanation): Function types, optional and default params, rest params with tuples, the rare-but-useful overload signature. Brief note on `this` typing.
-- Step 2 (exercise): Write `pluck<...>` — first as a non-generic function on a fixed shape (the generic version is deliberately deferred to course 2).
-- Step 3 (challenge): Implement `compose(f, g)` typed correctly for two functions. Hint that "for N functions" is a generics problem we'll meet later.
-
-**Lesson 5: Narrowing, `unknown`, `never`**
-- Step 1 (explanation): The narrowing toolbox: `typeof`, `in`, equality, `Array.isArray`, user-defined guards (`is` predicates). `unknown` as the polite `any`. `never` as the "this branch can't happen" signal.
-- Step 2 (exercise): Write `safeJsonParse(input: string): unknown` and a guard `isUserShape(value: unknown): value is User`. Tests pass valid and malformed JSON.
-- Step 3 (exercise): An exhaustiveness check on a discriminated union using `assertNever`. Test fails to compile if a new variant is added without handling — taught with `@ts-expect-error` flipping after the fix.
-- Step 4 (challenge): Refactor a `try/catch` block where `error` is `unknown` (TS 4.4+ default) into a typed error handler.
-
-**Piston considerations:** Pure functions, deterministic output, single-file. testCode lives next to user code and uses a tiny assertion helper (no dep). `@ts-expect-error` directives are used to *assert that a call should fail to compile* — Piston runs the compiler so this works natively. We document the runner's behavior on `tsc --noEmit` failures: a compile error counts as a failed test, not a runtime crash.
-
-**Reference material:**
-- Book: *Learning TypeScript* by Josh Goldberg (O'Reilly, 2022) — chapters 1–6 align almost 1:1 with this course. Use as the primary "if the learner wants a book on the side" recommendation.
-- Book: *Programming TypeScript* by Boris Cherny (O'Reilly, 2019) — chapters 1–4. Slightly older, but its "TypeScript: A 10,000 Foot View" framing is still the cleanest mental model intro in print.
-- Docs: <https://www.typescriptlang.org/docs/handbook/2/everyday-types.html> and <https://www.typescriptlang.org/docs/handbook/2/narrowing.html>
-- Community reference: Total TypeScript — *Pro Essentials* free intro modules (Matt Pocock); Frontend Masters — Mike North's *TypeScript Fundamentals v3*; Execute Program *TypeScript Basics* course for spaced-repetition reinforcement.
-
----
-
-### Voice notes specific to fundamentals
-
-The fundamentals course is the entry point for the largest fraction of the audience and sets tone for the whole track. Two voice rules we hold:
-
-- **Don't congratulate.** No "great job!" copy. The compile passing is its own reward; the platform doesn't need to add a sticker.
-- **Name the cost.** Every time a feature is introduced, the explanation includes one sentence on what it costs (compile time, mental load, runtime cost, reader cost). This is the single largest deviation from most TS courses on the market and is an explicit BRANDING.md alignment.
-
----
-
-### 3.2 TS Advanced Types — Intermediate
-
-**Slug:** `typescript-advanced-types`
-**Prereqs:** `typescript-fundamentals`. Learner should be comfortable annotating Node-style code without help.
-**Sandbox:** Piston (`typescript`)
-**Learner time:** ~5–6 hours
-**Learning outcomes:**
-- Write a generic function or type, motivated by a concrete duplication problem they just solved manually.
-- Read and decompose a conditional type with `infer`.
-- Use the standard utility types (`Pick`, `Omit`, `Partial`, `Required`, `Record`, `Readonly`, `ReturnType`, `Parameters`, `Awaited`, `NonNullable`) and explain when each applies.
-- Build one custom mapped type and one custom utility from the standard set.
-
-**Lesson 1: Generics, motivated**
-- Step 1 (explanation): Start with three functions a learner just wrote in the fundamentals course: `firstString`, `firstNumber`, `firstUser`. Show the duplication. Introduce `<T>` as "the parameter you would have written for the type, if the language allowed it." No `<T, U, V, W>` cascade — one `T` at a time.
-- Step 2 (exercise): Write `first<T>(arr: T[]): T | undefined`. Tests pass arrays of different element types.
-- Step 3 (exercise): Write `groupBy<T, K extends string>(items: T[], key: (item: T) => K): Record<K, T[]>`. Forces a constraint and a `Record`.
-- Step 4 (exercise): Generic constraints — `pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K>`. Now the standard utility `Pick` shows up because the learner *needs* it.
-
-**Lesson 2: Mapped types**
-- Step 1 (explanation): Mapped types as "loop over the keys." Build `Partial<T>` from scratch in three lines. Then build `Readonly<T>`. Then `Nullable<T>`.
-- Step 2 (exercise): Implement `MyPartial<T>`, `MyRequired<T>`, `MyReadonly<T>` and prove they match the built-ins via type-level equality assertions (testCode uses `Equal<A, B>` helper).
-- Step 3 (exercise): `Stringify<T>` — turn every property of `T` into a `string`. Tests use `Equal`.
-- Step 4 (challenge): `DeepPartial<T>` — first attempt without recursion (fails on nested objects), then with.
-
-**Lesson 3: Conditional types and `infer`**
-- Step 1 (explanation): "Type-level if." Walk through `T extends U ? X : Y`. Show `NonNullable<T>` as one line. Then introduce `infer` as "give the matched part a name."
-- Step 2 (exercise): `MyReturnType<F>`, `MyParameters<F>`, `MyAwaited<P>`. Tests with `Equal<MyAwaited<Promise<string>>, string>`.
-- Step 3 (exercise): `Flatten<T>` — `T extends Array<infer U> ? U : T`.
-- Step 4 (challenge): `LastOf<T>` on a tuple using `infer` with rest. Hard but well-motivated by the next lesson.
-
-**Lesson 4: Template literal types and key remapping**
-- Step 1 (explanation): String types as values at the type level. `` `on${Capitalize<K>}` `` patterns. Key remapping with `as`.
-- Step 2 (exercise): `EventHandlers<T>` — turn `{ click: ..., hover: ... }` into `{ onClick: ..., onHover: ... }`. Tests with `Equal`.
-- Step 3 (exercise): `Getters<T>` — `{ name: string }` → `{ getName: () => string }`.
-- Step 4 (challenge): `Path<T>` — produce dotted-string union for all leaf paths in a nested object type. (This is a Type Challenges medium; we use a simpler 2-level version here and defer the recursive version to course 5.)
-
-**Lesson 5: The standard utility types as a fluent vocabulary**
-- Step 1 (explanation): Tour of the standard utilities, but framed as "things you would have built." Map each to the mapped/conditional pattern that produces it.
-- Step 2 (exercise): A real-shaped task: given a `User` and a `UserUpdate = Partial<Pick<User, Updatable>>`, write the update function. Tests check field-by-field merge.
-- Step 3 (exercise): API request/response shaping — given a `RouteSchema`, derive `Request` and `Response` types and write a typed handler signature.
-
-**Piston considerations:** Heavy use of *type-only* assertions. testCode contains things like `type _t1 = Equal<MyReturnType<() => 1>, 1>` and a tiny helper `type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false`. Runtime is trivial — most tests pass if the file compiles. Piston returns the `tsc` exit code, which is enough.
-
-**Reference material:**
-- Book: *Effective TypeScript* by Dan Vanderkam (O'Reilly, 2nd ed. 2024) — items 14–25 cover generics and the type system in the form of "do this / not that," which slots straight into exercise rationale.
-- Book: *Programming TypeScript* (Cherny) chapters 6–7 for the original walkthrough of conditional and mapped types.
-- Docs: <https://www.typescriptlang.org/docs/handbook/2/generics.html> and <https://www.typescriptlang.org/docs/handbook/2/conditional-types.html>
-- Community reference: Total TypeScript *Type Transformations* workshop (Matt Pocock) — the structure of lessons 2–4 above is heavily informed by it; *Type-Level TypeScript* by Gabriel Vergnaud, lessons on conditional types and `infer`.
-
----
-
-### 3.3 TS Functional Patterns — Intermediate
-
-**Slug:** `typescript-functional-patterns`
-**Prereqs:** `typescript-fundamentals`. `typescript-advanced-types` recommended but not required (we use only single-parameter generics).
-**Sandbox:** Piston (`typescript`)
-**Learner time:** ~3–4 hours
-**Learning outcomes:**
-- Model state with discriminated unions instead of optional-field soup or class hierarchies.
-- Write a function whose return type forces the caller to handle the failure case.
-- Update nested immutable data without mutating, with type safety preserved.
-- Recognize when an `if/else` chain wants to be a discriminated union.
-
-**Lesson 1: Discriminated unions and exhaustiveness**
-- Step 1 (explanation): The "tag field" pattern. Why a `RemoteData = Loading | Success<T> | Error` beats `{ loading: bool, data?, error? }`. Show the bug the bag-of-optionals enables that the union prevents.
-- Step 2 (exercise): Model a `PaymentStatus = Pending | Authorized | Captured | Refunded | Failed` and write a `nextStates(s)` function returning the legal next states. Tests check transitions.
-- Step 3 (exercise): Add a new variant. Use `assertNever` in a `switch` so the compiler points at every site that needs updating. Tests verify the compile error before the fix and the pass after.
-
-**Lesson 2: Result / Either patterns**
-- Step 1 (explanation): "Don't throw; return." Define `Result<T, E> = { ok: true; value: T } | { ok: false; error: E }`. Why this is better than `T | null` (you keep the error) and better than throwing (the type signals it).
-- Step 2 (exercise): Rewrite a `parseConfig` that currently throws into one that returns `Result<Config, ConfigError>`. Tests check both branches.
-- Step 3 (exercise): Compose two `Result`-returning functions with a `map` and `flatMap` you implement. Tests cover short-circuit behavior.
-- Step 4 (challenge): A small `Result.all([...])` that collapses an array of results into a single `Result<T[], E[]>`.
-
-**Lesson 3: Immutable updates, typed**
-- Step 1 (explanation): The case for never mutating: type narrowing survives the update, undo/redo is trivial, render diffing works. The case against deep cloning everywhere: cost. Middle path: structural sharing, one level at a time.
-- Step 2 (exercise): `updateUser(state, id, patch)` returning a new state with one user replaced. Type signature must preserve the array element type.
-- Step 3 (exercise): `toggleNested(state, path)` for a 2-level structure. Path is typed as a dotted string from the previous course.
-- Step 4 (challenge): Implement `produce`-style update with a recipe callback typed so the recipe can mutate locally but the outside type stays immutable. Hint at Immer without requiring it.
-
-**Lesson 4: Pipe, curry, and the limits**
-- Step 1 (explanation): What `pipe` buys you (reads top-down, no parens nesting). What it costs (typing N-arity is genuinely hard in TS). When a plain `const x = f(g(h(y)))` is just better.
-- Step 2 (exercise): Write `pipe2(f, g)` and `pipe3(f, g, h)` typed correctly. Tests on string transforms.
-- Step 3 (challenge): Write a typed `curry2`. Note: full variadic curry is parked as out-of-scope for sanity.
-
-**Piston considerations:** All exercises are pure functions, single file, no external deps. The `Result` type is defined in the starter code. Tests use the same lightweight assertion helper as course 1.
-
-**Reference material:**
-- Book: *Effective TypeScript* (Vanderkam), items on union types and exhaustiveness (e.g., item 27, item 41).
-- Book: *Domain Modeling Made Functional* by Scott Wlaschin (Pragmatic, 2018). F#-based, but the discriminated-union modeling style ports to TS almost line-by-line. This is the single best book on *why* you'd reach for ADTs in real code.
-- Docs: <https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions>
-- Community reference: Matt Pocock's "Discriminated unions" content (Total TypeScript Pro Essentials and YouTube shorts); Execute Program — *Modern JavaScript* immutable update modules (concepts port directly).
-
----
-
-### 3.4 TS for Node / API — Intermediate
-
-**Slug:** `typescript-node-api`
-**Prereqs:** `typescript-fundamentals`. Comfortable with `async`/`await` and basic HTTP concepts.
-**Sandbox:** Piston (`typescript` on Node, no network)
-**Learner time:** ~4–5 hours
-**Learning outcomes:**
-- Type a request handler from request shape to response shape, including the failure path.
-- Validate `unknown` JSON at the I/O boundary and produce a typed value on the inside.
-- Type environment variables once and use them safely everywhere.
-- Type async functions, including `Promise` rejection cases that don't appear in the type system (and what to do about it).
-
-**Lesson 1: The boundary problem**
-- Step 1 (explanation): "TypeScript's type system ends at the network." JSON arrives as `unknown`. The inside of the app is typed; the outside isn't. The job is to write a small set of functions that take `unknown` in and `T | ParseError` out.
-- Step 2 (exercise): Write `parseUserPayload(input: unknown): Result<User, string>` using only structural checks (no Zod, no library). Tests pass valid, malformed, and adversarial payloads.
-- Step 3 (exercise): Build a tiny `assert(condition, message)` that narrows when it returns. Tests use it in chained checks.
-
-**Lesson 2: Typed environment**
-- Step 1 (explanation): `process.env.X` is `string | undefined` everywhere it's read. The fix: parse it once, in one place, into a typed `Env` object. Crash early on missing required vars — never silently.
-- Step 2 (exercise): Write a `loadEnv(raw: Record<string, string | undefined>): Env` that parses required strings, optional booleans, and a port number. Tests cover missing, malformed, and present.
-- Step 3 (exercise): Type the `Env` object as `Readonly` and prove (with `@ts-expect-error`) that downstream code can't mutate it.
-
-**Lesson 3: Async and errors**
-- Step 1 (explanation): What a `Promise<T>` does and doesn't tell you (it tells you the resolve type; it tells you nothing about reject). The two responses: `Result`-wrap, or treat `catch` as an `unknown` boundary.
-- Step 2 (exercise): Convert a function that throws on bad input into one returning `Promise<Result<T, E>>`. Tests on success and failure.
-- Step 3 (exercise): A `withTimeout(promise, ms)` typed correctly, returning `Result<T, "timeout">`. Implementation via `Promise.race`.
-- Step 4 (challenge): A `retry<T>(fn, { attempts, backoffMs })` with a typed `Result` return.
-
-**Lesson 4: A typed mini HTTP layer**
-- Step 1 (explanation): Build a *toy* request/response type — `Req<Body>` and `Res<Body>` — and a `Handler<ReqBody, ResBody>` type. No real HTTP server (Piston has no network); we simulate it with a function that takes a `Req` and returns a `Promise<Res>`.
-- Step 2 (exercise): Write a `createUserHandler: Handler<CreateUserBody, UserResponse>`. Tests invoke it directly with mocked requests and assert the response shape and status.
-- Step 3 (exercise): Add validation at the boundary using the patterns from lesson 1. Tests pass invalid bodies and assert a typed `400`.
-- Step 4 (challenge): A typed `route(method, path, handler)` registry with literal types preserving the shape end-to-end. (Foreshadows what Hono/tRPC/Zod do for real.)
-
-**Piston considerations:** No network, no real HTTP. We simulate the request/response layer in a single file. This is fine pedagogically — the goal is the *typing*, not the wire format. Flag in step copy: "in a real app, the framework gives you these types; we're building them once so you understand what the framework is doing."
-
-**Reference material:**
-- Book: *Effective TypeScript* (Vanderkam), chapters on type narrowing and on working with libraries — items 28 ("prefer types that always represent valid states"), 33, 46–48 are direct sources.
-- Book: *Programming TypeScript* (Cherny) chapter on async, and chapter 11 on interop with JS.
-- Docs: <https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html#useunknownincatchvariables> and Node.js types reference.
-- Community reference: Matt Pocock's videos on `Result` and on typing the boundary; Frontend Masters — *Production-Grade TypeScript* by Mike North (configuration and library design parts overlap); Execute Program *TypeScript Concepts*.
-
----
-
-### 3.5 TS Type-Level Programming (Deep Cuts) — Advanced / Specific
-
-**Slug:** `typescript-type-level`
-**Prereqs:** `typescript-advanced-types`. The learner should be comfortable reading a 5-line conditional type without flinching.
-**Sandbox:** Piston (`typescript`, type-only — runtime is trivial)
-**Learner time:** ~6–8 hours. This is the longest course; we say so up front.
-**Learning outcomes:**
-- Write a recursive type and reason about its termination.
-- Build a small template-literal parser at the type level (e.g., parse a path string into a tuple of segments).
-- Use brand types and phantom types to enforce invariants the structural type system would otherwise erase.
-- Read a `type-challenges` "hard" problem and decompose it into the patterns from this course.
-
-**Lesson 1: Recursive types and tuple manipulation**
-- Step 1 (explanation): Recursion at the type level — base case, recursive case, depth limits. TS has a recursion guard (~50 levels in practice); we name it.
-- Step 2 (exercise): `Length<T extends readonly any[]>` — first attempt without recursion (use `T['length']`), then `Reverse<T>` which needs spread + recursion.
-- Step 3 (exercise): `Concat<A, B>`, `Push<T, X>`, `Pop<T>`. Tests with `Equal`.
-- Step 4 (challenge): `Flatten<T>` for nested tuples, with a depth parameter.
-
-**Lesson 2: Template literal parsers**
-- Step 1 (explanation): Strings as ASTs. The `${A}.${B}` pattern as a parser. Why this is a real tool, not a toy: think router path types, Tailwind class types, SQL column types.
-- Step 2 (exercise): `Split<S, Sep>` returning a tuple of segments. Tests with several separators.
-- Step 3 (exercise): `ParsePath<S>` for a router-style `/users/:id/posts/:postId` returning `{ id: string; postId: string }`.
-- Step 4 (challenge): `Replace<S, From, To>` and `ReplaceAll<S, From, To>`.
-
-**Lesson 3: Brand types and phantom types**
-- Step 1 (explanation): Structural typing's blind spot. `UserId` and `PostId` are both `string` to TS by default; this is a real bug source. Brand types (`string & { __brand: "UserId" }`) make them distinct without runtime cost. Phantom types extend the idea to track invariants ("validated email," "non-empty array").
-- Step 2 (exercise): Define `UserId` and `PostId` as branded strings and a `lookupUser(id: UserId)` that rejects a `PostId` at compile time. `@ts-expect-error` enforces it.
-- Step 3 (exercise): A `NonEmptyArray<T>` brand and a `head` function on it that returns `T` (not `T | undefined`).
-- Step 4 (challenge): An `Email` brand with a `parseEmail(s: string): Result<Email, string>` constructor — the only way to obtain an `Email`.
-
-**Lesson 4: Decomposing a "hard" type challenge**
-- Step 1 (explanation): A walkthrough of one `type-challenges` "hard" problem (e.g., `KebabCase` or `Camelize`). The lesson is the *decomposition method*: name the recursive shape, write the base case, write the recursive case, prove with `Equal`.
-- Step 2 (exercise): `KebabCase<S>` from scratch.
-- Step 3 (exercise): `Camelize<T>` over an object type — combines key remapping (course 2) with template literals.
-- Step 4 (challenge): `DeepReadonly<T>` that handles arrays, tuples, and nested objects. Tests use `Equal` against a hand-written expected type and use `@ts-expect-error` to verify that mutation attempts at any nested level are rejected.
-- Step 5 (challenge, optional): `Camelize<T>` extended to be recursive across nested objects. Hint at the depth limit and how to recognize when you're hitting it (a specific TS error: "Type instantiation is excessively deep and possibly infinite").
-
-**Lesson 5: Knowing when to stop**
-- Step 1 (explanation): Type-level programming has a real cost: compile time, error-message legibility, and the next person reading it. A short rant about the right moment to drop into runtime instead. We name the smell: "I have spent more than 30 minutes typing something that takes 5 minutes to write."
-- Step 2 (exercise): Take an over-engineered type from lesson 4 and rewrite the API to need less type-level work. Tests: same external API, simpler internals.
-
-**Piston considerations:** Type-only. The runtime program in many steps is `console.log("ok")`. Tests are `type _ = Equal<...>` lines. Piston's `tsc --noEmit` is the actual evaluator. We document this prominently in the course intro so learners aren't confused by the lack of runtime output.
-
-**Reference material:**
-- Book: *Effective TypeScript* (Vanderkam) — items on advanced type system use (items 50–55 in the 2nd edition discuss when type-level work pays and when it doesn't).
-- Repo: `type-challenges/type-challenges` on GitHub — primary exercise source for inspiration, with credit. We **do not** copy challenges verbatim; we adapt and re-author.
-- Docs: <https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html> and the `Recursive Conditional Types` section of the release notes for TS 4.1.
-- Community reference: *Type-Level TypeScript* by Gabriel Vergnaud (full course is a reference for this entire sub-course); Matt Pocock's "Advanced Patterns" videos; Mike North's *Intermediate TypeScript* on Frontend Masters (brand types module specifically).
-
----
-
-### 3.6 TS + React Primer — Specific
-
-**Slug:** `typescript-react-primer`
-**Prereqs:** `typescript-fundamentals`. Comfortable with React fundamentals (components, props, useState, useEffect). **Not** a React intro — we don't teach JSX from scratch.
-**Sandbox:** **iframe-sandbox** (per ADR 016). Routed by `course.language === 'typescript-react'` (new language tag — flag for backend addition).
-**Learner time:** ~3–4 hours
-**Learning outcomes:**
-- Type component props with literal unions, optional fields, and discriminated variants.
-- Type the four hooks the learner uses every day (`useState`, `useEffect`, `useRef`, `useReducer`) without fighting the inferred types.
-- Type event handlers without copying-pasting `React.ChangeEvent<HTMLInputElement>` from Stack Overflow.
-- Build a generic component (e.g., a typed `Select<T>`) with a single type parameter.
-
-**Lesson 1: Props, properly**
-- Step 1 (explanation): `type Props = { ... }` vs `interface Props { ... }`. Why we use `type` for props (union props compose better). Optional vs required, default values, `children: ReactNode`.
-- Step 2 (exercise): Type a `<Button>` with `variant: "primary" | "secondary" | "ghost"` and an optional `loading` boolean. Tests render and assert classes.
-- Step 3 (exercise): Discriminated-union props — a `<Banner>` whose `kind: "info" | "warning" | "error"` requires different additional fields per kind. `@ts-expect-error` proves the misuse fails.
-
-**Lesson 2: Hooks, typed**
-- Step 1 (explanation): `useState` inference vs. explicit. When TS guesses wrong (`useState(null)` widening to `null`). `useRef<HTMLInputElement>(null)`. `useReducer` with a discriminated-union action.
-- Step 2 (exercise): A counter component with `useReducer` and a typed action union. Tests fire actions and assert state.
-- Step 3 (exercise): A typed `useDebouncedValue<T>` custom hook. Tests on string and number inputs.
-
-**Lesson 3: Events, refs, and the DOM**
-- Step 1 (explanation): The `React.SomethingEvent<HTMLSomething>` family. The trick: type the *handler*, not the event, by typing the prop you assign the handler to. Example: `const onChange: ChangeEventHandler<HTMLInputElement> = e => ...`.
-- Step 2 (exercise): A controlled input with typed `onChange` and `onBlur`. Tests simulate input events.
-- Step 3 (exercise): Forwarded ref to a child input. Tests assert focus behavior.
-
-**Lesson 4: Generic components**
-- Step 1 (explanation): When a component genuinely wants a generic. The classic case: `<Select<T> items={T[]} onChange={(t: T) => void} />`. Syntax oddity: generic components in `.tsx` need either a comma in `<T,>` or `extends unknown` to disambiguate from JSX.
-- Step 2 (exercise): Build the typed `<Select<T>>`. Tests render with `Select<User>` and `Select<string>`.
-- Step 3 (challenge): A typed `<Table<T>>` with a `columns: { key: keyof T; render: (row: T) => ReactNode }[]` prop.
-
-**Lesson 5: The `satisfies` operator and friends**
-- Step 1 (explanation): When a component author wants to *constrain* a config object's shape without losing the narrow inference of its literal values, `satisfies` is the right tool. Walk a concrete case (a `routes` object whose path strings should be inferred as literals while still satisfying a base shape).
-- Step 2 (exercise): Refactor an over-annotated component config to use `satisfies`. Tests `Equal`-assert that the inferred narrow types survive.
-- Step 3 (challenge, optional): Compare three approaches to typing a `theme` object — explicit annotation, no annotation, `satisfies`. Identify which one each preserves and loses.
-
-**iframe considerations:** Per ADR 016, this course routes through `IframeSandboxRunner`, not Piston. Several constraints follow:
-- **No real React installed in the iframe.** We bundle a pinned React + ReactDOM as inline `<script>` tags in the iframe `srcdoc`, plus an in-browser TS compiler (`@typescript/vfs` + `typescript` UMD, or `esbuild-wasm`). This is a non-trivial frontend infrastructure cost — flag for review.
-- **Test runner via `postMessage`.** `testCode` mounts the component, asserts on the rendered DOM, and posts results back to the parent. Same contract as the existing `javascript-dom` course.
-- **No JSX-runtime debate in the course copy.** We pick the classic runtime, document it, move on. Modern automatic JSX runtime is a bundler concern; this course teaches the type story, not the build story.
-- **Compile-time type errors must be surfaced to the learner.** The browser TS compiler reports them; the test runner needs to display them as a "compile failed" panel separate from runtime test failures. A red runtime panel for a compile error is misleading and produces bug reports we don't want.
-- **Cold-start latency.** First step in the course pays a ~300–800ms cost to load the in-browser TS compiler. We warm it on course-page mount, not on first "Run" click, to keep the first execution responsive.
-- **No external network calls from inside the iframe in test scenarios.** Components that fetch data should mock the fetch in starter code; the iframe sandbox technically allows network calls but we avoid them for determinism and to honor the ADR's guidance about future Phase 3 review.
-
-**Reference material:**
-- Book: *Learning TypeScript* (Goldberg) chapter 12 (TS with React).
-- Book: *Effective TypeScript* (Vanderkam) — selected items on library/framework typing apply.
-- Docs: <https://react.dev/learn/typescript> and the React TypeScript Cheatsheet repo (`typescript-cheatsheets/react`).
-- Community reference: Matt Pocock's *Advanced React and TypeScript* workshop (Total TypeScript) — single best paid resource on this material; Frontend Masters — *React and TypeScript v2* by Steve Kinney.
-
----
-
-### 3.7 TS Build Config: tsconfig for Humans — Specific (proposed, optional)
-
-**Slug:** `typescript-tsconfig-for-humans`
-**Prereqs:** `typescript-fundamentals`.
-**Sandbox:** Piston, compile-only (`tsc` invoked, output is the diagnostic stream)
-**Learner time:** ~1.5 hours
-**Learning outcomes:**
-- Read an unfamiliar `tsconfig.json` and explain what each non-default flag is buying.
-- Choose `target`, `module`, and `moduleResolution` for Node and for a bundler context, and know why "Node16" vs "NodeNext" vs "Bundler" exist.
-- Predict which compile errors a given strictness flag will start producing on an untouched codebase.
-- Diagnose a "works on my machine but not in CI" tsconfig drift in under five minutes.
-
-**Lesson 1: The four flags that matter**
-- Step 1 (explanation): Of the ~150 flags in `tsconfig.json`, four govern 90% of behavior: `strict`, `target`, `module`, `moduleResolution`. Everything else is a refinement.
-- Step 2 (exercise): Given a `tsconfig.json` with `strict: false` and a source file, predict the compile errors and then enable `strict` to confirm.
-- Step 3 (exercise): Same source file across `target: "ES2017"` vs `target: "ES2022"` — observe which down-leveling occurs in the emitted JS.
-
-**Lesson 2: Strictness, flag by flag**
-- Step 1 (explanation): What `strict: true` actually enables (eight flags in current TS). Walk each one with a one-line example. Highlight `noUncheckedIndexedAccess` (off by default even under `strict`, almost always worth turning on) and `exactOptionalPropertyTypes` (semantic gotchas worth knowing).
-- Step 2 (exercise): Toggle `noUncheckedIndexedAccess` on a function that indexes into an array; fix the resulting errors with a guard.
-- Step 3 (exercise): A tsconfig with `noImplicitAny: false` hides three real bugs in the source. Turn it on, find them, fix them.
-
-**Lesson 3: Module resolution in 2026**
-- Step 1 (explanation): The Node ESM/CJS situation, briefly. `moduleResolution: "Node16"` vs `"NodeNext"` vs `"Bundler"`. When `paths` and `baseUrl` are appropriate (almost only with a bundler) vs. when they cause runtime resolution to fail (Node, without a loader).
-- Step 2 (exercise): Diagnose a `tsconfig` that compiles cleanly but produces JS that Node can't run. Fix by changing `module`/`moduleResolution`.
-
-**Sandbox considerations:** Each step is a `tsconfig.json` + a tiny source file. The "test" is whether `tsc --noEmit` (or `tsc` for emit-checking steps) produces the expected diagnostic set. Piston needs to run `tsc -p .` against a multi-file working directory instead of single-file `ts-node` — verify the adapter supports a project-mode invocation, or extend it. **Flag for review.**
-
-**Reference material:**
-- Book: *Effective TypeScript* (Vanderkam) chapter on configuration (items 1–3 in current edition).
-- Frontend Masters: Mike North's *Production-Grade TypeScript* — first module is the cleanest tsconfig walkthrough on video.
-- Docs: <https://www.typescriptlang.org/tsconfig> (canonical reference) and <https://www.typescriptlang.org/docs/handbook/modules/reference.html> for module resolution specifics.
-- Community reference: TypeScript team blog posts on `Bundler` resolution (TS 5.0); Andrew Branch's posts on Node ESM interop.
-
----
-
-### 3.8 Zod as a Type-Design Tool — Specific (proposed, optional)
-
-**Slug:** `typescript-zod-as-type-design`
-**Prereqs:** `typescript-fundamentals` + `typescript-node-api`.
-**Sandbox:** Piston with **bundled** Zod (single-file build of Zod inlined into starter code) — since `npm install` is forbidden in Piston steps, we ship the dep as part of the starter.
-**Learner time:** ~2 hours
-**Learning outcomes:**
-- Reach for Zod when the runtime/compile-time gap is the *actual* problem (not as a default for every shape).
-- Use `z.infer` to get the TypeScript type from the schema and explain why this is a one-source-of-truth win.
-- Distinguish `z.input` and `z.output` and recognize the schemas where they differ (transforms, defaults).
-- Compose Zod discriminated unions and connect them to the TS-side `switch`.
-
-**Lesson 1: Schema-first vs. type-first**
-- Step 1 (explanation): Two ways to start a model. Type-first: write `type User = { ... }`, parse manually at the boundary. Schema-first: write `const userSchema = z.object({ ... })`, derive the type from the schema. Each has costs; we pick a default (schema-first at the boundary, type-first in the core) and explain why.
-- Step 2 (exercise): Convert a hand-written boundary parser from course 4 into a Zod schema. Tests are unchanged; behavior must match.
-
-**Lesson 2: `infer`, `input`, `output`**
-- Step 1 (explanation): `z.infer<typeof schema>` is the output type. For schemas with transforms or defaults, `z.input` and `z.output` differ — and that's a feature, not a bug. Walk the canonical example: a schema that takes a string and outputs a `Date`.
-- Step 2 (exercise): Write a schema with `z.coerce.date()` and `z.string().default("anon")`. Assert the difference between input and output types using `Equal`.
-
-**Lesson 3: Discriminated unions, both sides**
-- Step 1 (explanation): `z.discriminatedUnion("kind", [...])` produces a TS discriminated union via `z.infer`. Show the `switch` on the inferred type with `assertNever` exhaustiveness.
-- Step 2 (exercise): Model a small event log (`UserCreated`, `UserDeleted`, `EmailChanged`) as a discriminated union, validate, and reduce.
-- Step 3 (challenge): Add a fourth event variant; the `switch` should fail to compile until handled.
-
-**Lesson 4: The boundary, properly**
-- Step 1 (explanation): Zod at the boundary, TS in the core. Inside the application, you never re-validate; you trust the type. The validation cost is paid once, at the edge.
-- Step 2 (exercise): A request handler that validates with Zod, then passes a typed value through three internal functions. Tests cover invalid input → 400, valid input → 200.
-
-**Sandbox considerations:** Bundling Zod into the starter file works but is ugly (~30KB of pre-amble per step). Alternative: extend the Piston runtime image to include a curated allowlist of common type-design libraries (Zod, Valibot, ArkType). **Flag for review** — this course is contingent on the bundling-vs-allowlist decision.
-
-**Reference material:**
-- Docs: <https://zod.dev>
-- Talks: Colin McDonnell's conference talks on Zod design (multiple ReactConf / TSConf appearances).
-- Book: *Effective TypeScript* (Vanderkam) items on validation libraries and the runtime-vs-compile-time boundary.
-- Community reference: Matt Pocock's videos on Zod inference; Theo Browne's videos on Zod-at-the-boundary patterns; ArkType vs Zod comparison posts (useful as "we're not married to Zod" framing).
-
----
-
-## 4. Cross-course exercise patterns
-
-The curriculum reuses a small set of testable exercise shapes. Standardizing them keeps authoring sane and learner cognitive load low — the *exercise mechanic* shouldn't itself be a puzzle.
-
-| Pattern | What it tests | Fits | Sandbox notes |
-|---|---|---|---|
-| **Pure function + value tests** | Runtime correctness | All Piston courses | Standard `assertEqual(actual, expected)` helper, no deps |
-| **`@ts-expect-error` assertions** | The compiler catches what we expect | Fundamentals lesson 5; advanced types throughout; functional patterns lesson 1 | Comment is the assertion; if the next line *does not* error, `tsc` will flag the directive itself — that's our test |
-| **Type-level `Equal<A, B>` assertions** | The derived type matches the expected one | Advanced types, type-level | Tiny helper in starter; runtime is trivial |
-| **Discriminated-union exhaustiveness** | A new variant breaks the switch deliberately | Functional patterns; React primer (banner) | `assertNever` helper in starter |
-| **Boundary parser tests** | `unknown` in, typed `Result` out, with adversarial inputs | Node/API course | Piston, no deps; adversarial JSON literals in testCode |
-| **Render + assert** | Component renders; DOM has expected text/role | React primer only | iframe-sandbox; `postMessage` results contract per ADR 016 |
-| **Compile-config tests** | A given `tsconfig.json` produces a given diagnostic | tsconfig-for-humans (proposed) | Requires `tsc -p .` support in Piston adapter — flag |
-
-**Authoring conventions used across all courses:**
-
-- Every starter file begins with a short, named comment block: `// Goal: ...` and `// Constraints: ...`. The learner reads the goal before reading code.
-- testCode is a co-file (`*.test.ts`) referenced by the runner — never inlined in the same file as starter code. This keeps the editor view clean.
-- Helpers (`assertEqual`, `assertNever`, `Equal<A,B>`) live in a single shared starter prelude per course, so the learner sees the same primitives every step.
-- Hints, when present, are written as Socratic prompts ("what does the type of `x` resolve to on the failing line?"), not as solutions or near-solutions.
-- Solutions are *not* shipped in-app. A learner who's stuck reads the hint, then walks away. The platform is for practice, not for completionism.
-
-**Sandbox routing per sub-course:**
-
-| Sub-course | Sandbox | Notes |
-|---|---|---|
-| `typescript-fundamentals` | Piston | No DOM, no React |
-| `typescript-advanced-types` | Piston | Type-only assertions; `tsc --noEmit` is the evaluator |
-| `typescript-functional-patterns` | Piston | Pure functions |
-| `typescript-node-api` | Piston | Simulated request/response — Piston has no network |
-| `typescript-type-level` | Piston | Type-only; runtime is `console.log("ok")` |
-| `typescript-react-primer` | **iframe-sandbox** | Requires bundled React + in-browser TS compiler — infra task |
-| `typescript-tsconfig-for-humans` | Piston (compile-only) | Needs `tsc -p .` — verify adapter supports it |
-| `typescript-zod-as-type-design` | Piston | Zod bundled into starter (no `npm install`) — flag |
-
----
-
-### Assessment philosophy
-
-The course system has no LLM evaluator (per ADR 015). Pass/fail is what Piston (or the iframe runner) returns. This forces a discipline most LLM-evaluated courses skip: **the test cases are the rubric**. We hold three rules:
-
-- **Tests must be readable.** A learner who fails a test should be able to read the test and understand what was expected. No clever assertion DSL, no magic; `assertEqual(actual, expected, "what we were checking")` is the spine.
-- **Tests must catch the real failure modes, not just the happy path.** Every exercise carries at least one adversarial input or edge case (empty array, `undefined`, malformed JSON, off-by-one). A learner whose function passes only the happy-path test has not finished the exercise.
-- **Tests don't grade style.** TS has no canonical style; we don't penalize code shape. The compiler and the runtime tests are the only judges.
-
-For type-only steps, the rubric is `Equal<Actual, Expected>` plus, occasionally, `@ts-expect-error` directives on adversarial calls. We don't grade *how* the type was constructed — only that it satisfies the equality. This is intentional: there are usually multiple correct shapes for a type, and ranking them is not the platform's job.
-
----
-
-## 5. Known pedagogical pitfalls
-
-These are the failure modes we've watched other TS courses fall into. The curriculum is structured to avoid each one explicitly.
-
-1. **The `any` shortcut.** Learners discover that adding `: any` makes the red squiggles stop. Without explicit cost framing, this becomes their default. **Mitigation:** in fundamentals lesson 5, an exercise where an `any` annotation makes a downstream test fail at runtime. The lesson is felt, not lectured.
-2. **Generics as first-class topic.** Course outlines that introduce `<T>` in hour two lose people who haven't yet experienced the duplication that motivates parametricity. **Mitigation:** generics live in course 2, lesson 1 — and lesson 1 opens by reproducing the duplication from the previous course.
-3. **`interface` vs `type` flame war.** Course copy that spends a paragraph debating this teaches nothing. **Mitigation:** we declare a default (`type`) and a one-line exception (`interface` for declaration merging or extending external module types) and never revisit it.
-4. **`enum` as the obvious choice.** TS `enum` has runtime cost, weird semantics (numeric vs string), and no good interaction with the type system. **Mitigation:** literal unions everywhere; `enum` mentioned only in a "why we don't use this" paragraph in fundamentals lesson 2.
-5. **Conditional types as a magic show.** `infer` and conditional types are easy to teach as puzzles and impossible to apply. **Mitigation:** every conditional-type exercise in course 2 is a type the learner has already used (`ReturnType`, `Awaited`) — they're rebuilding tools, not learning party tricks.
-6. **Class hierarchies imported from Java/C#.** TS supports classes; this is not the same as them being the right tool. **Mitigation:** discriminated unions are the default for state in courses 3 and 6. Classes appear only when interop demands them (e.g., `Error` subclassing in course 4).
-7. **`as` as type-checker bypass.** Learners use `as` to silence errors without the cost being explicit. **Mitigation:** course 1 lesson 5 explicitly frames `as` as "a promise to the compiler" and an exercise demonstrates a runtime crash from a broken cast.
-8. **React types from copy-paste.** A learner who pastes `React.ChangeEvent<HTMLInputElement>` from Stack Overflow seven times is not a TS+React engineer. **Mitigation:** course 6 lesson 3 teaches the *handler-typing* technique that makes the event type fall out of context.
-9. **Type-level programming for its own sake.** Course 5 risks producing learners who write incomprehensible utility types because they can. **Mitigation:** lesson 5 of that course is explicitly about *not* doing that — refactoring an over-engineered type back into something a colleague can read.
-10. **Treating MVP fundamentals as "done."** The Sprint 014 fundamentals course is only 9 steps, half of them trivial. A learner who finishes it should not graduate to the advanced course directly. **Mitigation:** see §7 — we extend it.
-
----
-
-## 6. External references
+**Figures menu** *(added at promotion, 2026-06-11 — the S026 draft predates the figure catalog).* Per [`INTERACTIVITY-PATTERNS.md`](../INTERACTIVITY-PATTERNS.md) §Embeddable visual figures:
+
+- **IN, committed:**
+  - **`disambiguation`** — two committed landings. *Lesson 4: `unknown` vs `any`* (divergent attribute: **what the compiler lets you do before narrowing** — `any` permits everything and propagates; `unknown` permits nothing until proven). *Lesson 2: literal union vs `enum`* (divergent attribute: **runtime footprint** — the union erases to nothing; `enum` emits a JavaScript object). Per the Sprint 028 mandate at least one `disambiguation` ships; Lesson 4 is the primary commitment, Lesson 2 the second. *Interface-vs-type was considered and rejected as a figure: the scroll settles it in one sentence; a figure would re-dignify the flame war.*
+  - **`before-after`** — *Lesson 1: annotation-maximalism vs inference-led TS.* Left pane: Felipe's habitual style, every local annotated. Right pane: signature-only annotations, inference doing the rest. This figure IS the lens, drawn.
+- **IN, situational:** **`tabbed-card`** — only if Lesson 3's narrowing read needs the multi-lens framing (`typeof` / `in` / equality / tag-field as four tabs over the same union). Default: don't embed unless the read pulls toward it.
+- **OUT:** `two-by-two` (no orthogonal-axes confusion in this scope — gradual-vs-strict × checked-vs-stripped was considered and isn't crisp enough), `array-track`, `sequence-play`, `grid-canvas`, `recursion-stack` (nothing in the crash scope iterates or recurses in a way these teach). Max 2 figures per read step, per canon.
+
+**Pedagogical bets.**
+
+1. **Prediction-before-explanation on the type-system reveals.** Four predicts target the four wrong mental models a JS developer brings: "running TS = checking TS" (Lesson 0), "no annotation = no type" (Lesson 1), "type names matter for compatibility" (Lesson 2), "the static type can't change inside a branch" (Lesson 3). Each wrong-answer feedback addresses the specific model the option encodes (per the predict voice contract). *Failure mode without it:* Felipe memorises syntax rules and keeps writing `any` because the model never updated.
+2. **Generics only after felt duplication.** Lesson 5 opens by reproducing monomorphic duplication from the learner's own Lessons 2-3 katas; `<T>` enters as "the parameter you would have written for the type." Constraints (`extends`, `keyof`) arrive with one concrete use case each. No `<T, U, V, W>` cascade.
+3. **Footgun awareness, not footgun fear.** `as`, `any` propagation, `enum`, declaration merging, decorators, conditional/mapped types — each named once with its specific failure mode and a deep-dive pointer (§3.1). Never silently elided, never drilled.
+4. **Sandbox-honesty markers.** Piston runs single-file `ts-node`-style execution: no DOM, no React, no `npm install`, fixed tsconfig. Named in Lesson 0 and wherever a kata's shape is sandbox-constrained, with the real-world next step stated.
+5. **The compiler as refactor partner, demonstrated not asserted.** Lesson 3's challenge adds a variant to a discriminated union and lets the compiler point at every site that needs updating. This is the "second reader during refactors" benefit from the lens, made physical. The capstone re-performs it.
+
+**Maintainer experts.** S9 Leo Barros (language), S5 Elif Yıldız (curriculum), S2 Valentina Cruz (content quality), S11 Maya Lindqvist (predict / playground / read+inline reviews). C3 Tomás Ríos only if a lesson drifts into Node API typing, monorepo TS, or tsconfig depth — the resolution there is usually "cut; deep-dive scope." S12 Felix Park only if a lesson proposes a new animation runtime; default is none (shared GSAP runtime available per the scrolls motion contract, no TS-specific need identified).
+
+## 3. Scroll Catalog
+
+| Slug | Kind | Steps (target) | Time (target) | Status |
+|---|---|---|---|---|
+| `typescript` | Language scroll (crash course) | 21 | ~95 min | **Scope block complete 2026-06-11 (S028 W1)** — outer + inner spec promoted from the S026 scratch drafts under the JS-dev-first audience pivot; capstone + production-gesture audit applied from outline per the 2026-06-11 canon. W2 authoring pending; W3 seed replaces the legacy `typescript-fundamentals` scroll. |
+
+That is the whole catalog for TypeScript in v1. Per [ADR 022](../../adr/022-crash-course-pivot.md), one language scroll per language is the anchored set.
+
+**Legacy scroll: rebuild, not migrate.** The `typescript-fundamentals` scroll (Sprint 014 MVP, 3 lessons / ~9 steps, seeded from `apps/api/src/infrastructure/persistence/seed-scrolls.ts`) predates ADR 022 and the audience contract. Sprint 028 decision: **rebuild under polyglot-first, salvaging individual steps only where they survive the paragraph test** — Ruby's L3 migration (S026) is the precedent: re-tighten, don't transplant. The legacy row is hard-deleted at seed time via the existing `removeLegacyScrollBySlug` helper (precedent: the `ruby-fundamentals` cleanup). No redirect — Phase 0 has no real users to migrate. Details in §8 and the inner spec §7.
+
+### 3.1 Future deep-dive candidates (not in scope for v1)
+
+Listed so the crash scroll can name-and-defer without inventing on the spot. The old pre-pivot course track (this file's previous content; see git history) sketched several of these as full courses — they survive here as deep-dive candidates:
+
+- **`typescript-advanced-types`** — conditional types, mapped types, `infer`, template literal types, key remapping, recursion limits. "Type challenges with motivation": every pattern earns its place by solving a problem felt in the crash scroll. Likely first deep-dive (highest pull-through from Lesson 5's closer).
+- **`typescript-domain-modeling`** — Result/Either patterns ("don't throw; return"), discriminated-union state machines at depth, brand and phantom types (`UserId` vs `PostId` as branded strings), immutable updates typed. Salvages the old `typescript-functional-patterns` course's spine; *Domain Modeling Made Functional* is the reference.
+- **`typescript-for-node-api`** — the boundary problem at depth (`unknown` in, typed `Result` out), typed environment parsing, `Promise<T>` rejection as `unknown`, a typed mini HTTP layer. Tomás's lens with Leo on type design.
+- **`typescript-with-react`** — typed components, hooks, event handlers without Stack Overflow copy-paste, generic components, `satisfies` for component config. Gated on the iframe-sandbox infrastructure path (bundled React + in-browser TS compiler).
+- **`typescript-build-and-config`** — the tsconfig flag tour, module resolution (`Node16`/`NodeNext`/`Bundler`), the ESM/CJS situation, `import type` discipline. Requires Piston project-mode (`tsc -p .`).
+- **`typescript-type-challenges`** — Type Challenges-style decomposition method: recursive types, tuple manipulation, template-literal parsers. Niche; ship last.
+- **`typescript-decorators-and-metadata`** — TC39 stage-3 vs legacy `experimentalDecorators`. Gated on standardisation settling.
+- **`typescript-zod-as-type-design`** — schema-first design, `z.infer`, validation at the boundary. Gated on a Piston library-allowlist/bundling decision.
+
+None committed. They exist so the crash scroll's closers point at something honest.
+
+## 4. The TypeScript Scroll
+
+**Slug:** `typescript`
+**Kind:** Language scroll (crash course)
+**Audience (Sprint 028 decision, 2026-06-11):** the developer who **already knows JavaScript and wants to learn TypeScript and its benefits**. JS fluency assumed (closures, async/await, array methods — never re-taught); zero TS assumed (or TS-with-`any` habits, which the scroll explicitly unlearns). **Primary:** A4 Felipe (JS-heavy → TS-strict modernizer — the scroll exists for people in his position). **Secondary:** A1 Mariana (TS senior — reviewer lens: she verifies the claimed benefits are the real ones, not course-ware folklore). *Note: this supersedes the pre-pivot audience row in [`AUDIENCE.md`](../AUDIENCE.md) (A2 Esteban + A4 primary); the matrix needs a same-sprint update — tracked in the inner spec §7.*
+**Learner time:** ~95 minutes real work (60-120 range).
+**Spec file:** [`typescript/typescript.md`](typescript/typescript.md) — the executable authoring brief.
+
+**Learning outcomes.** After this scroll, the learner can:
+
+- State what TypeScript adds to their JavaScript and what it costs: types are erased at runtime; checking (`tsc --noEmit`) is a separate pass from running (`tsx`, `esbuild`, modern `node` all strip without checking); `tsconfig.json` exists and `strict` is the flag that matters first.
+- Annotate function signatures and let inference do the rest: predict inferred types of un-annotated code, explain `const`-literal vs `let`-widened inference, and stop annotating locals out of habit.
+- Define object shapes with optional fields and consume them safely; explain structural compatibility ("shape decides, not name") and excess-property checks on literals; apply the `type`-by-default rule with its one `interface` exception; reach for literal unions where they'd have reached for strings or `enum`.
+- Write narrowing-driven code: `typeof`, `in`, equality, `Array.isArray`; model state as a discriminated union; close a `switch` exhaustively with `assertNever`; write a user-defined type guard (`x is Foo`).
+- Use the compiler as a refactor partner: add a variant to a union and follow the compile errors to every site that needs updating.
+- Choose between `any`, `unknown`, and `never` at a boundary; type a JSON boundary as `unknown` and narrow it with a guard; name `any`'s propagation cost and `as`'s broken-promise cost.
+- Write a generic function with a constraint when duplication motivates it (`<T>`, `extends`, `keyof`, `T[K]`); predict inferred `T` at a call site; recognise when NOT to make a function generic.
+- Recognise (not write) conditional types, mapped types, `infer`, and template literal types in real code, and know which deep-dive covers each.
+
+**Lessons (polyglot-first order — the day-one deltas for a JS developer first).**
+
+- **Lesson 0 — TypeScript in context.** What TS adds to JS, type erasure, the check-vs-strip toolchain split, `tsconfig.json` named without the flag tour. 2 steps: 1 `read` + 1 `predict`. No kata — orientation, not drill.
+- **Lesson 1 — Inference: annotate less, the compiler already knows.** Inference over annotation — the lens's first benefit. `const` literal inference vs `let` widening, inference through chains, the rule "annotate the signature, infer the rest." Production gesture #1 (type a function signature) lands here. Ships the `before-after` figure.
+- **Lesson 2 — Shapes: the type system is structural.** Object types, optional fields, structural compatibility, excess-property checks, `type` vs `interface` in one rule, literal unions over `enum`. Production gesture #2 (type an object shape with optional fields). Ships the first playground and the union-vs-enum `disambiguation`.
+- **Lesson 3 — Narrowing: the compiler reads your control flow.** The narrowing toolbox, discriminated unions, `assertNever` exhaustiveness, user-defined type guards. Production gesture #3 (define a discriminated union + narrow it exhaustively). The challenge demonstrates the compiler-as-second-reader benefit by adding a variant.
+- **Lesson 4 — `any`, `unknown`, and the boundary.** `any` propagates and silences; `unknown` is the boundary type; `never` is "this can't happen"; `as` named and bounded. Ships the second playground and the unknown-vs-any `disambiguation`.
+- **Lesson 5 — Generics that earn their place — and the close.** Generics motivated by the learner's own duplication; `extends`, `keyof`, `T[K]`; advanced types named-and-deferred in the closer; **the scroll capstone** (a typed webhook processor integrating Lessons 2-5) as the final step.
+
+The full step-by-step authoring lives in [`typescript/typescript.md`](typescript/typescript.md). The titles here are the index, not the spec.
+
+**Polyglot-first reordering rationale.** The S026 draft led with structural typing, framed against nominal-typing reflexes from Java/Python. The Sprint 028 audience decision invalidates that framing: Felipe has no nominal reflexes to unlearn — he has *annotation-maximalism* and *`any`-reflex* to unlearn, and he's never been shown that inference carries most of the weight. So inference leads (Lesson 1), shapes and structural compatibility follow (Lesson 2, reframed as "your duck typing, now checked"), narrowing is the daily driver (Lesson 3), the escape hatches get their own lesson because they're where Felipe's habits live (Lesson 4), and generics close (Lesson 5) after the duplication is felt. The draft's standalone advanced-types lesson is gone — per Sprint 028, conditional/mapped types are name-and-defer material, compressed into Lesson 5's closer; the freed budget funds the capstone. Leo (S9) holds the constraint that every advanced pattern named in the closer ties to a problem the learner felt in Lessons 1-5.
+
+**Production-gesture audit** (per [`README.md`](../README.md) §4.4, applied at outline stage). The 2-3 gestures a working TS developer performs daily, each written in a kata: **(1) type a function signature** — Lesson 1 kata; **(2) type an object shape with optional fields** — Lesson 2 kata; **(3) define a discriminated union and narrow it exhaustively** — Lesson 3 kata + challenge. All three re-performed in the capstone.
+
+**Sandbox notes.** Piston TypeScript (existing allowlisted path at `/scrolls/execute` — Sprint 028 decision: keep it; iframe is `javascript-dom` only). Single-file execution: no DOM, no React, no `npm install`, no multi-file tsconfig builds. Manual `_t` / `_eq` harness **consistent with the Ruby and Python scrolls** (Sprint 028 decision) — the legacy scroll's `test()`/`expect()` harness retires with it. Type-only assertions use a tiny `Equal<A, B>` helper; `@ts-expect-error` directives assert that a line should fail to compile. Compile errors must surface as test failures — adapter behavior verified before W3 seeding (inner spec §7). Deterministic only; STDIN never exercised.
+
+**Reference material for this scroll specifically.**
+
+- *Effective TypeScript*, 2nd ed. (Dan Vanderkam, O'Reilly 2024) — the spine for Lessons 1-5; each "item" is essentially a lesson outline.
+- *Learning TypeScript* (Josh Goldberg, O'Reilly 2022) — the side-reading recommendation; maps nearly 1:1 to Lessons 1-4.
+- *Programming TypeScript* (Boris Cherny, O'Reilly 2019) — the "type system as a parallel program" framing for Lesson 0.
+- Total TypeScript (Matt Pocock) — *Pro Essentials* free modules; Felipe already follows Pocock, which makes the depth-pointer credible.
+- TypeScript Handbook v2 — Everyday Types, Narrowing, Generics, Objects chapters, cited per lesson in the spec.
+
+## 5. Cross-lesson exercise patterns
+
+Repeatable shapes suited to Piston's stateless, single-file sandbox:
+
+- **Pure functions with inference-asserting tests.** Runtime behavior via `_t`/`_eq`; inferred types via `Equal<A, B>` lines. Default for Lessons 1-2 and 5.
+- **Discriminated-union state machines.** Tag field + `switch` + `assertNever`; adding a variant breaks the compile — the compiler is the test. Core to Lesson 3 and the capstone.
+- **Boundary guards.** `unknown` in, typed value or error out, via a user-defined type guard. Lesson 4's dominant shape and the capstone's entry point.
+- **Generic-with-constraint exercises.** Monomorphic duplication first, `<T>` second, `extends` only when required, `Equal` proofs at multiple call sites. Lesson 5.
+- **Predict-then-implement pairs.** A predict's snippet becomes the next kata's starter or fixture. Lessons 1-3.
+- **`@ts-expect-error` assertions.** The directive is the assertion: if the next line compiles, `tsc` flags the directive itself. Lessons 1-5.
+- **`Equal<A, B>` type-only assertions.** `type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false` in the starter prelude; the compile pass is the evaluator.
+
+**Piston constraint reminder:** single file, no `npm install`, no DOM, no network, no Jest/Vitest/`node:test`. Test harness is the manual `_t` / `_eq` pattern defined in [`typescript/typescript.md`](typescript/typescript.md) §5, mirroring Ruby's and Python's harness shape.
+
+## 6. Known pedagogical pitfalls
+
+Pitfalls the TypeScript scroll specifically defends against:
+
+- **Re-teaching JavaScript.** The reader writes JS for a living. A read step that explains closures, `map`, or async/await fails the Felipe test (inner spec §2.1) and is cut. *This is the TS mirror of Ruby-not-Rails: the single biggest disservice would be teaching JS with annotations and calling it TypeScript.*
+- **Annotation-maximalism by example.** Course code that annotates every local teaches the habit the scroll exists to break. *Every example in Lessons 1-5 annotates signatures only; Lesson 1's `before-after` figure makes the rule visible.*
+- **Teaching `any` without naming the cost.** *Named first in Lesson 0 (erasure read), cost exercised in Lesson 4 (an `any` silences a downstream bug), paired immediately with `unknown`. Order matters: `any`'s sin first, `unknown` as the polite answer second — a learner who meets `unknown` cold reads it as "`any` with paperwork."*
+- **Generics as a tour.** *Lesson 5 opens with the learner's own duplication; `<T>` enters motivated; no multi-parameter cascade in this scroll.*
+- **The `interface` vs `type` flame war.** *Lesson 2 declares the default (`type`) and the one-line exception (`interface` for declaration merging / extending external module types), and never revisits it. No figure — a figure would re-dignify the debate.*
+- **`enum` as the obvious choice.** Runtime cost, odd numeric semantics, wrong default for a JS developer. *Lesson 2 teaches literal unions as the default and shows what `enum` emits; the `disambiguation` figure carries the contrast.*
+- **`as` as squiggle-silencer.** *Lesson 4 frames `as` as a promise to the compiler with one worked broken-promise-crashes example. No kata exercises `as`.*
+- **Conflating TypeScript with React typing.** Props, hooks inference, `forwardRef` are React surface. *Never taught here; Lesson 5's closer points at the `typescript-with-react` deep-dive.*
+- **Teaching tsconfig flags as language syntax.** *Lesson 0 names the file and `strict`; the flag tour is deferred to `typescript-build-and-config`.*
+- **Teaching decorators before they're settled.** Legacy vs TC39 stage-3 are not source-compatible. *Named in Lesson 5's closer only.*
+- **Type-system flexing.** A clever type that doesn't prevent a bug in the reader's day job is showing off. *The inner spec §2.2 gate cuts it at draft and at review.*
+
+## 7. External references
 
 ### Books
 
-- **Josh Goldberg — *Learning TypeScript*** (O'Reilly, 2022). The single best modern intro. Maps almost 1:1 to courses 1 and 6. Recommended as the side-reading for fundamentals.
-- **Dan Vanderkam — *Effective TypeScript: 83 Specific Ways to Improve Your TypeScript* (2nd ed., O'Reilly, 2024)**. The "items" format makes it the best exercise-rationale source: each item is essentially a lesson outline. Cited in courses 1, 2, 3, 4, 5, 7.
-- **Boris Cherny — *Programming TypeScript*** (O'Reilly, 2019). Older, but its "10,000 foot view" framing and chapters on the type system remain pedagogically clean. Cited in courses 1, 2, 4.
-- **Scott Wlaschin — *Domain Modeling Made Functional*** (Pragmatic Bookshelf, 2018). F# not TS, but the discriminated-union modeling style transfers directly. Primary reference for course 3.
-- **Stefan Baumgartner — *TypeScript in 50 Lessons*** (Smashing Magazine, 2020). Useful as a counterpoint structure — short lessons, often DOM-flavored. Reference for the React primer's lesson sizing.
-- **Marius Schulz — *TypeScript Evolution*** (blog series, ongoing — `mariusschulz.com`). Not a book, but the closest thing to a release-by-release narrative of the language. Useful when an exercise depends on a specific TS version's behavior.
-- **Anton Korzunov — *Rebuilding the React TypeScript Cheatsheet*** (community resource, GitHub) — the maintenance notes are surprisingly good as a reference for course 6.
+- *Effective TypeScript: 83 Specific Ways to Improve Your TypeScript*, 2nd ed. — Dan Vanderkam, O'Reilly 2024. The single best source for this audience; each item is a lesson-rationale unit.
+- *Learning TypeScript* — Josh Goldberg, O'Reilly 2022. Best modern intro; the side-reading recommendation. Companion exercises: `josh-goldberg/learning-typescript` on GitHub.
+- *Programming TypeScript* — Boris Cherny, O'Reilly 2019. Older; the "10,000 foot view" mental-model framing remains the cleanest in print. Lesson 0 reference.
+- *Domain Modeling Made Functional* — Scott Wlaschin, Pragmatic 2018. F#, but the discriminated-union modeling transfers line-by-line. Lesson 3 + the `typescript-domain-modeling` deep-dive reference.
+- *TypeScript in 50 Lessons* — Stefan Baumgartner, Smashing 2020. Counterpoint for short-lesson sizing.
+- *TypeScript Cookbook* — Stefan Baumgartner, O'Reilly 2024. Recipe reference for the advanced-types deep-dive.
 
 ### Online platforms
 
-- **Total TypeScript (Matt Pocock)** — `totaltypescript.com`. Workshops referenced: *Pro Essentials* (free intro), *Type Transformations* (course 2 backbone), *Advanced React and TypeScript* (course 6 backbone), *Advanced Patterns*. The `ts-reset` library and Pocock's blog posts are also useful supplementary material.
-- **Type-Level TypeScript (Gabriel Vergnaud)** — `type-level-typescript.com`. The most rigorous treatment of conditional and recursive types in any paid course. Direct reference for course 5.
-- **Frontend Masters** — `frontendmasters.com`. Mike North's *TypeScript Fundamentals v3*, *Intermediate TypeScript*, and *Production-Grade TypeScript* are the cleanest video walkthroughs of the same material. Steve Kinney's *React and TypeScript v2* is the React-side reference.
-- **Execute Program** — `executeprogram.com`. *TypeScript Basics* and *TypeScript Concepts* courses. Spaced-repetition-driven; useful as a "after-class drill" recommendation, not as primary curriculum.
-- **Egghead** — collections by Marius Schulz on Conditional Types and by John Lindquist on TS basics.
-- **Udemy** — Stephen Grider's TS course is the most popular but skews toward "TS for Angular" and is not a great fit for our voice. Mention without recommending.
+- **Total TypeScript** (Matt Pocock) — `totaltypescript.com`. *Pro Essentials* (free intro), *Type Transformations* (deep-dive reference). The single best paid resource on the modern canon; also the influencer the primary persona already follows.
+- **Type-Level TypeScript** (Gabriel Vergnaud) — `type-level-typescript.com`. The rigorous conditional/recursive-types treatment; deep-dive reference only.
+- **Frontend Masters** — Mike North's *TypeScript Fundamentals v3* / *Intermediate* / *Production-Grade TypeScript*; the video-course alternative.
+- **Execute Program** — *TypeScript Basics* / *TypeScript Concepts*. Spaced-repetition; "after-class drill" recommendation, not curriculum.
+- **Exercism TypeScript track** — pure-function drill recommendation after the scroll.
+- **Type Challenges** (`type-challenges/type-challenges`) — deep-dive inspiration only; named in Lesson 5's closer so the pointer is credible. Adapt with credit, never copy.
+- **Egghead** — Marius Schulz's conditional-types collections; deep-dive reference.
 
 ### Official documentation
 
-- TypeScript Handbook — <https://www.typescriptlang.org/docs/handbook/intro.html> (the v2 handbook). Specific chapters cited per course.
-- TypeScript Release Notes — <https://www.typescriptlang.org/docs/handbook/release-notes/> (especially 4.1 for template literal types, 4.4 for `unknown` in catch, 4.9 for `satisfies`, 5.x for the `const` type parameters).
-- TSConfig Reference — <https://www.typescriptlang.org/tsconfig> (course 7).
-- React TypeScript docs — <https://react.dev/learn/typescript>.
-- React TypeScript Cheatsheets — <https://github.com/typescript-cheatsheets/react>.
+- TypeScript Handbook v2 — <https://www.typescriptlang.org/docs/handbook/intro.html>; chapters cited per lesson in the spec (Everyday Types, Narrowing, Generics, Objects).
+- TypeScript Release Notes — <https://www.typescriptlang.org/docs/handbook/release-notes/>. Key versions: 4.1 (template literal types), 4.4 (`unknown` in catch), 4.9 (`satisfies`), 5.0 (`const` type parameters, `Bundler` resolution).
+- TSConfig Reference — <https://www.typescriptlang.org/tsconfig> (deferred; named in Lesson 0).
+- Node.js type-stripping docs — <https://nodejs.org/api/typescript.html> (Lesson 0's check-vs-strip honesty).
 
 ### Community learning resources
 
-- **`type-challenges/type-challenges`** GitHub repo — primary inspiration source for course 5 exercises. We adapt with credit; we do not copy verbatim.
-- **`josh-goldberg/learning-typescript`** — companion exercises to the *Learning TypeScript* book.
-- **Exercism — TypeScript track** — well-structured pure-function exercises, good for "if you want more drill" recommendations after course 1.
-- **`typescript-cheatsheets`** umbrella org on GitHub — React, Next, others. Useful as quick-lookup material in course 6.
-- **Matt Pocock's blog** (`mattpocock.com`) and YouTube channel — short-format reinforcement for almost every topic.
-- **Sandi Metz's "Schemas of Trust"** talks — not TS-specific, but the intuition for "where do we validate, and once validated, what do we trust?" maps directly onto the boundary lessons in course 4.
+- Matt Pocock's blog (`mattpocock.com`) and YouTube — short-format reinforcement for nearly every topic here.
+- *TypeScript Evolution* (Marius Schulz, `mariusschulz.com`) — release-by-release narrative; useful when a step depends on version behavior.
+- `typescript-cheatsheets` org on GitHub — quick-lookup; React sheet deferred with the React deep-dive.
+- Sandi Metz's "Schemas of Trust" talks — not TS-specific; the "validate once at the edge, trust the type inside" intuition maps directly onto Lesson 4 and the capstone.
 
----
+## 8. Implementation order
 
-## 7. Suggested implementation order
+There is one TypeScript scroll to ship. Order applies to the lessons within it, in the Sprint 028 scope:
 
-### Decision to flag for the reviewer: what to do with the Sprint 014 MVP
+1. **Lesson 0 — TypeScript in context.** Orients; lands erasure + check-vs-strip. Status: outlined, target W2.
+2. **Lesson 1 — Inference.** Establishes the scroll-level kata shape (`_t`/`_eq` harness, `@ts-expect-error` discipline) and the lens's first benefit. Ships the `before-after` figure. Status: outlined, target W2.
+3. **Lesson 2 — Shapes.** Structural model + first playground + union-vs-enum `disambiguation`. Status: outlined, target W2.
+4. **Lesson 3 — Narrowing.** Daily-driver lesson; discriminated unions; the compiler-as-second-reader challenge. Status: outlined, target W2.
+5. **Lesson 4 — `any`, `unknown`, and the boundary.** Second playground + unknown-vs-any `disambiguation`. Status: outlined, target W2.
+6. **Lesson 5 — Generics + close + capstone.** Closes with the named-and-deferred list and the scroll capstone (first TS scroll step authored against the 2026-06-11 capstone canon). Status: outlined, target W2.
 
-The current shipped course (`docs/specs/020-courses-mvp.md`, "TypeScript Fundamentals", 3 lessons / ~9 steps: Variables & Types, Arrays & Objects, Control Flow) is solid as far as it goes but does not produce a learner who can engage with the next course in this track. Two options:
+**Legacy replacement discipline (Sprint 028 decision: REBUILD).** The legacy `typescript-fundamentals` scroll (Sprint 014 MVP, seeded pre-pivot from `apps/api/src/infrastructure/persistence/seed-scrolls.ts`) is **not migrated**. It predates ADR 022, the audience contract, and the polyglot-first lens; its read steps carry the "JS with annotations" frame this scroll exists to replace. The decision is rebuild under polyglot-first, **salvaging individual steps only where they survive the paragraph test** — the Ruby L3 migration (S026) is the precedent: re-tighten, don't transplant. Salvage candidates (the MVP's katas: `memoize`, `palindrome`, `fizzbuzz`, etc.) are evaluated per-kata at W2 authoring; the expectation is that most fail the new lens (inner spec §7). At W3 seed time, the new `typescript` scroll lands in its own seed file (`seed-scrolls-typescript.ts`, following the Ruby/Python precedent) and the legacy row is hard-deleted via `removeLegacyScrollBySlug('typescript-fundamentals')` — the same helper that retired `ruby-fundamentals`. The cleanup runs before the new rows insert so the `slug` unique constraint can't reject the seed.
 
-**Option A — Replace.** Retire the MVP course slug `typescript-fundamentals` and replace its content with the 5-lesson `typescript-fundamentals` (Extended) defined in §3.1. The MVP's three lessons map cleanly into lessons 1–3 of the extension; the new lessons 4 (functions) and 5 (narrowing/`unknown`/`never`) are additive. Existing learner progress (completed step IDs) is invalidated — but the MVP shipped only weeks ago and the learner population is small.
+**Figures registration:** the three committed figures register in `apps/web/src/scrolls/figures/data/typescript-figures.ts` at W2, following `python-figures.ts`.
 
-**Option B — Stack.** Keep the MVP under its current slug, ship the extended fundamentals as a *separate* course (e.g., `typescript-fundamentals-2`), and link them in sequence on the catalog. Preserves progress; clutters the catalog and creates a confusing prereq story for downstream courses.
+**Playground frontend reuse:** the `data.kind === "playground"` branch shipped with Ruby and was reused by Python; TypeScript's two playgrounds (Lessons 2 and 4) reuse the same contract. No frontend work expected.
 
-**Recommendation:** Option A. The MVP is a 9-step course whose stated purpose was "first vertical slice of the courses feature," not "the canonical fundamentals course." Replacing it now, while the learner base is small, costs less than living with a split track for years. Keep the MVP's exercise content — those exercises are good — and slot them into lessons 1–3 of the extended course.
-
-**Open question for the reviewer:** is "invalidate existing progress on a course slug" a UX path we want, or do we need a one-time migration that maps old step IDs → new step IDs? This affects schema work in `course_progress` and is out of scope for this curriculum doc.
-
-### Authoring rhythm
-
-A note on production cadence, since "ship a 22-step course" is a non-trivial unit of work. We estimate, conservatively:
-
-- Fundamentals (extended): ~3 author-days, mostly because the MVP exercises carry over.
-- Functional patterns: ~3 author-days. Pure-function exercises author quickly; the hard part is exhaustiveness scenarios that feel real.
-- Node/API: ~5 author-days. Each lesson needs a believable boundary scenario; bad fixtures here read as toy code.
-- Advanced types: ~6 author-days. Type-level assertions are tedious to author by hand and easy to get subtly wrong (see open question 6 below).
-- React primer: ~4 author-days for the *content*. Add an estimated sprint for the iframe-sandbox infra (bundled React + in-browser TS compiler).
-- Type-level: ~8 author-days. Longest course, hardest to write, smallest audience — accept that the per-learner cost is high and ship it last.
-
-These are author-days for a domain expert with a clean review pipeline, not calendar days. Reviews from C3 (Tomás Ríos) for any course that touches infra (4, 5, 6, 7, 8) and from Yemi Okafor are out of scope (no LLM in the learning context per ADR 015).
-
-### Suggested ship order
-
-| # | Sub-course | Why this position |
-|---|---|---|
-| 1 | `typescript-fundamentals` (extended, replacing MVP per Option A) | Prereq for everything else; the existing course is incomplete |
-| 2 | `typescript-functional-patterns` | Short course; high payoff; reuses fundamentals patterns directly; doesn't require advanced types infrastructure |
-| 3 | `typescript-node-api` | Demonstrates the platform's value to the working backend developer audience that overlaps heavily with Dojo's existing kata users |
-| 4 | `typescript-advanced-types` | Bigger course, opens up the type-level track; ship after the platform has proven it can host content this size |
-| 5 | `typescript-react-primer` | Requires iframe-sandbox infrastructure work (bundled React + in-browser TS compiler) — gated on that platform investment |
-| 6 | `typescript-type-level` | Longest course, niche audience; ship last |
-| 7 (optional) | `typescript-tsconfig-for-humans` | Gated on Piston `tsc -p .` support; small course, easy follow-up |
-| 8 (optional) | `typescript-zod-as-type-design` | Gated on a decision about library bundling/allowlist in Piston |
-
-**Open questions to resolve before content production:**
-
-1. **Course slug migration** — see the Option A recommendation above. Needs a one-line product decision.
-2. **`@ts-expect-error` semantics in the runner** — does the existing Piston adapter treat a `tsc` non-zero exit as a test failure? If yes, no work needed. If it currently only inspects the runtime stream, the runner needs a small change.
-3. **iframe-sandbox + React** — bundling React + an in-browser TS compiler into the iframe `srcdoc` is a real frontend infra task. Estimate ~1 sprint of work before course 6 can be authored. Decide priority.
-4. **Library allowlist in Piston** — needed for course 8 (Zod) and would unblock other courses (e.g., a hypothetical *Effect for TS*). Worth a separate ADR.
-5. **Type-only test verdict UX** — courses 2 and 5 have steps where "passing" means "the file compiled." The course player's current results panel is built for runtime test cases (pass/fail with output). It needs to gracefully render "compile passed; no runtime tests" without looking broken.
-6. **Authoring tool for type-level exercises** — type-level exercises with `Equal<A, B>` assertions are tedious to author by hand and easy to get subtly wrong. Worth a small internal CLI that takes a starter, a solution, and an expected type and emits the testCode. Not blocking, but worth noting.
+After the scroll ships, deep-dive prioritisation is a separate per-sprint decision; the likely first is `typescript-advanced-types` (highest pull-through from Lesson 5's closer), with `typescript-domain-modeling` second (highest Felipe-relevance).
