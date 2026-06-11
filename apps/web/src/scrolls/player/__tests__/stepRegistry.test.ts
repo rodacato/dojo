@@ -11,6 +11,10 @@ describe('STEP_RENDERERS', () => {
       expect(STEP_RENDERERS[type], `missing renderer for "${type}"`).toBeTypeOf('function')
     }
   })
+
+  it("legacy 'kata' DB value labels correctly even though it is outside the DTO union", () => {
+    expect(stepTypeLabel('kata' as StepDTO['type'])).toBe('Kata')
+  })
 })
 
 describe('stepTypeLabel', () => {

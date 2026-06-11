@@ -19,6 +19,9 @@ export const STEP_RENDERERS: Record<StepDTO['type'], ComponentType<StepComponent
 }
 
 export function StepContent(props: StepComponentProps) {
-  const Renderer = STEP_RENDERERS[props.step.type]
+  // Runtime types can exceed the DTO union — seeds store legacy 'kata' for
+  // exercise-shaped steps. Anything unknown gets the editor, the old
+  // dispatcher's else-branch behavior.
+  const Renderer = STEP_RENDERERS[props.step.type] ?? StepEditor
   return <Renderer {...props} />
 }

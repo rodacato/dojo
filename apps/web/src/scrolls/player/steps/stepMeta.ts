@@ -1,6 +1,8 @@
 import type { StepDTO } from '@dojo/shared'
 
 export function stepTypeLabel(type: StepDTO['type']): string {
+  // Legacy DB value not present in the DTO union; seeds use it for katas.
+  if ((type as string) === 'kata') return 'Kata'
   switch (type) {
     case 'read': return 'Read'
     case 'read+inline': return 'Read+'
