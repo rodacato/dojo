@@ -1,6 +1,7 @@
 import { ArrayTrack } from './ArrayTrack'
 import { BeforeAfter } from './BeforeAfter'
 import { Disambiguation } from './Disambiguation'
+import { MetricPair } from './MetricPair'
 import { TabbedCard } from './TabbedCard'
 import { TwoByTwo } from './TwoByTwo'
 import { PYTHON_FIGURES } from './data/python-figures'
@@ -27,6 +28,8 @@ export function FigureRenderer({ id }: { id: string }) {
       return <BeforeAfter data={figure} />
     case 'disambiguation':
       return <Disambiguation data={figure} />
+    case 'metric-pair':
+      return <MetricPair data={figure} />
     case 'tabbed-card':
       return <TabbedCard data={figure} />
     case 'two-by-two':
