@@ -7,9 +7,9 @@
 // seed-scrolls.ts).
 //
 // Polyglot-first lesson order (S027 W2 authoring; W3 seeding complete):
-//   order 1 — Lesson 0 (Python en contexto)               — 2 steps (read, predict)
-//   order 2 — Lesson 1 (Las dos sintaxis que sorprenden)  — 3 steps (read, predict, kata)
-//   order 3 — Lesson 2 (Literales y comprehensions)       — 4 steps (read, 2 kata, playground)
+//   order 1 — Lesson 0 (Python in context)               — 2 steps (read, predict)
+//   order 2 — Lesson 1 (The two syntax surprises)  — 3 steps (read, predict, kata)
+//   order 3 — Lesson 2 (Literals + comprehensions)       — 4 steps (read, 2 kata, playground)
 //   order 4 — Lesson 3 (EAFP vs LBYL)                     — 4 steps (read, predict, 2 kata)
 //   order 5 — Lesson 4 (Context managers)                 — 4 steps (read, 2 kata, playground)
 //   order 6 — Lesson 5 (Decorators + closures)            — 5 steps (read+inline, read, predict, 2 kata)
@@ -137,7 +137,7 @@ export const PYTHON_COURSE_DATA = {
 }
 
 // =============================================================================
-// Lesson 0 — Python en contexto
+// Lesson 0 — Python in context
 // =============================================================================
 //
 // 2 steps after the 2026-06-08 audience-review collapse (original draft had
@@ -259,11 +259,11 @@ const LESSON_0 = {
   id: LESSON_0_ID,
   scrollId: COURSE_ID,
   order: 1,
-  title: 'Python en contexto',
+  title: 'Python in context',
 }
 
 // =============================================================================
-// Lesson 1 — Las dos sintaxis que sorprenden
+// Lesson 1 — The two syntax surprises
 // =============================================================================
 //
 // 3 steps (read + predict + kata). The read carries the TS/Java analogue
@@ -494,11 +494,11 @@ const LESSON_1 = {
   id: LESSON_1_ID,
   scrollId: COURSE_ID,
   order: 2,
-  title: 'Las dos sintaxis que sorprenden',
+  title: 'The two syntax surprises',
 }
 
 // =============================================================================
-// Lesson 2 — Literales y comprehensions que vas a leer
+// Lesson 2 — Literals and comprehensions you'll actually read
 // =============================================================================
 //
 // 4 steps (read + 2 kata + playground). The read embeds the array-track
@@ -777,11 +777,11 @@ const LESSON_2 = {
   id: LESSON_2_ID,
   scrollId: COURSE_ID,
   order: 3,
-  title: 'Literales y comprehensions que vas a leer',
+  title: "Literals and comprehensions you'll actually read",
 }
 
 // =============================================================================
-// Lesson 3 — EAFP vs LBYL — el reflejo Pythonic
+// Lesson 3 — EAFP vs LBYL — the Pythonic reflex
 // =============================================================================
 //
 // 4 steps (read + predict + 2 kata). The read embeds the MANDATORY
@@ -1096,7 +1096,7 @@ const LESSON_3 = {
   id: LESSON_3_ID,
   scrollId: COURSE_ID,
   order: 4,
-  title: 'EAFP vs LBYL — el reflejo Pythonic',
+  title: 'EAFP vs LBYL — the Pythonic reflex',
 }
 
 // =============================================================================
