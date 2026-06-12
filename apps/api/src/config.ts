@@ -18,7 +18,13 @@ const envSchema = z.object({
   FF_CODE_EXECUTION_ENABLED: z.coerce.boolean().default(false),
   PISTON_URL: z.string().url().default('http://piston:2000'),
   PISTON_MAX_CONCURRENT: z.coerce.number().int().min(1).default(3),
-  PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(3000),
+  // 3000 was too tight for the TypeScript runtime: Piston compiles TS at run
+  // (tsc + node), a ~2.7s fixed floor even for `console.log`, so the heavier
+  // steps (the TS capstone) tipped past 3s. 8000 gives compiled languages
+  // headroom. NOTE: the self-hosted Piston also caps run_timeout server-side
+  // (max_run_timeout in its config) — raise that to >=8000 at deploy or this
+  // value is silently clamped. See seed-scrolls-typescript.ts header.
+  PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(8000),
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
   DRAWHAUS_URL: z.string().url().optional(),
   RESEND_API_KEY: z.string().default(''),
