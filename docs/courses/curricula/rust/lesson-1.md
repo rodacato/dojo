@@ -8,7 +8,7 @@
 
 This file holds the **production prose** for each step's fields. All content and meta-notes in English. This is the format exception's from-scratch lesson #1 (spec §2.2); the first compiler-error reveal lands in step 1.2, inside the scroll's first 25 minutes (Björn's constraint).
 
-**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || _eq(actual, expected))`, where `_eq` returns `Result<(), String>`. The exact harness header/footer (the `_t`/`_eq` definitions, `main` that runs the tests, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3) per rust.md §5. Open seeding question, flagged: the §5 harness sketch owns `main`, while this lesson's starters include a learner-facing `main` per the spec's own outlines (1.3, 1.4, 1.5) — the merge mechanics (strip/rename the learner `main`, or run tests from the harness's entry) must be resolved with Tomás (C3) at the Lesson 1 smoke.
+**Harness note (applies to every `testCode` block below):** tests are written against the manual harness contract — `_t("user-facing sentence", || _eq(actual, expected))`, where `_eq` returns `Result<(), String>`. The exact harness header/footer (the `_t`/`_eq` definitions, the runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) ships in the seed (`seed-scrolls-rust.ts`). The learner-`main` merge question is **resolved** (L1 smoke, 2026-06-12): the PistonAdapter **renames** a learner-written `fn main` to `__learner_main` — zero line offset — so starters keep a learner-facing `main` (1.3, 1.4, 1.5) while the harness owns the real entry point; the playground's testCode calls `__learner_main()` explicitly. (Historical: the first design wrapped learner code in a `mod solution`; it failed on module privacy — E0425/E0603 — against real rustc 1.68.2 and was replaced by the rename.)
 
 ---
 
@@ -73,7 +73,7 @@ fn main() {
 ```text
 error[E0382]: borrow of moved value: `s1`
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 ```
 
 ### Authoring notes
@@ -117,9 +117,9 @@ Does this compile — and if not, what does rustc say?
 
 ```rust
 fn main() {
-    let s1 = String::from("hello");
+    let s1 = String::from("dojo");
     let s2 = s1;
-    println!("{} {}", s1, s2);
+    println!("{} meets {}", s1, s2);
 }
 ```
 
@@ -127,7 +127,7 @@ fn main() {
 
 ```yaml
 - id: a
-  text: "Compiles — prints `hello hello`"
+  text: "Compiles — prints `dojo meets dojo`"
 - id: b
   text: "Compiles, with a warning about the moved value"
 - id: c
@@ -139,7 +139,7 @@ correct: c
 
 ### `feedback` (per option, sensei voice)
 
-**a — Compiles, prints `hello hello`:**
+**a — Compiles, prints `dojo meets dojo`:**
 > The JS/Java/Python reflex: `let s2 = s1` copies a reference, both names point at the same string, everyone's happy. In Rust there is no shared reference here to copy — `String` owns its heap buffer, and assignment of a non-`Copy` type moves that ownership. After line 3, `s1` is not a stale pointer; it is not a usable name at all. The compiler proves that before a binary exists. The real output is below.
 
 **b — Compiles with a warning:**
@@ -158,20 +158,25 @@ Here is the full output:
 
 ```text
 error[E0382]: borrow of moved value: `s1`
- --> main.rs:4:23
+ --> main.rs:4:29
   |
-2 |     let s1 = String::from("hello");
+2 |     let s1 = String::from("dojo");
   |         -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
 3 |     let s2 = s1;
   |              -- value moved here
-4 |     println!("{} {}", s1, s2);
-  |                       ^^ value borrowed here after move
+4 |     println!("{} meets {}", s1, s2);
+  |                             ^^ value borrowed here after move
   |
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let s2 = s1.clone();
+  |                ++++++++
+
 error: aborting due to previous error
 
 For more information about this error, try `rustc --explain E0382`.
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 Line by line:
 
@@ -179,12 +184,13 @@ Line by line:
 - ``move occurs because `s1` has type `String`, which does not implement the `Copy` trait`` — the *why*. The compiler names the exact rule from the read: `String` isn't `Copy`, so assignment moved.
 - ``value moved here`` — the move site. Ownership left `s1` on `let s2 = s1;`.
 - ``value borrowed here after move`` — the use site. (`println!` borrows its arguments, which is why the headline says *borrow* of moved value, not *use*.)
+- ``help: consider cloning the value if the performance cost is acceptable`` — the compiler proposes a fix, down to the exact edit (`s1.clone()`) spelled out under it. Read `help:` lines; they often *are* the fix — and notice the honesty in "if the performance cost is acceptable".
 - The footer hands you a habit: `rustc --explain E0382` prints a long-form explanation. It works for every error code in this scroll — bookmark the command.
 
 Three responses to `E0382` exist, and you will choose between them for the rest of your Rust life:
 
-1. **Clone** — duplicate the data. Legitimate when two owners are genuinely needed; a reflex when they aren't.
-2. **Restructure** — reorder the code, or return ownership, so one owner suffices.
+1. **Clone** — duplicate the data. This is the compiler's own `help:` suggestion above. Legitimate when two owners are genuinely needed; a reflex when they aren't — the compiler proposes it because it provably compiles, not because it's always the right call.
+2. **Restructure** — reorder the code, or return ownership, so one owner suffices. The fix the compiler can't see.
 3. **Borrow** — use the value without taking ownership at all. That's Lesson 2.
 
 The next kata hands you this exact error and asks for the fix. The first two responses are on the table; the third isn't yet.
@@ -192,7 +198,7 @@ The next kata hands you this exact error and asks for the fix. The first two res
 
 ### Authoring notes
 
-- The quoted output is expected-from-knowledge; smoke recaptures from Piston's 1.68.2 and the seed pastes the recaptured text verbatim (spec §2.7). In particular: whether 1.68.2 appends a macro-origin `= note:` line for the `println!` expansion, and whether it offers a `help: consider cloning` suggestion (believed post-1.68), is exactly what the recapture settles — the walk's five anchors (headline, missing-`Copy` label, move site, use site, `--explain` footer) are stable across versions.
+- The quoted output is **captured verbatim from Piston's rustc 1.68.2** (L1 smoke, 2026-06-12), with one sanctioned trim: 1.68.2 does append a macro-origin ``= note: this error originates in the macro `$crate::format_args_nl`…`` line for the `println!` expansion, and it is **deliberately omitted** from the learner-facing reveal — macro-expansion provenance is noise for a beginner reading their first Rust error. Everything else is verbatim, including the `help: consider cloning the value if the performance cost is acceptable` block — settled at capture: the suggestion **exists on 1.68.2** (the draft believed it post-1.68), so the walk names it and response 1 below is literally the compiler's own proposal. The snippet uses the captured run's exact code (`"dojo"`, `println!("{} meets {}", s1, s2)`) so the reveal's spans and line/column numbers are real.
 - Per-option feedback stays reflex-specific (predict voice contract); the shared walk ships appended to each feedback entry at seed since the player's `predict` schema has no separate reveal field.
 - **Stage-11 decision (telegraph accepted, not learner-facing):** option (c) necessarily echoes read 1.1's just-quoted `E0382` headline — accepted as-is. 1.2 is the scroll's first reveal, and the ritual being installed is commit-then-see-the-full-output; the pairing clause already puts the headline in the read by design. The near-miss-distractor treatment went to predict 5.2 instead (stage-11 audience fix), and 2.2 already carries one (`E0502`). Do not re-litigate by hardening (c).
 
@@ -207,7 +213,7 @@ The next kata hands you this exact error and asks for the fix. The first two res
 ### `instruction` (markdown body)
 
 ```markdown
-**This starter does not compile — by design. The `E0382` error you get when you run it is the brief: read it before you touch the code.**
+**This starter does not compile — by design. The `E0382` error you get when you run it is the brief: read it — all the way down to its `help:` line — before you touch the code.**
 
 ## Your task
 
@@ -215,8 +221,8 @@ The next kata hands you this exact error and asks for the fix. The first two res
 
 From the predict's reveal, three responses to `E0382` exist. Two are available right now, and **both are accepted**:
 
-1. **Duplicate the data** with `.clone()` — legitimate here, since the code as written wants two owners.
-2. **Restructure** so one owner is enough.
+1. **Duplicate the data** with `.clone()` — the fix the error's own `help:` line proposes, edit included. Legitimate here, since the code as written wants two owners.
+2. **Restructure** so one owner is enough — the fix the compiler can't propose for you.
 
 The third — borrowing, using the value without owning it — is Lesson 2's whole topic. Pick one of the two, and be able to say why.
 ```
@@ -299,11 +305,11 @@ One owner, used twice — `format!` borrows its arguments, so a single binding s
 |---|---|
 | Expected text after the fix | The compile fix can't cheat the output — a fix that deletes the `s1` use entirely fails here. Asserted on the returned `String`, not raw stdout, per the spec. |
 | Callable more than once | Guards against a "fix" that restructures `banner` into something stateful or partially-moved; also a determinism check. |
-| *(implicit)* compiling at all | The real first gate. ExecuteStep must surface the compile error as learner feedback (stderr passthrough) — the spec's open infra question, validated with Tomás (C3) at Lesson 1 smoke. |
+| *(implicit)* compiling at all | The real first gate. ExecuteStep surfaces the compile error as learner feedback (stderr passthrough) — **validated at the L1 smoke (2026-06-12)**: the starter's real E0382 (the `format!` variant) comes back including its own `help: consider cloning` suggestion with the `let s2 = s1.clone();` edit; Piston's sandbox-keeper/chmod noise is scrubbed by the adapter. |
 
 ### Hint-discipline check (§2.5)
 
-The instruction names `.clone()` because predict 1.2's reveal already put it on the table — per the spec's own 1.3 outline ("instruction framing picks up the three responses"). The **hint** stays one rung lower: layer-2 translation of what the compiler is asking, layer-3 names the clone-vs-restructure *choice* and never the call site (`s1.clone()` does not appear in hint text).
+The instruction names `.clone()` because predict 1.2's reveal already put it on the table — per the spec's own 1.3 outline ("instruction framing picks up the three responses"). The **hint** stays one rung lower: layer-2 translation of what the compiler is asking, layer-3 names the clone-vs-restructure *choice* and never the call site (`s1.clone()` does not appear in hint text). Captured fact: the starter's real error itself shows ` let s2 = s1.clone();` under its `help:` line — that is ladder layer 1 (the raw error, always on screen), sanctioned by §2.5; the hint still doesn't repeat it.
 
 ---
 
@@ -492,7 +498,7 @@ The instruction does not reduce to "play around": prompt 1 demands a prediction 
 
 ### Smoke note (authoring, not learner-facing)
 
-Whether 1.68.2 emits a literal `help:` line for this E0382 (the `consider cloning` suggestion is believed post-1.68) is settled at recapture — the same open question 1.2's authoring note flags. Prompt 1 is worded against "what fix does the output point you toward", which the span labels and the `--explain` trailer answer either way; if smoke shows a `help:` line, the prompt may name it verbatim.
+Settled at the L1 smoke (2026-06-12): rustc 1.68.2 **does** emit a literal `help:` line for E0382 — `help: consider cloning the value if the performance cost is acceptable`, with the `.clone()` edit spelled out under it (the draft believed the suggestion post-1.68; it isn't). Prompt 1's "what fix does the output point you toward" is therefore answered by a literal `help:` line on top of the span labels and the `--explain` trailer — the prompt wording stands as-is.
 
 ---
 
@@ -500,9 +506,9 @@ Whether 1.68.2 emits a literal `help:` line for this E0382 (the `consider clonin
 
 - [x] Read 1.1 under the ~400-word ceiling (code blocks excluded); paragraph audit included; what got cut is named.
 - [x] **Pairing clause (§2.2 rule 2):** read 1.1 ends with the cliffhanger snippet + the `E0382` headline line only. Full output, line-by-line walk, missing-`Copy` note, and the three responses live in 1.2's reveal — nowhere in the read.
-- [x] **Error-anchor rule (§2.2.2):** the lesson's ownership teaching is anchored to real `E0382` output (1.2's reveal, full + walked); every quoted `rustc` excerpt carries `<!-- verify-at-smoke: rustc 1.68.2 -->`.
+- [x] **Error-anchor rule (§2.2.2):** the lesson's ownership teaching is anchored to real `E0382` output (1.2's reveal, full + walked); every quoted `rustc` excerpt carries `<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->` and is verbatim from the capture (one sanctioned trim: 1.2's macro-origin `= note:` line, documented in its authoring note).
 - [x] Predict 1.2 feedback names the specific reflex per option (JS reference-copy / C warning / systems-language find-out-at-runtime, with the C-vs-C++ accuracy split: C dangles, C++ moved-from is valid-but-unspecified); correct-option feedback explains why, not just "correct".
-- [x] 1.2's reveal closes with the **three responses to E0382** (clone / restructure / borrow-next-lesson); kata 1.3's instruction picks up exactly those, with borrowing explicitly deferred.
+- [x] 1.2's reveal closes with the **three responses to E0382** (clone / restructure / borrow-next-lesson), response 1 named as the compiler's own `help:` suggestion; kata 1.3's instruction picks up exactly those, with borrowing explicitly deferred.
 - [x] **Fail-by-design (1.3, 1.4):** each instruction leads with the starter-does-not-compile-by-design contract and the error-is-the-brief framing (Yui's files-a-bug failure mode pre-empted). 1.3's tests assert on a returned `String`, not raw stdout.
 - [x] **Hint discipline (§2.5):** 1.3 hint = layer-2 translation + layer-3 choice, no call site; 1.4 hint names shadowing as concept, never `to_uppercase` nor `let s = shout(s);`. Hint-discipline check sections included per kata.
 - [x] 1.4 bans `.clone()` in the instruction; `alternative_approach` shows the clone detour and calls it out.
@@ -510,7 +516,7 @@ Whether 1.68.2 emits a literal `help:` line for this E0382 (the `consider clonin
 - [x] All code compiles under rustc 1.68.2, std only, single file — no post-1.68 APIs anywhere (`to_uppercase` is 1.2-era; `todo!` is 1.40; no `is_some_and`, no `OnceLock`, no let-else used).
 - [x] One figure embedded (`disambiguation` — `copy-vs-clone`), data spec below; single divergent dimension highlighted (`Explicitness`), other rows render unhighlighted.
 - [x] Every word in English — titles, instructions, hints, options, feedback, code comments, captions, meta-notes.
-- [x] Harness-`main` merge question flagged at the top of this file, not improvised.
+- [x] Harness-`main` merge question resolved at the top of this file (PistonAdapter renames the learner `fn main` to `__learner_main`; L1 smoke, 2026-06-12).
 
 ---
 

@@ -7,9 +7,11 @@
 //   order 1 — Lesson 0 (Rust in context) — 2 steps (read, predict)
 //   order 2 — Lesson 1 (Ownership)       — 5 steps (read, predict, 2 kata, playground)
 // This batch: 7 steps. Full scroll: 25 steps / ~120 min target.
-// Lessons 2-6 are gated on the Lesson 1 real-Piston smoke — it must validate
-// compile-errors-as-feedback (rustc stderr surfacing through ExecuteStep) and
-// the module-wrap before the remaining batches seed.
+// Lessons 2-6 seed in later batches. The Lesson 1 real-Piston smoke ran
+// 2026-06-12 against rustc 1.68.2: compile-errors-as-feedback validated
+// (rustc stderr surfaces through ExecuteStep; Piston noise scrubbed by the
+// adapter), entry-point handled via the fn-main rename, and the quoted
+// excerpts below are pasted verbatim from that capture.
 // Authoring drafts live in docs/courses/curricula/rust/lesson-{0..6}.md;
 // figures registered in apps/web/src/scrolls/figures/data/rust-figures.ts.
 //
@@ -19,12 +21,14 @@
 // javascript-dom; rust is NOT in that whitelist.
 //
 // Test harness: manual _t/_eq pattern (mirrors Ruby/Python), Rust-shaped.
-// The PistonAdapter wraps learner code in `mod solution` (see
-// PistonAdapter.ts), so starters may define their own fn main. Each step's
-// bare _t statements sit INSIDE the harness's fn main — between
-// RUST_HARNESS_HEADER and RUST_HARNESS_FOOTER. `use solution::*` resolves
-// because of the module wrap, and glob-imported names lose to the harness's
-// local definitions, so a learner fn main can't collide with the harness's.
+// The PistonAdapter renames a learner-written `fn main` to `__learner_main`
+// (see PistonAdapter.ts), so starters may define their own fn main and the
+// harness owns the real entry point. Learner code stays at the file's top
+// level — same-file items need no `pub`. (A `mod solution` wrap was the
+// first design; it failed on module privacy at the L1 smoke against real
+// rustc 1.68.2 — E0425/E0603.) Each step's bare _t statements sit INSIDE
+// the harness's fn main — between RUST_HARNESS_HEADER and RUST_HARNESS_FOOTER.
+// Playground testCode calls `__learner_main()` to run the learner's main.
 // __DOJO_RESULT__ JSON footer for ExecuteStep parsing; `cargo test` is not
 // available on Piston — real #[test] testing is rust-testing-deep's territory.
 // =============================================================================
@@ -57,7 +61,6 @@ const STEP_1_4_ID = seedUuid('rust-s1-4-kata-take-and-give-back')
 const STEP_1_5_ID = seedUuid('rust-s1-5-playground-function-boundaries')
 
 const RUST_HARNESS_HEADER = String.raw`// ── dojo harness ──────────────────────────────────
-#[allow(unused_imports)] use solution::*;
 use std::panic::{catch_unwind, AssertUnwindSafe};
 
 thread_local! {
@@ -185,8 +188,9 @@ export const RUST_COURSE_DATA = {
 //
 // 2 steps (read + predict). The read deliberately ends on E0308, not E0382 —
 // an E0382 teaser here would front predict 1.2 (the de-spoiling decision in
-// the spec). Quoted rustc excerpts are expected-from-knowledge; smoke
-// recaptures from Piston's 1.68.2 and the seed gets the recaptured text.
+// the spec). The E0308 excerpt is verbatim from the L1 smoke capture
+// (Piston rustc 1.68.2, 2026-06-12); note 1.68.2 emits no help: line for
+// this snippet — the dual-span line + "expected due to this" label carry it.
 
 const STEP_0_1 = {
   id: STEP_0_1_ID,
@@ -224,16 +228,17 @@ The frame the whole scroll runs on: \`rustc\` is not a gate to sneak code past. 
 
 \`\`\`rust
 fn main() {
-    let total: i64 = 5i32;
+    let count: i32 = "three";
 }
 \`\`\`
 
-The three load-bearing lines:
+The load-bearing lines:
 
 \`\`\`text
 error[E0308]: mismatched types
-  |                ---   ^^^^ expected \`i64\`, found \`i32\`
-help: change the type of the numeric literal from \`i32\` to \`i64\`
+  |                ---   ^^^^^^^ expected \`i32\`, found \`&str\`
+  |                |
+  |                expected due to this
 \`\`\``,
   starterCode: null,
   testCode: null,
@@ -363,20 +368,28 @@ error[E0382]: borrow of moved value: \`s1\`
 }
 
 // The E0382 walk — appended to every option's feedback at seed, so each
-// answer path sees it (per the lesson file's reveal section).
+// answer path sees it (per the lesson file's reveal section). Output is
+// verbatim from the L1 smoke capture (Piston rustc 1.68.2, 2026-06-12),
+// minus one sanctioned trim: the macro-origin "= note: this error
+// originates in the macro..." line — noise for a beginner's first error.
 const E0382_REVEAL = `Here is the full output:
 
 \`\`\`text
 error[E0382]: borrow of moved value: \`s1\`
- --> main.rs:4:23
+ --> main.rs:4:29
   |
-2 |     let s1 = String::from("hello");
+2 |     let s1 = String::from("dojo");
   |         -- move occurs because \`s1\` has type \`String\`, which does not implement the \`Copy\` trait
 3 |     let s2 = s1;
   |              -- value moved here
-4 |     println!("{} {}", s1, s2);
-  |                       ^^ value borrowed here after move
+4 |     println!("{} meets {}", s1, s2);
+  |                             ^^ value borrowed here after move
   |
+help: consider cloning the value if the performance cost is acceptable
+  |
+3 |     let s2 = s1.clone();
+  |                ++++++++
+
 error: aborting due to previous error
 
 For more information about this error, try \`rustc --explain E0382\`.
@@ -388,12 +401,13 @@ Line by line:
 - \`\`move occurs because \`s1\` has type \`String\`, which does not implement the \`Copy\` trait\`\` — the *why*. The compiler names the exact rule from the read: \`String\` isn't \`Copy\`, so assignment moved.
 - \`\`value moved here\`\` — the move site. Ownership left \`s1\` on \`let s2 = s1;\`.
 - \`\`value borrowed here after move\`\` — the use site. (\`println!\` borrows its arguments, which is why the headline says *borrow* of moved value, not *use*.)
+- \`\`help: consider cloning the value if the performance cost is acceptable\`\` — the compiler proposes a fix, down to the exact edit (\`s1.clone()\`) spelled out under it. Read \`help:\` lines; they often *are* the fix — and notice the honesty in "if the performance cost is acceptable".
 - The footer hands you a habit: \`rustc --explain E0382\` prints a long-form explanation. It works for every error code in this scroll — bookmark the command.
 
 Three responses to \`E0382\` exist, and you will choose between them for the rest of your Rust life:
 
-1. **Clone** — duplicate the data. Legitimate when two owners are genuinely needed; a reflex when they aren't.
-2. **Restructure** — reorder the code, or return ownership, so one owner suffices.
+1. **Clone** — duplicate the data. This is the compiler's own \`help:\` suggestion above. Legitimate when two owners are genuinely needed; a reflex when they aren't — the compiler proposes it because it provably compiles, not because it's always the right call.
+2. **Restructure** — reorder the code, or return ownership, so one owner suffices. The fix the compiler can't see.
 3. **Borrow** — use the value without taking ownership at all. That's Lesson 2.
 
 The next kata hands you this exact error and asks for the fix. The first two responses are on the table; the third isn't yet.`
@@ -413,12 +427,12 @@ const STEP_1_2 = {
   data: {
     question: 'Does this compile — and if not, what does rustc say?',
     snippet: `fn main() {
-    let s1 = String::from("hello");
+    let s1 = String::from("dojo");
     let s2 = s1;
-    println!("{} {}", s1, s2);
+    println!("{} meets {}", s1, s2);
 }`,
     options: [
-      { id: 'a', text: 'Compiles — prints `hello hello`' },
+      { id: 'a', text: 'Compiles — prints `dojo meets dojo`' },
       { id: 'b', text: 'Compiles, with a warning about the moved value' },
       { id: 'c', text: 'Fails to compile — `E0382`, borrow of moved value' },
       {
@@ -442,7 +456,7 @@ const STEP_1_3 = {
   order: 3,
   type: 'kata' as const,
   title: 'Fix the move',
-  instruction: `**This starter does not compile — by design. The \`E0382\` error you get when you run it is the brief: read it before you touch the code.**
+  instruction: `**This starter does not compile — by design. The \`E0382\` error you get when you run it is the brief: read it — all the way down to its \`help:\` line — before you touch the code.**
 
 ## Your task
 
@@ -450,8 +464,8 @@ const STEP_1_3 = {
 
 From the predict's reveal, three responses to \`E0382\` exist. Two are available right now, and **both are accepted**:
 
-1. **Duplicate the data** with \`.clone()\` — legitimate here, since the code as written wants two owners.
-2. **Restructure** so one owner is enough.
+1. **Duplicate the data** with \`.clone()\` — the fix the error's own \`help:\` line proposes, edit included. Legitimate here, since the code as written wants two owners.
+2. **Restructure** so one owner is enough — the fix the compiler can't propose for you.
 
 The third — borrowing, using the value without owning it — is Lesson 2's whole topic. Pick one of the two, and be able to say why.`,
   starterCode: `fn banner() -> String {
@@ -610,7 +624,7 @@ fn main() {
 }
 `,
   testCode: `${RUST_HARNESS_HEADER}
-    solution::main();
+    __learner_main();
     _t("explored", || _eq(true, true));
 ${RUST_HARNESS_FOOTER}`,
   hint: null,

@@ -49,23 +49,24 @@ The frame the whole scroll runs on: `rustc` is not a gate to sneak code past. It
 
 ```rust
 fn main() {
-    let total: i64 = 5i32;
+    let count: i32 = "three";
 }
 ```
 
-The three load-bearing lines:
+The load-bearing lines:
 
 ```text
 error[E0308]: mismatched types
-  |                ---   ^^^^ expected `i64`, found `i32`
-help: change the type of the numeric literal from `i32` to `i64`
+  |                ---   ^^^^^^^ expected `i32`, found `&str`
+  |                |
+  |                expected due to this
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 ```
 
 ### Authoring note on the E0308 excerpt
 
-The quoted block is the **3-line load-bearing excerpt** (headline / expected-found span / `help:`) of the full 1.68.2 output, per spec §2.1's "load-bearing 3-line excerpt" allowance. The full output includes `--> main.rs:2:22`, the `expected due to this` secondary label, and the suggested-rewrite lines under `help:` — smoke recaptures the real output from Piston's 1.68.2 and the seed quotes the recaptured lines verbatim; this draft's lines are expected-from-knowledge, flagged by the `verify-at-smoke` comment as mandated.
+The quoted block is the **load-bearing excerpt** (headline / dual-span expected-found line / the `expected due to this` label) of the full 1.68.2 output, per spec §2.1's load-bearing-excerpt allowance. Captured verbatim from Piston's rustc 1.68.2 at the Lesson 1 smoke (2026-06-12); the full output adds the `--> main.rs:2:22` locus line and the `rustc --explain E0308` footer, trimmed here as the allowance permits. Settled at capture: 1.68.2 emits **no `help:` line for this snippet** — the dual-span line plus the `expected due to this` label carry the anatomy demo (the prose's general claim that `help:` frequently contains the fix stands; E0382's reveal in Lesson 1 shows a real one).
 
 ### Paragraph-test audit (borrow-check test §2.1 — Valentina/Björn gate)
 
@@ -142,7 +143,7 @@ correct: b
 ## Self-review checkpoint (before commit)
 
 - [x] Read 0.1 under the ~400-word ceiling (code blocks excluded); audit table above; what got cut is named.
-- [x] Read 0.1 ends with the quoted **E0308** excerpt — not E0382 (de-spoiling, spec §4 step 0.1), not prose (voice_check). `verify-at-smoke` comment present.
+- [x] Read 0.1 ends with the quoted **E0308** excerpt — not E0382 (de-spoiling, spec §4 step 0.1), not prose (voice_check). `captured-at-smoke` comment present (real Piston 1.68.2 output, 2026-06-12).
 - [x] Toolchain paragraph names each cross-language analog exactly once; the daily inner-loop subcommand is withheld for predict 0.2.
 - [x] Sandbox-honesty paragraph present, version-honest (1.68.2, std-only, manual harness, *newer Rust* markers), per spec §2.9.
 - [x] Predict feedback names the specific reflex behind every option, including the correct one (`predict` voice contract, INTERACTIVITY-PATTERNS).

@@ -72,8 +72,8 @@ export class PistonAdapter implements CodeExecutionPort {
       if (result.compile && result.compile.code !== 0) {
         return {
           stdout: result.compile.stdout,
-          stderr: result.compile.stderr,
-          exitCode: result.compile.code,
+          stderr: scrubPistonNoise(result.compile.stderr),
+          exitCode: result.compile.code ?? 1,
           timedOut: false,
           executionTimeMs: Date.now() - start,
         }
@@ -118,14 +118,14 @@ export class PistonAdapter implements CodeExecutionPort {
     const isRust = params.language.toLowerCase() === 'rust'
     // Combine solution + test into one file so all symbols are in scope.
     // Two-file mode loses stdout in Piston's TypeScript runtime.
-    // Rust: learner code is wrapped in `mod solution` so a learner-written
-    // `fn main` becomes an ordinary module function and the test harness owns
-    // the real entry point. The harness header glob-imports the module; glob
-    // imports lose to the harness's own `fn main` by precedence, so there is
-    // no E0428 collision. Compile-error line numbers shift by exactly one
-    // (the mod wrapper line) — noted in the Rust scroll's smoke contract.
+    // Rust: a learner-written `fn main` is renamed to `fn __learner_main` so
+    // the test harness owns the real entry point. Learner code stays at the
+    // top level of the file (same-file items are accessible without `pub` —
+    // a `mod` wrapper was tried first and failed on module privacy, validated
+    // against real rustc 1.68.2 at the L1 smoke). Zero line-number offset.
+    // Playground testCode calls `__learner_main()` to run the learner's main.
     const combined = isRust
-      ? `#[allow(dead_code, unused_variables, unused_mut, unused_imports)] mod solution {\n${params.code}\n}\n\n${params.testCode}`
+      ? `${params.code.replace(/\bfn\s+main\s*\(/g, 'fn __learner_main(')}\n\n${params.testCode}`
       : `${params.code}\n\n${params.testCode}`
     // Rust file is named main.rs so rustc's error paths match the scroll
     // prose ("main.rs:LINE"); other languages keep the historical test.*.
@@ -173,8 +173,10 @@ export class PistonAdapter implements CodeExecutionPort {
       if (result.compile && result.compile.code !== 0) {
         return {
           stdout: result.compile.stdout,
-          stderr: result.compile.stderr,
-          exitCode: result.compile.code,
+          stderr: scrubPistonNoise(result.compile.stderr),
+          // Piston reports a null code when the compile stage dies on a
+          // signal (observed with rustc on signal 6); normalize to 1.
+          exitCode: result.compile.code ?? 1,
           timedOut: false,
           executionTimeMs: Date.now() - start,
         }
@@ -197,6 +199,21 @@ export class PistonAdapter implements CodeExecutionPort {
       }
     }
   }
+}
+
+// Piston's runner appends its own noise to compile stderr when the compile
+// stage fails (its run script still tries to chmod the missing binary, and
+// the sandbox keeper logs its signal). Neither line is the learner's error.
+function scrubPistonNoise(stderr: string): string {
+  return stderr
+    .split('\n')
+    .filter(
+      (line) =>
+        !/^Sandbox keeper received fatal signal/.test(line) &&
+        !/^chmod: cannot access 'binary'/.test(line),
+    )
+    .join('\n')
+    .trimEnd()
 }
 
 function ext(language: string): string {

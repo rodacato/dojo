@@ -44,7 +44,7 @@ describe('PistonAdapter', () => {
     expect(result.executionTimeMs).toBeGreaterThanOrEqual(0)
   })
 
-  it('wraps Rust learner code in mod solution and names the file main.rs', async () => {
+  it('renames a Rust learner main to __learner_main and names the file main.rs', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -54,22 +54,23 @@ describe('PistonAdapter', () => {
 
     await adapter.execute({
       language: 'rust',
-      code: 'fn main() {\n    println!("learner");\n}',
+      code: 'fn helper() -> i32 { 1 }\n\nfn main() {\n    println!("learner");\n}',
       testCode: 'fn main() { _t("explored", || _eq(true, true)); }',
     })
 
     const body = JSON.parse(mockFetch.mock.calls[0]?.[1]?.body as string)
     const file = body.files[0]
     expect(file.name).toBe('main.rs')
-    // Learner main lives inside the module; the harness owns the real entry.
-    expect(file.content).toMatch(/^#\[allow\([^)]*\)\] mod solution \{\n/)
-    expect(file.content).toContain('println!("learner")')
-    expect(file.content.indexOf('mod solution')).toBeLessThan(
+    // Learner main is renamed; the harness's fn main is the only entry point.
+    expect(file.content).toContain('fn __learner_main(')
+    expect(file.content).toContain('fn helper() -> i32')
+    expect(file.content.match(/\bfn\s+main\s*\(/g)).toHaveLength(1)
+    expect(file.content.indexOf('fn __learner_main(')).toBeLessThan(
       file.content.indexOf('_t("explored"'),
     )
   })
 
-  it('does not wrap non-Rust languages in mod solution', async () => {
+  it('does not rewrite non-Rust languages', async () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -84,7 +85,6 @@ describe('PistonAdapter', () => {
     })
 
     const body = JSON.parse(mockFetch.mock.calls[0]?.[1]?.body as string)
-    expect(body.files[0].content).not.toContain('mod solution')
     expect(body.files[0].content).toBe('def f():\n    return 1\n\nassert f() == 1')
   })
 
