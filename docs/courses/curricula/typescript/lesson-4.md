@@ -46,7 +46,7 @@ const data: unknown = JSON.parse(payload);
 data.user;  // Error: 'data' is of type 'unknown'.
 ```
 
-This is what `JSON.parse` *should* return and what `catch (e)` binds since TS 4.4. It pairs with the user-defined guards from Lesson 3: `unknown` in, a guard proves the shape, a typed value out. The compiler makes you earn every property access.
+This is what `JSON.parse` *should* return and what `catch (e)` binds since TS 4.4. It pairs with the user-defined type guards from Lesson 3: `unknown` in, a guard proves the shape, a typed value out. The compiler makes you earn every property access.
 
 <!-- interact:catch-is-unknown -->
 
@@ -111,11 +111,9 @@ Next: the boundary kata — take `unknown` in, narrow it with a guard, hand a ty
 ### `instruction` (markdown body)
 
 ```markdown
-## Why this matters
-
-`JSON.parse` is typed to return `any` by the standard library — that's the silent hole this lesson opened with. Every webhook, every `fetch().json()`, every `process.env` value enters your program this way: shaped however the outside world felt like shaping it, and typed as "stop checking". The single most transferable TypeScript skill for a working JS developer is closing that hole *once*, at the boundary, with a guard — so everything downstream is a real `User`, not a hope.
-
 ## Your task
+
+`JSON.parse` is typed to return `any` by the standard library — that's the silent hole this lesson opened with. Every webhook, every `fetch().json()`, every `process.env` value enters your program this way: shaped however the outside world felt like shaping it, and typed as "stop checking". Closing that hole *once*, at the boundary, with a guard — so everything downstream is a real `User`, not a hope — is the single most transferable TypeScript skill for a working JS developer, and it's what you build here.
 
 `User` is the shape you defined in Lesson 2: `type User = { id: string; name?: string; email?: string }` — `id` required, the other two optional. The starter gives you `parseJson`, which already downgrades `JSON.parse`'s `any` to `unknown` (a `try/catch` returning `null` on malformed input). You write two things:
 
@@ -297,12 +295,12 @@ console.log(a);
 ### `testCode`
 
 ```typescript
-_t("explored", () => { _eq(true, true); });
+_t("explored the escape hatches at a boundary", () => { _eq(true, true); });
 ```
 
 ### Authoring notes
 
-- **Playground contract (§2.4):** `data.kind: "playground"`, the trivially-true `_t("explored", …)` assertion, button "↻ Try it", no verdict UI. A compile error here is pedagogical — the instruction says so in its first line. Frontend `data.kind === "playground"` branch shipped with Ruby, reused by Python — no new work.
+- **Playground contract (§2.4):** `data.kind: "playground"`, the trivially-true `_t("explored the escape hatches at a boundary", …)` assertion, button "↻ Try it", no verdict UI. A compile error here is pedagogical — the instruction says so in its first line. Frontend `data.kind === "playground"` branch shipped with Ruby, reused by Python — no new work.
 - **Things-to-try as numbered starter comments (Maya contract):** four concrete edits — the `any` deep-chain (answer to "when does it warn?" is *never*, but the comment doesn't say so — the learner runs it and finds the compiler silent), the `unknown` refusal lighting one exact line, the `never`-after-`fail()` inference, and the `string | never` collapse that powers `assertNever`. **No `(spoiler: …)` that answers its own prompt** — each comment asks, the run answers.
 - **Coverage:** the four tries map to the read's four beats — `any` propagation (try 1), `unknown` refusal (try 2), `never`-returning function (try 3), `T | never` collapse (try 4). The playground is where the read's claims become physical.
 - Single-file, TS 5.0.3. The committed-error lines (try 1, try 2) are the point — the runner surfaces them as readable compile output, not a crash (§5). <!-- verify-at-smoke: tsc 5.0.3 -->

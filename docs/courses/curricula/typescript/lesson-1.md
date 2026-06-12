@@ -222,11 +222,8 @@ applyDiscount("120", 10);
 applyDiscount();
 
 // the return type must be exactly number
-type _r = Equal<ReturnType<typeof applyDiscount>, number>;
-_t("return type is number", () => {
-  const _check: _r = true;
-  _eq(_check, true);
-});
+type _r1 = Equal<ReturnType<typeof applyDiscount>, number> extends true ? true : never;
+const _check1: _r1 = true;
 ```
 
 ### `hint`

@@ -165,6 +165,7 @@ getDisplayName({ name: "Ada" });
 
 // The return type is exactly string (never string | undefined), because id is the floor.
 type _t1 = Equal<ReturnType<typeof getDisplayName>, string> extends true ? true : never;
+const _check1: _t1 = true;
 ```
 
 ### `hint`

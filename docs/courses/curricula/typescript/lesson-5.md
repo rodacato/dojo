@@ -69,7 +69,7 @@ function get<T, K extends keyof T>(obj: T, key: K): T[K] {
 
 <!-- interact:keyof-indexed -->
 
-One more shape you'll *read* but not drill: a parameter spelled `guard: (x: unknown) => x is T` — a function-typed parameter carrying a type guard. The capstone's `parseWith` signature uses it; you don't have to write that signature, only its body.
+One more shape you'll *read* but not drill: a parameter spelled `guard: (x: unknown) => x is T` — a function-typed parameter carrying a user-defined type guard. The capstone's `parseWith` signature uses it; you don't have to write that signature, only its body.
 
 ## When NOT to be generic
 
@@ -445,7 +445,7 @@ type _t1 = Equal<ReturnType<typeof parseWith<ShipmentEvent>>, ShipmentEvent | nu
 const _check1: _t1 = true;
 
 // @ts-expect-error  an un-guarded `unknown` is not assignable to ShipmentEvent.
-describeShipment(JSON.parse('{"kind":"created","id":"s1"}'));
+describeShipment(JSON.parse('{"kind":"created","id":"s1"}') as unknown);
 ```
 
 ### `hint` (the only one — challenge rules, README §5.3)
@@ -530,7 +530,7 @@ function handleShipmentWebhook(raw: string): string {
 | Missing tag / unknown tag → `"invalid payload"` | The guard's tag validation; **these run through the composed handler**, so a `JSON.parse(raw) as ShipmentEvent` shortcut inside the guard passes the guard but crashes in `describeShipment` at runtime — the Felipe attack caught where it lies (S028 panel). |
 | `scanned` missing `location` → `"invalid payload"` | The per-variant required-field check — a guard that validates only the tag lets this through. |
 | `Equal<ReturnType<typeof parseWith<ShipmentEvent>>, ShipmentEvent \| null>` | Forces `parseWith` to actually be generic — a non-generic body that hard-codes `ShipmentEvent` would pass the runtime tests but is pinned here. Instantiation expression, TS ≥4.7 (5.0.3 clears it); load-bearing, do not simplify away. |
-| `@ts-expect-error` on `describeShipment(JSON.parse(...))` | `describeShipment` refuses an un-guarded `unknown` — the boundary discipline holds at the type level too. |
+| `@ts-expect-error` on `describeShipment(JSON.parse(...) as unknown)` | `describeShipment` refuses an un-guarded `unknown` — the boundary discipline holds at the type level too. The `as unknown` cast is load-bearing: `JSON.parse` returns `any`, which is assignable to `ShipmentEvent`, so without it the directive goes unused (TS2578) and the capstone fails to compile. |
 
 ### Lesson-name map (the brief names where each piece comes from)
 

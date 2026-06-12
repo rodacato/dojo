@@ -150,7 +150,7 @@ If every variant is handled, the value reaching `default` is `never`, and `asser
 
 ## When built-in checks can't see the shape
 
-For a value whose type the compiler genuinely can't infer — JSON off the wire, an `unknown` from a boundary — you write a **type guard**: a function whose return type is `x is User`. One example; Lesson 4 puts it to work.
+For a value whose type the compiler genuinely can't infer — JSON off the wire, an `unknown` from a boundary — you write a **user-defined type guard**: a function whose return type is `x is User`. One example; Lesson 4 puts it to work.
 
 Next: chain the toolbox on a three-way union.
 ```
