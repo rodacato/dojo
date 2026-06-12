@@ -4,6 +4,21 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 028 — Rust + TypeScript crash scrolls (2026-06-12)
+**Phase 1 — Alpha**
+
+The sprint that proved the authoring machine runs at 2×: two language scrolls, end-to-end, through the same Phase-A→W3 pipeline, twice, with consistent quality. The cadence held — both shipped content-complete and smoked against the real compiler.
+
+- **Rust crash scroll** — 7 lessons / 25 steps. The compiler-as-tutor lens with a Rust-scoped format exception: one mental model taught from scratch (ownership → borrowing → lifetimes-lite), everything else delta-style. The exception held without leaking — Go and TS don't inherit it, and the spec says so. Seeded in 4 batches, each smoked live against **Piston rustc 1.68.2** (installed into the local Piston this sprint). All 13 reference solutions pass; every quoted rustc error is a verbatim capture, not a guess. `isPublic:false`.
+- **TypeScript crash scroll** — 6 lessons / 20 steps. Benefits-forward for the JS developer adopting TS (A4 Felipe). The whole interaction model rides on compile-result-as-feedback (`Equal<>` assertions, `@ts-expect-error`, type-error-as-output) — a channel no prior scroll exercised, so it was smoked green (TS 5.0.3) before a word of prose. The harness `_eq` distinguishes `{}` from `{k:undefined}` — the optional-field benefit the scroll teaches, made real in the test runner. All 11 solutions pass. Legacy `typescript-fundamentals` left intact — rebuild-not-migrate's hard-delete is a publish-time call, not done unilaterally on live content. `isPublic:false`.
+- **Per-batch real-compiler smoke earned its keep, every batch.** Rust: the mod-solution wrap died on module privacy (E0425/E0603 — replaced with a fn-main rename); a kata solution wasn't self-contained; `help: consider cloning` exists on 1.68.2 (the drafts believed it post-1.68). TS: the suite voice audit (which compiled the code) caught two compile-breakers; the live smoke caught the strip-and-run trap (a type-only `@ts-expect-error` whose stripped JS runs and throws), a `@ts-expect-error` living inside a `//` comment, a content arithmetic bug (the discount example claimed 108×0.95=102), and a stdout-cap overflow on the capstone. None survive a real-compiler smoke; none are caught by reading.
+- **Execution infra hardened by what the smokes exposed:** the PistonAdapter renames learner `fn main`→`__learner_main` for Rust and scrubs Piston's sandbox-keeper/chmod noise; `errorKind` recognizes compiler-error signatures (`error TS####`, `error[E####]`) so type/borrow errors read as "did not compile," not "crashed"; `PISTON_RUN_TIMEOUT` 3000→8000 (Piston compiles TS at run — a ~2.7s floor even for `console.log`); the TS harness footer drops the legacy ✓/✗ echo (Piston caps stdout at 1024 bytes; the capstone's 10-test result tipped over).
+- **The `metric-pair` figure consciously unserved in both scrolls** (no honest ≥3× magnitude — Rust's alloc-count would seed clone-phobia, TS's enum-vs-union is categorical not magnitude), recorded so it isn't re-proposed. **AUDIENCE.md corrected:** the TS row I'd written gave Esteban "JS from his fullstack years" — he's Python-first with no JS background; personas drive real authoring calls, so the invented detail was a real bug, caught at the TS confirmation.
+- **Honest publish gate:** neither scroll publishes yet. Both are `isPublic:false` until the full-set real-Piston smoke and — for TS specifically — the Piston deploy raises `max_run_timeout` (≥8000) and `output_max_size`. Documented in the seed headers as infra the deploy owns, not a content blocker.
+- **Cadence decision held; Go is next.** S029 opens with Go (Piston Go 1.16.2 is pre-generics — that constraint shapes the lens) as mandatory scroll #1.
+
+---
+
 ## Sprint 027 — Python crash scroll + scroll hardening (2026-06-11)
 **Phase 1 — Alpha**
 

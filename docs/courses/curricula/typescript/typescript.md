@@ -16,7 +16,7 @@ sandbox: piston                  # existing allowlisted TS path; iframe is javas
 prereqs: []                      # JS fluency is the audience contract, not a prereq scroll
 audience: "JS developer who wants to learn TypeScript and its benefits — JS assumed fluent, TS assumed zero"
 learner_time: "~95 minutes (60-120 range)"
-status: scope-block-complete     # outline + capstone + gesture audit done (S028 W1); lesson prose is W2
+status: seeded-smoked            # full scroll seeded (20 steps) + end-to-end smoked vs Piston TS 5.0.3 (2026-06-12); isPublic:false pending S028 full-set smoke gate + Piston deploy config (max_run_timeout/output_max_size)
 maintainers:
   - S9 Leo Barros                # language pedagogy
   - S5 Elif Yıldız               # curriculum architecture
