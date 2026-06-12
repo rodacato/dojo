@@ -1,5 +1,5 @@
 // =============================================================================
-// Rust — scroll seed, batches 1-2 of 4 (Lessons 0-3). The dojo's Rust crash
+// Rust — scroll seed, batches 1-3 of 4 (Lessons 0-5). The dojo's Rust crash
 // course for polyglot developers.
 //
 // Direction: ADR 022 (crash-course pivot); spec promoted to canon S028 W1
@@ -8,10 +8,14 @@
 //   order 2 — Lesson 1 (Ownership)          — 5 steps (read, predict, 2 kata, playground)
 //   order 3 — Lesson 2 (Borrowing)          — 5 steps (read, predict, kata, read+inline, kata)
 //   order 4 — Lesson 3 (Result, ?, errors)  — 3 steps (read, 2 kata)
-// These batches: 15 steps total seeded. Full scroll: 25 steps / ~120 min target.
-// Lessons 4-6 seed in later batches. The batch-2 quoted rustc excerpts
+//   order 5 — Lesson 4 (Traits, generics)   — 4 steps (read, predict, 2 kata)
+//   order 6 — Lesson 5 (Enums, Option)      — 4 steps (read, predict, 2 kata)
+// These batches: 23 steps total seeded. Full scroll: 25 steps / ~120 min target.
+// Lesson 6 seeds in the final batch. The batch-2 quoted rustc excerpts
 // (2.2 E0499, 2.4 fresh E0499 + E0502, 3.1 E0277) are pasted verbatim from
-// the live Piston rustc 1.68.2 capture (2026-06-12).
+// the live Piston rustc 1.68.2 capture (2026-06-12). The batch-3 quoted
+// excerpts (4.2 E0277-unsized, 5.2 E0004, 5.1 E0004 headline) are likewise
+// pasted verbatim from the live Piston rustc 1.68.2 capture (2026-06-12).
 // The Lesson 1 real-Piston smoke ran
 // 2026-06-12 against rustc 1.68.2: compile-errors-as-feedback validated
 // (rustc stderr surfaces through ExecuteStep; Piston noise scrubbed by the
@@ -57,6 +61,8 @@ const LESSON_0_ID = seedUuid('rust-l0-context')
 const LESSON_1_ID = seedUuid('rust-l1-ownership')
 const LESSON_2_ID = seedUuid('rust-l2-borrowing')
 const LESSON_3_ID = seedUuid('rust-l3-result')
+const LESSON_4_ID = seedUuid('rust-l4-traits')
+const LESSON_5_ID = seedUuid('rust-l5-enums')
 
 const STEP_0_1_ID = seedUuid('rust-s0-1-context-and-toolchain')
 const STEP_0_2_ID = seedUuid('rust-s0-2-predict-first-command')
@@ -76,6 +82,16 @@ const STEP_2_5_ID = seedUuid('rust-s2-5-kata-fix-overlapping-borrows')
 const STEP_3_1_ID = seedUuid('rust-s3-1-result-and-question-mark')
 const STEP_3_2_ID = seedUuid('rust-s3-2-kata-parse-and-double')
 const STEP_3_3_ID = seedUuid('rust-s3-3-kata-custom-error-enum')
+
+const STEP_4_1_ID = seedUuid('rust-s4-1-traits-and-dispatch')
+const STEP_4_2_ID = seedUuid('rust-s4-2-predict-which-signatures-compile')
+const STEP_4_3_ID = seedUuid('rust-s4-3-kata-define-struct-implement-trait')
+const STEP_4_4_ID = seedUuid('rust-s4-4-kata-generic-function-with-bound')
+
+const STEP_5_1_ID = seedUuid('rust-s5-1-enums-option-and-match')
+const STEP_5_2_ID = seedUuid('rust-s5-2-predict-does-this-compile')
+const STEP_5_3_ID = seedUuid('rust-s5-3-kata-define-enum-match-every-shape')
+const STEP_5_4_ID = seedUuid('rust-s5-4-kata-first-even')
 
 const RUST_HARNESS_HEADER = String.raw`// ── dojo harness ──────────────────────────────────
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -1305,11 +1321,736 @@ const LESSON_3 = {
   title: 'Result, ?, and errors as values',
 }
 
-export const RUST_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3]
+// =============================================================================
+// Lesson 4 — Traits and generics: interfaces with a twist
+// =============================================================================
+//
+// 4 steps (read + predict + 2 kata). Delta-framed: traits anchored to the
+// TS/Java interface the personas already write; monomorphization named as the
+// inverse of Java's type erasure. Read 4.1 carries no error excerpt (every
+// sample compiles) and embeds the dispatch-decision tabbed-card figure; it
+// closes by posing predict 4.2's question. Predict 4.2 reveals the scroll's
+// E0277 in its unsized-`dyn` form — a DISTINCT member of the same family as
+// 3.1's `?`-in-non-Result E0277 (Sized, not FromResidual). Kata 4.3 (G1) has
+// the learner write a struct + inherent impl + trait impl; kata 4.4 a single
+// generic function the tests call with two concrete types (monomorphization
+// observable). The 4.2 E0277-unsized excerpt is the verbatim Piston 1.68.2 capture.
+
+const STEP_4_1 = {
+  id: STEP_4_1_ID,
+  lessonId: LESSON_4_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'Traits: the interface you know, the dispatch you choose',
+  instruction: `## Why this matters
+
+You already hold this concept: a Rust **trait** is the interface you write in TypeScript or Java — a named contract of methods. The twist is threefold: no inheritance between types (traits attach behavior to otherwise-flat types), a single *blanket impl* can cover every type matching a bound (a power your interfaces lack — \`rust-traits-deep\` owns it), and — the heart of this lesson — **dispatch** (which function body actually runs) **is a choice you spell**.
+
+One inversion, for Java readers: your generics **erase** — one compiled body, type parameters gone by runtime. Rust **monomorphizes** — one generic body in source, one specialized copy per concrete type in the binary. Your erasure model running backwards: flip it once and the rest is bookkeeping.
+
+## Define, implement
+
+Two statements: the contract, and a type honoring it. A trait method may ship a default body — implementors get it free and may override. The \`&self\` receiver is Lesson 2's shared borrow wearing method syntax.
+
+\`\`\`rust
+trait Greet {
+    fn name(&self) -> String;
+    fn greet(&self) -> String {
+        format!("hello, {}", self.name())
+    }
+}
+
+struct Person { name: String }
+
+impl Greet for Person {
+    fn name(&self) -> String {
+        self.name.clone()
+    }
+}
+
+fn main() {
+    let dev = Person { name: String::from("Mariana") };
+    println!("{}", dev.greet());
+}
+\`\`\`
+
+## Consuming the contract: static by default
+
+The generic bound is the workhorse. It compiles to a specialized \`announce\` per concrete type — direct calls, zero runtime cost, a bigger binary:
+
+\`\`\`rust
+fn announce<T: Greet>(guest: &T) -> String {
+    format!("now arriving: {}", guest.name())
+}
+\`\`\`
+
+\`fn announce(guest: &impl Greet)\` is sugar for that exact generic — same monomorphization; you only lose naming \`T\` at a call site. (In **return** position: "one concrete type, unnamed.") The third spelling is different machinery:
+
+\`\`\`rust
+let guests: Vec<Box<dyn Greet>> = vec![
+    Box::new(Person { name: String::from("Mariana") }),
+    Box::new(Robot),
+];
+\`\`\`
+
+(Compiles given the definitions above plus a \`struct Robot;\` impl.) \`Box<dyn Greet>\` is **runtime dispatch**: one compiled body, every call through a vtable — a per-type table of method pointers looked up at runtime — the value behind a heap allocation. That buys what monomorphization cannot: one collection holding *different* concrete types. Deeper trait-object territory (\`&dyn\`, explicit lifetimes) is \`rust-traits-deep\`'s too.
+
+## The decision — and the reflex to retire
+
+The Java/C# reflex says interface-typed values are always dynamically dispatched, so \`dyn\` looks like the honest default; in Rust it is the escape hatch. The tree: one concrete type → take it plainly; several types, known at compile time → generic bound; genuine runtime heterogeneity → \`Box<dyn Trait>\`. The figure holds the three spellings side by side:
+
+:figure[tabbed-card]{id="dispatch-decision"}
+
+## \`#[derive]\`: traits the compiler writes
+
+Some impls are mechanical enough to request instead of write:
+
+\`\`\`rust
+#[derive(Debug, Clone, PartialEq)]
+struct Session { id: u32 }
+
+fn main() {
+    let a = Session { id: 7 };
+    let b = a.clone();
+    println!("{:?} equals {:?}: {}", a, b, a == b);
+}
+\`\`\`
+
+\`derive\` is a macro — the mechanism belongs to \`rust-macros-declarative-and-procedural\`; this scroll only asks you to read and use it. Next: four \`announce\`-shaped signatures — which ones does the compiler accept? Commit before you peek.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+// The E0277-unsized walk — appended to every option's feedback at seed (per
+// the lesson file's reveal section), so each answer path sees it. DISTINCT
+// from batch-2's E0277_REVEAL (3.1, ?-in-non-Result / FromResidual): this is
+// the Sized form on a bare `dyn` parameter. Output is the verbatim Piston
+// 1.68.2 capture (2026-06-12).
+const E0277_UNSIZED_REVEAL = `Three of the four compile. Here is what rustc says about \`greet_dyn\`:
+
+\`\`\`text
+error[E0277]: the size for values of type \`(dyn Greet + 'static)\` cannot be known at compilation time
+ --> main.rs:8:14
+  |
+8 | fn greet_dyn(guest: dyn Greet) -> String { guest.name() }
+  |              ^^^^^ doesn't have a size known at compile-time
+  |
+  = help: the trait \`Sized\` is not implemented for \`(dyn Greet + 'static)\`
+help: you can use \`impl Trait\` as the argument type
+  |
+8 | fn greet_dyn(guest: impl Greet) -> String { guest.name() }
+  |                     ~~~~
+help: function arguments must have a statically known size, borrowed types always have a known size
+  |
+8 | fn greet_dyn(guest: &dyn Greet) -> String { guest.name() }
+  |                     +
+
+error: aborting due to previous error
+
+For more information about this error, try \`rustc --explain E0277\`.
+\`\`\`
+
+First, the code. You have met \`E0277\` before: in Lesson 3 it refused \`?\` inside a function returning \`i32\`. \`E0277\` is not one error — it is the **family** "a required trait bound is not satisfied," and the unsatisfied trait is named in the headline or a \`help:\` line — read both. There it was the \`?\`-plumbing's \`FromResidual\`; here it is \`Sized\`, the implicit bound every by-value parameter carries. When you meet the next family member, those are the lines to read first.
+
+Why \`dyn Greet\` specifically: parameters are passed by value, and a value needs a compile-time size to get a stack slot. \`dyn Greet\` is the type whose concrete implementor — and therefore size — is only known at runtime. The compiler writes **two** fixes for you, and they are two of the three signatures that compile: the first \`help:\` rewrites the parameter to \`impl Greet\` (the sized, monomorphized form); the second puts it behind a pointer, \`&dyn Greet\`. \`&dyn Greet\` and \`Box<dyn Greet>\` are both pointer-sized, and pointers always have a known size. The compiler is pointing you back at the very signatures the predict asked about. (The \`'static\` in the message is the lifetime cameo from Lesson 2's error walk — recognize it, don't write it; owned trait objects default to it, and the full story belongs to \`rust-traits-deep\`.)
+
+Now the three that compile — they are not interchangeable:
+
+- \`greet_generic\` and \`greet_impl\` produce **identical machine code**: static dispatch, monomorphized per concrete type, zero runtime cost. The only difference is at the call site — the generic's type can be named explicitly (\`greet_generic::<Person>(dev)\`); the \`impl Trait\` version's cannot.
+- \`greet_boxed\` is **dynamic dispatch**: one compiled body, a vtable lookup per call, a heap allocation per value. The right signature when the caller genuinely holds mixed concrete types — and a silent tax everywhere else.
+
+Name the reflex once more, because this is where it picks wrongly: the Java/C# instinct says "interface parameter means dynamic dispatch, always" — which makes \`greet_boxed\` look like the workhorse and \`greet_generic\` look exotic. Rust's default runs the other way: reach for the bound; pay for the box only when heterogeneity is real. The next two katas have you write both halves — the contract with its impls, then the generic consumer.`
+
+const STEP_4_2 = {
+  id: STEP_4_2_ID,
+  lessonId: LESSON_4_ID,
+  order: 2,
+  type: 'predict' as const,
+  title: 'Predict: which of these signatures compile?',
+  instruction: `The read ended pointing here: four signatures, one trait — the same \`Greet\`. Commit to an answer before you reveal.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: {
+    question: 'Which of these four signatures compile?',
+    snippet: `trait Greet {
+    fn name(&self) -> String;
+}
+
+fn greet_generic<T: Greet>(guest: T) -> String { guest.name() }
+fn greet_impl(guest: impl Greet) -> String { guest.name() }
+fn greet_boxed(guest: Box<dyn Greet>) -> String { guest.name() }
+fn greet_dyn(guest: dyn Greet) -> String { guest.name() }`,
+    options: [
+      { id: 'a', text: 'All four — they are four spellings of the same contract' },
+      { id: 'b', text: 'Three — \`greet_dyn\` is rejected; the other three compile' },
+      {
+        id: 'c',
+        text: 'Two — only \`greet_generic\` and \`greet_impl\`; trait objects cannot be function parameters at all',
+      },
+      {
+        id: 'd',
+        text: 'Three — \`greet_impl\` is rejected; \`impl Trait\` is only legal as a return type',
+      },
+    ],
+    correct: 'b',
+    feedback: {
+      a: `The Java/C# reflex, in its purest form: there, \`String f(Greet guest)\` is the daily signature, an interface-typed parameter is just a reference, and dispatch is dynamic — always, invisibly. \`fn greet_dyn(guest: dyn Greet)\` is that signature transliterated, which is exactly why it reads as the *normal* one. But Rust passes parameters by value, a value needs a compile-time size to get a stack slot, and \`dyn Greet\` is precisely the type whose size depends on which implementor shows up at runtime. The real output is below.\n\n${E0277_UNSIZED_REVEAL}`,
+      b: `Correct — and the three that compile are not three spellings of one thing. Two of them are the same machine code and the third is different machinery. The error and the dispatch walk are below.\n\n${E0277_UNSIZED_REVEAL}`,
+      c: `The overcorrection that follows first contact with the unsized rule: "trait objects can't cross function boundaries." They can — behind a pointer. \`Box<dyn Greet>\` is a fat pointer (data pointer + vtable pointer), a perfectly fixed-size parameter; \`&dyn Greet\` works the same way. The rule was never "no trait objects in signatures" — it is "no unsized values *by value*." The real output is below.\n\n${E0277_UNSIZED_REVEAL}`,
+      d: `The half-remembered rule. \`impl Trait\` did premiere in return position — and that is where it is irreplaceable ("one concrete type, unnamed"). But argument position is legal, stable for years, and is pure sugar for the generic on the line above it: same monomorphization, same zero cost. The real output is below.\n\n${E0277_UNSIZED_REVEAL}`,
+    },
+  },
+}
+
+const STEP_4_3 = {
+  id: STEP_4_3_ID,
+  lessonId: LESSON_4_ID,
+  order: 3,
+  type: 'kata' as const,
+  title: 'Define a struct, implement a trait',
+  instruction: `## Your task
+
+The starter is a complete worked example: \`struct Person\`, its **inherent impl** (\`impl Person\` — the type's own methods, here a constructor), and its **trait impl** (\`impl Describe for Person\` — the promise that \`Person\` honors the contract). Your job is the same three blocks for a new type, typed with your own hands:
+
+1. **Define \`struct Point\`** with two fields: \`x: i32\` and \`y: i32\`.
+2. **Give it an inherent impl** with a constructor, so \`Point::new(3, 4)\` builds the point.
+3. **Implement \`Describe\` for it**, so \`Point::new(3, 4).describe()\` returns exactly \`"(3, 4)"\`.
+
+The two impl blocks are different statements on purpose: \`impl Point\` is where a type's own API lives; \`impl Describe for Point\` is the contract being honored. Production Rust types routinely carry both — which is why you write both.
+
+### What's expected
+
+\`\`\`rust
+Person::new("Mariana").describe()  // "Mariana (person)" — the worked example, already passing
+Point::new(3, 4).describe()        // "(3, 4)"
+Point::new(-1, 12).describe()      // "(-1, 12)"
+\`\`\``,
+  starterCode: `trait Describe {
+    fn describe(&self) -> String;
+}
+
+// Worked example — a complete type: struct + inherent impl + trait impl.
+struct Person {
+    name: String,
+}
+
+impl Person {
+    fn new(name: &str) -> Person {
+        Person { name: String::from(name) }
+    }
+}
+
+impl Describe for Person {
+    fn describe(&self) -> String {
+        format!("{} (person)", self.name)
+    }
+}
+
+// Your turn: the same three blocks for \`Point\` (fields x: i32, y: i32).
+
+fn main() {
+    println!("{}", Person::new("Mariana").describe());
+    // once Point exists, try:
+    // println!("{}", Point::new(3, 4).describe());
+}
+`,
+  testCode: `${RUST_HARNESS_HEADER}
+_t("Point::new stores both coordinates for describe to use", || _eq(Point::new(3, 4).describe(), String::from("(3, 4)")));
+
+_t("a different point describes itself, not the example", || _eq(Point::new(-1, 12).describe(), String::from("(-1, 12)")));
+
+_t("the worked example still describes itself", || _eq(Person::new("Mariana").describe(), String::from("Mariana (person)")));
+${RUST_HARNESS_FOOTER}`,
+  hint: `All three blocks you need are already on screen with different names: the worked example is the skeleton — the struct, the inherent \`impl Type { ... }\`, the trait \`impl Trait for Type { ... }\`. Only the fields, the constructor's parameters, and the produced text change. For the text itself, \`format!\` does the assembling, and the expected output is the two fields with parentheses and a comma around them — the instruction's examples pin it exactly.`,
+  solution: `trait Describe {
+    fn describe(&self) -> String;
+}
+
+struct Person {
+    name: String,
+}
+
+impl Person {
+    fn new(name: &str) -> Person {
+        Person { name: String::from(name) }
+    }
+}
+
+impl Describe for Person {
+    fn describe(&self) -> String {
+        format!("{} (person)", self.name)
+    }
+}
+
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Point {
+    fn new(x: i32, y: i32) -> Point {
+        Point { x, y }
+    }
+}
+
+impl Describe for Point {
+    fn describe(&self) -> String {
+        format!("({}, {})", self.x, self.y)
+    }
+}
+
+fn main() {
+    println!("{}", Person::new("Mariana").describe());
+    println!("{}", Point::new(3, 4).describe());
+}
+`,
+  alternativeApproach: `Two derive experiments worth five minutes each, right here in this editor:
+
+1. Add \`#[derive(Debug)]\` above your \`Point\`, print it with \`println!("{:?}", Point::new(3, 4))\`, and look at the output you didn't write. Then **delete the derive and run again** — the error that comes back is \`E0277\`, the trait-bound family from the predict: \`{:?}\` requires the \`Debug\` bound, and your type no longer satisfies it. A derive is a trait impl the compiler wrote; removing it un-implements the trait.
+2. With the derive back in place, change \`{:?}\` to \`{}\`. It refuses — \`{}\` requires \`Display\`, and \`Display\` is **not derivable**. The standard library declines to guess what a user-facing rendering of your type should look like; that is a judgment call, so you write it. You already made exactly this call twice: \`Display\` by hand in Lesson 3, and \`describe\` here. \`{:?}\` is for developers and derivable; \`{}\` is for users and written.`,
+}
+
+const STEP_4_4 = {
+  id: STEP_4_4_ID,
+  lessonId: LESSON_4_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: 'A generic function with a bound',
+  instruction: `## Your task
+
+Write \`announce\`: a single generic function that takes a slice of values of **any type implementing \`Describe\`** and returns a \`Vec<String>\` holding one description per item, in order. An empty slice announces nothing — an empty \`Vec\`.
+
+The starter already carries \`Describe\`, \`Person\`, and \`Point\` with their impls — kata 4.3's work, pre-written so this step stands alone. You write one function. The tests then call it with a slice of \`Person\` **and** a slice of \`Point\` — that second call is the lesson: one body in your source, and the compiler monomorphizes a specialized copy per concrete type. The read's inverse-of-erasure point, observable.
+
+### What's expected
+
+\`\`\`rust
+announce(&team)    // &[Person] -> vec!["Mariana (person)", "Yui (person)"]
+announce(&path)    // &[Point]  -> vec!["(0, 0)", "(3, 4)"]
+announce(&nobody)  // empty     -> vec![]
+\`\`\``,
+  starterCode: `trait Describe {
+    fn describe(&self) -> String;
+}
+
+struct Person {
+    name: String,
+}
+
+impl Describe for Person {
+    fn describe(&self) -> String {
+        format!("{} (person)", self.name)
+    }
+}
+
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Describe for Point {
+    fn describe(&self) -> String {
+        format!("({}, {})", self.x, self.y)
+    }
+}
+
+// Your code: write \`announce\` here — generic, bounded, slice in, Vec<String> out.
+
+fn main() {
+    // once announce exists, try:
+    // let team = vec![Person { name: String::from("Mariana") }];
+    // println!("{:?}", announce(&team));
+}
+`,
+  testCode: `${RUST_HARNESS_HEADER}
+_t("announces every person in a slice, in order", || {
+    let team = vec![
+        Person { name: String::from("Mariana") },
+        Person { name: String::from("Yui") },
+    ];
+    _eq(announce(&team), vec![
+        String::from("Mariana (person)"),
+        String::from("Yui (person)"),
+    ])
+});
+
+_t("the same function announces points — one source body, two compiled copies", || {
+    let path = vec![Point { x: 0, y: 0 }, Point { x: 3, y: 4 }];
+    _eq(announce(&path), vec![
+        String::from("(0, 0)"),
+        String::from("(3, 4)"),
+    ])
+});
+
+_t("an empty slice announces nothing", || {
+    let nobody: Vec<Person> = vec![];
+    _eq(announce(&nobody), Vec::<String>::new())
+});
+${RUST_HARNESS_FOOTER}`,
+  hint: `The signature is the kata: a type parameter constrained to the trait — the read's \`announce\` and the figure's first tab show the \`<T: Trait>\` shape on a different trait — and a parameter that is a borrowed slice of that type. The return type is in the instruction.
+
+For the body: walk the slice, build a \`Vec<String>\` from what each item produces. The explicit loop-and-push and the \`.iter()\` / \`.map(...)\` / \`.collect()\` family both land the same place — write whichever your hands prefer; the alternative approach shows the other.`,
+  solution: `trait Describe {
+    fn describe(&self) -> String;
+}
+
+struct Person {
+    name: String,
+}
+
+impl Describe for Person {
+    fn describe(&self) -> String {
+        format!("{} (person)", self.name)
+    }
+}
+
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Describe for Point {
+    fn describe(&self) -> String {
+        format!("({}, {})", self.x, self.y)
+    }
+}
+
+fn announce<T: Describe>(items: &[T]) -> Vec<String> {
+    items.iter().map(|item| item.describe()).collect()
+}
+
+fn main() {}
+`,
+  alternativeApproach: `The explicit loop — same monomorphization, same result:
+
+\`\`\`rust
+fn announce<T: Describe>(items: &[T]) -> Vec<String> {
+    let mut descriptions = Vec::new();
+    for item in items {
+        descriptions.push(item.describe());
+    }
+    descriptions
+}
+\`\`\`
+
+Two notes. The bound also spells as a \`where\` clause — \`fn announce<T>(items: &[T]) -> Vec<String> where T: Describe\` — identical meaning, preferred when bounds pile up. And the \`dyn\` version (\`items: &[Box<dyn Describe>]\`) would type-check too — type-check, not pass: these tests hand over plain \`&[Person]\` and \`&[Point]\` slices, which that signature refuses until every item is boxed first. It would pay a heap allocation per item and a vtable call per \`describe\` to buy heterogeneity these tests never ask for. Both slices here are homogeneous — the generic is the right tool, which is exactly what read 4.1's decision tree was selling.`,
+}
+
+const LESSON_4 = {
+  id: LESSON_4_ID,
+  scrollId: COURSE_ID,
+  order: 5,
+  title: 'Traits and generics: interfaces with a twist',
+}
+
+// =============================================================================
+// Lesson 5 — Enums, Option, and exhaustive match
+// =============================================================================
+//
+// 4 steps (read + predict + 2 kata). Delta-framed: enums anchored to TS
+// discriminated unions and Java sealed types; Option to the null-handling
+// every persona already does, made compiler-checked. Pairing clause: read 5.1
+// carries the E0004 headline line ONLY; predict 5.2 owns the full reveal.
+// Kata 5.3 (G2) has the learner define an enum + an exhaustive match with NO
+// `_` arm (honor-system, refactor-safety reason attached); kata 5.4 writes
+// first_even returning Option<i32>. The 5.2 E0004 and 5.1 E0004-headline
+// excerpts are the verbatim Piston 1.68.2 capture (2026-06-12).
+
+const STEP_5_1 = {
+  id: STEP_5_1_ID,
+  lessonId: LESSON_5_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'Enums you already know, a match that refuses to forget',
+  instruction: `## Why this matters
+
+You have modeled "one of several known shapes" in every codebase you ship: discriminated unions in TypeScript — \`{ kind: "circle", radius: number } | { kind: "square", side: number }\` — sealed classes switched over exhaustively in Java — except here it is not opt-in: every \`match\` on every enum is checked, statements included, no sealed hierarchy or switch-expression required. Rust's \`enum\` is that concept as a first-class type. And if "enum" still means a list of named constants to you (C, older Java), widen it one notch: **each variant can carry its own data**. The twist this lesson sells is not the type — it is the \`match\`: exhaustive by construction, where a missing case is a compile error instead of a runtime surprise.
+
+## \`Option<T>\`: the null check, compiler-enforced
+
+Rust has no null. "Might be absent" is itself an enum — \`Option<T>\` is \`Some(value)\` or \`None\` — and the value is unreachable except by going through both possibilities. This is the null-handling you already do in every language, minus the version where you forgot. The \`match\` you wrote on \`Result\` in Lesson 3 was this exact machinery: \`Result\` and \`Option\` are both plain enums whose variants carry data.
+
+\`\`\`rust
+fn describe_port(port: Option<u16>) -> String {
+    match port {
+        Some(p) => format!("listening on {}", p),
+        None => String::from("no port configured"),
+    }
+}
+\`\`\`
+
+## \`if let\`, and the everyday methods
+
+When only one arm matters, a full \`match\` is ceremony — \`if let\` destructures a single pattern and ignores the rest. \`Option\` also ships combinators you will read daily: \`unwrap_or\` (the value or a default), \`map\` (transform the inside, if any), \`and_then\` (chain a step that may itself produce \`None\`). Named here so you can read them in the wild; the katas only need \`match\` and \`if let\`.
+
+\`\`\`rust
+fn main() {
+    let port: Option<u16> = Some(8080);
+    if let Some(p) = port {
+        println!("explicit: {}", p);
+    }
+    println!("effective: {}", port.unwrap_or(3000));
+}
+\`\`\`
+
+## Exhaustiveness is a refactor tool
+
+Here is the sell, and it lands hardest if you have ever maintained a \`switch\` over a growing union: **add a variant, and the compiler lists every \`match\` that must now make a decision** — file, line, missing pattern. A \`match\` is not checked against the cases you remembered; it is checked against the *type*. That turns an enum's matches into a compiler-maintained TODO list — the property the next kata will forbid you to trade away.
+
+So: three variants, two arms. Does this compile — and what exactly does the compiler refuse to let slide?
+
+\`\`\`rust
+enum Status { Active, Idle, Banned }
+
+fn main() {
+    let status = Status::Idle;
+    match status {
+        Status::Active => println!("running drills"),
+        Status::Idle => println!("waiting for a kata"),
+    }
+}
+\`\`\`
+
+\`rustc\`'s answer starts like this:
+
+\`\`\`text
+error[E0004]: non-exhaustive patterns: \`Status::Banned\` not covered
+\`\`\``,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+// The E0004 walk — appended to every option's feedback at seed (per the lesson
+// file's reveal section), so each answer path sees it. Output is the verbatim
+// Piston 1.68.2 capture (2026-06-12).
+const E0004_REVEAL = `Here is the full output:
+
+\`\`\`text
+error[E0004]: non-exhaustive patterns: \`Status::Banned\` not covered
+ --> main.rs:4:11
+  |
+4 |     match status {
+  |           ^^^^^^ pattern \`Status::Banned\` not covered
+  |
+note: \`Status\` defined here
+ --> main.rs:1:29
+  |
+1 | enum Status { Active, Idle, Banned }
+  |      ------                 ^^^^^^ not covered
+  = note: the matched value is of type \`Status\`
+help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
+  |
+6 ~         Status::Idle => String::from("waiting for a kata"),
+7 ~         Status::Banned => todo!(),
+  |
+
+error: aborting due to previous error
+
+For more information about this error, try \`rustc --explain E0004\`.
+\`\`\`
+
+Line by line:
+
+- \`\`error[E0004]: non-exhaustive patterns: \`Status::Banned\` not covered\`\` — the headline names the exact missing pattern. Not "something's missing": *which* variant, by name.
+- The span under \`match status\` marks the match being judged; the \`\`note: \`Status\` defined here\`\` span points **into your enum definition** and underlines the uncovered variant. The error reads in both directions — from the match to the type and back.
+- The \`help:\` writes the fix arm for you, \`todo!()\` body included — paste it and the program compiles (and panics honestly at runtime until you decide what \`Banned\` means).
+- The same \`help:\` offers a second exit: a wildcard. Take \`_\` and this error never fires again *for this match* — including the day a fourth variant lands and this match silently mishandles it. That is the refactor-safety trade the read named: \`_\` sells it back.
+
+This is exhaustiveness as a design tool, demonstrated: add a variant to a production enum and the build fails at every \`match\` that now needs a decision — file, line, missing pattern. The compiler turned a grep-and-pray refactor into a checklist. The next kata has you write the full exhaustive form with your own hands; the wildcard is off the table there for exactly this reason.`
+
+const STEP_5_2 = {
+  id: STEP_5_2_ID,
+  lessonId: LESSON_5_ID,
+  order: 2,
+  type: 'predict' as const,
+  title: 'Predict: does this compile?',
+  instruction: `The read ended on this match. Here it is again, one notch more honest — the match is now an expression whose value gets used. Commit to an answer before you reveal.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: {
+    question: 'Does this compile — and if not, what does rustc say?',
+    snippet: `enum Status { Active, Idle, Banned }
+
+fn announce(status: Status) -> String {
+    match status {
+        Status::Active => String::from("running drills"),
+        Status::Idle => String::from("waiting for a kata"),
+    }
+}
+
+fn main() {
+    println!("{}", announce(Status::Idle));
+}`,
+    options: [
+      {
+        id: 'a',
+        text: 'Fails to compile — but only because this match is used as an expression; as a statement it would compile',
+      },
+      { id: 'b', text: 'Compiles, with a warning that \`Banned\` is not covered' },
+      {
+        id: 'c',
+        text: 'Fails to compile — \`E0004\`: the match misses a variant the type can produce',
+      },
+      {
+        id: 'd',
+        text: 'Fails to compile — but because the enum is missing a default variant, which Rust enums require',
+      },
+    ],
+    correct: 'c',
+    feedback: {
+      a: `A near-miss built from the read's own emphasis — and a model worth correcting now. Yes, this \`match\` is an expression whose \`String\` the function must produce; no, that is not what trips the error. Exhaustiveness is checked on **every** \`match\`, expression or statement alike: rewrite this as a bare \`match status { ... }\` statement with \`println!\` arms and the same \`E0004\` fires. The error doesn't care where the match sits — it cares that the arms don't cover the type. The real output is below.\n\n${E0004_REVEAL}`,
+      b: `The lint-vs-gate misread. Plenty of ecosystems treat missing cases as advisory — TS only catches a non-exhaustive union switch if you wired a \`never\`-typed check yourself; linters flag a missing \`default\` and you ship anyway. In Rust, exhaustiveness is the type system, not a style opinion: \`E0004\` is a hard error, the same severity as a type mismatch. Nothing ships until the match covers the type. The real output is below.\n\n${E0004_REVEAL}`,
+      c: `Correct — and the output is worth more than the verdict: it names the missing pattern, points into your enum definition, and writes the fix arm for you. Walk it below.\n\n${E0004_REVEAL}`,
+      d: `The misread that puts exhaustiveness on the wrong artifact. The enum owes you nothing — it just declares what can exist. Covering it is each **match**'s job, and \`_\` is the per-match opt-out (which the next kata forbids, on purpose). There is no "default variant" concept in Rust, and adding a \`Banned\`-shaped catch-all variant to satisfy an imagined rule would corrupt the type to appease a misreading of the error. The real output is below.\n\n${E0004_REVEAL}`,
+    },
+  },
+}
+
+const STEP_5_3 = {
+  id: STEP_5_3_ID,
+  lessonId: LESSON_5_ID,
+  order: 3,
+  type: 'kata' as const,
+  title: 'Define an enum, match every shape',
+  instruction: `## Your task
+
+Two definitions, written with your own hands:
+
+1. **Define \`enum Shape\`** with three data-carrying variants: \`Circle(f64)\` (the radius), \`Square(f64)\` (the side), and \`Rect(f64, f64)\` (width, height).
+2. **Write \`fn area(s: &Shape) -> f64\`** with one \`match\` covering all three variants. Circle area is π·r² — std ships π as \`std::f64::consts::PI\` — square is side², rectangle is width·height.
+
+**No \`_\` arm.** A wildcard would pass these tests — and it would sell back the one property the predict just demonstrated: with three explicit arms, adding a \`Triangle\` variant next month makes the compiler list this \`match\` as needing a decision; with a \`_\`, it silently computes nonsense instead. The tests can't see your match arms, so this rule is on your honor — like 3.2's no-\`match\` rule, the point is the gesture your hands learn, not outsmarting the suite.
+
+\`area\` won't compile until the enum exists — write the two definitions together.
+
+### What's expected
+
+\`\`\`rust
+area(&Shape::Circle(3.0))     // PI * 9.0
+area(&Shape::Square(2.5))     // 6.25
+area(&Shape::Rect(3.0, 4.5))  // 13.5
+\`\`\``,
+  starterCode: `// 1. Define \`enum Shape\` here: Circle(f64), Square(f64), Rect(f64, f64).
+
+// 2. Write \`fn area(s: &Shape) -> f64\` here: one match, three arms, no wildcard.
+
+fn main() {
+    // once both exist, try:
+    // println!("{}", area(&Shape::Square(2.0)));
+}
+`,
+  testCode: `${RUST_HARNESS_HEADER}
+_t("a circle's area is pi times radius squared", || _eq_close(area(&Shape::Circle(3.0)), std::f64::consts::PI * 9.0));
+
+_t("a square's area is its side squared", || _eq_close(area(&Shape::Square(2.5)), 6.25));
+
+_t("a rectangle's area is width times height, not either squared", || _eq_close(area(&Shape::Rect(3.0, 4.5)), 13.5));
+${RUST_HARNESS_FOOTER}`,
+  hint: `A match arm on a data-carrying variant destructures the payload into a name you choose: \`Shape::Circle(radius) => ...\` — the pattern on the left, the binding usable on the right. Three variants, three patterns of that shape; the rectangle's pattern binds two names. The arithmetic is yours. The compiler's only demand is that the three patterns together leave nothing uncovered — and if you mistype one, the error that comes back is the predict's \`E0004\`, now working for you.`,
+  solution: `enum Shape {
+    Circle(f64),
+    Square(f64),
+    Rect(f64, f64),
+}
+
+fn area(s: &Shape) -> f64 {
+    match s {
+        Shape::Circle(radius) => std::f64::consts::PI * radius * radius,
+        Shape::Square(side) => side * side,
+        Shape::Rect(width, height) => width * height,
+    }
+}
+
+fn main() {
+    println!("{}", area(&Shape::Square(2.0)));
+}
+`,
+  alternativeApproach: null,
+}
+
+const STEP_5_4 = {
+  id: STEP_5_4_ID,
+  lessonId: LESSON_5_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: 'Return the first even number, if any',
+  instruction: `## Your task
+
+Write \`first_even\`: it takes a slice of \`i32\` and returns the **first** even number as an \`Option<i32>\` — \`Some(n)\` when one exists, \`None\` when none does, including for the empty slice.
+
+\`Option\` is the return type doing honest work here: the no-result case is in the signature, and every caller is forced to deal with it — no sentinel \`-1\`, no null, no exception. This is the shape std itself uses everywhere a search can come up empty.
+
+Two implementations count as idiomatic: the explicit loop that returns early, and the iterator one-liner. Write whichever your hands prefer — the alternative approach shows the other after you pass.
+
+### What's expected
+
+\`\`\`rust
+first_even(&[1, 2, 3])     // Some(2)
+first_even(&[1, 3, 5])     // None
+first_even(&[])            // None
+first_even(&[7, 4, 8, 2])  // Some(4) — the first, not the largest or last
+\`\`\``,
+  starterCode: `fn first_even(v: &[i32]) -> Option<i32> {
+    // your code
+    todo!()
+}
+`,
+  testCode: `${RUST_HARNESS_HEADER}
+_t("returns the first even number when one exists", || _eq(first_even(&[1, 2, 3]), Some(2)));
+
+_t("returns None when no number is even", || _eq(first_even(&[1, 3, 5]), None));
+
+_t("returns None for an empty slice", || _eq(first_even(&[]), None));
+
+_t("returns the first even number, not the largest or the last", || _eq(first_even(&[7, 4, 8, 2]), Some(4)));
+${RUST_HARNESS_FOOTER}`,
+  hint: `Even means \`n % 2 == 0\`. If you're looping: the moment you see an even number you already know the whole answer — return it wrapped in its variant, and let the code after the loop be the other variant. If you'd rather not loop: the iterator family has a method for "the first element satisfying a predicate" — \`find\` — and it already returns an \`Option\`. Mind what it hands your closure when you iterate a slice of \`i32\`; the compiler will tell you if you ignore it.`,
+  solution: `fn first_even(v: &[i32]) -> Option<i32> {
+    v.iter().copied().find(|n| n % 2 == 0)
+}
+`,
+  alternativeApproach: `The explicit loop — same semantics, the early return doing \`find\`'s job:
+
+\`\`\`rust
+fn first_even(v: &[i32]) -> Option<i32> {
+    for &n in v {
+        if n % 2 == 0 {
+            return Some(n);
+        }
+    }
+    None
+}
+\`\`\`
+
+If you wrote the loop: the one-liner's \`.copied()\` adapter does what your \`&n\` pattern does — turns the slice's \`&i32\` items into \`i32\` values (without it, \`find\`'s closure receives a reference to a reference and the types complain). If you wrote the one-liner: the loop is not the beginner version — it is roughly what the iterator compiles down to, and production Rust reaches for it whenever the predicate grows past one line. *Using* iterators is this scroll's scope; *implementing* the \`Iterator\` trait is \`rust-iterators-deep\`'s.`,
+}
+
+const LESSON_5 = {
+  id: LESSON_5_ID,
+  scrollId: COURSE_ID,
+  order: 6,
+  title: 'Enums, Option, and exhaustive match',
+}
+
+export const RUST_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3, LESSON_4, LESSON_5]
 
 export const RUST_STEPS = [
   STEP_0_1, STEP_0_2,
   STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4, STEP_1_5,
   STEP_2_1, STEP_2_2, STEP_2_3, STEP_2_4, STEP_2_5,
   STEP_3_1, STEP_3_2, STEP_3_3,
+  STEP_4_1, STEP_4_2, STEP_4_3, STEP_4_4,
+  STEP_5_1, STEP_5_2, STEP_5_3, STEP_5_4,
 ]

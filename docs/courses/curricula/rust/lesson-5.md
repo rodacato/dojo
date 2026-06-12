@@ -75,7 +75,7 @@ fn main() {
 ```text
 error[E0004]: non-exhaustive patterns: `Status::Banned` not covered
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 ```
 
 ### Authoring notes
@@ -174,21 +174,22 @@ error[E0004]: non-exhaustive patterns: `Status::Banned` not covered
   |           ^^^^^^ pattern `Status::Banned` not covered
   |
 note: `Status` defined here
- --> main.rs:1:6
+ --> main.rs:1:29
   |
 1 | enum Status { Active, Idle, Banned }
-  |      ^^^^^^               ------ not covered
+  |      ------                 ^^^^^^ not covered
   = note: the matched value is of type `Status`
 help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown
   |
 6 ~         Status::Idle => String::from("waiting for a kata"),
 7 ~         Status::Banned => todo!(),
   |
+
 error: aborting due to previous error
 
 For more information about this error, try `rustc --explain E0004`.
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 Line by line:
 
@@ -202,7 +203,7 @@ This is exhaustiveness as a design tool, demonstrated: add a variant to a produc
 
 ### Authoring notes
 
-- The quoted output is expected-from-knowledge; smoke recaptures from Piston's 1.68.2 and the seed pastes the recaptured text verbatim (spec §2.7). What the recapture settles: the exact rendering of the suggestion block (the `~` lines), whether 1.68.2 collapses the one-line enum definition span as shown, and any dead-code warning noise above the error (`Banned` is never constructed). Stable anchors: the `E0004` code, the named missing pattern, the `note:` into the definition, the wildcard-or-explicit `help:`.
+- The quoted output is the verbatim Piston 1.68.2 capture (spec §2.7; captured 2026-06-12). What the recapture settled: 1.68.2 renders the suggestion as `~` rewrite lines (arms 6 and 7); the one-line enum definition note spans `main.rs:1:29`, underlining the `Status` name with `------` and `Banned` with `^^^^^^ not covered`; no dead-code warning noise leaked above the error. Stable anchors: the `E0004` code, the named missing pattern, the `note:` into the definition, the wildcard-or-explicit `help:`.
 - Per-option feedback stays reflex-specific (predict voice contract); the shared walk ships appended to each feedback entry at seed since the player's `predict` schema has no separate reveal field — same convention as 1.2 and 4.2.
 - The snippet is read 5.1's cliffhanger "expanded by one use" (match as a used expression), mirroring the 1.1 → 1.2 construction; the expression form is also the bait option (a) exploits — the stage-11 near-miss distractor that replaced the switch-fallthrough option. Its feedback corrects the model: `E0004` is checked on every `match`, expression or statement.
 - Option (c) paraphrases the failure on purpose (stage-11): read 5.1 just quoted the headline verbatim, so a verbatim option would reward string-matching over prediction; the E-code stays.
@@ -414,7 +415,7 @@ The hint names `find` as the family member — sanctioned by the spec's own 5.4 
 - [x] **Pairing clause (§2.2 rule 2):** read 5.1 ends with the cliffhanger snippet + the `E0004` **headline line only**. The full output, the `note:`-into-the-definition walk, the `help:` fix arm, and the wildcard caveat live in 5.2's reveal — nowhere in the read.
 - [x] **Delta rule (§2.2.1):** enums anchored to TS discriminated unions and Java sealed classes + exhaustive switch; the C-enum widening is exactly one line; `Option` anchored to the null-handling every persona already does. Zero from-scratch ADT prose.
 - [x] The read's core sell is refactor safety ("add a variant, the compiler lists every match that must now make a decision") — Yui's lens, per the outline — and the Lesson 3 loop is closed ("your `match` on `Result` was this exact machinery").
-- [x] Predict 5.2 options include the expression-only near-miss (the stage-11 replacement for the switch-fallthrough option), "compiles with a warning" (Mariana's prior), and "enums require a default variant" (the plausible misread); feedback corrects the near-miss (exhaustiveness is checked on every match, expression or statement), the lint-vs-gate misread, and the default-variant misconception with "exhaustiveness is the match's job, `_` is the opt-out"; option (c) paraphrases the just-shown headline rather than echoing it verbatim. Full expected `E0004` output in the reveal with `<!-- verify-at-smoke: rustc 1.68.2 -->`.
+- [x] Predict 5.2 options include the expression-only near-miss (the stage-11 replacement for the switch-fallthrough option), "compiles with a warning" (Mariana's prior), and "enums require a default variant" (the plausible misread); feedback corrects the near-miss (exhaustiveness is checked on every match, expression or statement), the lint-vs-gate misread, and the default-variant misconception with "exhaustiveness is the match's job, `_` is the opt-out"; option (c) paraphrases the just-shown headline rather than echoing it verbatim. Full captured `E0004` output in the reveal with `<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->`.
 - [x] Kata 5.3 (gesture G2): learner defines the enum **and** the exhaustive `match`; the instruction forbids the `_` arm with the refactor-safety reason attached and honest honor-system framing; `_eq_close` used per the spec's harness commitment.
 - [x] Kata 5.4 holds the outline's `first_even` shape (`&[i32]` per the Lesson 2 signature default, `Option<i32>` out); both implementations blessed in the instruction; `alternative_approach` shows the loop and the iterator-deferral hook.
 - [x] **Hint discipline (§2.5):** 5.3 hint shows the pattern shape only (spec-sanctioned), never the arithmetic; 5.4 hint names `find` (spec-sanctioned), never the chain. Hint-discipline check sections included per kata.

@@ -145,11 +145,8 @@ trait Greet {
 }
 
 fn greet_generic<T: Greet>(guest: T) -> String { guest.name() }
-
 fn greet_impl(guest: impl Greet) -> String { guest.name() }
-
 fn greet_boxed(guest: Box<dyn Greet>) -> String { guest.name() }
-
 fn greet_dyn(guest: dyn Greet) -> String { guest.name() }
 ```
 
@@ -188,23 +185,30 @@ Three of the four compile. Here is what rustc says about `greet_dyn`:
 
 ```text
 error[E0277]: the size for values of type `(dyn Greet + 'static)` cannot be known at compilation time
-  --> main.rs:11:14
-   |
-11 | fn greet_dyn(guest: dyn Greet) -> String { guest.name() }
-   |              ^^^^^ doesn't have a size known at compile-time
-   |
-   = help: the trait `Sized` is not implemented for `(dyn Greet + 'static)`
-   = help: unsized fn params are gated as an unstable feature
+ --> main.rs:8:14
+  |
+8 | fn greet_dyn(guest: dyn Greet) -> String { guest.name() }
+  |              ^^^^^ doesn't have a size known at compile-time
+  |
+  = help: the trait `Sized` is not implemented for `(dyn Greet + 'static)`
+help: you can use `impl Trait` as the argument type
+  |
+8 | fn greet_dyn(guest: impl Greet) -> String { guest.name() }
+  |                     ~~~~
 help: function arguments must have a statically known size, borrowed types always have a known size
-   |
-11 | fn greet_dyn(guest: &dyn Greet) -> String { guest.name() }
-   |                     +
+  |
+8 | fn greet_dyn(guest: &dyn Greet) -> String { guest.name() }
+  |                     +
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 First, the code. You have met `E0277` before: in Lesson 3 it refused `?` inside a function returning `i32`. `E0277` is not one error — it is the **family** "a required trait bound is not satisfied," and the unsatisfied trait is named in the headline or a `help:` line — read both. There it was the `?`-plumbing's `FromResidual`; here it is `Sized`, the implicit bound every by-value parameter carries. When you meet the next family member, those are the lines to read first.
 
-Why `dyn Greet` specifically: parameters are passed by value, and a value needs a compile-time size to get a stack slot. `dyn Greet` is the type whose concrete implementor — and therefore size — is only known at runtime. The compiler's last `help:` writes the fix for you: put it behind a pointer. `&dyn Greet` and `Box<dyn Greet>` are both pointer-sized, and pointers always have a known size. (The `'static` in the message is the lifetime cameo from Lesson 2's error walk — recognize it, don't write it; owned trait objects default to it, and the full story belongs to `rust-traits-deep`.)
+Why `dyn Greet` specifically: parameters are passed by value, and a value needs a compile-time size to get a stack slot. `dyn Greet` is the type whose concrete implementor — and therefore size — is only known at runtime. The compiler writes **two** fixes for you, and they are two of the three signatures that compile: the first `help:` rewrites the parameter to `impl Greet` (the sized, monomorphized form); the second puts it behind a pointer, `&dyn Greet`. `&dyn Greet` and `Box<dyn Greet>` are both pointer-sized, and pointers always have a known size. The compiler is pointing you back at the very signatures the predict asked about. (The `'static` in the message is the lifetime cameo from Lesson 2's error walk — recognize it, don't write it; owned trait objects default to it, and the full story belongs to `rust-traits-deep`.)
 
 Now the three that compile — they are not interchangeable:
 
@@ -216,7 +220,7 @@ Name the reflex once more, because this is where it picks wrongly: the Java/C# i
 
 ### Authoring notes
 
-- The quoted output is expected-from-knowledge; smoke recaptures from Piston's 1.68.2 and the seed pastes the recaptured text verbatim (spec §2.7). What the recapture settles: whether 1.68.2 emits the `unsized fn params are gated` help line in this position, the exact suggestion rendering (`+` underline form), and the spans (the snippet is captured wrapped in a `fn main() {}` stub, which shifts line numbers). The walk's stable anchors: the `E0277` code, `Sized` not implemented for `(dyn Greet + 'static)`, and the borrow suggestion.
+- The quoted output is the verbatim Piston 1.68.2 capture (spec §2.7; captured 2026-06-12). What the recapture settled: 1.68.2 does **not** emit an `unsized fn params are gated` help line here; it emits the `Sized` note plus **two** suggestion blocks — `impl Greet` (rendered with `~~~~`) and `&dyn Greet` (rendered with `+`); the failing line lands at `main.rs:8:14` against the four-signature file (no `fn main()` stub shift in this capture). The walk's stable anchors: the `E0277` code, `Sized` not implemented for `(dyn Greet + 'static)`, and the two suggestions.
 - The spec writes all four signatures as `fn f(...)`; they are renamed `greet_generic` / `greet_impl` / `greet_boxed` / `greet_dyn` so the snippet is a single compilable-except-one file and the error output names the failing one unambiguously. Flagged in the W2 report, not improvised silently.
 - Per-option feedback stays reflex-specific (predict voice contract per INTERACTIVITY-PATTERNS); the shared walk ships appended to each feedback entry at seed since the player's `predict` schema has no separate reveal field — same convention as 1.2.
 - Family naming honors the spec's de-spoiling direction: Lesson 3's read did not mention the unsized form; this reveal owns the linkage backwards.
@@ -515,7 +519,7 @@ The instruction states the contract in words ("a slice of values of any type imp
 - [x] Read 4.1 at the ~400-word ceiling (≈405, code blocks and figure directive excluded; stage 9–11 trim applied); paragraph audit included; what got cut is named.
 - [x] **Delta rule (§2.2.1):** traits framed as the TS/Java interface with a named twist; Yui's monomorphization-as-inverse-of-erasure named explicitly ("your erasure model running backwards"); the Java/C# `dyn`-first reflex named in the read and again in 4.2's feedback and reveal. Zero from-scratch interface prose.
 - [x] Every sample in read 4.1 **compiles** under rustc 1.68.2 (voice_check) — no error excerpt in the read; predict 4.2 owns the lesson's reveal.
-- [x] Predict 4.2: four signatures, correct answer "three of four"; the bare `dyn Greet` fails with `E0277` (unsized); full expected output quoted with `<!-- verify-at-smoke: rustc 1.68.2 -->`; `E0277` named as an error **family** with the explicit back-link to Lesson 3's `?` form; dispatch difference taught across the three that compile; per-option feedback names the reflex (Java/C# transliteration / overcorrection / return-only misremembering).
+- [x] Predict 4.2: four signatures, correct answer "three of four"; the bare `dyn Greet` fails with `E0277` (unsized); full captured output quoted with `<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->`; `E0277` named as an error **family** with the explicit back-link to Lesson 3's `?` form; dispatch difference taught across the three that compile; per-option feedback names the reflex (Java/C# transliteration / overcorrection / return-only misremembering).
 - [x] Kata 4.3 (gesture G1): learner defines the struct **and both impl blocks** — inherent (`Point::new`) + trait (`impl Describe for Point`); tests construct both types and assert both `describe()` outputs; the two derive-exploration prompts live in `alternative_approach` per the panel decision (no second playground).
 - [x] Kata 4.4: generic bound written by the learner (signature stated in words, not printed); tests call with `Person` and `Point` so monomorphization is the test's own point; `where`-clause spelling and the dyn-cost contrast live in `alternative_approach`.
 - [x] **Hint discipline (§2.5):** 4.3 hint names shape + `format!` (spec-sanctioned), never the bodies; 4.4 hint names the method family without assembling the chain (spec-sanctioned). Hint-discipline check sections included per kata.
