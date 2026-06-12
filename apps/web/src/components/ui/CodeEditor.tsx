@@ -8,6 +8,7 @@ import { javascript } from '@codemirror/lang-javascript'
 import { python } from '@codemirror/lang-python'
 import { sql } from '@codemirror/lang-sql'
 import { ruby } from '@codemirror/legacy-modes/mode/ruby'
+import { rust } from '@codemirror/legacy-modes/mode/rust'
 import { useThemeTokens, hexToRgba, type ThemeTokens } from '../../hooks/useThemeTokens'
 
 export type CodeEditorLanguage =
@@ -17,6 +18,7 @@ export type CodeEditorLanguage =
   | 'sql'
   | 'javascript-dom'
   | 'ruby'
+  | 'rust'
 
 interface CodeEditorProps {
   value: string
@@ -129,6 +131,7 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
       python: python(),
       sql: sql(),
       ruby: StreamLanguage.define(ruby),
+      rust: StreamLanguage.define(rust),
     }
     const langExtension = langExtensions[language] ?? []
 

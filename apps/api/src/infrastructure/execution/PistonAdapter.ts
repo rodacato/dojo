@@ -115,10 +115,21 @@ export class PistonAdapter implements CodeExecutionPort {
     }
 
     const isSql = params.language.toLowerCase() === 'sql'
+    const isRust = params.language.toLowerCase() === 'rust'
     // Combine solution + test into one file so all symbols are in scope.
     // Two-file mode loses stdout in Piston's TypeScript runtime.
-    const combined = `${params.code}\n\n${params.testCode}`
-    const runFile = isSql ? 'query.sql' : `test.${ext(params.language)}`
+    // Rust: learner code is wrapped in `mod solution` so a learner-written
+    // `fn main` becomes an ordinary module function and the test harness owns
+    // the real entry point. The harness header glob-imports the module; glob
+    // imports lose to the harness's own `fn main` by precedence, so there is
+    // no E0428 collision. Compile-error line numbers shift by exactly one
+    // (the mod wrapper line) — noted in the Rust scroll's smoke contract.
+    const combined = isRust
+      ? `#[allow(dead_code, unused_variables, unused_mut, unused_imports)] mod solution {\n${params.code}\n}\n\n${params.testCode}`
+      : `${params.code}\n\n${params.testCode}`
+    // Rust file is named main.rs so rustc's error paths match the scroll
+    // prose ("main.rs:LINE"); other languages keep the historical test.*.
+    const runFile = isSql ? 'query.sql' : isRust ? 'main.rs' : `test.${ext(params.language)}`
     const files = isSql
       ? [{ name: 'query.sql', content: buildSqlScript(params.code, params.testCode) }]
       : [{ name: runFile, content: combined }]

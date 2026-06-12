@@ -44,6 +44,50 @@ describe('PistonAdapter', () => {
     expect(result.executionTimeMs).toBeGreaterThanOrEqual(0)
   })
 
+  it('wraps Rust learner code in mod solution and names the file main.rs', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        run: { stdout: 'ok', stderr: '', code: 0, signal: null },
+      }),
+    })
+
+    await adapter.execute({
+      language: 'rust',
+      code: 'fn main() {\n    println!("learner");\n}',
+      testCode: 'fn main() { _t("explored", || _eq(true, true)); }',
+    })
+
+    const body = JSON.parse(mockFetch.mock.calls[0]?.[1]?.body as string)
+    const file = body.files[0]
+    expect(file.name).toBe('main.rs')
+    // Learner main lives inside the module; the harness owns the real entry.
+    expect(file.content).toMatch(/^#\[allow\([^)]*\)\] mod solution \{\n/)
+    expect(file.content).toContain('println!("learner")')
+    expect(file.content.indexOf('mod solution')).toBeLessThan(
+      file.content.indexOf('_t("explored"'),
+    )
+  })
+
+  it('does not wrap non-Rust languages in mod solution', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        run: { stdout: 'ok', stderr: '', code: 0, signal: null },
+      }),
+    })
+
+    await adapter.execute({
+      language: 'python',
+      code: 'def f():\n    return 1',
+      testCode: 'assert f() == 1',
+    })
+
+    const body = JSON.parse(mockFetch.mock.calls[0]?.[1]?.body as string)
+    expect(body.files[0].content).not.toContain('mod solution')
+    expect(body.files[0].content).toBe('def f():\n    return 1\n\nassert f() == 1')
+  })
+
   it('detects compilation failure', async () => {
     mockFetch.mockResolvedValue({
       ok: true,

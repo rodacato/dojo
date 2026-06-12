@@ -18,6 +18,11 @@ import {
   RUBY_LESSONS,
   RUBY_STEPS,
 } from './seed-scrolls-ruby'
+import {
+  RUST_COURSE_DATA,
+  RUST_LESSONS,
+  RUST_STEPS,
+} from './seed-scrolls-rust'
 
 // ---------------------------------------------------------------------------
 // Deterministic UUIDs for seed data
@@ -1241,6 +1246,11 @@ export async function seedAllScrolls(db: ReturnType<typeof drizzle>): Promise<Se
       courseData: RUBY_COURSE_DATA,
       lessonsData: RUBY_LESSONS,
       stepsData: RUBY_STEPS,
+    },
+    {
+      courseData: RUST_COURSE_DATA,
+      lessonsData: RUST_LESSONS,
+      stepsData: RUST_STEPS,
     },
   ]
 
