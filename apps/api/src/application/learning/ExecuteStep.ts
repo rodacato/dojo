@@ -26,6 +26,13 @@ const RESULT_MARKER = /^__DOJO_RESULT__\s+(\{[\s\S]*\})\s*$/m
 // fetch() catch branch (Connection refused, fetch failed, etc.).
 const SANDBOX_ERROR_RE = /fetch failed|ECONNREFUSED|ECONNRESET|Connection refused|Piston error/i
 
+// A compile failure looks different per language and rarely contains the
+// literal word "compile": tsc emits `error TS2322`, rustc `error[E0382]`,
+// go `./main.go:N: ...`, java `error:`. Recognize the common compiler-error
+// signatures so the learner is told "did not compile" (and pointed at the
+// type/borrow error), not "crashed at runtime".
+const COMPILE_ERROR_RE = /\berror TS\d+\b|error\[E\d+\]|^.*\.go:\d+:\d+:|cannot find symbol|: error:/m
+
 export class ExecuteStep {
   constructor(private readonly deps: Deps) {}
 
@@ -90,7 +97,10 @@ export class ExecuteStep {
 
     // 3. Non-zero exit with no structured output — treat as compile/runtime error.
     if (r.exitCode !== 0) {
-      const kind: ExecuteErrorKind = stderr.toLowerCase().includes('compile') ? 'compile' : 'runtime'
+      const kind: ExecuteErrorKind =
+        stderr.toLowerCase().includes('compile') || COMPILE_ERROR_RE.test(combined)
+          ? 'compile'
+          : 'runtime'
       return {
         passed: false,
         output: combined,

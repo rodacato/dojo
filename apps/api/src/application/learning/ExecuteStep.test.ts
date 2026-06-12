@@ -88,11 +88,39 @@ describe('ExecuteStep', () => {
     expect(result.passed).toBe(false)
   })
 
-  it('reports runtime errorKind when exit != 0 with no structured output and no compile hint', async () => {
-    const executionPort = port({ stderr: 'SyntaxError: Unexpected token', exitCode: 1 })
+  it('detects a tsc type error in stdout (no literal "compile" word) as compile', async () => {
+    // Piston's TS runtime puts tsc errors on compile.stdout; the word
+    // "compile" never appears. The TS#### signature is what flags it.
+    const executionPort = port({
+      stdout: "test.ts(2,7): error TS2322: Type 'true' is not assignable to type 'false'.",
+      exitCode: 2,
+    })
 
     const result = await new ExecuteStep({ executionPort }).execute({
       code: '', testCode: '', language: 'typescript',
+    })
+
+    expect(result.errorKind).toBe('compile')
+  })
+
+  it('detects a rustc borrow error as compile (error[E####] signature)', async () => {
+    const executionPort = port({
+      stderr: 'error[E0382]: borrow of moved value: `s1`',
+      exitCode: 1,
+    })
+
+    const result = await new ExecuteStep({ executionPort }).execute({
+      code: '', testCode: '', language: 'rust',
+    })
+
+    expect(result.errorKind).toBe('compile')
+  })
+
+  it('reports runtime errorKind when exit != 0 with no structured output and no compile hint', async () => {
+    const executionPort = port({ stderr: 'thread panicked at index out of bounds', exitCode: 101 })
+
+    const result = await new ExecuteStep({ executionPort }).execute({
+      code: '', testCode: '', language: 'rust',
     })
 
     expect(result.errorKind).toBe('runtime')
