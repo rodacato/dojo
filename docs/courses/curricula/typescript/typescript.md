@@ -91,10 +91,21 @@ Lessons 2, 4, and 5 carry no predict: Lesson 2's structural-assignment surprise 
 
 Two playground steps (Lessons 2 and 4) — `kata` steps with `data.kind: "playground"`, identical contract to Ruby's and Python's (no verdict UI, button "↻ Try it", trivially-true harness assertion). With Ruby (2) + Python (2) + TypeScript (2), the catalog holds 6 playgrounds across 3 scrolls — still a local experiment below the ≥20-instance promotion gate; Rust/Go decide whether it graduates.
 
+**Suite-consistency (post-promotion tally).** TypeScript now ships 2 playgrounds / 3 figures / 2 `read+inline` / 3 predicts / 55% exercise share (counting the two challenges; 45% katas-only) — squarely inside the Ruby/Python band on every axis, no per-scroll exception to justify. The read+inline count moved from 0 to 2 at promotion (reads 4.1 and 5.1, §2.4a).
+
 Type-system playgrounds are unusually strong because the output of interest is the *compile result*, not stdout: the learner adds `type _check = Equal<…>` lines and assignment statements, and the compiler's acceptance/rejection IS the feedback. A compile-error verdict in a playground is pedagogical, not a failure.
 
 - **Lesson 2 playground — structural compatibility explorer.** Pre-loaded pairs of compatible and incompatible shapes, plus the excess-property surprise (`const u: User = { …, age: 3 }` errors on a literal but not via an intermediate variable). Specific things to try, per Maya's contract.
 - **Lesson 4 playground — the escape hatches at a boundary.** `JSON.parse` as `any` (dangerous chain compiles) vs `unknown` (compiler refuses until narrowed); a `never`-returning function; `string | never` collapsing to `string`.
+
+### 2.4a `read+inline` placement
+
+Two `read+inline` steps — reads 4.1 and 5.1 — each carrying **one** micro-quiz (per `readInlineDataSchema`, ≤4 allowed; one is the right dose for a single load-bearing fact). Reads 0.1, 1.1, 2.1, and 3.2 stay plain `read`. The selection rule: promote a read to `read+inline` only when it states one fact the reader is likely *wrong* about and that a later kata immediately depends on — a check-the-model beat, not decoration.
+
+- **Read 4.1 — `catch-is-unknown`.** Anchored after the `unknown` paragraph; tests the catch-clause fact (most JS-to-TS devs assume `catch (e)` binds `any`; under modern TS it's `unknown`). Kata 4.2's guard work depends on the reader holding the `unknown`-must-be-narrowed model.
+- **Read 5.1 — `keyof-indexed`.** Anchored after the `keyof`/indexed-access (`T[K]`) paragraph; tests indexed-access-with-a-union-key (`User['id' | 'age']` is `string | number`, the distribution). Katas 5.2/5.3 use exactly this mechanism.
+
+The micro-quiz data blocks live with each step in §4 (`data.interactions`).
 
 ### 2.5 Hint discipline
 
@@ -191,7 +202,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 > *What changes in the learner's head:* "I've been annotating everything because I thought un-annotated meant untyped. It doesn't — the compiler infers almost everything from the values and the flow. The contract I owe is the **function signature**; inside it, inference carries the weight. `const` infers the literal; `let` widens. My TS just got shorter than my JS habits expected."
 
-**Step distribution:** 1 `read` (the `read+inline` candidate), 1 `predict`, 1 `kata` = 3 steps.
+**Step distribution:** 1 `read` (plain), 1 `predict`, 1 `kata` = 3 steps. *(The S026 draft floated this read as the scroll's `read+inline` candidate; promotion moved the inline micro-quizzes to reads 4.1 and 5.1 instead — see §2.4a — because L1's read already feeds straight into predict 1.2, so an inline quiz would double the same beat.)*
 
 **Why inference first (lens defense):** the S026 draft led with structural typing, framed against nominal reflexes from Java/Python. Felipe has no such reflexes — his day-one pathology is annotation-maximalism. "The compiler already knows" is the single biggest behavior change available to him, and every later lesson (narrowing IS inference through control flow; generic inference at call sites) builds on it. Leo (S9) signed off with the constraint that the signature-annotation rule is stated as a positive duty (the checked contract), not as "annotations bad."
 
@@ -237,7 +248,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
   ```
   The learner adds: `price: number`, `percent: number`, `code?: string`, `): number`.
 - **test shape:** `_t`/`_eq` runtime assertions on the three behaviors (no code, VIP code, non-VIP code); `@ts-expect-error` assertions on `applyDiscount("120", 10)` and on `applyDiscount()` (missing required args); `Equal<ReturnType<typeof applyDiscount>, number>` type-only assertion.
-- **instruction note (test furniture — read, don't write):** one line in the instruction: the test block's `Equal` / `ReturnType` / type-level `typeof` lines are harness furniture — read them as assertions, don't write them; the scroll teaches the underlying operators later. Keep `Equal`'s definition out of the visible starter if the harness allows (prelude injection).
+- **instruction note (test furniture — read, don't write):** one line in the instruction: the test block's `Equal` / `ReturnType` / type-level `typeof` lines are harness furniture — read them as assertions, don't write them; the scroll teaches the underlying operators later. Keep `Equal`'s definition out of the visible starter if the harness allows (prelude injection). One sentence on `@ts-expect-error` (first explained here): "`@ts-expect-error` is the assertion here — but it's a sharp tool, not a test framework: a stale one that stops erroring (because the underlying type got fixed) flips to a failure of its own. In this scroll it's test furniture; in your code, prefer it narrow and temporary."
 - **hint sketch:** *"The third argument sometimes does not arrive. TypeScript has a way to mark a parameter as optional in the signature itself — what happens to `code`'s type inside the function once you mark it that way?"* (points at `?` and at `string | undefined` without naming either).
 - **why this kata:** 80%-confidence opener that lands gesture G1 and quietly plants `string | undefined` — Lesson 3's narrowing has a hook back to it.
 
@@ -259,7 +270,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
   - **Structural compatibility:** two types with matching shapes are interchangeable — no `implements`, no registration. For a JS developer this is good news: it's the duck typing they already practice, with a reader checking the duck. One worked example of width subtyping (extra fields are fine *via a variable*).
   - **Excess-property checking on literals:** the asymmetry that bites everyone in week one — `const u: User = { id: "1", age: 3 }` errors, but the same object passed through an intermediate variable doesn't. Named with one example; the playground pokes it.
   - **`type` vs `interface` — one rule:** `type` by default; `interface` only when you need declaration merging or are extending external module types (both rare). One sentence; never revisited. *(No figure — a figure would re-dignify the flame war.)*
-  - **Literal unions over strings and over `enum`:** `type Status = "idle" | "loading" | "ready"` beats `string` (typo = compile error) and beats `enum` (which emits a runtime object). **Figure:** `:figure[disambiguation]{id:"ts-union-vs-enum"}` — identical skeletons (a set of named values); divergent attribute: **runtime footprint** (union erases to nothing; `enum` compiles to a JS object). `enum` flagged legacy/interop, deferred per §2.6.
+  - **Literal unions over strings and over `enum`:** `type Status = "idle" | "loading" | "ready"` beats `string` (typo = compile error) and beats `enum` (which emits a runtime object). **Figure:** `:figure[disambiguation]{id:"ts-union-vs-enum"}` — identical skeletons (a set of named values); divergent attribute: **runtime footprint** (union erases to nothing; `enum` compiles to a JS object). The divergent attribute renders the real `tsc`-emitted output — the enum's runtime IIFE/JS object vs the union's literally-empty output — counted and shown for real, not described in prose (capture the actual emitted JS at seed). This is the orchestrator adjudication of the architect-vs-Felipe conflict: it stays a `disambiguation` (no separate metric-pair — N-vs-0 is categorical, no ≥3× ratio to justify the device), but binding the `runtime footprint` highlightAttribute to the real emitted output delivers Felipe's magnitude (he *sees* the ~N lines) inside Elif's device. **Authoring guard:** `highlightAttribute` is `runtime footprint` ONLY (single-dimension rule); the other rows — typo-safety, interop — render unhighlighted. `enum` flagged legacy/interop, deferred per §2.6.
   - **Do NOT include:** classes (out of crash scope); nominal-typing comparative theory (Felipe has no nominal reflexes — one sentence of contrast is plenty); mapped/conditional types; `readonly`/index signatures beyond a naming mention.
 - **closer:** forward prompt into the kata — "You've read the shape rules; now write a shape and survive its optional fields."
 
@@ -293,6 +304,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **snippet:** `function format(x: string | number) { if (typeof x === "string") { /* type of x here? */ } … }`
 - **options (4):** `string` (**correct**); `string | number` *(the "static types don't move" model — the polyglot/JS reflex)*; `string & number` *(the intersection confusion)*; `any` *(the "checks are runtime-only, the compiler can't know" model)*.
 - **correct:** `string`. Feedback for the correct answer extends: and in the `else`, `x` is `number` — the compiler subtracts what it learned.
+- **W2/seed smoke gate:** if the correct-answer rate on 3.1 exceeds ~60% at smoke, Felipe's committed folk model ("static types can't change in a branch") isn't as committed as assumed — demote 3.1 to a post-read micro-quiz or cut it. Predict-first is justified *only* by the committed wrong model; without it the predict spoils nothing and earns nothing.
 
 #### Step 3.2 — `read` — "Narrowing: every `if` teaches the compiler something"
 
@@ -325,6 +337,7 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 - **framing in instruction:** this is the benefit the scroll's lens promised — *the compiler as a second reader during refactors*. In JS this change is a grep and a prayer over code you've never read; here the compiler hands you the checklist of every site.
 - **budget:** ~15 min (2× kata). ≤1 hint. Not a gate.
 - **test shape:** runtime for the new variant's transitions + `labelFor`/`isTerminal` outputs for `disputed` + all old variants unchanged across all three consumers; the pre-fix compile failure is demonstrated via the step's instruction narrative (the learner experiences it live on first run — three errors, three sites).
+- **seed-time note (W3):** the "compiler hands you the checklist of three sites" benefit only lands if each pre-written consumer (`nextStates`, `labelFor`, `isTerminal`) closes its `switch` with `assertNever` — otherwise a string-returning `switch` with no exhaustiveness check falls through silently and the variant addition breaks ONE site, not three, gutting the challenge's whole point. Verify all three consumers carry `assertNever` in the seeded starter; smoke that the variant addition produces three compile errors, not one.
 
 ---
 
@@ -332,21 +345,39 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 > *What changes in the learner's head:* "`any` isn't a type, it's an off-switch — and it spreads. `unknown` is the honest type for data crossing a boundary: the compiler refuses to let me touch it until a guard proves the shape. `never` is 'this can't happen', and it's how exhaustiveness checks work under the hood. My `JSON.parse` habit just changed."
 
-**Step distribution:** 1 `read`, 1 `kata`, 1 `playground` = 3 steps. No predict — the payoff is *choosing*, which is kata-shaped. *(The S026 draft's second kata here — an `assertNever` drill — duplicated gesture G3 and was cut at promotion.)*
+**Step distribution:** 1 `read+inline`, 1 `kata`, 1 `playground` = 3 steps. No predict — the payoff is *choosing*, which is kata-shaped. *(The S026 draft's second kata here — an `assertNever` drill — duplicated gesture G3 and was cut at promotion.)*
 
 **Status:** outlined.
 
-#### Step 4.1 — `read` — "The three escape valves: when each one is fine"
+#### Step 4.1 — `read+inline` — "The three escape valves: when each one is fine"
 
 - **why_care topics:** pain first, and it's autobiographical for the primary persona: the migration `any` that silenced a typo for six months. Felipe wrote that `any`. This lesson is the unlearning.
 - **body topic outline (~350 words):**
   - **`any` first — the cost:** it turns checking off *and propagates* — `data.user.name.first` off an `any` is `any` all the way down; the bug surfaces at runtime, far from its source. The legitimate use: a deliberate escape hatch with a TODO (untyped third-party lib, mid-migration), i.e. a promise to come back — never a permanent state.
-  - **`unknown` second — the boundary type:** accepts anything (like `any`), permits nothing until narrowed (unlike `any`). What `JSON.parse` should return; what `catch (e)` binds since TS 4.4 — a fact most JS-to-TS developers don't know and hit in week one. Pairs with Lesson 3's user-defined guards: `unknown` in, guard proves, typed value out.
+  - **`unknown` second — the boundary type:** accepts anything (like `any`), permits nothing until narrowed (unlike `any`). What `JSON.parse` should return; what `catch (e)` binds since TS 4.4 — a fact most JS-to-TS developers don't know and hit in week one. Pairs with Lesson 3's user-defined guards: `unknown` in, guard proves, typed value out. `<!-- interact:catch-is-unknown -->` (micro-quiz anchored after this paragraph — see data.interactions below).
   - **Figure:** `:figure[disambiguation]{id:"ts-unknown-vs-any"}` — identical skeletons (a value from outside, an attempted property access); divergent attribute: **what the compiler lets you do before narrowing** (`any`: everything, silently; `unknown`: nothing, loudly).
   - **`never` third:** the bottom type — no value inhabits it. Where the reader has already met it: `assertNever`'s parameter (Lesson 3). Also: functions that only `throw`, and unions that narrowing has emptied. `T | never` collapses to `T` — named for the playground.
-  - **Closer:** `as` named-and-bounded with one worked example (a wrong cast over a parse result → runtime crash the compiler could no longer prevent): "a cast is a promise to the compiler; a guard is proof. Prefer proof." Zod-shaped schema-first boundaries named-and-deferred (§2.6). No kata exercises `as`.
+  - **Closer:** `as` named-and-bounded with one worked example (a wrong cast over a parse result → runtime crash the compiler could no longer prevent): "a cast is a promise to the compiler the compiler can't check; a guard is proof. Prefer proof." Make the deferral explicit to the learner: a half-sentence that the scroll deliberately doesn't drill `as` — and that the capstone will let an `as` shortcut compile-but-fail-at-runtime (so the learner is warned the gap is by design, not an omission). Zod-shaped schema-first boundaries named-and-deferred (§2.6). No kata exercises `as`.
   - **Do NOT include:** `as const` (named in L1, not exercised); double-cast `as unknown as T` (deep-dive); `satisfies` (Lesson 5 closer).
 - **closer:** forward prompt into the boundary kata.
+- **data.interactions (one micro-quiz, anchored at `<!-- interact:catch-is-unknown -->`; valid per `readInlineDataSchema`):**
+  ```ts
+  data: {
+    interactions: [
+      {
+        kind: 'micro-quiz' as const,
+        after: 'catch-is-unknown',
+        question: 'In a `catch (e)` clause under modern TS, what type is `e`?',
+        options: ['any', 'unknown'] as [string, string],
+        correct: 1 as const,
+        feedback: [
+          "That was the rule before TS 4.4, and many JS devs still assume it — but `any` here is exactly the silent-propagation hole this lesson is about: nothing stops you from reading `e.response.data` off a thrown string.",
+          "Right — since TS 4.4 (`useUnknownInCatchVariables`, on under `strict`; this scroll runs TS 5.0.3) `e` is `unknown`, so you must narrow it (`e instanceof Error`, a guard) before using it. The compiler makes you prove what you caught.",
+        ] as [string, string],
+      },
+    ],
+  }
+  ```
 
 #### Step 4.2 — `kata` — `parseUser(input: string): User | string`
 
@@ -368,20 +399,38 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 > *What changes in the learner's head:* "I felt the duplication before `<T>` showed up, so generics read as 'the parameter I would have written for the type'. `extends` is the promise about what T supports; `keyof`/`T[K]` is how key-based helpers stay typed end-to-end. The clever stuff (conditional types, mapped types, `infer`) — I can now *recognise* it and I know where the depth lives. And the capstone proved I can put the whole scroll together."
 
-**Step distribution:** 1 `read`, 2 `kata`, 1 `challenge` (capstone) = 4 steps. No predict (§2.3); the call-site-inference reveal lives in kata 5.2's `Equal` assertions. *(The S026 draft's standalone advanced-types lesson is compressed into this lesson's closer per the Sprint 028 name-and-defer decision; the freed budget funds the capstone.)*
+**Step distribution:** 1 `read+inline`, 2 `kata`, 1 `challenge` (capstone) = 4 steps. No predict (§2.3); the call-site-inference reveal lives in kata 5.2's `Equal` assertions. *(The S026 draft's standalone advanced-types lesson is compressed into this lesson's closer per the Sprint 028 name-and-defer decision; the freed budget funds the capstone.)*
 
 **Status:** outlined.
 
-#### Step 5.1 — `read` — "Motivated generics — and the map of what comes next"
+#### Step 5.1 — `read+inline` — "Motivated generics — and the map of what comes next"
 
 - **why_care topics:** opens by reproducing duplication from the learner's own scroll: `firstString` / `firstNumber` / `firstUser` (fixtures echo katas 2.2 and 3.3 — retrieval). Name the duplication; `<T>` enters as the parameter you'd have written for the type.
 - **body topic outline (~350 words, the scroll's longest read):**
-  - **`<T>` motivated;** inference at the call site (you almost never write `first<string>(…)` — the compiler reads the argument). **`extends` constraints** with one concrete case: `<T extends { id: string }>` — "T must at least have an `id`". **`keyof` + indexed access:** `<T, K extends keyof T>(obj: T, key: K): T[K]` — the typed-helper shape; mistyped keys become compile errors. Re-surface, recall-without-warning: *you already read `T[K]` in the wild — kata 3.4's provided `nextStates` signature was `PaymentStatus["kind"][]`.*
+  - **`<T>` motivated;** inference at the call site (you almost never write `first<string>(…)` — the compiler reads the argument). **`extends` constraints** with one concrete case: `<T extends { id: string }>` — "T must at least have an `id`". **`keyof` + indexed access:** `<T, K extends keyof T>(obj: T, key: K): T[K]` — the typed-helper shape; mistyped keys become compile errors. Re-surface, recall-without-warning: *you already read `T[K]` in the wild — kata 3.4's provided `nextStates` signature was `PaymentStatus["kind"][]`.* `<!-- interact:keyof-indexed -->` (micro-quiz anchored after this paragraph — see data.interactions below).
   - **One function-type annotation shown in passing** (a parameter spelled `guard: (x: unknown) => x is T` in an example), so the capstone's pre-written `parseWith` signature is readable when it arrives — shown, not drilled.
   - **When NOT to be generic:** a function used with one type isn't generic; speculative `<T>` is annotation-maximalism wearing a costume (callback to Lesson 1's rule).
   - **The named-and-deferred closer (recognition, not writing — one concrete use case each, per the §2.2 gate):** conditional types (`NonNullable<T>` as type-level `if`), mapped types (`Partial<T>` as a loop over keys), `infer` (`ReturnType<F>` names a matched part), template literal types (event-name remapping), brand types (nominal islands in a structural sea), `satisfies` (constrain without widening). Each with its deep-dive pointer per §2.6. Felipe's recognition bar: he follows Pocock — he's *seen* these; now he can place them.
   - **Do NOT include:** `<T, U, V>` cascades; writing any conditional/mapped type; React generic components (`<T,>` oddity deferred with them).
 - **closer:** sets up the two katas and names the capstone explicitly: "Last step of the scroll: everything at once, on purpose."
+- **data.interactions (one micro-quiz, anchored at `<!-- interact:keyof-indexed -->`; valid per `readInlineDataSchema`):**
+  ```ts
+  data: {
+    interactions: [
+      {
+        kind: 'micro-quiz' as const,
+        after: 'keyof-indexed',
+        question: "Given `type User = { id: string; age: number }`, what is `User['id' | 'age']`?",
+        options: ['string | number', 'never'] as [string, string],
+        correct: 0 as const,
+        feedback: [
+          "Right — indexing a type with a *union* of keys distributes: `User['id' | 'age']` is `User['id'] | User['age']` = `string | number`. That's the exact mechanism katas 5.2/5.3 lean on to keep key-based helpers typed end to end.",
+          "`never` is what you'd get indexing with a key the type doesn't have. `'id' | 'age'` are both real keys, so indexed access with that union distributes over each: `User['id'] | User['age']` = `string | number`.",
+        ] as [string, string],
+      },
+    ],
+  }
+  ```
 
 #### Step 5.2 — `kata` — `first<T>(arr: T[]): T | undefined`
 
@@ -415,15 +464,16 @@ Audit result: no gesture is read-only; all three recur in the capstone with a ne
 
 ## 5. Sandbox notes
 
-- **Runner:** Piston TypeScript — the **existing allowlisted path** at `/scrolls/execute` (Sprint 028 decision; iframe stays `javascript-dom`-only). Single-file execution: no DOM, no React, no `npm install`, no project-mode tsconfig, no multi-file imports. TS version pin confirmed at seed time via Piston `/runtimes` (§7); no 5.x-only feature is *required* by any kata.
+- **Runner:** Piston TypeScript — the **existing allowlisted path** at `/scrolls/execute` (Sprint 028 decision; iframe stays `javascript-dom`-only). Single-file execution: no DOM, no React, no `npm install`, no project-mode tsconfig, no multi-file imports. TS version pinned at **5.0.3** in Piston (confirmed 2026-06-12); clears both floors the scroll needs (`catch`-is-`unknown` ≥4.4, instantiation-expression assertion ≥4.7). No 5.x-only feature is *required* by any kata.
 - **Test harness: manual `_t` / `_eq`, consistent with Ruby and Python (Sprint 028 decision).** The legacy `typescript-fundamentals` harness (`TS_HARNESS_HEADER`/`FOOTER` with `test()`/`expect()`) **retires with the legacy scroll** — the new scroll uses the cross-scroll shape, translated to TS:
   - `const _tests: Array<{ name: string; passed: boolean; message?: string }> = []`
   - `function _t(name: string, fn: () => void)` — try/catch, push result
   - `function _eq<T>(actual: T, expected: T)` — deep equality via `JSON.stringify` (number-vs-string caught cleanly; `undefined`-vs-missing-key is not — flagged per-kata where it could matter, notably capstone optional fields)
   - Footer emits `__DOJO_RESULT__ <json>` for `ExecuteStep` to parse — same contract as Ruby/Python.
+- **Optional-field harness requirement (BINDING, seed-time gate — W3).** Lesson 2's thesis is "optional fields are part of the shape," but a `JSON.stringify`-based `_eq` cannot distinguish a *missing* key from a key set to `undefined` (`{}` vs `{ name: undefined }` stringify identically) — so optional-field katas (2.2, the capstone) would pass tests that don't actually verify the benefit the lesson teaches. Requirement: **the TS harness `_eq` must distinguish missing keys from `undefined`-valued keys for optional-field fixtures** (a structural deep-equal that treats `{}` and `{ k: undefined }` as different), OR optional-field katas must carry an explicit key-presence assertion. A bare `JSON.stringify` equality silently passes the exact bug the lesson teaches against. Decide the harness shape at seed (W3) and smoke an optional-field kata against it **before seeding Lesson 2**.
 - **Type-only assertions:** `Equal<A, B>` helper in the starter prelude (`type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false`), consumed as `type _t1 = Equal<X, Y> extends true ? true : never`-style lines that fail the compile when wrong. The compile pass is the evaluator for these.
 - **`@ts-expect-error` semantics:** the directive is the assertion — if the next line compiles, the compiler flags the directive itself → compile failure → step failure. Used in Lessons 1-5.
-- **Compile-error verdict (load-bearing, verify before W3):** both mechanisms above require the Piston adapter to treat a TS compile-error exit as a *test failure with readable output*, not an opaque runtime crash. The legacy scroll never exercised this path (runtime assertions only). Smoke-test with a deliberately failing `Equal` and a violated `@ts-expect-error` before seeding Lesson 1 (§7).
+- **Compile-error verdict (load-bearing — ✓ resolved 2026-06-12):** both mechanisms above require the Piston adapter to treat a TS compile-error exit as a *test failure with readable output*, not an opaque runtime crash. Smoked green on TS 5.0.3: plain type error → `TS2322` (exit 2), unused `@ts-expect-error` → `TS2578` (exit 2), false `Equal` → `TS2322` (exit 2); the adapter labels them `errorKind:compile` via the `TS####` signature through `ExecuteStep`. No runner change needed (§7).
 - **Playground harness:** trivially-true `_t('explored', …)`; frontend `data.kind === "playground"` branch shipped with Ruby, reused by Python — no new work.
 - **Determinism:** no `Math.random()` unseeded, no wall clock, no timers, no network. STDIN never exercised; inputs are function arguments.
 - **Run timeout:** Piston's default is comfortable for single-file compile+run at these kata sizes; verify on the capstone (largest file) at smoke time.
@@ -445,8 +495,8 @@ To fill with exact item/chapter citations when prose lands (W2). Placeholder str
 
 ## 7. Open questions / known gaps
 
-- **Piston adapter on TS compile-error exit codes.** Lessons 1-5 lean on `Equal` lines and `@ts-expect-error`; "passing" sometimes means "the file compiled." The adapter must surface a compile failure as a readable test failure. The legacy scroll never exercised this path. **Verify before seeding Lesson 1** (deliberately failing `Equal` + violated `@ts-expect-error` smoke). If the adapter only inspects the runtime stream, the runner needs a small change — same open question the S026 draft carried; still unresolved.
-- **TypeScript version pin.** Confirm via Piston `/runtimes` at seed time. Nothing in the scroll *requires* 5.x (`satisfies` and `const` type params are named-and-deferred only), but Lesson 0's read must reflect the actual sandbox version. Two floors to verify: the `catch`-is-`unknown` claim needs **TS ≥4.4**, and the capstone's `Equal<ReturnType<typeof parseWith<ShipmentEvent>>, …>` assertion uses an instantiation expression — **TS ≥4.7**. That assertion shape is load-bearing (it's what forces the generic to actually be exercised); W2 must keep it, not simplify it away.
+- **✓ RESOLVED 2026-06-12 — Piston adapter on TS compile-error exit codes.** TS 5.0.3 installed in Piston; all three type-assertion channels smoked green: a plain type error surfaces as `TS2322` (exit 2); an unused `@ts-expect-error` surfaces as `TS2578` (exit 2); a false `Equal<A, B>` surfaces as `TS2322` (exit 2). The adapter labels these `errorKind:compile` via the `TS####` signature and they flow through `ExecuteStep` as readable test failures, not opaque runtime crashes. The "passing means the file compiled" mechanism the whole TS scroll leans on is confirmed working end to end — no runner change needed.
+- **✓ RESOLVED 2026-06-12 — TypeScript version pin.** Piston is pinned at **TS 5.0.3**, which clears both floors the scroll needs: the `catch`-is-`unknown` claim (≥4.4) and the capstone's `Equal<ReturnType<typeof parseWith<ShipmentEvent>>, …>` instantiation-expression assertion (≥4.7). Lesson 0's read should state 5.0.3 as the sandbox version. Open residue for W2: that capstone assertion shape is load-bearing (it's what forces the generic to actually be exercised) — keep it, don't simplify it away.
 - **Legacy kata salvage (decide at W2, per-kata).** Sprint 028 decision is rebuild; salvage only what survives the paragraph test (Ruby L3 precedent). MVP kata inventory: `greet`, `add`, `sum`, `fullname`, `fizzbuzz`, `palindrome`, `memoize`. Honest expectation: **most fail the new lens** — they are JS exercises with annotations, the exact frame the scroll replaces. `memoize` is the only one with a plausible re-skin (generic constraint exercise), and Lesson 5 already has stronger katas. Default: salvage nothing; revisit only if a W2 slot proves weak.
 - **Capstone difficulty.** Five functions in 20-25 min is the top of the 2× budget. Smoke with Felipe + Mariana walks after the first W2 pass; declared fallback (recorded in §4 / 5.4): provide `parseWith` in full (its signature is already starter-provided), keep the union + guard + exhaustive switch + composition as the work — the capstone still integrates L2/L3/L4 and stays canon-compliant (≥3 lessons).
 - **Hard-delete cascade.** `removeLegacyScrollBySlug` (used for `ruby-fundamentals`) deletes "everything that hangs off" the scroll; verify at W3 that learner-progress rows from Phase-0 smoke users are included in the cascade (or cascade-deleted explicitly) so the seed doesn't foreign-key-fail. Phase 0: cost of being wrong is one re-seed.
