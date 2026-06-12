@@ -16,7 +16,7 @@ sandbox: piston                    # Rust 1.68.2, rustc + run, single file, std-
 prereqs: []
 audience: "polyglot developer who already programs in another language"
 learner_time: "~120 minutes (60-120 range, at the ceiling)"
-status: outline-canon              # outline + capstone + gesture audit done; prose W2, seed W3
+status: seeded-smoked              # full scroll seeded (25 steps) + end-to-end smoked vs Piston rustc 1.68.2 (2026-06-12); isPublic:false pending S028 full-set smoke gate
 maintainers:
   - S8 Björn Lindqvist             # language pedagogy (compiler-as-tutor, format-exception scope)
   - S5 Elif Yıldız                 # curriculum architecture
