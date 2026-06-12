@@ -79,7 +79,7 @@ fn main() {
 ```text
 error[E0499]: cannot borrow `report` as mutable more than once at a time
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 ```
 
 ### Paragraph-test audit (borrow-check test §2.1 — Valentina/Björn gate)
@@ -169,19 +169,19 @@ error[E0499]: cannot borrow `v` as mutable more than once at a time
   |              ^^^^^^ second mutable borrow occurs here
 5 |     println!("{:?} {:?}", r1, r2);
   |                           -- first borrow later used here
-  |
+
 error: aborting due to previous error
 
 For more information about this error, try `rustc --explain E0499`.
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 Read it like the compiler wrote it for you, because it did. The headline names the owner (`v`) and the broken rule. The first span marks where the first exclusive borrow began (`r1`). The caret span marks the borrow that broke the rule (`r2`). The third label is the proof of overlap — `r1` is *used later*, on the `println!` line, so its borrow is still alive when `r2` is created. That label is also the fix in disguise: if `r1`'s last use came **before** `let r2`, the first borrow would already be over and this would compile. Borrows end at their last use, and rustc points the guidance at exactly that. The next-but-one step walks a fresh `E0499` line by line; first, a kata.
 ```
 
 ### Smoke note (authoring, not learner-facing)
 
-The 1.68-family `E0499` output for this snippet carries three labeled spans and the `--explain` trailer; it may emit **no literal `help:` line**. The spec (§2.3, §4 step 2.2) says the reveal "walks its `help:`" — option c's walk is drafted against the span labels plus the trailer instead, which carry the same guidance. If smoke shows a `help:` line, fold it into the walk verbatim.
+The captured 1.68.2 `E0499` output for this snippet carries three labeled spans and the `--explain` trailer, and emits **no literal `help:` line**. The spec (§2.3, §4 step 2.2) says the reveal "walks its `help:`" — option c's walk is built against the span labels plus the trailer instead, which carry the same guidance. The "first borrow later used here" label is the fix signpost.
 
 ---
 
@@ -305,7 +305,7 @@ error[E0499]: cannot borrow `scores` as mutable more than once at a time
 3 |     let top = &mut scores[0];
   |                    ------ first mutable borrow occurs here
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 The headline names the owner and the rule. The first span marks where the first exclusive borrow began — and notice what it says: `top` borrows *one element*, but the label charges the borrow against `scores`. Borrowing an element borrows the whole vector. The compiler can't prove a future `push` won't reallocate the buffer out from under your element pointer (a `Vec` keeps its elements in one contiguous buffer; growing it may move that buffer) — so it doesn't try; it forbids the overlap.
 
@@ -317,11 +317,11 @@ Here is the rest of the output:
 4 |     scores.push(88);
   |     ^^^^^^^^^^^^^^^ second mutable borrow occurs here
 5 |     *top += 5;
-  |     ------------ first borrow later used here
-  |
+  |     --------- first borrow later used here
+
 error: aborting due to previous error
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 The caret span is the line that broke the rule: `push` needs `&mut` access to the whole vector, and `top` already holds it. The last label is the overlap proof — `top` is **used later**, at `*top += 5`, so its borrow is still alive at the `push`. Borrows end at their last use; that label tells you exactly where this one refuses to die.
 
@@ -364,8 +364,8 @@ Next: a starter that fails with exactly the error you just learned to read. Fix 
     {
       kind: 'reveal',
       after: 'fix-shape',
-      prompt: 'You can see the overlap. What shape of fix will the help here point you toward?',
-      answer: 'End one borrow before the other starts. Move `*top += 5` above the push — a borrow dies at its last use — or wrap the element work in its own `{ }` scope. The fix re-orders WHEN each access happens; it does not change WHAT the code does. That re-sequencing move is the standard answer to E0499, and it is exactly what the next kata asks of you.',
+      prompt: 'You can see the overlap. This E0499 prints no `help:` line — so read the span labels (and reach for `rustc --explain E0499`). What shape of fix do they point you toward?',
+      answer: 'End one borrow before the other starts. The "first borrow later used here" label on `*top += 5` is the signpost: move that line above the push — a borrow dies at its last use — or wrap the element work in its own `{ }` scope. The fix re-orders WHEN each access happens; it does not change WHAT the code does. That re-sequencing move is the standard answer to E0499, and it is exactly what the next kata asks of you.',
     },
     {
       kind: 'micro-quiz',
@@ -375,7 +375,7 @@ Next: a starter that fails with exactly the error you just learned to read. Fix 
       correct: 1,
       feedback: [
         'Overlapping, yes — but not two writers. E0499 is reserved for two `&mut` borrows. A `&mut` overlapping a plain `&` (and `len` takes `&self`) is its sibling: E0502 — "cannot borrow `scores` as immutable because it is also borrowed as mutable". Two codes, one rule: many readers or one writer.',
-        'Correct. One writer plus one reader is the other half of the aliasing-XOR-mutation rule, and it gets its own code:\n\n```text\nerror[E0502]: cannot borrow `scores` as immutable because it is also borrowed as mutable\n4 |     let count = scores.len();\n  |                 ^^^^^^^^^^^^ immutable borrow occurs here\n```\n<!-- verify-at-smoke: rustc 1.68.2 -->\n\nSame anatomy you just walked — headline, spans, overlap. E0499: two writers. E0502: writer plus reader. You now hold both codes the lesson outcomes promised.',
+        'Correct. One writer plus one reader is the other half of the aliasing-XOR-mutation rule, and it gets its own code:\n\n```text\nerror[E0502]: cannot borrow `scores` as immutable because it is also borrowed as mutable\n --> main.rs:4:17\n  |\n3 |     let top = &mut scores[0];\n  |                    ------ mutable borrow occurs here\n4 |     let count = scores.len();\n  |                 ^^^^^^^^^^^^ immutable borrow occurs here\n5 |     *top += 5;\n  |     --------- mutable borrow later used here\n\nerror: aborting due to previous error\n\nFor more information about this error, try `rustc --explain E0502`.\n```\n\nSame anatomy you just walked — headline, spans, overlap. E0499: two writers. E0502: writer plus reader. You now hold both codes the lesson outcomes promised.',
       ],
     },
   ]
@@ -385,7 +385,7 @@ Next: a starter that fails with exactly the error you just learned to read. Fix 
 ### Authoring notes
 
 - **Prose budget:** every prose block between interactions is under 200 words (longest ≈ 110); total prose ≈ 400 words — at the §5.1 ceiling, justified by the close carrying two committed beats (cameo + habit).
-- **Smoke note:** reveal 2's prompt references the compiler's `help:` guidance per the outline. If 1.68.2 emits only span labels (no literal `help:` line) for this snippet, reword the prompt to "what fix do the spans point you toward?" — the answer stands either way. The `E0502` excerpt in the micro-quiz feedback is the one place the scroll *shows* `E0502` (outcomes contract, §2.7); re-capture both excerpts at smoke.
+- **Smoke note (resolved at capture):** the captured 1.68.2 `E0499` for this snippet emits **no literal `help:` line** — only span labels and the `--explain` trailer. Reveal 2's prompt was reworded to point at the span labels + `rustc --explain E0499` (the "first borrow later used here" label is the fix signpost); the answer stands either way. The `E0502` excerpt in the micro-quiz feedback is the one place the scroll *shows* `E0502` (outcomes contract, §2.7), captured verbatim below.
 - The `'a` cameo shows the `longest` signature exactly once, recognize-don't-write framing, with the deferral sentence (failure mode + slug) per §2.6. The sample compiles as written — borrow-check test §2.1 holds.
 
 ---

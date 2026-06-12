@@ -65,9 +65,13 @@ error[E0277]: the `?` operator can only be used in a function that returns `Resu
 2 |     let n: i32 = s.parse()?;
   |                           ^ cannot use the `?` operator in a function that returns `i32`
   |
-  = help: the trait `FromResidual<Result<Infallible, ParseIntError>>` is not implemented for `i32`
+  = help: the trait `FromResidual<Result<Infallible, _>>` is not implemented for `i32`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.
 ```
-<!-- verify-at-smoke: rustc 1.68.2 -->
+<!-- captured-at-smoke: rustc 1.68.2 (Piston), 2026-06-12 -->
 
 Read the anatomy: the span under the signature contains the fix; the `help:` line names the mechanism — `?` needs somewhere typed for the error to go. The trait it mentions is desugar plumbing; act on the span's sentence.
 
