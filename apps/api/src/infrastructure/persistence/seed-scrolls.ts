@@ -23,6 +23,11 @@ import {
   RUST_LESSONS,
   RUST_STEPS,
 } from './seed-scrolls-rust'
+import {
+  TYPESCRIPT_COURSE_DATA,
+  TYPESCRIPT_LESSONS,
+  TYPESCRIPT_STEPS,
+} from './seed-scrolls-typescript'
 
 // ---------------------------------------------------------------------------
 // Deterministic UUIDs for seed data
@@ -1251,6 +1256,14 @@ export async function seedAllScrolls(db: ReturnType<typeof drizzle>): Promise<Se
       courseData: RUST_COURSE_DATA,
       lessonsData: RUST_LESSONS,
       stepsData: RUST_STEPS,
+    },
+    // New polyglot-first 'typescript' scroll (W3 batch 1, L0-L2). Coexists as
+    // draft/isPublic:false with the legacy 'typescript-fundamentals' above; the
+    // rebuild-not-migrate hard-delete is deferred to the full-set smoke gate.
+    {
+      courseData: TYPESCRIPT_COURSE_DATA,
+      lessonsData: TYPESCRIPT_LESSONS,
+      stepsData: TYPESCRIPT_STEPS,
     },
   ]
 

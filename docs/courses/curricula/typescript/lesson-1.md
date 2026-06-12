@@ -8,7 +8,7 @@
 
 This file holds the **production prose** for each step's fields. All content and meta-notes in English. The sandbox runs **TypeScript 5.0.3** under `strict`; no code here needs anything past 5.0.3. Embeds one `before-after` figure (`ts-annotation-maximalism`) — the lens, drawn.
 
-**Harness note (applies to the `testCode` block in 1.3):** tests are written against the manual harness contract — `_t("user-facing sentence", () => { _eq(actual, expected) })`, with `Equal<A, B>` lines and `@ts-expect-error` directives for type-level assertions. The exact harness header/footer (the `_t`/`_eq` definitions, the `Equal` prelude, the runner, `__DOJO_RESULT__` emission, and the deep-equal that distinguishes a missing key from an `undefined`-valued one per spec §5) lands with the seed (W3, `seed-scrolls-typescript.ts`). Authors write `testCode` against the contract, not the header.
+**Harness note (applies to the `testCode` block in 1.3):** tests are written against the manual harness contract — `_t("user-facing sentence", () => { _eq(actual, expected) })` (and `_eqClose` for floating-point results), with `Equal<A, B>` lines and `@ts-expect-error` directives for type-level assertions. The exact harness header/footer (the `_t`/`_eq` definitions, the `Equal` prelude, the runner, `__DOJO_RESULT__` emission, and the deep-equal that distinguishes a missing key from an `undefined`-valued one per spec §5) lands with the seed (W3, `seed-scrolls-typescript.ts`). Authors write `testCode` against the contract, not the header.
 
 ---
 
@@ -170,8 +170,8 @@ The thesis of this lesson, restated: **un-annotated is not untyped.** The compil
 One parameter doesn't always arrive. The caller may pass a discount `code` or may not:
 
 ```typescript
-applyDiscount(120, 10)        // -> 108   (no code)
-applyDiscount(120, 10, "VIP") // -> 102   (VIP code, extra 5% off)
+applyDiscount(200, 10)        // -> 180   (no code)
+applyDiscount(200, 10, "VIP") // -> 171   (VIP code, extra 5% off)
 ```
 
 Mark that parameter optional in the signature, and notice what its type becomes *inside* the function once you do — the body already handles the case where it's absent, so the type should reflect that it might be.
@@ -187,7 +187,7 @@ A word on `@ts-expect-error`, since this is where you first meet it: the directi
 ### `starterCode`
 
 ```typescript
-// applyDiscount(120, 10) -> 108 ; applyDiscount(120, 10, "VIP") -> 102
+// applyDiscount(200, 10) -> 180 ; applyDiscount(200, 10, "VIP") -> 171
 // Give this function a signature: typed params, an optional param, a return type.
 function applyDiscount(price, percent, code) {
   const base = price * (1 - percent / 100);
@@ -203,15 +203,15 @@ function applyDiscount(price, percent, code) {
 
 // Runtime behavior:
 _t("applies the percentage discount when no code is given", () => {
-  _eq(applyDiscount(120, 10), 108);
+  _eqClose(applyDiscount(200, 10), 180);
 });
 
 _t("applies an extra 5% for a VIP code", () => {
-  _eq(applyDiscount(120, 10, "VIP"), 102);
+  _eqClose(applyDiscount(200, 10, "VIP"), 171);
 });
 
 _t("ignores an unrecognised code", () => {
-  _eq(applyDiscount(200, 0, "NOPE"), 200);
+  _eqClose(applyDiscount(200, 0, "NOPE"), 200);
 });
 
 // Type-level assertions (furniture):
@@ -252,23 +252,23 @@ You may have spelled the optional parameter the long way:
 function applyDiscount(price: number, percent: number, code: string | undefined): number {
 ```
 
-This compiles and types the body identically — `code` is `string | undefined` either way. The difference is at the *call site*: `code?: string` makes the argument genuinely optional (`applyDiscount(120, 10)` is legal), while `code: string | undefined` forces every caller to pass *something*, even if it's `undefined` (`applyDiscount(120, 10, undefined)`). When a parameter can be omitted, `?` is the honest spelling — it says "optional" at the boundary, not just "could be undefined" inside. The two only coincide on the body's view of the type; they differ on what callers are allowed to write.
+This compiles and types the body identically — `code` is `string | undefined` either way. The difference is at the *call site*: `code?: string` makes the argument genuinely optional (`applyDiscount(200, 10)` is legal), while `code: string | undefined` forces every caller to pass *something*, even if it's `undefined` (`applyDiscount(200, 10, undefined)`). When a parameter can be omitted, `?` is the honest spelling — it says "optional" at the boundary, not just "could be undefined" inside. The two only coincide on the body's view of the type; they differ on what callers are allowed to write.
 ```
 
 ### Why these tests
 
 | Test | Lands |
 |---|---|
-| No-code path returns 108 | The default branch — the body runs with `code` absent, proving the optional param's `undefined` case is handled. |
-| VIP path returns 102 | The named-code branch — the extra 5% applies. |
+| No-code path returns 180 | The default branch — the body runs with `code` absent, proving the optional param's `undefined` case is handled. |
+| VIP path returns 171 | The named-code branch — the extra 5% applies. |
 | Unrecognised code returns input | Guards a "fix" that treats any truthy `code` as VIP; only the literal `"VIP"` discounts. |
-| `@ts-expect-error` on `applyDiscount("120", 10)` | A string `price` must be rejected at compile time — proves `price: number` is actually annotated, not left implicit-`any`. |
+| `@ts-expect-error` on `applyDiscount("200", 10)` | A string `price` must be rejected at compile time — proves `price: number` is actually annotated, not left implicit-`any`. |
 | `@ts-expect-error` on `applyDiscount()` | Missing required args must be rejected — proves `price`/`percent` are *not* optional (the `?` belongs only on `code`). |
 | `Equal<ReturnType<typeof applyDiscount>, number>` | The return type is exactly `number` — proves the return annotation (or its inference) is right, not `any` or `number \| undefined`. |
 
 ### Hint-discipline check (§2.5)
 
-The hint points at the *gap* — "a way to mark a parameter as may-be-absent" and "what does its type become inside the function" — without naming `?` or `string | undefined`. Removing the hint wouldn't change which identifier the learner types from the instruction alone, so the hint adds direction, not the answer. The instruction states the optional-param behavior via the call examples (`applyDiscount(120, 10)` legal) rather than naming the operator.
+The hint points at the *gap* — "a way to mark a parameter as may-be-absent" and "what does its type become inside the function" — without naming `?` or `string | undefined`. Removing the hint wouldn't change which identifier the learner types from the instruction alone, so the hint adds direction, not the answer. The instruction states the optional-param behavior via the call examples (`applyDiscount(200, 10)` legal) rather than naming the operator.
 
 ---
 

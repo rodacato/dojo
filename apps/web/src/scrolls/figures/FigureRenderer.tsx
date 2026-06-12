@@ -7,11 +7,13 @@ import { TwoByTwo } from './TwoByTwo'
 import { PYTHON_FIGURES } from './data/python-figures'
 import { RUBY_FIGURES, type FigureData } from './data/ruby-figures'
 import { RUST_FIGURES } from './data/rust-figures'
+import { TYPESCRIPT_FIGURES } from './data/typescript-figures'
 
 const ALL_FIGURES: Record<string, FigureData> = {
   ...RUBY_FIGURES,
   ...PYTHON_FIGURES,
   ...RUST_FIGURES,
+  ...TYPESCRIPT_FIGURES,
 }
 
 export function FigureRenderer({ id }: { id: string }) {
