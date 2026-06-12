@@ -1,6 +1,6 @@
 // =============================================================================
-// Rust — scroll seed, batches 1-3 of 4 (Lessons 0-5). The dojo's Rust crash
-// course for polyglot developers.
+// Rust — scroll seed, ALL 4 batches (Lessons 0-6). The dojo's Rust crash
+// course for polyglot developers. Full scroll seeded: 25 steps / 7 lessons.
 //
 // Direction: ADR 022 (crash-course pivot); spec promoted to canon S028 W1
 // (docs/courses/curricula/rust.md + rust/rust.md). Polyglot-first order:
@@ -10,8 +10,12 @@
 //   order 4 — Lesson 3 (Result, ?, errors)  — 3 steps (read, 2 kata)
 //   order 5 — Lesson 4 (Traits, generics)   — 4 steps (read, predict, 2 kata)
 //   order 6 — Lesson 5 (Enums, Option)      — 4 steps (read, predict, 2 kata)
-// These batches: 23 steps total seeded. Full scroll: 25 steps / ~120 min target.
-// Lesson 6 seeds in the final batch. The batch-2 quoted rustc excerpts
+//   order 7 — Lesson 6 (Integration)        — 2 steps (read, challenge — the capstone)
+// 25 steps total seeded. Full scroll: 25 steps / ~120 min target.
+// Lessons 0-5's errors were captured at smoke (2026-06-12); Lesson 6 has no
+// rustc error excerpts (the 6.1 deferral map is prose; the 6.2 capstone is
+// pass/fail tests, integration rather than a new error reveal).
+// The batch-2 quoted rustc excerpts
 // (2.2 E0499, 2.4 fresh E0499 + E0502, 3.1 E0277) are pasted verbatim from
 // the live Piston rustc 1.68.2 capture (2026-06-12). The batch-3 quoted
 // excerpts (4.2 E0277-unsized, 5.2 E0004, 5.1 E0004 headline) are likewise
@@ -63,6 +67,7 @@ const LESSON_2_ID = seedUuid('rust-l2-borrowing')
 const LESSON_3_ID = seedUuid('rust-l3-result')
 const LESSON_4_ID = seedUuid('rust-l4-traits')
 const LESSON_5_ID = seedUuid('rust-l5-enums')
+const LESSON_6_ID = seedUuid('rust-l6-integration')
 
 const STEP_0_1_ID = seedUuid('rust-s0-1-context-and-toolchain')
 const STEP_0_2_ID = seedUuid('rust-s0-2-predict-first-command')
@@ -92,6 +97,9 @@ const STEP_5_1_ID = seedUuid('rust-s5-1-enums-option-and-match')
 const STEP_5_2_ID = seedUuid('rust-s5-2-predict-does-this-compile')
 const STEP_5_3_ID = seedUuid('rust-s5-3-kata-define-enum-match-every-shape')
 const STEP_5_4_ID = seedUuid('rust-s5-4-kata-first-even')
+
+const STEP_6_1_ID = seedUuid('rust-s6-1-deferral-map')
+const STEP_6_2_ID = seedUuid('rust-s6-2-capstone-log-triage')
 
 const RUST_HARNESS_HEADER = String.raw`// ── dojo harness ──────────────────────────────────
 use std::panic::{catch_unwind, AssertUnwindSafe};
@@ -2044,7 +2052,234 @@ const LESSON_5 = {
   title: 'Enums, Option, and exhaustive match',
 }
 
-export const RUST_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3, LESSON_4, LESSON_5]
+// =============================================================================
+// Lesson 6 — Integration: the capstone
+// =============================================================================
+//
+// 2 steps (read + challenge). The read 6.1 is the deferral map: a one-paragraph
+// recap ending in a compiling miniature (the capstone's shape — &str + .lines()
+// + ? + match), then the eight sanctioned omissions with owning deep-dive slugs,
+// then the forward prompt naming Lessons 2-5. No figure (none committed for L6),
+// no quoted rustc output (the capstone is integration, not a new error). The
+// challenge 6.2 (capstone "Log triage") is the scroll's last step: ONE hint
+// (challenge rules, README §5.3), todo!()-stubbed starter so the scaffold
+// compiles, and a self-contained referenceSolution — Summary + LogError ship in
+// the starter (the tests construct/match them) and the solution re-declares them
+// so it runs standalone against testCode (the kata-4.4 pattern). No rustc error
+// excerpts captured: the deferral map is prose and the capstone is pass/fail.
+
+const STEP_6_1 = {
+  id: STEP_6_1_ID,
+  lessonId: LESSON_6_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'What you can now read — and what we deliberately didn\'t teach',
+  instruction: `## What you can now read
+
+Two hours ago, \`let s2 = s1\` ended your program. Here is what you now read without slowing down: ownership and borrowing decide every signature you meet — you know why this scroll's functions took \`&str\`, and what \`E0382\` is asking when a move goes wrong. Errors are values: \`Result<T, E>\`, \`?\` propagation, a hand-written error enum with \`Display\` and \`From\`. Behavior lives in traits, statically dispatched until heterogeneity forces \`Box<dyn Trait>\`. Every \`match\` on an enum is exhaustive, because the compiler refuses anything less. That is most of the first real Rust file you will open. Here it is as one compiling function — \`str::lines\` is std's iterator over a string's lines, and \`Option::ok_or\` is the std bridge from \`Option\` to \`Result\`, the same method family as Lesson 5's \`unwrap_or\`:
+
+\`\`\`rust
+fn head_level(log: &str) -> Result<&str, String> {
+    let line = log.lines().next().ok_or(String::from("empty log"))?;
+    match line.split_whitespace().next() {
+        Some(token) => Ok(token),
+        None => Err(String::from("blank first line")),
+    }
+}
+
+fn main() {
+    println!("{:?}", head_level("WARN disk usage at 91%\\nINFO all clear"));
+}
+\`\`\`
+
+## What we deliberately didn't teach
+
+Eight omissions, all deliberate. One sentence each: how it bites, and which deep-dive owns it.
+
+- **\`unsafe\`** — for soundness you can prove and the compiler can't, never for borrows you'd rather not think about; the proof discipline is \`rust-unsafe-and-ffi\`.
+- **Lifetime annotations at depth** — you can recognize \`'a\` since Lesson 2; learned under deadline pressure, it gets sprayed everywhere because one signature needed it — \`rust-lifetimes-and-borrowing-deep\`.
+- **Async, \`tokio\`, \`Pin\`** — async without a runtime is confusingly-written sync code, and this sandbox cannot host a runtime; \`rust-async-with-tokio\`.
+- **\`Rc<RefCell<T>>\`** — the poor-man's-GC reflex, and usually a data-model smell the arena pattern dissolves; covered alongside lifetimes in \`rust-lifetimes-and-borrowing-deep\`.
+- **Trait objects beyond \`Box<dyn Trait>\` literacy** — reaching for \`dyn\` because "interface" maps to it linguistically buys a vtable and an allocation you didn't price; \`rust-traits-deep\`.
+- **Macros** — \`macro_rules!\` where a plain function would do, and proc macros cannot even build in this sandbox; \`rust-macros-declarative-and-procedural\`.
+- **Implementing \`Iterator\`** — this scroll *used* \`.iter()\`, \`.find()\`, \`.collect()\`; writing index loops because the trait felt advanced is the failure mode \`rust-iterators-deep\` exists to remove.
+- **Real testing** — the \`_t\` harness here is a sandbox workaround; actual Rust tests are \`#[test]\` functions run by \`cargo test\`, and \`rust-testing-deep\` owns that story.
+
+## The last step
+
+What remains is one function a working developer would actually write. It needs Lesson 2's borrowed parsing, Lesson 3's error model, Lesson 4's trait gesture, and Lesson 5's exhaustive match — at the same time, in the same file. That's the point.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+}
+
+const STEP_6_2 = {
+  id: STEP_6_2_ID,
+  lessonId: LESSON_6_ID,
+  order: 2,
+  type: 'challenge' as const,
+  title: 'Capstone: log triage — parse, classify, summarize',
+  instruction: `**Budget: ~25 minutes — twice a kata. Not a gate:** skipping it costs you nothing downstream. But this is the scroll's promise made checkable, and failing it is useful data — it names the lesson to go re-run. The routing is at the end of this brief.
+
+You run a service. It logs lines like this — a level token first, the message after:
+
+\`\`\`text
+INFO server started
+WARN disk usage at 91%
+ERROR disk full
+\`\`\`
+
+Write \`fn summarize(log: &str) -> Result<Summary, LogError>\`:
+
+- Count the \`INFO\`, \`WARN\`, and \`ERROR\` lines into a \`Summary\`.
+- A line's level is its **first token**. Blank lines — no tokens at all — are skipped, not counted.
+- The first unrecognized level token aborts the triage: \`Err(LogError::UnknownLevel(token.to_string()))\`.
+- An input with no non-blank lines is \`Err(LogError::Empty)\` — an all-zero summary would be a lie.
+- \`Summary\` displays as \`2 info, 1 warn, 1 error\`: counts in that order, labels singular no matter the count.
+
+\`Summary\` and \`LogError\` are pinned in the starter — the tests construct and match them, so their shape isn't yours to choose. Everything else is yours. Define \`Level\` yourself: three variants, no payload.
+
+This is Lessons 2 through 5 in one file, by name:
+
+- **Lesson 2 — borrowed parsing.** \`summarize\` takes \`&str\`; lines and tokens stay borrowed all the way down. Turning a line into its first token is the \`first_word\` gesture you already wrote in kata 2.3. \`str::lines\` exists in std — 6.1's sample used it — and looking up its exact shape, and its neighbors', is allowed at challenge level.
+- **Lesson 3 — errors as values.** A custom error enum and \`?\` doing the propagation: kata 3.3's shape. A small fallible function that turns one token into a \`Level\` keeps \`summarize\` honest — \`?\` is built for exactly that seam.
+- **Lesson 4 — the trait gesture.** \`impl Display for Summary\`, like kata 4.3's \`Describe\` — against std's trait this time.
+- **Lesson 5 — your enum, matched exhaustively.** Every \`match\` on \`Level\` covers all three variants. No \`_\` arm on \`Level\`.
+
+One precision before your Lesson 5 reflex files a complaint: exhaustiveness is the **enum** match's contract. The match that classifies a token is a match on \`&str\`, and strings aren't enumerable — that match needs its catch-all arm. That arm also holds the solution's one allocation: the token is borrowed from \`log\`, and an error that borrows from the input would drag a lifetime parameter into \`LogError\` — owning the offending token with \`.to_string()\` is the honest copy. It is the only allocation you need.
+
+If you stall, the stall is information. Can't get from a line to its borrowed token: Lesson 2. Tangled in the error plumbing: Lesson 3. \`Display\` won't compile: Lesson 4. The compiler complains about your \`match\`: Lesson 5. Go close the gap, then come back.`,
+  starterCode: `#[derive(Debug, PartialEq)]
+struct Summary {
+    infos: usize,
+    warns: usize,
+    errors: usize,
+}
+
+#[derive(Debug, PartialEq)]
+enum LogError {
+    Empty,
+    UnknownLevel(String),
+}
+
+// Your Level enum goes here: three variants, no payload.
+
+impl std::fmt::Display for Summary {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        todo!()
+    }
+}
+
+fn summarize(log: &str) -> Result<Summary, LogError> {
+    todo!()
+}
+
+fn main() {
+    let log = "INFO server started\\nWARN disk usage at 91%\\nERROR disk full";
+    match summarize(log) {
+        Ok(summary) => println!("{}", summary),
+        Err(problem) => println!("triage failed: {:?}", problem),
+    }
+}
+`,
+  testCode: `${RUST_HARNESS_HEADER}
+_t("counts every level across a mixed log, skipping blank lines", || {
+    let log = "INFO server started\\n\\nWARN disk usage at 91%\\nINFO request served\\n\\nERROR disk full";
+    _eq(summarize(log), Ok(Summary { infos: 2, warns: 1, errors: 1 }))
+});
+
+_t("an unknown level token is an error carrying that token", || {
+    let log = "INFO ok\\nTRACE deep in the weeds";
+    _eq(summarize(log), Err(LogError::UnknownLevel(String::from("TRACE"))))
+});
+
+_t("empty input is an error, not a zero summary", || _eq(summarize(""), Err(LogError::Empty)));
+
+_t("input with only blank lines is just as empty", || _eq(summarize("\\n\\n"), Err(LogError::Empty)));
+
+_t("a summary displays as '2 info, 1 warn, 1 error'", || {
+    let summary = Summary { infos: 2, warns: 1, errors: 1 };
+    _eq(format!("{}", summary), String::from("2 info, 1 warn, 1 error"))
+});
+${RUST_HARNESS_FOOTER}`,
+  hint: `Three sub-problems: split the input into candidate lines, turn a line's first token into a \`Level\` (one fallible function — \`?\` is your friend), and accumulate counts. Solve them in that order.`,
+  solution: `#[derive(Debug, PartialEq)]
+struct Summary {
+    infos: usize,
+    warns: usize,
+    errors: usize,
+}
+
+#[derive(Debug, PartialEq)]
+enum LogError {
+    Empty,
+    UnknownLevel(String),
+}
+
+enum Level {
+    Info,
+    Warn,
+    Error,
+}
+
+fn parse_level(token: &str) -> Result<Level, LogError> {
+    match token {
+        "INFO" => Ok(Level::Info),
+        "WARN" => Ok(Level::Warn),
+        "ERROR" => Ok(Level::Error),
+        unknown => Err(LogError::UnknownLevel(unknown.to_string())),
+    }
+}
+
+fn summarize(log: &str) -> Result<Summary, LogError> {
+    let mut summary = Summary { infos: 0, warns: 0, errors: 0 };
+    let mut saw_line = false;
+    for line in log.lines() {
+        let token = match line.split_whitespace().next() {
+            Some(token) => token,
+            None => continue,
+        };
+        saw_line = true;
+        match parse_level(token)? {
+            Level::Info => summary.infos += 1,
+            Level::Warn => summary.warns += 1,
+            Level::Error => summary.errors += 1,
+        }
+    }
+    if saw_line {
+        Ok(summary)
+    } else {
+        Err(LogError::Empty)
+    }
+}
+
+impl std::fmt::Display for Summary {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} info, {} warn, {} error", self.infos, self.warns, self.errors)
+    }
+}
+
+fn main() {
+    let log = "INFO server started\\n\\nWARN disk usage at 91%\\nINFO request served\\n\\nERROR disk full";
+    match summarize(log) {
+        Ok(summary) => println!("{}", summary),
+        Err(problem) => println!("triage failed: {:?}", problem),
+    }
+}
+`,
+  alternativeApproach: null,
+}
+
+const LESSON_6 = {
+  id: LESSON_6_ID,
+  scrollId: COURSE_ID,
+  order: 7,
+  title: 'Integration: the capstone',
+}
+
+export const RUST_LESSONS = [LESSON_0, LESSON_1, LESSON_2, LESSON_3, LESSON_4, LESSON_5, LESSON_6]
 
 export const RUST_STEPS = [
   STEP_0_1, STEP_0_2,
@@ -2053,4 +2288,5 @@ export const RUST_STEPS = [
   STEP_3_1, STEP_3_2, STEP_3_3,
   STEP_4_1, STEP_4_2, STEP_4_3, STEP_4_4,
   STEP_5_1, STEP_5_2, STEP_5_3, STEP_5_4,
+  STEP_6_1, STEP_6_2,
 ]
