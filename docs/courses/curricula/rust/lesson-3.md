@@ -16,18 +16,18 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 
 **Title:** `Errors are values the compiler makes you handle`
 **Type:** `read`
-**Word count target:** ~400 hard ceiling (landed ~400 — audit below). Embeds one `before-after` figure (match ladder vs `?`) beside the desugar paragraph. Delta anchors: TS result-object union + Node `(err, data)` callbacks (Mariana/Felipe); checked-exceptions-that-compose (Yui); Go/`Either` in one clause.
+**Word count target:** ~400 hard ceiling (landed ~400 after the stage 9–11 trim — audit below). Embeds one `before-after` figure (match ladder vs `?`) beside the desugar paragraph. Delta anchors: TS result-object union + Node `(err, data)` callbacks (Mariana/Felipe); checked-exceptions-that-compose (Yui); Go/`Either` in one clause.
 
 ### `instruction` (markdown body)
 
 ```markdown
 ## Why this matters
 
-You already encode "this can fail" somewhere. In TS you may have written the result-object union — `{ ok: true, value } | { ok: false, error }` — to escape exceptions; Node's older convention threads `(err, data)` through every callback. From Java: checked exceptions had the right instinct — failure in the signature — and mechanics that don't compose, so everyone catches and swallows. `Result<T, E>` is that instinct with compiler enforcement, the same family as Go's `(value, err)` pairs and functional `Either`.
+You already encode "this can fail" somewhere: the TS result-object union — `{ ok: true, value } | { ok: false, error }` — written to escape exceptions; Node's `(err, data)` callbacks. From Java: checked exceptions had the right instinct — failure in the signature — and mechanics that don't compose, so everyone catches and swallows. `Result<T, E>` is that instinct with compiler enforcement, kin to Go's `(value, err)` pairs and functional `Either`.
 
 ## `Result` is an ordinary enum
 
-Two variants, no runtime machinery — and you can't reach the success value without going through both arms:
+Two variants, no runtime machinery — and the type won't let you forget the error arm:
 
 ```rust
 fn main() {
@@ -39,15 +39,15 @@ fn main() {
 }
 ```
 
-`parse` returns `Result<i32, ParseIntError>`. There is no `n` outside the `Ok` arm — the forgotten error path is a type error here, not a review comment.
+`parse` returns `Result<i32, ParseIntError>`. There is no `n` outside the `Ok` arm — the forgotten error path is a type error, not a review comment.
 
 ## `?` — the match ladder, collapsed
 
-A full `match` per `Result` turns three fallible calls into a staircase. `?` is the staircase as one character:
+A full `match` per `Result` turns three fallible calls into a staircase; `?` is the staircase as one character:
 
 :figure[before-after]{id="match-ladder-vs-question-mark"}
 
-The desugaring is the lesson: `expr?` means *if `Ok(v)`, evaluate to `v`; if `Err(e)`, `return Err(From::from(e))` right now*. Two consequences. First, `?` is a `return` in disguise, so the enclosing function must itself return a `Result` (or `Option`). Second, the error passes through `From::from` on the way out — that's the next section. Break the first rule and you hit one of the first errors every real Rust beginner meets:
+The desugaring is the lesson: `expr?` means *if `Ok(v)`, evaluate to `v`; if `Err(e)`, `return Err(From::from(e))` now*. Two consequences: `?` is a `return` in disguise, so the enclosing function must itself return `Result` (or `Option`); and the error passes through `From::from` on the way out — the next section. Break the first rule and you hit an error every Rust beginner meets:
 
 ```rust
 fn double_input(s: &str) -> i32 {
@@ -69,11 +69,11 @@ error[E0277]: the `?` operator can only be used in a function that returns `Resu
 ```
 <!-- verify-at-smoke: rustc 1.68.2 -->
 
-Read the anatomy: the span under the signature contains the fix, and the `help:` line names the mechanism — `?` needs somewhere typed for the error to go. The trait it mentions is desugar plumbing; the span's sentence is what you act on.
+Read the anatomy: the span under the signature contains the fix; the `help:` line names the mechanism — `?` needs somewhere typed for the error to go. The trait it mentions is desugar plumbing; act on the span's sentence.
 
 ## `From` is how `?` converts errors
 
-Real pipelines fail in more than one way. Because `?` calls `From::from` as it propagates, a function returning `Result<T, AppError>` can use `?` directly on a `Result<_, ParseIntError>` — *if* the conversion impl exists:
+Real pipelines fail in more than one way. Because `?` calls `From::from` as it propagates, a function returning `Result<T, AppError>` can use `?` on a `Result<_, ParseIntError>` — *if* the conversion impl exists (`impl … for`: pattern-match the spelling; Lesson 4 teaches it):
 
 ```rust
 impl From<std::num::ParseIntError> for AppError {
@@ -81,11 +81,11 @@ impl From<std::num::ParseIntError> for AppError {
 }
 ```
 
-Three lines; every `?` in the pipeline now wraps the parse error into your type. (Compiles next to `enum AppError { Parse(std::num::ParseIntError), Empty }` — the enum kata 3.3 hands you.)
+Three lines; every `?` now wraps the parse error into your type. (Compiles next to kata 3.3's `AppError` enum.)
 
 ## `unwrap`, `expect`, and where `panic!` belongs
 
-`unwrap()` and `expect()` extract the `Ok` value or crash the program. Not error handling — **invariant assertions**: the `expect` string is a claim about your own logic, not anxiety. Decision matrix, two lines: caller can plausibly handle the failure → `Result`. Failure means the program's own assumptions are broken → `panic!`/`expect`.
+`unwrap()` and `expect()` extract the `Ok` value or crash — **invariant assertions**, not error handling: the `expect` string is a claim about your own logic. Caller can plausibly handle the failure → `Result`; broken internal assumptions → `panic!`/`expect`.
 
 ```rust
 fn main() {
@@ -94,7 +94,7 @@ fn main() {
 }
 ```
 
-Production error enums are derived with `thiserror`, context added with `anyhow` — no crates in this sandbox, so you hand-write `Display` and `From`; the mechanics are the lesson, the boilerplate is what the crates remove. Next: write the `?` shape yourself, then the whole error enum.
+Production error enums are derived with `thiserror`, context added with `anyhow` — absent here, so you hand-write `Display` and `From`: the mechanics are the lesson, the boilerplate is what the crates remove. Next: the `?` shape, then the whole error enum.
 ```
 
 ### Paragraph-test audit (borrow-check test §2.1 — Valentina/Björn gate)
@@ -105,7 +105,7 @@ Production error enums are derived with `thiserror`, context added with `anyhow`
 | "`Result` is an ordinary enum" | "the union you already wrote, enforced" — no enum theory (data-carrying variants are Lesson 5's job; this read only *uses* the shape) | KEEP — ends in a compiling sample (`match` on `parse`) |
 | "`?` — the match ladder, collapsed" + figure | Pain-led (the staircase); desugar stated as mechanics, not philosophy | KEEP — ends in the non-compiling sample + **full `E0277` output incl. `help:`** |
 | "`From` is how `?` converts errors" | Anchored to "real pipelines fail in more than one way" — the multi-error ache every persona has shipped around | KEEP — ends in the compiling 3-line `From` impl (the kata 3.3 model) |
-| "`unwrap`/`expect`/`panic!`" | Maps to assertion culture every persona holds; 2-line decision matrix | KEEP — ends in a compiling sample (`expect` as invariant claim) |
+| "`unwrap`/`expect`/`panic!`" | Maps to assertion culture every persona holds; the Result-vs-panic decision rule in one line | KEEP — ends in a compiling sample (`expect` as invariant claim) |
 | Sandbox-honesty marker + forward prompt | Names `thiserror`/`anyhow` and why they're absent | KEEP (pointer paragraph — exempt per §2.6 framing) |
 
 **What got cut:** `Box<dyn Error>` as an error type (trait objects land in Lesson 4; using one here would lean on untaught machinery), `unwrap_or`/`map_err` combinator tour (Lesson 5 names `Option`'s combinators; drilling `Result`'s here would blow the budget), `main() -> Result<...>` (works since 1.26 but adds a second `E0277` surface for no new mechanism), and error-trait-object vs enum design debate (Rust for Rustaceans territory — deferred with the `thiserror` marker).

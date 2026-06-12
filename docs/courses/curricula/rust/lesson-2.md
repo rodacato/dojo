@@ -16,7 +16,7 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 
 **Title:** `Borrowing: read access for many, write access for one`
 **Type:** `read`
-**Word count target:** ~400 hard ceiling (landed ~330 — audit below). Borrow-check test §2.1 applied; error-anchor §2.2.2 satisfied via the pairing clause (`E0499` headline line only — predict 2.2 owns the full output). Embeds one `disambiguation` figure (the scroll's ≥1-disambiguation mandate). **No lifetimes content in this read** — the `'a` cameo lives at the close of 2.4.
+**Word count target:** ~400 hard ceiling (landed ~350 after the stage 9–11 audience additions — audit below). Borrow-check test §2.1 applied; error-anchor §2.2.2 satisfied via the pairing clause (`E0499` headline line only — predict 2.2 owns the full output). Embeds one `disambiguation` figure (the scroll's ≥1-disambiguation mandate). **No lifetimes content in this read** — the `'a` cameo lives at the close of 2.4.
 
 ### `instruction` (markdown body)
 
@@ -40,13 +40,13 @@ fn main() {
 }
 ```
 
-A `&T` is read access. Any number can coexist, because readers can't invalidate each other. Nothing moves: `name` is still owned by `main` after every borrow. If you come from JS, Java, or Python, this is the by-reference passing you already do everywhere — except the compiler tracks who's looking.
+A `&T` is read access (`&String` on purpose — the next section improves it). Any number can coexist, because readers can't invalidate each other. Nothing moves: `name` is still owned by `main` after every borrow. If you come from JS, Java, or Python, this is the share-don't-copy argument passing you already do everywhere — except the compiler tracks who's looking, and while anyone is looking, nobody writes — not even the owner.
 
 ## `&String` vs `&str` — take the slice
 
 :figure[disambiguation]{id="string-vs-str"}
 
-`String` owns and grows a heap buffer; `&str` is a borrowed view into string data — anyone's string data, including a literal's. The idiomatic argument type is `&str`. A `&String` coerces to `&str` at the call site (that's the deref coercion the Lesson 1 playground let you feel), so a `&str` parameter accepts both. Take `&str` unless taking ownership is the point.
+`String` owns and grows a heap buffer; `&str` is a borrowed view into string data — anyone's string data, including a literal's. The idiomatic argument type is `&str`. A `&String` coerces to `&str` at the call site (a compile-checked conversion — nothing like JS coercion; it's the deref coercion the Lesson 1 playground let you feel), so a `&str` parameter accepts both. Take `&str` unless taking ownership is the point.
 
 ```rust
 fn greet(name: &str) -> String {
@@ -87,7 +87,7 @@ error[E0499]: cannot borrow `report` as mutable more than once at a time
 | Paragraph | Removes what polyglot decision? | Verdict |
 |---|---|---|
 | "Why this matters" | "Why not just keep returning ownership like kata 1.4?" | KEEP (opener — licensed lead-in, next paragraph carries the sample) |
-| "`&T` — shared borrows" | "Is a Rust reference the by-reference passing I already know?" — yes, plus static tracking | KEEP — ends in a compiling sample |
+| "`&T` — shared borrows" | "Is a Rust reference the share-don't-copy passing I already know?" — yes, plus static tracking (readers block writers, even the owner) | KEEP — ends in a compiling sample |
 | "`&String` vs `&str`" | "Which string type goes in my function signature?" — the G3 default every later kata holds | KEEP — ends in a compiling sample (coercion shown both ways) |
 | "`&mut T` — exactly one" + cliffhanger | "Can I hold two mutable references like two object handles?" | KEEP — ends in the non-compiling sample + `E0499` headline line ONLY (pairing clause: 2.2 owns the full output) |
 
@@ -307,7 +307,7 @@ error[E0499]: cannot borrow `scores` as mutable more than once at a time
 ```
 <!-- verify-at-smoke: rustc 1.68.2 -->
 
-The headline names the owner and the rule. The first span marks where the first exclusive borrow began — and notice what it says: `top` borrows *one element*, but the label charges the borrow against `scores`. Borrowing an element borrows the whole vector. The compiler can't prove a future `push` won't reallocate the buffer out from under your element pointer — so it doesn't try; it forbids the overlap.
+The headline names the owner and the rule. The first span marks where the first exclusive borrow began — and notice what it says: `top` borrows *one element*, but the label charges the borrow against `scores`. Borrowing an element borrows the whole vector. The compiler can't prove a future `push` won't reallocate the buffer out from under your element pointer (a `Vec` keeps its elements in one contiguous buffer; growing it may move that buffer) — so it doesn't try; it forbids the overlap.
 
 <!-- interact:second-span -->
 
@@ -488,7 +488,7 @@ The other honest fix: drop the intermediate handles entirely and let each statem
 
 ## Self-review checkpoint (before commit)
 
-- [x] Read 2.1 under the ~400-word ceiling (≈390); every section terminates in a compiling sample or the `E0499` headline (audit table above). The spec-vs-W2-instruction ordering conflict is **flagged in 2.1's notes**, not silently resolved.
+- [x] Read 2.1 under the ~400-word ceiling (≈350); every section terminates in a compiling sample or the `E0499` headline (audit table above). The spec-vs-W2-instruction ordering conflict is **flagged in 2.1's notes**, not silently resolved.
 - [x] Pairing clause (§2.2 rule 2): 2.1 carries snippet + headline line only; the verbatim multi-line `E0499` lives in 2.2's reveal. 2.1 contains **zero lifetimes content**.
 - [x] 2.4 walks a **fresh** `E0499` (element borrow + `push` — distinct mechanism from 2.2's two named bindings); both reveal prompts are anatomy-general; the micro-quiz reveal carries the 3-line `E0502` excerpt; ≤4 interactions; markers in prose match `after` ids.
 - [x] 2.4 closes with the lifetimes-lite cameo (`longest<'a>` shown once, recognize-don't-write, deferral slug named) then the `rustc --explain` habit.

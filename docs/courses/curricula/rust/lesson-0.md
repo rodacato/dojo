@@ -25,7 +25,7 @@ This scroll spends ~120 minutes on one mental model (ownership) and one skill (r
 
 ## The sweet spot — and what Rust is not for
 
-Rust earns its compile times where memory safety and performance matter at the same time: high-performance CLI tools (`ripgrep`, `fd`, `bat`), services under real load (Discord's read-states service, Cloudflare's proxies, AWS's Bottlerocket OS), and WebAssembly targets. It is a poor fit for quick prototypes (compile times tax iteration), notebooks, CRUD apps where developer-hours dominate runtime cost, and 30-line scripts — there, the borrow checker is pure overhead. If everything you ship lives in that second list, close the tab with a clear conscience.
+Rust earns its compile times where memory safety and performance matter at the same time: high-performance CLI tools (`ripgrep`, `fd`, `bat`), services under real load (Discord's read-states service, Cloudflare's proxies, AWS's Bottlerocket OS), and WebAssembly targets. It is a poor fit for quick prototypes (compile times tax iteration), notebooks, CRUD apps where developer-hours dominate runtime cost, and 30-line scripts — there, the borrow checker is pure overhead. If everything you ship lives in that second list, close the tab with a clear conscience — unless you're here for what the borrow checker teaches you about your own designs, which is a workload-independent reason to stay.
 
 ## The toolchain in one breath
 
@@ -132,7 +132,7 @@ correct: b
 > Correct. `cargo run` reads `Cargo.toml`, fetches dependencies pinned by `Cargo.lock`, compiles the project, and runs the binary — one command, no separate install step. The npm-style two-step (install, then run) collapses into this. It is the daily inner loop: edit, `cargo run`, read what the compiler says. Which is the right segue — Lesson 1 is about what the compiler says.
 
 **c — `cargo install`:**
-> The `gem install` / `pipx install` reflex. `cargo install` builds a binary crate and installs it **globally** into `~/.cargo/bin` — it's how you get *tools* (`cargo install ripgrep`), not how you work on the project in front of you. Run it here and you've published the project's binary onto your own PATH, which is not what "see it run" meant.
+> The `gem install` / `pipx install` reflex — and where bare `npm install` or `mvn clean install` muscle memory lands. What actually happens: cargo refuses and points you at `cargo install --path .` — that flag is how you'd install *this* project's binary globally into `~/.cargo/bin`; bare `cargo install` is for fetching tools from the registry (`cargo install ripgrep`). Either way, nothing runs the project in front of you.
 
 **d — `cargo add`:**
 > The `npm install <pkg>` reflex. `cargo add <crate>` edits `Cargo.toml` to declare a **new** dependency — it modifies the project and runs nothing. And the reflex behind it ("I must install dependencies before running") doesn't transfer: there is no separate install step to perform. Fetching what `Cargo.lock` already pins is part of the run command itself.

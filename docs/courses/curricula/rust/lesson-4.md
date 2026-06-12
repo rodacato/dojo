@@ -16,20 +16,20 @@ This file holds the **production prose** for each step's fields. All content and
 
 **Title:** `Traits: the interface you know, the dispatch you choose`
 **Type:** `read`
-**Word count target:** ~400 hard ceiling (code blocks and figure directive excluded). Borrow-check test §2.1 applied — **every sample compiles**; no error excerpt belongs in this read (predict 4.2 owns the lesson's reveal, and the read closes by posing its question). Embeds one `tabbed-card` figure (`dispatch-decision`, committed at the Phase A panel review) beside the decision-tree paragraph.
+**Word count target:** ~400 hard ceiling (code blocks and figure directive excluded; landed ~405 after the stage 9–11 trim). Borrow-check test §2.1 applied — **every sample compiles**; no error excerpt belongs in this read (predict 4.2 owns the lesson's reveal, and the read closes by posing its question). Embeds one `tabbed-card` figure (`dispatch-decision`, committed at the Phase A panel review) beside the decision-tree paragraph.
 
 ### `instruction` (markdown body)
 
 ```markdown
 ## Why this matters
 
-You already hold this concept: a Rust **trait** is the interface you write in TypeScript or Java — a named contract of methods a type promises to honor. The twist has three parts: there is no inheritance (traits attach behavior to otherwise-flat types), a single *blanket impl* can cover every type matching a bound (a power your interfaces lack — `rust-traits-deep` owns it), and — the heart of this lesson — **dispatch is a choice you spell**, not a property of the language.
+You already hold this concept: a Rust **trait** is the interface you write in TypeScript or Java — a named contract of methods. The twist is threefold: no inheritance between types (traits attach behavior to otherwise-flat types), a single *blanket impl* can cover every type matching a bound (a power your interfaces lack — `rust-traits-deep` owns it), and — the heart of this lesson — **dispatch** (which function body actually runs) **is a choice you spell**.
 
-One inversion before the syntax, for the Java readers: your generics **erase** — one compiled method body, type parameters gone by runtime. Rust **monomorphizes** — one generic body in source, one specialized copy per concrete type in the binary. It is your erasure model running backwards. Flip it once and the rest is bookkeeping.
+One inversion, for Java readers: your generics **erase** — one compiled body, type parameters gone by runtime. Rust **monomorphizes** — one generic body in source, one specialized copy per concrete type in the binary. Your erasure model running backwards: flip it once and the rest is bookkeeping.
 
 ## Define, implement
 
-Two statements: the contract, and a type honoring it. A trait method may ship a default body — implementors get it free and may override. The `&self` receiver is Lesson 2's shared borrow wearing method syntax; nothing new there.
+Two statements: the contract, and a type honoring it. A trait method may ship a default body — implementors get it free and may override. The `&self` receiver is Lesson 2's shared borrow wearing method syntax.
 
 ```rust
 trait Greet {
@@ -55,7 +55,7 @@ fn main() {
 
 ## Consuming the contract: static by default
 
-The generic bound is the workhorse. This compiles to a specialized `announce` per concrete type — direct calls, zero runtime cost, a slightly bigger binary:
+The generic bound is the workhorse. It compiles to a specialized `announce` per concrete type — direct calls, zero runtime cost, a bigger binary:
 
 ```rust
 fn announce<T: Greet>(guest: &T) -> String {
@@ -63,7 +63,7 @@ fn announce<T: Greet>(guest: &T) -> String {
 }
 ```
 
-`fn announce(guest: &impl Greet)` is sugar for that exact generic — same monomorphization; you only lose the ability to name `T` at a call site. In **return** position, `impl Greet` means something else: "one concrete type, which I decline to name." The third spelling is different machinery:
+`fn announce(guest: &impl Greet)` is sugar for that exact generic — same monomorphization; you only lose naming `T` at a call site. (In **return** position: "one concrete type, unnamed.") The third spelling is different machinery:
 
 ```rust
 let guests: Vec<Box<dyn Greet>> = vec![
@@ -72,11 +72,11 @@ let guests: Vec<Box<dyn Greet>> = vec![
 ];
 ```
 
-(Compiles next to the definitions above plus a one-line `struct Robot;` with its own `impl Greet`.) `Box<dyn Greet>` is **runtime dispatch**: one compiled body, every call through a vtable, the value behind a heap allocation. That price buys the one thing monomorphization cannot do: a collection holding *different* concrete types at once. Trait objects run deeper than this literacy — `&dyn`, explicit lifetimes on the object — and that depth is `rust-traits-deep`'s too.
+(Compiles given the definitions above plus a `struct Robot;` impl.) `Box<dyn Greet>` is **runtime dispatch**: one compiled body, every call through a vtable — a per-type table of method pointers looked up at runtime — the value behind a heap allocation. That buys what monomorphization cannot: one collection holding *different* concrete types. Deeper trait-object territory (`&dyn`, explicit lifetimes) is `rust-traits-deep`'s too.
 
 ## The decision — and the reflex to retire
 
-If you write Java or C#, your reflex says an interface-typed value is always dynamically dispatched, so `dyn` looks like the honest default. In Rust it is the escape hatch. The tree: one concrete type → take it plainly; several types, all known at compile time → generic bound; genuine runtime heterogeneity → `Box<dyn Trait>`. The figure holds the three spellings of one contract side by side:
+The Java/C# reflex says interface-typed values are always dynamically dispatched, so `dyn` looks like the honest default; in Rust it is the escape hatch. The tree: one concrete type → take it plainly; several types, known at compile time → generic bound; genuine runtime heterogeneity → `Box<dyn Trait>`. The figure holds the three spellings side by side:
 
 :figure[tabbed-card]{id="dispatch-decision"}
 
@@ -95,7 +95,7 @@ fn main() {
 }
 ```
 
-`derive` is a macro — the mechanism is `rust-macros-declarative-and-procedural`'s topic; this scroll only asks you to read and use it. Next: four `announce`-shaped signatures, and the question of which ones the compiler accepts. Commit before you peek.
+`derive` is a macro — the mechanism belongs to `rust-macros-declarative-and-procedural`; this scroll only asks you to read and use it. Next: four `announce`-shaped signatures — which ones does the compiler accept? Commit before you peek.
 ```
 
 ### Authoring notes
@@ -202,7 +202,7 @@ help: function arguments must have a statically known size, borrowed types alway
 ```
 <!-- verify-at-smoke: rustc 1.68.2 -->
 
-First, the code. You have met `E0277` before: in Lesson 3 it refused `?` inside a function returning `i32`. `E0277` is not one error — it is the **family** "a required trait bound is not satisfied," and the unsatisfied trait is named in the first `help:` line each time. There it was the `?`-plumbing's `FromResidual`; here it is `Sized`, the implicit bound every by-value parameter carries. When you meet the next family member, that `help:` line is where you look first.
+First, the code. You have met `E0277` before: in Lesson 3 it refused `?` inside a function returning `i32`. `E0277` is not one error — it is the **family** "a required trait bound is not satisfied," and the unsatisfied trait is named in the headline or a `help:` line — read both. There it was the `?`-plumbing's `FromResidual`; here it is `Sized`, the implicit bound every by-value parameter carries. When you meet the next family member, those are the lines to read first.
 
 Why `dyn Greet` specifically: parameters are passed by value, and a value needs a compile-time size to get a stack slot. `dyn Greet` is the type whose concrete implementor — and therefore size — is only known at runtime. The compiler's last `help:` writes the fix for you: put it behind a pointer. `&dyn Greet` and `Box<dyn Greet>` are both pointer-sized, and pointers always have a known size. (The `'static` in the message is the lifetime cameo from Lesson 2's error walk — recognize it, don't write it; owned trait objects default to it, and the full story belongs to `rust-traits-deep`.)
 
@@ -493,7 +493,7 @@ fn announce<T: Describe>(items: &[T]) -> Vec<String> {
 }
 ```
 
-Two notes. The bound also spells as a `where` clause — `fn announce<T>(items: &[T]) -> Vec<String> where T: Describe` — identical meaning, preferred when bounds pile up. And the `dyn` version (`items: &[Box<dyn Describe>]`) would type-check too: it would pay a heap allocation per item and a vtable call per `describe` to buy heterogeneity these tests never ask for. Both slices here are homogeneous — the generic is the right tool, which is exactly what read 4.1's decision tree was selling.
+Two notes. The bound also spells as a `where` clause — `fn announce<T>(items: &[T]) -> Vec<String> where T: Describe` — identical meaning, preferred when bounds pile up. And the `dyn` version (`items: &[Box<dyn Describe>]`) would type-check too — type-check, not pass: these tests hand over plain `&[Person]` and `&[Point]` slices, which that signature refuses until every item is boxed first. It would pay a heap allocation per item and a vtable call per `describe` to buy heterogeneity these tests never ask for. Both slices here are homogeneous — the generic is the right tool, which is exactly what read 4.1's decision tree was selling.
 ```
 
 ### Why these tests
@@ -512,7 +512,7 @@ The instruction states the contract in words ("a slice of values of any type imp
 
 ## Self-review checkpoint (before commit)
 
-- [x] Read 4.1 under the ~400-word ceiling (code blocks and figure directive excluded); paragraph audit included; what got cut is named.
+- [x] Read 4.1 at the ~400-word ceiling (≈405, code blocks and figure directive excluded; stage 9–11 trim applied); paragraph audit included; what got cut is named.
 - [x] **Delta rule (§2.2.1):** traits framed as the TS/Java interface with a named twist; Yui's monomorphization-as-inverse-of-erasure named explicitly ("your erasure model running backwards"); the Java/C# `dyn`-first reflex named in the read and again in 4.2's feedback and reveal. Zero from-scratch interface prose.
 - [x] Every sample in read 4.1 **compiles** under rustc 1.68.2 (voice_check) — no error excerpt in the read; predict 4.2 owns the lesson's reveal.
 - [x] Predict 4.2: four signatures, correct answer "three of four"; the bare `dyn Greet` fails with `E0277` (unsized); full expected output quoted with `<!-- verify-at-smoke: rustc 1.68.2 -->`; `E0277` named as an error **family** with the explicit back-link to Lesson 3's `?` form; dispatch difference taught across the three that compile; per-option feedback names the reflex (Java/C# transliteration / overcorrection / return-only misremembering).

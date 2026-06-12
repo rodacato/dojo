@@ -42,7 +42,7 @@ fn main() {
 
 ## `Copy` types vs owned heap types
 
-`i32`, `bool`, `char`, `f64`, and tuples or arrays of `Copy` types are duplicated on assignment — copying a few fixed bytes is free, so there is nothing to own exclusively. `String`, `Vec<T>`, and `Box<T>` own a heap allocation, and for them assignment moves. The why is concrete: if assignment duplicated *ownership* of a heap buffer, two owners would each free it at scope exit — a double-free, the classic C bug. So Rust moves instead: the new binding owns the buffer, the old binding is dead. When you genuinely want a second, independent copy of owned data, that exists too — as an explicit, possibly-allocating call, never as a silent assignment. The figure pins the contrast.
+`i32`, `bool`, `char`, `f64`, and tuples or arrays of `Copy` types are duplicated on assignment — copying fixed bytes is cheap for these types. `String`, `Vec<T>`, and `Box<T>` own a heap allocation, and for them assignment moves. The why is concrete: if assignment duplicated *ownership* of a heap buffer, two owners would each free it at scope exit — a double-free, the classic C bug. So Rust moves instead: the new binding owns the buffer, the old binding is dead. When you genuinely want a second, independent copy of owned data, that exists too — as an explicit, possibly-allocating call, never as a silent assignment. The figure pins the contrast.
 
 ```rust
 fn main() {
@@ -56,7 +56,7 @@ fn main() {
 
 ## The reflex to unlearn
 
-In JavaScript, Java, or Python, `let s2 = s1` copies a reference; both names stay valid and the runtime cleans up eventually. Your fingers will type that pattern in Rust within ten minutes. In Rust, for a non-`Copy` type, that same line moves ownership: `s2` owns the data now, and `s1` is no longer a usable name. Internalize this — everything else in the scroll sits on it.
+In JavaScript, Java, or Python, `let s2 = s1` copies a value or a reference — either way both names stay valid and the runtime cleans up after you. Your fingers will type that pattern in Rust within ten minutes. In Rust, for a non-`Copy` type, that same line moves ownership: `s2` owns the data now, and `s1` is no longer a usable name. Internalize this — everything else in the scroll sits on it.
 
 So, concretely. You have the rule. Does this compile — and if not, what exactly does the compiler say?
 
@@ -99,7 +99,7 @@ error[E0382]: borrow of moved value: `s1`
 
 **Title:** `Predict: does this compile?`
 **Type:** `predict`
-**Mental model under test:** assignment of a non-`Copy` value moves ownership and the compiler rejects use-after-move at compile time. The traps: the JS reference-copy reflex, the C warnings-not-errors reflex, the C++ compiles-then-UB reflex. **First compiler-error reveal of the scroll.**
+**Mental model under test:** assignment of a non-`Copy` value moves ownership and the compiler rejects use-after-move at compile time. The traps: the JS reference-copy reflex, the C warnings-not-errors reflex, the generic systems-language compiles-then-find-out-at-runtime reflex. **First compiler-error reveal of the scroll.**
 
 ### `instruction` (short intro shown above the snippet)
 
@@ -133,7 +133,7 @@ fn main() {
 - id: c
   text: "Fails to compile — `E0382`, borrow of moved value"
 - id: d
-  text: "Compiles, but crashes at runtime with a use-after-free"
+  text: "Compiles — the language allows the misuse and you find out at runtime"
 correct: c
 ```
 
@@ -148,8 +148,8 @@ correct: c
 **c — Fails to compile, `E0382`:**
 > Correct — and the message is worth more than the verdict. Walk it line by line below: this error is the scroll's recurring character.
 
-**d — Compiles, crashes at runtime:**
-> The C++ reflex: use-after-move compiles and detonates at runtime (undefined behavior, if it bothers to detonate at all). Rust took the same move semantics and made the misuse a *compile-time* rejection — there is no runtime to crash because no binary is produced. The real output is below.
+**d — Compiles, and runtime is where you find out:**
+> The generic systems-language reflex: the compiler accepts the misuse and the consequences are yours to discover later. That *is* how C behaves with a dangling pointer. C++ is subtler than the folklore: a moved-from `std::string` is valid-but-unspecified — not undefined behavior, typically no crash, just a value you must not rely on. Rust took the same move semantics and drew the line elsewhere: the misuse never compiles, so there is no runtime in which to find out. The real output is below.
 
 ### `reveal` — the E0382 walk (appended to every option's feedback at seed, so each path sees it)
 
@@ -194,6 +194,7 @@ The next kata hands you this exact error and asks for the fix. The first two res
 
 - The quoted output is expected-from-knowledge; smoke recaptures from Piston's 1.68.2 and the seed pastes the recaptured text verbatim (spec §2.7). In particular: whether 1.68.2 appends a macro-origin `= note:` line for the `println!` expansion, and whether it offers a `help: consider cloning` suggestion (believed post-1.68), is exactly what the recapture settles — the walk's five anchors (headline, missing-`Copy` label, move site, use site, `--explain` footer) are stable across versions.
 - Per-option feedback stays reflex-specific (predict voice contract); the shared walk ships appended to each feedback entry at seed since the player's `predict` schema has no separate reveal field.
+- **Stage-11 decision (telegraph accepted, not learner-facing):** option (c) necessarily echoes read 1.1's just-quoted `E0382` headline — accepted as-is. 1.2 is the scroll's first reveal, and the ritual being installed is commit-then-see-the-full-output; the pairing clause already puts the headline in the read by design. The near-miss-distractor treatment went to predict 5.2 instead (stage-11 audience fix), and 2.2 already carries one (`E0502`). Do not re-litigate by hardening (c).
 
 ---
 
@@ -265,22 +266,31 @@ Pick one and defend it. The third response — borrowing across the function bou
 ### `referenceSolution`
 
 ```rust
-// Response 1 — clone: two owners are real here
+// Response 1 from the predict's reveal — clone: two owners are real here
 fn banner() -> String {
     let s1 = String::from("dojo");
     let s2 = s1.clone();
     format!("{} meets {}", s1, s2)
 }
 
-// Response 2 — restructure: one owner, used twice
+fn main() {
+    println!("{}", banner());
+}
+```
+
+### `alternative_approach` (shown after pass)
+
+```markdown
+The other accepted fix — Response 2, restructure:
+
+```rust
 fn banner() -> String {
     let s = String::from("dojo");
     format!("{} meets {}", s, s)
 }
+```
 
-fn main() {
-    println!("{}", banner());
-}
+One owner, used twice — `format!` borrows its arguments, so a single binding serves both slots and nothing is duplicated. When does restructuring beat cloning? When the second owner is an accident of how the code grew rather than a real requirement: here `s2` exists only because the starter created it, so deleting the binding is cheaper than copying the buffer. Clone earns its allocation when two independent owners genuinely need the data; when a small reorder makes the question disappear, reorder.
 ```
 
 ### Why these tests
@@ -297,7 +307,7 @@ The instruction names `.clone()` because predict 1.2's reveal already put it on 
 
 ---
 
-## Step 1.4 — `kata` — "Take ownership, give it back"
+## Step 1.4 — `kata` — "Take ownership, give it back" *(fail-by-design)*
 
 **Title:** `Take ownership, give it back`
 **Type:** `kata`
@@ -307,6 +317,8 @@ The instruction names `.clone()` because predict 1.2's reveal already put it on 
 
 ```markdown
 ## Your task
+
+**This starter does not compile — by design.** The error is the brief.
 
 Write `shout`: it takes **ownership** of a `String` and returns ownership of the transformed value — every character uppercased. `"dojo"` comes back as `"DOJO"`.
 
@@ -489,9 +501,9 @@ Whether 1.68.2 emits a literal `help:` line for this E0382 (the `consider clonin
 - [x] Read 1.1 under the ~400-word ceiling (code blocks excluded); paragraph audit included; what got cut is named.
 - [x] **Pairing clause (§2.2 rule 2):** read 1.1 ends with the cliffhanger snippet + the `E0382` headline line only. Full output, line-by-line walk, missing-`Copy` note, and the three responses live in 1.2's reveal — nowhere in the read.
 - [x] **Error-anchor rule (§2.2.2):** the lesson's ownership teaching is anchored to real `E0382` output (1.2's reveal, full + walked); every quoted `rustc` excerpt carries `<!-- verify-at-smoke: rustc 1.68.2 -->`.
-- [x] Predict 1.2 feedback names the specific reflex per option (JS reference-copy / C warning / C++ runtime-UB); correct-option feedback explains why, not just "correct".
+- [x] Predict 1.2 feedback names the specific reflex per option (JS reference-copy / C warning / systems-language find-out-at-runtime, with the C-vs-C++ accuracy split: C dangles, C++ moved-from is valid-but-unspecified); correct-option feedback explains why, not just "correct".
 - [x] 1.2's reveal closes with the **three responses to E0382** (clone / restructure / borrow-next-lesson); kata 1.3's instruction picks up exactly those, with borrowing explicitly deferred.
-- [x] **Fail-by-design (1.3):** instruction's first line states the starter does not compile by design and the error is the brief (Yui's files-a-bug failure mode pre-empted). Tests assert on a returned `String`, not raw stdout.
+- [x] **Fail-by-design (1.3, 1.4):** each instruction leads with the starter-does-not-compile-by-design contract and the error-is-the-brief framing (Yui's files-a-bug failure mode pre-empted). 1.3's tests assert on a returned `String`, not raw stdout.
 - [x] **Hint discipline (§2.5):** 1.3 hint = layer-2 translation + layer-3 choice, no call site; 1.4 hint names shadowing as concept, never `to_uppercase` nor `let s = shout(s);`. Hint-discipline check sections included per kata.
 - [x] 1.4 bans `.clone()` in the instruction; `alternative_approach` shows the clone detour and calls it out.
 - [x] Playground prompts ship as numbered comments inside `starterCode`; prompts 2-3 framed as an explicit Lesson 2 teaser; Maya-gate check included.
@@ -526,7 +538,7 @@ Read 1.1 embeds `:figure[disambiguation]{id="copy-vs-clone"}` beside the "`Copy`
         title: 'Copy',
         values: {
           'Explicitness': 'Implicit — plain assignment duplicates; nothing extra is written',
-          'What gets duplicated': 'The bits themselves — fixed-size bitwise copy, always cheap',
+          'What gets duplicated': 'The bits themselves — fixed-size bitwise copy, cheap for these types',
           'Typical types': 'i32, bool, char, f64, tuples/arrays of Copy types',
           'Original binding afterwards': 'Still valid — both names own an independent value',
         },
@@ -543,7 +555,7 @@ Read 1.1 embeds `:figure[disambiguation]{id="copy-vs-clone"}` beside the "`Copy`
     ],
     highlightAttribute: 'Explicitness',
     caption:
-      'Both columns end with two usable values. The dividing line is explicitness: Copy duplicates silently on assignment because it is always a cheap bitwise copy; Clone makes you write the call because it may allocate. A type with neither moves on assignment — the default this lesson is about.',
+      'Both columns end with two usable values. The dividing line is explicitness: Copy duplicates silently on assignment because it is a cheap bitwise copy for these types; Clone makes you write the call because it may allocate. The columns are not disjoint — every Copy type is also Clone (Copy: Clone). A type with neither moves on assignment — the default this lesson is about.',
   }
   ```
 - **Single-dimension rule (INTERACTIVITY-PATTERNS authoring rules):** only **Explicitness** carries `highlightAttribute`; the other three rows are unhighlighted cascade rows. The divergent dimension is one (implicit bitwise copy vs explicit, possibly-allocating call), exactly as the spec's figure commitment states — a multi-highlight version would be a `two-by-two` candidate, which this is not.

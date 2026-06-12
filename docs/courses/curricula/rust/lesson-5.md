@@ -23,7 +23,7 @@ This file holds the **production prose** for each step's fields. All content and
 ```markdown
 ## Why this matters
 
-You have modeled "one of several known shapes" in every codebase you ship: discriminated unions in TypeScript — `{ kind: "circle", radius: number } | { kind: "square", side: number }` — sealed classes switched over exhaustively in Java. Rust's `enum` is that concept as a first-class type. And if "enum" still means a list of named constants to you (C, older Java), widen it one notch: **each variant can carry its own data**. The twist this lesson sells is not the type — it is the `match`: exhaustive by construction, where a missing case is a compile error instead of a runtime surprise.
+You have modeled "one of several known shapes" in every codebase you ship: discriminated unions in TypeScript — `{ kind: "circle", radius: number } | { kind: "square", side: number }` — sealed classes switched over exhaustively in Java — except here it is not opt-in: every `match` on every enum is checked, statements included, no sealed hierarchy or switch-expression required. Rust's `enum` is that concept as a first-class type. And if "enum" still means a list of named constants to you (C, older Java), widen it one notch: **each variant can carry its own data**. The twist this lesson sells is not the type — it is the `match`: exhaustive by construction, where a missing case is a compile error instead of a runtime surprise.
 
 ## `Option<T>`: the null check, compiler-enforced
 
@@ -102,7 +102,7 @@ error[E0004]: non-exhaustive patterns: `Status::Banned` not covered
 
 **Title:** `Predict: does this compile?`
 **Type:** `predict`
-**Mental model under test:** `match` is checked against the *type*, not the values the author expected — a missing variant is `E0004`, a hard error, not a warning, not a fall-through. The traps: the JS/Java switch-fallthrough reflex, the lint-vs-gate misread (Mariana's prior, per the spec), and the "enums require a default variant" misconception (exhaustiveness misattributed to the enum instead of the match).
+**Mental model under test:** `match` is checked against the *type*, not the values the author expected — a missing variant is `E0004`, a hard error, not a warning, not a fall-through. The traps: the expression-only near-miss (exhaustiveness misattributed to the match's expression position — the stage-11 distractor that replaced the switch-fallthrough option), the lint-vs-gate misread (Mariana's prior, per the spec), and the "enums require a default variant" misconception (exhaustiveness misattributed to the enum instead of the match).
 
 ### `instruction` (short intro shown above the snippet)
 
@@ -137,11 +137,11 @@ fn main() {
 
 ```yaml
 - id: a
-  text: "Compiles — an unmatched value just falls through, like a `switch` with no `default`"
+  text: "Fails to compile — but only because this match is used as an expression; as a statement it would compile"
 - id: b
   text: "Compiles, with a warning that `Banned` is not covered"
 - id: c
-  text: "Fails to compile — `E0004`, non-exhaustive patterns: `Banned` not covered"
+  text: "Fails to compile — `E0004`: the match misses a variant the type can produce"
 - id: d
   text: "Fails to compile — but because the enum is missing a default variant, which Rust enums require"
 correct: c
@@ -149,8 +149,8 @@ correct: c
 
 ### `feedback` (per option, sensei voice)
 
-**a — Falls through like a `switch`:**
-> The switch-fallthrough reflex, JS and Java vintage: a missing `case` means execution skips the block and life goes on. Two Rust facts forbid it here. This `match` is an **expression** — `announce` must produce a `String` for every possible `status`, and a fallen-through `Banned` would have no value to produce. And `match` has no implicit default: the arms you write are the whole story, checked against the type, not against the values you expect tonight. The real output is below.
+**a — Fails only because the match is an expression:**
+> A near-miss built from the read's own emphasis — and a model worth correcting now. Yes, this `match` is an expression whose `String` the function must produce; no, that is not what trips the error. Exhaustiveness is checked on **every** `match`, expression or statement alike: rewrite this as a bare `match status { ... }` statement with `println!` arms and the same `E0004` fires. The error doesn't care where the match sits — it cares that the arms don't cover the type. The real output is below.
 
 **b — Compiles with a warning:**
 > The lint-vs-gate misread. Plenty of ecosystems treat missing cases as advisory — TS only catches a non-exhaustive union switch if you wired a `never`-typed check yourself; linters flag a missing `default` and you ship anyway. In Rust, exhaustiveness is the type system, not a style opinion: `E0004` is a hard error, the same severity as a type mismatch. Nothing ships until the match covers the type. The real output is below.
@@ -204,7 +204,8 @@ This is exhaustiveness as a design tool, demonstrated: add a variant to a produc
 
 - The quoted output is expected-from-knowledge; smoke recaptures from Piston's 1.68.2 and the seed pastes the recaptured text verbatim (spec §2.7). What the recapture settles: the exact rendering of the suggestion block (the `~` lines), whether 1.68.2 collapses the one-line enum definition span as shown, and any dead-code warning noise above the error (`Banned` is never constructed). Stable anchors: the `E0004` code, the named missing pattern, the `note:` into the definition, the wildcard-or-explicit `help:`.
 - Per-option feedback stays reflex-specific (predict voice contract); the shared walk ships appended to each feedback entry at seed since the player's `predict` schema has no separate reveal field — same convention as 1.2 and 4.2.
-- The snippet is read 5.1's cliffhanger "expanded by one use" (match as a used expression), mirroring the 1.1 → 1.2 construction; the expression form is also what makes option (a) concretely impossible, which the feedback exploits.
+- The snippet is read 5.1's cliffhanger "expanded by one use" (match as a used expression), mirroring the 1.1 → 1.2 construction; the expression form is also the bait option (a) exploits — the stage-11 near-miss distractor that replaced the switch-fallthrough option. Its feedback corrects the model: `E0004` is checked on every `match`, expression or statement.
+- Option (c) paraphrases the failure on purpose (stage-11): read 5.1 just quoted the headline verbatim, so a verbatim option would reward string-matching over prediction; the E-code stays.
 - Option (b) is Mariana's prior and option (d) the plausible misread, both per the spec's own 5.2 outline; (d)'s feedback delivers the spec-mandated correction "exhaustiveness is the match's job, `_` is the opt-out".
 
 ---
@@ -227,7 +228,7 @@ Two definitions, written with your own hands:
 
 **No `_` arm.** A wildcard would pass these tests — and it would sell back the one property the predict just demonstrated: with three explicit arms, adding a `Triangle` variant next month makes the compiler list this `match` as needing a decision; with a `_`, it silently computes nonsense instead. The tests can't see your match arms, so this rule is on your honor — like 3.2's no-`match` rule, the point is the gesture your hands learn, not outsmarting the suite.
 
-The file won't compile until the enum exists — write the two definitions together.
+`area` won't compile until the enum exists — write the two definitions together.
 
 ### What's expected
 
@@ -305,7 +306,7 @@ The hint shows the destructuring pattern *shape* (`Shape::Circle(radius) =>`) �
 
 ### Authoring note — starter shape
 
-The learner defines both the enum and the function, so the starter is a comment scaffold plus an inert `main` (it compiles alone; the first run after writing `area` without the enum fails with a find-the-type error, which is honest feedback, not fail-by-design — that label stays reserved for 1.3/2.5). The production-gesture rule (README §4.4) takes precedence over the signature-present default (README §5.4) here, same trade as kata 4.4 — flagged in the W2 report.
+The learner defines both the enum and the function, so the starter is a comment scaffold plus an inert `main` (it compiles alone; the first run after writing `area` without the enum fails with a find-the-type error, which is honest feedback, not fail-by-design — that label stays reserved for 1.3/1.4/2.5). The production-gesture rule (README §4.4) takes precedence over the signature-present default (README §5.4) here, same trade as kata 4.4 — flagged in the W2 report.
 
 ---
 
@@ -413,7 +414,7 @@ The hint names `find` as the family member — sanctioned by the spec's own 5.4 
 - [x] **Pairing clause (§2.2 rule 2):** read 5.1 ends with the cliffhanger snippet + the `E0004` **headline line only**. The full output, the `note:`-into-the-definition walk, the `help:` fix arm, and the wildcard caveat live in 5.2's reveal — nowhere in the read.
 - [x] **Delta rule (§2.2.1):** enums anchored to TS discriminated unions and Java sealed classes + exhaustive switch; the C-enum widening is exactly one line; `Option` anchored to the null-handling every persona already does. Zero from-scratch ADT prose.
 - [x] The read's core sell is refactor safety ("add a variant, the compiler lists every match that must now make a decision") — Yui's lens, per the outline — and the Lesson 3 loop is closed ("your `match` on `Result` was this exact machinery").
-- [x] Predict 5.2 options include "compiles with a warning" (Mariana's prior) and "enums require a default variant" (the plausible misread); feedback names the switch-fallthrough reflex, the lint-vs-gate misread, and corrects the default-variant misconception with "exhaustiveness is the match's job, `_` is the opt-out". Full expected `E0004` output in the reveal with `<!-- verify-at-smoke: rustc 1.68.2 -->`.
+- [x] Predict 5.2 options include the expression-only near-miss (the stage-11 replacement for the switch-fallthrough option), "compiles with a warning" (Mariana's prior), and "enums require a default variant" (the plausible misread); feedback corrects the near-miss (exhaustiveness is checked on every match, expression or statement), the lint-vs-gate misread, and the default-variant misconception with "exhaustiveness is the match's job, `_` is the opt-out"; option (c) paraphrases the just-shown headline rather than echoing it verbatim. Full expected `E0004` output in the reveal with `<!-- verify-at-smoke: rustc 1.68.2 -->`.
 - [x] Kata 5.3 (gesture G2): learner defines the enum **and** the exhaustive `match`; the instruction forbids the `_` arm with the refactor-safety reason attached and honest honor-system framing; `_eq_close` used per the spec's harness commitment.
 - [x] Kata 5.4 holds the outline's `first_even` shape (`&[i32]` per the Lesson 2 signature default, `Option<i32>` out); both implementations blessed in the instruction; `alternative_approach` shows the loop and the iterator-deferral hook.
 - [x] **Hint discipline (§2.5):** 5.3 hint shows the pattern shape only (spec-sanctioned), never the arithmetic; 5.4 hint names `find` (spec-sanctioned), never the chain. Hint-discipline check sections included per kata.
