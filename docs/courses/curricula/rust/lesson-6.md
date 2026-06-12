@@ -171,13 +171,9 @@ _t("an unknown level token is an error carrying that token", || {
     _eq(summarize(log), Err(LogError::UnknownLevel(String::from("TRACE"))))
 });
 
-_t("empty input is an error, not a zero summary", || {
-    _eq(summarize(""), Err(LogError::Empty))
-});
+_t("empty input is an error, not a zero summary", || _eq(summarize(""), Err(LogError::Empty)));
 
-_t("input with only blank lines is just as empty", || {
-    _eq(summarize("\n\n"), Err(LogError::Empty))
-});
+_t("input with only blank lines is just as empty", || _eq(summarize("\n\n"), Err(LogError::Empty)));
 
 _t("a summary displays as '2 info, 1 warn, 1 error'", || {
     let summary = Summary { infos: 2, warns: 1, errors: 1 };

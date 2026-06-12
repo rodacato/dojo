@@ -8,6 +8,8 @@
 
 This file holds the **production prose** for each step's `instruction` / `feedback` / etc. fields. All content in English. Every quoted `rustc` excerpt is a smoke-capture placeholder: shape is correct for the 1.68.2 family, exact text is re-captured from Piston at the Lesson 1 smoke batch (rust.md §5).
 
+**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || _eq(actual, expected))`, where `_eq` returns `Result<(), String>`. The exact harness header/footer (the `_t`/`_eq` definitions, runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3) per rust.md §5. The learner-`main`-vs-harness-`main` merge question stays flagged where lesson-1.md raised it.
+
 ---
 
 ## Step 2.1 — `read` — "`&T`, `&mut T`, and the aliasing-XOR-mutation rule"
@@ -80,14 +82,14 @@ error[E0499]: cannot borrow `report` as mutable more than once at a time
 <!-- verify-at-smoke: rustc 1.68.2 -->
 ```
 
-### Borrow-check audit (§2.1 gate — every paragraph ends in a green check or a quoted rustc message)
+### Paragraph-test audit (borrow-check test §2.1 — Valentina/Björn gate)
 
-| Paragraph | Terminates in | Removes what polyglot decision? |
+| Paragraph | Removes what polyglot decision? | Verdict |
 |---|---|---|
-| "Why this matters" | (opener — licensed lead-in, next paragraph carries the sample) | "Why not just keep returning ownership like kata 1.4?" |
-| "`&T` — shared borrows" | Compiling sample | "Is a Rust reference the by-reference passing I already know?" — yes, plus static tracking |
-| "`&String` vs `&str`" | Compiling sample (coercion shown both ways) | "Which string type goes in my function signature?" — the G3 default every later kata holds |
-| "`&mut T` — exactly one" + cliffhanger | Non-compiling sample + `E0499` headline line ONLY | "Can I hold two mutable references like two object handles?" — pairing clause: 2.2 owns the full output |
+| "Why this matters" | "Why not just keep returning ownership like kata 1.4?" | KEEP (opener — licensed lead-in, next paragraph carries the sample) |
+| "`&T` — shared borrows" | "Is a Rust reference the by-reference passing I already know?" — yes, plus static tracking | KEEP — ends in a compiling sample |
+| "`&String` vs `&str`" | "Which string type goes in my function signature?" — the G3 default every later kata holds | KEEP — ends in a compiling sample (coercion shown both ways) |
+| "`&mut T` — exactly one" + cliffhanger | "Can I hold two mutable references like two object handles?" | KEEP — ends in the non-compiling sample + `E0499` headline line ONLY (pairing clause: 2.2 owns the full output) |
 
 **What got cut:** raw pointers (`*const`/`*mut` — `unsafe` territory, deferred per §2.6), the borrow checker's implementation (NLL internals — the *behavior* is taught in 2.4's "last use ends the borrow" walk), `Cell`/`RefCell` interior mutability (the `Rc<RefCell<T>>` deferral owns it), and the lifetimes-lite cameo (moved to 2.4's close per the audience review — this read was the scroll's most overloaded at six topics).
 
@@ -97,7 +99,7 @@ error[E0499]: cannot borrow `report` as mutable more than once at a time
 
 ## Step 2.2 — `predict` — "Does this compile?"
 
-**Title:** `Predict: two mutable borrows at once`
+**Title:** `Predict: does this compile?`
 **Type:** `predict`
 **Mental model under test:** `&mut` is an exclusive capability, not a pointer you can copy freely. The reveal is the scroll's second full compiler-error walk (§2.7), and the `E0499`/`E0502` near-miss distinction is planted here on purpose.
 
@@ -110,7 +112,7 @@ The read step showed you the headline. Now commit to the full answer: does this 
 ### `question`
 
 ```
-Does this compile?
+Does this compile — and if not, what does rustc say?
 ```
 
 ### `snippet`
@@ -132,44 +134,50 @@ fn main() {
 - id: b
   text: "Compiles with an aliasing warning"
 - id: c
-  text: "Fails — `E0499`: cannot borrow `v` as mutable more than once at a time"
+  text: "Fails to compile — `E0499`, cannot borrow `v` as mutable more than once at a time"
 - id: d
-  text: "Fails — `E0502`: cannot borrow `v` as mutable because it is also borrowed as immutable"
+  text: "Fails to compile — `E0502`, cannot borrow `v` as mutable because it is also borrowed as immutable"
 correct: c
 ```
 
 ### `feedback` (per option, sensei voice)
 
 **a — Compiles, prints both:**
-> The JS/Java/Python reflex: references are free, take as many as you like, the runtime keeps them all valid. In Rust a `&mut` is an exclusive capability — the compiler hands out at most one at a time, precisely so that nobody else (reader *or* writer) can observe the data mid-mutation. Two live `&mut v` bindings is the textbook violation, and it's a compile error, not a runtime surprise.
+> The JS/Java/Python reflex: references are free, take as many as you like, the runtime keeps them all valid. In Rust a `&mut` is an exclusive capability — the compiler hands out at most one at a time, precisely so that nobody else (reader *or* writer) can observe the data mid-mutation. Two live `&mut v` bindings is the textbook violation, and it's a compile error, not a runtime surprise. The real output is below.
 
 **b — Compiles with an aliasing warning:**
-> The C reflex — aliasing rules as something the compiler warns about (or silently miscompiles around) while the program ships anyway. Rust's aliasing-XOR-mutation rule is a hard gate, not a lint: code that breaks it does not produce a binary. That hardness is the trade the whole language makes — you negotiate with the compiler now instead of with a debugger later.
+> The C reflex — aliasing rules as something the compiler warns about (or silently miscompiles around) while the program ships anyway. Rust's aliasing-XOR-mutation rule is a hard gate, not a lint: code that breaks it does not produce a binary. That hardness is the trade the whole language makes — you negotiate with the compiler now instead of with a debugger later. The real output is below.
 
 **c — Fails with `E0499`:**
-> Correct. Here is the full output the read step withheld:
->
-> ```text
-> error[E0499]: cannot borrow `v` as mutable more than once at a time
->  --> src/main.rs:4:14
->   |
-> 3 |     let r1 = &mut v;
->   |              ------ first mutable borrow occurs here
-> 4 |     let r2 = &mut v;
->   |              ^^^^^^ second mutable borrow occurs here
-> 5 |     println!("{:?} {:?}", r1, r2);
->   |                           -- first borrow later used here
->   |
-> error: aborting due to previous error
->
-> For more information about this error, try `rustc --explain E0499`.
-> ```
-> <!-- verify-at-smoke: rustc 1.68.2 -->
->
-> Read it like the compiler wrote it for you, because it did. The headline names the owner (`v`) and the broken rule. The first span marks where the first exclusive borrow began (`r1`). The caret span marks the borrow that broke the rule (`r2`). The third label is the proof of overlap — `r1` is *used later*, on the `println!` line, so its borrow is still alive when `r2` is created. That label is also the fix in disguise: if `r1`'s last use came **before** `let r2`, the first borrow would already be over and this would compile. Borrows end at their last use, and rustc points the guidance at exactly that. The next-but-one step walks a fresh `E0499` line by line; first, a kata.
+> Correct. The full output the read step withheld is below — walk it line by line.
 
 **d — Fails with `E0502`:**
-> Close — right family, wrong code, and the distinction matters because you'll meet both in your first real week. `E0499` is two **writers**: two `&mut` borrows alive at once (this snippet). `E0502` is a writer **plus a reader**: a `&mut` alive while a plain `&` borrow of the same value is also alive. Both spell the same rule — many readers or one writer — from its two failure sides. Step 2.4 shows you an `E0502` excerpt next to a fresh `E0499` so the pair sticks.
+> Close — right family, wrong code, and the distinction matters because you'll meet both in your first real week. `E0499` is two **writers**: two `&mut` borrows alive at once (this snippet). `E0502` is a writer **plus a reader**: a `&mut` alive while a plain `&` borrow of the same value is also alive. Both spell the same rule — many readers or one writer — from its two failure sides. The next-but-one step shows you an `E0502` excerpt next to a fresh `E0499` so the pair sticks. The real output is below.
+
+### `reveal` — the E0499 walk (appended to every option's feedback at seed, so each path sees it)
+
+```markdown
+Here is the full output the read step withheld:
+
+```text
+error[E0499]: cannot borrow `v` as mutable more than once at a time
+ --> main.rs:4:14
+  |
+3 |     let r1 = &mut v;
+  |              ------ first mutable borrow occurs here
+4 |     let r2 = &mut v;
+  |              ^^^^^^ second mutable borrow occurs here
+5 |     println!("{:?} {:?}", r1, r2);
+  |                           -- first borrow later used here
+  |
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0499`.
+```
+<!-- verify-at-smoke: rustc 1.68.2 -->
+
+Read it like the compiler wrote it for you, because it did. The headline names the owner (`v`) and the broken rule. The first span marks where the first exclusive borrow began (`r1`). The caret span marks the borrow that broke the rule (`r2`). The third label is the proof of overlap — `r1` is *used later*, on the `println!` line, so its borrow is still alive when `r2` is created. That label is also the fix in disguise: if `r1`'s last use came **before** `let r2`, the first borrow would already be over and this would compile. Borrows end at their last use, and rustc points the guidance at exactly that. The next-but-one step walks a fresh `E0499` line by line; first, a kata.
+```
 
 ### Smoke note (authoring, not learner-facing)
 
@@ -212,23 +220,16 @@ fn first_word(s: &str) -> &str {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...) })` calls below are the contract.
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract.
 
 ```rust
-fn main() {
-    _t("returns the slice before the first space", || {
-        _eq(first_word("hello world"), "hello");
-    });
-    _t("returns the whole input when there is no space", || {
-        _eq(first_word("single"), "single");
-    });
-    _t("returns an empty slice for empty input", || {
-        _eq(first_word(""), "");
-    });
-    _t("stops at the first space, not the last", || {
-        _eq(first_word("ship it friday"), "ship");
-    });
-}
+_t("returns the slice before the first space", || _eq(first_word("hello world"), "hello"));
+
+_t("returns the whole input when there is no space", || _eq(first_word("single"), "single"));
+
+_t("returns an empty slice for empty input", || _eq(first_word(""), ""));
+
+_t("stops at the first space, not the last", || _eq(first_word("ship it friday"), "ship"));
 ```
 
 ### `hint`
@@ -266,7 +267,7 @@ An iterator-flavored version: `s.split(' ').next().unwrap_or("")` — `split` al
 | Slice before the first space | Base case — the find-then-slice shape. |
 | Whole input when no space | The `None` arm; catches solutions that panic or return `""` when the search fails. |
 | Empty input | Smallest input; `find` on `""` is `None`, the whole-input arm must hold. |
-| First space, not the last | Catches `rfind` / split-on-last-space solutions. |
+| First space, not the last | Catches `rfind` / split-on-last-space solutions (added beyond the outline's tests: without it, a split-on-last-space implementation passes — §5.2's one-behavior rule needs the behavior actually asserted). Flagged in the W2 report. |
 
 ---
 
@@ -299,7 +300,7 @@ It refuses to compile. The output starts:
 
 ```text
 error[E0499]: cannot borrow `scores` as mutable more than once at a time
- --> src/main.rs:4:5
+ --> main.rs:4:5
   |
 3 |     let top = &mut scores[0];
   |                    ------ first mutable borrow occurs here
@@ -427,17 +428,12 @@ fn main() {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...) })` calls below are the contract. For this fail-by-design kata, ExecuteStep must surface the compile error as learner feedback (rust.md §5, open item with Tomás C3).
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract. For this fail-by-design kata, ExecuteStep must surface the compile error as learner feedback (rust.md §5, open item with Tomás C3).
 
 ```rust
-fn main() {
-    _t("the audit lands on the first element", || {
-        _eq(restock()[0], 10);
-    });
-    _t("every push survives the fix", || {
-        _eq(restock(), vec![10, 7, 2, 5, 8]);
-    });
-}
+_t("the audit lands on the first element", || _eq(restock()[0], 10));
+
+_t("every push survives the fix", || _eq(restock(), vec![10, 7, 2, 5, 8]));
 ```
 
 ### `hint`
@@ -500,7 +496,7 @@ The other honest fix: drop the intermediate handles entirely and let each statem
 - [x] Hint discipline §2.5: 2.3's hint names the search *family* (`find` / `char_indices`) and the slice *shape* per the outline's explicit sanction, never the assembled body.
 - [x] Every `rustc` excerpt fence is followed by `<!-- verify-at-smoke: rustc 1.68.2 -->`. All compiling samples are std-only, single-file, 1.68-safe (no post-1.68 APIs; `todo!` is 1.40).
 - [x] One figure (`disambiguation` — `string-vs-str`), `highlightAttribute: "Ownership"` only, cascade rows unhighlighted per the spec's authoring note. Max 2 figures per read holds.
-- [x] testCode uses the `_t("user-facing sentence", || { _eq(actual, expected); })` contract shape with the harness-lands-at-seed note. All tests deterministic.
+- [x] testCode uses the `_t("user-facing sentence", || _eq(actual, expected))` contract shape — bare `_t` calls, no learner-side `main`, closures ending in the assertion expression — with the harness-lands-at-seed note. All tests deterministic.
 - [x] All content in English, including code comments and figure caption. No emoji, no celebration.
 
 ---

@@ -42,7 +42,7 @@ fn main() {
 
 ## `Copy` types vs owned heap types
 
-`i32`, `bool`, `char`, `f64`, and tuples or arrays of `Copy` types are duplicated on assignment — copying a few fixed bytes is free, so there is nothing to own exclusively. `String`, `Vec<T>`, and `Box<T>` own a heap allocation, and for them assignment moves. The why is concrete: if assignment duplicated *ownership* of a heap buffer, two owners would each free it at scope exit — a double-free, the classic C bug. So Rust transfers instead: the new binding owns the buffer, the old binding is dead. When you genuinely want a second, independent copy of owned data, that exists too — as an explicit, possibly-allocating call, never as a silent assignment. The figure pins the contrast.
+`i32`, `bool`, `char`, `f64`, and tuples or arrays of `Copy` types are duplicated on assignment — copying a few fixed bytes is free, so there is nothing to own exclusively. `String`, `Vec<T>`, and `Box<T>` own a heap allocation, and for them assignment moves. The why is concrete: if assignment duplicated *ownership* of a heap buffer, two owners would each free it at scope exit — a double-free, the classic C bug. So Rust moves instead: the new binding owns the buffer, the old binding is dead. When you genuinely want a second, independent copy of owned data, that exists too — as an explicit, possibly-allocating call, never as a silent assignment. The figure pins the contrast.
 
 ```rust
 fn main() {
@@ -140,7 +140,7 @@ correct: c
 ### `feedback` (per option, sensei voice)
 
 **a — Compiles, prints `hello hello`:**
-> The JS/Java/Python reflex: `let s2 = s1` copies a reference, both names point at the same string, everyone's happy. In Rust there is no shared reference here to copy — `String` owns its heap buffer, and assignment of a non-`Copy` type transfers that ownership. After line 3, `s1` is not a stale pointer; it is not a usable name at all. The compiler proves that before a binary exists. The real output is below.
+> The JS/Java/Python reflex: `let s2 = s1` copies a reference, both names point at the same string, everyone's happy. In Rust there is no shared reference here to copy — `String` owns its heap buffer, and assignment of a non-`Copy` type moves that ownership. After line 3, `s1` is not a stale pointer; it is not a usable name at all. The compiler proves that before a binary exists. The real output is below.
 
 **b — Compiles with a warning:**
 > The C reflex: the compiler warns about the sketchy thing and lets you ship it. Rust draws the line differently — ownership violations are **errors**, never warnings. There is no `-Wmove-after-use` to ignore; the program is rejected until the ownership story is coherent. The real output is below.
@@ -208,6 +208,8 @@ The next kata hands you this exact error and asks for the fix. The first two res
 ```markdown
 **This starter does not compile — by design. The `E0382` error you get when you run it is the brief: read it before you touch the code.**
 
+## Your task
+
 `banner` builds the string `"dojo meets dojo"`, but ownership of `s1` is gone by the time the last line needs it. Make the minimal change so the code compiles and `banner()` still returns `"dojo meets dojo"`.
 
 From the predict's reveal, three responses to `E0382` exist. Two are available right now, and **both are accepted**:
@@ -238,9 +240,7 @@ fn main() {
 // Harness contract — exact _t/_eq definitions, runner main, and
 // __DOJO_RESULT__ footer land with the seed harness (W3).
 
-_t("banner still produces the expected text after your fix", || {
-    _eq(banner(), String::from("dojo meets dojo"))
-});
+_t("banner still produces the expected text after your fix", || _eq(banner(), String::from("dojo meets dojo")));
 
 _t("banner can be called more than once", || {
     let first = banner();
@@ -306,6 +306,8 @@ The instruction names `.clone()` because predict 1.2's reveal already put it on 
 ### `instruction` (markdown body)
 
 ```markdown
+## Your task
+
 Write `shout`: it takes **ownership** of a `String` and returns ownership of the transformed value — every character uppercased. `"dojo"` comes back as `"DOJO"`.
 
 There are two jobs here, and the second is the lesson:
@@ -344,13 +346,9 @@ fn main() {
 // Harness contract — exact _t/_eq definitions, runner main, and
 // __DOJO_RESULT__ footer land with the seed harness (W3).
 
-_t("shout returns the uppercased text", || {
-    _eq(shout(String::from("dojo")), String::from("DOJO"))
-});
+_t("shout returns the uppercased text", || _eq(shout(String::from("dojo")), String::from("DOJO")));
 
-_t("works for mixed-case input with spaces", || {
-    _eq(shout(String::from("Rust by Friday")), String::from("RUST BY FRIDAY"))
-});
+_t("works for mixed-case input with spaces", || _eq(shout(String::from("Rust by Friday")), String::from("RUST BY FRIDAY")));
 
 _t("the caller keeps a usable value after the call", || {
     let banner = String::from("dojo");
@@ -424,7 +422,7 @@ This step is a playground — no verdict, no pass/fail. The button runs whatever
 
 The starter carries **three numbered prompts as comments**. Trying each one is an uncomment or a one-token edit — work through them in order:
 
-1. **Prompt 1** uses the value after the call. You know *that* it fails — the question is: which error code, and what does its `help:` line suggest? Predict both, then uncomment and check yourself.
+1. **Prompt 1** uses the value after the call. You know *that* it fails — the question is: which error code, and what fix does the output point you toward? Predict both, then uncomment and check yourself.
 2. **Prompts 2 and 3 are a Lesson 2 teaser.** Each is a one-token change to the parameter type that makes prompt 1's line legal. You can see *that* they work; *why* they work — borrowing, and why `&str` accepts a `&String` — is the next lesson's job.
 ```
 
@@ -440,7 +438,7 @@ fn main() {
     print_and_consume(s);
 
     // 1. Uncomment the next line. Which error code do you get, and what
-    //    does its `help:` line suggest? Predict before you run.
+    //    fix does the output point you toward? Predict before you run.
     // println!("still here: {}", s);
 
     // 2. Lesson 2 teaser: change the parameter type `String` to `&String`
@@ -478,7 +476,11 @@ fn main() {
 
 ### Maya-gate check (S11 — playground voice contract)
 
-The instruction does not reduce to "play around": prompt 1 demands a prediction (error code + `help:` content) before running; prompts 2-3 are specific one-token edits with a stated observation each. The prompts ship **inside the starter as numbered comments** — trying one is an uncomment or a one-token edit, never a re-type from the instruction (the audience fix: the difference between Mariana doing 1 of 3 and 3 of 3). The Lesson 2 teaser framing is explicit and honest: the playground shows *that*, the next lesson owns *why* (where deref coercion also gets its one-line name — not here).
+The instruction does not reduce to "play around": prompt 1 demands a prediction (error code + the fix the output points toward) before running; prompts 2-3 are specific one-token edits with a stated observation each. The prompts ship **inside the starter as numbered comments** — trying one is an uncomment or a one-token edit, never a re-type from the instruction (the audience fix: the difference between Mariana doing 1 of 3 and 3 of 3). The Lesson 2 teaser framing is explicit and honest: the playground shows *that*, the next lesson owns *why* (where deref coercion also gets its one-line name — not here).
+
+### Smoke note (authoring, not learner-facing)
+
+Whether 1.68.2 emits a literal `help:` line for this E0382 (the `consider cloning` suggestion is believed post-1.68) is settled at recapture — the same open question 1.2's authoring note flags. Prompt 1 is worded against "what fix does the output point you toward", which the span labels and the `--explain` trailer answer either way; if smoke shows a `help:` line, the prompt may name it verbatim.
 
 ---
 

@@ -8,7 +8,7 @@
 
 This file holds the **production prose** for each step's fields. All content and meta-notes in English. Delta-framed throughout (spec §2.2 rule 1): enums anchor to TS discriminated unions (Mariana/Felipe) and sealed classes + exhaustive switch (Yui); `Option` anchors to the null-handling every persona already does, made compiler-checked. No figure is committed for this lesson (spec §4 commits none — the read's anchor is the `E0004` cliffhanger, not a visual).
 
-**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || { _eq(actual, expected); })`, where `_eq` returns `Result<(), String>`. Kata 5.3 additionally uses the float-epsilon helper `_eq_close(actual, expected, epsilon)`, which rust.md §5 commits the harness to ship. The exact harness header/footer (the `_t`/`_eq`/`_eq_close` definitions, runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3).
+**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || _eq(actual, expected))`, where `_eq` returns `Result<(), String>`. Kata 5.3 additionally uses the float-epsilon helper `_eq_close(actual, expected, epsilon)`, which rust.md §5 commits the harness to ship. The exact harness header/footer (the `_t`/`_eq`/`_eq_close` definitions, runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3).
 
 ---
 
@@ -168,13 +168,13 @@ Here is the full output:
 
 ```text
 error[E0004]: non-exhaustive patterns: `Status::Banned` not covered
- --> src/main.rs:4:11
+ --> main.rs:4:11
   |
 4 |     match status {
   |           ^^^^^^ pattern `Status::Banned` not covered
   |
 note: `Status` defined here
- --> src/main.rs:1:6
+ --> main.rs:1:6
   |
 1 | enum Status { Active, Idle, Banned }
   |      ^^^^^^               ------ not covered
@@ -256,17 +256,11 @@ fn main() {
 > Harness preamble (`_t`/`_eq`/`_eq_close` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the calls below are the contract. `_eq_close(actual, expected, epsilon)` is the harness's float-epsilon helper, committed for this kata in rust.md §5.
 
 ```rust
-fn main() {
-    _t("a circle's area is pi times radius squared", || {
-        _eq_close(area(&Shape::Circle(3.0)), std::f64::consts::PI * 9.0, 1e-9);
-    });
-    _t("a square's area is its side squared", || {
-        _eq_close(area(&Shape::Square(2.5)), 6.25, 1e-9);
-    });
-    _t("a rectangle's area is width times height, not either squared", || {
-        _eq_close(area(&Shape::Rect(3.0, 4.5)), 13.5, 1e-9);
-    });
-}
+_t("a circle's area is pi times radius squared", || _eq_close(area(&Shape::Circle(3.0)), std::f64::consts::PI * 9.0, 1e-9));
+
+_t("a square's area is its side squared", || _eq_close(area(&Shape::Square(2.5)), 6.25, 1e-9));
+
+_t("a rectangle's area is width times height, not either squared", || _eq_close(area(&Shape::Rect(3.0, 4.5)), 13.5, 1e-9));
 ```
 
 ### `hint`
@@ -353,23 +347,16 @@ fn first_even(v: &[i32]) -> Option<i32> {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...); })` calls below are the contract.
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract.
 
 ```rust
-fn main() {
-    _t("returns the first even number when one exists", || {
-        _eq(first_even(&[1, 2, 3]), Some(2));
-    });
-    _t("returns None when no number is even", || {
-        _eq(first_even(&[1, 3, 5]), None);
-    });
-    _t("returns None for an empty slice", || {
-        _eq(first_even(&[]), None);
-    });
-    _t("returns the first even number, not the largest or the last", || {
-        _eq(first_even(&[7, 4, 8, 2]), Some(4));
-    });
-}
+_t("returns the first even number when one exists", || _eq(first_even(&[1, 2, 3]), Some(2)));
+
+_t("returns None when no number is even", || _eq(first_even(&[1, 3, 5]), None));
+
+_t("returns None for an empty slice", || _eq(first_even(&[]), None));
+
+_t("returns the first even number, not the largest or the last", || _eq(first_even(&[7, 4, 8, 2]), Some(4)));
 ```
 
 ### `hint`

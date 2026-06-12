@@ -126,7 +126,7 @@ correct: b
 ### `feedback` (per option, sensei voice)
 
 **a — `rustc src/main.rs`:**
-> The direct-compile reflex — `gcc main.c` muscle memory. `rustc` compiles exactly the file you hand it: it does not read `Cargo.toml`, does not resolve dependencies, and fails on the first `use` of an external crate. Honesty note: this scroll's sandbox *does* run bare `rustc` on a single std-only file — which works precisely because the exercises have zero dependencies. A cloned project has them; `rustc`-by-hand is not how anyone builds one.
+> The direct-compile reflex — `gcc main.c` muscle memory. `rustc` compiles exactly the file you hand it: it does not read `Cargo.toml`, does not resolve dependencies, and fails on the first `use` of an external crate. This scroll's sandbox *does* run bare `rustc` on a single std-only file — which works precisely because the exercises have zero dependencies. A cloned project has them; `rustc`-by-hand is not how anyone builds one.
 
 **b — `cargo run`:**
 > Correct. `cargo run` reads `Cargo.toml`, fetches dependencies pinned by `Cargo.lock`, compiles the project, and runs the binary — one command, no separate install step. The npm-style two-step (install, then run) collapses into this. It is the daily inner loop: edit, `cargo run`, read what the compiler says. Which is the right segue — Lesson 1 is about what the compiler says.

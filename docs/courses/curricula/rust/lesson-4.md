@@ -8,7 +8,7 @@
 
 This file holds the **production prose** for each step's fields. All content and meta-notes in English. **Delta-framed throughout** (spec §2.2 rule 1): traits are anchored to the interfaces the primary personas already write — Java for Yui (with monomorphization named as the inverse of her type-erasure model), TS for Mariana and Felipe. The error-anchor rule (§2.2.2) does not bind this lesson's read — it scopes to ownership/borrowing/lifetimes — but the scroll's signature compiler-error reveal still lands here, in predict 4.2 (`E0277`, unsized-`dyn` form).
 
-**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || { _eq(actual, expected); })`, where `_eq` returns `Result<(), String>`. The exact harness header/footer (the `_t`/`_eq` definitions, runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3) per rust.md §5. The learner-`main`-vs-harness-`main` merge question stays flagged where lesson-1.md raised it.
+**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || _eq(actual, expected))`, where `_eq` returns `Result<(), String>`. The exact harness header/footer (the `_t`/`_eq` definitions, runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3) per rust.md §5. The learner-`main`-vs-harness-`main` merge question stays flagged where lesson-1.md raised it.
 
 ---
 
@@ -188,7 +188,7 @@ Three of the four compile. Here is what rustc says about `greet_dyn`:
 
 ```text
 error[E0277]: the size for values of type `(dyn Greet + 'static)` cannot be known at compilation time
-  --> src/main.rs:11:14
+  --> main.rs:11:14
    |
 11 | fn greet_dyn(guest: dyn Greet) -> String { guest.name() }
    |              ^^^^^ doesn't have a size known at compile-time
@@ -286,20 +286,14 @@ fn main() {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...); })` calls below are the contract.
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract.
 
 ```rust
-fn main() {
-    _t("Point::new stores both coordinates for describe to use", || {
-        _eq(Point::new(3, 4).describe(), String::from("(3, 4)"));
-    });
-    _t("a different point describes itself, not the example", || {
-        _eq(Point::new(-1, 12).describe(), String::from("(-1, 12)"));
-    });
-    _t("the worked example still describes itself", || {
-        _eq(Person::new("Mariana").describe(), String::from("Mariana (person)"));
-    });
-}
+_t("Point::new stores both coordinates for describe to use", || _eq(Point::new(3, 4).describe(), String::from("(3, 4)")));
+
+_t("a different point describes itself, not the example", || _eq(Point::new(-1, 12).describe(), String::from("(-1, 12)")));
+
+_t("the worked example still describes itself", || _eq(Person::new("Mariana").describe(), String::from("Mariana (person)")));
 ```
 
 ### `hint`
@@ -359,7 +353,7 @@ fn main() {
 ```markdown
 Two derive experiments worth five minutes each, right here in this editor:
 
-1. Add `#[derive(Debug)]` above your `Point`, print it with `println!("{:?}", Point::new(3, 4))`, and look at the output you didn't write. Then **delete the derive and run again** — the error that comes back is `E0277`, the trait-bound family from the predict: `{:?}` requires the `Debug` bound, and your type no longer satisfies it. A derive is just a trait impl the compiler wrote; removing it un-implements the trait.
+1. Add `#[derive(Debug)]` above your `Point`, print it with `println!("{:?}", Point::new(3, 4))`, and look at the output you didn't write. Then **delete the derive and run again** — the error that comes back is `E0277`, the trait-bound family from the predict: `{:?}` requires the `Debug` bound, and your type no longer satisfies it. A derive is a trait impl the compiler wrote; removing it un-implements the trait.
 2. With the derive back in place, change `{:?}` to `{}`. It refuses — `{}` requires `Display`, and `Display` is **not derivable**. The standard library declines to guess what a user-facing rendering of your type should look like; that is a judgment call, so you write it. You already made exactly this call twice: `Display` by hand in Lesson 3, and `describe` here. `{:?}` is for developers and derivable; `{}` is for users and written.
 ```
 
@@ -440,32 +434,32 @@ fn main() {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...); })` calls below are the contract.
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract.
 
 ```rust
-fn main() {
-    _t("announces every person in a slice, in order", || {
-        let team = vec![
-            Person { name: String::from("Mariana") },
-            Person { name: String::from("Yui") },
-        ];
-        _eq(announce(&team), vec![
-            String::from("Mariana (person)"),
-            String::from("Yui (person)"),
-        ]);
-    });
-    _t("the same function announces points — one source body, two compiled copies", || {
-        let path = vec![Point { x: 0, y: 0 }, Point { x: 3, y: 4 }];
-        _eq(announce(&path), vec![
-            String::from("(0, 0)"),
-            String::from("(3, 4)"),
-        ]);
-    });
-    _t("an empty slice announces nothing", || {
-        let nobody: Vec<Person> = vec![];
-        _eq(announce(&nobody), Vec::<String>::new());
-    });
-}
+_t("announces every person in a slice, in order", || {
+    let team = vec![
+        Person { name: String::from("Mariana") },
+        Person { name: String::from("Yui") },
+    ];
+    _eq(announce(&team), vec![
+        String::from("Mariana (person)"),
+        String::from("Yui (person)"),
+    ])
+});
+
+_t("the same function announces points — one source body, two compiled copies", || {
+    let path = vec![Point { x: 0, y: 0 }, Point { x: 3, y: 4 }];
+    _eq(announce(&path), vec![
+        String::from("(0, 0)"),
+        String::from("(3, 4)"),
+    ])
+});
+
+_t("an empty slice announces nothing", || {
+    let nobody: Vec<Person> = vec![];
+    _eq(announce(&nobody), Vec::<String>::new())
+});
 ```
 
 ### `hint`

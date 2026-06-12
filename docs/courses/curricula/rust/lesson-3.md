@@ -8,6 +8,8 @@
 
 This file holds the **production prose** for each step's `instruction` / `feedback` / etc. fields. All content in English. Delta-framed throughout (§2.2 rule 1): `Result` is anchored to models the primary personas already hold, not taught from scratch. Every quoted `rustc` excerpt is a smoke-capture placeholder re-captured from Piston 1.68.2 at smoke.
 
+**Harness note (applies to every `testCode` block below):** tests are written against the planned manual harness contract — `_t("user-facing sentence", || _eq(actual, expected))`, where `_eq` returns `Result<(), String>`. The exact harness header/footer (the `_t`/`_eq` definitions, runner `main`, `__DOJO_RESULT__` emission, `catch_unwind` wrapping) lands at seed (W3) per rust.md §5. The learner-`main`-vs-harness-`main` merge question stays flagged where lesson-1.md raised it.
+
 ---
 
 ## Step 3.1 — `read` — "`Result<T, E>` and propagation with `?`"
@@ -23,7 +25,7 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 
 You already encode "this can fail" somewhere. In TS you may have written the result-object union — `{ ok: true, value } | { ok: false, error }` — to escape exceptions; Node's older convention threads `(err, data)` through every callback. From Java: checked exceptions had the right instinct — failure in the signature — and mechanics that don't compose, so everyone catches and swallows. `Result<T, E>` is that instinct with compiler enforcement, the same family as Go's `(value, err)` pairs and functional `Either`.
 
-## `Result` is just an enum
+## `Result` is an ordinary enum
 
 Two variants, no runtime machinery — and you can't reach the success value without going through both arms:
 
@@ -56,7 +58,7 @@ fn double_input(s: &str) -> i32 {
 
 ```text
 error[E0277]: the `?` operator can only be used in a function that returns `Result` or `Option` (or another type that implements `FromResidual`)
- --> src/main.rs:2:27
+ --> main.rs:2:27
   |
 1 | fn double_input(s: &str) -> i32 {
   | ------------------------------- this function should return `Result` or `Option` to accept `?`
@@ -92,19 +94,19 @@ fn main() {
 }
 ```
 
-Honesty marker: production error enums are derived with `thiserror`, context added with `anyhow` — no crates in this sandbox, so we hand-write `Display` and `From`; the mechanics are the lesson, the boilerplate is what the crates remove. Next: write the `?` shape yourself, then the whole error enum.
+Production error enums are derived with `thiserror`, context added with `anyhow` — no crates in this sandbox, so you hand-write `Display` and `From`; the mechanics are the lesson, the boilerplate is what the crates remove. Next: write the `?` shape yourself, then the whole error enum.
 ```
 
-### Borrow-check audit (§2.1 gate) + delta audit (§2.2 rule 1, Valentina's lens)
+### Paragraph-test audit (borrow-check test §2.1 — Valentina/Björn gate)
 
-| Paragraph | Terminates in | Delta anchor (not from-scratch?) |
+| Paragraph | Delta anchor (not from-scratch? — §2.2 rule 1, Valentina's lens) | Verdict |
 |---|---|---|
-| "Why this matters" | (opener — licensed lead-in) | TS result-object union, Node `(err, data)`, Java checked-exceptions-that-compose; Go/`Either` in one clause exactly |
-| "`Result` is just an enum" | Compiling sample (`match` on `parse`) | "the union you already wrote, enforced" — no enum theory (data-carrying variants are Lesson 5's job; this read only *uses* the shape) |
-| "`?` — the match ladder, collapsed" + figure | Non-compiling sample + **full `E0277` output incl. `help:`** | Pain-led (the staircase); desugar stated as mechanics, not philosophy |
-| "`From` is how `?` converts errors" | Compiling 3-line `From` impl (the kata 3.3 model) | Anchored to "real pipelines fail in more than one way" — the multi-error ache every persona has shipped around |
-| "`unwrap`/`expect`/`panic!`" | Compiling sample (`expect` as invariant claim) | Maps to assertion culture every persona holds; 2-line decision matrix |
-| Sandbox-honesty marker + forward prompt | (pointer paragraph — exempt per §2.6 framing) | Names `thiserror`/`anyhow` and why they're absent |
+| "Why this matters" | TS result-object union, Node `(err, data)`, Java checked-exceptions-that-compose; Go/`Either` in one clause exactly | KEEP (opener — licensed lead-in) |
+| "`Result` is an ordinary enum" | "the union you already wrote, enforced" — no enum theory (data-carrying variants are Lesson 5's job; this read only *uses* the shape) | KEEP — ends in a compiling sample (`match` on `parse`) |
+| "`?` — the match ladder, collapsed" + figure | Pain-led (the staircase); desugar stated as mechanics, not philosophy | KEEP — ends in the non-compiling sample + **full `E0277` output incl. `help:`** |
+| "`From` is how `?` converts errors" | Anchored to "real pipelines fail in more than one way" — the multi-error ache every persona has shipped around | KEEP — ends in the compiling 3-line `From` impl (the kata 3.3 model) |
+| "`unwrap`/`expect`/`panic!`" | Maps to assertion culture every persona holds; 2-line decision matrix | KEEP — ends in a compiling sample (`expect` as invariant claim) |
+| Sandbox-honesty marker + forward prompt | Names `thiserror`/`anyhow` and why they're absent | KEEP (pointer paragraph — exempt per §2.6 framing) |
 
 **What got cut:** `Box<dyn Error>` as an error type (trait objects land in Lesson 4; using one here would lean on untaught machinery), `unwrap_or`/`map_err` combinator tour (Lesson 5 names `Option`'s combinators; drilling `Result`'s here would blow the budget), `main() -> Result<...>` (works since 1.26 but adds a second `E0277` surface for no new mechanism), and error-trait-object vs enum design debate (Rust for Rustaceans territory — deferred with the `thiserror` marker).
 
@@ -147,29 +149,22 @@ fn parse_and_double(s: &str) -> Result<i32, std::num::ParseIntError> {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...) })` calls below are the contract.
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract.
 
 ```rust
-fn main() {
-    _t("doubles a parsed positive number", || {
-        _eq(parse_and_double("5"), Ok(10));
-    });
-    _t("doubles a parsed negative number", || {
-        _eq(parse_and_double("-3"), Ok(-6));
-    });
-    _t("propagates the error for non-numeric input", || {
-        _eq(parse_and_double("abc").is_err(), true);
-    });
-    _t("propagates the error for empty input", || {
-        _eq(parse_and_double("").is_err(), true);
-    });
-}
+_t("doubles a parsed positive number", || _eq(parse_and_double("5"), Ok(10)));
+
+_t("doubles a parsed negative number", || _eq(parse_and_double("-3"), Ok(-6)));
+
+_t("propagates the error for non-numeric input", || _eq(parse_and_double("abc").is_err(), true));
+
+_t("propagates the error for empty input", || _eq(parse_and_double("").is_err(), true));
 ```
 
 ### `hint`
 
 ```markdown
-`s.parse::<i32>()` returns `Result<i32, ParseIntError>` — exactly the error type your signature promises. So the propagation needs no conversion at all: `?` unwraps the `Ok` value into your expression on success and early-returns the `Err` for you on failure. The whole function is one expression wrapped in `Ok(...)`. If you wrote a `match`, you re-built `?` by hand — read the desugar paragraph again and collapse it.
+`s.parse::<i32>()` returns `Result<i32, ParseIntError>` — exactly the error type your signature promises. So the propagation needs no conversion at all: `?` unwraps the `Ok` value into your expression on success and early-returns the `Err` for you on failure. If you wrote a `match`, you re-built `?` by hand — read the desugar paragraph again and collapse it.
 ```
 
 ### `referenceSolution`
@@ -260,28 +255,22 @@ fn main() {
 
 ### `testCode`
 
-> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || { _eq(...) })` calls below are the contract. The `matches!` macro is stable since 1.42 — fine under 1.68.2.
+> Harness preamble (`_t`/`_eq` definitions, panic capture, the `__DOJO_RESULT__` footer) is finalized at seed (W3) per rust.md §5 — the `_t("sentence", || _eq(...))` calls below are the contract. The `matches!` macro is stable since 1.42 — fine under 1.68.2.
 
 ```rust
-fn main() {
-    _t("parses the first element of a valid slice", || {
-        _eq(matches!(parse_first(&["42", "junk"]), Ok(42)), true);
-    });
-    _t("an empty slice is the Empty error", || {
-        _eq(matches!(parse_first(&[]), Err(AppError::Empty)), true);
-    });
-    _t("a bad first element becomes a Parse error via From", || {
-        _eq(matches!(parse_first(&["nope", "7"]), Err(AppError::Parse(_))), true);
-    });
-    _t("Empty displays its exact message", || {
-        _eq(format!("{}", AppError::Empty), String::from("input was empty"));
-    });
-    _t("Parse's display carries the inner error's message", || {
-        let err = "x".parse::<i32>().unwrap_err();
-        let shown = format!("{}", AppError::Parse(err.clone()));
-        _eq(shown.contains(&err.to_string()), true);
-    });
-}
+_t("parses the first element of a valid slice", || _eq(matches!(parse_first(&["42", "junk"]), Ok(42)), true));
+
+_t("an empty slice is the Empty error", || _eq(matches!(parse_first(&[]), Err(AppError::Empty)), true));
+
+_t("a bad first element becomes a Parse error via From", || _eq(matches!(parse_first(&["nope", "7"]), Err(AppError::Parse(_))), true));
+
+_t("Empty displays its exact message", || _eq(format!("{}", AppError::Empty), String::from("input was empty")));
+
+_t("Parse's display carries the inner error's message", || {
+    let err = "x".parse::<i32>().unwrap_err();
+    let shown = format!("{}", AppError::Parse(err.clone()));
+    _eq(shown.contains(&err.to_string()), true)
+});
 ```
 
 ### `hint`
