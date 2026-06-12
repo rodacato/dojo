@@ -267,13 +267,13 @@ The starter has the same parsed value typed two ways — `any` and `unknown` —
 ```typescript
 const raw = '{"user":{"name":"Ada"}}';
 
+// The honest version: `unknown` refuses every access until you narrow.
+const strict: unknown = JSON.parse(raw);
+// const b = strict.user;  // <- uncomment for try #1
+
 // The dangerous version: `any` turns checking off and lets any chain compile.
 const loose: any = JSON.parse(raw);
 const a = loose.user.name.first;
-
-// The honest version: `unknown` refuses every access until you narrow.
-const strict: unknown = JSON.parse(raw);
-// const b = strict.user;  // <- uncomment for try #2
 
 function fail(message: string): never {
   throw new Error(message);
@@ -282,14 +282,13 @@ function fail(message: string): never {
 type Collapsed = string | never;
 
 // ── Things to try ──────────────────────────────────────────────
-// 1. Chain two more accesses onto the `any` version: `loose.user.name.first.x.y`.
+// 1. Uncomment the `strict.user` line. Which exact line does the compiler light up,
+//    and what is the message? (No output runs — the compiler refusal IS the result.)
+// 2. Chain two more accesses onto the `any` version: `loose.user.name.first.x.y`.
 //    Run it. At what point does the compiler warn you?
-// 2. Uncomment the `strict.user` line. Which exact line does the compiler light up,
-//    and what is the message?
 // 3. Add a branch that calls `fail("boom")` and then tries to use a value after it —
 //    what type does the compiler think the code after a `never`-returning call has?
 // 4. Hover `Collapsed`. What single type is left, and why does that make `assertNever` work?
-console.log(a);
 ```
 
 ### `testCode`
@@ -301,8 +300,8 @@ _t("explored the escape hatches at a boundary", () => { _eq(true, true); });
 ### Authoring notes
 
 - **Playground contract (§2.4):** `data.kind: "playground"`, the trivially-true `_t("explored the escape hatches at a boundary", …)` assertion, button "↻ Try it", no verdict UI. A compile error here is pedagogical — the instruction says so in its first line. Frontend `data.kind === "playground"` branch shipped with Ruby, reused by Python — no new work.
-- **Things-to-try as numbered starter comments (Maya contract):** four concrete edits — the `any` deep-chain (answer to "when does it warn?" is *never*, but the comment doesn't say so — the learner runs it and finds the compiler silent), the `unknown` refusal lighting one exact line, the `never`-after-`fail()` inference, and the `string | never` collapse that powers `assertNever`. **No `(spoiler: …)` that answers its own prompt** — each comment asks, the run answers.
-- **Coverage:** the four tries map to the read's four beats — `any` propagation (try 1), `unknown` refusal (try 2), `never`-returning function (try 3), `T | never` collapse (try 4). The playground is where the read's claims become physical.
+- **Things-to-try as numbered starter comments (Maya contract):** four concrete edits — the `unknown` refusal lighting one exact line (try 1, compile-error-shaped with no stdout, so "the squiggle is the result" lands before any runtime-output reflex fires — §2.3 contract), the `any` deep-chain (answer to "when does it warn?" is *never*, but the comment doesn't say so — the learner runs it and finds the compiler silent), the `never`-after-`fail()` inference, and the `string | never` collapse that powers `assertNever`. **No `(spoiler: …)` that answers its own prompt** — each comment asks, the run answers. **No live `console.log` on the first run:** the starter prints nothing, so the learner's first action (uncommenting `strict.user`) yields a compiler error, not stdout.
+- **Coverage:** the four tries map to the read's four beats — `unknown` refusal (try 1), `any` propagation (try 2), `never`-returning function (try 3), `T | never` collapse (try 4). The playground is where the read's claims become physical.
 - Single-file, TS 5.0.3. The committed-error lines (try 1, try 2) are the point — the runner surfaces them as readable compile output, not a crash (§5). <!-- verify-at-smoke: tsc 5.0.3 -->
 
 ---
@@ -314,7 +313,7 @@ _t("explored the escape hatches at a boundary", () => { _eq(true, true); });
 - [x] `ts-unknown-vs-any` `disambiguation` figure directive in prose; data block at end of file; `highlightAttribute` single-dimension ("what the compiler lets you do before narrowing").
 - [x] Kata 4.2 names `JSON.parse`'s stdlib-`any` typing as the reason the wrap exists; learner takes `unknown` in (`parseJson` provided) and narrows out with a guard; tests cover valid+full, optionals-absent, missing-`id`, malformed, array, primitive; key-presence-aware `_eq` requirement flagged (§5 gate); `@ts-expect-error` on un-narrowed access as a commented illustration.
 - [x] Hint 4.2 concept-level — points at the guard's return-type role and the order of checks, never names `is`/`typeof`/the widening.
-- [x] Playground 4.3 `data.kind: "playground"`, trivially-true assertion, four numbered things-to-try (`any` deep-chain, `unknown` refusal, `never`-returning fn, `string | never` collapse), **no self-answering spoilers**.
+- [x] Playground 4.3 `data.kind: "playground"`, trivially-true assertion, four numbered things-to-try (`unknown` refusal first — compile-error-shaped, no stdout — then `any` deep-chain, `never`-returning fn, `string | never` collapse), **no self-answering spoilers**, no live `console.log` on the first run.
 - [x] Hints concept-level; voice direct, no celebration, no emoji; `tsc` excerpts (none quoted here — no error reveal in this lesson) would carry `<!-- verify-at-smoke: tsc 5.0.3 -->`; every compiling-sample claim carries the smoke marker.
 - [x] All content English. All code single-file, TS 5.0.3, `strict`. No code needing >5.0.3.
 

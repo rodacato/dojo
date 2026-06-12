@@ -142,7 +142,7 @@ The implementation is trivial JavaScript. The point is the **signature**: `T` ti
 ### What's expected
 
 ```typescript
-first([10, 20, 30])   // 30? no — the first: 10   (type: number | undefined)
+first([10, 20, 30])   // 10   (type: number | undefined)
 first(["a", "b"])     // "a"                        (type: string | undefined)
 first([])             // undefined
 ```
@@ -342,7 +342,7 @@ You write five things:
    - `"delivered"` with `id: string`, optional `signedBy?: string`
    - `"lost"` with `id: string`, optional `lastSeen?: string`
    (shapes with optional fields — Lesson 2; discriminated union — Lesson 3.)
-2. **`isShipmentEvent(x: unknown): x is ShipmentEvent`** — the boundary guard (Lesson 3's guard shape over Lesson 4's `unknown`): validate the `kind` tag and the required fields each variant demands.
+2. **`isShipmentEvent(x: unknown): x is ShipmentEvent`** — the boundary guard (Lesson 3's guard shape over Lesson 4's `unknown`): validate the `kind` tag and the required fields each variant demands. Unlike `isUser`'s flat check, this guard branches on the `kind` tag — each variant has its own required fields to verify.
 3. **`parseWith<T>`** — its signature is **already in the starter**; you write only the body: `JSON.parse` inside a `try/catch`, call the guard, return the value on success or `null` on failure.
 4. **`describeShipment(e: ShipmentEvent): string`** — an exhaustive `switch` on `kind`, closed with `assertNever` (provided), the output varying with the optional fields (e.g. `"delivered #s1 (signed by Ada)"` vs `"delivered #s1"`).
 5. **`handleShipmentWebhook(raw: string): string`** — the composition: parse-and-guard, then describe; `"invalid payload"` when the parse-and-guard returns `null`.
@@ -445,6 +445,7 @@ type _t1 = Equal<ReturnType<typeof parseWith<ShipmentEvent>>, ShipmentEvent | nu
 const _check1: _t1 = true;
 
 // @ts-expect-error  an un-guarded `unknown` is not assignable to ShipmentEvent.
+// 'as unknown' only forces the @ts-expect-error to bite — not a shape claim; contrast the broken 'as' the brief warns about.
 describeShipment(JSON.parse('{"kind":"created","id":"s1"}') as unknown);
 ```
 

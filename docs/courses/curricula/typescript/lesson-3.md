@@ -94,7 +94,7 @@ Per typescript.md §2.3 / §4 step 3.1: if the correct-answer rate on 3.1 exceed
 ```markdown
 ## Why this matters
 
-Lesson 2's optional fields handed you a `string | undefined` — a value that might not be there. So did the optional parameter in Lesson 1. How does code *use* a value that might be one of several types without crashing on the wrong one? With the checks you already write — except now the compiler reads them too. If you just predicted `string | number` for that branch, you were holding the old model; here's the one that's actually true.
+Lesson 2's optional fields handed you a `string | undefined` — a value that might not be there. So did the optional parameter in Lesson 1. You already narrow these in JS by reflex (`typeof`, `Array.isArray`); the delta is that the compiler now reads the same checks and tracks the type through each branch. If you just predicted `string | number` for that branch, you were holding the old model; here's the one that's actually true.
 
 ## The narrowing toolbox
 
