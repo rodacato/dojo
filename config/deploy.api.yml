@@ -84,27 +84,25 @@ accessories:
     # the digest guards against silent upstream updates breaking prod again.
     image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     host: <%= ENV["HOST_IP"] %>
-    env:
-      clear:
-        # Server-side caps on the per-request timeouts. Piston ships defaults
-        # of 3000ms/10000ms and 400s any execute over them, regardless of how
-        # long the run/compile actually takes (parameter validation, not real
-        # timing). Our API sends 8000/30000 from config.ts; the accessory has
-        # to allow at least as much. Verified the pinned digest reads these
-        # via `docker run --rm -e PISTON_RUN_TIMEOUT=8000 ... node -e
-        # 'require("nocamel"); console.log(require("./src/config").run_timeout)'`.
-        # Keep in sync with apps/api/src/config.ts.
-        PISTON_RUN_TIMEOUT: '8000'
-        PISTON_COMPILE_TIMEOUT: '30000'
-    # The image's entrypoint does `cd /sys/fs/cgroup && mkdir isolate/` to
-    # build the cgroup subtree for the sandbox. With `cgroupns: host` that
-    # subtree lives on the HOST's cgroup tree — not in the container's
-    # writable layer — so it survives container teardown. Any next start
-    # then fails with `mkdir isolate/: File exists` and Docker enters an
-    # infinite restart loop. Wrap the original entrypoint with a small
-    # cleanup so reboots are idempotent. Path verified against the image:
-    # `docker run --rm --entrypoint cat <image> /piston_api/src/docker-entrypoint.sh`.
-    cmd: '-c "rmdir /sys/fs/cgroup/isolate/init 2>/dev/null; rmdir /sys/fs/cgroup/isolate 2>/dev/null; exec /piston_api/src/docker-entrypoint.sh"'
+    # The wrapper does three things in one cmd, in order:
+    #   1. Embeds PISTON_RUN_TIMEOUT / PISTON_COMPILE_TIMEOUT via `env VAR=val`
+    #      so they reach the node process. These bypass kamal's accessory
+    #      `env.clear:` block, which silently failed to apply on
+    #      `accessory reboot` in our setup (verified via docker inspect:
+    #      env_count showed only the image defaults, none of our additions).
+    #      Embedding in cmd is the durable workaround and survives whatever
+    #      kamal is doing wrong. `su` (used by the image entrypoint) preserves
+    #      custom env vars across the user switch — confirmed by hand.
+    #      Keep these aligned with apps/api/src/config.ts.
+    #   2. Removes the orphan /sys/fs/cgroup/isolate{,/init} cgroup subtrees
+    #      left over from any prior container. With `cgroupns: host` the
+    #      subtree lives on the HOST's cgroup tree, not in the container's
+    #      writable layer, so it survives teardown. Without this cleanup the
+    #      image's `mkdir isolate/` in the entrypoint fails EEXIST and Docker
+    #      enters an infinite restart loop.
+    #   3. Execs the original image entrypoint at the path verified by
+    #      `docker run --rm --entrypoint cat <image> /piston_api/src/docker-entrypoint.sh`.
+    cmd: '-c "rmdir /sys/fs/cgroup/isolate/init 2>/dev/null; rmdir /sys/fs/cgroup/isolate 2>/dev/null; exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 /piston_api/src/docker-entrypoint.sh"'
     volumes:
       # Persist installed runtimes so a container recreate doesn't wipe them.
       - dojo-piston-packages:/piston/packages
