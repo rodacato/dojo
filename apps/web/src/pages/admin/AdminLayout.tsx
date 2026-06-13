@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/admin/scrolls', label: 'Scrolls', icon: BookIcon },
   { to: '/admin/invitations', label: 'Invitations', icon: MailIcon },
   { to: '/admin/errors', label: 'Errors', icon: AlertIcon },
+  { to: '/admin/health', label: 'Health', icon: HeartIcon },
 ]
 
 export function AdminLayout() {
@@ -128,6 +129,14 @@ function AlertIcon({ className }: { className?: string }) {
       <circle cx="12" cy="12" r="9" />
       <path d="M12 7v6" />
       <circle cx="12" cy="16.5" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function HeartIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M3 12h4l2-5 4 10 2-5h6" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }

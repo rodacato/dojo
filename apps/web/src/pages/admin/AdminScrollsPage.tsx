@@ -22,7 +22,6 @@ interface AdminScroll {
 
 type Busy =
   | { kind: 'seed' }
-  | { kind: 'reprovision' }
   | { kind: 'patch'; id: string }
   | { kind: 'wipe'; id: string }
   | null
@@ -77,35 +76,6 @@ export function AdminScrollsPage() {
       setNotice({
         tone: 'err',
         eyebrow: 'Re-seed failed',
-        body: asMsg(e),
-        at: Date.now(),
-      })
-    } finally {
-      setBusy(null)
-    }
-  }
-
-  async function onReprovision() {
-    setBusy({ kind: 'reprovision' })
-    try {
-      const report = await api.reprovisionPiston()
-      const total = report.runtimes.length
-      const parts = [
-        `${report.installed.length} installed`,
-        `${report.skipped.length} skipped`,
-        `${report.failed.length} failed`,
-      ]
-      const failedTone = report.failed.length > 0
-      setNotice({
-        tone: failedTone ? 'err' : 'ok',
-        eyebrow: failedTone ? 'Reprovision incomplete' : 'Piston ready',
-        body: `${parts.join(' · ')}. Runtimes live: ${total}.`,
-        at: Date.now(),
-      })
-    } catch (e) {
-      setNotice({
-        tone: 'err',
-        eyebrow: 'Reprovision failed',
         body: asMsg(e),
         at: Date.now(),
       })
@@ -188,20 +158,9 @@ export function AdminScrollsPage() {
             <span>Catalog seeded from <code className="font-mono text-secondary">/apps/api/seed/scrolls/</code></span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onReprovision}
-            loading={busy?.kind === 'reprovision'}
-            title="Install missing Piston runtimes (idempotent)"
-          >
-            ↻ Reprovision Piston
-          </Button>
-          <Button variant="ghost" size="sm" onClick={onSeed} loading={busy?.kind === 'seed'}>
-            ↻ Re-seed all
-          </Button>
-        </div>
+        <Button variant="ghost" size="sm" onClick={onSeed} loading={busy?.kind === 'seed'}>
+          ↻ Re-seed all
+        </Button>
       </div>
 
       {notice && (

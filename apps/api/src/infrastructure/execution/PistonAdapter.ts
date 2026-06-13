@@ -55,9 +55,10 @@ export class PistonAdapter implements CodeExecutionPort {
       })
 
       if (!response.ok) {
+        const body = await response.text().catch(() => '')
         return {
           stdout: '',
-          stderr: `Piston error: ${response.status} ${response.statusText}`,
+          stderr: formatPistonHttpError(response.status, response.statusText, body),
           exitCode: 1,
           timedOut: false,
           executionTimeMs: Date.now() - start,
@@ -155,9 +156,10 @@ export class PistonAdapter implements CodeExecutionPort {
       })
 
       if (!response.ok) {
+        const body = await response.text().catch(() => '')
         return {
           stdout: '',
-          stderr: `Piston error: ${response.status} ${response.statusText}`,
+          stderr: formatPistonHttpError(response.status, response.statusText, body),
           exitCode: 1,
           timedOut: false,
           executionTimeMs: Date.now() - start,
@@ -199,6 +201,27 @@ export class PistonAdapter implements CodeExecutionPort {
       }
     }
   }
+}
+
+// Piston returns 400 with a JSON body { message: "..." } when it rejects
+// the payload (e.g., run_timeout above MAX_RUN_TIMEOUT, unknown runtime).
+// Surfacing the body is the only way to tell sandbox-unreachable apart
+// from sandbox-said-no-because-X without shell access to the container.
+function formatPistonHttpError(status: number, statusText: string, body: string): string {
+  const trimmed = body.trim()
+  if (!trimmed) {
+    return `Piston error: ${status} ${statusText}`
+  }
+  let detail = trimmed
+  try {
+    const parsed = JSON.parse(trimmed) as { message?: string }
+    if (typeof parsed.message === 'string' && parsed.message.length > 0) {
+      detail = parsed.message
+    }
+  } catch {
+    // Body is plain text — surface as-is.
+  }
+  return `Piston error: ${status} ${statusText} — ${detail}`
 }
 
 // Piston's runner appends its own noise to compile stderr when the compile

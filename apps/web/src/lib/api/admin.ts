@@ -122,6 +122,28 @@ export const admin = {
       runtimes: Array<{ language: string; version: string }>
     }>('/admin/piston/reprovision', { method: 'POST' }),
 
+  getAdminHealth: () =>
+    request<{
+      api: { status: 'ok' | 'down'; latencyMs: number | null; detail: { env: string } }
+      db: { status: 'ok' | 'down'; latencyMs: number | null; detail: { error?: string } }
+      piston: {
+        status: 'ok' | 'down'
+        latencyMs: number | null
+        detail: {
+          expected: Array<{ language: string; version: string }>
+          actual: Array<{ language: string; version: string }>
+          missing: Array<{ language: string; version: string }>
+          extra: Array<{ language: string; version: string }>
+          error?: string
+        }
+      }
+      llm: {
+        status: 'ok' | 'unconfigured'
+        latencyMs: number | null
+        detail: { adapter: 'mock' | 'anthropic' | 'openai'; configured: boolean }
+      }
+    }>('/admin/health'),
+
   getErrors: (params: { source?: 'api' | 'web'; status?: number; limit?: number; offset?: number } = {}) => {
     const qs = new URLSearchParams()
     if (params.source) qs.set('source', params.source)

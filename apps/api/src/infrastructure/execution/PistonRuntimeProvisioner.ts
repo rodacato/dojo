@@ -7,6 +7,15 @@ export interface ProvisionResult {
   runtimes: PistonRuntimeSpec[]
 }
 
+export interface RuntimeStatus {
+  reachable: boolean
+  error: string | null
+  expected: PistonRuntimeSpec[]
+  actual: PistonRuntimeSpec[]
+  missing: PistonRuntimeSpec[]
+  extra: PistonRuntimeSpec[]
+}
+
 // Each runtime install hits the Piston package API which downloads + extracts
 // a tarball into the persisted volume. Sized to cover the slowest (rust) on
 // a cold start without false aborts.
@@ -43,6 +52,25 @@ export class PistonRuntimeProvisioner {
 
     const runtimes = await this.fetchInstalled().catch(() => installedNow)
     return { installed, skipped, failed, runtimes }
+  }
+
+  // Idle read for the admin UI: what does Piston currently have vs the
+  // canonical list. Never throws — a transport failure is surfaced as
+  // reachable:false so the panel can render "unreachable" instead of 500.
+  async status(): Promise<RuntimeStatus> {
+    const expected = [...PISTON_RUNTIMES]
+    let actual: PistonRuntimeSpec[] = []
+    let error: string | null = null
+    let reachable = true
+    try {
+      actual = await this.fetchInstalled()
+    } catch (err) {
+      reachable = false
+      error = err instanceof Error ? err.message : String(err)
+    }
+    const missing = expected.filter((e) => !isInstalled(actual, e))
+    const extra = actual.filter((a) => !isInstalled(expected, a))
+    return { reachable, error, expected, actual, missing, extra }
   }
 
   private async fetchInstalled(): Promise<PistonRuntimeSpec[]> {

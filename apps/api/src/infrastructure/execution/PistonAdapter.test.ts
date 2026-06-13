@@ -129,6 +129,7 @@ describe('PistonAdapter', () => {
       ok: false,
       status: 500,
       statusText: 'Internal Server Error',
+      text: async () => '',
     })
 
     const result = await adapter.execute({
@@ -139,6 +140,23 @@ describe('PistonAdapter', () => {
 
     expect(result.exitCode).toBe(1)
     expect(result.stderr).toContain('Piston error: 500')
+  })
+
+  it('surfaces Piston error body when present', async () => {
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 400,
+      statusText: 'Bad Request',
+      text: async () => '{"message":"run_timeout exceeds maximum"}',
+    })
+
+    const result = await adapter.execute({
+      language: 'javascript',
+      code: '1+1',
+      testCode: 'test',
+    })
+
+    expect(result.stderr).toContain('run_timeout exceeds maximum')
   })
 
   it('handles network failure', async () => {
