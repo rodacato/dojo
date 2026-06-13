@@ -85,15 +85,24 @@ accessories:
     image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     host: <%= ENV["HOST_IP"] %>
     # The wrapper does three things in one cmd, in order:
-    #   1. Embeds PISTON_RUN_TIMEOUT / PISTON_COMPILE_TIMEOUT via `env VAR=val`
-    #      so they reach the node process. These bypass kamal's accessory
-    #      `env.clear:` block, which silently failed to apply on
-    #      `accessory reboot` in our setup (verified via docker inspect:
-    #      env_count showed only the image defaults, none of our additions).
-    #      Embedding in cmd is the durable workaround and survives whatever
-    #      kamal is doing wrong. `su` (used by the image entrypoint) preserves
-    #      custom env vars across the user switch — confirmed by hand.
-    #      Keep these aligned with apps/api/src/config.ts.
+    #   1. Embeds Piston server-side config via `env VAR=val` so the values
+    #      reach the node process. Bypass kamal's accessory `env.clear:`
+    #      block, which silently failed to apply on `accessory reboot` in our
+    #      setup (docker inspect showed env_count = image defaults only).
+    #      `su` (used inside the entrypoint) preserves custom env vars across
+    #      the user switch — confirmed by hand. Keep aligned with config.ts.
+    #
+    #      - PISTON_RUN_TIMEOUT / PISTON_COMPILE_TIMEOUT raise the per-request
+    #        timeout caps. Defaults of 3000/10000 are too tight for our TS
+    #        capstone (~2.7s tsc fixed floor) and any Rust compile of size.
+    #      - PISTON_OUTPUT_MAX_SIZE raises the per-stream stdout/stderr cap
+    #        from 1024 bytes. Our harness emits `__DOJO_RESULT__ <json>` with
+    #        the full per-test array, which routinely exceeds 1KB for >3 tests.
+    #        When the default kicks in Piston returns `signal: SIGKILL`,
+    #        `status: "OL"`, with stderr "Sandbox keeper received fatal
+    #        signal 6" — misleading enough that we spent hours misdiagnosing
+    #        it as a kernel / cgroup / sandbox issue. 64KB is generous and
+    #        safe; raise further only if a scroll genuinely needs it.
     #   2. Removes the orphan /sys/fs/cgroup/isolate{,/init} cgroup subtrees
     #      left over from any prior container. With `cgroupns: host` the
     #      subtree lives on the HOST's cgroup tree, not in the container's
@@ -102,7 +111,7 @@ accessories:
     #      enters an infinite restart loop.
     #   3. Execs the original image entrypoint at the path verified by
     #      `docker run --rm --entrypoint cat <image> /piston_api/src/docker-entrypoint.sh`.
-    cmd: '-c "rmdir /sys/fs/cgroup/isolate/init 2>/dev/null; rmdir /sys/fs/cgroup/isolate 2>/dev/null; exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 /piston_api/src/docker-entrypoint.sh"'
+    cmd: '-c "rmdir /sys/fs/cgroup/isolate/init 2>/dev/null; rmdir /sys/fs/cgroup/isolate 2>/dev/null; exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 PISTON_OUTPUT_MAX_SIZE=65536 /piston_api/src/docker-entrypoint.sh"'
     volumes:
       # Persist installed runtimes so a container recreate doesn't wipe them.
       - dojo-piston-packages:/piston/packages
