@@ -16,8 +16,6 @@
 import { ExecuteStep } from '../application/learning/ExecuteStep'
 import { PistonAdapter } from '../infrastructure/execution/PistonAdapter'
 import {
-  COURSE_DATA,
-  STEPS_DATA,
   DOM_COURSE_DATA,
   DOM_STEPS_DATA,
 } from '../infrastructure/persistence/seed-scrolls'
@@ -49,9 +47,6 @@ function fallbackTitle(s: StepLike): string {
 
 function collect(): Array<{ scrollSlug: string; scrollLanguage: string; step: StepLike }> {
   const all: Array<{ scrollSlug: string; scrollLanguage: string; step: StepLike }> = []
-  for (const step of STEPS_DATA) {
-    all.push({ scrollSlug: COURSE_DATA.slug, scrollLanguage: COURSE_DATA.language, step })
-  }
   for (const step of DOM_STEPS_DATA) {
     all.push({ scrollSlug: DOM_COURSE_DATA.slug, scrollLanguage: DOM_COURSE_DATA.language, step })
   }

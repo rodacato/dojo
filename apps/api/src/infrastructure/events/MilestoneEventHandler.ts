@@ -10,7 +10,6 @@ import type { DB } from '../persistence/drizzle/client'
 // infrastructure (not domain) because it's awarding policy, not a domain
 // invariant.
 const SCROLL_MILESTONE_BY_SLUG: Record<string, string> = {
-  'typescript-fundamentals': 'COURSE_TYPESCRIPT_FUNDAMENTALS',
   'javascript-dom-fundamentals': 'COURSE_JAVASCRIPT_DOM_FUNDAMENTALS',
   'sql-deep-cuts': 'COURSE_SQL_DEEP_CUTS',
 }

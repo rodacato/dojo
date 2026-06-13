@@ -15,12 +15,9 @@
 // minus the smoke-marker comments). Figures registered in
 // apps/web/src/scrolls/figures/data/typescript-figures.ts.
 //
-// COEXISTENCE NOTE: this NEW scroll uses slug 'typescript' and seeds as
-// draft / isPublic:false. The LEGACY scroll (slug 'typescript-fundamentals',
-// COURSE_DATA in seed-scrolls.ts) is NOT touched here — the rebuild-not-migrate
-// hard-delete of the legacy slug is a publish-time decision deferred to the
-// full-set smoke gate (Adrian's call). Until then the two coexist: legacy stays
-// published, the new 'typescript' scroll stays a draft.
+// Legacy slug `typescript-fundamentals` is hard-deleted at the tail of
+// seedAllScrolls() via removeLegacyScrollBySlug — the crash-course this
+// file seeds replaces it.
 //
 // Test harness: manual _t/_eq pattern (mirrors Ruby/Python/Rust), TS-shaped.
 // The PistonAdapter combines the learner's `code` BEFORE the testCode
