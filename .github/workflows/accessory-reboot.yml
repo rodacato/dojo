@@ -1,0 +1,88 @@
+name: Reboot accessory
+
+# Manual-only. Used when a Kamal accessory needs its container recreated
+# to pick up changed env vars or options in config/deploy.api.yml — most
+# common case is the Piston accessory after a timeout/limit change.
+# `kamal deploy` does NOT reboot already-running accessories, so the env
+# diff in deploy.api.yml is invisible until this workflow runs.
+
+on:
+  workflow_dispatch:
+    inputs:
+      accessory:
+        description: 'Accessory to reboot'
+        type: choice
+        options:
+          - piston
+        default: piston
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  KAMAL_VERSION: "~> 2.7"
+  RUBY_VERSION: "3.3"
+
+jobs:
+  reboot:
+    name: Reboot ${{ inputs.accessory }}
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    env:
+      # Mirror deploy-api: Kamal parses config/deploy.api.yml with ERB and
+      # references these env vars regardless of which subcommand it runs.
+      KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_USERNAME: ${{ github.repository_owner }}
+      HOST_IP: ${{ vars.HOST_IP }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      OAUTH_CLIENT_ID: ${{ vars.OAUTH_CLIENT_ID }}
+      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
+      OAUTH_CALLBACK_URL: ${{ vars.OAUTH_CALLBACK_URL }}
+      LLM_ADAPTER_FORMAT: ${{ vars.LLM_ADAPTER_FORMAT }}
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+      LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
+      LLM_MODEL: ${{ vars.LLM_MODEL }}
+      LLM_STREAM: ${{ vars.LLM_STREAM }}
+      WEB_URL: ${{ vars.WEB_URL }}
+      API_URL: ${{ vars.API_URL }}
+      CREATOR_GITHUB_ID: ${{ secrets.CREATOR_GITHUB_ID }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      FF_CODE_EXECUTION_ENABLED: ${{ vars.FF_CODE_EXECUTION_ENABLED }}
+      FF_LLM_PREP_STREAMING_ENABLED: ${{ vars.FF_LLM_PREP_STREAMING_ENABLED || 'false' }}
+      FF_PLAYGROUND_ASK_SENSEI_ENABLED: ${{ vars.FF_PLAYGROUND_ASK_SENSEI_ENABLED || 'false' }}
+      FF_PLAYGROUND_CONSOLE_ENABLED: ${{ vars.FF_PLAYGROUND_CONSOLE_ENABLED || 'false' }}
+      PISTON_URL: ${{ vars.PISTON_URL }}
+      PLAYGROUND_ASK_SENSEI_DAILY_QUOTA: ${{ vars.PLAYGROUND_ASK_SENSEI_DAILY_QUOTA || '30' }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+      TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
+      SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+
+      - name: Install Kamal
+        run: gem install kamal -v "$KAMAL_VERSION"
+
+      - uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add VPS to known hosts
+        run: ssh-keyscan ${{ vars.HOST_IP }} >> ~/.ssh/known_hosts
+
+      - name: Reboot ${{ inputs.accessory }}
+        run: kamal accessory reboot "${{ inputs.accessory }}" --config-file config/deploy.api.yml -y
