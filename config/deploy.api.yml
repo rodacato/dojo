@@ -84,6 +84,15 @@ accessories:
     # the digest guards against silent upstream updates breaking prod again.
     image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     host: <%= ENV["HOST_IP"] %>
+    # The image's entrypoint does `cd /sys/fs/cgroup && mkdir isolate/` to
+    # build the cgroup subtree for the sandbox. With `cgroupns: host` that
+    # subtree lives on the HOST's cgroup tree — not in the container's
+    # writable layer — so it survives container teardown. Any next start
+    # then fails with `mkdir isolate/: File exists` and Docker enters an
+    # infinite restart loop. Wrap the original entrypoint with a small
+    # cleanup so reboots are idempotent. Path verified against the image:
+    # `docker run --rm --entrypoint cat <image> /piston_api/src/docker-entrypoint.sh`.
+    cmd: '-c "rmdir /sys/fs/cgroup/isolate/init 2>/dev/null; rmdir /sys/fs/cgroup/isolate 2>/dev/null; exec /piston_api/src/docker-entrypoint.sh"'
     volumes:
       # Persist installed runtimes so a container recreate doesn't wipe them.
       - dojo-piston-packages:/piston/packages
@@ -95,6 +104,9 @@ accessories:
       privileged: true
       cgroupns: host
       tmpfs: /piston/jobs:exec,size=256m
+      # /bin/sh replaces the image's ENTRYPOINT; cmd above runs the cleanup
+      # then exec's the original entrypoint.
+      entrypoint: /bin/sh
 
 logging:
   driver: json-file
