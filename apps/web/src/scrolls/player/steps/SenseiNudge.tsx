@@ -101,14 +101,14 @@ export function SenseiNudgePanel({
                 <span className="text-muted">Did this help?</span>
                 <button
                   onClick={() => onRate('up')}
-                  className="text-muted hover:text-success transition-colors"
+                  className="px-2 py-1 -my-1 text-base leading-none text-muted hover:text-success transition-colors"
                   aria-label="This nudge helped"
                 >
                   👍
                 </button>
                 <button
                   onClick={() => onRate('down')}
-                  className="text-muted hover:text-danger transition-colors"
+                  className="px-2 py-1 -my-1 text-base leading-none text-muted hover:text-danger transition-colors"
                   aria-label="This nudge did not help"
                 >
                   👎

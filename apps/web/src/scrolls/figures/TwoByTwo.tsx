@@ -54,14 +54,17 @@ export function TwoByTwo({ data }: { data: TwoByTwoData }) {
 
   return (
     <figure className="my-6">
-      <div className="bg-page border border-border rounded-sm p-3">
+      <div className="bg-page border border-border rounded-sm p-3 overflow-x-auto">
+        {/* min-w keeps the 2×2 readable; narrow phones scroll rather than
+            crushing the cells. Row-label column shrinks on mobile. */}
+        <div className="min-w-[300px]">
         {/* col-axis label */}
-        <div className="flex items-baseline gap-3 mb-2 pl-[140px]">
+        <div className="flex items-baseline gap-3 mb-2 pl-[88px] sm:pl-[140px]">
           <span className="font-mono text-[10px] uppercase tracking-wider text-muted">
             {data.colAxis.label}
           </span>
         </div>
-        <div className="grid grid-cols-[120px_1fr_1fr] gap-2 items-stretch">
+        <div className="grid grid-cols-[72px_1fr_1fr] sm:grid-cols-[120px_1fr_1fr] gap-2 items-stretch">
           {/* col headers */}
           <div />
           <div className="font-mono text-[11px] text-primary px-2 py-1">{data.colAxis.values[0]}</div>
@@ -85,6 +88,7 @@ export function TwoByTwo({ data }: { data: TwoByTwoData }) {
           </div>
           <Cell cell={data.cells[1][0]} highlighted={isHighlighted(1, 0)} />
           <Cell cell={data.cells[1][1]} highlighted={isHighlighted(1, 1)} />
+        </div>
         </div>
       </div>
       {data.caption && (

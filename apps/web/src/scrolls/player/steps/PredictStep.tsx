@@ -37,7 +37,7 @@ export function PredictStep({
 
   if (!data) {
     return (
-      <div className="max-w-3xl mx-auto px-6 py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         <p className="text-sm font-mono text-danger">
           Predict step is missing required `data` payload.
         </p>
@@ -67,7 +67,7 @@ export function PredictStep({
     .trim()
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-6">
       <div>
         <p className="font-mono text-xs uppercase tracking-[0.08em] text-muted mb-2">
           Predict
@@ -125,7 +125,7 @@ export function PredictStep({
               <span className="shrink-0 w-6 h-6 rounded border border-current/40 flex items-center justify-center text-xs">
                 {revealed && icon ? icon : letter}
               </span>
-              <span className="flex-1 leading-relaxed pt-0.5">{opt.text}</span>
+              <span className="flex-1 min-w-0 break-words leading-relaxed pt-0.5">{opt.text}</span>
             </button>
           )
         })}

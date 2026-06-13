@@ -91,9 +91,14 @@ export function StepEditor({
   const editorLanguage = (isIframeLang ? 'javascript-dom' : language) as CodeEditorLanguage
 
   return (
-    <div className="flex flex-col h-[calc(100vh-48px)]">
-      {/* Instruction */}
-      <div className="px-6 py-4 border-b border-border/40 overflow-y-auto max-h-[35vh]">
+    // h-full fills <main> (flex-1 of the h-[100dvh] root) — no magic-number
+    // calc. The old h-[calc(100vh-48px)] both double-counted the layout height
+    // and subtracted 48px for a 56px (h-14) header, overflowing 8px on every
+    // screen and ignoring mobile browser chrome.
+    <div className="flex flex-col h-full">
+      {/* Instruction — capped so the editor keeps usable height; min-h-0 lets
+          it shrink on short phones instead of pushing the editor off-screen. */}
+      <div className="px-4 sm:px-6 py-4 border-b border-border/40 overflow-y-auto max-h-[30vh] shrink-0">
         <h1 className="text-lg md:text-xl font-mono text-primary mb-3">
           {stepTitle}
         </h1>

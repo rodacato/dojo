@@ -74,7 +74,7 @@ export function ScrollPlayerPage() {
   const completedCount = completedSteps.length
 
   return (
-    <div className="h-screen bg-page flex flex-col overflow-hidden">
+    <div className="h-[100dvh] bg-page flex flex-col overflow-hidden">
       {/* Top bar — 56px, mono caps progress */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <Link

@@ -22,7 +22,7 @@ export function ReadInlineStep({ step, isCompleted, onMarkComplete, onAdvance }:
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
       {segments.map((segment, i) => (
         <Fragment key={i}>
           {segment.prose.trim() && <MarkdownContent content={segment.prose} />}

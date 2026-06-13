@@ -191,7 +191,7 @@ function TabButton({
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`px-3 py-1.5 text-xs font-mono transition-colors border-b-2 -mb-px ${
+      className={`px-3.5 py-2.5 text-xs font-mono transition-colors border-b-2 -mb-px ${
         active
           ? 'text-primary border-accent'
           : disabled
