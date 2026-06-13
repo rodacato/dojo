@@ -67,6 +67,11 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
       SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
+      # deploy.api.yml interpolates ENV["SENTRY_RELEASE"] via ERB; missing it
+      # fails kamal's config validation with "should be a string" even though
+      # this job doesn't ship a new release. Use the workflow SHA as a stable
+      # placeholder so the parse succeeds.
+      SENTRY_RELEASE: ${{ github.sha }}
     steps:
       - uses: actions/checkout@v4
 
