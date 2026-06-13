@@ -16,6 +16,7 @@ import { adminScrollsRoutes } from './routes/admin-scrolls'
 import { adminErrorsRoutes } from './routes/admin-errors'
 import { adminPistonRoutes } from './routes/admin-piston'
 import { adminHealthRoutes } from './routes/admin-health'
+import { cronPistonSmokeRoutes } from './routes/cron-piston-smoke'
 import { shareRoutes } from './routes/share'
 import { scrollRoutes } from './routes/scrolls'
 import { beltsRoutes } from './routes/belts'
@@ -61,6 +62,7 @@ export function createRouter() {
   app.route('/admin/errors', adminErrorsRoutes)
   app.route('/admin/piston', adminPistonRoutes)
   app.route('/admin/health', adminHealthRoutes)
+  app.route('/', cronPistonSmokeRoutes)
 
   app.onError((err, c) => {
     if (err instanceof HTTPException) return err.getResponse()

@@ -1,0 +1,41 @@
+name: Piston Execute Smoke
+
+# Synthetic end-to-end check of Piston: a real /api/v2/execute per language,
+# going through PistonAdapter.execute() — the same path scrolls take. Catches
+# what piston-liveness.yml misses: timeouts/caps misconfigured, runtime
+# missing for a specific language, or the API↔Piston payload contract drifting.
+# That gap is what hid the compile-timeout regression for hours: /health/piston
+# kept returning 200 while every Ruby/Rust/TS scroll was 400ing.
+#
+# Six languages × every 30 min × ~30s wall-clock = cheap. Fails the run on
+# any per-language miss; GitHub emails the maintainer on red.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: Execute one hello-world per language
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Call /cron/piston-smoke
+        env:
+          API_URL: ${{ vars.API_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -uo pipefail
+          response=$(mktemp)
+          status=$(curl -sS -o "$response" -w '%{http_code}' --max-time 90 \
+            -X POST "$API_URL/cron/piston-smoke" \
+            -H "Authorization: Bearer $CRON_SECRET" || echo 000)
+          echo "status=$status"
+          echo "--- body ---"
+          cat "$response" 2>/dev/null || true
+          echo ""
+          if [ "$status" != "200" ]; then
+            echo "::error title=Piston execute smoke failed::endpoint returned $status — at least one language failed end-to-end. See body above for per-language detail."
+            exit 1
+          fi
