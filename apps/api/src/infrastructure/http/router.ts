@@ -14,6 +14,7 @@ import { profileRoutes } from './routes/profile'
 import { adminKatasRoutes } from './routes/admin-katas'
 import { adminScrollsRoutes } from './routes/admin-scrolls'
 import { adminErrorsRoutes } from './routes/admin-errors'
+import { adminPistonRoutes } from './routes/admin-piston'
 import { shareRoutes } from './routes/share'
 import { scrollRoutes } from './routes/scrolls'
 import { beltsRoutes } from './routes/belts'
@@ -57,6 +58,7 @@ export function createRouter() {
   app.route('/admin', adminKatasRoutes)
   app.route('/admin/scrolls', adminScrollsRoutes)
   app.route('/admin/errors', adminErrorsRoutes)
+  app.route('/admin/piston', adminPistonRoutes)
 
   app.onError((err, c) => {
     if (err instanceof HTTPException) return err.getResponse()

@@ -22,23 +22,20 @@ set -euo pipefail
 
 PISTON_URL="${PISTON_URL:-http://localhost:2000}"
 
-# Source of truth. Adding a runtime or a new version = edit this array
-# and re-run. Keep sorted by language for diff readability.
+# Source of truth lives in TypeScript:
+#   apps/api/src/infrastructure/execution/piston-runtimes.ts
+# The list below MUST stay byte-equivalent (language version, one per line);
+# piston-runtimes.parity.test.ts is the CI gate that asserts they match.
+# This script exists as the emergency fallback for when the API itself is
+# unreachable — the admin UI at /admin/scrolls is the normal path.
 #
-# Multi-version note (S022 §1.4): Python 3.10 is provisionally listed
-# alongside 3.12 because `match` pedagogy wants 3.10+ and the course
-# framework targets 3.11+. TypeScript / Go / Ruby / Rust stay single-
-# version until a concrete use case asks for more.
+# Adding a runtime or version: edit the TS const first, then mirror here,
+# then run `pnpm test --filter=api` to confirm parity. Keep sorted by
+# language for diff readability.
 #
-# Runtime bump status (S022 close): blocked upstream. The pinned
-# engineer-man/piston image only ships these versions:
-#   - go     → 1.16.2 only
-#   - ruby   → 2.5.1, 3.0.1 (no 3.x ≥ 3.1)
-#   - rust   → up to 1.68.2
-# Bumping to current stable (Go 1.23 / Ruby 3.3 / Rust 1.83) requires
-# either a fork that maintains newer runtimes or building our own image
-# layer with extra packages. Tracked in the backlog as a conditional
-# item — re-evaluate when a learner actually trips a missing-feature gap.
+# Runtime bump status: blocked upstream — engineer-man/piston ships only
+# go=1.16.2, ruby up to 3.0.1, rust up to 1.68.2. Bumping requires either
+# a maintained fork or a custom image layer (tracked in the backlog).
 RUNTIMES=(
   "go 1.16.2"
   "python 3.10.0"

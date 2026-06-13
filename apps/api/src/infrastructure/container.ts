@@ -34,6 +34,7 @@ import { PostgresScrollProgressRepository } from './persistence/PostgresScrollPr
 import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
 import { ExecutionQueue } from './execution/ExecutionQueue'
+import { PistonRuntimeProvisioner } from './execution/PistonRuntimeProvisioner'
 import type { CodeExecutionPort, LLMPort } from '../domain/practice/ports'
 import type { ErrorReporterPort } from './observability/ports'
 import { ConsoleErrorReporter } from './observability/ConsoleErrorReporter'
@@ -72,6 +73,8 @@ export const executionQueue = new ExecutionQueue(
   createExecutionAdapter(),
   config.PISTON_MAX_CONCURRENT,
 )
+
+export const pistonRuntimeProvisioner = new PistonRuntimeProvisioner(config.PISTON_URL)
 
 // Environments we never want to emit to Sentry even if a DSN is present.
 // Prevents a copied prod `.env` from pumping dev noise into the Sentry

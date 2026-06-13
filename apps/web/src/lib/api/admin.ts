@@ -114,6 +114,14 @@ export const admin = {
   wipeScrollContent: (id: string) =>
     request<{ ok: boolean }>(`/admin/scrolls/${id}/wipe`, { method: 'POST' }),
 
+  reprovisionPiston: () =>
+    request<{
+      installed: Array<{ language: string; version: string }>
+      skipped: Array<{ language: string; version: string }>
+      failed: Array<{ language: string; version: string; error: string }>
+      runtimes: Array<{ language: string; version: string }>
+    }>('/admin/piston/reprovision', { method: 'POST' }),
+
   getErrors: (params: { source?: 'api' | 'web'; status?: number; limit?: number; offset?: number } = {}) => {
     const qs = new URLSearchParams()
     if (params.source) qs.set('source', params.source)
