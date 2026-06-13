@@ -84,6 +84,18 @@ accessories:
     # the digest guards against silent upstream updates breaking prod again.
     image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
     host: <%= ENV["HOST_IP"] %>
+    env:
+      clear:
+        # Server-side caps on the per-request timeouts. Piston ships defaults
+        # of 3000ms/10000ms and 400s any execute over them, regardless of how
+        # long the run/compile actually takes (parameter validation, not real
+        # timing). Our API sends 8000/30000 from config.ts; the accessory has
+        # to allow at least as much. Verified the pinned digest reads these
+        # via `docker run --rm -e PISTON_RUN_TIMEOUT=8000 ... node -e
+        # 'require("nocamel"); console.log(require("./src/config").run_timeout)'`.
+        # Keep in sync with apps/api/src/config.ts.
+        PISTON_RUN_TIMEOUT: '8000'
+        PISTON_COMPILE_TIMEOUT: '30000'
     # The image's entrypoint does `cd /sys/fs/cgroup && mkdir isolate/` to
     # build the cgroup subtree for the sandbox. With `cgroupns: host` that
     # subtree lives on the HOST's cgroup tree — not in the container's
