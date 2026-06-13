@@ -92,6 +92,21 @@ jobs:
       - name: Run kamal ${{ env.ACTION }}
         run: kamal "$ACTION" --config-file config/deploy.api.yml
 
+      # `kamal accessory boot` above is no-op if the accessory is already running,
+      # so it does NOT pick up changes to env / cmd / options in deploy.api.yml.
+      # `kamal accessory reboot` does stop+rm+run, which is the only way to apply
+      # accessory config drift without manual intervention. We always reboot Piston
+      # on deploy because it's the accessory whose config changes most often
+      # (timeouts, runtime list) — db is left alone because its config rarely
+      # moves and a reboot of postgres mid-deploy is more disruptive than helpful.
+      #
+      # Cost: ~30s window where executes fail with sandbox-unavailable. Acceptable
+      # given low deploy frequency. The persisted `dojo-piston-packages` volume
+      # is unaffected, so installed runtimes survive.
+      - name: Reboot Piston to pick up accessory config changes
+        if: env.ACTION != 'setup'
+        run: printf 'y\n' | kamal accessory reboot piston --config-file config/deploy.api.yml
+
   deploy-web:
     name: Deploy web (${{ inputs.action || 'deploy' }})
     needs: deploy-api
