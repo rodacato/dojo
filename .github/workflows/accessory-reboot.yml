@@ -85,4 +85,7 @@ jobs:
         run: ssh-keyscan ${{ vars.HOST_IP }} >> ~/.ssh/known_hosts
 
       - name: Reboot ${{ inputs.accessory }}
-        run: kamal accessory reboot "${{ inputs.accessory }}" --config-file config/deploy.api.yml -y
+        # kamal v2.7 does not wire --confirmed/-y on `accessory reboot`
+        # (Thor parses it as a second positional NAME). Pipe a 'y' to its
+        # confirmation prompt instead — works across kamal versions.
+        run: printf 'y\n' | kamal accessory reboot "${{ inputs.accessory }}" --config-file config/deploy.api.yml
