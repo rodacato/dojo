@@ -178,6 +178,10 @@ export interface StepDTO {
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  // Tier-ordered hints surfaced progressively on repeated failure: hints[0] on
+  // the first failure, hints[1] (a stronger nudge) on the second. Falls back to
+  // [hint] for steps authored before tiered hints. Null when none are authored.
+  hints: string[] | null
   // Variant-shaped data for Tier 2 step types and step variants.
   // Discriminated by structural fields — use isPredictData / isPlaygroundData
   // to narrow. Null for plain kata/read steps without a variant.

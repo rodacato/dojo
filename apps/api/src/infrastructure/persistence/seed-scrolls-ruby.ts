@@ -261,11 +261,11 @@ const STEP_1_3 = {
   order: 3,
   type: 'kata' as const,
   title: 'safe_call(obj, method_name) — ask before you tell',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Implement \`safe_call(obj, method_name)\` that returns the result of calling \`method_name\` on \`obj\` if \`obj\` responds to it, or \`nil\` if it doesn't.
+\`safe_call(obj, method_name)\` should return the result of calling \`method_name\` on \`obj\` when \`obj\` responds to it, or \`nil\` when it doesn't — and it should **never raise**.
 
-This is the Ruby idiom for "ask before you tell" — check that an object handles a message before sending it, instead of catching \`NoMethodError\` after the fact.
+The implementation below looks reasonable: it sends the message and returns the result. It even passes three of the five examples. But on the two cases where the object doesn't respond to the method, it raises \`NoMethodError\` instead of returning \`nil\`. **Fix it** so every example passes.
 
 ## Examples
 
@@ -277,9 +277,9 @@ safe_call(42, :nope)         # => nil       (Integer has no method :nope)
 safe_call(nil, :to_s)        # => ""        (NilClass#to_s exists, returns "")
 \`\`\`
 
-You'll use exactly two methods from \`Object\`: \`respond_to?\` and \`send\`. Both work on any object, including \`nil\`.`,
+This is the Ruby idiom for "ask before you tell" — check that an object handles a message *before* sending it, instead of letting \`NoMethodError\` blow up after the fact.`,
   starterCode: `def safe_call(obj, method_name)
-  # Your code here.
+  obj.send(method_name)
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
@@ -303,7 +303,11 @@ _t('calls the method on nil when nil DOES respond to it') do
   _eq safe_call(nil, :to_s), ""
 end
 ${RB_HARNESS_FOOTER}`,
-  hint: 'Two `Object` methods get you there. One asks "does this object handle this message?" — its name is a yes/no question. The other actually sends the message — its name is what you call the action ("sending a message to an object").',
+  hint: null,
+  hints: [
+    'Sending a message an object doesn\'t understand raises `NoMethodError`. "Ask before you tell" means checking first. Which `Object` method answers, as a yes/no question, whether an object handles a given message?',
+    'Guard the `send` with `respond_to?(method_name)`: if the object responds, send the message; otherwise return `nil`.',
+  ],
   solution: `def safe_call(obj, method_name)
   obj.respond_to?(method_name) ? obj.send(method_name) : nil
 end`,
@@ -547,7 +551,11 @@ const STEP_0_1 = {
   order: 1,
   type: 'read' as const,
   title: "What Ruby is for (and what it isn't)",
-  instruction: `## Why this matters
+  instruction: `## What this is
+
+A **crash course, not a tutorial.** It assumes you already program in another language and have met Ruby's basic syntax somewhere — a video, the docs, a coworker's PR. You're here to *practice under pressure*, not to be walked through "what a variable is". Six lessons, ~90 minutes, no hand-holding. Some katas hand you plausible-but-wrong code to fix; others ask you to write from scratch. Either way, the tests are the judge — and when you fail twice, the hints sharpen, but the answer stays yours to earn.
+
+## Why this matters
 
 Before you spend 100 minutes on syntax, you need to know whether Ruby is worth your Friday. This step locates Ruby on your internal map: where it shines, where it doesn't, who maintains it, what version family to learn. The kind of orientation you'd normally cobble together from five browser tabs and a Hacker News thread.
 
@@ -788,11 +796,11 @@ const STEP_2_2 = {
   order: 2,
   type: 'kata' as const,
   title: 'lookup(records, name) — Hash#fetch with a sensible default',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Implement \`lookup(records, name)\` that takes a Hash of records (symbol keys, hash values) and returns the record for \`name\` or the string \`"unknown person"\` if the name isn't a key.
+\`lookup(records, name)\` takes a Hash of records (symbol keys, hash values) and returns the record for \`name\`, or the string \`"unknown person"\` if the name isn't a key.
 
-The point of this kata isn't "use a default value" — it's to force you to use \`Hash#fetch\` with a block instead of \`records[name] || "unknown person"\`. The tests include a record explicitly set to \`nil\` to make the \`|| "unknown"\` shortcut give the wrong answer.
+The implementation below uses the \`||\` fallback — the reflex every language teaches. It passes the obvious cases. But it has a silent corruption bug: when a key is **present with a \`nil\` value**, \`||\` treats \`nil\` as "missing" and wrongly returns \`"unknown person"\`. **Fix it** so a present-but-\`nil\` value comes back as \`nil\`.
 
 ## Examples
 
@@ -806,18 +814,16 @@ lookup(people, :ada)      # => { age: 30, role: "scientist" }
 lookup(people, :missing)  # => "unknown person"
 \`\`\`
 
-## The trap (which the tests catch)
+## The trap (which the third test catches)
 
 \`\`\`ruby
 records = { ghost: nil }
 lookup(records, :ghost)   # MUST return nil, NOT "unknown person"
 \`\`\`
 
-\`records[:ghost]\` is \`nil\`. \`records[:ghost] || "unknown person"\` would wrongly return \`"unknown person"\`. \`Hash#fetch\` distinguishes "key absent" from "key present with \`nil\` value".
-
-Don't take the trap on faith: submit \`records[name] || "unknown person"\` first and watch the third test fail. *Then* write the \`fetch\` form.`,
+\`records[:ghost]\` is \`nil\`. \`records[:ghost] || "unknown person"\` wrongly returns \`"unknown person"\`. You need a method that distinguishes "key absent" from "key present with a \`nil\` value".`,
   starterCode: `def lookup(records, name)
-  # Your code here.
+  records[name] || "unknown person"
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
@@ -839,7 +845,11 @@ _t('returns nil (not the default) when the key is present and value is nil') do
   _eq lookup(records, :ghost), nil
 end
 ${RB_HARNESS_FOOTER}`,
-  hint: '`Hash#fetch` takes two distinct shapes: `h.fetch(key)` raises `KeyError` if absent, and `h.fetch(key) { ... }` falls back to the block on absent. The block is only evaluated on the miss path — so it\'s safe to put expensive defaults there.',
+  hint: null,
+  hints: [
+    'The `||` fallback can\'t tell "key absent" from "key present but `nil`" — both are falsy, so both take the fallback. Which `Hash` method treats only a genuinely-absent key as the miss?',
+    '`Hash#fetch` with a block: `records.fetch(name) { "unknown person" }`. The block runs only when the key is truly absent — a present `nil` value is returned as-is.',
+  ],
   solution: `def lookup(records, name)
   records.fetch(name) { "unknown person" }
 end`,
@@ -1118,9 +1128,9 @@ const STEP_4_3 = {
   order: 3,
   type: 'kata' as const,
   title: 'classify(x) — dispatch on class with case/when',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Implement \`classify(x)\` that returns a String describing the class of \`x\` using \`case/when\` dispatch. The exact strings:
+\`classify(x)\` should return a String describing the class of \`x\` using \`case/when\` dispatch:
 
 - \`Integer\` → \`"number"\`
 - \`String\` → \`"text"\`
@@ -1128,6 +1138,8 @@ Implement \`classify(x)\` that returns a String describing the class of \`x\` us
 - \`Hash\` → \`"map"\`
 - \`Symbol\` → \`"label"\`
 - anything else → \`"other"\`
+
+The implementation below dispatches on \`x.class\` — the reflex you'd bring from most languages. But it returns \`"other"\` for **everything**, even \`42\`. The \`else\`-only cases (Float, nil, true) pass by accident; the five real cases all fail. **Fix it** so each type returns its label.
 
 ## Example
 
@@ -1141,9 +1153,16 @@ classify(3.14)       # => "other"   (Float, not Integer)
 classify(nil)        # => "other"
 \`\`\`
 
-The point of this kata is to use \`case/when Class\` directly — which works because \`===\` on a class checks \`is_a?\`. You should not write \`case x.class\` (that's a different idiom, also valid, but it doesn't exercise the \`Class === instance\` rule).`,
+Why does \`case x.class\` fail? \`when Integer\` matches via \`Integer === <value>\`. When the value is \`x.class\` (itself a class like \`Integer\`), \`Integer === Integer\` is \`false\` — \`Integer\` is an instance of \`Class\`, not of itself. So nothing matches and every value falls to \`else\`.`,
   starterCode: `def classify(x)
-  # Your code here.
+  case x.class
+  when Integer then "number"
+  when String  then "text"
+  when Array   then "list"
+  when Hash    then "map"
+  when Symbol  then "label"
+  else              "other"
+  end
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
@@ -1156,7 +1175,11 @@ _t('Float is "other"')    { _eq classify(3.14), "other" }
 _t('nil is "other"')      { _eq classify(nil), "other" }
 _t('true is "other"')     { _eq classify(true), "other" }
 ${RB_HARNESS_FOOTER}`,
-  hint: '`case x` with `when ClassName` clauses works directly — no `x.class` needed in the `case` head. The `else` clause handles "everything not matched above".',
+  hint: null,
+  hints: [
+    '`case x.class` compares the *class object* against each `when` with `===`, and `Integer === Integer` is `false` — so nothing matches. What belongs in the `case` head so that `when Integer` tests an *instance* instead of a class?',
+    'Drop the `.class`: `case x`. Now `when Integer` works because `Integer === 42` is `true` (`Class#===` checks `is_a?`).',
+  ],
   solution: `def classify(x)
   case x
   when Integer then "number"
@@ -1887,9 +1910,11 @@ const STEP_BLOCKS_3 = {
   order: 3,
   type: 'kata' as const,
   title: 'repeat(n) — invoke the block n times',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Implement \`repeat(n)\` that invokes the block passed to it \`n\` times. The block's return value doesn't matter; what matters is that it's called the right number of times.
+\`repeat(n)\` should invoke the block passed to it \`n\` times. The block's return value doesn't matter; what matters is that it's called the right number of times.
+
+The implementation below reaches for \`Integer#times\` — the right tool. But the block you pass to \`repeat\` is never actually invoked, so the counter never moves. \`repeat(0)\` happens to pass (zero calls is zero calls), but \`repeat(3)\` and \`repeat(5)\` leave the counter at 0. **Fix it** so the block runs \`n\` times.
 
 ## Examples
 
@@ -1902,9 +1927,9 @@ repeat(0) { raise "shouldn't be called" }
 # does not raise — the block was never invoked
 \`\`\`
 
-The idiomatic solution is a single line. Think Ruby, not C.`,
+The fix is a single keyword. Think about what makes a method run the block it was handed.`,
   starterCode: `def repeat(n)
-  # Your code here.
+  n.times { }
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
@@ -1926,7 +1951,11 @@ _t('calls the block 5 times') do
   _eq counter, 5
 end
 ${RB_HARNESS_FOOTER}`,
-  hint: 'Think about which object already knows how to iterate N times. In Ruby, integers aren\'t a primitive type — they\'re objects with methods. Which of those methods invokes a block?',
+  hint: null,
+  hints: [
+    'A method doesn\'t run the block you pass it automatically — you have to invoke it. The `times` block runs `n` times, but right now its body is empty. What keyword hands control to the block that was given to `repeat`?',
+    'Inside the `times` block, call `yield` on each pass — that invokes the block handed to `repeat`.',
+  ],
   solution: `def repeat(n)
   n.times { yield }
 end`,

@@ -134,18 +134,25 @@ instruction: |
   <30-150 words. States the contract: what the function takes, what it returns,
   what edge cases matter. No example output here — the tests carry that.>
 starter_code: |
-  <real scaffold — signature + imports + a single placeholder comment.
-   Must compile / parse as-is. Never an empty file.>
+  <EITHER a real scaffold (signature + imports + a single placeholder comment —
+   must compile/parse as-is, never an empty file)
+   OR — broken→fix shape — plausible-but-wrong code the learner debugs, when the
+   planted bug IS the misconception this kata targets and the fix teaches the
+   intended idiom. If the natural bug-fix leads away from the idiom, use a blank
+   scaffold instead. See INTERACTIVITY-PATTERNS.md §"Broken→fix katas".>
 test_code: |
   <deterministic; uses the language's stdlib test harness; test names are
    sentences ("returns the empty string for an empty array"); failure messages
    quote actual values — see [`README.md`](README.md) §5.2.>
-hints:                                   # 1-3 entries, concept-level
-  - <hint #1 — names the concept the learner is missing, not the line to type>
-  - <hint #2 — slightly more specific>
-  - <hint #3 — only if 2 was not enough; never gives away the answer>
+hints:                                   # tier-ordered; ships as StepDTO.hints
+  - <tier 1 — names the concept the learner is missing, not the identifier to type.
+     Auto-revealed on the learner's FIRST failed run.>
+  - <tier 2 — the last nudge before the (still gated) solution. May name the
+     method/operator, but must not write the full solving expression. Revealed on
+     the SECOND failure. Omit for katas where one hint is enough.>
 solution: |
-  <reference implementation; hidden in the UI until the learner passes the tests>
+  <reference implementation; hidden in the UI until the learner passes the tests
+   — tiered hints escalate on failure, the solution does not.>
 ```
 
 ### `challenge`

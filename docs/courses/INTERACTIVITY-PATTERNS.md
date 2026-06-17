@@ -33,6 +33,20 @@ These types are part of the live schema. The catalog and authoring contract for 
 | **`exercise`** | The dominant exercise format — one behavior per step | Same as `code`; the type tag distinguishes pedagogical role |
 | **`challenge`** | Stretch goal at the end of a lesson | Same surface as `exercise` with no hints by default |
 
+#### Broken→fix katas (a usage pattern, not a new type)
+
+A `code`/`exercise`/`kata` step can ship `starterCode` that is **plausible-but-wrong** instead of a blank scaffold — the learner debugs working-looking code rather than writing from a clean slate (the Rustlings shape). This needs no new step type or schema: it is `starterCode` + a `testCode` whose assertions fail on the planted bug. Precedent: the `debugging` category in `apps/api/.../katas/debugging.ts` (broken starter + descriptive assert messages + sensei `variations` that judge root-cause reasoning).
+
+The bar — both must hold, or keep the kata write-from-scratch:
+1. **The bug embodies the misconception the kata targets** (e.g. a polyglot dispatching on `x.class`, or `||` swallowing a present-`nil`).
+2. **Fixing it teaches the intended idiom.** If the natural fix leads *away* from the idiom (correcting an off-by-one in a hand-rolled loop instead of reaching for the stdlib method), a blank slate teaches better. A broken→fix that fights the lesson is worse than no conversion.
+
+Do not convert a whole scroll to broken→fix — the format mix (predict / write-from-scratch / broken→fix / playground / challenge) is a feature. Rustlings is monotone because it is all fill-the-blank; don't copy that.
+
+#### Progressive hint reveal
+
+Kata steps may carry `hints: string[]` (tier-ordered) instead of a single `hint`. The player tracks an **ephemeral, client-only** failure count and reveals tiers progressively: tier 1 auto-opens on the first failed run, tier 2 on the second. The failure count is not persisted and the reference `solution` stays gated post-pass — escalating hints reduce frustration without surrendering the answer (the brand rule: no feature softens the evaluation). `hints` falls back to `[hint]` for steps with only the legacy single hint. Tier-discipline lives in each curriculum's hint section (e.g. `curricula/ruby/ruby.md` §2.4): tier 1 never names the solving identifier; tier 2 may name it but not write the full expression.
+
 ### Tier 2 — proposed (Sprint 023+ decision)
 
 These types are pedagogical bets. Each must justify its authoring cost and its implementation cost before it ships. Two-week panel review with Elif (S5) + Valentina (S2) + Maya (S11) is the contract.

@@ -18,6 +18,7 @@ type StepRow = {
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  hints: string[] | null
   solution: string | null
   alternativeApproach: string | null
   data: unknown
@@ -122,6 +123,7 @@ export class PostgresScrollRepository implements ScrollRepositoryPort {
       starterCode: row.starterCode,
       testCode: row.testCode,
       hint: row.hint,
+      hints: (row.hints ?? null) as string[] | null,
       solution: row.solution,
       alternativeApproach: row.alternativeApproach,
       data: (row.data ?? null) as PredictData | null,

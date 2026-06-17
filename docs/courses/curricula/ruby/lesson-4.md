@@ -153,14 +153,14 @@ correct: a
 ## Step 4.3 — `kata` — `classify(x)`
 
 **Title:** `classify(x) — dispatch on class with case/when`
-**Type:** `kata`
+**Type:** `kata` (broken→fix shape — see `docs/courses/INTERACTIVITY-PATTERNS.md` §"Broken→fix katas")
 
 ### `instruction`
 
 ```markdown
-## Your task
+## Fix the bug
 
-Implement `classify(x)` that returns a String describing the class of `x` using `case/when` dispatch. The exact strings:
+`classify(x)` should return a String describing the class of `x` using `case/when` dispatch:
 
 - `Integer` → `"number"`
 - `String` → `"text"`
@@ -168,6 +168,8 @@ Implement `classify(x)` that returns a String describing the class of `x` using 
 - `Hash` → `"map"`
 - `Symbol` → `"label"`
 - anything else → `"other"`
+
+The implementation below dispatches on `x.class` — the reflex you'd bring from most languages. But it returns `"other"` for **everything**, even `42`. The `else`-only cases (Float, nil, true) pass by accident; the five real cases all fail. **Fix it** so each type returns its label.
 
 ## Example
 
@@ -181,14 +183,21 @@ classify(3.14)       # => "other"   (Float, not Integer)
 classify(nil)        # => "other"
 ```
 
-The point of this kata is to use `case/when Class` directly — which works because `===` on a class checks `is_a?`. You should not write `case x.class` (that's a different idiom, also valid, but it doesn't exercise the `Class === instance` rule).
+Why does `case x.class` fail? `when Integer` matches via `Integer === <value>`. When the value is `x.class` (itself a class like `Integer`), `Integer === Integer` is `false` — `Integer` is an instance of `Class`, not of itself. So nothing matches and every value falls to `else`.
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: dispatches on `x.class`, so nothing matches)
 
 ```ruby
 def classify(x)
-  # Your code here.
+  case x.class
+  when Integer then "number"
+  when String  then "text"
+  when Array   then "list"
+  when Hash    then "map"
+  when Symbol  then "label"
+  else              "other"
+  end
 end
 ```
 
@@ -205,9 +214,11 @@ _t('nil is "other"')      { _eq classify(nil), "other" }
 _t('true is "other"')     { _eq classify(true), "other" }
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
-> `case x` with `when ClassName` clauses works directly — no `x.class` needed in the `case` head. The `else` clause handles "everything not matched above".
+> **Tier 1** (on first failure): `case x.class` compares the *class object* against each `when` with `===`, and `Integer === Integer` is `false` — so nothing matches. What belongs in the `case` head so that `when Integer` tests an *instance* instead of a class?
+>
+> **Tier 2** (on second failure): Drop the `.class`: `case x`. Now `when Integer` works because `Integer === 42` is `true` (`Class#===` checks `is_a?`).
 
 ### `solution`
 

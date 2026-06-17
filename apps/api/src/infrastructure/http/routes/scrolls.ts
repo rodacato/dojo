@@ -79,6 +79,7 @@ scrollRoutes.get('/scrolls/:slug', optionalAuth, async (c) => {
           starterCode: s.starterCode,
           testCode: s.testCode,
           hint: s.hint,
+          hints: s.hints ?? null,
           data: s.data,
         })),
       })),

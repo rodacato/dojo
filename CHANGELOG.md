@@ -4,6 +4,18 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 029 — broken→fix katas + progressive hints (2026-06-17)
+**Phase 1 — Alpha**
+
+Triggered by an honest gut-check: the courses felt "boring, too much text, no felt learning," and the instinct was to gamify with a 3D engine. Wrong fix — that competes with YouTube on production, the one axis a solo author loses. The real gap was the *interaction shape*: katas were write-from-scratch over a blank scaffold, never "debug plausible code." So two format changes, scoped to the course (Piston) surface, with the sensei deliberately left to the kata side (cost + a clean two-mode story).
+
+- **Broken→fix katas (a usage pattern, not a new step type).** A kata can ship plausible-but-wrong `starterCode` to debug. Adopted only where the planted bug *is* the misconception and the fix teaches the idiom. Ruby: `repeat` (forgets to `yield`), `lookup` (`||` swallows present-`nil`), `safe_call` (sends without a `respond_to?` guard), `classify` (dispatches on `x.class`, so `Integer === Integer` is false). Audited and **kept write-from-scratch** where a bug would fight the lesson (`map_keys`, `summarize`, `tally_words`, `compare_views`, `tally_args`, `greet`) — the format mix is a feature, not a thing to homogenize.
+- **Progressive hint reveal.** New `hints: string[]` (tier-ordered) on kata steps; the player reveals tier 1 on the first failed run and tier 2 on the second, off an ephemeral client-side failure count. The reference `solution` stays gated post-pass — escalating hints, never the answer (the brand rule: no feature softens the evaluation). Rejected the original ask (reveal the solution after 2 fails) because it would relax the server `403` gate and reopen the leak it closes on purpose. New nullable `steps.hints jsonb` column; falls back to `[hint]`, so no existing step changes. See [ADR 023](docs/adr/023-progressive-hint-reveal.md).
+- **Crash-course contract made explicit.** Ruby Lesson 0 now opens with a "What this is" block — crash course, not tutorial; assumes you've met the syntax; the tests judge; hints sharpen on failure but the answer stays earned. Closes the "nobody tells you it's a crash course" gap without a new landing surface.
+- **The honest call on scope:** this is one Ruby experiment to *feel* whether debugging-as-learning lands, not a platform rebuild. Ruby stays `isPublic:false`; the metric is the author running it and judging "did I debug, or did I copy?"
+
+---
+
 ## Sprint 028 — Rust + TypeScript crash scrolls (2026-06-12)
 **Phase 1 — Alpha**
 

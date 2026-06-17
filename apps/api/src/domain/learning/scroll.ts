@@ -11,6 +11,9 @@ export interface Step {
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  // Tier-ordered hints revealed progressively on repeated failure. Optional
+  // because most steps carry none; the DTO coerces absence to null.
+  hints?: string[] | null
   solution: string | null
   alternativeApproach: string | null
   // Variant-shaped data — currently only used by `predict` steps.

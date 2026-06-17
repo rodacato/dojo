@@ -18,6 +18,10 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 ### `instruction` (markdown body)
 
 ```markdown
+## What this is
+
+A **crash course, not a tutorial.** It assumes you already program in another language and have met Ruby's basic syntax somewhere — a video, the docs, a coworker's PR. You're here to *practice under pressure*, not to be walked through "what a variable is". Six lessons, ~90 minutes, no hand-holding. Some katas hand you plausible-but-wrong code to fix; others ask you to write from scratch. Either way, the tests are the judge — and when you fail twice, the hints sharpen, but the answer stays yours to earn.
+
 ## Why this matters
 
 Before you spend 100 minutes on syntax, you need to know whether Ruby is worth your Friday. This step locates Ruby on your internal map: where it shines, where it doesn't, who maintains it, what version family to learn. The kind of orientation you'd normally cobble together from five browser tabs and a Hacker News thread.

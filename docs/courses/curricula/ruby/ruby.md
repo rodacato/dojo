@@ -94,6 +94,19 @@ Same rule for `instruction`: avoid "Pista: ..." lines that reveal the answer und
 
 This rule applies to all kata steps across Lessons 1-5. Authoring Lessons 2-5 against this gate is a precondition for their seeding.
 
+**Tiered hints (`hints: string[]`).** A kata may carry an ordered array of hints instead of a single `hint`. The player reveals them progressively: tier 1 on the first failed run, tier 2 on the second (see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Progressive hint reveal"). The discipline scales by tier:
+
+- **Tier 1** obeys the rule above verbatim — points at *where to look*, never names the identifier.
+- **Tier 2** is the last nudge before the (still gated) solution. It may name the method or operator, but must not write the full solving expression — leave the learner to assemble it.
+
+The reference `solution` stays gated until pass; tiered hints reduce frustration without surrendering it. `hints` falls back to `[hint]` for steps that carry only the legacy single hint, so unconverted katas need no change.
+
+### 2.4.1 Broken→fix katas
+
+Some katas hand the learner plausible-but-wrong `starterCode` to debug instead of a blank scaffold (the Rustlings shape; precedent: `apps/api/.../katas/debugging.ts`). Use it **only when the planted bug embodies the polyglot misconception the kata targets, and fixing it teaches the intended idiom.** If the natural bug-fix leads away from the idiom (e.g. correcting an off-by-one in a manual loop instead of reaching for `Integer#times`), keep the kata write-from-scratch — a broken→fix that fights the lesson is worse than a blank slate.
+
+Converted in this scroll (bug = the misconception): `repeat` (forgets to `yield` to the block), `lookup` (`||` can't tell absent from present-`nil`), `safe_call` (sends without a `respond_to?` guard), `classify` (dispatches on `x.class`, so `Integer === Integer` is false). Audited and **kept write-from-scratch** because no bug embodies the idiom without fighting it: `map_keys` (map-without-`to_h` bypasses `transform_keys(&block)`), `summarize` (four idioms — no single clean bug), `tally_words` (bug would hide `Array#tally`), `compare_views` (one-liner; pedagogy is in the test expectations), `tally_args`/`greet` (signature/splat mechanics). Don't homogenize — the format mix is a feature.
+
 ### 2.5 Footgun deferral discipline
 
 When a topic that belongs in a future deep-dive surfaces (e.g. `Proc.new { return 1 }` semantics, eigenclasses, `method_missing`), the scroll **names it explicitly** and points to the deep-dive — does not silently elide. This is the difference between honest crash and superficial cheat sheet.

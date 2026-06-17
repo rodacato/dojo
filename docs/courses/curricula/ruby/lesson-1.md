@@ -186,14 +186,16 @@ correct: a
 ## Step 1.3 — `kata` — `repeat(n) { ... }`
 
 **Title:** `repeat(n) — invoke the block n times`
-**Type:** `kata`
+**Type:** `kata` (broken→fix shape — see `docs/courses/INTERACTIVITY-PATTERNS.md` §"Broken→fix katas")
 
 ### `instruction`
 
 ```markdown
-## Your task
+## Fix the bug
 
 Implement `repeat(n)` that invokes the block passed to it `n` times. The block's return value doesn't matter; what matters is that it's called the right number of times.
+
+The implementation below reaches for `Integer#times` — the right tool. But the block you pass to `repeat` is never actually invoked, so the counter never moves. `repeat(0)` happens to pass (zero calls is zero calls), but `repeat(3)` and `repeat(5)` leave the counter at 0. **Fix it** so the block runs `n` times.
 
 ## Examples
 
@@ -206,14 +208,14 @@ repeat(0) { raise "shouldn't be called" }
 # does not raise — the block was never invoked
 ```
 
-The idiomatic solution is a single line. Think Ruby, not C.
+The fix is a single keyword. Think about what makes a method run the block it was handed.
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: uses `times` but never yields to the block)
 
 ```ruby
 def repeat(n)
-  # Your code here.
+  n.times { }
 end
 ```
 
@@ -239,9 +241,11 @@ _t('calls the block 5 times') do
 end
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
-> Think about which object already knows how to iterate N times. In Ruby, integers aren't a primitive type — they're objects with methods. Which of those methods invokes a block?
+> **Tier 1** (on first failure): A method doesn't run the block you pass it automatically — you have to invoke it. The `times` block runs `n` times, but right now its body is empty. What keyword hands control to the block that was given to `repeat`?
+>
+> **Tier 2** (on second failure): Inside the `times` block, call `yield` on each pass — that invokes the block handed to `repeat`.
 
 ### `solution`
 

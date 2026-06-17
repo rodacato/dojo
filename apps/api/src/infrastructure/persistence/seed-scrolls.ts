@@ -545,6 +545,8 @@ type StepSeed = {
   starterCode: string | null
   testCode: string | null
   hint: string | null
+  // Tier-ordered hints revealed progressively on repeated failure (StepDTO.hints).
+  hints?: string[] | null
   solution?: string | null
   alternativeApproach?: string | null
   // Variant-shaped JSONB payload — only set for `predict` steps today
@@ -615,6 +617,7 @@ async function seedOneScroll(
       .values({
         ...step,
         title: step.title ?? null,
+        hints: step.hints ?? null,
         solution: step.solution ?? null,
         alternativeApproach: step.alternativeApproach ?? null,
         data: step.data ?? null,
@@ -629,6 +632,7 @@ async function seedOneScroll(
           starterCode: step.starterCode,
           testCode: step.testCode,
           hint: step.hint,
+          hints: step.hints ?? null,
           solution: step.solution ?? null,
           alternativeApproach: step.alternativeApproach ?? null,
           data: step.data ?? null,

@@ -105,16 +105,16 @@ Cut from earlier drafts: a paragraph on `Array.new(n) { ... }` (deep enough that
 ## Step 2.2 — `kata` — `lookup(records, name)`
 
 **Title:** `lookup(records, name) — Hash#fetch with a sensible default`
-**Type:** `kata`
+**Type:** `kata` (broken→fix shape — see `docs/courses/INTERACTIVITY-PATTERNS.md` §"Broken→fix katas")
 
 ### `instruction`
 
 ```markdown
-## Your task
+## Fix the bug
 
-Implement `lookup(records, name)` that takes a Hash of records (symbol keys, hash values) and returns the record for `name` or the string `"unknown person"` if the name isn't a key.
+`lookup(records, name)` takes a Hash of records (symbol keys, hash values) and returns the record for `name`, or the string `"unknown person"` if the name isn't a key.
 
-The point of this kata isn't "use a default value" — it's to force you to use `Hash#fetch` with a block instead of `records[name] || "unknown person"`. The tests include a record explicitly set to `nil` to make the `|| "unknown"` shortcut give the wrong answer.
+The implementation below uses the `||` fallback — the reflex every language teaches. It passes the obvious cases. But it has a silent corruption bug: when a key is **present with a `nil` value**, `||` treats `nil` as "missing" and wrongly returns `"unknown person"`. **Fix it** so a present-but-`nil` value comes back as `nil`.
 
 ## Examples
 
@@ -128,21 +128,21 @@ lookup(people, :ada)      # => { age: 30, role: "scientist" }
 lookup(people, :missing)  # => "unknown person"
 ```
 
-## The trap (which the tests catch)
+## The trap (which the third test catches)
 
 ```ruby
 records = { ghost: nil }
 lookup(records, :ghost)   # MUST return nil, NOT "unknown person"
 ```
 
-`records[:ghost]` is `nil`. `records[:ghost] || "unknown person"` would wrongly return `"unknown person"`. `Hash#fetch` distinguishes "key absent" from "key present with `nil` value".
+`records[:ghost]` is `nil`. `records[:ghost] || "unknown person"` wrongly returns `"unknown person"`. You need a method that distinguishes "key absent" from "key present with a `nil` value".
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: `||` can't tell absent from present-`nil`)
 
 ```ruby
 def lookup(records, name)
-  # Your code here.
+  records[name] || "unknown person"
 end
 ```
 
@@ -168,9 +168,11 @@ _t('returns nil (not the default) when the key is present and value is nil') do
 end
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
-> `Hash#fetch` takes two distinct shapes: `h.fetch(key)` raises `KeyError` if absent, and `h.fetch(key) { ... }` falls back to the block on absent. The block is only evaluated on the miss path — so it's safe to put expensive defaults there.
+> **Tier 1** (on first failure): The `||` fallback can't tell "key absent" from "key present but `nil`" — both are falsy, so both take the fallback. Which `Hash` method treats only a genuinely-absent key as the miss?
+>
+> **Tier 2** (on second failure): `Hash#fetch` with a block: `records.fetch(name) { "unknown person" }`. The block runs only when the key is truly absent — a present `nil` value is returned as-is.
 
 ### `solution`
 

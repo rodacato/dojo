@@ -220,6 +220,7 @@ export const steps = pgTable('steps', {
   starterCode: text('starter_code'),
   testCode: text('test_code'),
   hint: text('hint'),
+  hints: jsonb('hints'), // string[] | null — tier-ordered hints revealed progressively on repeated failure
   solution: text('solution'),
   alternativeApproach: text('alternative_approach'),
   // Variant-shaped data for non-kata step types. Currently used by `predict`

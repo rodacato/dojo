@@ -187,6 +187,8 @@ Bug fixes from smoke go in their own commits, not bundled with the main pipeline
 - **Per-scroll authoring gates in §2 of the scroll spec** (stage 7). Each scroll defines its own gates; the *patterns* (paragraph-style test, hint-style discipline) reuse across scrolls but the *specific rules* vary.
 - **Parallel subagents for independent code generation** (stage 13). Wall-clock win when lessons don't cross-reference.
 - **Smoke between batches, not at the end** (stage D — learned from Ruby's anti-pattern).
+- **Broken→fix as a kata shape in the mix** (Sprint 029, [ADR 023](../adr/023-progressive-hint-reveal.md)). When choosing a kata's interaction, ask: would a *plausible-but-wrong* `starterCode` teach better than a blank scaffold? Adopt it only where the planted bug *is* the misconception the kata targets and the fix lands on the intended idiom — otherwise the off-the-shelf bug-fix pulls the learner away from the lesson (Ruby's `repeat` would have taught off-by-one-fixing instead of `yield`). Per scroll, mix shapes; never homogenize to all-fix. Spec + bar: [INTERACTIVITY-PATTERNS.md](INTERACTIVITY-PATTERNS.md) §"Broken→fix katas".
+- **Tiered hints for the harder katas** (Sprint 029). Author `hints: [tier1, tier2]` where one nudge isn't enough; tier 1 obeys the never-name-the-identifier rule, tier 2 may name it but not write the solving expression. Reserve for katas that bite — a one-step kata needs one hint. The reference solution stays gated post-pass; hints escalate, the answer doesn't.
 
 ## Patterns that were Ruby-specific (probably not reusable)
 

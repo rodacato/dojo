@@ -151,17 +151,17 @@ correct: b
 ## Step 3.3 — `kata` — `safe_call(obj, method_name)`
 
 **Title:** `safe_call(obj, method_name) — ask before you tell`
-**Type:** `kata`
+**Type:** `kata` (broken→fix shape — see `docs/courses/INTERACTIVITY-PATTERNS.md` §"Broken→fix katas")
 **Replaces:** the original `type_of` kata (which exercised only `.class.name` — too mechanical for an experienced dev).
 
 ### `instruction`
 
 ```markdown
-## Your task
+## Fix the bug
 
-Implement `safe_call(obj, method_name)` that returns the result of calling `method_name` on `obj` if `obj` responds to it, or `nil` if it doesn't.
+`safe_call(obj, method_name)` should return the result of calling `method_name` on `obj` when `obj` responds to it, or `nil` when it doesn't — and it should **never raise**.
 
-This is the Ruby idiom for "ask before you tell" — check that an object handles a message before sending it, instead of catching `NoMethodError` after the fact.
+The implementation below looks reasonable: it sends the message and returns the result. It even passes three of the five examples. But on the two cases where the object doesn't respond to the method, it raises `NoMethodError` instead of returning `nil`. **Fix it** so every example passes.
 
 ## Examples
 
@@ -173,14 +173,14 @@ safe_call(42, :nope)         # => nil       (Integer has no method :nope)
 safe_call(nil, :to_s)        # => ""        (NilClass#to_s exists, returns "")
 ```
 
-You'll use exactly two methods from `Object`: `respond_to?` and `send`. Both work on any object, including `nil`.
+This is the Ruby idiom for "ask before you tell" — check that an object handles a message *before* sending it, instead of letting `NoMethodError` blow up after the fact.
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: sends the message without checking first)
 
 ```ruby
 def safe_call(obj, method_name)
-  # Your code here.
+  obj.send(method_name)
 end
 ```
 
@@ -208,9 +208,11 @@ _t('calls the method on nil when nil DOES respond to it') do
 end
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
-> Two `Object` methods get you there. One asks "does this object handle this message?" — its name is a yes/no question. The other actually sends the message — its name is what you call the action ("sending a message to an object").
+> **Tier 1** (on first failure): Sending a message an object doesn't understand raises `NoMethodError`. "Ask before you tell" means checking first. Which `Object` method answers, as a yes/no question, whether an object handles a given message?
+>
+> **Tier 2** (on second failure): Guard the `send` with `respond_to?(method_name)`: if the object responds, send the message; otherwise return `nil`.
 
 ### `solution`
 

@@ -11,6 +11,7 @@ import { OutputPanel, type OutputTabId } from './OutputPanel'
 import { StatusChip, ExploredChip } from './verdict'
 import { useSolution } from './useSolution'
 import { useNudge, SenseiNudgePanel } from './SenseiNudge'
+import { resolveTieredHints, visibleHintTiers, HINT_TIER_LABELS } from './hintReveal'
 
 export function StepEditor({
   step,
@@ -25,6 +26,10 @@ export function StepEditor({
   const [result, setResult] = useState<ExecuteStepResponse | null>(null)
   const [tab, setTab] = useState<OutputTabId>('tests')
   const [showHint, setShowHint] = useState(false)
+  // Ephemeral, client-only. Drives progressive hint reveal: tier 1 on the first
+  // failure, tier 2 on the second. Not persisted — the solution gate stays
+  // post-pass (see useSolution). Reset on step change.
+  const [failCount, setFailCount] = useState(0)
 
   const isIframeLang = language === 'javascript-dom'
   // Playground variant: a kata with `data.kind === "playground"`. The backend
@@ -32,6 +37,7 @@ export function StepEditor({
   // experiences free exploration, not a graded exercise. See
   // docs/courses/curricula/ruby/ruby.md §2.3 for the local-experiment scope.
   const isPlayground = isPlaygroundData(step.data)
+  const tieredHints = resolveTieredHints(step.hints, step.hint)
   const stepTitle = extractStepTitle(step)
   // The markdown still contains the H1; strip it so it isn't rendered twice.
   const instructionBody = stripLeadingH1(step.instruction)
@@ -49,6 +55,7 @@ export function StepEditor({
     setCode(step.starterCode ?? '')
     setResult(null)
     setShowHint(false)
+    setFailCount(0)
     setTab('tests')
   }, [step.id, step.starterCode])
 
@@ -71,6 +78,13 @@ export function StepEditor({
       // behind the next step.
       if (res.passed && !isCompleted) {
         onMarkComplete()
+      } else if (!res.passed && res.errorKind !== 'sandbox' && !isPlayground) {
+        // A real failed attempt (wrong answer or learner-code error), not a
+        // network drop. Escalate the hint to reduce frustration without
+        // surrendering the rigor — auto-open tier 1 now; tier 2 follows on the
+        // next failure.
+        setFailCount((c) => c + 1)
+        if (tieredHints.length > 0) setShowHint(true)
       }
     } catch {
       setResult({
@@ -150,7 +164,7 @@ export function StepEditor({
                 {sensei.loading ? '⌛ Thinking…' : '🥋 Ask the sensei'}
               </button>
             )}
-            {step.hint && (
+            {tieredHints.length > 0 && (
               <button
                 onClick={() => setShowHint((v) => !v)}
                 className="text-xs font-mono text-muted hover:text-secondary transition-colors"
@@ -161,11 +175,18 @@ export function StepEditor({
           </div>
         </div>
 
-        {/* Hint panel */}
-        {showHint && step.hint && (
-          <div className="px-4 py-3 border-t border-border/40 bg-surface/40">
-            <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">hint</p>
-            <p className="text-sm text-secondary leading-relaxed">{step.hint}</p>
+        {/* Hint panel — tier 1 always when open; tier 2 unlocks after the
+            second failure. */}
+        {showHint && tieredHints.length > 0 && (
+          <div className="px-4 py-3 border-t border-border/40 bg-surface/40 space-y-3">
+            {visibleHintTiers(tieredHints, failCount).map((text, i) => (
+              <div key={i}>
+                <p className="text-xs font-mono text-muted uppercase tracking-wider mb-1">
+                  {HINT_TIER_LABELS[i] ?? 'hint'}
+                </p>
+                <p className="text-sm text-secondary leading-relaxed">{text}</p>
+              </div>
+            ))}
           </div>
         )}
 

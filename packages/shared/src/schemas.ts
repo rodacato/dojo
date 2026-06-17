@@ -166,6 +166,8 @@ export const stepDTOSchema = z.object({
   starterCode: z.string().nullable(),
   testCode: z.string().nullable(),
   hint: z.string().nullable(),
+  // Tier-ordered hints revealed progressively on repeated failure (see StepDTO).
+  hints: z.array(z.string()).nullable(),
   // Variant-shaped data for Tier 2 step types (predict; later trace, read+inline).
   // Null for kata/read/code/exercise/challenge. The renderer dispatches on
   // step.type and parses data against the corresponding variant schema
