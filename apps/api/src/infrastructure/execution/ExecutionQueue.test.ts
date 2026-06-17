@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { ExecutionQueue } from './ExecutionQueue'
 import type { CodeExecutionPort, ExecutionResult } from '../../domain/practice/ports'
 
-const ok: ExecutionResult = { stdout: 'ok', stderr: '', exitCode: 0, timedOut: false, executionTimeMs: 10 }
+const ok: ExecutionResult = { stdout: 'ok', stderr: '', exitCode: 0, timedOut: false, outputExceeded: false, runTimeoutMs: 8000, executionTimeMs: 10 }
 
 function mockExecutor(delayMs = 0): CodeExecutionPort {
   return {

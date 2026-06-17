@@ -1,13 +1,25 @@
 import { describe, expect, it, vi } from 'vitest'
 import { ExecuteStep } from './ExecuteStep'
 
-function port(result: Partial<{ stdout: string; stderr: string; exitCode: number; timedOut: boolean; executionTimeMs: number }>) {
+function port(
+  result: Partial<{
+    stdout: string
+    stderr: string
+    exitCode: number
+    timedOut: boolean
+    outputExceeded: boolean
+    runTimeoutMs: number
+    executionTimeMs: number
+  }>,
+) {
   return {
     execute: vi.fn().mockResolvedValue({
       stdout: '',
       stderr: '',
       exitCode: 0,
       timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs: 8000,
       executionTimeMs: 100,
       ...result,
     }),
@@ -75,6 +87,38 @@ describe('ExecuteStep', () => {
 
     expect(result.errorKind).toBe('timeout')
     expect(result.errorMessage).toContain('timed out')
+  })
+
+  it('timeout message reflects the actual runTimeoutMs, not a hardcoded 30s', async () => {
+    const executionPort = port({ timedOut: true, exitCode: 1, runTimeoutMs: 8000 })
+
+    const result = await new ExecuteStep({ executionPort }).execute({
+      code: 'while(true){}', testCode: '', language: 'typescript',
+    })
+
+    expect(result.output).toBe('Execution timed out (8s limit)')
+    expect(result.errorMessage).toContain('after 8 seconds')
+    expect(result.errorMessage).not.toContain('30')
+  })
+
+  it('reports output-exceeded errorKind when the runner killed the process for stdout/stderr cap', async () => {
+    const executionPort = port({
+      outputExceeded: true,
+      // Piston also flags SIGKILL when OL triggers; the adapter sets
+      // timedOut=false so output-exceeded wins classification.
+      timedOut: false,
+      exitCode: 1,
+      stderr: 'Sandbox keeper received fatal signal 6\n',
+    })
+
+    const result = await new ExecuteStep({ executionPort }).execute({
+      code: '1.upto(100000) { puts "x" }', testCode: '', language: 'ruby',
+    })
+
+    expect(result.passed).toBe(false)
+    expect(result.errorKind).toBe('output-exceeded')
+    expect(result.errorMessage).toContain('more output than')
+    expect(result.testResults).toHaveLength(0)
   })
 
   it('reports compile errorKind when exit != 0 and stderr mentions compile', async () => {

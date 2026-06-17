@@ -90,6 +90,19 @@ export interface ExecutionResult {
   readonly stderr: string
   readonly exitCode: number
   readonly timedOut: boolean
+  /**
+   * True when the runner killed the process for exceeding the per-stream
+   * stdout/stderr cap. Distinct from `timedOut` — both arrive as SIGKILL
+   * from Piston, but only output-exceeded means "raise the cap, the program
+   * was fine" whereas timeout means "the program is slow or stuck".
+   */
+  readonly outputExceeded: boolean
+  /**
+   * The wall-clock cap, in milliseconds, that was applied to the run phase
+   * for this execution. Surfaced so the application layer can show the
+   * learner the real limit it hit instead of a hardcoded constant.
+   */
+  readonly runTimeoutMs: number
   readonly executionTimeMs: number
 }
 

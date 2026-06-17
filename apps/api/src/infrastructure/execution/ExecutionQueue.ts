@@ -60,6 +60,8 @@ export class ExecutionQueue {
             stderr: 'Execution queue timeout — too many concurrent requests',
             exitCode: 1,
             timedOut: true,
+            outputExceeded: false,
+            runTimeoutMs: this.queueTimeoutMs,
             executionTimeMs: this.queueTimeoutMs,
           })
         }

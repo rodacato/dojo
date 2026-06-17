@@ -240,6 +240,7 @@ export type ExecuteErrorKind =
   | 'compile'   // TS/compiled language failed to compile
   | 'timeout'   // hit sandbox timeout
   | 'sandbox'   // infra failed (Piston unreachable, network, etc.)
+  | 'output-exceeded' // killed for printing past the runner's stdout/stderr cap
 
 export interface ExecuteStepResponse {
   passed: boolean

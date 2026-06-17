@@ -24,6 +24,7 @@ export class PistonAdapter implements CodeExecutionPort {
     version: string
     code: string
   }): Promise<ExecutionResult> {
+    const runTimeoutMs = PLAYGROUND_RUN_TIMEOUT_MS
     const langConfig = LANGUAGE_MAP[params.language.toLowerCase()]
     if (!langConfig) {
       return {
@@ -31,6 +32,8 @@ export class PistonAdapter implements CodeExecutionPort {
         stderr: `Unsupported language: ${params.language}`,
         exitCode: 1,
         timedOut: false,
+        outputExceeded: false,
+        runTimeoutMs,
         executionTimeMs: 0,
       }
     }
@@ -61,14 +64,13 @@ export class PistonAdapter implements CodeExecutionPort {
           stderr: formatPistonHttpError(response.status, response.statusText, body),
           exitCode: 1,
           timedOut: false,
+          outputExceeded: false,
+          runTimeoutMs,
           executionTimeMs: Date.now() - start,
         }
       }
 
-      const result = (await response.json()) as {
-        run: { stdout: string; stderr: string; code: number; signal: string | null }
-        compile?: { stdout: string; stderr: string; code: number }
-      }
+      const result = (await response.json()) as PistonExecuteResponse
 
       if (result.compile && result.compile.code !== 0) {
         return {
@@ -76,23 +78,21 @@ export class PistonAdapter implements CodeExecutionPort {
           stderr: scrubPistonNoise(result.compile.stderr),
           exitCode: result.compile.code ?? 1,
           timedOut: false,
+          outputExceeded: false,
+          runTimeoutMs,
           executionTimeMs: Date.now() - start,
         }
       }
 
-      return {
-        stdout: result.run.stdout,
-        stderr: result.run.stderr,
-        exitCode: result.run.code,
-        timedOut: result.run.signal === 'SIGKILL',
-        executionTimeMs: Date.now() - start,
-      }
+      return classifyRunResult(result.run, runTimeoutMs, Date.now() - start)
     } catch (err) {
       return {
         stdout: '',
         stderr: err instanceof Error ? err.message : 'Execution failed',
         exitCode: 1,
         timedOut: err instanceof Error && err.name === 'TimeoutError',
+        outputExceeded: false,
+        runTimeoutMs,
         executionTimeMs: Date.now() - start,
       }
     }
@@ -104,6 +104,7 @@ export class PistonAdapter implements CodeExecutionPort {
     testCode: string
     timeoutMs?: number
   }): Promise<ExecutionResult> {
+    const runTimeoutMs = config.PISTON_RUN_TIMEOUT
     const langConfig = LANGUAGE_MAP[params.language.toLowerCase()]
     if (!langConfig) {
       return {
@@ -111,6 +112,8 @@ export class PistonAdapter implements CodeExecutionPort {
         stderr: `Unsupported language: ${params.language}`,
         exitCode: 1,
         timedOut: false,
+        outputExceeded: false,
+        runTimeoutMs,
         executionTimeMs: 0,
       }
     }
@@ -162,14 +165,13 @@ export class PistonAdapter implements CodeExecutionPort {
           stderr: formatPistonHttpError(response.status, response.statusText, body),
           exitCode: 1,
           timedOut: false,
+          outputExceeded: false,
+          runTimeoutMs,
           executionTimeMs: Date.now() - start,
         }
       }
 
-      const result = (await response.json()) as {
-        run: { stdout: string; stderr: string; code: number; signal: string | null }
-        compile?: { stdout: string; stderr: string; code: number }
-      }
+      const result = (await response.json()) as PistonExecuteResponse
 
       // If compilation failed, return compile error
       if (result.compile && result.compile.code !== 0) {
@@ -177,29 +179,71 @@ export class PistonAdapter implements CodeExecutionPort {
           stdout: result.compile.stdout,
           stderr: scrubPistonNoise(result.compile.stderr),
           // Piston reports a null code when the compile stage dies on a
-          // signal (observed with rustc on signal 6); normalize to 1.
+          // signal (observed with rustc); normalize to 1.
           exitCode: result.compile.code ?? 1,
           timedOut: false,
+          outputExceeded: false,
+          runTimeoutMs,
           executionTimeMs: Date.now() - start,
         }
       }
 
-      return {
-        stdout: result.run.stdout,
-        stderr: result.run.stderr,
-        exitCode: result.run.code,
-        timedOut: result.run.signal === 'SIGKILL',
-        executionTimeMs: Date.now() - start,
-      }
+      return classifyRunResult(result.run, runTimeoutMs, Date.now() - start)
     } catch (err) {
       return {
         stdout: '',
         stderr: err instanceof Error ? err.message : 'Execution failed',
         exitCode: 1,
         timedOut: err instanceof Error && err.name === 'TimeoutError',
+        outputExceeded: false,
+        runTimeoutMs,
         executionTimeMs: Date.now() - start,
       }
     }
+  }
+}
+
+interface PistonRunResult {
+  stdout: string
+  stderr: string
+  code: number | null
+  signal: string | null
+  /**
+   * Piston `status` codes for the run stage that we react to:
+   *   "OL" — stdout length exceeded the per-stream cap
+   *   "EL" — stderr length exceeded the per-stream cap
+   *   "TO" — timeout hit
+   * Anything else (or `null`) means the run finished normally — the exit
+   * code or signal carry the result.
+   */
+  status?: string | null
+  message?: string | null
+}
+
+interface PistonExecuteResponse {
+  run: PistonRunResult
+  compile?: { stdout: string; stderr: string; code: number }
+}
+
+// Both adapter entrypoints classify the run result the same way; centralise
+// it so the OL/EL distinction lives in exactly one place. Without this the
+// caller can't tell "raise the output cap, the program was fine" from
+// "the program is slow or stuck" — both arrive as SIGKILL from Piston and
+// the dojo harness routinely overshoots the default 1024-byte cap.
+function classifyRunResult(
+  run: PistonRunResult,
+  runTimeoutMs: number,
+  executionTimeMs: number,
+): ExecutionResult {
+  const outputExceeded = run.status === 'OL' || run.status === 'EL'
+  return {
+    stdout: run.stdout,
+    stderr: run.stderr,
+    exitCode: run.code ?? 1,
+    timedOut: !outputExceeded && run.signal === 'SIGKILL',
+    outputExceeded,
+    runTimeoutMs,
+    executionTimeMs,
   }
 }
 

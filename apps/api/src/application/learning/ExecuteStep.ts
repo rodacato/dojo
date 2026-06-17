@@ -1,6 +1,11 @@
 import type { CodeExecutionPort, ExecutionResult } from '../../domain/practice/ports'
 
-export type ExecuteErrorKind = 'runtime' | 'compile' | 'timeout' | 'sandbox'
+export type ExecuteErrorKind =
+  | 'runtime'
+  | 'compile'
+  | 'timeout'
+  | 'sandbox'
+  | 'output-exceeded'
 
 export interface StepExecutionResult {
   passed: boolean
@@ -70,16 +75,35 @@ export class ExecuteStep {
       }
     }
 
-    if (r.timedOut) {
+    // Output-exceeded comes first because Piston returns SIGKILL for both
+    // output-exceeded and real timeouts, but they're different failure modes:
+    // output-exceeded means "the program ran fine, it just printed too much",
+    // timeout means "the program is stuck or too slow". Telling the learner
+    // "infinite loop" when their harness merely overshot the 64 KB cap is
+    // the bad UX we lived through during the Ruby capstone marathon.
+    if (r.outputExceeded) {
       return {
         passed: false,
-        output: 'Execution timed out (30s limit)',
+        output: 'Output exceeded the runner cap',
+        stdout,
+        stderr,
+        testResults: [],
+        errorKind: 'output-exceeded',
+        errorMessage:
+          'Your program printed more output than the runner allows. Trim debug prints, large arrays, or repeated logs.',
+      }
+    }
+
+    if (r.timedOut) {
+      const seconds = formatTimeoutSeconds(r.runTimeoutMs)
+      return {
+        passed: false,
+        output: `Execution timed out (${seconds}s limit)`,
         stdout,
         stderr,
         testResults: [],
         errorKind: 'timeout',
-        errorMessage:
-          'Execution timed out after 30 seconds — check for infinite loops or excessively slow work.',
+        errorMessage: `Execution timed out after ${seconds} seconds — check for infinite loops or excessively slow work.`,
       }
     }
 
@@ -121,6 +145,11 @@ export class ExecuteStep {
     const passed = r.exitCode === 0 && testResults.every((t) => t.passed)
     return { passed, output: combined, stdout, stderr, testResults }
   }
+}
+
+function formatTimeoutSeconds(ms: number): string {
+  const seconds = ms / 1000
+  return Number.isInteger(seconds) ? String(seconds) : seconds.toFixed(1)
 }
 
 interface StructuredResult {

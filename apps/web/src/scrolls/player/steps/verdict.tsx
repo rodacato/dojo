@@ -6,6 +6,7 @@ export function labelForErrorKind(kind: NonNullable<ExecuteStepResponse['errorKi
     case 'timeout': return 'Timed out'
     case 'compile': return 'Compile error'
     case 'runtime': return 'Runtime error'
+    case 'output-exceeded': return 'Too much output'
   }
 }
 

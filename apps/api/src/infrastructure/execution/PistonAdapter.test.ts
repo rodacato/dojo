@@ -111,7 +111,7 @@ describe('PistonAdapter', () => {
     mockFetch.mockResolvedValue({
       ok: true,
       json: async () => ({
-        run: { stdout: '', stderr: 'Killed', code: 137, signal: 'SIGKILL' },
+        run: { stdout: '', stderr: 'Killed', code: 137, signal: 'SIGKILL', status: 'TO' },
       }),
     })
 
@@ -122,6 +122,73 @@ describe('PistonAdapter', () => {
     })
 
     expect(result.timedOut).toBe(true)
+    expect(result.outputExceeded).toBe(false)
+  })
+
+  it('classifies status=OL (stdout cap) as outputExceeded, not timedOut', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        run: {
+          stdout: '',
+          stderr: 'Sandbox keeper received fatal signal 6\n',
+          code: null,
+          signal: 'SIGKILL',
+          status: 'OL',
+          message: 'stdout length exceeded',
+        },
+      }),
+    })
+
+    const result = await adapter.execute({
+      language: 'ruby',
+      code: '',
+      testCode: '1.upto(100000) { puts "x" }',
+    })
+
+    expect(result.outputExceeded).toBe(true)
+    expect(result.timedOut).toBe(false)
+  })
+
+  it('classifies status=EL (stderr cap) as outputExceeded', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        run: {
+          stdout: '',
+          stderr: 'Sandbox keeper received fatal signal 6\n',
+          code: null,
+          signal: 'SIGKILL',
+          status: 'EL',
+        },
+      }),
+    })
+
+    const result = await adapter.execute({
+      language: 'ruby',
+      code: '',
+      testCode: '',
+    })
+
+    expect(result.outputExceeded).toBe(true)
+    expect(result.timedOut).toBe(false)
+  })
+
+  it('surfaces runTimeoutMs from config so callers can format the cap correctly', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        run: { stdout: 'hi', stderr: '', code: 0, signal: null },
+      }),
+    })
+
+    const result = await adapter.execute({
+      language: 'python',
+      code: '',
+      testCode: 'print("hi")',
+    })
+
+    expect(result.runTimeoutMs).toBeGreaterThan(0)
   })
 
   it('handles Piston HTTP error', async () => {

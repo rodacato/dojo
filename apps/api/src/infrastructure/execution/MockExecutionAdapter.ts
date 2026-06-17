@@ -44,6 +44,8 @@ export class MockExecutionAdapter implements CodeExecutionPort {
       stderr: '',
       exitCode: passed ? 0 : 1,
       timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs: 8000,
       executionTimeMs: 200,
     }
   }
@@ -59,6 +61,8 @@ export class MockExecutionAdapter implements CodeExecutionPort {
       stderr: '',
       exitCode: 0,
       timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs: 3000,
       executionTimeMs: 50,
     }
   }
