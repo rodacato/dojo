@@ -193,13 +193,11 @@ _t("rejects a JSON primitive — right syntax, wrong shape", () => {
 // raw.id;
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.5)
 
-```markdown
-The compiler will not let you read `.id` off the value `parseJson` returns — it's `unknown`, and until you prove something about it, every property access is an error. So the work is the proof: a function whose return type *teaches the compiler something about its argument* when it returns true.
-
-Two things to prove inside it, in order: first that the value is even an object you can read keys off (a `null` slips past `typeof x === "object"` — handle it), then that the keys you need have the types `User` demands. The optional fields are only present sometimes — so check their type only *when they exist*.
-```
+> **Tier 1** (on first failure): The compiler will not let you read `.id` off the value `parseJson` returns — it's `unknown`, and until you prove something about it, every property access is an error. So the work is the proof: a function whose return type *teaches the compiler something about its argument* when it returns true.
+>
+> **Tier 2** (on second failure): Give `isUser` the return type `x is User` — that type-predicate shape is what narrows `unknown` to `User` at the call site. Inside, prove the shape in order: first that the value is a non-`null` object (a `null` slips past `typeof x === "object"`), then that `id` is a string, then that each optional field is a string *only when it's present*. `parseUser` then just calls the guard and returns the value or `"invalid user"`.
 
 ### `referenceSolution`
 
@@ -241,7 +239,7 @@ function parseUser(input: string): User | string {
 ### Authoring notes
 
 - **§2.2 no-flexing:** the un-typed version fails *at runtime* — without the guard, `parseUser` would hand a wrong-shaped object downstream typed as `User` and crash on first use. The `@ts-expect-error` illustrative line shows the compile-time half (the `unknown` refusal) without making the kata about `@ts-expect-error`.
-- **Hint discipline §2.5:** the hint points at "a function whose return type teaches the compiler about its argument" and at the order of checks (object-and-not-null, then key types, optionals-only-when-present) — it never writes `x is User`, never names the `as Record<string, unknown>` widening trick, never spells `typeof`.
+- **Hint discipline §2.5 / §2.4 tiers:** tier 1 points at "a function whose return type teaches the compiler about its argument" without naming the predicate. Tier 2 may name the `x is User` type-predicate shape and the order of checks (object-and-not-null, then `id`, then optionals-only-when-present), but writes no full solving line — it never spells the `as Record<string, unknown>` widening or the complete guard body.
 - **Retrieval:** `User` is the Lesson 2 fixture, read in the prelude without re-explanation (§3). The guard shape `(x: unknown) => x is User` is Lesson 3's user-defined-guard form, now exercised against a real boundary. This kata is direct rehearsal for the capstone's `isShipmentEvent`.
 - **Confidence slot:** 40%-stretch of the lesson (the only kata here). The JS orchestration is trivial; the guard's narrowing is the work.
 - Single-file, TS 5.0.3, `strict`. <!-- verify-at-smoke: tsc 5.0.3 -->

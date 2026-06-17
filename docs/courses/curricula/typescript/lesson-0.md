@@ -19,6 +19,10 @@ This file holds the **production prose** for each step's fields. All content and
 ### `instruction` (markdown body)
 
 ```markdown
+## What this is
+
+A **crash course, not a tutorial.** It's for JavaScript developers who already shipped "TS-strict" code without ever being sold the delta — you've met the syntax, you're here to *practice under pressure*, not to be walked through "what a type is". Six lessons, no hand-holding. The compiler is your **second reader**, and its errors *are* the curriculum: every kata is judged by the tests and the type-checker, not by a vibe. When you fail twice, the hints sharpen — but the answer stays yours to earn.
+
 ## Why this matters
 
 You've shipped "TS-strict" code for a year without anyone selling you the delta. Here it is, in one read: what the type system actually buys you, the one cost it charges, and the toolchain fact that decides whether you're getting the benefit at all.

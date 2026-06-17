@@ -231,11 +231,11 @@ _t("handles an empty array", () => {
 describe(true);
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.5)
 
-```markdown
-One of the three union members is not a primitive, and `typeof` will tell you something unhelpful about it — the same word it gives every object. Which built-in check, that you already use, distinguishes that one case? And here's the ordering trap: that check has to run *before* you treat `x` as a plain value, or the branch order narrows the array case away into the wrong arm.
-```
+> **Tier 1** (on first failure): One of the three union members is not a primitive, and `typeof` will tell you something unhelpful about it — the same word it gives every object. Which built-in check, that you already use, distinguishes that one case? And note the ordering trap: that check has to run *before* you treat `x` as a plain value.
+>
+> **Tier 2** (on second failure): Use `Array.isArray(x)` for the array case, and put it *first* — `typeof` can't separate an array from other objects. The `string` and `number` arms follow with `typeof`; narrowing subtracts as it goes, so the last `return` already has the remaining type.
 
 ### `referenceSolution`
 
@@ -340,11 +340,11 @@ _t("failed is terminal", () => {
 nextStates({ kind: "shipped" });
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.5)
 
-```markdown
-Two jobs. First, each missing variant is a shape with the shared `kind` tag plus one field that only that state needs — model `captured` and `failed` on the two the starter already shows you. Second, your `switch` default should be *unreachable*: there's a way to have the compiler **guarantee** that instead of you promising it at review. What type does a value have once the `switch` has ruled out every variant it can be — and what does passing that value to a function expecting exactly that type tell the compiler?
-```
+> **Tier 1** (on first failure): Two jobs. First, each missing variant is a shape with the shared `kind` tag plus one field that only that state needs — model `captured` and `failed` on the two the starter already shows you. Second, your `switch` default should be *unreachable*: there's a way to have the compiler **guarantee** that instead of you promising it at review. What type does a value have once the `switch` has ruled out every variant it can be?
+>
+> **Tier 2** (on second failure): Once every `case` returns, the value reaching `default` is `never` — and the starter already calls `assertNever(s)` there, which only compiles when its argument is `never`. So handle all four variants and the exhaustive switch type-checks itself; miss one and `assertNever` stops compiling and points at the gap. You still write the four `case` arms.
 
 ### `referenceSolution`
 
@@ -607,6 +607,6 @@ Per typescript.md §4 step 3.5 (C7): the "compiler hands you the checklist of th
 - [x] Kata 3.4 (gesture G3): starter gives 2 of 4 variants; learner writes the other 2 plus the `switch` closed with `assertNever` (provided in prelude); `PaymentStatus["kind"]` indexed-access glossed and deferred to L5; `@ts-expect-error` on a non-variant tag.
 - [x] Challenge 3.5: starter ships **three** pre-written consumers (`nextStates`, `labelFor`, `isTerminal`), **each** closed with `assertNever`; adding `disputed` breaks all three (sites the learner didn't write); ≤1 high-level hint; ~15 min budget stated; not a gate. The seed-time gate (all three must carry `assertNever`; smoke that the variant produces three errors, not one) is recorded per C7.
 - [x] Harness: `_t("sentence", () => { _eq(...) })` + `@ts-expect-error`/`Equal<>` for type assertions; `assertNever` in prelude; harness-lands-at-seed and key-presence-aware-`_eq` notes carried. All tests deterministic, user-facing names.
-- [x] Hint discipline (§2.5): 3.3's hint names neither `Array.isArray` nor the order outright as a solution; 3.4's hint points at "what type does a value have once every variant is ruled out" without naming `never` or `assertNever`; 3.5's single hint is high-level (let the compiler enumerate the sites).
+- [x] Hint discipline (§2.5 / §2.4 tiers): 3.3 and 3.4 carry tiered hints — tier 1 points at the gap (3.3: a non-primitive `typeof` can't separate, ordering matters; 3.4: "what type does a value have once every variant is ruled out") without naming the construct; tier 2 may name it (3.3: `Array.isArray` first; 3.4: `never`/`assertNever`) but writes no full solving line. 3.5's single hint is high-level (let the compiler enumerate the sites).
 - [x] All code TypeScript 5.0.3 under `strict`, single-file, nothing needing >5.0.3 (no `satisfies`, no `const` type params, no instantiation expressions in this lesson).
 - [x] Voice direct, "you", no celebration, no "simply/just/obviously", no emoji. Every word in English — titles, instructions, hints, options, feedback, comments.

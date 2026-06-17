@@ -172,27 +172,27 @@ correct: c
 ## Step 3.3 — `kata` — `safe_get(d, key, default)`
 
 **Title:** `safe_get — handle a missing key without LBYL`
-**Type:** `kata`
-**1-line task:** Return `d[key]` if it exists, else `default`. Forces the EAFP shape — but also shows that `dict.get` is the better answer when the operation IS the check.
+**Type:** `kata` (broken→fix shape — see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Broken→fix katas")
+**1-line task:** Fix `d.get(key) or default`, which swallows a present-but-falsy value. Forces the EAFP-vs-`dict.get` distinction and the `None`-vs-missing trap.
 
 ### `instruction` (markdown body)
 
 ```markdown
-## Your task
+## Fix the bug
 
-Build `safe_get(d, key, default=None)` that returns `d[key]` if the key exists, else returns `default`.
+`safe_get(d, key, default=None)` should return `d[key]` if the key exists, else return `default`.
 
-**Three solutions are correct.** The lesson is in noticing why one is best:
+The implementation below reaches for `dict.get` and an `or` fallback — the reflex that "feels" like a default. It passes the easy cases: key present returns the value, key absent returns the default. But it has a silent bug on a **present-but-falsy value**: when the key exists with value `None` (or `0`, or `""`), `d.get(key) or default` treats the falsy value as "missing" and wrongly returns the default. **`None` is a legitimate value, not absence.** **Fix it** so a key present with value `None` comes back as `None`, not the default.
 
-1. **EAFP shape.** `try: return d[key] except KeyError: return default`. Lands the cultural reflex.
-2. **`dict.get(key, default)`.** One-liner. The right answer when the operation IS the missing-key check.
+### Three correct shapes (pick one)
+
+1. **`dict.get(key, default)`.** One-liner — pass the default as the *second argument* instead of using `or`. Only the genuinely-missing key falls back. The right answer when the operation IS the missing-key check.
+2. **EAFP shape.** `try: return d[key] except KeyError: return default`. `KeyError` is raised only when the key is absent — a present `None` is returned as-is. Lands the cultural reflex.
 3. **LBYL shape.** `if key in d: return d[key] else: return default`. **Works.** **Has a race window in concurrent contexts** (another thread can delete the key between the check and the read). For a single-threaded function it's fine; the discipline reason to avoid it is that the polyglot who writes LBYL here writes LBYL everywhere, including where it bites.
 
-### The `None`-vs-missing trap
+### Why the starter fails
 
-What about `safe_get({"a": None}, "a", default="missing")`? The key `"a"` **exists**; its value is `None`. The function should return `None` (the actual value), not `"missing"` (the default for a missing key).
-
-A solution that does `return d.get(key) or default` fails this test — `None or default` evaluates to `default`. **`None` is a legitimate value, not absence.** The fix: use `d.get(key, default)` (which only falls back on missing key) or the EAFP shape (which only catches `KeyError`).
+`return d.get(key) or default` — when the value is `None`, `None or default` evaluates to `default`. `or` falls back on *any* falsy value, not just a missing key. That's the planted bug, and the fourth test catches it.
 
 ### What's expected
 
@@ -208,12 +208,11 @@ safe_get({"a": None}, "a", default="missing")   # None  (value IS None, not miss
 One of the tests below uses a dict shaped like `{"a": 2, "b": 1}` — **exactly the output shape your `tally` function from Lesson 2 produced.** That's not coincidence: `safe_get` over a count dictionary is a common production shape (look up a word's count; return `0` if the word never appeared). The retrieval interleaving is deliberate — the lesson-2 muscle compounds here, and you'll see this dict shape again in Lesson 5's decorator wrappers.
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: `or` fallback swallows a present-`None`/falsy value)
 
 ```python
 def safe_get(d: dict, key, default=None):
-    # your code
-    ...
+    return d.get(key) or default
 ```
 
 ### `testCode`
@@ -274,16 +273,12 @@ import json, sys
 sys.stdout.write("__DOJO_RESULT__ " + json.dumps({"tests": _tests}) + "\n")
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
 ```markdown
-Two paths land all five tests cleanly:
-
-1. **EAFP shape.** `try` the dictionary access; `except` the **specific** exception type Python raises when a dict key is missing. Return the default in the `except` branch. The `None`-vs-missing test passes for free because `KeyError` is only raised when the key isn't there — not when the value is `None`.
-
-2. **`dict.get(key, default)` shape.** Dicts have a built-in method that does exactly this: returns the value if the key exists, else the second argument. **Not the same as `dict[key] or default`** — `or` falls back on any falsy value (including `None` and `0`), which breaks the `None`-vs-missing test.
-
-What to avoid: `if key in d: return d[key] else: return default` (LBYL — works but trains the wrong reflex). `return d.get(key) or default` (fails the `None` test).
+> **Tier 1** (on first failure): The `or` fallback can't tell "key absent" from "key present but falsy" — `None`, `0`, and `""` are all falsy, so all three take the fallback even when the key is genuinely there. The fix isn't a different operator; it's letting the lookup itself carry the default, or catching only the absent-key case. Which dict lookup distinguishes "key missing" from "value is falsy"?
+>
+> **Tier 2** (on second failure): `dict.get` takes the default as its **second argument**: `d.get(key, default)` falls back only when the key is absent, returning a present `None` as-is. (The EAFP form `try: return d[key] except KeyError: return default` is equally correct — `KeyError` fires only on a missing key.) Don't keep the `or`.
 ```
 
 ### `referenceSolution`
@@ -411,25 +406,12 @@ import json, sys
 sys.stdout.write("__DOJO_RESULT__ " + json.dumps({"tests": _tests}) + "\n")
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
 ```markdown
-The shape is three lines:
-
-```
-try:
-    return <int conversion of s>
-except <specific exception>:
-    return default
-```
-
-To find the specific exception type:
-
-- `int()` raises a specific exception when the string isn't a valid integer.
-- The exception name describes the problem: it's not about *type* (the input IS a string), it's about *value* — the string's value isn't a parseable integer.
-- The class name follows that pattern.
-
-What to avoid: `except:` (catches too much, including Ctrl-C); `except Exception:` (still too broad — masks bugs in the calling code); `isdigit()`-based LBYL (fails on negative numbers, fails on whitespace-padded input, and is exactly the LBYL anti-pattern Lesson 3.1 named).
+> **Tier 1** (on first failure): The shape is `try` the conversion, `except` the **specific** failure, return the default. Don't pre-validate with `isdigit()` (fails on negatives and whitespace) and don't use a bare `except:` (swallows Ctrl-C). To find the right exception: it's not about *type* — the input IS a string — it's about the string's *value* not being a parseable integer. Run `int("nope")` in a REPL and read the class name.
+>
+> **Tier 2** (on second failure): Catch `ValueError` — that's what `int()` raises on an unparseable string. The three-line shape: `try: return int(s)` / `except ValueError: return default`. Keep the clause narrow; `except Exception` is still too broad and masks real bugs.
 ```
 
 ### `referenceSolution`

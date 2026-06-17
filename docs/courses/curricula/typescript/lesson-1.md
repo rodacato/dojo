@@ -226,13 +226,11 @@ type _r1 = Equal<ReturnType<typeof applyDiscount>, number> extends true ? true :
 const _check1: _r1 = true;
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.5)
 
-```markdown
-The third argument sometimes doesn't arrive — the body already guards for that with `code === "VIP"`. TypeScript has a way to mark a parameter as *may-be-absent* in the signature itself, rather than forcing every caller to pass it.
-
-Once you mark it that way, ask what `code`'s type becomes *inside* the function: it's no longer just the text type you'd expect — the "might not be here" possibility is now part of the type, and the body has to be written so it survives that. The first two parameters carry no such doubt; they're always there.
-```
+> **Tier 1** (on first failure): The third argument sometimes doesn't arrive — the body already guards for that with `code === "VIP"`. TypeScript has a way to mark a parameter as *may-be-absent* in the signature itself, rather than forcing every caller to pass it. The first two parameters carry no such doubt; they're always there.
+>
+> **Tier 2** (on second failure): Mark that parameter optional with a `?` after its name. Notice what it does to the type *inside* the function: an optional parameter is the text type *or* `undefined`, and the body has to survive that. The two required params get plain type annotations; the return type goes after the parameter list.
 
 ### `referenceSolution`
 
@@ -268,7 +266,7 @@ This compiles and types the body identically — `code` is `string | undefined` 
 
 ### Hint-discipline check (§2.5)
 
-The hint points at the *gap* — "a way to mark a parameter as may-be-absent" and "what does its type become inside the function" — without naming `?` or `string | undefined`. Removing the hint wouldn't change which identifier the learner types from the instruction alone, so the hint adds direction, not the answer. The instruction states the optional-param behavior via the call examples (`applyDiscount(200, 10)` legal) rather than naming the operator.
+Tiered (§2.5 / §2.4): **Tier 1** points at the *gap* — "a way to mark a parameter as may-be-absent" — without naming `?` or `string | undefined`. **Tier 2**, the last nudge before the gated solution, may name the construct (`?`, the optional-is-`type | undefined` inside-view) but does **not** write the full signature line — the learner still assembles the params, the `?`, and the return annotation. The instruction states the optional-param behavior via the call examples (`applyDiscount(200, 10)` legal) rather than naming the operator.
 
 ---
 
@@ -282,7 +280,7 @@ The hint points at the *gap* — "a way to mark a parameter as may-be-absent" an
 - [x] Kata 1.3 is **production gesture G1** — the learner signs the function with typed params, one **optional** param (`string | undefined`), and a return type.
 - [x] Kata 1.3 instruction carries the **`@ts-expect-error`-is-a-sharp-tool note** (assertion here, stale one flips to a failure) and the **"test furniture — read, don't write"** note for the `Equal`/`ReturnType`/`@ts-expect-error` scaffolding.
 - [x] `testCode` is **mixed**: runtime `_t("sentence", () => _eq(...))` assertions AND `@ts-expect-error` / `Equal` type-level assertions; test names are user-facing sentences; deterministic.
-- [x] Hint is concept-level (§2.5) — never names `?` or `string | undefined`; direct voice, no "great try," no "we'll see later."
+- [x] Hints are tiered (§2.5 / §2.4) — tier 1 concept-level (never names `?` or `string | undefined`), tier 2 may name `?` but not write the full signature; direct voice, no "great try," no "we'll see later."
 - [x] All code compiles under TypeScript 5.0.3 under `strict`; nothing needs >5.0.3 (`@ts-expect-error` ≥3.9; `ReturnType`/indexed access/`Equal` all pre-5.0). No `tsc` error *output* is quoted in this lesson, so no `verify-at-smoke` text fence is required.
 - [x] One figure embedded (`before-after` — `ts-annotation-maximalism`); data spec below.
 - [x] Every word in English — titles, instructions, hints, options, feedback, code comments, captions, meta-notes.

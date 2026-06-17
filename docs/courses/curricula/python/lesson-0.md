@@ -18,6 +18,10 @@ This file holds the **production prose** for each step's `instruction` / `feedba
 ### `instruction` (markdown body)
 
 ```markdown
+## What this is
+
+A **crash course, not a tutorial.** It assumes you already program in another language and have met Python's basic syntax somewhere — a video, the docs, a coworker's PR. You're here to *practice under pressure*, not to be walked through "what a variable is". Six lessons, ~100 minutes, no hand-holding. It teaches the **language** — the protocol surface (dunders, iterables, context managers, decorators) and EAFP as the cultural reflex — not the framework stack (Django, Flask, FastAPI, pandas are named only to exclude them). Some katas hand you plausible-but-wrong code to fix; others ask you to write from scratch. Either way, the tests are the judge — and when you fail twice, the hints sharpen, but the answer stays yours to earn.
+
 ## Why this matters
 
 Before you spend ~100 minutes on Python's idioms, you need (1) a one-paragraph "is Python for me, what version, where does it fit and where doesn't it" so you can close the tab if it isn't, and (2) the modern command sequence to run a cloned Python project. Both fit one tight read. If you already operate `venv` and `pip` daily, the second half is fast — go to the predict and on to Lesson 1.

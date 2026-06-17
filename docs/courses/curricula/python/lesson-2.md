@@ -231,15 +231,15 @@ def tally(words: list[str]) -> dict[str, int]:
 ## Step 2.3 — `kata` — `flatten(nested)`
 
 **Title:** `Flatten a list of lists`
-**Type:** `kata`
-**1-line task:** Given a list of lists, return a single flat list. Forces the nested-comprehension shape — the one-deep nesting Step 2.1 excused as legitimate.
+**Type:** `kata` (broken→fix shape — see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Broken→fix katas")
+**1-line task:** Fix a nested comprehension whose `for` clauses are in the wrong order. Forces the nested-comprehension shape — the one-deep nesting Step 2.1 excused as legitimate.
 
 ### `instruction` (markdown body)
 
 ```markdown
-## Your task
+## Fix the bug
 
-Given a list of lists of integers, return a single flat list containing every integer in order.
+`flatten(nested)` should take a list of lists of integers and return a single flat list containing every integer in order.
 
 ```python
 flatten([[1, 2], [3], [4, 5]])    # [1, 2, 3, 4, 5]
@@ -247,17 +247,16 @@ flatten([])                       # []
 flatten([[]])                     # []
 ```
 
-**The idiomatic answer is a one-deep nested comprehension.** The 2.1 read step named the rule: one level of nesting reads cleanly left-to-right; two is a code smell. This is the one-level case the rule excuses.
+The implementation below reaches for the right tool — a one-deep nested comprehension — but writes the two `for` clauses in the **wrong order**. It reads like the nested loops a polyglot expects, but it isn't: the comprehension's `for` clauses run **left-to-right**, like the loops you'd write top-to-bottom, so naming `row` in the output and first clause before the second clause binds it raises `NameError`. **Fix it** by ordering the clauses so the outer loop comes first.
 
-If you find yourself reaching for `sum(nested, [])` or `functools.reduce(...)`, stop. The comprehension shape is what a Python reviewer expects and what the next reader will understand fastest. (`itertools.chain.from_iterable` is also acceptable and arguably more idiomatic at scale; it does not appear in the hint because the comprehension is the lesson.)
+**The idiomatic answer is a one-deep nested comprehension.** The 2.1 read step named the rule: one level of nesting reads cleanly left-to-right; two is a code smell. This is the one-level case the rule excuses. If you find yourself rewriting it as `sum(nested, [])` or `functools.reduce(...)`, stop — the lesson is the clause order, not a different tool. (`itertools.chain.from_iterable` is also acceptable and arguably more idiomatic at scale; it does not appear in the hint because the comprehension is the lesson.)
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: nested comprehension with the `for` clauses reversed)
 
 ```python
 def flatten(nested: list[list[int]]) -> list[int]:
-    # your code
-    ...
+    return [x for x in row for row in nested]
 ```
 
 ### `testCode`

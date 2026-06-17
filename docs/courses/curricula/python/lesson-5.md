@@ -367,26 +367,12 @@ import json, sys
 sys.stdout.write("__DOJO_RESULT__ " + json.dumps({"tests": _tests}) + "\n")
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
 ```markdown
-The decorator's shape:
-
-```
-def trace(fn):
-    @<the stdlib decorator that copies metadata>(fn)
-    def wrapper(*args, **kwargs):
-        result = <call the original function with the args>
-        <append the tuple (args, kwargs, result) to the list>
-        return result
-    return wrapper
-```
-
-Three specific things to land:
-
-1. **Forward `*args` and `**kwargs`** so the wrapper accepts any call shape — single positional, kwargs only, mix.
-2. **Record before returning.** Compute `result` first, then append `(args, kwargs, result)` to `trace.calls`, then return. If you append before the call, you don't have the result yet; if you `return` before appending, the record never lands.
-3. **Use the stdlib decorator that copies metadata.** It lives in `functools`. The third test (`__name__`) is what catches you if you skipped it — the wrapper's name without it is `"wrapper"`.
+> **Tier 1** (on first failure): `trace(fn)` returns an inner `wrapper(*args, **kwargs)` that calls `fn`, records, and returns. Two ordering traps: forward `*args`/`**kwargs` so any call shape works, and record *after* the call (you need the result first). The third test asserts `add.__name__ == "add"` — by default the wrapper's name is `"wrapper"`, so something has to copy the original function's metadata onto it. What does the stdlib give you for that?
+>
+> **Tier 2** (on second failure): Decorate the inner `wrapper` with `@wraps(fn)` (from `functools`) — that copies `fn.__name__`, `__doc__`, etc. onto the wrapper. Inside: `result = fn(*args, **kwargs)`, then append `(args, kwargs, result)` to `trace.calls`, then `return result`.
 ```
 
 ### `referenceSolution`
@@ -580,28 +566,12 @@ import json, sys
 sys.stdout.write("__DOJO_RESULT__ " + json.dumps({"tests": _tests}) + "\n")
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
 ```markdown
-The shape, with the three layers labelled:
-
-```
-def retry(times):              # OUTER — receives the decorator's arg
-    def decorator(fn):          # MIDDLE — receives the function (THIS is the decorator)
-        @<stdlib-metadata-copier>(fn)
-        def wrapper(*args, **kw):    # INNER — runs at call time
-            <try the function up to `times` times>
-            <on success: return the result>
-            <on failure: re-raise the last exception>
-        return wrapper
-    return decorator
-```
-
-Two specific traps:
-
-1. **Where does `times` live?** It's a parameter of the OUTER function. The INNER wrapper references it via closure. If you wrote it as two layers (just `decorator` + `wrapper`), `times` has no scope. The third layer (outer) exists *because* the decorator needs to take an argument.
-
-2. **The retry loop.** A `for _ in range(times)` loop with `try: return fn(*args, **kw) except Exception: continue` covers the retry-and-return-on-success path. After the loop exits without a return, you've exhausted attempts — `raise` (bare, no argument) re-raises the last caught exception. Python remembers it.
+> **Tier 1** (on first failure): This needs one more layer than 5.3's `@trace`. `times` is the decorator's *argument*, so it can't live where `fn` lives — `@retry(times=3)` first calls `retry(3)`, and whatever that returns is then applied to the function. So where in the nesting does `times` get captured, and what does the outermost function have to return so the next layer receives `fn`? Inside the innermost wrapper, loop the call attempts and decide what happens when they're all exhausted.
+>
+> **Tier 2** (on second failure): Three layers: `retry(times)` returns `decorator(fn)` returns `wrapper(*args, **kw)`, with `@wraps(fn)` on the wrapper. The wrapper loops `for _ in range(times)`, each pass `try: return fn(...) except Exception: continue`. After the loop runs out, re-raise the last exception (track it in a variable and `raise` it, or re-`raise` from the except). Don't return `None` on exhaustion — the tests expect the exception to propagate.
 ```
 
 ### `referenceSolution`

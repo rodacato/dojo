@@ -181,13 +181,11 @@ const _check1: _t1 = true;
 const _check2: _t2 = true;
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.5)
 
-```markdown
-The return type has to *depend on* the element type of the argument — `number` in means `number | undefined` out, `string` in means `string | undefined` out. A fixed return type can't do that.
-
-What syntax introduces a name for a type you don't know yet, so a signature can refer to "whatever element type the caller passed"? Lesson 5.1 opened with exactly the duplication this collapses.
-```
+> **Tier 1** (on first failure): The return type has to *depend on* the element type of the argument — `number` in means `number | undefined` out, `string` in means `string | undefined` out. A fixed return type can't do that. What syntax introduces a name for a type you don't know yet, so a signature can refer to "whatever element type the caller passed"? Lesson 5.1 opened with exactly the duplication this collapses.
+>
+> **Tier 2** (on second failure): Add a type parameter `<T>` after the function name, type the argument as `T[]`, and let the return type be built from `T`. The compiler infers `T` from each call — you never write `first<number>(...)`. The body stays one line.
 
 ### `referenceSolution`
 
@@ -209,7 +207,7 @@ function first<T>(arr: T[]): T | undefined {
 ### Authoring notes
 
 - **§2.2 no-flexing:** the un-generic version (`unknown[] → unknown`) demonstrably fails the type-only tests — `ReturnType` would be `unknown`, not `number | undefined` — so the generic earns its place at compile time, visibly.
-- **Hint discipline §2.5:** points at "a name for a type you don't know yet" and the dependency between in and out; never writes `<T>`.
+- **Hint discipline §2.5 / §2.4 tiers:** tier 1 points at "a name for a type you don't know yet" and the dependency between in and out without naming `<T>`. Tier 2 may name the `<T>` type-parameter position (after the function name, argument as `T[]`, return built from `T`) but writes no full signature line — the learner still assembles it.
 - **Confidence slot:** 80% opener of the lesson's kata pair — anyone who read 5.1 passes.
 - Single-file, TS 5.0.3, `strict`; the `typeof first<…>` assertions are instantiation expressions (≥4.7, fine on 5.0.3). <!-- verify-at-smoke: tsc 5.0.3 -->
 

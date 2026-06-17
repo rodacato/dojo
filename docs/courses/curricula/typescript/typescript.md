@@ -119,6 +119,10 @@ Applied to TypeScript:
 
 Same rule for `instruction` text. Applies to all katas, Lessons 1-5. Challenges (3.5 and the capstone) carry ≤1 high-level hint per challenge canon.
 
+**Tiered hints (`hints: string[]`).** A kata may carry an ordered array of hints instead of a single `hint`, revealed progressively — tier 1 on the first failed run, tier 2 on the second (see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Progressive hint reveal"). The discipline scales by tier: **tier 1** obeys the rule above verbatim (points at *where to look*, never names the construct); **tier 2** is the last nudge before the still-gated solution — it may name the operator/keyword/utility type (the optional `?`, `typeof`/`Array.isArray` narrowing, `assertNever`/the exhaustive `switch`, the `x is T` type-predicate shape, the `<T>` type-parameter position + `extends`) but must not write the full solving line. Converted in this scroll: 1.3, 3.3, 3.4, 4.2, 5.2. `hints` falls back to `[hint]` for the single-hint steps, so unconverted katas need no change.
+
+**No broken→fix in TypeScript — by design.** Ruby and Python convert some katas to the broken→fix shape (plausible-but-wrong `starterCode` to debug; see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Broken→fix katas"). TS deliberately stays **write-from-scratch**: the type system *is already* the misconception-corrector. A planted type bug doesn't create a debugging exercise — it just yields a compile error, which is the exact channel the `@ts-expect-error` / `Equal<>` assertions already own. Broken→fix would duplicate that channel without adding a distinct skill, so the katas here keep their blank-or-partial scaffolds and the compiler stays the second reader. (Runtime-logic bugs *could* be planted, but the scroll's gestures are about types, not control-flow bugs — so the conversion has no home here.)
+
 ### 2.6 Footgun deferral discipline
 
 When a deep-dive topic surfaces, the scroll names it explicitly with its one-line footgun and pointer — never silently elides, never drills:

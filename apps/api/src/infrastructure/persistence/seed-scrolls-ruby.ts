@@ -25,9 +25,10 @@
 // data.kind === 'playground') are both wired in ScrollPlayerPage. The
 // playground scope decision lives in docs/courses/curricula/ruby/ruby.md §2.3.
 //
-// Status: draft. isPublic: false. Ruby execution requires auth — the
-// /scrolls/execute endpoint (apps/api/src/infrastructure/http/routes/scrolls.ts)
-// only allows anonymous calls for sql/typescript/python/javascript-dom.
+// Status: published. isPublic: true (S030). Ruby joined the anonymous-execution
+// whitelist in /scrolls/execute (apps/api/src/infrastructure/http/routes/scrolls.ts)
+// so logged-out visitors can run the katas. Prod reseed precondition: full-set
+// Piston smoke green.
 //
 // Test harness: manual (mirrors the Python pattern — _t + _eq helpers, JSON
 // emitted on a __DOJO_RESULT__ line that ExecuteStep parses). Minitest is
@@ -97,8 +98,8 @@ export const RUBY_COURSE_DATA = {
     'The dojo\'s Ruby crash course. For developers who already program in another language and need confidence in Ruby by Friday. Object model + the idioms a polyglot needs + the surprises that bite, in ~90 minutes. Rails is not Ruby; this scroll teaches the language, not the framework.',
   language: 'ruby',
   accentColor: '#CC342D',
-  status: 'draft' as const,
-  isPublic: false,
+  status: 'published' as const,
+  isPublic: true,
   externalReferences: [
     {
       title: 'The Well-Grounded Rubyist, 3rd ed. (Black & Leo)',

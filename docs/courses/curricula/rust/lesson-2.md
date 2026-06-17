@@ -232,16 +232,11 @@ _t("returns an empty slice for empty input", || _eq(first_word(""), ""));
 _t("stops at the first space, not the last", || _eq(first_word("ship it friday"), "ship"));
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
-```markdown
-Two sub-problems: find where the first word ends, then hand back that piece of the input.
-
-- For the search, `str` has a whole family of position-finding methods — `str::find` is the direct one, `char_indices` the manual one. Either tells you the byte index of the first space, if any.
-- For the hand-back, slice syntax `&s[..i]` is the shape: a borrowed view of `s` from the start up to index `i`. No new `String` anywhere — the return value points into the caller's data, which is exactly why the signature says `&str`.
-
-What should happen when the search finds nothing? That case is the second test.
-```
+> **Tier 1** (on first failure): Two sub-problems, in order: find where the first word ends, then hand back that piece of the input. The first is a search over the characters; the second is a borrowed view, not a new allocation. And ask yourself what should happen when the search finds nothing — that case is the second test.
+>
+> **Tier 2** (on second failure): For the search, `str` has a family of position-finding methods — `str::find` is the direct one — that give you the byte index of the first space, if any. For the hand-back, the slice form `&s[..i]` is a borrowed view of `s` from the start up to index `i` — no new `String`, which is why the signature says `&str`. You still have to decide what the no-space case returns.
 
 ### `referenceSolution`
 
@@ -436,20 +431,13 @@ _t("the audit lands on the first element", || _eq(restock()[0], 10));
 _t("every push survives the fix", || _eq(restock(), vec![10, 7, 2, 5, 8]));
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
-```markdown
-The compiler marked three places:
-
-```text
-  |              ------ first mutable borrow occurs here
-  |              ^^^^^^ second mutable borrow occurs here
-  |     ---------------- first borrow later used here
-```
 <!-- verify-at-smoke: rustc 1.68.2 -->
 
-Translation: `receiver` is still alive when `auditor` is created — because Rust keeps a borrow alive until its **last use**, and `receiver`'s last use (`receiver.push(8)`) sits *after* `auditor`'s first. So ask the question the spans are asking: when does a binding's borrow end? Re-order the work so one writer is finished before the next begins — the final contents don't depend on the order, which is why both fix shapes pass the same tests.
-```
+> **Tier 1** (on first failure): The compiler marked three places — `first mutable borrow occurs here`, `second mutable borrow occurs here`, and `first borrow later used here`. A borrow doesn't end where it's created; it ends at its **last use**. So the question the spans are asking is: when does `receiver`'s borrow actually end, and is `auditor` created before or after that point?
+>
+> **Tier 2** (on second failure): `receiver`'s last use (`receiver.push(8)`) sits *after* `auditor` is created, so the two `&mut` borrows overlap. The fix shape: make the first writer's borrow finish before the second begins — either by moving its last use up so it ends earlier, or by scoping it in a `{ }` block so it drops at the brace. The final contents don't depend on the order, which is why both shapes pass.
 
 ### `referenceSolution`
 

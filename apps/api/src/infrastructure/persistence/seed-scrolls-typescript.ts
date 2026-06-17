@@ -152,8 +152,13 @@ export const TYPESCRIPT_COURSE_DATA = {
     "The dojo's TypeScript crash course. For JavaScript developers who shipped \"TS-strict\" for a year without anyone selling them the delta. One mental model at a time — inference over annotation, the structural type system, the boundary types — taught with the compiler as second reader: the errors are the curriculum. Annotate the signature, infer the rest.",
   language: 'typescript',
   accentColor: '#3178C6',
-  status: 'draft' as const,
-  isPublic: false,
+  // PUBLISH GATE (prod reseed precondition): before reseeding production with
+  // this published, the Piston deploy MUST raise max_run_timeout (>=8000) and
+  // output_max_size — TS compiles at run (~2.7s floor) and the capstone's test
+  // output exceeds Piston's 1024-byte stdout cap. Published without it, TS
+  // katas time out. See CHANGELOG (S030) and docs/ROADMAP.md.
+  status: 'published' as const,
+  isPublic: true,
   externalReferences: [
     {
       title: 'TypeScript Handbook',
@@ -186,7 +191,11 @@ const STEP_0_1 = {
   order: 1,
   type: 'read' as const,
   title: 'What TypeScript adds — and where the benefit lives',
-  instruction: `## Why this matters
+  instruction: `## What this is
+
+A **crash course, not a tutorial.** It's for JavaScript developers who already shipped "TS-strict" code without ever being sold the delta — you've met the syntax, you're here to *practice under pressure*, not to be walked through "what a type is". Six lessons, no hand-holding. The compiler is your **second reader**, and its errors *are* the curriculum: every kata is judged by the tests and the type-checker, not by a vibe. When you fail twice, the hints sharpen — but the answer stays yours to earn.
+
+## Why this matters
 
 You've shipped "TS-strict" code for a year without anyone selling you the delta. Here it is, in one read: what the type system actually buys you, the one cost it charges, and the toolchain fact that decides whether you're getting the benefit at all.
 
@@ -432,9 +441,11 @@ applyDiscount();
 type _r1 = Equal<ReturnType<typeof applyDiscount>, number> extends true ? true : never;
 const _check1: _r1 = true;
 ${TYPESCRIPT_HARNESS_FOOTER}`,
-  hint: `The third argument sometimes doesn't arrive — the body already guards for that with \`code === "VIP"\`. TypeScript has a way to mark a parameter as *may-be-absent* in the signature itself, rather than forcing every caller to pass it.
-
-Once you mark it that way, ask what \`code\`'s type becomes *inside* the function: it's no longer just the text type you'd expect — the "might not be here" possibility is now part of the type, and the body has to be written so it survives that. The first two parameters carry no such doubt; they're always there.`,
+  hint: null,
+  hints: [
+    `The third argument sometimes doesn't arrive — the body already guards for that with \`code === "VIP"\`. TypeScript has a way to mark a parameter as *may-be-absent* in the signature itself, rather than forcing every caller to pass it. The first two parameters carry no such doubt; they're always there.`,
+    `Mark that parameter optional with a \`?\` after its name. Notice what it does to the type *inside* the function: an optional parameter is the text type *or* \`undefined\`, and the body has to survive that. The two required params get plain type annotations; the return type goes after the parameter list.`,
+  ],
   solution: `function applyDiscount(price: number, percent: number, code?: string): number {
   const base = price * (1 - percent / 100);
   return code === "VIP" ? base * 0.95 : base;
@@ -845,7 +856,11 @@ _t("handles an empty array", () => {
 // @ts-expect-error — boolean is not in the union; the signature rejects it.
 describe(true);
 ${TYPESCRIPT_HARNESS_FOOTER}`,
-  hint: `One of the three union members is not a primitive, and \`typeof\` will tell you something unhelpful about it — the same word it gives every object. Which built-in check, that you already use, distinguishes that one case? And here's the ordering trap: that check has to run *before* you treat \`x\` as a plain value, or the branch order narrows the array case away into the wrong arm.`,
+  hint: null,
+  hints: [
+    `One of the three union members is not a primitive, and \`typeof\` will tell you something unhelpful about it — the same word it gives every object. Which built-in check, that you already use, distinguishes that one case? And note the ordering trap: that check has to run *before* you treat \`x\` as a plain value.`,
+    `Use \`Array.isArray(x)\` for the array case, and put it *first* — \`typeof\` can't separate an array from other objects. The \`string\` and \`number\` arms follow with \`typeof\`; narrowing subtracts as it goes, so the last \`return\` already has the remaining type.`,
+  ],
   solution: `function describe(x: string | number | string[]): string {
   if (Array.isArray(x)) return \`list of \${x.length}\`;
   if (typeof x === "string") return \`text: \${x}\`;
@@ -924,7 +939,11 @@ function _typeChecks(): void {
 }
 void _typeChecks;
 ${TYPESCRIPT_HARNESS_FOOTER}`,
-  hint: `Two jobs. First, each missing variant is a shape with the shared \`kind\` tag plus one field that only that state needs — model \`captured\` and \`failed\` on the two the starter already shows you. Second, your \`switch\` default should be *unreachable*: there's a way to have the compiler **guarantee** that instead of you promising it at review. What type does a value have once the \`switch\` has ruled out every variant it can be — and what does passing that value to a function expecting exactly that type tell the compiler?`,
+  hint: null,
+  hints: [
+    `Two jobs. First, each missing variant is a shape with the shared \`kind\` tag plus one field that only that state needs — model \`captured\` and \`failed\` on the two the starter already shows you. Second, your \`switch\` default should be *unreachable*: there's a way to have the compiler **guarantee** that instead of you promising it at review. What type does a value have once the \`switch\` has ruled out every variant it can be?`,
+    `Once every \`case\` returns, the value reaching \`default\` is \`never\` — and the starter already calls \`assertNever(s)\` there, which only compiles when its argument is \`never\`. So handle all four variants and the exhaustive switch type-checks itself; miss one and \`assertNever\` stops compiling and points at the gap. You still write the four \`case\` arms.`,
+  ],
   solution: `type PaymentStatus =
   | { kind: "pending" }
   | { kind: "authorized"; auth: string }
@@ -1286,9 +1305,11 @@ _t("rejects a JSON primitive — right syntax, wrong shape", () => {
 // const raw: unknown = parseJson('{"id":"u1"}');
 // raw.id;  // would error: 'raw' is of type 'unknown' (a @ts-expect-error would bite here).
 ${TYPESCRIPT_HARNESS_FOOTER}`,
-  hint: `The compiler will not let you read \`.id\` off the value \`parseJson\` returns — it's \`unknown\`, and until you prove something about it, every property access is an error. So the work is the proof: a function whose return type *teaches the compiler something about its argument* when it returns true.
-
-Two things to prove inside it, in order: first that the value is even an object you can read keys off (a \`null\` slips past \`typeof x === "object"\` — handle it), then that the keys you need have the types \`User\` demands. The optional fields are only present sometimes — so check their type only *when they exist*.`,
+  hint: null,
+  hints: [
+    `The compiler will not let you read \`.id\` off the value \`parseJson\` returns — it's \`unknown\`, and until you prove something about it, every property access is an error. So the work is the proof: a function whose return type *teaches the compiler something about its argument* when it returns true.`,
+    `Give \`isUser\` the return type \`x is User\` — that type-predicate shape is what narrows \`unknown\` to \`User\` at the call site. Inside, prove the shape in order: first that the value is a non-\`null\` object (a \`null\` slips past \`typeof x === "object"\`), then that \`id\` is a string, then that each optional field is a string *only when it's present*. \`parseUser\` then just calls the guard and returns the value or \`"invalid user"\`.`,
+  ],
   solution: `const parseJson = (s: string): unknown => {
   try {
     return JSON.parse(s);
@@ -1520,9 +1541,11 @@ type _t2 = Equal<ReturnType<typeof first<string>>, string | undefined> extends t
 const _check1: _t1 = true;
 const _check2: _t2 = true;
 ${TYPESCRIPT_HARNESS_FOOTER}`,
-  hint: `The return type has to *depend on* the element type of the argument — \`number\` in means \`number | undefined\` out, \`string\` in means \`string | undefined\` out. A fixed return type can't do that.
-
-What syntax introduces a name for a type you don't know yet, so a signature can refer to "whatever element type the caller passed"? Lesson 5.1 opened with exactly the duplication this collapses.`,
+  hint: null,
+  hints: [
+    `The return type has to *depend on* the element type of the argument — \`number\` in means \`number | undefined\` out, \`string\` in means \`string | undefined\` out. A fixed return type can't do that. What syntax introduces a name for a type you don't know yet, so a signature can refer to "whatever element type the caller passed"? Lesson 5.1 opened with exactly the duplication this collapses.`,
+    `Add a type parameter \`<T>\` after the function name, type the argument as \`T[]\`, and let the return type be built from \`T\`. The compiler infers \`T\` from each call — you never write \`first<number>(...)\`. The body stays one line.`,
+  ],
   solution: `function first<T>(arr: T[]): T | undefined {
   return arr[0];
 }

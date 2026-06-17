@@ -17,8 +17,9 @@
 // Authoring drafts live in docs/courses/curricula/python/lesson-{0..5}.md;
 // figures registered in apps/web/src/scrolls/figures/data/python-figures.ts.
 //
-// Status: draft. isPublic: false. Python execution allows anonymous calls
-// (allowlisted at /scrolls/execute alongside sql/typescript/javascript-dom).
+// Status: published. isPublic: true (S030). Python execution allows anonymous
+// calls (allowlisted at /scrolls/execute). Prod reseed precondition: full-set
+// Piston smoke green.
 //
 // Test harness: manual decorator-based `_t("name") def _(): ...` shape per
 // the spec's §5 decision (mirror of Ruby's `_t do ... end` pattern adapted
@@ -115,8 +116,8 @@ export const PYTHON_COURSE_DATA = {
     'The dojo\'s Python crash course. For developers who already program in another language and need confidence in Python by Friday. The protocol surface (dunders + iterables + context managers + decorators) and EAFP as the cultural reflex, in ~100 minutes. Django, Flask, FastAPI, pandas, numpy, PyTorch are not Python; this scroll teaches the language, not the framework stack.',
   language: 'python',
   accentColor: '#3776AB',
-  status: 'draft' as const,
-  isPublic: false,
+  status: 'published' as const,
+  isPublic: true,
   externalReferences: [
     {
       title: 'Fluent Python, 2nd ed. (Luciano Ramalho)',
@@ -150,7 +151,11 @@ const STEP_0_1 = {
   order: 1,
   type: 'read' as const,
   title: 'Python in context: what it’s for, how it actually runs',
-  instruction: `## Why this matters
+  instruction: `## What this is
+
+A **crash course, not a tutorial.** It assumes you already program in another language and have met Python's basic syntax somewhere — a video, the docs, a coworker's PR. You're here to *practice under pressure*, not to be walked through "what a variable is". Six lessons, ~100 minutes, no hand-holding. It teaches the **language** — the protocol surface (dunders, iterables, context managers, decorators) and EAFP as the cultural reflex — not the framework stack (Django, Flask, FastAPI, pandas are named only to exclude them). Some katas hand you plausible-but-wrong code to fix; others ask you to write from scratch. Either way, the tests are the judge — and when you fail twice, the hints sharpen, but the answer stays yours to earn.
+
+## Why this matters
 
 Before you spend ~100 minutes on Python's idioms, you need (1) a one-paragraph "is Python for me, what version, where does it fit and where doesn't it" so you can close the tab if it isn't, and (2) the modern command sequence to run a cloned Python project. Both fit one tight read. If you already operate \`venv\` and \`pip\` daily, the second half is fast — go to the predict and on to Lesson 1.
 
@@ -666,9 +671,9 @@ const STEP_2_3 = {
   order: 3,
   type: 'kata' as const,
   title: 'Flatten a list of lists',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Given a list of lists of integers, return a single flat list containing every integer in order.
+\`flatten(nested)\` should take a list of lists of integers and return a single flat list containing every integer in order.
 
 \`\`\`python
 flatten([[1, 2], [3], [4, 5]])    # [1, 2, 3, 4, 5]
@@ -676,12 +681,11 @@ flatten([])                       # []
 flatten([[]])                     # []
 \`\`\`
 
-**The idiomatic answer is a one-deep nested comprehension.** The 2.1 read step named the rule: one level of nesting reads cleanly left-to-right; two is a code smell. This is the one-level case the rule excuses.
+The implementation below reaches for the right tool — a one-deep nested comprehension — but writes the two \`for\` clauses in the **wrong order**. It reads like the nested loops a polyglot expects, but it isn't: the comprehension's \`for\` clauses run **left-to-right**, like the loops you'd write top-to-bottom, so naming \`row\` in the output and first clause before the second clause binds it raises \`NameError\`. **Fix it** by ordering the clauses so the outer loop comes first.
 
-If you find yourself reaching for \`sum(nested, [])\` or \`functools.reduce(...)\`, stop. The comprehension shape is what a Python reviewer expects and what the next reader will understand fastest. (\`itertools.chain.from_iterable\` is also acceptable and arguably more idiomatic at scale; it does not appear in the hint because the comprehension is the lesson.)`,
+**The idiomatic answer is a one-deep nested comprehension.** The 2.1 read step named the rule: one level of nesting reads cleanly left-to-right; two is a code smell. This is the one-level case the rule excuses. If you find yourself rewriting it as \`sum(nested, [])\` or \`functools.reduce(...)\`, stop — the lesson is the clause order, not a different tool. (\`itertools.chain.from_iterable\` is also acceptable and arguably more idiomatic at scale; it does not appear in the hint because the comprehension is the lesson.)`,
   starterCode: `def flatten(nested: list[list[int]]) -> list[int]:
-    # your code
-    ...
+    return [x for x in row for row in nested]
 `,
   testCode: `${PY_HARNESS_HEADER}
 # === learner code runs above this line ===
@@ -925,21 +929,21 @@ const STEP_3_3 = {
   order: 3,
   type: 'kata' as const,
   title: 'safe_get — handle a missing key without LBYL',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Build \`safe_get(d, key, default=None)\` that returns \`d[key]\` if the key exists, else returns \`default\`.
+\`safe_get(d, key, default=None)\` should return \`d[key]\` if the key exists, else return \`default\`.
 
-**Three solutions are correct.** The lesson is in noticing why one is best:
+The implementation below reaches for \`dict.get\` and an \`or\` fallback — the reflex that "feels" like a default. It passes the easy cases: key present returns the value, key absent returns the default. But it has a silent bug on a **present-but-falsy value**: when the key exists with value \`None\` (or \`0\`, or \`""\`), \`d.get(key) or default\` treats the falsy value as "missing" and wrongly returns the default. **\`None\` is a legitimate value, not absence.** **Fix it** so a key present with value \`None\` comes back as \`None\`, not the default.
 
-1. **EAFP shape.** \`try: return d[key] except KeyError: return default\`. Lands the cultural reflex.
-2. **\`dict.get(key, default)\`.** One-liner. The right answer when the operation IS the missing-key check.
+### Three correct shapes (pick one)
+
+1. **\`dict.get(key, default)\`.** One-liner — pass the default as the *second argument* instead of using \`or\`. Only the genuinely-missing key falls back. The right answer when the operation IS the missing-key check.
+2. **EAFP shape.** \`try: return d[key] except KeyError: return default\`. \`KeyError\` is raised only when the key is absent — a present \`None\` is returned as-is. Lands the cultural reflex.
 3. **LBYL shape.** \`if key in d: return d[key] else: return default\`. **Works.** **Has a race window in concurrent contexts** (another thread can delete the key between the check and the read). For a single-threaded function it's fine; the discipline reason to avoid it is that the polyglot who writes LBYL here writes LBYL everywhere, including where it bites.
 
-### The \`None\`-vs-missing trap
+### Why the starter fails
 
-What about \`safe_get({"a": None}, "a", default="missing")\`? The key \`"a"\` **exists**; its value is \`None\`. The function should return \`None\` (the actual value), not \`"missing"\` (the default for a missing key).
-
-A solution that does \`return d.get(key) or default\` fails this test — \`None or default\` evaluates to \`default\`. **\`None\` is a legitimate value, not absence.** The fix: use \`d.get(key, default)\` (which only falls back on missing key) or the EAFP shape (which only catches \`KeyError\`).
+\`return d.get(key) or default\` — when the value is \`None\`, \`None or default\` evaluates to \`default\`. \`or\` falls back on *any* falsy value, not just a missing key. That's the planted bug, and the fourth test catches it.
 
 ### What's expected
 
@@ -954,8 +958,7 @@ safe_get({"a": None}, "a", default="missing")   # None  (value IS None, not miss
 
 One of the tests below uses a dict shaped like \`{"a": 2, "b": 1}\` — **exactly the output shape your \`tally\` function from Lesson 2 produced.** That's not coincidence: \`safe_get\` over a count dictionary is a common production shape (look up a word's count; return \`0\` if the word never appeared). The retrieval interleaving is deliberate — the lesson-2 muscle compounds here, and you'll see this dict shape again in Lesson 5's decorator wrappers.`,
   starterCode: `def safe_get(d: dict, key, default=None):
-    # your code
-    ...
+    return d.get(key) or default
 `,
   testCode: `${PY_HARNESS_HEADER}
 # === learner code runs above this line ===
@@ -992,7 +995,11 @@ def _():
     _eq(safe_get(counts, "a", default=0), 2)
     _eq(safe_get(counts, "missing", default=0), 0)
 ${PY_HARNESS_FOOTER}`,
-  hint: "Two paths land all six tests cleanly:\n\n1. **EAFP shape.** `try` the dictionary access; `except` the **specific** exception type Python raises when a dict key is missing. Return the default in the `except` branch. The `None`-vs-missing test passes for free because `KeyError` is only raised when the key isn't there — not when the value is `None`.\n\n2. **`dict.get(key, default)` shape.** Dicts have a built-in method that does exactly this: returns the value if the key exists, else the second argument. **Not the same as `dict[key] or default`** — `or` falls back on any falsy value (including `None` and `0`), which breaks the `None`-vs-missing test.\n\nWhat to avoid: `if key in d: return d[key] else: return default` (LBYL — works but trains the wrong reflex). `return d.get(key) or default` (fails the `None` test).",
+  hint: null,
+  hints: [
+    "The `or` fallback can't tell \"key absent\" from \"key present but falsy\" — `None`, `0`, and `\"\"` are all falsy, so all three take the fallback even when the key is genuinely there. The fix isn't a different operator; it's letting the lookup itself carry the default, or catching only the absent-key case. Which dict lookup distinguishes \"key missing\" from \"value is falsy\"?",
+    "`dict.get` takes the default as its **second argument**: `d.get(key, default)` falls back only when the key is absent, returning a present `None` as-is. (The EAFP form `try: return d[key] except KeyError: return default` is equally correct — `KeyError` fires only on a missing key.) Don't keep the `or`.",
+  ],
   solution: `def safe_get(d: dict, key, default=None):
     return d.get(key, default)`,
   alternativeApproach: `The explicit EAFP form is also correct, and worth seeing once because it's what \`dict.get\` desugars to under the hood:
@@ -1073,7 +1080,11 @@ def _():
 def _():
     _eq(parse_int_or("-5", 0), -5)
 ${PY_HARNESS_FOOTER}`,
-  hint: "The shape is three lines:\n\n```\ntry:\n    return <int conversion of s>\nexcept <specific exception>:\n    return default\n```\n\nTo find the specific exception type:\n\n- `int()` raises a specific exception when the string isn't a valid integer.\n- The exception name describes the problem: it's not about *type* (the input IS a string), it's about *value* — the string's value isn't a parseable integer.\n- The class name follows that pattern.\n\nWhat to avoid: `except:` (catches too much, including Ctrl-C); `except Exception:` (still too broad — masks bugs in the calling code); `isdigit()`-based LBYL (fails on negative numbers, fails on whitespace-padded input, and is exactly the LBYL anti-pattern Lesson 3.1 named).",
+  hint: null,
+  hints: [
+    "The shape is `try` the conversion, `except` the **specific** failure, return the default. Don't pre-validate with `isdigit()` (fails on negatives and whitespace) and don't use a bare `except:` (swallows Ctrl-C). To find the right exception: it's not about *type* — the input IS a string — it's about the string's *value* not being a parseable integer. Run `int(\"nope\")` in a REPL and read the class name.",
+    "Catch `ValueError` — that's what `int()` raises on an unparseable string. The three-line shape: `try: return int(s)` / `except ValueError: return default`. Keep the clause narrow; `except Exception` is still too broad and masks real bugs.",
+  ],
   solution: `def parse_int_or(s: str, default: int) -> int:
     try:
         return int(s)
@@ -1198,15 +1209,17 @@ const STEP_4_2 = {
   order: 2,
   type: 'kata' as const,
   title: 'temp_state — a generator-based context manager',
-  instruction: `## Your task
+  instruction: `## Fix the bug
 
-Write \`temp_state(d, key, value)\` — a context manager that:
+\`temp_state(d, key, value)\` is a \`@contextmanager\` that should:
 
-1. Sets \`d[key] = value\` when the \`with\` block starts.
-2. Restores the **original** value when the block exits — *or removes the key entirely if it wasn't there before*.
-3. Restores correctly **even if the block raises an exception**.
+1. Set \`d[key] = value\` when the \`with\` block starts.
+2. Restore the **original** value when the block exits — *or remove the key entirely if it wasn't there before*.
+3. Restore correctly **even if the block raises an exception**.
 
-Use the \`@contextmanager\` decorator from \`contextlib\`. The function yields exactly once.
+The implementation below looks reasonable: it remembers the old value, sets the new one, \`yield\`s, then restores. It passes the happy path — the first three tests are green. But the restore runs *after* the \`yield\` with no \`try / finally\` around it, so when the \`with\` block raises, control never reaches the restore and \`d[key]\` is left holding the temporary value. **Fix it** so cleanup runs even when the block raises.
+
+This is the context-manager cleanup contract: the code after the \`yield\` is the \`__exit__\` path, and \`__exit__\` must run on the exception path too. \`finally\` is not optional here — it's the whole reason \`with\` beats a bare assign-and-restore.
 
 ### What's expected
 
@@ -1238,14 +1251,21 @@ assert d["a"] == 1               # restored despite the raise
 
 ### The yield-once contract
 
-\`@contextmanager\` requires **exactly one** \`yield\` in the function body. The code before it runs on \`__enter__\`; the yielded value is what gets bound to \`as name\`; the code after runs on \`__exit__\`. Wrap the body in \`try / finally\` so the cleanup runs even when the \`with\` block raises.`,
+\`@contextmanager\` requires **exactly one** \`yield\` in the function body. The code before it runs on \`__enter__\`; the yielded value is what gets bound to \`as name\`; the code after runs on \`__exit__\`. The cleanup after the \`yield\` only runs on the exception path if it's guarded by \`try / finally\`.`,
   starterCode: `from contextlib import contextmanager
+
+_MISSING = object()
 
 
 @contextmanager
 def temp_state(d: dict, key, value):
-    # your code (yield once)
-    ...
+    sentinel = d.get(key, _MISSING)
+    d[key] = value
+    yield
+    if sentinel is _MISSING:
+        del d[key]
+    else:
+        d[key] = sentinel
 `,
   testCode: `${PY_HARNESS_HEADER}
 # === learner code runs above this line ===
@@ -1294,7 +1314,11 @@ def _():
         pass
     _eq("a" in d, False)
 ${PY_HARNESS_FOOTER}`,
-  hint: "The shape is:\n\n```\n@contextmanager\ndef temp_state(d, key, value):\n    # 1. Remember whether the key existed (and if so, its old value).\n    # 2. Set d[key] = value.\n    # 3. yield\n    # 4. Restore: if the key existed before, put the old value back; else delete it.\n```\n\nTo pass the \"restores even when the block raises\" test, wrap the `yield` in `try / finally` so the restore step (4) runs regardless of whether the block exits cleanly.\n\nTwo specific traps:\n\n- **Don't use `try / except`** — you don't want to catch the exception, you want the cleanup to run *and* the exception to propagate. `try / finally` does that.\n- **Don't `del d[key]` unconditionally on exit.** The key may have legitimately existed before you set it; in that case you restore the original value, not delete it. Track the pre-existence with a sentinel (`MISSING = object()` is the standard pattern) or with `key in d` checked once at the start.",
+  hint: null,
+  hints: [
+    "The starter restores correctly on the happy path but not when the block raises — because the restore runs straight after the `yield` with nothing guarding it, and a raise inside the `with` block skips straight past it. What language construct guarantees a piece of code runs whether or not the block above it raised?",
+    "Wrap the `yield` in `try / finally`: put the `yield` in the `try`, move the restore (the `if sentinel is _MISSING: ... else: ...` block) into the `finally`. `finally` runs on both the clean and the raising path; don't use `except` — you want the cleanup to run *and* the exception to propagate.",
+  ],
   solution: `from contextlib import contextmanager
 
 _MISSING = object()
@@ -1820,7 +1844,11 @@ def _():
     greet("Adrian", greeting="hola")
     _eq(trace.calls, [(("Adrian",), {"greeting": "hola"}, "hola, Adrian")])
 ${PY_HARNESS_FOOTER}`,
-  hint: "The decorator's shape:\n\n```\ndef trace(fn):\n    @<the stdlib decorator that copies metadata>(fn)\n    def wrapper(*args, **kwargs):\n        result = <call the original function with the args>\n        <append the tuple (args, kwargs, result) to the list>\n        return result\n    return wrapper\n```\n\nThree specific things to land:\n\n1. **Forward `*args` and `**kwargs`** so the wrapper accepts any call shape — single positional, kwargs only, mix.\n2. **Record before returning.** Compute `result` first, then append `(args, kwargs, result)` to `trace.calls`, then return. If you append before the call, you don't have the result yet; if you `return` before appending, the record never lands.\n3. **Use the stdlib decorator that copies metadata.** It lives in `functools`. The third test (`__name__`) is what catches you if you skipped it — the wrapper's name without it is `\"wrapper\"`.",
+  hint: null,
+  hints: [
+    "`trace(fn)` returns an inner `wrapper(*args, **kwargs)` that calls `fn`, records, and returns. Two ordering traps: forward `*args`/`**kwargs` so any call shape works, and record *after* the call (you need the result first). The third test asserts `add.__name__ == \"add\"` — by default the wrapper's name is `\"wrapper\"`, so something has to copy the original function's metadata onto it. What does the stdlib give you for that?",
+    "Decorate the inner `wrapper` with `@wraps(fn)` (from `functools`) — that copies `fn.__name__`, `__doc__`, etc. onto the wrapper. Inside: `result = fn(*args, **kwargs)`, then append `(args, kwargs, result)` to `trace.calls`, then `return result`.",
+  ],
   solution: `from functools import wraps
 
 
@@ -1981,7 +2009,11 @@ def _():
 
     _eq(flaky.__name__, "flaky")
 ${PY_HARNESS_FOOTER}`,
-  hint: "The shape, with the three layers labelled:\n\n```\ndef retry(times):              # OUTER — receives the decorator's arg\n    def decorator(fn):          # MIDDLE — receives the function (THIS is the decorator)\n        @<stdlib-metadata-copier>(fn)\n        def wrapper(*args, **kw):    # INNER — runs at call time\n            <try the function up to `times` times>\n            <on success: return the result>\n            <on failure: re-raise the last exception>\n        return wrapper\n    return decorator\n```\n\nTwo specific traps:\n\n1. **Where does `times` live?** It's a parameter of the OUTER function. The INNER wrapper references it via closure. If you wrote it as two layers (just `decorator` + `wrapper`), `times` has no scope. The third layer (outer) exists *because* the decorator needs to take an argument.\n\n2. **The retry loop.** A `for _ in range(times)` loop with `try: return fn(*args, **kw) except Exception: continue` covers the retry-and-return-on-success path. After the loop exits without a return, you've exhausted attempts — `raise` (bare, no argument) re-raises the last caught exception. Python remembers it.",
+  hint: null,
+  hints: [
+    "This needs one more layer than 5.3's `@trace`. `times` is the decorator's *argument*, so it can't live where `fn` lives — `@retry(times=3)` first calls `retry(3)`, and whatever that returns is then applied to the function. So where in the nesting does `times` get captured, and what does the outermost function have to return so the next layer receives `fn`? Inside the innermost wrapper, loop the call attempts and decide what happens when they're all exhausted.",
+    "Three layers: `retry(times)` returns `decorator(fn)` returns `wrapper(*args, **kw)`, with `@wraps(fn)` on the wrapper. The wrapper loops `for _ in range(times)`, each pass `try: return fn(...) except Exception: continue`. After the loop runs out, re-raise the last exception (track it in a variable and `raise` it, or re-`raise` from the except). Don't return `None` on exhaustion — the tests expect the exception to propagate.",
+  ],
   solution: `from functools import wraps
 
 

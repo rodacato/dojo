@@ -19,6 +19,10 @@ This file holds the **production prose** for each step's fields. All content and
 ### `instruction` (markdown body)
 
 ```markdown
+## What this is
+
+A **crash course, not a tutorial.** It assumes you already program in another language and have met Rust's syntax somewhere — a video, the docs, a colleague's PR. You're here to *practice under pressure*, not to be told "what a variable is". Six lessons, ~120 minutes, no hand-holding. The compiler is your co-teacher: its errors aren't obstacles to sneak past, they're the curriculum — you'll predict them before you read them, and read them like a brief. Some katas hand you code that won't compile by design; others ask you to write from scratch. Either way, the tests judge — and when you fail twice, the hints sharpen, but the answer stays yours to earn.
+
 ## Why this matters
 
 This scroll spends ~120 minutes on one mental model (ownership) and one skill (reading compiler errors). Before that: whether Rust is for you, the toolchain names every README assumes, and what this sandbox runs.

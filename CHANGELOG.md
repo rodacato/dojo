@@ -4,6 +4,20 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 030 — roll the Ruby treatment across the catalog + publish all four (2026-06-17)
+**Phase 1 — Alpha**
+
+Took the S029 Ruby treatment to Rust, Python, and TypeScript — and the honest finding shrank the work. All three were authored post-pivot (S027/S028) with crash-course framing, paragraph-test discipline, figures, and polyglot-first ordering already in place. So "what Ruby had to fix" was already there, and broken→fix barely transfers: Rust already teaches via fail-by-design katas (the compiler error *is* the brief) and signature clarity; TS's type system is itself the misconception-corrector. Forcing planted bugs into either would be the homogenization the Ruby plan forbids. Python — the one dynamic language left — was the only real broken→fix candidate.
+
+- **L0 "What this is" block — all three.** Each Lesson 0 now opens with the explicit crash-course contract (not a tutorial; assumes you program; the tests judge; hints sharpen on failure, the answer stays earned), language-flavored.
+- **Tiered hints where katas bite.** Rust 2.3/2.5 (borrowing), TS 1.3/3.3/3.4/4.2/5.2 (signatures, narrowing, exhaustiveness, type guards, generics), Python safe_get/parse_int_or/temp_state/@trace/@retry. Tier 1 never names the identifier; tier 2 may name it but not write the expression.
+- **Python broken→fix ×3** (verified each bug fails the existing tests and the existing solution still passes): `temp_state` (restores without `try/finally` — the cleanup contract), `flatten` (nested-comprehension clauses in the wrong order — NameError), `safe_get` (`d.get(key) or default` swallows a present-`None`). Rust and TS: **zero**, by design, documented in their specs.
+- **No broken→fix forced into Rust/TS.** Recorded in `curricula/rust/rust.md` and `curricula/typescript/typescript.md` why the compiler/type-system already does that job.
+
+**Published all four language scrolls** (Ruby, Python, Rust, TypeScript): `status: 'published'` + `isPublic: true`. `ruby` and `rust` joined the anonymous-execution whitelist so logged-out visitors can run the katas, matching Python/TS (all sandboxed + rate-limited in Piston; incremental surface over the already-allowed Python ≈ nil).
+
+- **Prod reseed is the publish event, and it has gates (the human clears them, not the seed):** the full-set real-Piston smoke must be green (Ruby especially — it changed in S029 and has no local Ruby to smoke against), and **for TypeScript** the Piston deploy must raise `max_run_timeout` (≥8000) and `output_max_size` first or TS katas time out (TS compiles at run; the capstone's output exceeds Piston's 1024-byte stdout cap). Flagged in a loud comment at `TYPESCRIPT_COURSE_DATA`. The flip lives in the seeds so a reseed ships them ready — it does not bypass the smoke.
+
 ## Sprint 029 — broken→fix katas + progressive hints (2026-06-17)
 **Phase 1 — Alpha**
 

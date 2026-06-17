@@ -28,10 +28,10 @@
 // Authoring drafts live in docs/courses/curricula/rust/lesson-{0..6}.md;
 // figures registered in apps/web/src/scrolls/figures/data/rust-figures.ts.
 //
-// Status: draft. isPublic: false. Rust execution requires auth (like Ruby) —
-// the /scrolls/execute endpoint (apps/api/src/infrastructure/http/routes/
-// scrolls.ts) only allows anonymous calls for sql/typescript/python/
-// javascript-dom; rust is NOT in that whitelist.
+// Status: published. isPublic: true (S030). Rust joined the anonymous-execution
+// whitelist in /scrolls/execute (apps/api/src/infrastructure/http/routes/
+// scrolls.ts) so logged-out visitors can run the katas. Prod reseed
+// precondition: full-set Piston smoke green.
 //
 // Test harness: manual _t/_eq pattern (mirrors Ruby/Python), Rust-shaped.
 // The PistonAdapter renames a learner-written `fn main` to `__learner_main`
@@ -202,8 +202,8 @@ export const RUST_COURSE_DATA = {
     'The dojo\'s Rust crash course. For developers who already program in another language and need to read Rust by Friday. One mental model taught from scratch — ownership and borrowing — with the compiler as co-teacher: the error messages are the curriculum, not the obstacle. Traits, enums, Result and ? land as deltas, in ~120 minutes.',
   language: 'rust',
   accentColor: '#CE422B',
-  status: 'draft' as const,
-  isPublic: false,
+  status: 'published' as const,
+  isPublic: true,
   externalReferences: [
     {
       title: 'The Rust Programming Language (Klabnik & Nichols)',
@@ -239,7 +239,11 @@ const STEP_0_1 = {
   order: 1,
   type: 'read' as const,
   title: 'What Rust is for, how it runs, and why the compiler is your tutor',
-  instruction: `## Why this matters
+  instruction: `## What this is
+
+A **crash course, not a tutorial.** It assumes you already program in another language and have met Rust's syntax somewhere — a video, the docs, a colleague's PR. You're here to *practice under pressure*, not to be told "what a variable is". Six lessons, ~120 minutes, no hand-holding. The compiler is your co-teacher: its errors aren't obstacles to sneak past, they're the curriculum — you'll predict them before you read them, and read them like a brief. Some katas hand you code that won't compile by design; others ask you to write from scratch. Either way, the tests judge — and when you fail twice, the hints sharpen, but the answer stays yours to earn.
+
+## Why this matters
 
 This scroll spends ~120 minutes on one mental model (ownership) and one skill (reading compiler errors). Before that: whether Rust is for you, the toolchain names every README assumes, and what this sandbox runs.
 
@@ -875,12 +879,11 @@ _t("returns an empty slice for empty input", || _eq(first_word(""), ""));
 
 _t("stops at the first space, not the last", || _eq(first_word("ship it friday"), "ship"));
 ${RUST_HARNESS_FOOTER}`,
-  hint: `Two sub-problems: find where the first word ends, then hand back that piece of the input.
-
-- For the search, \`str\` has a whole family of position-finding methods — \`str::find\` is the direct one, \`char_indices\` the manual one. Either tells you the byte index of the first space, if any.
-- For the hand-back, slice syntax \`&s[..i]\` is the shape: a borrowed view of \`s\` from the start up to index \`i\`. No new \`String\` anywhere — the return value points into the caller's data, which is exactly why the signature says \`&str\`.
-
-What should happen when the search finds nothing? That case is the second test.`,
+  hint: null,
+  hints: [
+    `Two sub-problems, in order: find where the first word ends, then hand back that piece of the input. The first is a search over the characters; the second is a borrowed view, not a new allocation. And ask yourself what should happen when the search finds nothing — that case is the second test.`,
+    `For the search, \`str\` has a family of position-finding methods — \`str::find\` is the direct one — that give you the byte index of the first space, if any. For the hand-back, the slice form \`&s[..i]\` is a borrowed view of \`s\` from the start up to index \`i\` — no new \`String\`, which is why the signature says \`&str\`. You still have to decide what the no-space case returns.`,
+  ],
   solution: `fn first_word(s: &str) -> &str {
     match s.find(' ') {
         Some(i) => &s[..i],
@@ -1032,7 +1035,9 @@ _t("the audit lands on the first element", || _eq(restock()[0], 10));
 
 _t("every push survives the fix", || _eq(restock(), vec![10, 7, 2, 5, 8]));
 ${RUST_HARNESS_FOOTER}`,
-  hint: `The compiler marked three places:
+  hint: null,
+  hints: [
+    `The compiler marked three places:
 
 \`\`\`text
   |              ------ first mutable borrow occurs here
@@ -1040,7 +1045,9 @@ ${RUST_HARNESS_FOOTER}`,
   |     ---------------- first borrow later used here
 \`\`\`
 
-Translation: \`receiver\` is still alive when \`auditor\` is created — because Rust keeps a borrow alive until its **last use**, and \`receiver\`'s last use (\`receiver.push(8)\`) sits *after* \`auditor\`'s first. So ask the question the spans are asking: when does a binding's borrow end? Re-order the work so one writer is finished before the next begins — the final contents don't depend on the order, which is why both fix shapes pass the same tests.`,
+A borrow doesn't end where it's created — it ends at its **last use**. So the question the spans are asking is: when does \`receiver\`'s borrow actually end, and is \`auditor\` created before or after that point?`,
+    `\`receiver\`'s last use (\`receiver.push(8)\`) sits *after* \`auditor\` is created, so the two \`&mut\` borrows overlap. The fix shape: make the first writer's borrow finish before the second begins — either by moving its last use up so it ends earlier, or by scoping it in a \`{ }\` block so it drops at the brace. The final contents don't depend on the order, which is why both shapes pass.`,
+  ],
   solution: `fn restock() -> Vec<i32> {
     let mut stock = vec![3, 7, 2];
     {

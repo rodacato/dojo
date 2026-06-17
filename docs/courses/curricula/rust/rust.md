@@ -105,6 +105,10 @@ Rust-specific extension — **compiler output is part of the hint calculus**, in
 
 Same rule for `instruction` text. Applies to all katas, Lessons 1-6; authoring against this gate is a precondition for seeding.
 
+**Tiered hints (`hints: string[]`).** A kata may carry an ordered array of hints instead of a single `hint`, revealed progressively (tier 1 on the first failed run, tier 2 on the second — see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Progressive hint reveal"). Tier 1 obeys the gate above verbatim: it never names the solving identifier, only where to look. Tier 2 is the last nudge before the (still gated) solution — it may name the method, operator, or slice form, but must not write the full solving expression. Converted in this scroll, the two borrowing katas that bite: 2.3 `first_word` and 2.5 `restock` (`E0499`). `hints` falls back to `[hint]` for the unconverted katas, so they need no change.
+
+**Why Rust stays write-from-scratch / fail-by-design (not broken→fix).** Ruby converted four katas to the broken→fix shape; Rust deliberately does not adopt it. Its fail-by-design katas (1.3, 1.4, 2.5) already start from non-compiling code, but that's not the same device: the brief is the *compiler error itself* (read it, predict it, fix it), not a planted logic bug to spot by inspection. For the rest, the lesson is carried by signature clarity — a planted bug would fight it. Per [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Broken→fix katas", the pattern only earns its place when the planted bug embodies the misconception the kata targets; in Rust the compiler error is already that brief, so broken→fix would be redundant scaffolding.
+
 ### 2.6 Footgun deferral discipline
 
 Every named-but-not-taught topic gets **one sentence**: the failure mode + a deep-dive slug (placeholder slugs are fine — they anchor the deferral honestly).

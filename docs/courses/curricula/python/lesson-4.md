@@ -112,22 +112,24 @@ Next: two katas. 4.2 writes a `@contextmanager` generator (the friendly shape). 
 ## Step 4.2 — `kata` — `@contextmanager`-based `temp_state`
 
 **Title:** `temp_state — a generator-based context manager`
-**Type:** `kata`
-**1-line task:** Write a generator-based context manager `temp_state(d, key, value)` that temporarily sets `d[key] = value` inside the `with` block and restores the original value (or removes the key) on exit.
+**Type:** `kata` (broken→fix shape — see [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §"Broken→fix katas")
+**1-line task:** Fix a `@contextmanager` `temp_state(d, key, value)` that restores on the happy path but skips cleanup when the `with` block raises — because the restore isn't guarded by `try / finally`.
 **Order rationale:** comes before the class-form kata per the 2026-06-08 audience review — the `yield` + `try/finally` shape lands faster for the polyglot (JS/TS generator pattern wrapped in a Python decorator) than `__enter__` / `__exit__` from scratch.
 
 ### `instruction` (markdown body)
 
 ```markdown
-## Your task
+## Fix the bug
 
-Write `temp_state(d, key, value)` — a context manager that:
+`temp_state(d, key, value)` is a `@contextmanager` that should:
 
-1. Sets `d[key] = value` when the `with` block starts.
-2. Restores the **original** value when the block exits — *or removes the key entirely if it wasn't there before*.
-3. Restores correctly **even if the block raises an exception**.
+1. Set `d[key] = value` when the `with` block starts.
+2. Restore the **original** value when the block exits — *or remove the key entirely if it wasn't there before*.
+3. Restore correctly **even if the block raises an exception**.
 
-Use the `@contextmanager` decorator from `contextlib`. The function yields exactly once.
+The implementation below looks reasonable: it remembers the old value, sets the new one, `yield`s, then restores. It passes the happy path — the first three tests are green. But the restore runs *after* the `yield` with no `try / finally` around it, so when the `with` block raises, control never reaches the restore and `d[key]` is left holding the temporary value. **Fix it** so cleanup runs even when the block raises.
+
+This is the context-manager cleanup contract: the code after the `yield` is the `__exit__` path, and `__exit__` must run on the exception path too. `finally` is not optional here — it's the whole reason `with` beats a bare assign-and-restore.
 
 ### What's expected
 
@@ -159,19 +161,26 @@ assert d["a"] == 1               # restored despite the raise
 
 ### The yield-once contract
 
-`@contextmanager` requires **exactly one** `yield` in the function body. The code before it runs on `__enter__`; the yielded value is what gets bound to `as name`; the code after runs on `__exit__`. Wrap the body in `try / finally` so the cleanup runs even when the `with` block raises.
+`@contextmanager` requires **exactly one** `yield` in the function body. The code before it runs on `__enter__`; the yielded value is what gets bound to `as name`; the code after runs on `__exit__`. The cleanup after the `yield` only runs on the exception path if it's guarded by `try / finally`.
 ```
 
-### `starterCode`
+### `starterCode` (plausible-but-wrong: restore runs after `yield` with no `try / finally`)
 
 ```python
 from contextlib import contextmanager
 
+_MISSING = object()
+
 
 @contextmanager
 def temp_state(d: dict, key, value):
-    # your code (yield once)
-    ...
+    sentinel = d.get(key, _MISSING)
+    d[key] = value
+    yield
+    if sentinel is _MISSING:
+        del d[key]
+    else:
+        d[key] = sentinel
 ```
 
 ### `testCode`
@@ -244,26 +253,12 @@ import json, sys
 sys.stdout.write("__DOJO_RESULT__ " + json.dumps({"tests": _tests}) + "\n")
 ```
 
-### `hint`
+### `hints` (tier-ordered — see §2.4)
 
 ```markdown
-The shape is:
-
-```
-@contextmanager
-def temp_state(d, key, value):
-    # 1. Remember whether the key existed (and if so, its old value).
-    # 2. Set d[key] = value.
-    # 3. yield
-    # 4. Restore: if the key existed before, put the old value back; else delete it.
-```
-
-To pass the "restores even when the block raises" test, wrap the `yield` in `try / finally` so the restore step (4) runs regardless of whether the block exits cleanly.
-
-Two specific traps:
-
-- **Don't use `try / except`** — you don't want to catch the exception, you want the cleanup to run *and* the exception to propagate. `try / finally` does that.
-- **Don't `del d[key]` unconditionally on exit.** The key may have legitimately existed before you set it; in that case you restore the original value, not delete it. Track the pre-existence with a sentinel (`MISSING = object()` is the standard pattern) or with `key in d` checked once at the start.
+> **Tier 1** (on first failure): The starter restores correctly on the happy path but not when the block raises — because the restore runs straight after the `yield` with nothing guarding it, and a raise inside the `with` block skips straight past it. What language construct guarantees a piece of code runs whether or not the block above it raised?
+>
+> **Tier 2** (on second failure): Wrap the `yield` in `try / finally`: put the `yield` in the `try`, move the restore (the `if sentinel is _MISSING: ... else: ...` block) into the `finally`. `finally` runs on both the clean and the raising path; don't use `except` — you want the cleanup to run *and* the exception to propagate.
 ```
 
 ### `referenceSolution`
@@ -571,7 +566,7 @@ Three deliberate experiments:
 - [x] Read step passes the paragraph test §2.1 (audit table above).
 - [x] Primary `before-after` figure per the figures menu is embedded (`try-finally-vs-with`) — the verbose pre-Python pattern on the left, the Pythonic `with` on the right. Data spec in §"Figure data spec" below.
 - [x] Kata order swap (4.2 = `@contextmanager`, 4.3 = `class Capture`) per the 2026-06-08 audience review — generator shape first, class shape second. Each kata's instruction explicitly references the other to make the unification (`with` ⇔ class form ⇔ generator-with-yield) clear.
-- [x] Hint discipline §2.4: `temp_state` hint does NOT name `dict.get` or `del d[key]` directly — points at "track pre-existence with a sentinel" and walks the trap shape. `Capture` hint does NOT name `self` or `append` — points at "return the value the `with ... as name:` clause should bind."
+- [x] Hint discipline §2.4: `temp_state` is now broken→fix with **tiered hints** — Tier 1 points at "what construct guarantees code runs whether or not the block raised" without naming `try / finally`; Tier 2 names `try / finally` (the still-gated solution-level nudge) but leaves the learner to assemble it. `Capture` hint does NOT name `self` or `append` — points at "return the value the `with ... as name:` clause should bind."
 - [x] Playground voice contract §2.3: instruction and hint list specific things to try (raise inside, swallow with `True`, three-deep nesting), not "explorá libremente." Maya's veto avoided.
 - [x] Playground instruction carries the print-routing note (Maya §7 resolved item) so the learner who copies the pattern into a kata understands why their `print` vanishes.
 - [x] `__exit__`-returns-`True` warning surfaces explicitly in both the read step ("default to returning `None`") and the playground experiments ("**this is why `return True` from `__exit__` is dangerous**"). The polyglot doesn't have to discover this by accident.
