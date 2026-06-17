@@ -12,9 +12,9 @@ export const cronPistonSmokeRoutes = new Hono<AppEnv>()
 // behind a working /health/piston for hours.
 //
 // `critical: false` means a failure is reported in the body but doesn't 503
-// the endpoint, so the GHA workflow stays green. Use this for languages with
-// known runtime quirks on the pinned image, or for scrolls that haven't
-// shipped yet — we want regressions visible without burning the email signal.
+// the endpoint — reserve it for languages we've confirmed are broken at the
+// runner layer and not in our control, never as a way to silence noise we
+// haven't diagnosed. All six are critical today.
 const SMOKE_PAYLOADS: ReadonlyArray<{
   language: string
   code: string
@@ -27,10 +27,7 @@ const SMOKE_PAYLOADS: ReadonlyArray<{
   { language: 'typescript', code: '', testCode: 'console.log("ok")',   expectedStdout: 'ok', critical: true },
   { language: 'rust',       code: '', testCode: 'fn main() { println!("ok"); }', expectedStdout: 'ok', critical: true },
   { language: 'sql',        code: 'SELECT 1;', testCode: '',           expectedStdout: '1', critical: true },
-  // Go scroll is still in S029; on the pinned engineer-man/piston image Go
-  // also has a known stderr-buffer quirk that's orthogonal to the scrolls.
-  // Surface the result, don't red the workflow.
-  { language: 'go',         code: '', testCode: 'package main\nimport "fmt"\nfunc main() { fmt.Println("ok") }', expectedStdout: 'ok', critical: false },
+  { language: 'go',         code: '', testCode: 'package main\nimport "fmt"\nfunc main() { fmt.Println("ok") }', expectedStdout: 'ok', critical: true },
 ]
 
 cronPistonSmokeRoutes.post('/cron/piston-smoke', async (c) => {
