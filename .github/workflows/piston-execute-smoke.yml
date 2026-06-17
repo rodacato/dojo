@@ -19,6 +19,12 @@ jobs:
   smoke:
     name: Execute one hello-world per language
     runs-on: ubuntu-latest
+    # production-scoped secrets (CRON_SECRET) only resolve when the job
+    # declares the environment — otherwise secrets.CRON_SECRET reads empty
+    # and the API responds 401 instantly, turning the smoke into a
+    # constant red ping. (Same reason deploy.yml and accessory-reboot.yml
+    # declare `environment: production`.)
+    environment: production
     timeout-minutes: 3
     steps:
       - name: Call /cron/piston-smoke
