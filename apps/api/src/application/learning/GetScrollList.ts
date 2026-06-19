@@ -11,6 +11,7 @@ export interface ScrollSummary {
   accentColor: string
   status: ScrollStatus
   isPublic: boolean
+  estimatedMinutes: number | null
   lessonCount: number
   stepCount: number
   externalReferences: ExternalReference[]
@@ -36,6 +37,7 @@ export class GetScrollList {
       accentColor: c.accentColor,
       status: c.status,
       isPublic: c.isPublic,
+      estimatedMinutes: c.estimatedMinutes,
       lessonCount: c.lessons.length,
       stepCount: c.lessons.reduce((sum, l) => sum + l.steps.length, 0),
       externalReferences: c.externalReferences,

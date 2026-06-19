@@ -208,6 +208,9 @@ export interface ScrollDTO {
   // /admin/scrolls and /scrolls/:slug both include it.
   status?: ScrollStatus
   isPublic: boolean
+  // Real work time in minutes (framework §4.2). Null when not yet measured —
+  // the card renders no time rather than a fabricated one.
+  estimatedMinutes: number | null
   lessonCount: number
   stepCount: number
   externalReferences: ExternalReference[]
@@ -220,6 +223,14 @@ export interface StepSolutionDTO {
 
 export interface ScrollDetailDTO extends ScrollDTO {
   lessons: LessonDTO[]
+}
+
+// Batch catalog progress (GET /scrolls/progress). One entry per scroll the
+// caller has touched; the catalog derives binary state client-side against
+// each scroll's stepCount. Kept off ScrollDTO so the content DTO stays pure.
+export interface ScrollProgressSummary {
+  scrollId: string
+  completedStepCount: number
 }
 
 export interface ExecuteStepRequest {

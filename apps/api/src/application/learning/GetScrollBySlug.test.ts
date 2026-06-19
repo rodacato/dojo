@@ -12,6 +12,7 @@ const makeScroll = (): Scroll => ({
   accentColor: '#3178C6',
   status: 'published',
   isPublic: false,
+  estimatedMinutes: null,
   externalReferences: [],
   lessons: [],
 })

@@ -169,6 +169,13 @@
       "when": 1781731419959,
       "tag": "0023_step_hints",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1781901998811,
+      "tag": "0024_ordinary_magma",
+      "breakpoints": true
     }
   ]
 }

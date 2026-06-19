@@ -36,6 +36,9 @@ export interface Scroll {
   accentColor: string
   status: ScrollStatus
   isPublic: boolean
+  // Real, attentive-polyglot work time (framework §4.2). Nullable: a scroll
+  // without a measured estimate renders no time rather than a fabricated one.
+  estimatedMinutes: number | null
   externalReferences: ExternalReference[]
   lessons: Lesson[]
 }

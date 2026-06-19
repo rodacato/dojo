@@ -15,6 +15,7 @@ describe('GetScrollProgress', () => {
         lastAccessedAt: new Date(),
       }),
       findAllForAnonymous: vi.fn(),
+      findAllForOwner: vi.fn(),
       save: vi.fn(),
       deleteAnonymous: vi.fn(),
     }
@@ -30,6 +31,7 @@ describe('GetScrollProgress', () => {
     const progressRepo = {
       findByOwnerAndScroll: vi.fn().mockResolvedValue(null),
       findAllForAnonymous: vi.fn(),
+      findAllForOwner: vi.fn(),
       save: vi.fn(),
       deleteAnonymous: vi.fn(),
     }
@@ -49,6 +51,7 @@ describe('GetScrollProgress', () => {
         lastAccessedAt: new Date(),
       }),
       findAllForAnonymous: vi.fn(),
+      findAllForOwner: vi.fn(),
       save: vi.fn(),
       deleteAnonymous: vi.fn(),
     }

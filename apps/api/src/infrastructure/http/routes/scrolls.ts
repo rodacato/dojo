@@ -37,6 +37,28 @@ scrollRoutes.get('/scrolls', optionalAuth, async (c) => {
   return c.json({ scrolls })
 })
 
+// Batch progress for the catalog — one round-trip, a completed-step count per
+// scroll the caller has touched. Registered before /scrolls/:slug so the static
+// path is never shadowed by the slug param. ScrollDTO stays pure Content; the
+// catalog derives binary state client-side. Anonymous callers pass
+// ?anonymousSessionId; a fresh anon (no session) legitimately has no progress.
+scrollRoutes.get('/scrolls/progress', optionalAuth, async (c) => {
+  const user = c.get('user')
+  let owner: ProgressOwner
+  if (user) {
+    owner = { kind: 'user', userId: user.id }
+  } else {
+    const anonymousSessionId = c.req.query('anonymousSessionId')
+    if (!anonymousSessionId) {
+      return c.json({ progress: [] })
+    }
+    owner = { kind: 'anonymous', sessionId: anonymousSessionId }
+  }
+
+  const progress = await useCases.getAllScrollProgress.execute(owner)
+  return c.json({ progress })
+})
+
 scrollRoutes.get('/scrolls/:slug', optionalAuth, async (c) => {
   const parsed = scrollSlugSchema.safeParse({ slug: c.req.param('slug') })
   if (!parsed.success) {
@@ -66,6 +88,7 @@ scrollRoutes.get('/scrolls/:slug', optionalAuth, async (c) => {
       accentColor: scroll.accentColor,
       status: scroll.status,
       isPublic: scroll.isPublic,
+      estimatedMinutes: scroll.estimatedMinutes,
       externalReferences: scroll.externalReferences,
       lessonCount,
       stepCount,

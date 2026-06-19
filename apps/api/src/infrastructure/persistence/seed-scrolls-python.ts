@@ -115,6 +115,7 @@ export const PYTHON_COURSE_DATA = {
   accentColor: '#3776AB',
   status: 'published' as const,
   isPublic: true,
+  estimatedMinutes: 85,
   externalReferences: [
     {
       title: 'Fluent Python, 2nd ed. (Luciano Ramalho)',

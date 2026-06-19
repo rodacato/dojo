@@ -14,6 +14,7 @@ import { GetScrollBySlug } from '../application/learning/GetScrollBySlug'
 import { ExecuteStep } from '../application/learning/ExecuteStep'
 import { TrackProgress } from '../application/learning/TrackProgress'
 import { GetScrollProgress } from '../application/learning/GetScrollProgress'
+import { GetAllScrollProgress } from '../application/learning/GetAllScrollProgress'
 import { MergeAnonymousProgress } from '../application/learning/MergeAnonymousProgress'
 import { GenerateNudge } from '../application/learning/GenerateNudge'
 import { SubmitNudgeFeedback } from '../application/learning/SubmitNudgeFeedback'
@@ -128,6 +129,7 @@ export const useCases = {
   executeStep: new ExecuteStep({ executionPort: createExecutionAdapter() }),
   trackProgress: new TrackProgress({ progressRepo: scrollProgressRepo, scrollRepo, eventBus }),
   getScrollProgress: new GetScrollProgress({ progressRepo: scrollProgressRepo }),
+  getAllScrollProgress: new GetAllScrollProgress({ progressRepo: scrollProgressRepo }),
   mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: scrollProgressRepo }),
   generateNudge: new GenerateNudge({ scrollRepo, llm, nudgeRepo }),
   submitNudgeFeedback: new SubmitNudgeFeedback({ nudgeRepo }),

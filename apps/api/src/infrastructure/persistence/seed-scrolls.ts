@@ -110,6 +110,7 @@ export const DOM_COURSE_DATA = {
   accentColor: '#F7DF1E',
   status: 'published' as const,
   isPublic: true,
+  estimatedMinutes: 75,
   externalReferences: [
     { title: 'MDN: Introduction to the DOM', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction', kind: 'docs' as const },
     { title: 'MDN: Event delegation', url: 'https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#event_delegation', kind: 'docs' as const },
@@ -529,6 +530,7 @@ type ScrollSeed = {
   accentColor: string
   status: 'draft' | 'published'
   isPublic?: boolean
+  estimatedMinutes?: number | null
   externalReferences?: Array<{ title: string; url: string; kind: 'book' | 'docs' | 'talk' | 'article' }>
 }
 
@@ -581,6 +583,7 @@ async function seedOneScroll(
         accentColor: courseData.accentColor,
         status: courseData.status,
         isPublic: courseData.isPublic ?? false,
+        estimatedMinutes: courseData.estimatedMinutes ?? null,
         externalReferences: courseData.externalReferences ?? [],
       },
     })

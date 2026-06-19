@@ -158,6 +158,7 @@ export const TYPESCRIPT_COURSE_DATA = {
   // job (every 30 min, prod) goes red if these regress. See CHANGELOG (S029).
   status: 'published' as const,
   isPublic: true,
+  estimatedMinutes: 100,
   externalReferences: [
     {
       title: 'TypeScript Handbook',

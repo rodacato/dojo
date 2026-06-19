@@ -33,6 +33,19 @@ export class PostgresScrollProgressRepository implements ScrollProgressPort {
     return row ? toDomain(row) : null
   }
 
+  async findAllForOwner(owner: ProgressOwner): Promise<ScrollProgress[]> {
+    const whereClause =
+      owner.kind === 'user'
+        ? and(eq(scrollProgress.userId, owner.userId), isNull(scrollProgress.anonymousSessionId))
+        : and(
+            eq(scrollProgress.anonymousSessionId, owner.sessionId),
+            isNull(scrollProgress.userId),
+          )
+
+    const rows = await this.db.query.scrollProgress.findMany({ where: whereClause })
+    return rows.map(toDomain)
+  }
+
   async findAllForAnonymous(sessionId: string): Promise<ScrollProgress[]> {
     const rows = await this.db.query.scrollProgress.findMany({
       where: eq(scrollProgress.anonymousSessionId, sessionId),

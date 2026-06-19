@@ -199,6 +199,7 @@ export const scrolls = pgTable('courses', {
   accentColor: varchar('accent_color', { length: 20 }).notNull().default('#6366F1'),
   status: varchar('status', { length: 50 }).notNull().default('draft'),
   isPublic: boolean('is_public').notNull().default(false),
+  estimatedMinutes: integer('estimated_minutes'),
   externalReferences: jsonb('external_references').notNull().default([]),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 })

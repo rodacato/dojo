@@ -200,6 +200,7 @@ export const RUST_COURSE_DATA = {
   accentColor: '#CE422B',
   status: 'published' as const,
   isPublic: true,
+  estimatedMinutes: 120,
   externalReferences: [
     {
       title: 'The Rust Programming Language (Klabnik & Nichols)',

@@ -16,6 +16,7 @@ function buildScroll(overrides: Partial<Scroll> = {}): Scroll {
     accentColor: '#000',
     status: 'published',
     isPublic: true,
+    estimatedMinutes: null,
     externalReferences: [],
     lessons: [
       {
@@ -48,6 +49,7 @@ function buildDeps(overrides: {
           : null,
       ),
     findAllForAnonymous: vi.fn(),
+    findAllForOwner: vi.fn(),
     save: vi.fn(),
     deleteAnonymous: vi.fn(),
   }

@@ -20,6 +20,7 @@ export interface ScrollProgress {
 
 export interface ScrollProgressPort {
   findByOwnerAndScroll(owner: ProgressOwner, scrollId: string): Promise<ScrollProgress | null>
+  findAllForOwner(owner: ProgressOwner): Promise<ScrollProgress[]>
   findAllForAnonymous(sessionId: string): Promise<ScrollProgress[]>
   save(progress: ScrollProgress): Promise<void>
   deleteAnonymous(sessionId: string): Promise<void>

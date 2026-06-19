@@ -95,6 +95,7 @@ export class PostgresScrollRepository implements ScrollRepositoryPort {
       accentColor: row.accentColor,
       status: row.status as ScrollStatus,
       isPublic: row.isPublic,
+      estimatedMinutes: row.estimatedMinutes ?? null,
       externalReferences: (row.externalReferences ?? []) as ExternalReference[],
       lessons: row.lessons
         .sort((a, b) => a.order - b.order)

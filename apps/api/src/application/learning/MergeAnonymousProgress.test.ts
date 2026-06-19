@@ -9,6 +9,7 @@ function makeRepo(anonList: ScrollProgress[], userProgress: Map<string, ScrollPr
       return userProgress.get(scrollId) ?? null
     }),
     findAllForAnonymous: vi.fn(async () => anonList),
+    findAllForOwner: vi.fn(async () => []),
     save: vi.fn(async (p: ScrollProgress) => {
       userProgress.set(p.scrollId, p)
     }),

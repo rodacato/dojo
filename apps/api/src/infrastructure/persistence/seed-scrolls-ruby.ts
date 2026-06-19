@@ -96,6 +96,7 @@ export const RUBY_COURSE_DATA = {
   accentColor: '#CC342D',
   status: 'published' as const,
   isPublic: true,
+  estimatedMinutes: 90,
   externalReferences: [
     {
       title: 'The Well-Grounded Rubyist, 3rd ed. (Black & Leo)',
