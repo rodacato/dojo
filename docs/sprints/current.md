@@ -1,58 +1,67 @@
-# Sprint 030 — Scrolls presentation reshape + the full-set smoke gate
+# Sprint 031 — Go crash scroll + the carried full-set smoke
 
-> **Status:** Open 2026-06-19 · **re-scoped 2026-06-19** from "Go crash scroll" to the scrolls presentation reshape. Go authoring moves to **S031** — only its curriculum (`curricula/go.md`) + a scratch draft exist, nothing is built/seeded/live, so deferring it costs nothing built. Authoring a full scroll *and* the reshape in one sprint is overload.
-> **Direction:** [`docs/courses/README.md`](../courses/README.md) §4.5/§4.6 (catalog + landing) · design work staged in [`.kwik-e/tmp/scrolls-reshape/`](../../.kwik-e/tmp/scrolls-reshape/) (prompts, prototype review, action plan) · [ADR 022](../adr/022-crash-course-pivot.md) · [ADR 023](../adr/023-progressive-hint-reveal.md)
-> **Predecessor:** [Sprint 029 — Scroll format revision + publish all four](archive/sprint-029-scroll-format-revision.md)
+> **Status:** Open 2026-06-19. Active focus: Go — the fifth and final language scroll — preceded by the full-set real-Piston smoke carried from S030 (owed since S029).
+> **Direction:** [ADR 022 — crash-course pivot](../adr/022-crash-course-pivot.md) · [ADR 023 — progressive hint reveal + broken→fix](../adr/023-progressive-hint-reveal.md) · [`docs/courses/AUTHORING.md`](../courses/AUTHORING.md) · [`docs/courses/README.md`](../courses/README.md) §5.3 + §4.4
+> **Predecessor:** [Sprint 030 — Scrolls presentation reshape](archive/sprint-030-scrolls-reshape.md) *(re-scoped from Go; Go landed here)*
 
 ## Sprint thesis
 
-The scroll *format* (Piston exercises, broken→fix), *progress* (anonymous→login merge), and *playground* (Engawa) already exist and four scrolls are live. What does **not** match the bar is the **presentation** — the catalog shows no progress, there's no orientation surface, and the entry doesn't read as the Rustlings-style "clear, free, I-can-start-anything" experience Adrian endorsed after the 2026-06-19 design review. A Claude Design prototype validated the direction (terminal-forward, state-aware, no streak/%/badges).
-
-This is a **presentation reshape on a working engine** — restyle, don't rewrite. Reuse the site's tokens (`apps/web/src/styles/main.css @theme`) and existing components; the prototype's `_ds/` token export is reference only, discarded at implementation.
-
-The full-set real-Piston smoke stays in this sprint. It was always due — S029 flipped the four scrolls to `published` + `isPublic: true` *before* the gate ran, on Adrian's call, so a broken kata is broken *in production* at the next reseed. And it's now the **safety net for the reshape**: we restyle the player that serves live Ruby/Python/Rust/TS, so the smoke guards that content while we work around it.
+Go closes the five-language set. The authoring pipeline is proven four times — the risk is not "can we author a scroll." It's two things: Go's pre-generics sandbox (Piston ships Go 1.16.2) and **the smoke debt carried twice now**. S029 published four scrolls ahead of the gate; S030 was presentation-only and didn't touch executable katas, so the smoke didn't get more dangerous — but it's still owed, and it runs *first* this sprint, before any Go seed touches the DB.
 
 ## Mandatory (sprint blockers if not done)
 
-- **Phase 0 — backend prereqs (do first, the UI lies without them).**
-  - `estimatedMinutes` on the Scroll schema + `ScrollDTO` + per-scroll seed values (framework's real time targets, not derived `2 min/step`). The `~95 MIN` card contract (§4.5) is fake until this lands.
-  - Batch progress endpoint `GET /scrolls/progress` → `{scrollId, completedStepCount}[]` for the current owner/session; the catalog computes binary state client-side against `stepCount`. **`ScrollDTO` stays pure content** — progress is the Learning context, not Content (no per-owner state on the cacheable catalog DTO).
-- **Catalog reshape (`ScrollsPage.tsx`).** State chips (`Not started`/`In progress`/`Completed`, glyph+word), state-aware CTA (`Start`/`Continue`/`Review`), filters, Languages/Topics grouping (Topics as deliberate `upcoming` gap), the metadata row with time. No streak, no %-hero, no badges.
-- **Scroll orientation landing (new route).** `/scrolls/:slug` = landing, player moves to `/scrolls/:slug/:stepId`. Lesson list as free `jump-to` (not a gate), per-lesson state, an inside-scroll `N / M steps` progress panel. Per §4.6.
-- **THE full-set real-Piston smoke — guarding live content, now also the reshape's safety net.** Walk all four live scrolls against real Piston (`FF_CODE_EXECUTION_ENABLED=true`): every kata's starter + solution, the predicts, playgrounds, read+inline interactions, figures, capstones. Ruby especially — its S029 broken→fix conversions were validated by logic, never executed. Fix what surfaces.
-- **TS Piston deploy-config — DONE (verify, don't re-do).** `config/deploy.api.yml` runs the Piston accessory with `PISTON_RUN_TIMEOUT=8000` + `PISTON_OUTPUT_MAX_SIZE=65536`. The `piston-execute-smoke` CI job (`/cron/piston-smoke`, every 30 min, production-scoped) is the live verifier. Confirm green after deploy.
-- **Sprint admin discipline.** Close with retro, archive, CHANGELOG, S031 open. Two commits.
+- **THE full-set real-Piston smoke — run it first.** Walk all four live scrolls against real Piston (`FF_CODE_EXECUTION_ENABLED=true pnpm --filter api validate:scrolls`): every kata's starter + solution, the predicts, playgrounds, read+inline interactions, figures, capstones. Ruby especially — its S029 broken→fix conversions were validated by logic, never executed. Fix what surfaces. This is W1, before Go authoring.
+- **Go crash scroll end-to-end.** Kenji Watanabe (S6) lens. Full pipeline: scope block (lens, panel, outline + capstone + gesture audit, outline-level user test), prose, suite voice audit, panel + audience prose review, seed in batches each smoked live against **Piston Go 1.16.2**. Scratch draft at `.kwik-e/tmp/curricula-drafts/go/` informs scope. When it seeds + smokes clean, flip it to `published` + `isPublic: true` and add `go` to `PUBLIC_LANGUAGE_WHITELIST` (consistent with the other four). Add an `estimatedMinutes` value to its seed (S030 added the field).
+- **Sprint admin discipline.** Close with retro, archive, CHANGELOG, S032 open.
 
-## Stretch (ship if the reshape core closes cleanly)
+## Stretch (carried from S030 — ship if Go closes cleanly)
 
-- **Step player consistency pass** (Phase 3) — terminal `scroll/` header, step-type rail tags, `THE CONTRACT` box + **the completion moment** (`ScrollCompleteBanner`) + **error/empty/runner-offline/rate-limit states**. May fold into S031 next to Go if it doesn't fit.
-- **Engawa consistency pass** (Phase 4).
-- **Render-test infra** (jsdom + @testing-library) — flagged every sprint since S027; land it or defer with a reason.
+- **Step player visual polish** — terminal `scroll/<language>` header, `THE CONTRACT` box styling to match the reshaped catalog/landing. Cosmetic; the player is already functionally solid (rail step-type tags + graceful runner states all present).
+- **Engawa consistency pass** — align the playground with the reshaped surfaces.
+- **Render-test infra** (jsdom + @testing-library) — flagged every sprint since S027; land it or explicitly defer with a reason.
 
-## Out of scope (deferred, with explicit triggers)
+## Open decisions for the Go scope block
 
-- **Go crash scroll → S031.** Only `curricula/go.md` + the scratch draft at `.kwik-e/tmp/curricula-drafts/go/` exist. Full scope block + authoring + Piston Go 1.16.2 smoke + publish flip all move to S031. The Go scope-block decisions (lens, sandbox honesty, broken→fix policy, capstone) are preserved in [S031's open file] when it opens.
-- **Completed-scroll share surface + anonymous→sign-in / save-progress nudge** (framework open Q #8) — Phase 5; real surfaces, not blocking the core eval.
-- **Sumi-e migration** — separate sprint. The reshape ships in Slate Indigo; do not entangle.
-- **Admin scrolls UI, Belts/milestones, Dashboard** — out of scope (brand contract / separate effort).
-- **Streak on scrolls** — parked (README §10). If ever adopted, it's a brand-stance change → ADR.
+| Question | Default |
+|---|---|
+| Go lens | **"Go's small surface and its sharp edges: goroutines/channels, the error-value convention, interfaces-by-satisfaction, zero values, and the gotchas (nil interfaces, loop-variable capture, slice aliasing)."** Confirm at scope block with Kenji (S6). |
+| Go sandbox reality | **Declare Go 1.16.2 in Lesson 0's sandbox-honesty section.** Pre-generics (no type parameters), no `slices`/`maps` stdlib, older `errors` API. Idioms needing >1.16 move to prose with a "newer Go" marker, not a kata. The loop-variable-capture gotcha (fixed in 1.22) is *live* on 1.16 — teach it as the real footgun it is. |
+| Go format | **Pure delta, no exception.** Go does NOT inherit Rust's one-model-from-scratch exception. Frame goroutines/channels against the async models the polyglot already holds. |
+| Go test harness | **Manual `_t`/`_eq` consistent with the other four** — Piston runs `go run`, not `go test`. |
+| Capstone + gestures | **One capstone integrating ≥3 lessons; production-gesture audit at outline** (define a struct + methods, handle an error-value return, use a goroutine+channel). |
+| Broken→fix in Go? | **Decide at scope block.** Go is compiled — like Rust, much of the misconception-correction is the compiler's job, so default to write-from-scratch + fail-by-design; reach for broken→fix only where a planted bug embodies a genuine Go gotcha (nil-interface, loop-capture) and the fix teaches the idiom. See [ADR 023](../adr/023-progressive-hint-reveal.md). |
+
+## Open questions (real, blocking specific decisions)
+
+1. **Does the loop-variable-capture footgun belong in the crash scroll or the deep-dive?** Live on the 1.16.2 sandbox (1.22 fixed it). Default: **teach it, marked version-specific.** Kenji + Elif decide at scope block.
+2. **Concurrency depth.** Goroutines + channels + `select` is a lot for ~100 min. How much is delta-able vs needs real teaching? If it overflows the format, concurrency becomes a named-and-deferred deep-dive and the crash scroll covers the sequential surface + a single goroutine/channel taste.
 
 ## Working order (hypothesis, not contract)
 
 | Block | Work |
 |---|---|
-| W1 | Phase 0: `estimatedMinutes` schema + migration + DTO + seed; batch progress endpoint. Confirm `piston-execute-smoke` green. Start the full-set content smoke of the four live scrolls — they guard production, do them first. |
-| W2 | Catalog reshape (`ScrollsPage.tsx`) against the prototype. Reuse site tokens + existing components. |
-| W3 | Scroll landing (new route + routing split). |
-| W4 | Finish full-set smoke incl. fixes. Step-player consistency pass if it fits (else S031). Sprint admin close. |
+| W1 | The carried full-set Piston smoke against all four live scrolls. Fix what surfaces. Confirm `piston-execute-smoke` cron green. |
+| W2 | Go scope block (lens, panel, outline + capstone + gesture audit, outline-level user test). |
+| W3 | Go authoring (prose, gates, suite voice audit, panel + audience prose review). |
+| W4 | Go seed (incl. `estimatedMinutes`) + per-batch smoke against Piston Go 1.16.2; Go publish flip; final full-set smoke incl. Go. Sprint admin close. |
+
+## Reshape follow-ups (from S030 — triage before picking up)
+
+- **`lessons.outcome` field** — the §4.4 "what changed in the learner's head" line the new landing can't yet show (lessons store only `title`). Small schema add, like `estimatedMinutes`.
+- **Completed-scroll share reshape** (`ScrollSharePage`) — align with the reshaped surfaces.
+- **`estimatedMinutes` tuning** — S030 seeded framework-anchored estimates; replace with real measured numbers when known.
+- **`javascript-dom` grouping** — landed under "Topics" via the closed-5-language constant; revisit if it should sit elsewhere.
+- **Turnstile on `/scrolls/execute`** — precautionary; only if real execution abuse shows (backlog).
 
 ## Reading order if you're picking this up cold
 
-1. [`.kwik-e/tmp/scrolls-reshape/action-plan.md`](../../.kwik-e/tmp/scrolls-reshape/action-plan.md) — the plan, prototype verdict, constraints.
-2. [`.kwik-e/tmp/scrolls-reshape/claude-design-prompts.md`](../../.kwik-e/tmp/scrolls-reshape/claude-design-prompts.md) — the four screen prompts + the on-brand content palette.
-3. [`docs/courses/README.md`](../courses/README.md) §4.5/§4.6 — catalog + landing canon.
-4. [`docs/DESIGN.md`](../DESIGN.md) — tokens (Slate Indigo), the "what we don't do" list.
-5. The prototype export at [`.kwik-e/tmp/scrolls-reshape/Dojo - scrolls/`](../../.kwik-e/tmp/scrolls-reshape/) — visual reference only (its `_ds/` tokens are a copy; reuse the site's).
+1. [`archive/sprint-030-scrolls-reshape.md`](archive/sprint-030-scrolls-reshape.md) — what just shipped + the carried smoke debt.
+2. [ADR 022](../adr/022-crash-course-pivot.md) — the crash-course pivot.
+3. [ADR 023](../adr/023-progressive-hint-reveal.md) — broken→fix + tiered hints.
+4. [`docs/courses/AUTHORING.md`](../courses/AUTHORING.md) — the pipeline, proven four times.
+5. [`docs/courses/README.md`](../courses/README.md) §5.3 + §4.4 — capstone + production-gesture canon.
+6. [`docs/courses/AUDIENCE.md`](../courses/AUDIENCE.md) — personas; Go's row.
+7. The four shipped scroll specs under [`curricula/`](../courses/curricula/) — Rust's is closest in shape (compiled-language sandbox, error-as-curriculum).
 
 ## Out of scope, parked
 
@@ -60,3 +69,4 @@ The full-set real-Piston smoke stays in this sprint. It was always due — S029 
 - Per-track belt marks, rust indicator (PRD-031 v1.1).
 - LLM telemetry table (backlog carry).
 - Aggressive sensei voice rewrite (calibration-gated).
+- Sixth scroll / deep-dives — the five-language set is the closed commitment.

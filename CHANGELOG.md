@@ -4,6 +4,25 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 030 — scrolls presentation reshape (2026-06-19)
+**Phase 1 — Alpha**
+
+> Re-scoped from the Go scroll. Saw Rustfinity/Rustlings and realized the thing I wanted for the scrolls already existed in the engine — Piston exercises, anonymous→login progress, the Engawa playground — but the *presentation* didn't sell it. The catalog showed no progress, there was no orientation surface, the entry didn't read as "clear, free, start-anything." A Claude Design prototype validated the direction (terminal-forward, state-aware, no streak/%/badges). Reshaped the presentation on the working engine — restyle, not rewrite — and moved Go to S031.
+
+**What shipped:**
+- **Catalog reshape** — per-scroll binary state (Not started / In progress / Completed) from a new batch endpoint, state-aware CTA (Start / Continue / Review), filter tabs, Languages/Topics grouping keyed on the closed 5-language set (ADR 022), a `~min` contract per card. No streak, no %-hero, no badges — the felt win in the reference was clarity + free choice, not the dopamine.
+- **Scroll orientation landing** (`/scrolls/:slug`, new route) — contract + time, a state-aware CTA, the lesson list as a free jump-to (not a gate), an inside-scroll N/M progress rail. The player moved to `/scrolls/:slug/:stepId`; step navigation dropped its hash bookkeeping for the path param, so back/forward and refresh are exact for free.
+- **Completion moment for anonymous finishers** — was gated on login (the share card is keyed by user), so anon learners who can do every scroll saw nothing on finishing. Now they get the same moment, with the share button replaced by an offer to sign in (which saves the completion + unlocks the card). Merge-on-login already carries their progress over.
+- **Backend prereqs (no UI):** `estimatedMinutes` on the scroll schema (migration 0024) + per-scroll seed anchored to the framework's time targets (§4.2 — Rust 120, the ceiling, not the prototype's invented 150); `GET /scrolls/progress` batch endpoint. `ScrollDTO` stayed pure Content — progress (Learning) never coupled onto the cacheable catalog DTO (Darius C2).
+
+**Key decision (the honest one):** considered gating scrolls behind auth to stop API abuse. Rejected — it reverses the free/anonymous thesis (ADR 022, README §1) and identity doesn't stop automated abuse anyway; rate-limit + captcha + sandbox quotas do (Marta C5). Anonymous stays first-class. The execution endpoint already has per-IP rate-limit + a language whitelist + the Piston sandbox; Turnstile is a precautionary backlog item, added only if real abuse shows.
+
+**Also fixed:** `db:migrate` / `db:push` / `db:studio` didn't load the workspace `.env` (the seeds did, via `tsx --env-file`), so they saw `DATABASE_URL` undefined. Invoke the drizzle-kit bin under `node --env-file` — Node 22 native, no new dependency.
+
+**Carried to S031:** the **full-set Piston smoke** (owed since S029; this sprint's changes were presentation-only and didn't touch executable katas, so the risk didn't grow — run it before any Go DB work). Player visual polish (terminal `scroll/` header, contract box), Engawa consistency pass, render-test infra. The Go scroll itself. Follow-ups: a `lessons.outcome` field (the §4.4 "what changed in your head" line the landing can't yet show), the completed-scroll share reshape.
+
+---
+
 ## Sprint 029 — scroll format revision + publish all four (2026-06-17 – 06-19)
 **Phase 1 — Alpha**
 
