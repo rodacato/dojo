@@ -1635,7 +1635,7 @@ def fixture_splats(*args, **opts)
   # rest and keyrest only
 end
 
-def fixture_mixed(a, b: 1, *rest, c:, **opts)
+def fixture_mixed(a, *rest, b: 1, c:, **opts)
   # all the shapes at once
 end
 \`\`\`
@@ -1658,17 +1658,18 @@ parameters_of(:fixture_mixed)
 - The mental model that "methods are objects too" — same property the object-model lesson built.
 
 The 15-minute budget is real.`,
-  starterCode: `def fixture_simple(a, b); end
-def fixture_defaults(a, b = 1); end
-def fixture_keywords(a:, b: "default"); end
-def fixture_splats(*args, **opts); end
-def fixture_mixed(a, b: 1, *rest, c:, **opts); end
-
-def parameters_of(method_name)
+  starterCode: `def parameters_of(method_name)
   # Your code here.
 end
 `,
   testCode: `${RB_HARNESS_HEADER}
+# The five methods to introspect — you only write parameters_of.
+def fixture_simple(a, b); end
+def fixture_defaults(a, b = 1); end
+def fixture_keywords(a:, b: "default"); end
+def fixture_splats(*args, **opts); end
+def fixture_mixed(a, *rest, b: 1, c:, **opts); end
+
 _t('simple — two required positional') do
   result = parameters_of(:fixture_simple)
   expected = { required: 2, optional: 0, keyword_required: 0, keyword_optional: 0, rest: false, keyrest: false }
