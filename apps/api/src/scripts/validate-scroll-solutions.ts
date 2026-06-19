@@ -27,6 +27,18 @@ import {
   PYTHON_COURSE_DATA,
   PYTHON_STEPS,
 } from '../infrastructure/persistence/seed-scrolls-python'
+import {
+  RUBY_COURSE_DATA,
+  RUBY_STEPS,
+} from '../infrastructure/persistence/seed-scrolls-ruby'
+import {
+  RUST_COURSE_DATA,
+  RUST_STEPS,
+} from '../infrastructure/persistence/seed-scrolls-rust'
+import {
+  TYPESCRIPT_COURSE_DATA,
+  TYPESCRIPT_STEPS,
+} from '../infrastructure/persistence/seed-scrolls-typescript'
 
 type StepLike = {
   id: string
@@ -61,6 +73,19 @@ function collect(): Array<{ scrollSlug: string; scrollLanguage: string; step: St
     all.push({
       scrollSlug: PYTHON_COURSE_DATA.slug,
       scrollLanguage: PYTHON_COURSE_DATA.language,
+      step,
+    })
+  }
+  for (const step of RUBY_STEPS) {
+    all.push({ scrollSlug: RUBY_COURSE_DATA.slug, scrollLanguage: RUBY_COURSE_DATA.language, step })
+  }
+  for (const step of RUST_STEPS) {
+    all.push({ scrollSlug: RUST_COURSE_DATA.slug, scrollLanguage: RUST_COURSE_DATA.language, step })
+  }
+  for (const step of TYPESCRIPT_STEPS) {
+    all.push({
+      scrollSlug: TYPESCRIPT_COURSE_DATA.slug,
+      scrollLanguage: TYPESCRIPT_COURSE_DATA.language,
       step,
     })
   }
