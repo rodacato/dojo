@@ -226,8 +226,20 @@ The catalog page (`/scrolls`) is part of the curriculum, not a UI afterthought. 
 - **Group by kind: Languages first, then Topics.** The five language scrolls are the canonical top of the catalog — they are the closed set the dojo commits to. Topic scrolls are a secondary section, ordered by relevance to the learner's prior selections (if any) or alphabetically by default.
 - **No level tags in the catalog header.** Crash courses are not levels. If a scroll genuinely needs a prereq surface (e.g. `ruby-metaprogramming` assumes Ruby basics), that prereq belongs in the card body, not as a coloured badge that implies a global hierarchy.
 - **Don't show progress as a percentage on the catalog.** A learner who's done 1 of 16 steps does not need a `6% complete` bar shaming them on the home page. Show "in progress" as a binary state. Surface granular progress *inside* the scroll, not in the catalog.
+- **Do surface the binary state and let the learner filter by it.** The catalog should show each scroll's state (`Not started` / `In progress` / `Completed`), offer a filter (All / In progress / Completed / Not started), and use a per-state CTA label (`Start` / `Continue` / `Review`). "No percentage" is not "no progress" — the binary state is wanted, the shaming percentage is not. (Added 2026-06-19 after the Rustfinity/Rustlings presentation review — the felt win there was clarity + free choice, not the streak.)
 
 The catalog page also has a job the framework cares about: it's the only place a learner sees the full shape of the scroll set at once. That visibility is what makes intentional gaps (a deep-dive that doesn't exist yet, a language that's deliberately not in the set) read as deliberate rather than as a content backlog.
+
+### 4.6 Scroll orientation landing (added 2026-06-19)
+
+Between the catalog card and the step player sits a **scroll landing** — an orientation surface the learner sees *before* the code editor. The current player drops the learner straight into step 1 with a lesson sidebar; the landing is the missing "here's what this is, here's where I am, start wherever I want" view. The model is Rustlings' category page: clear contract, a quiet progress panel, and a lesson list that is a *jump-to*, not a gate. Routing: `/scrolls/:slug` is the landing, `/scrolls/:slug/:stepId` is the player.
+
+- **Lead with the contract.** Title + one-or-two sentences + "~90 min · for devs who already program". The learner decides to commit in five seconds.
+- **One state-aware CTA.** `Start · Lesson 1` when untouched, `Continue · <lesson>` when there's progress.
+- **The lesson list is free navigation.** Each lesson row shows its "what changed in the learner's head" line, step count, and per-lesson state. The learner may start *any* lesson. The freedom to choose is what makes the surface feel like a workspace, not an enrollment. (Tension with the gated-progression idea borrowed from Boot.dev in §2 — resolution: scrolls orient and invite, they don't lock. Lessons *build* on each other in content; the player does not fence them.)
+- **Granular progress is allowed here.** Unlike the catalog, the landing is one level inside the scroll, so an "N / M steps · X to go" panel is fine — it reports, it does not shame. Still: no streak, no heatmap, no return-visit nudge.
+
+The landing is a presentation surface only — the engine (Piston, `TrackProgress`, `MergeAnonymousProgress`, the Engawa playground) already exists.
 
 ---
 
@@ -594,5 +606,6 @@ Real questions the framework cannot yet answer. Each will be revisited at sprint
 6. **Analytics.** We need to know if a course is actually working. Completion rate is a notoriously bad proxy for learning (Codecademy proved this — high completion, low retention). Candidate signals: time-to-first-pass per step, hint-open rate, abandonment-by-step heatmap, return-after-N-days rate. Open: which of these we instrument first, and what privacy posture we publish around them.
 7. **Iframe-sandbox `fetch()` surface.** ADR 016 flagged this — the current sandbox can make outbound `fetch()` calls. Acceptable for first-party content, unacceptable once contributors can ship steps. Resolution required before §9's Phase 3 contribution opens.
 8. **Anonymous learner identity.** localStorage progress is fine for v1. But it loses progress on browser change, on incognito, on cache clear. Question: do we offer a lightweight "save progress" affordance (magic-link email, no full account) before forcing GitHub OAuth? Trade-off: friction vs. data loss complaints.
+9. **Streak / gamification on scrolls.** The Rustfinity/Rustlings reference (reviewed 2026-06-19) made a streak widget + per-card % look appealing. The framework rejected gamified streaks (§2, Boot.dev row) as dopamine-not-learning, and §4.5 rejects the catalog %. Note the live tension: a streak heatmap *already exists* on the dashboard/kata side (`docs/DESIGN.md` §Typography "dashboard streak" + §Component vocabulary "Streak heatmap") — so the objection is specifically to importing it onto *scrolls*, not that streaks are foreign to the product. Parked decision (2026-06-19): build the catalog/landing reshape *without* a streak; revisit whether scrolls earn one after the reshape ships and there's real return-visit data. If adopted, it's a brand-stance change → ADR, not a silent add.
 
-These eight are the live ones. They will be promoted to ADRs / specs as their answers become urgent.
+These nine are the live ones. They will be promoted to ADRs / specs as their answers become urgent.

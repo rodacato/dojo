@@ -35,6 +35,7 @@ _Good ideas, not urgent. Not in the next block._
 
 **Carry-forward from earlier sprints (still valid):**
 
+- **Scrolls catalog + orientation landing reshape** (S030 active — Phase 0 + catalog + landing in S030; player consistency pass + completion + error states may carry to S031) — presentation-only pass bringing `/scrolls` and the scroll-entry experience to the Rustlings-style clarity Adrian endorsed 2026-06-19 (clear contract, time-on-card, binary progress state + filters on the catalog, a new orientation landing at `/scrolls/:slug` with free lesson navigation). Engine untouched; reuse site tokens + existing components. Excludes streak (parked, README §10). Prereqs: `estimatedMinutes` schema field + batch `/scrolls/progress` endpoint. Design + plan staged at `.kwik-e/tmp/scrolls-reshape/` (Soren C6 + Maya S11 + Priya C1)
 - **Retrieval interleaving** (S019) — Lesson N tests usan identifiers introducidos en Lesson N-1. §3 del framework. Necesita PRD propio antes de sprint (Dr. Elif Yıldız)
 - **Diff visual** (S019) — entre la solución del learner y la `step.solution` reference. Polish posterior al "Alternative approach" ya shippeado en S019 (Soren)
 - **Dashboard EXPLAIN ANALYZE re-run** (S020) — re-run the 3 hottest queries once the alpha cohort has been active 2-3 weeks; DB volume in S020 was too small to validate the sprint-012 N+1 fix.
