@@ -140,11 +140,11 @@ export function ScrollPlayerPage() {
 
         {/* Main content */}
         <main ref={mainRef} className="flex-1 min-w-0 overflow-y-auto">
-          {scrollComplete && user && (
+          {scrollComplete && (
             <ScrollCompleteBanner
               scrollTitle={scroll.title}
               scrollSlug={scroll.slug}
-              userId={user.id}
+              userId={user?.id ?? null}
               lessonCount={scroll.lessons.length}
               stepCount={allSteps.length}
             />
