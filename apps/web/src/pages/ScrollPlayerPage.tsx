@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import type { ScrollDetailDTO } from '@dojo/shared'
 import { api } from '../lib/api'
 import { PageLoader } from '../components/PageLoader'
@@ -36,12 +36,16 @@ export function ScrollPlayerPage() {
     return () => { cancelled = true }
   }, [slug, retryTick])
 
-  const { completedSteps, progressLoaded, markStepComplete } = useScrollProgress(scroll, !!user)
-  const { activeStepId, navigateToStep, advanceToNextStep } = useStepNavigation(
-    scroll,
-    completedSteps,
-    progressLoaded,
-  )
+  const navigate = useNavigate()
+  const { completedSteps, markStepComplete } = useScrollProgress(scroll, !!user)
+  const { activeStepId, navigateToStep, advanceToNextStep } = useStepNavigation(scroll)
+
+  // The route always carries a :stepId; a bad/stale one falls back to the landing.
+  useEffect(() => {
+    if (scroll && activeStepId === null && slug) {
+      navigate(`/scrolls/${slug}`, { replace: true })
+    }
+  }, [scroll, activeStepId, slug, navigate])
 
   // On narrow viewports the sidebar overlays most of the screen — picking a
   // step is the signal the learner is done navigating.
@@ -78,10 +82,10 @@ export function ScrollPlayerPage() {
       {/* Top bar — 56px, mono caps progress */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <Link
-          to="/scrolls"
+          to={`/scrolls/${slug}`}
           className="font-mono text-xs tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
         >
-          ← Learn
+          ← Overview
         </Link>
         <span className="h-4 w-px bg-border hidden sm:block" />
         <span className="text-primary text-sm font-medium truncate hidden sm:inline">

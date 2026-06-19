@@ -31,6 +31,7 @@ const PublicProfilePage = lazyWithRetry(() => import('./pages/PublicProfilePage'
 const SharePage = lazyWithRetry(() => import('./pages/SharePage').then(m => ({ default: m.SharePage })))
 const ScrollSharePage = lazyWithRetry(() => import('./pages/ScrollSharePage').then(m => ({ default: m.ScrollSharePage })))
 const ScrollsPage = lazyWithRetry(() => import('./pages/ScrollsPage').then(m => ({ default: m.ScrollsPage })))
+const ScrollLandingPage = lazyWithRetry(() => import('./pages/ScrollLandingPage').then(m => ({ default: m.ScrollLandingPage })))
 const ScrollPlayerPage = lazyWithRetry(() => import('./pages/ScrollPlayerPage').then(m => ({ default: m.ScrollPlayerPage })))
 const BeltsPage = lazyWithRetry(() => import('./pages/BeltsPage').then(m => ({ default: m.BeltsPage })))
 const KumitePlaceholderPage = lazyWithRetry(() => import('./pages/KumitePlaceholderPage').then(m => ({ default: m.KumitePlaceholderPage })))
@@ -73,7 +74,8 @@ export function App() {
           <Route path="/share/:id" element={<LazyRoute><SharePage /></LazyRoute>} />
           <Route path="/share/scroll/:slug/:userId" element={<LazyRoute><ScrollSharePage /></LazyRoute>} />
           <Route path="/scrolls" element={<LazyRoute><ScrollsPage /></LazyRoute>} />
-          <Route path="/scrolls/:slug" element={<LazyRoute><ScrollPlayerPage /></LazyRoute>} />
+          <Route path="/scrolls/:slug" element={<LazyRoute><ScrollLandingPage /></LazyRoute>} />
+          <Route path="/scrolls/:slug/:stepId" element={<LazyRoute><ScrollPlayerPage /></LazyRoute>} />
           <Route element={<OptionalSidebarLayout />}>
             <Route path="/engawa" element={<LazyRoute><EngawaPage /></LazyRoute>} />
             <Route path="/engawa/:language" element={<LazyRoute><EngawaPage /></LazyRoute>} />

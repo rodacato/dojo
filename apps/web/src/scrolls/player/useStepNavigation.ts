@@ -1,70 +1,32 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import type { ScrollDetailDTO } from '@dojo/shared'
 
-export function useStepNavigation(
-  scroll: ScrollDetailDTO | null,
-  completedSteps: string[],
-  progressLoaded: boolean,
-) {
-  const [activeStepId, setActiveStepId] = useState<string | null>(null)
+// The active step is the `:stepId` path segment under /scrolls/:slug/:stepId.
+// react-router owns history, so back/forward and refresh are exact for free —
+// no hash bookkeeping. The landing decides where a learner starts; the player
+// only ever renders the step the URL names.
+export function useStepNavigation(scroll: ScrollDetailDTO | null) {
+  const navigate = useNavigate()
+  const { slug, stepId } = useParams<{ slug: string; stepId: string }>()
 
-  // navigateToStep — single source of truth for changing the active step.
-  // Updates state AND URL hash so refresh/back/forward preserve position.
-  const navigateToStep = useCallback((stepId: string) => {
-    setActiveStepId(stepId)
-    const target = `#step-${stepId}`
-    if (window.location.hash !== target) {
-      window.history.pushState(null, '', target)
-    }
-  }, [])
+  const allSteps = scroll?.lessons.flatMap((l) => l.steps) ?? []
+  const activeStepId = allSteps.some((s) => s.id === stepId) ? (stepId as string) : null
 
-  // Initial step resolution: hash first, then first incomplete step from
-  // progress, then first step. Hash wins immediately when present so refresh
-  // is exact; progress fills in for new tabs without a hash.
-  useEffect(() => {
-    if (!scroll || activeStepId) return
-    const allSteps = scroll.lessons.flatMap((l) => l.steps)
-    if (allSteps.length === 0) return
-
-    const hashMatch = window.location.hash.match(/^#step-([a-f0-9-]+)$/i)
-    const hashStepId = hashMatch?.[1]
-    if (hashStepId && allSteps.some((s) => s.id === hashStepId)) {
-      setActiveStepId(hashStepId)
-      return
-    }
-    if (!progressLoaded) return
-    const firstIncomplete = allSteps.find((s) => !completedSteps.includes(s.id))
-    const target = firstIncomplete ?? allSteps[0]
-    if (target) {
-      setActiveStepId(target.id)
-      window.history.replaceState(null, '', `#step-${target.id}`)
-    }
-  }, [scroll, progressLoaded, completedSteps, activeStepId])
-
-  // Browser back/forward syncs the active step from the URL.
-  useEffect(() => {
-    if (!scroll) return
-    const allSteps = scroll.lessons.flatMap((l) => l.steps)
-    const handleHashChange = () => {
-      const match = window.location.hash.match(/^#step-([a-f0-9-]+)$/i)
-      const hashStepId = match?.[1]
-      if (hashStepId && allSteps.some((s) => s.id === hashStepId)) {
-        setActiveStepId(hashStepId)
-      }
-    }
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [scroll])
+  const navigateToStep = useCallback(
+    (id: string) => {
+      if (slug) navigate(`/scrolls/${slug}/${id}`)
+    },
+    [navigate, slug],
+  )
 
   const advanceToNextStep = useCallback(() => {
-    if (!scroll || !activeStepId) return
-    const allSteps = scroll.lessons.flatMap((l) => l.steps)
-    const currentIdx = allSteps.findIndex((s) => s.id === activeStepId)
-    const nextStep = allSteps[currentIdx + 1]
-    if (nextStep) {
-      navigateToStep(nextStep.id)
-    }
-  }, [scroll, activeStepId, navigateToStep])
+    if (!scroll || !activeStepId || !slug) return
+    const steps = scroll.lessons.flatMap((l) => l.steps)
+    const idx = steps.findIndex((s) => s.id === activeStepId)
+    const next = steps[idx + 1]
+    if (next) navigate(`/scrolls/${slug}/${next.id}`)
+  }, [scroll, activeStepId, slug, navigate])
 
   return { activeStepId, navigateToStep, advanceToNextStep }
 }
