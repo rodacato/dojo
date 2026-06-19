@@ -14,7 +14,7 @@ That transition got inverted in S029: the four existing scrolls (Ruby, Python, R
 
 - **Go crash scroll end-to-end.** Kenji Watanabe (S6) lens. Full pipeline: scope block (lens, panel, outline + capstone + gesture audit, outline-level user test), prose, suite voice audit, panel + audience prose review, seed in batches each smoked live against **Piston Go 1.16.2**. Scratch draft at `.kwik-e/tmp/curricula-drafts/go/` informs scope. When it seeds + smokes clean, flip it to `published` + `isPublic: true` and add `go` to `PUBLIC_LANGUAGE_WHITELIST` (consistent with the other four).
 - **THE full-set real-Piston smoke — now guarding live content, no longer stretch.** Walk all five scrolls against real Piston (`FF_CODE_EXECUTION_ENABLED=true`): every kata's starter + solution, the predicts, playgrounds, read+inline interactions, figures, capstones. Ruby especially — its four S029 broken→fix conversions were validated by logic, never executed (no local Ruby). Fix what surfaces.
-- **TS Piston deploy-config raise — now urgent (TS is live).** The deploy must raise `max_run_timeout` (≥8000) and `output_max_size` above the 1024-byte default, or published TS katas time out. Flagged at `TYPESCRIPT_COURSE_DATA`. This must land before the next prod reseed.
+- **TS Piston deploy-config — DONE (verify, don't re-do).** `config/deploy.api.yml` already runs the Piston accessory with `PISTON_RUN_TIMEOUT=8000` + `PISTON_OUTPUT_MAX_SIZE=65536` (landed in the S029-adjacent Piston fixes). The `piston-execute-smoke` CI job (`/cron/piston-smoke`, every 30 min, production-scoped) executes a hello-world per language through `PistonAdapter` and goes red if the caps regress — that's the live verifier. Just confirm it's green after the next deploy; nothing to author.
 - **Sprint admin discipline.** Close with retro, archive, CHANGELOG, S031 open. Two commits.
 
 ## Stretch (ship if Go closes cleanly)
@@ -49,7 +49,7 @@ That transition got inverted in S029: the four existing scrolls (Ruby, Python, R
 
 | Block | Work |
 |---|---|
-| W1 | **TS Piston deploy-config raise** (unblocks live TS) + start the **full-set smoke** of the four already-published scrolls — these guard production, do them first. |
+| W1 | Confirm `piston-execute-smoke` is green post-deploy (TS caps already in config) + start the **full-set content smoke** of the four already-published scrolls — they guard production, do them first. |
 | W2 | Go scope block (lens, panel, outline + capstone + gesture audit, outline-level user test). |
 | W3 | Go authoring (prose, gates, suite voice audit, panel + audience prose review). |
 | W4 | Go seed + per-batch smoke against Piston Go 1.16.2; Go publish flip; final full-set smoke incl. Go. Sprint admin close. |

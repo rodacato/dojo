@@ -1,6 +1,7 @@
 # Sprint 023 — Dojo language pass
 
-> **Status:** code & docs done; calibration harness ready (awaiting real-LLM run); staging smoke pending. Visual polish closed by [Sprint 024](archive/sprint-024-maintenance-sumi-e.md).
+> **Status:** ✅ Closed. Code & docs shipped; visual polish closed by [Sprint 024](sprint-024-maintenance-sumi-e.md).
+> **Calibration gate — retired 2026-06-19, not run.** The gate measured sensei verdict drift from the `EXERCISE→KATA` prompt rename, and its only fail-remedy was to *revert* the rename. [ADR 020](../adr/020-ubiquitous-language-pass.md) made "kata" permanent ubiquitous language; reverting is off the table, so the gate's remedy is dead and a real-LLM run would be theater. Seven sprints of live sensei operation since the rename is the empirical validation. Closed as superseded. (The `calibrate:sensei` harness + fixture stay in the repo, reusable for any *future* prompt change; the rename-specific embedded legacy-prompt baseline can be deleted whenever someone next touches the script.)
 > **Plan:** [PRD-032](../prd/032-sprint-023-planning.md)
 > **Dependent PRDs:** [PRD-030](../prd/030-dojo-terminology-routes.md), [PRD-031](../prd/031-belt-progression-rubric.md)
 > **Spec:** [Spec 028](../specs/028-dojo-language-pass.md) · **ADR:** [ADR 020](../adr/020-ubiquitous-language-pass.md)

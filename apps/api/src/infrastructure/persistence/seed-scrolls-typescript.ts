@@ -152,11 +152,10 @@ export const TYPESCRIPT_COURSE_DATA = {
     "The dojo's TypeScript crash course. For JavaScript developers who shipped \"TS-strict\" for a year without anyone selling them the delta. One mental model at a time — inference over annotation, the structural type system, the boundary types — taught with the compiler as second reader: the errors are the curriculum. Annotate the signature, infer the rest.",
   language: 'typescript',
   accentColor: '#3178C6',
-  // PUBLISH GATE (prod reseed precondition): before reseeding production with
-  // this published, the Piston deploy MUST raise max_run_timeout (>=8000) and
-  // output_max_size — TS compiles at run (~2.7s floor) and the capstone's test
-  // output exceeds Piston's 1024-byte stdout cap. Published without it, TS
-  // katas time out. See CHANGELOG (S029) and docs/ROADMAP.md.
+  // Piston caps for TS: SATISFIED in config/deploy.api.yml (PISTON_RUN_TIMEOUT=8000,
+  // PISTON_OUTPUT_MAX_SIZE=65536) — TS compiles at run (~2.7s floor) and the
+  // capstone output exceeds the 1024-byte default. The piston-execute-smoke CI
+  // job (every 30 min, prod) goes red if these regress. See CHANGELOG (S029).
   status: 'published' as const,
   isPublic: true,
   externalReferences: [
