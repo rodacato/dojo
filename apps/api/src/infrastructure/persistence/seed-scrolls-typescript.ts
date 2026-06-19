@@ -156,7 +156,7 @@ export const TYPESCRIPT_COURSE_DATA = {
   // this published, the Piston deploy MUST raise max_run_timeout (>=8000) and
   // output_max_size — TS compiles at run (~2.7s floor) and the capstone's test
   // output exceeds Piston's 1024-byte stdout cap. Published without it, TS
-  // katas time out. See CHANGELOG (S030) and docs/ROADMAP.md.
+  // katas time out. See CHANGELOG (S029) and docs/ROADMAP.md.
   status: 'published' as const,
   isPublic: true,
   externalReferences: [

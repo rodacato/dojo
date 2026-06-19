@@ -17,7 +17,7 @@
 // Authoring drafts live in docs/courses/curricula/python/lesson-{0..5}.md;
 // figures registered in apps/web/src/scrolls/figures/data/python-figures.ts.
 //
-// Status: published. isPublic: true (S030). Python execution allows anonymous
+// Status: published. isPublic: true (S029). Python execution allows anonymous
 // calls (allowlisted at /scrolls/execute). Prod reseed precondition: full-set
 // Piston smoke green.
 //

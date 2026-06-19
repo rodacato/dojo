@@ -19,7 +19,7 @@ import { StepNotFoundError } from '../../../application/learning/GenerateNudge'
 
 // Languages permitted for anonymous (unauthenticated) code execution.
 // Authenticated users may execute any supported runtime. ruby + rust joined
-// when their scrolls went public (S030) so logged-out visitors can run the
+// when their scrolls went public (S029) so logged-out visitors can run the
 // katas, matching python/typescript. All run in the sandboxed, rate-limited
 // Piston; the incremental surface over the already-allowed python is ~nil.
 const PUBLIC_LANGUAGE_WHITELIST = new Set(['sql', 'typescript', 'python', 'javascript-dom', 'ruby', 'rust'])

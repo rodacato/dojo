@@ -25,7 +25,7 @@
 // data.kind === 'playground') are both wired in ScrollPlayerPage. The
 // playground scope decision lives in docs/courses/curricula/ruby/ruby.md §2.3.
 //
-// Status: published. isPublic: true (S030). Ruby joined the anonymous-execution
+// Status: published. isPublic: true (S029). Ruby joined the anonymous-execution
 // whitelist in /scrolls/execute (apps/api/src/infrastructure/http/routes/scrolls.ts)
 // so logged-out visitors can run the katas. Prod reseed precondition: full-set
 // Piston smoke green.

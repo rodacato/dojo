@@ -28,7 +28,7 @@
 // Authoring drafts live in docs/courses/curricula/rust/lesson-{0..6}.md;
 // figures registered in apps/web/src/scrolls/figures/data/rust-figures.ts.
 //
-// Status: published. isPublic: true (S030). Rust joined the anonymous-execution
+// Status: published. isPublic: true (S029). Rust joined the anonymous-execution
 // whitelist in /scrolls/execute (apps/api/src/infrastructure/http/routes/
 // scrolls.ts) so logged-out visitors can run the katas. Prod reseed
 // precondition: full-set Piston smoke green.
