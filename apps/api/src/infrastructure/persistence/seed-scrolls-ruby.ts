@@ -79,13 +79,9 @@ end
 const RB_HARNESS_FOOTER = `
 # ── dojo harness footer ───────────────────────────
 require 'json'
-$tests.each do |t|
-  if t['passed']
-    puts "\\u2713 #{t['name']}"
-  else
-    puts "\\u2717 #{t['name']}: #{t['message']}"
-  end
-end
+# Emit ONLY the __DOJO_RESULT__ line — no per-test ✓/✗ echo. ExecuteStep parses
+# the JSON; the echo just duplicated it and tipped Piston's stdout cap on
+# many-test steps (parameters_of). Mirrors the TS footer fix.
 ok = $tests.all? { |t| t['passed'] }
 puts "__DOJO_RESULT__ " + JSON.generate({ 'ok' => ok, 'tests' => $tests })
 `

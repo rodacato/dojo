@@ -168,13 +168,9 @@ const RUST_HARNESS_FOOTER = String.raw`
 // ── dojo harness footer ───────────────────────────
     _RESULTS.with(|results| {
         let results = results.borrow();
-        for (name, passed, message) in results.iter() {
-            if *passed {
-                println!("\u{2713} {}", name);
-            } else {
-                println!("\u{2717} {}: {}", name, message);
-            }
-        }
+        // Emit ONLY the __DOJO_RESULT__ line — no per-test echo. ExecuteStep
+        // parses the JSON; the echo duplicated it and risks Piston's stdout
+        // cap. Mirrors the TS footer fix.
         let ok = results.iter().all(|(_, p, _)| *p);
         let tests: Vec<String> = results
             .iter()

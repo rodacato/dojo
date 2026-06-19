@@ -99,11 +99,8 @@ def _eq(actual, expected):
 const PY_HARNESS_FOOTER = `
 # ── dojo harness footer ───────────────────────────
 import json
-for r in _tests:
-    if r['passed']:
-        print('\\u2713 ' + r['name'])
-    else:
-        print('\\u2717 ' + r['name'] + ': ' + r.get('message', ''))
+# Emit ONLY the __DOJO_RESULT__ line — no per-test echo. ExecuteStep parses the
+# JSON; the echo duplicated it and risks Piston's stdout cap. Mirrors TS footer.
 _ok = all(r['passed'] for r in _tests)
 print('__DOJO_RESULT__ ' + json.dumps({'ok': _ok, 'tests': _tests}))
 `
