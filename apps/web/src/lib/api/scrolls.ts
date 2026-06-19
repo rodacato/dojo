@@ -4,6 +4,7 @@ import type {
   ExecuteStepRequest,
   ExecuteStepResponse,
   ScrollProgressDTO,
+  ScrollProgressSummary,
   StepSolutionDTO,
 } from '@dojo/shared'
 import { request, ApiError } from './client'
@@ -44,6 +45,17 @@ export const scrolls = {
     return request<ScrollProgressDTO>(`/scrolls/progress/${scrollId}${query}`, {
       redirectOnAuth: false,
     })
+  },
+
+  // Batch progress for the catalog — one call, completed-step count per scroll.
+  // Auth users resolve via bearer; anon callers pass their stored session id.
+  getAllProgress: (anonymousSessionId?: string) => {
+    const query = anonymousSessionId
+      ? `?anonymousSessionId=${encodeURIComponent(anonymousSessionId)}`
+      : ''
+    return request<{ progress: ScrollProgressSummary[] }>(`/scrolls/progress${query}`, {
+      redirectOnAuth: false,
+    }).then((r) => r.progress)
   },
 
   mergeAnonymousProgress: (anonymousSessionId: string) =>
