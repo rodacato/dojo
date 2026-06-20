@@ -4,6 +4,23 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 031 — Go crash scroll: the five-language set closes (2026-06-19 – 06-20)
+**Phase 1 — Alpha**
+
+> The last language scroll, and the carried smoke debt finally paid.
+
+**The carried smoke (W1) earned its keep on the first run.** The full-set real-Piston smoke caught a dead kata in the *published* Ruby scroll — `parameters_of` had its fixtures in `starterCode` instead of `testCode` (so the recorded solution had nothing to introspect) *and* an invalid `fixture_mixed` signature (`*rest` after a keyword — a parse error). It never compiled; every learner Run failed. Fixed both.
+
+**Go — the fifth and final language scroll.** 22 steps, 6 lessons: the 1.16.2 sandbox contract, errors-as-values, structural interfaces, structs/composition, concurrency, and a capstone that integrates the first three (`Summarize` a log — `errors.Is`/`As`, an `io.Reader`, a `Summary` struct/method). 10 katas, 4 predicts, 6 reads, a mid-scroll challenge. Two broken→fix katas where the planted bug *is* the misconception (Counter's value receiver; FanOut's loop-variable capture, with the explicit 1.16-vs-1.22 version contract). Delta-framed from the polyglot's existing models, authored against the 1.16.2 sandbox truth.
+
+**The highest-risk infra item, de-risked first** (the spec demanded it). Go can't use Rust's learner-code-first combine — it demands `package` + imports at the file top and rejects unused imports — so `PistonAdapter` gained an `isGo` branch that splices the learner's code into a full-file template at a `// __DOJO_SOLUTION__` marker (`main.go`). And the harness **hand-rolls its JSON**: importing `encoding/json` crashes the Piston sandbox keeper on 1.16.2 (its cold-compile blows the cgroup `+pids` limit). Both found and fixed at the first smoke, before any lesson seeded.
+
+**The honest finding.** The devcontainer Piston is badly flaky for Go under host memory pressure — a healthy hello-world SIGABRTs at random (~50-90% by load; same root cause as the vite-build OOM, multiple devcontainers sharing the host). `validate:scrolls` now retries transient sandbox crashes (the `Sandbox keeper…` marker survives in stderr; real failures are deterministic and still surface). The Go content is correct — every kata validated when Piston cooperates (`validated=64`); the flake is environmental, not the seed.
+
+**Staged, not live.** Go is flipped to `published` + `isPublic:true` + whitelisted — it goes live on the next deploy + reseed. The prose was authored solo; a fresh-eyes read before deploy is the open recommendation.
+
+---
+
 ## Sprint 030 — scrolls presentation reshape (2026-06-19)
 **Phase 1 — Alpha**
 
