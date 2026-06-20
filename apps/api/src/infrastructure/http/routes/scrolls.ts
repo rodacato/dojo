@@ -22,7 +22,7 @@ import { StepNotFoundError } from '../../../application/learning/GenerateNudge'
 // when their scrolls went public (S029) so logged-out visitors can run the
 // katas, matching python/typescript. All run in the sandboxed, rate-limited
 // Piston; the incremental surface over the already-allowed python is ~nil.
-const PUBLIC_LANGUAGE_WHITELIST = new Set(['sql', 'typescript', 'python', 'javascript-dom', 'ruby', 'rust'])
+const PUBLIC_LANGUAGE_WHITELIST = new Set(['sql', 'typescript', 'python', 'javascript-dom', 'ruby', 'rust', 'go'])
 
 export const scrollRoutes = new Hono<AppEnv>()
 

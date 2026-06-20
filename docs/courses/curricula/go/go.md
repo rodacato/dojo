@@ -22,7 +22,7 @@ sandbox: piston                    # Go 1.16.2, `go run` single file, stdlib-onl
 prereqs: []
 audience: "polyglot developer who already programs in another language"
 learner_time: "~100 minutes (60-120 range, mid-band)"
-status: spec-graduated — authoring (S031 W3). §7 decisions ratified (capstone A). Author prose + per-batch smoke vs Piston Go 1.16.2; publish flip when green.
+status: published (S031). 22 steps authored across 6 lessons; all 10 katas smoke green vs Piston Go 1.16.2 (validated=64). §7 decisions ratified (capstone A).
 maintainers:
   - S6 Kenji Watanabe              # language pedagogy (errors-as-values, structural interfaces, concurrency restraint)
   - S5 Elif Yıldız                 # curriculum architecture

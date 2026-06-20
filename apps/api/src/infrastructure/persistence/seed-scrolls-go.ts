@@ -1,10 +1,9 @@
 // =============================================================================
-// Go crash scroll — seed (S031). SCAFFOLD.
+// Go crash scroll — seed (S031). The fifth and final language scroll.
 //
-// This file proves the Go seed → Piston pipeline end-to-end before the full
-// content pass. It carries the validated harness + course data + Lesson 1's
-// first kata (Divide). Lessons 0 and 2-5 land in the content-authoring pass;
-// the spec is docs/courses/curricula/go/go.md.
+// 22 steps across 6 lessons (L0 context, L1 errors, L2 interfaces, L3 structs,
+// L4 concurrency, L5 capstone); all 10 katas smoke green vs Piston Go 1.16.2.
+// Spec: docs/courses/curricula/go/go.md.
 //
 // Harness validated against Piston Go 1.16.2 (S031, §5):
 //   • hand-rolled JSON — NOT encoding/json (it crashes the sandbox keeper).
@@ -164,9 +163,8 @@ export const GO_COURSE_DATA = {
     "The dojo's Go crash course. For developers who already program in another language and need confidence in Go by Friday. Errors as values, structural interfaces, composition over inheritance, and just enough concurrency — taught as deltas from the model you already hold, in ~100 minutes. The sandbox runs Go 1.16.2; the prose flags where modern Go differs.",
   language: 'go',
   accentColor: '#00ADD8',
-  // SCAFFOLD: draft + private until the full content pass authors L0, L2-L5.
-  status: 'draft' as const,
-  isPublic: false,
+  status: 'published' as const,
+  isPublic: true,
   estimatedMinutes: 100,
   externalReferences: [
     {
