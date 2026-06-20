@@ -1,7 +1,7 @@
 // =============================================================================
 // Go crash scroll — seed (S031). The fifth and final language scroll.
 //
-// 22 steps across 6 lessons (L0 context, L1 errors, L2 interfaces, L3 structs,
+// 20 steps across 6 lessons (L0 context, L1 errors, L2 interfaces, L3 structs,
 // L4 concurrency, L5 capstone); all 10 katas smoke green vs Piston Go 1.16.2.
 // Spec: docs/courses/curricula/go/go.md.
 //
