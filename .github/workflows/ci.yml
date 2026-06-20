@@ -44,7 +44,7 @@ jobs:
         # Runs coverage so the vitest.config threshold gates here (the Sonar job
         # neutralizes it via VITEST_NO_COVERAGE_THRESHOLD; this job does not, so
         # the honest ratcheting floor is enforced). E2E runs in its own job.
-        run: pnpm test:coverage --filter=@dojo/api
+        run: pnpm --filter=@dojo/api test:coverage
         env:
           # Provide test env vars so config.ts validation passes
           DATABASE_URL: postgresql://dojo:dojo@localhost:5432/dojo_test
