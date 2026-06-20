@@ -32,6 +32,7 @@ const COURSE_ID = seedUuid('go')
 
 const LESSON_0_ID = seedUuid('go-l0-context')
 const LESSON_1_ID = seedUuid('go-l1-errors')
+const LESSON_2_ID = seedUuid('go-l2-interfaces')
 
 const STEP_0_1_ID = seedUuid('go-s0-1-context-and-toolchain')
 const STEP_0_2_ID = seedUuid('go-s0-2-predict-first-command')
@@ -39,6 +40,10 @@ const STEP_1_1_ID = seedUuid('go-s1-1-errors-are-values')
 const STEP_1_2_ID = seedUuid('go-s1-2-predict-typed-nil')
 const STEP_1_3_ID = seedUuid('go-s1-3-kata-divide')
 const STEP_1_4_ID = seedUuid('go-s1-4-kata-parse-age-wrap')
+const STEP_2_1_ID = seedUuid('go-s2-1-interfaces')
+const STEP_2_2_ID = seedUuid('go-s2-2-kata-write-hello')
+const STEP_2_3_ID = seedUuid('go-s2-3-kata-count-lines')
+const STEP_2_4_ID = seedUuid('go-s2-4-challenge-notifier')
 
 // ── Go harness (validated, Piston 1.16.2) ───────────────────────────────────
 // String.raw so the JSON-escaping backslashes survive verbatim into Go source.
@@ -114,10 +119,11 @@ const GO_FOOTER = String.raw`	ok := true
 // import the solution/tests don't use is an unused-import compile error — the
 // smoke catches it. The `// __DOJO_SOLUTION__` marker is where PistonAdapter
 // splices the learner's code (between the helpers and func main).
-function goTest(extraImports: string[], body: string): string {
+function goTest(extraImports: string[], body: string, prelude = ''): string {
   const importBlock = ['fmt', 'reflect', 'strings', ...extraImports]
     .map((i) => `\t"${i}"`)
     .join('\n')
+  const preludeBlock = prelude ? `\n${prelude}\n` : ''
   return `package main
 
 import (
@@ -125,7 +131,7 @@ ${importBlock}
 )
 
 ${GO_HELPERS}
-
+${preludeBlock}
 // __DOJO_SOLUTION__
 
 func main() {
@@ -458,6 +464,222 @@ The test for a non-numeric string calls \`errors.Is(err, strconv.ErrSyntax)\`. T
   data: null,
 }
 
-export const GO_LESSONS = [LESSON_0, LESSON_1]
+// ── Lesson 2 — Structural interfaces ─────────────────────────────────────────
 
-export const GO_STEPS = [STEP_0_1, STEP_0_2, STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4]
+const LESSON_2 = {
+  id: LESSON_2_ID,
+  scrollId: COURSE_ID,
+  order: 2,
+  title: 'Structural interfaces',
+}
+
+const STEP_2_1 = {
+  id: STEP_2_1_ID,
+  lessonId: LESSON_2_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'Interfaces are sets of methods',
+  instruction: `In Go you never write \`implements\`. A type satisfies an interface by *having the methods* — nothing is declared, the compiler infers it. You already did this in Lesson 1: your \`*MyError\` had an \`Error() string\` method, so it *was* an \`error\`, no ceremony.
+
+### Small is the point
+
+Go's interfaces are small on purpose. The proverb (Rob Pike) is *the bigger the interface, the weaker the abstraction* — a one-method interface composes everywhere; a twenty-method one fits almost nothing. The canonical examples are \`io.Writer\` and \`io.Reader\`, one method each:
+
+\`\`\`go
+type Writer interface {
+    Write(p []byte) (n int, err error)
+}
+\`\`\`
+
+Anything that can be written to — a file, a network connection, a \`bytes.Buffer\`, \`os.Stdout\` — satisfies \`io.Writer\`. Anything that can be read from satisfies \`io.Reader\`. Write a function that takes an \`io.Reader\` and it works against all of them.
+
+### Accept interfaces, return structs
+
+The default shape of a Go function: take the *interface* (the abstraction — the caller passes anything that fits) and return the *concrete struct* (so the caller keeps the full API, not a narrowed view). The next two katas make you feel it.
+
+### Where is \`implements\`?
+
+Coming from Java or C#, your hand reaches for it — and there is nowhere to put it. Satisfaction is structural, checked where the type is used. The trade: you lose the explicit "this type promises that interface" line, you gain the freedom to satisfy an interface that didn't exist when you wrote the type.
+
+One escape hatch to name and set aside: \`interface{}\` (the empty interface — written \`any\` in newer Go, a 1.18 alias) accepts *anything* and so tells you *nothing* callable. It is the boundary tool (\`fmt.Println\` takes it), not a default — reaching for it in your own code usually means you threw away a real interface. The deep-dive covers when it earns its place.
+
+Next: write a function that accepts an \`io.Writer\`, and feel the abstraction land.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: null,
+}
+
+const STEP_2_2 = {
+  id: STEP_2_2_ID,
+  lessonId: LESSON_2_ID,
+  order: 2,
+  type: 'kata' as const,
+  title: 'Write to any writer',
+  instruction: `Implement \`WriteHello(w io.Writer) error\` that writes exactly \`"hello, world\\n"\` to \`w\`.
+
+The point is the parameter type. The same function will work for \`os.Stdout\`, a file, a network connection, or — as the test does — a \`*bytes.Buffer\`, because each of those satisfies \`io.Writer\`. You accept the abstraction; the caller brings the concrete thing.
+
+\`io\` is imported. Return whatever error the write reports (or \`nil\`).`,
+  starterCode: `func WriteHello(w io.Writer) error {
+	// Your code here.
+}
+`,
+  testCode: goTest(
+    ['io', 'bytes'],
+    `	_t("writes the greeting to the writer", func() {
+		var buf bytes.Buffer
+		err := WriteHello(&buf)
+		_eq("no error", err == nil, true)
+		_eq("captured bytes", buf.String(), "hello, world\\n")
+	})`,
+  ),
+  hint: `\`io.Writer\` has exactly one method — look up its signature. The simplest path: hand \`w\` and your string to a helper from \`fmt\` that writes to a writer, and return the error it gives back.`,
+  hints: null,
+  solution: `func WriteHello(w io.Writer) error {
+	_, err := fmt.Fprint(w, "hello, world\\n")
+	return err
+}
+`,
+  alternativeApproach: null,
+  data: null,
+}
+
+const STEP_2_3 = {
+  id: STEP_2_3_ID,
+  lessonId: LESSON_2_ID,
+  order: 3,
+  type: 'kata' as const,
+  title: 'Count lines from any reader',
+  instruction: `Implement \`CountLines(r io.Reader) (int, error)\` that returns the number of lines in \`r\`.
+
+Mirror of the last kata: by accepting \`io.Reader\` you handle a file, a socket, or — as the test does — a string, without caring which. Don't read the whole thing into memory and split; reach for the buffered scanner whose default mode is line-by-line.
+
+\`io\` and \`bufio\` are imported.`,
+  starterCode: `func CountLines(r io.Reader) (int, error) {
+	// Your code here.
+}
+`,
+  testCode: goTest(
+    ['io', 'bufio'],
+    `	_t("counts the lines in the reader", func() {
+		n, err := CountLines(strings.NewReader("alpha\\nbeta\\ngamma\\n"))
+		_eq("no error", err == nil, true)
+		_eq("line count", n, 3)
+	})
+	_t("an empty reader has zero lines", func() {
+		n, err := CountLines(strings.NewReader(""))
+		_eq("no error", err == nil, true)
+		_eq("line count", n, 0)
+	})`,
+  ),
+  hint: `Reading line by line by hand is fiddly; \`bufio\` has a buffered scanner built for it, and its default split is lines. Create one over \`r\`, advance it in a loop counting each step, and check its error once the loop ends.`,
+  hints: null,
+  solution: `func CountLines(r io.Reader) (int, error) {
+	scanner := bufio.NewScanner(r)
+	count := 0
+	for scanner.Scan() {
+		count++
+	}
+	return count, scanner.Err()
+}
+`,
+  alternativeApproach: null,
+  data: null,
+}
+
+const STEP_2_4 = {
+  id: STEP_2_4_ID,
+  lessonId: LESSON_2_ID,
+  order: 4,
+  type: 'challenge' as const,
+  title: 'Notify every channel, and report the first failure',
+  instruction: `A real one — design an interface, give it two implementations, and fan a message out across them. Budget about twice a normal kata; there is no hint.
+
+## Build
+
+- \`type Notifier interface { Notify(msg string) error }\`.
+- \`NewEmailNotifier(w io.Writer) Notifier\` — its \`Notify\` writes \`"EMAIL: <msg>"\` to the writer.
+- \`NewLogNotifier(w io.Writer) Notifier\` — its \`Notify\` writes \`"LOG: <msg>"\`.
+- \`SendAll(notifiers []Notifier, msg string) error\` — call each in order; on the first failure, return that error **wrapped with the notifier's index**: \`fmt.Errorf("notifier %d: %w", i, err)\`. If all succeed, return \`nil\`.
+
+This pulls together everything so far: a structural interface, two structs satisfying it, iteration, and the Lesson 1 \`%w\` wrap. \`io\` is imported.`,
+  starterCode: `type Notifier interface {
+	Notify(msg string) error
+}
+
+// Define the two notifiers (each over an io.Writer), their constructors,
+// and SendAll.
+`,
+  testCode: goTest(
+    ['io', 'bytes'],
+    `	_t("delivers to each notifier with its prefix", func() {
+		var email, log bytes.Buffer
+		err := SendAll([]Notifier{NewEmailNotifier(&email), NewLogNotifier(&log)}, "deploy done")
+		_eq("no error", err == nil, true)
+		_eq("email body", email.String(), "EMAIL: deploy done")
+		_eq("log body", log.String(), "LOG: deploy done")
+	})
+	_t("wraps the first failing notifier's error", func() {
+		err := SendAll([]Notifier{NewLogNotifier(failWriter{})}, "x")
+		_eq("error present", err != nil, true)
+	})`,
+    `type failWriter struct{}
+
+func (failWriter) Write(p []byte) (int, error) {
+	return 0, fmt.Errorf("write failed")
+}`,
+  ),
+  hint: null,
+  hints: null,
+  solution: `type Notifier interface {
+	Notify(msg string) error
+}
+
+type emailNotifier struct{ w io.Writer }
+
+func (e emailNotifier) Notify(msg string) error {
+	_, err := fmt.Fprintf(e.w, "EMAIL: %s", msg)
+	return err
+}
+
+func NewEmailNotifier(w io.Writer) Notifier { return emailNotifier{w} }
+
+type logNotifier struct{ w io.Writer }
+
+func (l logNotifier) Notify(msg string) error {
+	_, err := fmt.Fprintf(l.w, "LOG: %s", msg)
+	return err
+}
+
+func NewLogNotifier(w io.Writer) Notifier { return logNotifier{w} }
+
+func SendAll(notifiers []Notifier, msg string) error {
+	for i, n := range notifiers {
+		if err := n.Notify(msg); err != nil {
+			return fmt.Errorf("notifier %d: %w", i, err)
+		}
+	}
+	return nil
+}
+`,
+  alternativeApproach: null,
+  data: null,
+}
+
+export const GO_LESSONS = [LESSON_0, LESSON_1, LESSON_2]
+
+export const GO_STEPS = [
+  STEP_0_1,
+  STEP_0_2,
+  STEP_1_1,
+  STEP_1_2,
+  STEP_1_3,
+  STEP_1_4,
+  STEP_2_1,
+  STEP_2_2,
+  STEP_2_3,
+  STEP_2_4,
+]
