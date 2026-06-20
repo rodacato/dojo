@@ -333,7 +333,7 @@ function buildMessages(params: {
     })
   } else {
     // Follow-up exchange — reconstruct the conversation
-    const firstTurn = params.history[0]!
+    const firstTurn = params.history[0]
     messages.push({
       role: 'user',
       content: buildPrompt({

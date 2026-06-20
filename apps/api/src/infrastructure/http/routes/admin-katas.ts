@@ -8,7 +8,6 @@ import { db } from '../../persistence/drizzle/client'
 import { attempts, katas, invitations, kataFeedback, sessions, users, variations } from '../../persistence/drizzle/schema'
 import { requireAuth, requireCreator } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
-import type { Difficulty, KataType } from '../../../domain/content/values'
 
 export const adminKatasRoutes = new Hono<AppEnv>()
 
@@ -65,7 +64,7 @@ adminKatasRoutes.get('/katas', async (c) => {
 // ---------------------------------------------------------------------------
 
 adminKatasRoutes.get('/katas/:id', async (c) => {
-  const kataId = c.req.param('id')!
+  const kataId = c.req.param('id')
   const kata = await useCases.getKataById.execute(KataId(kataId))
   if (!kata) return c.json({ error: 'Kata not found' }, 404)
 
@@ -95,7 +94,7 @@ adminKatasRoutes.get('/katas/:id', async (c) => {
 // ---------------------------------------------------------------------------
 
 adminKatasRoutes.get('/katas/:id/feedback', async (c) => {
-  const kataId = c.req.param('id')!
+  const kataId = c.req.param('id')
 
   const feedbackRows = await db
     .select()
@@ -123,7 +122,7 @@ adminKatasRoutes.get('/katas/:id/feedback', async (c) => {
     if (!byVariation[row.variationId]) {
       byVariation[row.variationId] = { total: 0, clarity: {}, timing: {}, evaluation: {} }
     }
-    const v = byVariation[row.variationId]!
+    const v = byVariation[row.variationId]
     v.total++
     if (row.clarity) v.clarity[row.clarity] = (v.clarity[row.clarity] ?? 0) + 1
     if (row.timing) v.timing[row.timing] = (v.timing[row.timing] ?? 0) + 1
@@ -169,7 +168,7 @@ const updateKataSchema = z.object({
 })
 
 adminKatasRoutes.put('/katas/:id', async (c) => {
-  const kataId = c.req.param('id')!
+  const kataId = c.req.param('id')
   const body = await c.req.json()
   const parsed = updateKataSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
@@ -214,7 +213,7 @@ adminKatasRoutes.put('/katas/:id', async (c) => {
 // ---------------------------------------------------------------------------
 
 adminKatasRoutes.post('/katas/:id/archive', async (c) => {
-  const kataId = c.req.param('id')!
+  const kataId = c.req.param('id')
   await db
     .update(katas)
     .set({ status: 'archived', updatedAt: new Date() })
@@ -252,8 +251,8 @@ adminKatasRoutes.post('/katas', async (c) => {
     title,
     description,
     durationMinutes: duration,
-    difficulty: difficulty as Difficulty,
-    type: type as KataType,
+    difficulty,
+    type,
     languages,
     tags,
     topics,
@@ -321,10 +320,10 @@ adminKatasRoutes.post('/invitations', async (c) => {
   }
 
   return c.json({
-    id: invitation!.id,
-    token: invitation!.token,
+    id: invitation.id,
+    token: invitation.token,
     url: inviteUrl,
-    expiresAt: invitation!.expiresAt.toISOString(),
+    expiresAt: invitation.expiresAt.toISOString(),
     emailSent,
   }, 201)
 })

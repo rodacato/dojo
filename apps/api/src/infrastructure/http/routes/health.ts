@@ -62,7 +62,7 @@ function extractCauseCode(err: unknown): string | undefined {
   if (err && typeof err === 'object' && 'cause' in err) {
     const cause = (err as { cause?: unknown }).cause
     if (cause && typeof cause === 'object' && 'code' in cause) {
-      return String((cause as { code: unknown }).code)
+      return String(cause.code)
     }
   }
   return undefined

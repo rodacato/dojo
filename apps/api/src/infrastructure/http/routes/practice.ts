@@ -156,7 +156,7 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
   if (!kata) return c.json({ error: 'Kata not found' }, 404)
   if (kata.variations.length === 0) return c.json({ error: 'Kata has no variations' }, 422)
 
-  const variation = kata.variations[Math.floor(Math.random() * kata.variations.length)]!
+  const variation = kata.variations[Math.floor(Math.random() * kata.variations.length)]
 
   const session = await useCases.startSession.execute({
     userId: UserId(user.id),
@@ -318,7 +318,7 @@ practiceRoutes.get('/sessions/:id/body-stream', requireAuth, async (c) => {
   // client doesn't need a separate code path for the cached case.
   if (session.body) {
     return streamSSE(c, async (sse) => {
-      await sse.writeSSE({ event: 'token', data: session.body! })
+      await sse.writeSSE({ event: 'token', data: session.body })
       await sse.writeSSE({ event: 'done', data: '' })
     })
   }

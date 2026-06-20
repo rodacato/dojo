@@ -162,12 +162,12 @@ authRoutes.get('/auth/github/callback', async (c) => {
 
   // Clear state cookie and redirect with token (ADR-007)
   deleteCookie(c, 'oauth_state')
-  return c.redirect(`${config.WEB_URL}/auth/callback?token=${session!.id}`)
+  return c.redirect(`${config.WEB_URL}/auth/callback?token=${session.id}`)
 })
 
 // Redeem invitation — validates token and starts OAuth flow
 authRoutes.get('/auth/invite/:token', async (c) => {
-  const token = c.req.param('token')!
+  const token = c.req.param('token')
 
   const invitation = await db.query.invitations.findFirst({
     where: and(

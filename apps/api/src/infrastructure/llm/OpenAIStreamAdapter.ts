@@ -301,7 +301,7 @@ function buildMessages(params: {
       }),
     })
   } else {
-    const firstTurn = params.history[0]!
+    const firstTurn = params.history[0]
     messages.push({
       role: 'user',
       content: buildPrompt({

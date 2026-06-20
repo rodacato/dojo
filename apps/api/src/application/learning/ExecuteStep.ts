@@ -161,7 +161,7 @@ function extractStructuredResult(output: string): StructuredResult | null {
   const match = output.match(RESULT_MARKER)
   if (!match) return null
   try {
-    const parsed = JSON.parse(match[1] as string) as {
+    const parsed = JSON.parse(match[1]) as {
       ok?: unknown
       tests?: Array<{ name?: unknown; passed?: unknown; message?: unknown }>
     }
