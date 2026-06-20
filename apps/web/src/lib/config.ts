@@ -8,7 +8,9 @@ export const API_URL = import.meta.env['VITE_API_URL'] ?? ''
 // Prod: wss://dojo-api.notdefined.dev
 export const WS_URL = API_URL
   ? API_URL.replace(/^https/, 'wss').replace(/^http/, 'ws')
-  : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`
+  : typeof window !== 'undefined'
+    ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`
+    : ''
 
 // Sentry (optional). Empty DSN disables the Sentry browser adapter entirely.
 // The environment tag defaults to Vite's build mode — 'development' during
