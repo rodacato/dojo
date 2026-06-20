@@ -59,13 +59,32 @@ jobs:
           WEB_URL: http://localhost:5173
           NODE_ENV: test
 
-      # Only the api is scanned. apps/web (react) and packages would OOM SonarJS's
-      # type-aware bridge on heavy type graphs (proven on drawhaus's equivalents),
-      # for little return — they have no real test coverage. Security scans
-      # (sector-7g security.yml) still cover them.
+      - name: Run web tests with coverage
+        run: pnpm --filter=@dojo/web test:coverage
+
+      - name: Run shared tests with coverage
+        run: pnpm --filter=@dojo/shared test:coverage
+
+      # One Sonar project per workspace. web's react type graph is the OOM risk
+      # that once got it dropped — mitigated by the per-workspace bridge +
+      # maxspace ceiling in its sonar-project.properties; bump that if it OOMs.
       - name: Scan api
         uses: rodacato/sector-7g/actions/sonar-scan@master
         with:
           host_url: ${{ vars.SONAR_HOST_URL }}
           token: ${{ secrets.SONAR_TOKEN }}
           project_base_dir: apps/api
+
+      - name: Scan web
+        uses: rodacato/sector-7g/actions/sonar-scan@master
+        with:
+          host_url: ${{ vars.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}
+          project_base_dir: apps/web
+
+      - name: Scan shared
+        uses: rodacato/sector-7g/actions/sonar-scan@master
+        with:
+          host_url: ${{ vars.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}
+          project_base_dir: packages/shared
