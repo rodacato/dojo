@@ -93,7 +93,7 @@ export function ScrollSharePage() {
             </p>
 
             {/* Title */}
-            <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight mt-5 md:mt-6">
+            <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight mt-5 md:mt-6">
               {data.scrollTitle}
             </h1>
 

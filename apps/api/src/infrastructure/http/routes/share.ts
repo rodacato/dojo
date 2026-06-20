@@ -349,7 +349,7 @@ shareRoutes.get('/share/scroll/:slug/:userId{.+\\.png$}', async (c) => {
           border: `2px solid ${completion.courseAccentColor}`,
           borderRadius: '4px',
         },
-        'COURSE COMPLETE',
+        'SCROLL COMPLETE',
       ),
     ),
     h(
@@ -403,7 +403,7 @@ shareRoutes.get('/share/scroll/:slug/:userId', async (c) => {
     scrollSlug: slug,
     scrollTitle: completion.scrollTitle,
     scrollLanguage: completion.scrollLanguage,
-    courseAccentColor: completion.courseAccentColor,
+    scrollAccentColor: completion.courseAccentColor,
     totalSteps: completion.totalSteps,
     completedAt: completion.lastAccessedAt.toISOString(),
     username: completion.username,
