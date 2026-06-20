@@ -39,6 +39,7 @@ import {
   TYPESCRIPT_COURSE_DATA,
   TYPESCRIPT_STEPS,
 } from '../infrastructure/persistence/seed-scrolls-typescript'
+import { GO_COURSE_DATA, GO_STEPS } from '../infrastructure/persistence/seed-scrolls-go'
 
 type StepLike = {
   id: string
@@ -88,6 +89,9 @@ function collect(): Array<{ scrollSlug: string; scrollLanguage: string; step: St
       scrollLanguage: TYPESCRIPT_COURSE_DATA.language,
       step,
     })
+  }
+  for (const step of GO_STEPS) {
+    all.push({ scrollSlug: GO_COURSE_DATA.slug, scrollLanguage: GO_COURSE_DATA.language, step })
   }
   return all
 }

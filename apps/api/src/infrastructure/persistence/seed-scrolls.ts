@@ -23,6 +23,7 @@ import {
   RUST_LESSONS,
   RUST_STEPS,
 } from './seed-scrolls-rust'
+import { GO_COURSE_DATA, GO_LESSONS, GO_STEPS } from './seed-scrolls-go'
 import {
   TYPESCRIPT_COURSE_DATA,
   TYPESCRIPT_LESSONS,
@@ -725,6 +726,11 @@ export async function seedAllScrolls(db: ReturnType<typeof drizzle>): Promise<Se
       courseData: TYPESCRIPT_COURSE_DATA,
       lessonsData: TYPESCRIPT_LESSONS,
       stepsData: TYPESCRIPT_STEPS,
+    },
+    {
+      courseData: GO_COURSE_DATA,
+      lessonsData: GO_LESSONS,
+      stepsData: GO_STEPS,
     },
   ]
 

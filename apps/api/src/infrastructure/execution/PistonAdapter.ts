@@ -120,6 +120,7 @@ export class PistonAdapter implements CodeExecutionPort {
 
     const isSql = params.language.toLowerCase() === 'sql'
     const isRust = params.language.toLowerCase() === 'rust'
+    const isGo = params.language.toLowerCase() === 'go'
     // Combine solution + test into one file so all symbols are in scope.
     // Two-file mode loses stdout in Piston's TypeScript runtime.
     // Rust: a learner-written `fn main` is renamed to `fn __learner_main` so
@@ -128,12 +129,28 @@ export class PistonAdapter implements CodeExecutionPort {
     // a `mod` wrapper was tried first and failed on module privacy, validated
     // against real rustc 1.68.2 at the L1 smoke). Zero line-number offset.
     // Playground testCode calls `__learner_main()` to run the learner's main.
+    // Go: the order is inverted — Go demands `package main` + one import block
+    // at the file top and rejects unused imports, so the learner's code can't
+    // lead. The testCode is the full file (package, imports, harness helpers,
+    // a `// __DOJO_SOLUTION__` marker, then `func main`); the learner's code is
+    // spliced in at the marker. A replacement function avoids `$`-pattern
+    // surprises from arbitrary learner code. Validated against Piston Go
+    // 1.16.2 (S031): the harness hand-rolls JSON because `encoding/json`
+    // crashes the sandbox keeper there.
     const combined = isRust
       ? `${params.code.replace(/\bfn\s+main\s*\(/g, 'fn __learner_main(')}\n\n${params.testCode}`
-      : `${params.code}\n\n${params.testCode}`
-    // Rust file is named main.rs so rustc's error paths match the scroll
-    // prose ("main.rs:LINE"); other languages keep the historical test.*.
-    const runFile = isSql ? 'query.sql' : isRust ? 'main.rs' : `test.${ext(params.language)}`
+      : isGo
+        ? params.testCode.replace('// __DOJO_SOLUTION__', () => params.code)
+        : `${params.code}\n\n${params.testCode}`
+    // Rust file is named main.rs so rustc's error paths match the scroll prose
+    // ("main.rs:LINE"); Go is main.go for the same reason; others keep test.*.
+    const runFile = isSql
+      ? 'query.sql'
+      : isRust
+        ? 'main.rs'
+        : isGo
+          ? 'main.go'
+          : `test.${ext(params.language)}`
     const files = isSql
       ? [{ name: 'query.sql', content: buildSqlScript(params.code, params.testCode) }]
       : [{ name: runFile, content: combined }]
