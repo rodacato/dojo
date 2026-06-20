@@ -29,8 +29,16 @@ function seedUuid(name: string): string {
 }
 
 const COURSE_ID = seedUuid('go')
+
+const LESSON_0_ID = seedUuid('go-l0-context')
 const LESSON_1_ID = seedUuid('go-l1-errors')
+
+const STEP_0_1_ID = seedUuid('go-s0-1-context-and-toolchain')
+const STEP_0_2_ID = seedUuid('go-s0-2-predict-first-command')
+const STEP_1_1_ID = seedUuid('go-s1-1-errors-are-values')
+const STEP_1_2_ID = seedUuid('go-s1-2-predict-typed-nil')
 const STEP_1_3_ID = seedUuid('go-s1-3-kata-divide')
+const STEP_1_4_ID = seedUuid('go-s1-4-kata-parse-age-wrap')
 
 // ── Go harness (validated, Piston 1.16.2) ───────────────────────────────────
 // String.raw so the JSON-escaping backslashes survive verbatim into Go source.
@@ -218,6 +226,238 @@ Implement \`Divide(a, b int) (int, error)\`:
   data: null,
 }
 
-export const GO_LESSONS = [LESSON_1]
+// ── Lesson 0 — Go in context ─────────────────────────────────────────────────
 
-export const GO_STEPS = [STEP_1_3]
+const LESSON_0 = {
+  id: LESSON_0_ID,
+  scrollId: COURSE_ID,
+  order: 0,
+  title: 'Go in context',
+}
+
+const STEP_0_1 = {
+  id: STEP_0_1_ID,
+  lessonId: LESSON_0_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'What Go is for, how it runs, and the sandbox contract',
+  instruction: `Go earns its place in a specific shape of work — worth knowing whether that's yours before you spend ninety minutes on its idioms.
+
+### Where Go fits
+
+Go is built for services and tools: HTTP and gRPC backends with no JVM to babysit, and command-line + infrastructure tooling — \`kubectl\`, \`terraform\`, \`docker\`, and \`hugo\` are all written in Go. The common thread is a single static binary that starts fast. Where it doesn't fit: heavy numerics (reach for Python or Julia), embedded work (C or Rust), desktop GUIs (no canonical toolkit), one-off scripts (the binary is deploy-friendly but script-hostile). Design choices, not slights.
+
+### The toolchain, one breath each
+
+- \`go build\` — compile to a static binary.
+- \`go run\` — compile and run in one step; your inner loop while learning.
+- \`go test\` — discovers \`func TestXxx\` by signature, no external runner.
+- \`go mod\` — modules. \`go.mod\` + \`go.sum\` ≈ \`package.json\` + a lockfile (or \`pyproject.toml\` + its lock).
+- \`go get\` — add a dependency. *Not available in this sandbox.*
+
+### \`gofmt\` ends the debate
+
+Formatting in Go is not a matter of taste. \`gofmt -w .\` and the Prettier-vs-StandardJS argument doesn't exist; editors run it on save.
+
+### What this sandbox runs
+
+This scroll runs **Go 1.16.2**, standard library only, single-file \`go run\` — no \`go get\`, no third-party packages (\`gin\`, \`echo\`, \`testify\` are named only to be excluded), and no \`go test\` (the katas use a small manual harness; real Go testing is a deep-dive). **1.16 is pre-generics:** no type parameters, no \`slices\`/\`maps\` packages, no \`any\` keyword — that is a 1.18 alias, so you write \`interface{}\`. Where modern Go has something newer — generics (1.18), \`errors.Join\` (1.20), the 1.22 loop-variable change — the prose marks it *newer Go* and won't ask you to run it. On your own machine, install current Go; nothing here breaks on it, but a couple of behaviors (loop-variable capture, in Lesson 4) *differ*, and the prose flags exactly where.
+
+You have the map. Next: which command do you actually run first on a project you just cloned?`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: null,
+}
+
+const STEP_0_2 = {
+  id: STEP_0_2_ID,
+  lessonId: LESSON_0_ID,
+  order: 2,
+  type: 'predict' as const,
+  title: 'Predict: what do you run first?',
+  instruction: `One check on the toolchain model before the idioms start.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: {
+    question:
+      'You cloned a Go project and the README says to run its tests. Which command goes first?',
+    snippet: `$ git clone https://github.com/example/log-triage.git
+$ cd log-triage
+$ ls
+go.mod  go.sum  main.go  internal/
+$ cat README.md
+# log-triage — Go 1.21+. Run the tests before sending a PR.
+$ ???`,
+    options: [
+      { id: 'a', text: '\`go build\`' },
+      { id: 'b', text: '\`go run main.go\`' },
+      { id: 'c', text: '\`go test ./...\`' },
+      { id: 'd', text: '\`go get\`' },
+    ],
+    correct: 'c',
+    feedback: {
+      a: "The compile-first reflex from C/Java. \`go build\` produces a binary and stops — it never runs anything, and it runs no tests. Handy to check the project compiles; not what 'run the tests' asks for.",
+      b: "The just-run-it reflex. \`go run main.go\` compiles and runs that file's \`main\` — the program, not the tests. (On a real project you'd write \`go run .\` to build the whole package, not a lone file.)",
+      c: 'Correct. \`go test ./...\` discovers every \`func TestXxx\` across all packages — \`./...\` means "this module, recursively" — and runs them, fetching pinned dependencies on demand. No separate runner, no config. In *this* sandbox you run single-file \`go run\` instead, but \`go test ./...\` is the muscle you want on a real project.',
+      d: "The \`npm install\` reflex. \`go get\` adds or updates a dependency and edits \`go.mod\` — it changes the project, it doesn't test it. Go fetches what \`go.sum\` already pins on demand, so you rarely need it just to build or test.",
+    },
+  },
+}
+
+// ── Lesson 1 — Errors as values ──────────────────────────────────────────────
+
+const STEP_1_1 = {
+  id: STEP_1_1_ID,
+  lessonId: LESSON_1_ID,
+  order: 1,
+  type: 'read' as const,
+  title: 'Errors are values',
+  instruction: `Your hand is reaching for \`try\`. Stop — Go does not have it, and that absence is the lesson.
+
+A function that can fail returns its result **and** an \`error\`, and the caller decides what to do, right there in the code:
+
+\`\`\`go
+f, err := os.Open(name)
+if err != nil {
+    return err
+}
+\`\`\`
+
+No \`throw\`, no \`try\`, no \`catch\`. The \`if err != nil { return ..., err }\` line is the language's load-bearing convention, and yes — you will write it constantly. That repetition is the point: every place something can fail is visible in the source, not hidden two stack frames up.
+
+### The pieces
+
+- **\`error\` is an interface** — the smallest useful one: \`type error interface { Error() string }\`. Lesson 2 makes that model explicit; for now, notice it is a value like any other.
+- **Sentinels** — a known error you can match: \`var ErrNotFound = errors.New("not found")\`. Compare with \`errors.Is\`, never \`==\`: wrapping breaks identity, and \`errors.Is\` walks the chain.
+- **Typed errors** — a struct with an \`Error() string\` method, when the error must carry data; pull it back out with \`errors.As\`.
+- **Wrapping** — add context without losing the original: \`fmt.Errorf("load config: %w", err)\`. The \`%w\` verb keeps the chain so a caller's \`errors.Is\` still finds the root cause. \`%v\` formats it to a plain string and *loses* that — **use \`%w\` by default.** It is the single most common Go error mistake.
+
+\`panic\`/\`recover\` exist, but they are for unrecoverable invariants, not control flow — reaching for \`panic\` as a \`throw\` substitute is a footgun the errors deep-dive covers.
+
+One surprise bites everyone exactly once: what does a function print when it returns a *typed* nil pointer as its \`error\`? Predict it next.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: null,
+}
+
+const STEP_1_2 = {
+  id: STEP_1_2_ID,
+  lessonId: LESSON_1_ID,
+  order: 2,
+  type: 'predict' as const,
+  title: 'Predict: typed nil vs interface nil',
+  instruction: `The surprise the read just set up. Read the program, commit to an answer, then reveal.`,
+  starterCode: null,
+  testCode: null,
+  hint: null,
+  solution: null,
+  alternativeApproach: null,
+  data: {
+    question: 'What does this program print?',
+    snippet: `type MyError struct{ msg string }
+
+func (e *MyError) Error() string { return e.msg }
+
+func doSomething() error {
+	var err *MyError = nil
+	return err
+}
+
+func main() {
+	if doSomething() != nil {
+		fmt.Println("got an error")
+	} else {
+		fmt.Println("no error")
+	}
+}`,
+    options: [
+      { id: 'a', text: '\`got an error\`' },
+      { id: 'b', text: '\`no error\`' },
+      { id: 'c', text: 'Compile error' },
+      { id: 'd', text: 'Runtime panic (nil dereference)' },
+    ],
+    correct: 'a',
+    feedback: {
+      a: `Correct, and it surprises everyone once. An interface value is a pair: a *type* and a *value*. \`doSomething\` returns a \`*MyError\` that is nil — so the value half is nil, but the type half is \`*MyError\`, which is **not** nil. The \`error\` interface therefore is not nil, and \`!= nil\` is true. The fix: return a bare \`nil\`, not a typed nil pointer — \`return nil\`, not \`return err\` when \`err\` is a nil \`*MyError\`. Lesson 2 names the model you just met: interfaces are method sets over a (type, value) pair.`,
+      b: `The Python \`is None\` reflex — "the pointer is nil, so the error is nil". In Go an interface holds (type, value); the type half is \`*MyError\` even when the value is nil, so the interface is non-nil. \`!= nil\` is true, and the error branch runs.`,
+      c: `The Java instinct that the type system should catch this. It compiles cleanly — a \`*MyError\` satisfies \`error\` (it has \`Error() string\`), and returning one where an \`error\` is expected is legal. The trap is at runtime, not compile time.`,
+      d: `The defensive-C reflex — expecting a nil dereference. Nothing is dereferenced here: \`Error()\` is never called, the code only compares the interface to nil. No panic; it prints the error branch.`,
+    },
+  },
+}
+
+const STEP_1_4 = {
+  id: STEP_1_4_ID,
+  lessonId: LESSON_1_ID,
+  order: 4,
+  type: 'kata' as const,
+  title: 'Parse an age, and wrap the failure',
+  instruction: `\`strconv.Atoi\` turns \`"25"\` into \`25\` — and returns an \`error\` when the string is not a number. Your job is to use that error *without throwing away* what it already knows.
+
+## Your task
+
+Implement \`ParseAge(s string) (int, error)\`:
+
+- parse \`s\` with \`strconv.Atoi\`;
+- if parsing fails, **wrap** the error with context so the original survives: \`fmt.Errorf("parse age %q: %w", s, err)\`;
+- if the number is outside \`0..150\` (inclusive), return your own error — \`fmt.Errorf("age %d out of range", n)\` — with no inner cause to preserve;
+- otherwise return the number and \`nil\`.
+
+The test for a non-numeric string calls \`errors.Is(err, strconv.ErrSyntax)\`. That only passes if you wrapped with \`%w\` — \`%v\` formats the error to text and breaks the chain. \`fmt\`, \`strconv\`, and \`errors\` are imported.`,
+  starterCode: `func ParseAge(s string) (int, error) {
+	// Parse s, then validate the range. Wrap on a parse failure.
+}
+`,
+  testCode: goTest(
+    ['errors', 'strconv'],
+    `	_t("parses a valid age", func() {
+		got, err := ParseAge("25")
+		_eq("no error", err == nil, true)
+		_eq("the parsed number", got, 25)
+	})
+	_t("wraps the parse error so errors.Is reaches strconv.ErrSyntax", func() {
+		_, err := ParseAge("abc")
+		_eq("error is present", err != nil, true)
+		_eq("the wrap chain is intact", errors.Is(err, strconv.ErrSyntax), true)
+	})
+	_t("rejects an age above the range", func() {
+		_, err := ParseAge("200")
+		_eq("error is present", err != nil, true)
+	})
+	_t("rejects a negative age", func() {
+		_, err := ParseAge("-1")
+		_eq("error is present", err != nil, true)
+	})`,
+  ),
+  hint: null,
+  hints: [
+    `Two failure shapes, two treatments. A bad parse already carries an error from \`strconv.Atoi\` worth keeping; an out-of-range number is entirely your own complaint. For the first, there is a \`fmt.Errorf\` verb that preserves the underlying error rather than flattening it to text.`,
+    `\`fmt.Errorf\` has two verbs for an error: \`%v\` formats it as a string (the chain is lost) and \`%w\` wraps it (the chain is kept). The test's \`errors.Is(err, strconv.ErrSyntax)\` only succeeds through a \`%w\` wrap.`,
+  ],
+  solution: `func ParseAge(s string) (int, error) {
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, fmt.Errorf("parse age %q: %w", s, err)
+	}
+	if n < 0 || n > 150 {
+		return 0, fmt.Errorf("age %d out of range", n)
+	}
+	return n, nil
+}
+`,
+  alternativeApproach: null,
+  data: null,
+}
+
+export const GO_LESSONS = [LESSON_0, LESSON_1]
+
+export const GO_STEPS = [STEP_0_1, STEP_0_2, STEP_1_1, STEP_1_2, STEP_1_3, STEP_1_4]
