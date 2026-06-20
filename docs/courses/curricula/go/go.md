@@ -22,7 +22,7 @@ sandbox: piston                    # Go 1.16.2, `go run` single file, stdlib-onl
 prereqs: []
 audience: "polyglot developer who already programs in another language"
 learner_time: "~100 minutes (60-120 range, mid-band)"
-status: published (S031). 22 steps authored across 6 lessons; all 10 katas smoke green vs Piston Go 1.16.2 (validated=64). §7 decisions ratified (capstone A).
+status: published (S031). 20 steps across 6 lessons (the 1.5 playground was cut at seed — §2.4; L5 = 2 steps); all 10 katas + 2 challenges smoke green vs Piston Go 1.16.2 (validated=64). §7 decisions ratified (capstone A).
 maintainers:
   - S6 Kenji Watanabe              # language pedagogy (errors-as-values, structural interfaces, concurrency restraint)
   - S5 Elif Yıldız                 # curriculum architecture
@@ -85,7 +85,7 @@ Valentina (S2) enforces the delta framing; Kenji (S6) enforces that each delta n
 
 ### 2.3 `predict` placement
 
-**Four predicts — Lessons 0, 1, 3, 4 (≈18% of ~22 steps).** Slightly above the 10-15% heuristic, defensible because Go's surprise surface is genuinely large and concentrated in a few traps the polyglot will hit in their first week. The Maya test (S11) applies to each: a learner who skipped it must lose something the prose can't cheaply give. Predict option discipline per [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §predict — every wrong option encodes a *specific* polyglot reflex, never a generic "compile error" / "undefined behavior".
+**Four predicts — Lessons 0, 1, 3, 4 (≈20% of 20 steps).** Slightly above the 10-15% heuristic, defensible because Go's surprise surface is genuinely large and concentrated in a few traps the polyglot will hit in their first week. The Maya test (S11) applies to each: a learner who skipped it must lose something the prose can't cheaply give. Predict option discipline per [`../../INTERACTIVITY-PATTERNS.md`](../../INTERACTIVITY-PATTERNS.md) §predict — every wrong option encodes a *specific* polyglot reflex, never a generic "compile error" / "undefined behavior".
 
 - **0.2 — "You cloned a Go project. What do you run first?"** Orientation predict (the only non-output-shaped one). Correct: `go run .` (run the program in the current directory) **or** `go test ./...` if the README says "run the tests" — the snippet fixes the intent so the answer is unambiguous; pick one framing at authoring and commit. Wrong options encode: `go build` (the compile-first C/Java reflex — produces a binary, doesn't run it), `go mod download` (technically valid but unnecessary — Go fetches on demand), `go get` (the `npm install` reflex — modifies deps). **Sandbox-honesty caveat baked into the reveal:** the dojo sandbox runs single-file `go run`, so the learner won't type `go mod` here — but the real-project answer is the one being taught.
 - **1.2 — "What does this print?"** the typed-`nil`-vs-interface-`nil` classic: a function returns a typed `nil` pointer as `error`, the caller's `if err != nil` is *true*. Correct: it prints the error branch. Wrong options encode: the Python `is None` reflex ("the check is false, the pointer is nil"), the Java NPE reflex ("compile error / nil-pointer panic"), and a defensive-C reflex ("runtime panic on deref"). The reveal teaches the interface-value `(type, value)` model — **surprise-first; Lesson 2 then names the model the learner just met.** First output-prediction reveal.
@@ -96,7 +96,7 @@ Lessons 2 and 5 carry no predict — both are mechanical enough (interface satis
 
 ### 2.4 Playground as `kata` variant (inherited from Ruby/Python/Rust)
 
-**One playground in this scroll (step 1.5).** Same contract as the other scrolls: a `kata` with `data.kind: "playground"`, verdict UI hidden, run button reads "↻ Try it", trivially-true harness assertion so the backend stays uniform. The instruction pre-loads specific expressions to run and vary, with motivation — Maya (S11) blocks any playground whose instruction reduces to "play around".
+**Playground (step 1.5) — designed below, CUT at seed (S031).** The cut path this section pre-authorized (line below) was taken: 1.5 was dropped and Lesson 1 re-budgeted to 4 steps, so the shipped scroll is 20 steps with no playground. The `%w`/`%v` discovery it carried now rests on read 1.1 + kata 1.4's prose. The design is kept here as canon for when a future scroll restores the pattern. Original contract: a `kata` with `data.kind: "playground"`, verdict UI hidden, run button reads "↻ Try it", trivially-true harness assertion so the backend stays uniform. The instruction pre-loads specific expressions to run and vary, with motivation — Maya (S11) blocks any playground whose instruction reduces to "play around".
 
 - **1.5 playground — error wrapping, `%w` vs `%v`.** Starter pre-loads `fmt.Errorf` with `%w` and with `%v`, then `errors.Is` and `errors.Unwrap` over both. The learner runs it, sees `errors.Is` find the inner error through `%w` but not through `%v`, then is invited to wrap-a-wrap and confirm the chain survives. The discovery — *`%v` is a string format, `%w` is a wrap* — is the one thing prose can't teach as cheaply as one run.
 
@@ -176,7 +176,7 @@ Only the standard library, under **Go 1.16.2**, single-file `go run`. No `go get
 
 ## 4. Lessons
 
-Step totals: L0 2 · L1 5 · L2 4 · L3 4 · L4 4 · L5 3 = **22 steps** (≈11 katas/challenges incl. capstone + 1 playground + 4 predicts + ~6 reads). Time ≈ 100 min (mid-band). **Exercise share:** writing steps (katas + playground + capstone) ≈ 12 of 22 ≈ **55%** — meets the framework floor (the Rust 48% exception is Rust-scoped; Go holds 55% per the S028 condition). **Cut order if over budget:** 1.5 playground → trim read 5.1 → fold predict 0.2 into read 0.1 as a `read+inline` micro-quiz. **Katas are not on the cut list.**
+Step totals (as shipped): L0 2 · L1 4 · L2 4 · L3 4 · L4 4 · L5 2 = **20 steps** (10 writing steps = 8 katas + 2 challenges incl. capstone + 4 predicts + ~6 reads). The 1.5 playground was cut at seed (§2.4); L1 re-budgeted to 4. Time ≈ 100 min (mid-band). **Exercise share:** writing steps ≈ 10 of 20 ≈ **50%** — meets the framework floor (the Rust 48% exception is Rust-scoped; Go holds ≥50% per the S028 condition). **Remaining cut order if over budget:** trim read 5.1 → fold predict 0.2 into read 0.1 as a `read+inline` micro-quiz. **Katas are not on the cut list.**
 
 > **Time-arithmetic note (recompute at prose stage):** Go's per-step surface is small, so reads run shorter than Rust's (~200-300 words). Rough accounting — reads ~25 min, predicts ~10 min, playground ~5 min, capstone ~20 min — leaves ~40 min for ~9 non-capstone katas (~4.5 min each). Per-step budgets get recomputed once prose exists.
 
@@ -210,7 +210,7 @@ Step totals: L0 2 · L1 5 · L2 4 · L3 4 · L4 4 · L5 3 = **22 steps** (≈11 
 
 > *What changes in the learner's head:* "Go has no exceptions. `error` is a return value and `if err != nil { return ..., err }` is the language's load-bearing convention, not boilerplate. I can wrap with `%w` so the caller still finds the original, match a sentinel with `errors.Is`, extract a typed error with `errors.As`. And I just saw that a typed `nil` is NOT an interface `nil` — the thing that bites everyone once."
 
-**Step distribution:** 1 `read`, 1 `predict`, 2 `kata`, 1 `playground` = 5 steps. Errors-first because it's the most viscerally surprising idiom for a Python/Java/JS dev and it appears in every later kata (Kenji's S6 sign-off: errors-before-interfaces, with the `error` interface as Lesson 2's motivating example — a forward hook, not a forward reference).
+**Step distribution (as shipped):** 1 `read`, 1 `predict`, 2 `kata` = 4 steps (the 1.5 playground was cut at seed — §2.4). Errors-first because it's the most viscerally surprising idiom for a Python/Java/JS dev and it appears in every later kata (Kenji's S6 sign-off: errors-before-interfaces, with the `error` interface as Lesson 2's motivating example — a forward hook, not a forward reference).
 
 #### Step 1.1 — `read` — "Errors are values"
 
@@ -236,7 +236,7 @@ Step totals: L0 2 · L1 5 · L2 4 · L3 4 · L4 4 · L5 3 = **22 steps** (≈11 
 - Tests: `"25" → (25, nil)`; `"abc" → (0, err)` asserted via `errors.Is(err, strconv.ErrSyntax)` — **`%v` fails this test**, with a specific message about the broken wrap chain; `"200"`/`"-1" → out-of-range`. **Confirm at smoke that `strconv.Atoi` on 1.16.2 wraps `strconv.ErrSyntax`** (it does since 1.x, but verify the sentinel is reachable via `errors.Is`).
 - `hints` (tier 1: there's a `fmt.Errorf` verb that preserves the wrap chain, different from the string-format one — `errors.Is` walks the chain only if you use it; tier 2: names `%w` vs `%v` but not the full call).
 
-#### Step 1.5 — `playground` — "Explore error wrapping: `%w` vs `%v`"
+#### Step 1.5 — `playground` — "Explore error wrapping: `%w` vs `%v`" *(CUT at seed — §2.4; design kept as canon)*
 
 - `data.kind: "playground"`. Starter pre-loads `ErrBase`, `wrappedW := fmt.Errorf("outer: %w", ErrBase)`, `wrappedV := fmt.Errorf("outer: %v", ErrBase)`, then prints `.Error()` for both (same string), `errors.Is(..., ErrBase)` for both (true vs false), `errors.Unwrap` for both (the inner vs nil).
 - Prompts in instruction (motivation, not "play around"): (1) same `Error()` text — so what differs? look at `errors.Is`/`errors.Unwrap`; (2) wrap-a-wrap (`inner := %w`; `outer := %w` over inner) — does `errors.Is(outer, ErrBase)` still find it? (3) the discovery framed straight: *`%v` formats the string and loses the wrap; `%w` keeps the chain — that's why §1.4's test insisted on `%w`.*
@@ -467,7 +467,7 @@ To finalize when prose lands. Anticipated citations (sandbox-honest: cite the *l
 
 5. **`✓ encoded` — Harness is manual `_t`/`_eq`, echo-free footer, NOT `go test`.** The scratch's "Go's stdlib testing is already the right shape, no manual harness needed" is the single most confidently-wrong line in the draft for *this* sandbox (`go run`, not `go test`). Encoded in §5 with the echo-free `__DOJO_RESULT__` footer specified from the start (the per-test `✓`/`✗` echo that tipped Piston's stdout cap on the other three scrolls is never added here).
 
-6. **`✓ encoded` — Exercise share held at 55%.** 22 steps, ~12 writing (≈55%). The Rust 48% exception was Rust-scoped with zero precedent for Go (Rust §7); Go meets the framework floor. If prose-stage merges a read, prefer that over adding one — the share must not drop.
+6. **`✓ encoded` — Exercise share held at ≥50%.** As shipped: 20 steps, ~10 writing (≈50%) after the 1.5 playground cut (§2.4). The Rust 48% exception was Rust-scoped with zero precedent for Go (Rust §7); Go meets the framework floor. If prose-stage merges a read, prefer that over adding one — the share must not drop.
 
 7. **`◐ leaning` — NEW FIGURE: none proposed; all six reuses fit.** Audited the figure needs against the catalog (before-after / two-by-two / disambiguation / array-track / tabbed-card / metric-pair). Every committed figure reuses an existing type: 1.1 `before-after` (smell vs idiom error handling), 2.1 `disambiguation` (`interface{}` vs named interface, single-dimension highlight), 3.1 `two-by-two` (receiver × call-site mutation grid), 4.1 `tabbed-card` (schedule/coordinate/choose), optional 5.1 `tabbed-card` (three test shapes). **No `⚠️ NEW FIGURE PROPOSED` is needed.** One thing I deliberately did NOT add: a `metric-pair` (goroutine vs thread memory: ~2KB vs ~1MB stack) was tempting for Lesson 4, but it risks seeding "goroutines are free, spawn thousands" — the exact cargo cult Kenji's lens guards against. Principle 2 (cost-as-number) is *consciously unserved* in this scroll, mirroring Rust's clone-count rejection (Rust §7). Flag if Adrian wants it back.
 

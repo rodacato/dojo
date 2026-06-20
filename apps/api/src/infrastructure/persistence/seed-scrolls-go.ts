@@ -631,7 +631,7 @@ This pulls together everything so far: a structural interface, two structs satis
 // and SendAll.
 `,
   testCode: goTest(
-    ['io', 'bytes'],
+    ['io', 'bytes', 'errors'],
     `	_t("delivers to each notifier with its prefix", func() {
 		var email, log bytes.Buffer
 		err := SendAll([]Notifier{NewEmailNotifier(&email), NewLogNotifier(&log)}, "deploy done")
@@ -639,14 +639,19 @@ This pulls together everything so far: a structural interface, two structs satis
 		_eq("email body", email.String(), "EMAIL: deploy done")
 		_eq("log body", log.String(), "LOG: deploy done")
 	})
-	_t("wraps the first failing notifier's error", func() {
-		err := SendAll([]Notifier{NewLogNotifier(failWriter{})}, "x")
+	_t("wraps the first failing notifier's error with its index", func() {
+		var ok bytes.Buffer
+		err := SendAll([]Notifier{NewEmailNotifier(&ok), NewLogNotifier(failWriter{})}, "x")
 		_eq("error present", err != nil, true)
+		_eq("preserves the wrap chain (%w, not %v)", errors.Is(err, errWriteFailed), true)
+		_eq("names the failing index", strings.Contains(err.Error(), "notifier 1"), true)
 	})`,
-    `type failWriter struct{}
+    `var errWriteFailed = errors.New("write failed")
+
+type failWriter struct{}
 
 func (failWriter) Write(p []byte) (int, error) {
-	return 0, fmt.Errorf("write failed")
+	return 0, errWriteFailed
 }`,
   ),
   hint: null,
