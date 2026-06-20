@@ -96,6 +96,40 @@ function collect(): Array<{ scrollSlug: string; scrollLanguage: string; step: St
   return all
 }
 
+const TRANSIENT_RE =
+  /Sandbox keeper received fatal signal|runner is unavailable|Couldn't reach the code sandbox/i
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+// The devcontainer Piston flakes on Go under host memory pressure — a healthy
+// program SIGABRTs ("Sandbox keeper received fatal signal 6") at random. That's
+// transient infra, not content drift, so retry it. A real failure (compile
+// error, wrong output) is deterministic and fails every attempt, so it still
+// surfaces; only the sandbox/runner crashes are retried.
+async function executeWithRetry(
+  useCase: ExecuteStep,
+  params: { code: string; testCode: string; language: string },
+  label: string,
+  maxAttempts = 8,
+) {
+  let result = await useCase.execute(params)
+  for (let attempt = 2; attempt <= maxAttempts && !result.passed; attempt++) {
+    // stderr is the reliable channel: ExecuteStep's timeout/sandbox branches
+    // overwrite `output` with a friendly message but always pass stderr through,
+    // and a SIGKILLed sandbox keeper is misread as a timeout — so the
+    // "Sandbox keeper..." marker only survives in stderr.
+    const transient =
+      TRANSIENT_RE.test(result.stderr ?? '') ||
+      TRANSIENT_RE.test(result.output ?? '') ||
+      TRANSIENT_RE.test(result.errorMessage ?? '')
+    if (!transient) break
+    console.error(`  ⟳ transient sandbox crash on ${label} — retry ${attempt}/${maxAttempts}`)
+    await sleep(250)
+    result = await useCase.execute(params)
+  }
+  return result
+}
+
 async function main() {
   const adapter = new PistonAdapter()
   const useCase = new ExecuteStep({ executionPort: adapter })
@@ -115,11 +149,11 @@ async function main() {
       continue
     }
     validated++
-    const result = await useCase.execute({
-      code: step.solution,
-      testCode: step.testCode,
-      language: scrollLanguage,
-    })
+    const result = await executeWithRetry(
+      useCase,
+      { code: step.solution, testCode: step.testCode, language: scrollLanguage },
+      `${scrollSlug} / ${fallbackTitle(step)}`,
+    )
     if (!result.passed) {
       failures++
       console.error(`FAIL  ${scrollSlug} / ${fallbackTitle(step)}`)
