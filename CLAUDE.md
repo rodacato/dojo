@@ -36,6 +36,6 @@ When making changes that affect behavior, update docs in the same commit:
 |---|---|
 | New/changed API endpoint | `README.md` |
 | New/changed env var | `README.md` + `.env.example` |
-| New feature shipped | `CHANGELOG.md` |
+| New feature shipped | `CHANGELOG.md` (internal, sprint detail) + `apps/web/src/pages/ChangelogPage.tsx` (public, curated user-facing entry) |
 | Completed roadmap item | `docs/ROADMAP.md` |
 | Architectural decision | `docs/adr/NNN-title.md` |

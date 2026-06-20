@@ -11,6 +11,27 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-06-20',
+    phase: 'Phase 1',
+    title: 'The five-language scroll set is live',
+    description:
+      'Go joins Ruby, Python, Rust, and TypeScript — five language crash-courses, free, no account needed to start. Every kata runs your code in a real sandbox and tells you the truth. The set we committed to is complete.',
+  },
+  {
+    date: '2026-06-19',
+    phase: 'Phase 1',
+    title: 'Scrolls, reshaped',
+    description:
+      'The catalog now shows where you stand and lets you start anything; each scroll opens with a contract — what it is, who it\'s for, how long it takes. Jump to any lesson, freely. No streaks, no badges, no percentage hero. Clarity and free choice, not dopamine.',
+  },
+  {
+    date: '2026-06-08',
+    phase: 'Phase 1',
+    title: 'Crash-course scrolls — the language you already half-know',
+    description:
+      'A new format for experienced developers: a language\'s idioms and peculiarities, taught as deltas from the model you already hold — not the fundamentals you don\'t need. Every concept is drilled in a real sandbox kata, never just read about. Proven on Ruby first; Python, Rust, and TypeScript followed.',
+  },
+  {
     date: '2026-03-22',
     phase: 'Phase 1',
     title: 'Public pages and legal foundation',
@@ -61,7 +82,7 @@ export function ChangelogPage() {
         <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-3">
           Changelog
         </p>
-        <h1 className="text-primary text-3xl md:text-2xl font-semibold leading-tight tracking-tight">
+        <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
           What we shipped.
         </h1>
         <p className="text-secondary text-base mt-2 mb-12">
