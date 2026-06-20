@@ -9,6 +9,7 @@ export default defineConfig({
     passWithNoTests: true,
     coverage: {
       provider: 'istanbul',
+      reporter: ['text', 'lcov'], // lcov → coverage/lcov.info for SonarQube
       include: ['src/**/*.ts'],
       exclude: [
         'src/test/**',

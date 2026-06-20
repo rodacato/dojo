@@ -16,9 +16,51 @@ jobs:
 
   sonar:
     # Manual-only for now: runs on "Run workflow", not on every push/PR.
+    # Runs @dojo/api tests with coverage (vitest → apps/api/coverage/lcov.info)
+    # before scanning. Thresholds are neutralized here so a low number still
+    # feeds Sonar instead of failing the run (gating stays in CI's test job).
     if: ${{ github.event_name == 'workflow_dispatch' }}
-    uses: rodacato/sector-7g/.github/workflows/sonar.yml@master
-    with:
-      host_url: ${{ vars.SONAR_HOST_URL }}
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history → accurate "new code" / blame dates
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4 # must match packageManager in root package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: >-
+          pnpm --filter=@dojo/api test:coverage --
+          --coverage.thresholds.lines=0 --coverage.thresholds.branches=0
+        env:
+          DATABASE_URL: postgresql://dojo:dojo@localhost:5432/dojo_test
+          SESSION_SECRET: ci-test-secret-minimum-32-characters-long
+          GITHUB_CLIENT_ID: ci-test-client-id
+          GITHUB_CLIENT_SECRET: ci-test-client-secret
+          GITHUB_CALLBACK_URL: http://localhost:3001/auth/github/callback
+          LLM_ADAPTER_FORMAT: mock
+          LLM_BASE_URL: http://localhost:11434
+          LLM_API_KEY: ci-test-api-key
+          WEB_URL: http://localhost:5173
+          NODE_ENV: test
+
+      - name: SonarQube scan
+        uses: rodacato/sector-7g/actions/sonar-scan@master
+        with:
+          host_url: ${{ vars.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}
