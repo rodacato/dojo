@@ -110,7 +110,7 @@ async function executeWithRetry(
   useCase: ExecuteStep,
   params: { code: string; testCode: string; language: string },
   label: string,
-  maxAttempts = 15,
+  maxAttempts = 25,
 ) {
   let result = await useCase.execute(params)
   for (let attempt = 2; attempt <= maxAttempts && !result.passed; attempt++) {
