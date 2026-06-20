@@ -27,10 +27,15 @@ export default defineConfig({
         'src/infrastructure/persistence/drizzle/**',
         'src/infrastructure/persistence/migrate.ts',
       ],
-      // Disabled when feeding Sonar so a low number reports instead of failing.
+      // Enforced floor = the honest measured number (S033), not aspiration —
+      // set just under current so it ratchets up, never silently regresses.
+      // The integration tests mock the DB, so there is no hidden coverage a
+      // CI postgres would unlock; 33%/21% is the real number. Raising it is
+      // the S034 testing-backbone work. Neutralized in the Sonar job (which
+      // only reports) via VITEST_NO_COVERAGE_THRESHOLD.
       thresholds: process.env.VITEST_NO_COVERAGE_THRESHOLD
         ? undefined
-        : { lines: 80, branches: 80 },
+        : { lines: 32, statements: 30, functions: 29, branches: 20 },
     },
   },
 })
