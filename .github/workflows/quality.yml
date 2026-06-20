@@ -31,7 +31,7 @@ jobs:
           fetch-depth: 0 # full history → accurate "new code" / blame dates
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 9.15.4 # must match packageManager in root package.json
 
