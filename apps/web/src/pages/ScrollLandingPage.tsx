@@ -144,6 +144,11 @@ export function ScrollLandingPage() {
                         <span className="text-primary text-base font-medium group-hover:text-accent transition-colors block truncate">
                           {lesson.title}
                         </span>
+                        {lesson.outcome && (
+                          <span className="text-secondary text-sm mt-0.5 block">
+                            {lesson.outcome}
+                          </span>
+                        )}
                         <span className="font-mono text-xs tracking-[0.04em] text-muted">
                           {lesson.steps.length} steps
                         </span>

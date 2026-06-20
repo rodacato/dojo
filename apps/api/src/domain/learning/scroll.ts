@@ -24,6 +24,8 @@ export interface Lesson {
   id: string
   order: number
   title: string
+  // §4.4 "what changed in the learner's head". Null when not yet authored.
+  outcome: string | null
   steps: Step[]
 }
 

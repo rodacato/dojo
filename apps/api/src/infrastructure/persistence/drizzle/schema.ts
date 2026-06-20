@@ -209,6 +209,9 @@ export const lessons = pgTable('lessons', {
   scrollId: uuid('course_id').notNull().references(() => scrolls.id),
   order: integer('order').notNull(),
   title: varchar('title', { length: 500 }).notNull(),
+  // §4.4 "what changed in the learner's head" — surfaced on the landing rows.
+  // Nullable: a lesson without an authored outcome renders only its title.
+  outcome: text('outcome'),
 })
 
 export const steps = pgTable('steps', {

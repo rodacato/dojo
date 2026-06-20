@@ -19,6 +19,7 @@ function buildScroll(overrides: Partial<Scroll> = {}): Scroll {
         id: 'l1',
         order: 1,
         title: 'Lesson',
+        outcome: null,
         steps: [
           {
             id: '00000000-0000-0000-0000-000000000001',

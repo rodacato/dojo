@@ -96,6 +96,7 @@ scrollRoutes.get('/scrolls/:slug', optionalAuth, async (c) => {
         id: l.id,
         order: l.order,
         title: l.title,
+        outcome: l.outcome,
         steps: l.steps.map((s) => ({
           id: s.id,
           order: s.order,

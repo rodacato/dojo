@@ -7,7 +7,7 @@ import type { DB } from './drizzle/client'
 import { scrolls } from './drizzle/schema'
 
 type ScrollRow = typeof scrolls.$inferSelect
-type LessonRow = { id: string; scrollId: string; order: number; title: string }
+type LessonRow = { id: string; scrollId: string; order: number; title: string; outcome: string | null }
 type StepRow = {
   id: string
   lessonId: string
@@ -108,6 +108,7 @@ export class PostgresScrollRepository implements ScrollRepositoryPort {
       id: row.id,
       order: row.order,
       title: row.title,
+      outcome: row.outcome ?? null,
       steps: row.steps
         .sort((a, b) => a.order - b.order)
         .map((s) => this.toStep(s)),

@@ -176,6 +176,13 @@
       "when": 1781901998811,
       "tag": "0024_ordinary_magma",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1781964699383,
+      "tag": "0025_curly_nuke",
+      "breakpoints": true
     }
   ]
 }

@@ -179,6 +179,7 @@ export const lessonDTOSchema = z.object({
   id: z.string().uuid(),
   order: z.number().int(),
   title: z.string(),
+  outcome: z.string().nullable(),
   steps: z.array(stepDTOSchema),
 })
 

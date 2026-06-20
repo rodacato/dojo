@@ -194,6 +194,9 @@ export interface LessonDTO {
   id: string
   order: number
   title: string
+  // §4.4 "what changed in the learner's head", shown under the lesson title on
+  // the landing. Null when not yet authored — the row renders only the title.
+  outcome: string | null
   steps: StepDTO[]
 }
 

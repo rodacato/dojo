@@ -190,6 +190,8 @@ const LESSON_1 = {
   scrollId: COURSE_ID,
   order: 1,
   title: 'Errors as values: the try/except reflex you unlearn',
+  outcome:
+    'You check errors as ordinary return values instead of reaching for try, and you wrap them so the original cause survives.',
 }
 
 const STEP_1_3 = {
@@ -250,6 +252,8 @@ const LESSON_0 = {
   scrollId: COURSE_ID,
   order: 0,
   title: 'Go in context',
+  outcome:
+    'You can judge whether Go fits a problem before you start, and you know which toolchain command does what.',
 }
 
 const STEP_0_1 = {
@@ -482,6 +486,8 @@ const LESSON_2 = {
   scrollId: COURSE_ID,
   order: 2,
   title: 'Structural interfaces',
+  outcome:
+    'You accept small interfaces and return concrete structs — and you stopped hunting for an implements keyword that does not exist.',
 }
 
 const STEP_2_1 = {
@@ -687,6 +693,8 @@ const LESSON_3 = {
   scrollId: COURSE_ID,
   order: 3,
   title: 'Structs, methods, and composition over inheritance',
+  outcome:
+    'You choose value vs pointer receivers on purpose, and compose behavior with embedding instead of an inheritance hierarchy.',
 }
 
 const STEP_3_1 = {
@@ -896,6 +904,8 @@ const LESSON_4 = {
   scrollId: COURSE_ID,
   order: 4,
   title: 'Concurrency: goroutines, channels, select',
+  outcome:
+    'You coordinate goroutines through channels and select, and you spot the shared-loop-variable trap on sight.',
 }
 
 const STEP_4_1 = {
@@ -1099,6 +1109,8 @@ const LESSON_5 = {
   scrollId: COURSE_ID,
   order: 5,
   title: 'Integration: the capstone',
+  outcome:
+    'You wired errors, interfaces, and structs into one working program — and you know what the scroll left for the deep-dives.',
 }
 
 const STEP_5_1 = {
