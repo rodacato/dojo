@@ -18,10 +18,10 @@ export default defineConfig({
         'src/index.ts',
         'src/config.ts',
       ],
-      thresholds: {
-        lines: 80,
-        branches: 80,
-      },
+      // Disabled when feeding Sonar so a low number reports instead of failing.
+      thresholds: process.env.VITEST_NO_COVERAGE_THRESHOLD
+        ? undefined
+        : { lines: 80, branches: 80 },
     },
   },
 })

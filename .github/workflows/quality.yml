@@ -44,10 +44,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests with coverage
-        run: >-
-          pnpm --filter=@dojo/api test:coverage --
-          --coverage.thresholds.lines=0 --coverage.thresholds.branches=0
+        run: pnpm --filter=@dojo/api test:coverage
         env:
+          VITEST_NO_COVERAGE_THRESHOLD: "1" # report coverage, don't gate on it
           DATABASE_URL: postgresql://dojo:dojo@localhost:5432/dojo_test
           SESSION_SECRET: ci-test-secret-minimum-32-characters-long
           GITHUB_CLIENT_ID: ci-test-client-id
