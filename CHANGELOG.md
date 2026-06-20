@@ -4,6 +4,21 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 032 — Ship the set, then close the reshape loop (2026-06-20)
+**Phase 1 — Alpha**
+
+> The five-language set went live, and the S030 reshape's deferred layer landed.
+
+**The set is live.** Deployed the five-language scroll set and reseeded prod — the Go scroll is published + public, and the reseed carried the S031 Ruby `parameters_of` fix that had been dead in prod (the kata every learner failed). Confirmed Go live via the prod catalog: `published`, `isPublic`, 20 steps, ~100 min.
+
+**The solo-authored Go prose got its review before it shipped.** S031 flagged that the Go scroll was authored solo against a spec that called for a panel + audience read that never happened. Ran that fresh-eyes read as the deploy gate — three lenses (Go 1.16.2 correctness, pedagogy/spec alignment, polyglot audience). The content held: both trap predicts and the 1.16-vs-1.22 loop-capture contract verified correct, no false takeaways. Two real gaps fixed: (1) the `Notifier` challenge (2.4) test only asserted `err != nil`, so a bare `return err` passed while skipping the `%w` wrap + index the challenge teaches — now asserts `errors.Is` through a sentinel and the named index; (2) the spec advertised 22 steps + a playground the seed never shipped (and its own arithmetic was inconsistent) — reconciled `go.md` to the shipped 20 steps, playground design kept as canon but marked CUT. `validate:scrolls` green (`validated=64`).
+
+**The reshape's deferred layer — closed.** The step-player got the terminal `scroll/<lang>` contract strip (accent, path-style, doubles as the back-to-overview affordance) matching the reshaped catalog/landing, and a proactive offline banner on the public `/scrolls/*` routes (the mid-run sandbox-unreachable case was already handled). The completed-scroll share page surfaced a live bug along the way: the JSON returned `courseAccentColor` while the page read `scrollAccentColor`, so the card had been rendering with no language accent at all — repaired the key, aligned the OG image's "COURSE COMPLETE" → "SCROLL COMPLETE", and bumped the title to the reshaped scale. (The `lessons.outcome` landing field landed earlier in the sprint.)
+
+**Maintenance groundwork landed early.** Per-workspace SonarQube split (api/web/packages), real coverage measured across the repo, and the shared CI quality kit adopted — the measured baseline S033 (maintenance) opens from.
+
+---
+
 ## Sprint 031 — Go crash scroll: the five-language set closes (2026-06-19 – 06-20)
 **Phase 1 — Alpha**
 

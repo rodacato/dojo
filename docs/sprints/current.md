@@ -1,43 +1,38 @@
-# Sprint 032 — Ship the set, then close the reshape loop
+# Sprint 033 — Maintenance: security & foundation
 
-> **Status:** Open 2026-06-20. The five-language scroll set is content-complete (Ruby, Python, Rust, TypeScript, Go) and the catalog/landing reshape shipped in S030. This sprint takes it live and finishes the reshape's deferred layer.
-> **Predecessor:** [Sprint 031 — Go crash scroll](archive/sprint-031-go-scroll.md)
+> **Status:** Open 2026-06-20. The five-language set is live (S032). This sprint stops the bleeding: security-relevant dep debt, honest coverage measurement + gating, dead-code tooling — so S034/S035 start from a measured baseline instead of a guess.
+> **Predecessor:** [Sprint 032 — Ship the set, then close the reshape loop](archive/sprint-032-ship-and-reshape-loop.md)
+> **Full plan:** [PRD-033](../prd/033-sprint-033-maintenance-planning.md) — this is the condensed working doc; the PRD is the source of truth (measured inputs, sequencing rationale, definition of done).
 
 ## Sprint thesis
 
-Two things have been staged but not landed: the Go scroll (published in source, not deployed) and the reshape's player/recognition layer (the catalog + landing shipped; the step-player polish, completion/error states, and share surface were carried). The set is built — this sprint ships it and closes the loop, rather than starting new content.
+The scrolls product shipped fast and accrued the usual debt: 78 `pnpm audit` vulns (1 critical, 12 high), coverage measured at ~63% api / ~6% web / 0% shared with a gate that's *decorative* (neutralized in CI), and no dead-code tooling. None of it is on the scroll-execution critical path — so it didn't block the ship — but it's the kind of debt that bites at the next thing. Measure it, gate it honestly, patch the security-relevant set. This is the *focused* cut of a 2–3 sprint block; the web testing backbone (S034) and architecture debt (S035) are explicitly deferred.
 
 ## Mandatory (sprint blockers if not done)
 
-- **Deploy the five-language set incl. Go.** The reseed runs the S031 Ruby `parameters_of` fix (a dead kata, live in prod until reseed) and the Go scroll live. **Read the Go prose first** — it was authored solo in S031; the spec called for a panel + audience review that didn't happen. Confirm the `piston-execute-smoke` cron covers `go` and is green post-deploy.
-- **Sprint admin discipline.** Close with retro, archive, CHANGELOG, S033 open.
+- **Task 0 — pull the findings before promising to fix them.** Run the Sonar `workflow_dispatch`, export issues to `docs/audits/2026-06-sonar-baseline.md`. Decide whether CodeQL enters the repo or stays in `sector-7g`; get its findings into the same doc. Triage both into fix-now / S035 / won't-fix-with-reason — **no silent drops.** This gates scoping the rest.
+- **Dependency security pass.** `pnpm audit --fix` for the non-breaking set; manually bump `dompurify` (via `mermaid`) and `hono` past their advisories. `pnpm audit` critical + high → **0**. Patch/minor bumps in one batch with full test + smoke after. **Majors are NOT in this track** (eslint 10, `@types/node` 26, vite-plugin-react 6, `@hono/node-server` 2, arctic 3) — log which were deferred.
+- **Coverage — measure everything, gate honestly.** api: exclude `src/scripts/**` (dev CLIs dragging the number), re-measure business logic, then either raise tests to 80% or **lower the gate to the honest number and turn it back ON** (a gate at 80-and-disabled is worse than 65-and-enforced). web: add vitest coverage config + wire `lcov` into Sonar (don't chase the number — that's S034). shared: vitest config + a smoke test per Zod export.
+- **Dead-code tooling.** Add `knip` at the root, commit the baseline to `docs/audits/2026-06-knip-baseline.md`, fix the unambiguous wins, defer the judgment calls.
+- **Sprint admin discipline.** Close with retro, archive, CHANGELOG (internal + public per the doc-sync table), open S034 (web testing backbone) + S035 (architecture debt) from the baselines this sprint produces.
 
-## The reshape's deferred layer (the real work of this sprint)
+## Critical-path order
 
-Carried from S030 (catalog + landing shipped; this is the rest):
-
-- **Step-player consistency pass + states.** The terminal `scroll/<lang>` header and a `THE CONTRACT`-style box to match the reshaped catalog/landing; plus the surfaces that decide whether it *works* — the completion moment for the catalog-era look and the error/empty/runner-offline states (the OutputPanel already handles runner errors; audit the rest).
-- **Completed-scroll share reshape** (`ScrollSharePage`) — align with the reshaped surfaces (Amara C7).
-- **`lessons.outcome` field** — the §4.4 "what changed in the learner's head" line the new scroll landing can't yet show (lessons store only `title`). Small schema add, like `estimatedMinutes`; then surface it on the landing rows.
-
-## Stretch / candidates (triage before picking up)
-
-- **First topic deep-dive** — `sql-deep-cuts` is already live; the named-but-unbuilt deep-dives (`rust-lifetimes`, `ruby-blocks`, `go-concurrency-deep`) are Phase-3 candidates, triggered by real audience need, not authored on spec.
-- **Turnstile on `/scrolls/execute`** for anonymous callers — precautionary hardening (backlog); only if real execution abuse shows.
-- **Local Piston Go reliability** — the devcontainer flake is host-memory-driven; if it keeps blocking local smokes, consider a memory bump or a CI-only Go smoke path.
-- **Render-test infra** (jsdom) — the perennial defer; land it or defer with a reason.
-
-## Reading order if you're picking this up cold
-
-1. [archive/sprint-031-go-scroll.md](archive/sprint-031-go-scroll.md) — what just shipped + the staged deploy + the solo-authored-prose flag.
-2. [archive/sprint-030-scrolls-reshape.md](archive/sprint-030-scrolls-reshape.md) — the reshape, and what its deferred layer is.
-3. [`docs/courses/README.md`](../courses/README.md) §4.5/§4.6 — catalog + landing canon.
-4. [`docs/sprints/backlog.md`](backlog.md) — the reshape follow-ups + carries.
+1. **Task 0** — pull Sonar + CodeQL findings, write the baseline audit, triage. (Unblocks the rest.)
+2. **Track 1** — dependency security pass (critical + high → 0). Highest urgency.
+3. **Track 2** — coverage measured across 3 workspaces + api gate enforced.
+4. **Track 3** — knip baseline + unambiguous dead-code wins.
 
 ## Out of scope, parked
 
-- Sixth scroll — the five-language set is the closed commitment (ADR 022).
-- Kumite feature (still the `/kumite` placeholder).
-- Per-track belt marks, rust indicator (PRD-031 v1.1).
-- Sumi-e migration — its own sprint when the token values get a designer pass.
-- Aggressive sensei voice rewrite (calibration-gated).
+- **Web testing backbone (P-5).** 7/109 → meaningful coverage is its own sprint. S033 only makes the number visible. → **S034**.
+- **Architecture debt** (P-1..P-6, F-4..F-6, in-memory rate limiters, `TelemetrySinkPort`). → **S035**, scoped from this sprint's baselines.
+- **Dependency majors** — deferred per Track 1.
+- **Aggressive Sonar smell cleanup** — only security-relevant + trivial findings this sprint; the long tail is S035.
+- **The share card's language glyph mark** (Amara C7 design call, carried from S032).
+
+## Reading order if you're picking this up cold
+
+1. [PRD-033](../prd/033-sprint-033-maintenance-planning.md) — measured inputs, sequencing, definition of done.
+2. [archive/sprint-032-ship-and-reshape-loop.md](archive/sprint-032-ship-and-reshape-loop.md) — what just shipped + the reseed-is-not-in-the-pipeline finding.
+3. [`docs/sprints/backlog.md`](backlog.md) — the P-* / F-* items this sprint triages.
