@@ -73,7 +73,7 @@ jobs:
       # placeholder so the parse succeeds.
       SENTRY_RELEASE: ${{ github.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ruby/setup-ruby@v1
         with:
