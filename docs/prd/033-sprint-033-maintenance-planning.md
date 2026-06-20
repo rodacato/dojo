@@ -32,6 +32,7 @@ This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findin
 - Run the Sonar `workflow_dispatch`; export the issue list (bugs / vulns / code smells / coverage-on-new-code) to `docs/audits/2026-06-sonar-baseline.md`.
 - Decide whether CodeQL enters the repo as a first-class workflow or stays inside `sector-7g`. If it runs in `sector-7g`, get its SARIF/findings out and into the same audit doc. If it does **not** run anywhere, that is the finding — record it and decide whether to add `github/codeql-action` (default-setup is one toggle).
 - Triage both lists into: (a) fix this sprint, (b) S035 arch debt, (c) won't-fix-with-reason. No silent drops.
+- **Tests-before-refactor (Adrian's call, 2026-06-20).** Reliability/maintainability findings that need a *refactor* (not a one-line fix) carry a `needs-test-net` tag in the triage. They do **not** get refactored — this sprint or in S035 — until a unit-test net pins the affected code's current behavior first. The test lands before the refactor, in its own commit, so the refactor's diff is provably behavior-preserving. A maintainability cleanup without a test net is how you ship a reliability regression. Trivial one-line fixes (a null guard, a `===`) are exempt — this gate is for structural changes.
 
 ### 1. Dependency security pass
 
@@ -54,7 +55,7 @@ This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findin
 ## Scope — what does NOT ship
 
 - **Web testing backbone (P-5).** 7/109 → meaningful coverage is its own sprint. S033 only makes the number visible. → **S034**.
-- **Architecture debt.** P-1..P-6 (header/loader inconsistency, `console.error` in prod, raw `fetch` bypassing the client), F-4..F-6, single-process in-memory rate limiters (won't scale horizontally), the pending `TelemetrySinkPort`. → **S035**, scoped from the Sonar/knip baselines this sprint produces.
+- **Architecture debt.** P-1..P-6 (header/loader inconsistency, `console.error` in prod, raw `fetch` bypassing the client), F-4..F-6, single-process in-memory rate limiters (won't scale horizontally), the pending `TelemetrySinkPort`. → **S035**, scoped from the Sonar/knip baselines this sprint produces. **Gated on tests-before-refactor** (task 0): every `needs-test-net`-tagged finding gets its characterization tests first, then the refactor — S035 inherits both the refactor list and its test debt.
 - **Dependency majors.** Deferred per Track 1.
 - **Aggressive Sonar smell cleanup.** Only security-relevant + trivial findings this sprint; the long tail of code smells is S035.
 
