@@ -7,6 +7,7 @@ import { ErrorState } from '../components/ui/ErrorState'
 import { useAuth } from '../context/AuthContext'
 import { useScrollProgress } from '../scrolls/player/useScrollProgress'
 import { useStepNavigation } from '../scrolls/player/useStepNavigation'
+import { OfflineBanner } from '../components/layout/OfflineBanner'
 import { LessonNav } from '../scrolls/player/LessonNav'
 import { FurtherReading } from '../scrolls/player/FurtherReading'
 import { ScrollCompleteBanner } from '../scrolls/player/ScrollCompleteBanner'
@@ -79,25 +80,36 @@ export function ScrollPlayerPage() {
 
   return (
     <div className="h-[100dvh] bg-page flex flex-col overflow-hidden">
-      {/* Top bar — 56px, mono caps progress */}
+      <OfflineBanner />
+      {/* Top bar — 56px terminal contract strip: scroll/<lang> · title · ~min · progress */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <Link
           to={`/scrolls/${slug}`}
-          className="font-mono text-xs tracking-[0.08em] uppercase text-muted hover:text-primary transition-colors"
+          aria-label="Back to overview"
+          className="group font-mono text-xs tracking-[0.06em] flex items-center gap-1.5 shrink-0"
         >
-          ← Overview
+          <span className="text-muted group-hover:text-primary transition-colors">←</span>
+          <span className="text-muted">scroll/</span>
+          <span style={{ color: scroll.accentColor }}>{scroll.language}</span>
         </Link>
         <span className="h-4 w-px bg-border hidden sm:block" />
         <span className="text-primary text-sm font-medium truncate hidden sm:inline">
           {scroll.title}
         </span>
-        <span
-          className={`ml-auto font-mono text-xs tracking-[0.08em] uppercase ${
-            scrollComplete ? 'text-success' : 'text-muted'
-          }`}
-        >
-          {completedCount} / {allSteps.length} steps
-        </span>
+        <div className="ml-auto flex items-center gap-3">
+          {scroll.estimatedMinutes != null && (
+            <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted hidden md:inline">
+              ~{scroll.estimatedMinutes} min
+            </span>
+          )}
+          <span
+            className={`font-mono text-xs tracking-[0.08em] uppercase ${
+              scrollComplete ? 'text-success' : 'text-muted'
+            }`}
+          >
+            {completedCount} / {allSteps.length} steps
+          </span>
+        </div>
         <button
           type="button"
           onClick={() => setSidebarOpen(!sidebarOpen)}
