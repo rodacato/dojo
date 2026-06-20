@@ -59,30 +59,13 @@ jobs:
           WEB_URL: http://localhost:5173
           NODE_ENV: test
 
-      - name: Run web tests with coverage
-        # web tests aren't in the CI gate yet; don't let a failure block the scans.
-        continue-on-error: true
-        run: pnpm --filter=@dojo/web test:coverage
-
+      # Only the api is scanned. apps/web (react) and packages would OOM SonarJS's
+      # type-aware bridge on heavy type graphs (proven on drawhaus's equivalents),
+      # for little return — they have no real test coverage. Security scans
+      # (sector-7g security.yml) still cover them.
       - name: Scan api
         uses: rodacato/sector-7g/actions/sonar-scan@master
         with:
           host_url: ${{ vars.SONAR_HOST_URL }}
           token: ${{ secrets.SONAR_TOKEN }}
           project_base_dir: apps/api
-
-      - name: Scan packages
-        uses: rodacato/sector-7g/actions/sonar-scan@master
-        with:
-          host_url: ${{ vars.SONAR_HOST_URL }}
-          token: ${{ secrets.SONAR_TOKEN }}
-          project_base_dir: packages
-
-      - name: Scan web
-        # Heaviest type graph; isolated here. If it still OOMs, only this step fails.
-        continue-on-error: true
-        uses: rodacato/sector-7g/actions/sonar-scan@master
-        with:
-          host_url: ${{ vars.SONAR_HOST_URL }}
-          token: ${{ secrets.SONAR_TOKEN }}
-          project_base_dir: apps/web
