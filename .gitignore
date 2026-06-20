@@ -48,5 +48,6 @@ test-results/
 playwright-report/
 
 .kwik-e/
+.mcp.json
 CLAUDE.local.md
 .claude/rules/kwik-e/
