@@ -16,12 +16,13 @@ jobs:
 
   sonar:
     # Manual-only for now: runs on "Run workflow", not on every push/PR.
-    # Runs @dojo/api tests with coverage (vitest → apps/api/coverage/lcov.info)
-    # before scanning. Thresholds are neutralized here so a low number still
-    # feeds Sonar instead of failing the run (gating stays in CI's test job).
+    # Monorepo → one Sonar project per workspace (own bridge = lower memory).
+    # Each app has its own sonar-project.properties; scanned via project_base_dir.
+    # Vitest thresholds are neutralized (VITEST_NO_COVERAGE_THRESHOLD) so a low
+    # number still feeds Sonar; gating stays in CI's test job.
     if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -59,12 +60,29 @@ jobs:
           NODE_ENV: test
 
       - name: Run web tests with coverage
-        # web tests aren't in the CI gate yet; don't let a failure block the scan.
+        # web tests aren't in the CI gate yet; don't let a failure block the scans.
         continue-on-error: true
         run: pnpm --filter=@dojo/web test:coverage
 
-      - name: SonarQube scan
+      - name: Scan api
         uses: rodacato/sector-7g/actions/sonar-scan@master
         with:
           host_url: ${{ vars.SONAR_HOST_URL }}
           token: ${{ secrets.SONAR_TOKEN }}
+          project_base_dir: apps/api
+
+      - name: Scan packages
+        uses: rodacato/sector-7g/actions/sonar-scan@master
+        with:
+          host_url: ${{ vars.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}
+          project_base_dir: packages
+
+      - name: Scan web
+        # Heaviest type graph; isolated here. If it still OOMs, only this step fails.
+        continue-on-error: true
+        uses: rodacato/sector-7g/actions/sonar-scan@master
+        with:
+          host_url: ${{ vars.SONAR_HOST_URL }}
+          token: ${{ secrets.SONAR_TOKEN }}
+          project_base_dir: apps/web
