@@ -30,6 +30,19 @@ const uploadSourcemaps = !!(sentryAuth && sentryOrg && sentryProject)
 
 export default defineConfig({
   envDir: '../..',
+  test: {
+    coverage: {
+      provider: 'istanbul',
+      reporter: ['text', 'lcov'], // lcov → coverage/lcov.info for SonarQube
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/**/__tests__/**',
+        'src/main.tsx',
+        'src/vite-env.d.ts',
+      ],
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
