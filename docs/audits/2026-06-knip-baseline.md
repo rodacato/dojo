@@ -31,7 +31,7 @@
 
 ## Findings to act on (not dead code, but surfaced by knip)
 
-- **`eslint-plugin-react-hooks` + `eslint-plugin-react-refresh` are declared in `apps/web` but wired into nothing** — the root `eslint.config.mjs` only registers `eslint-plugin-import`. So the React app gets **no react-hooks linting**. Don't delete the plugins — **wire them into the eslint flat config** (a quality follow-up, S034-adjacent). Knip flagged them as "unused devDependencies"; the honest fix is to use them, not drop them.
+- **`eslint-plugin-react-hooks` + `eslint-plugin-react-refresh` were declared in `apps/web` but wired into nothing** — the React app got no react-hooks linting. **Resolved:** `react-hooks` is now wired into `eslint.config.mjs` (rules-of-hooks + exhaustive-deps as errors for `apps/web/**`); the single surfaced violation (a CodeMirror `useEffect` in `CodeEditor.tsx`) was fixed via the latest-ref pattern. `react-refresh` was **removed** instead — it only lints HMR-friendliness (~10 violations to chase for dev-only benefit) and isn't worth wiring.
 
 ## Before wiring knip into `pnpm lint` (deferred)
 

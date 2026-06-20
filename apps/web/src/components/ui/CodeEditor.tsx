@@ -116,6 +116,14 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
   const viewRef = useRef<EditorView | null>(null)
   const tokens = useThemeTokens()
 
+  // Latest value/onChange held in refs so the editor is rebuilt only on
+  // [language, tokens] — not on every keystroke or parent re-render. `value`
+  // is the initial doc (external resets are not synced back in by design).
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+  const valueRef = useRef(value)
+  valueRef.current = value
+
   useEffect(() => {
     if (!containerRef.current) return
 
@@ -137,7 +145,7 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
 
     const view = new EditorView({
       state: EditorState.create({
-        doc: value,
+        doc: valueRef.current,
         extensions: [
           buildEditorTheme(tokens),
           syntaxHighlighting(buildHighlightStyle(tokens)),
@@ -146,7 +154,7 @@ export function CodeEditor({ value, onChange, language = 'javascript', placehold
           langExtension,
           EditorView.updateListener.of((update) => {
             if (update.docChanged) {
-              onChange(update.state.doc.toString())
+              onChangeRef.current(update.state.doc.toString())
             }
           }),
           EditorView.contentAttributes.of({
