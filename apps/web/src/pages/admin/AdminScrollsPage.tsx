@@ -375,6 +375,12 @@ function NoticeBanner({
 }
 
 
+const TH_ALIGN_CLASS: Record<'left' | 'center' | 'right', string> = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+}
+
 function Th({
   children,
   align = 'left',
@@ -382,7 +388,7 @@ function Th({
   children: React.ReactNode
   align?: 'left' | 'center' | 'right'
 }>) {
-  const a = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
+  const a = TH_ALIGN_CLASS[align]
   return (
     <th className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${a}`}>
       {children}

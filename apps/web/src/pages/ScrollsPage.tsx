@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { API_URL } from '../lib/config'
@@ -81,6 +81,20 @@ export function ScrollsPage() {
   const topics = visible.filter(({ scroll }) => !LANGUAGE_SCROLL_LANGS.has(scroll.language))
   const totalSteps = scrolls.reduce((sum, s) => sum + s.stepCount, 0)
 
+  let catalog: ReactNode
+  if (scrolls.length === 0) {
+    catalog = <EmptyState message="No scrolls available yet. Check back soon." />
+  } else if (visible.length === 0) {
+    catalog = <EmptyState message="No scrolls match this filter." />
+  } else {
+    catalog = (
+      <div className="flex flex-col gap-12">
+        {languages.length > 0 && <ScrollSection title="Languages" items={languages} />}
+        {topics.length > 0 && <ScrollSection title="Topics" items={topics} />}
+      </div>
+    )
+  }
+
   return (
     <PublicPageLayout>
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-16">
@@ -145,18 +159,7 @@ export function ScrollsPage() {
         )}
 
         {/* Catalog */}
-        {scrolls.length === 0 ? (
-          <EmptyState message="No scrolls available yet. Check back soon." />
-        ) : visible.length === 0 ? (
-          <EmptyState message="No scrolls match this filter." />
-        ) : (
-          <div className="flex flex-col gap-12">
-            {languages.length > 0 && (
-              <ScrollSection title="Languages" items={languages} />
-            )}
-            {topics.length > 0 && <ScrollSection title="Topics" items={topics} />}
-          </div>
-        )}
+        {catalog}
 
         {/* Kata invite — distinct from the sign-in-to-save offer above */}
         <section className="mt-12 md:mt-16 bg-surface border border-border rounded-md p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">

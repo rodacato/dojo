@@ -6,11 +6,18 @@ export const API_URL = import.meta.env['VITE_API_URL'] ?? ''
 // WebSocket base URL — derived from API_URL
 // Dev: ws://localhost:5173 (or wherever Vite serves)
 // Prod: wss://dojo-api.notdefined.dev
-export const WS_URL = API_URL
-  ? API_URL.replace(/^https/, 'wss').replace(/^http/, 'ws')
-  : typeof globalThis.window === 'undefined'
-    ? ''
-    : `${globalThis.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${globalThis.location.host}`
+function deriveWsUrl(): string {
+  if (API_URL) {
+    return API_URL.replace(/^https/, 'wss').replace(/^http/, 'ws')
+  }
+  if (typeof globalThis.window === 'undefined') {
+    return ''
+  }
+  const wsProtocol = globalThis.location.protocol === 'https:' ? 'wss:' : 'ws:'
+  return `${wsProtocol}//${globalThis.location.host}`
+}
+
+export const WS_URL = deriveWsUrl()
 
 // Sentry (optional). Empty DSN disables the Sentry browser adapter entirely.
 // The environment tag defaults to Vite's build mode — 'development' during

@@ -137,20 +137,26 @@ export class PistonAdapter implements CodeExecutionPort {
     // surprises from arbitrary learner code. Validated against Piston Go
     // 1.16.2 (S031): the harness hand-rolls JSON because `encoding/json`
     // crashes the sandbox keeper there.
-    const combined = isRust
-      ? `${params.code.replace(/\bfn\s+main\s*\(/g, 'fn __learner_main(')}\n\n${params.testCode}`
-      : isGo
-        ? params.testCode.replace('// __DOJO_SOLUTION__', () => params.code)
-        : `${params.code}\n\n${params.testCode}`
+    let combined: string
+    if (isRust) {
+      combined = `${params.code.replace(/\bfn\s+main\s*\(/g, 'fn __learner_main(')}\n\n${params.testCode}`
+    } else if (isGo) {
+      combined = params.testCode.replace('// __DOJO_SOLUTION__', () => params.code)
+    } else {
+      combined = `${params.code}\n\n${params.testCode}`
+    }
     // Rust file is named main.rs so rustc's error paths match the scroll prose
     // ("main.rs:LINE"); Go is main.go for the same reason; others keep test.*.
-    const runFile = isSql
-      ? 'query.sql'
-      : isRust
-        ? 'main.rs'
-        : isGo
-          ? 'main.go'
-          : `test.${ext(params.language)}`
+    let runFile: string
+    if (isSql) {
+      runFile = 'query.sql'
+    } else if (isRust) {
+      runFile = 'main.rs'
+    } else if (isGo) {
+      runFile = 'main.go'
+    } else {
+      runFile = `test.${ext(params.language)}`
+    }
     const files = isSql
       ? [{ name: 'query.sql', content: buildSqlScript(params.code, params.testCode) }]
       : [{ name: runFile, content: combined }]

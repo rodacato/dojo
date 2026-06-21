@@ -270,6 +270,12 @@ function InsightCards({ analysis }: Readonly<{ analysis?: string }>) {
   )
 }
 
+function getToneClass(tone: 'success' | 'warning' | 'accent') {
+  if (tone === 'success') return 'text-success'
+  if (tone === 'warning') return 'text-warning'
+  return 'text-accent'
+}
+
 function InsightCard({
   title,
   tone,
@@ -279,12 +285,7 @@ function InsightCard({
   tone: 'success' | 'warning' | 'accent'
   children: React.ReactNode
 }>) {
-  const toneClass =
-    tone === 'success'
-      ? 'text-success'
-      : tone === 'warning'
-        ? 'text-warning'
-        : 'text-accent'
+  const toneClass = getToneClass(tone)
   return (
     <div className="bg-surface border border-border rounded-md p-4 flex flex-col gap-3 min-h-50">
       <p className={`font-mono text-xs tracking-[0.08em] uppercase ${toneClass}`}>
@@ -371,6 +372,17 @@ function ShareActions({
   )
 }
 
+function getVerdictColor(verdict: string) {
+  if (verdict === 'passed') return 'text-success'
+  if (verdict === 'needs_work') return 'text-danger'
+  return 'text-warning'
+}
+
+function truncateAnalysis(analysis?: string) {
+  if (!analysis) return null
+  return analysis.length > 120 ? analysis.slice(0, 117) + '...' : analysis
+}
+
 function ShareCardPreview({
   kataTitle,
   verdict,
@@ -385,15 +397,8 @@ function ShareCardPreview({
   ownerRole?: string
 }>) {
   const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
-  const verdictColor =
-    verdict === 'passed'
-      ? 'text-success'
-      : verdict === 'needs_work'
-        ? 'text-danger'
-        : 'text-warning'
-  const pullQuote = approachNote ?? (analysis
-    ? analysis.length > 120 ? analysis.slice(0, 117) + '...' : analysis
-    : null)
+  const verdictColor = getVerdictColor(verdict)
+  const pullQuote = approachNote ?? truncateAnalysis(analysis)
 
   return (
     <div className="bg-page border border-border rounded-md p-5 flex flex-col gap-4 aspect-1200/630">

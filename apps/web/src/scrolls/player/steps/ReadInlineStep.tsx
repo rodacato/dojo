@@ -98,6 +98,7 @@ function MicroQuiz({
         {options.map((option, i) => {
           const isPicked = picked === i
           const isCorrect = i === correct
+          const pickedMark = isPicked ? '✗' : ''
           let stateClass = 'border-border bg-elevated/40 hover:border-accent/60 cursor-pointer'
           if (answered) {
             if (isPicked && isCorrect) stateClass = 'border-success bg-success/10 text-success cursor-default'
@@ -114,7 +115,7 @@ function MicroQuiz({
               className={`flex-1 text-left px-3 py-2 rounded border font-mono text-sm transition-all duration-200 ${stateClass}`}
             >
               {answered && (
-                <span className="mr-1.5">{isCorrect ? '✓' : isPicked ? '✗' : ''}</span>
+                <span className="mr-1.5">{isCorrect ? '✓' : pickedMark}</span>
               )}
               {option}
             </button>

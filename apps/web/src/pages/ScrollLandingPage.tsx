@@ -75,7 +75,8 @@ export function ScrollLandingPage() {
   const targetLesson = target
     ? scroll.lessons.find((l) => l.steps.some((s) => s.id === target.id))
     : undefined
-  const ctaVerb = completedCount === 0 ? 'Start' : firstIncomplete ? 'Continue' : 'Review'
+  const inProgressVerb = firstIncomplete ? 'Continue' : 'Review'
+  const ctaVerb = completedCount === 0 ? 'Start' : inProgressVerb
   const toGo = allSteps.length - completedCount
 
   return (

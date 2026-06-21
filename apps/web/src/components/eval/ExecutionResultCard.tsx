@@ -5,13 +5,18 @@ interface Props {
   result: ExecutionResult
 }
 
+function describeStatus(timedOut: boolean, passed: boolean): string {
+  if (timedOut) return 'TIMED OUT'
+  return passed ? 'TESTS PASSED' : 'TESTS FAILED'
+}
+
 export function ExecutionResultCard({ result }: Readonly<Props>) {
   const [expanded, setExpanded] = useState(false)
   const passed = result.exitCode === 0
   const timedOut = result.timedOut
 
   const statusColor = passed ? 'text-success' : 'text-danger'
-  const statusLabel = timedOut ? 'TIMED OUT' : passed ? 'TESTS PASSED' : 'TESTS FAILED'
+  const statusLabel = describeStatus(timedOut, passed)
   const statusIcon = passed ? '●' : '✕'
 
   return (

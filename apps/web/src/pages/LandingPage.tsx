@@ -90,15 +90,16 @@ export function LandingPage() {
 /*  Sections                                                           */
 /* ------------------------------------------------------------------ */
 
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  session_expired: 'Your session expired. Sign in again to continue.',
+  invite_required: 'The dojo is invite-only. Request access below or use an invitation link.',
+  invite_invalid: 'This invitation is invalid or has already been used.',
+}
+
 function AuthErrorBanner({ errorParam }: Readonly<{ errorParam: string }>) {
   const message =
-    errorParam === 'session_expired'
-      ? 'Your session expired. Sign in again to continue.'
-      : errorParam === 'invite_required'
-        ? 'The dojo is invite-only. Request access below or use an invitation link.'
-        : errorParam === 'invite_invalid'
-          ? 'This invitation is invalid or has already been used.'
-          : 'GitHub login failed. Try again or check your GitHub status.'
+    AUTH_ERROR_MESSAGES[errorParam] ??
+    'GitHub login failed. Try again or check your GitHub status.'
   return (
     <div className="bg-danger/10 border-b border-danger/30 px-4 md:px-8 py-3 text-center">
       <p className="text-danger text-sm font-mono">{message}</p>

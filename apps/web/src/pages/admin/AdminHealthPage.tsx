@@ -47,6 +47,15 @@ export function AdminHealthPage() {
     }
   }
 
+  let pistonSecondary: string | null = null
+  if (data) {
+    if (data.piston.detail.missing.length > 0) {
+      pistonSecondary = `Missing: ${data.piston.detail.missing.map(rtLabel).join(', ')}`
+    } else if (data.piston.detail.extra.length > 0) {
+      pistonSecondary = `Extra (not in canonical list): ${data.piston.detail.extra.map(rtLabel).join(', ')}`
+    }
+  }
+
   return (
     <div className="max-w-7xl">
       <AdminBreadcrumb trail={['ADMIN', 'HEALTH']} />
@@ -98,13 +107,7 @@ export function AdminHealthPage() {
                 ? `Unreachable — ${data.piston.detail.error}`
                 : `${data.piston.detail.actual.length} of ${data.piston.detail.expected.length} runtimes installed`
             }
-            secondary={
-              data.piston.detail.missing.length > 0
-                ? `Missing: ${data.piston.detail.missing.map(rtLabel).join(', ')}`
-                : data.piston.detail.extra.length > 0
-                  ? `Extra (not in canonical list): ${data.piston.detail.extra.map(rtLabel).join(', ')}`
-                  : null
-            }
+            secondary={pistonSecondary}
             action={
               <div className="flex flex-col items-end gap-1">
                 <Button
@@ -182,13 +185,10 @@ function Card({
   action?: React.ReactNode
   children?: React.ReactNode
 }>) {
-  const dot =
-    status === 'ok'
-      ? 'bg-success'
-      : status === 'unconfigured'
-        ? 'bg-muted'
-        : 'bg-danger'
-  const label = status === 'ok' ? 'OK' : status === 'unconfigured' ? 'UNCONFIGURED' : 'DOWN'
+  const dotByStatus = { ok: 'bg-success', unconfigured: 'bg-muted', down: 'bg-danger' }
+  const labelByStatus = { ok: 'OK', unconfigured: 'UNCONFIGURED', down: 'DOWN' }
+  const dot = dotByStatus[status]
+  const label = labelByStatus[status]
   return (
     <div className="rounded-md border border-border bg-surface p-4">
       <div className="flex items-start justify-between gap-4">

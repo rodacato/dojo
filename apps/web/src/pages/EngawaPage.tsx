@@ -178,12 +178,7 @@ export function EngawaPage() {
         codeChars: code.length,
       })
     } catch (err) {
-      const message =
-        err instanceof ApiError
-          ? describeApiError(err)
-          : err instanceof Error
-            ? err.message
-            : 'Run failed.'
+      const message = err instanceof ApiError ? describeApiError(err) : messageFromError(err, 'Run failed.')
       setRun({ ...INITIAL_RUN, status: 'error', errorMessage: message })
       trackEvent('playground_run', {
         language: selectedLanguage,
@@ -225,14 +220,7 @@ export function EngawaPage() {
       }
       setAsk((a) => ({ ...a, status: 'done' }))
     } catch (err) {
-      const message =
-        err instanceof ApiError && err.status === 429
-          ? "you've hit the daily sensei limit, try again tomorrow."
-          : err instanceof ApiError && err.status === 404
-            ? 'ask-sensei is not available on this deploy.'
-            : err instanceof Error
-              ? err.message
-              : 'unknown error'
+      const message = describeAskError(err)
       setAsk((a) => ({ ...a, status: 'error', errorMessage: message }))
     }
   }
@@ -557,6 +545,20 @@ function OutputPanel({ run }: Readonly<{ run: RunState }>) {
 function findRuntime(language: string | undefined): RuntimeSpec | undefined {
   if (!language) return undefined
   return RUNTIMES.find((r) => r.language === language.toLowerCase())
+}
+
+function messageFromError(err: unknown, fallback: string): string {
+  return err instanceof Error ? err.message : fallback
+}
+
+function describeAskError(err: unknown): string {
+  if (err instanceof ApiError && err.status === 429) {
+    return "you've hit the daily sensei limit, try again tomorrow."
+  }
+  if (err instanceof ApiError && err.status === 404) {
+    return 'ask-sensei is not available on this deploy.'
+  }
+  return messageFromError(err, 'unknown error')
 }
 
 function describeApiError(err: ApiError): string {

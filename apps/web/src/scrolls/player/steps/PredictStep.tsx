@@ -51,10 +51,12 @@ export function PredictStep({
   // Arrow keys move focus between options without selecting — selection
   // reveals the answer and can't be undone, so Enter/Space stays the commit.
   const handleOptionKeyDown = (e: KeyboardEvent, index: number) => {
-    const delta =
-      e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1
-      : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1
-      : 0
+    let delta = 0
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      delta = 1
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      delta = -1
+    }
     if (delta === 0) return
     e.preventDefault()
     const count = data.options.length

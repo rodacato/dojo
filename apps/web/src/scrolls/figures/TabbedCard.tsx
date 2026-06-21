@@ -29,7 +29,7 @@ export function TabbedCard({ data }: Readonly<{ data: TabbedCardData }>) {
             const isActive = i === active
             return (
               <button
-                key={i}
+                key={tab.label}
                 role="tab"
                 id={`${tablistId}-tab-${i}`}
                 aria-selected={isActive}

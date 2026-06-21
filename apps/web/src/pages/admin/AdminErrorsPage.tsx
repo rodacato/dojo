@@ -114,6 +114,33 @@ export function AdminErrorsPage() {
     return `Auto in ${secondsToRefresh}s`
   }, [refreshing, secondsToRefresh])
 
+  const filtersActive = source !== 'all' || status !== 'all'
+  const emptyState = filtersActive ? (
+    <EmptyState
+      eyebrow={emptyMatchEyebrow(source, status)}
+      headline="No errors match the current filters."
+      action={
+        <Button
+          variant="ghost"
+          size="md"
+          onClick={() => {
+            setSource('all')
+            setStatus('all')
+            setPage(1)
+          }}
+        >
+          Clear all filters
+        </Button>
+      }
+    />
+  ) : (
+    <EmptyState
+      eyebrow="Empty · Errors"
+      headline="No errors in this window. Nice."
+      microcopy="Retention is 30 days. Errors auto-refresh every 30s."
+    />
+  )
+
   return (
     <div className="max-w-7xl">
       <AdminBreadcrumb trail={['ADMIN', 'ERRORS']} />
@@ -169,31 +196,7 @@ export function AdminErrorsPage() {
       </div>
 
       {!loading && !error && rows.length === 0 ? (
-        source !== 'all' || status !== 'all' ? (
-          <EmptyState
-            eyebrow={emptyMatchEyebrow(source, status)}
-            headline="No errors match the current filters."
-            action={
-              <Button
-                variant="ghost"
-                size="md"
-                onClick={() => {
-                  setSource('all')
-                  setStatus('all')
-                  setPage(1)
-                }}
-              >
-                Clear all filters
-              </Button>
-            }
-          />
-        ) : (
-          <EmptyState
-            eyebrow="Empty · Errors"
-            headline="No errors in this window. Nice."
-            microcopy="Retention is 30 days. Errors auto-refresh every 30s."
-          />
-        )
+        emptyState
       ) : (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">

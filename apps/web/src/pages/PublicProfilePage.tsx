@@ -86,12 +86,7 @@ export function PublicProfilePage() {
     month: 'long',
     year: 'numeric',
   })
-  const passColor =
-    profile.stats.passRate >= 80
-      ? 'text-success/90'
-      : profile.stats.passRate >= 50
-        ? 'text-warning/90'
-        : 'text-danger/90'
+  const passColor = passRateColor(profile.stats.passRate)
   const avgTime = formatAvgTime(profile.stats.avgTimeMinutes)
 
   return (
@@ -237,6 +232,12 @@ function HeatmapLegend() {
       <span>more</span>
     </div>
   )
+}
+
+function passRateColor(passRate: number): string {
+  if (passRate >= 80) return 'text-success/90'
+  if (passRate >= 50) return 'text-warning/90'
+  return 'text-danger/90'
 }
 
 function formatAvgTime(minutes: number): string {

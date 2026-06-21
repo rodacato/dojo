@@ -76,16 +76,19 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
 
   const verdict = (row.verdict ?? 'needs_work').toLowerCase()
   const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
-  const verdictColor =
-    verdict === 'passed' ? '#10B981' : verdict === 'passed_with_notes' ? '#F59E0B' : '#EF4444'
+  let verdictColor = '#EF4444'
+  if (verdict === 'passed') verdictColor = '#10B981'
+  else if (verdict === 'passed_with_notes') verdictColor = '#F59E0B'
 
   const exType = row.kataType.toLowerCase()
-  const typeColor =
-    exType === 'code' ? '#6366F1' : exType === 'chat' ? '#7C3AED' : '#0D9488'
+  let typeColor = '#0D9488'
+  if (exType === 'code') typeColor = '#6366F1'
+  else if (exType === 'chat') typeColor = '#7C3AED'
 
   const diff = row.difficulty.toLowerCase()
-  const diffColor =
-    diff === 'easy' ? '#10B981' : diff === 'medium' ? '#F59E0B' : '#EF4444'
+  let diffColor = '#EF4444'
+  if (diff === 'easy') diffColor = '#10B981'
+  else if (diff === 'medium') diffColor = '#F59E0B'
 
   const pullQuote = extractPullQuote(row.analysis ?? '')
   const completionTime = row.completedAt

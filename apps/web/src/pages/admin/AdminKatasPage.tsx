@@ -161,7 +161,7 @@ export function AdminKatasPage() {
         />
       </div>
 
-      {!loading && katas.length > 0 && pageRows.length === 0 ? (
+      {!loading && katas.length > 0 && pageRows.length === 0 && (
         <EmptyState
           eyebrow={`No matches · Katas${activeFilters({ search, typeFilter, difficultyFilter, statusFilter, sort }).map((f) => ' · ' + f).join('')}`}
           headline="No katas match. Loosen the filter or wait for more catalog updates."
@@ -182,13 +182,15 @@ export function AdminKatasPage() {
             </Button>
           }
         />
-      ) : !loading && katas.length === 0 ? (
+      )}
+      {!loading && katas.length === 0 && (
         <EmptyState
           eyebrow="Empty · Katas"
           headline="No katas in the catalog yet."
           microcopy="Use the New kata button above to create the first one."
         />
-      ) : (
+      )}
+      {!(!loading && (katas.length === 0 || pageRows.length === 0)) && (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

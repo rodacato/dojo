@@ -104,6 +104,13 @@ export function StepEditor({
 
   const editorLanguage = (isIframeLang ? 'javascript-dom' : language) as CodeEditorLanguage
 
+  let runButtonLabel: string
+  if (running) {
+    runButtonLabel = 'Running...'
+  } else {
+    runButtonLabel = isPlayground ? '↻ Try it' : '▶ Run'
+  }
+
   return (
     // h-full fills <main> (flex-1 of the h-[100dvh] root) — no magic-number
     // calc. The old h-[calc(100vh-48px)] both double-counted the layout height
@@ -140,7 +147,7 @@ export function StepEditor({
                 : 'bg-accent text-bg hover:bg-accent/90'
             }`}
           >
-            {running ? 'Running...' : isPlayground ? '↻ Try it' : '▶ Run'}
+            {runButtonLabel}
           </button>
           {isIframeLang && (
             <span className="text-xs text-muted font-mono">Runs in browser</span>

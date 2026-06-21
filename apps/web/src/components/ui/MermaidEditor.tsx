@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import mermaid from 'mermaid'
 import { useThemeTokens, type ThemeTokens } from '../../hooks/useThemeTokens'
 
@@ -70,6 +70,24 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
     return () => clearTimeout(handle)
   }, [value, renderDiagram, tokens])
 
+  let previewContent: ReactNode = null
+  if (svg) {
+    previewContent = (
+      <div
+        dangerouslySetInnerHTML={{ __html: svg }}
+        className="[&_svg]:max-w-full [&_svg]:h-auto"
+      />
+    )
+  } else if (error) {
+    previewContent = <p className="text-danger text-xs font-mono">{error}</p>
+  } else if (!value.trim()) {
+    previewContent = (
+      <p className="text-muted text-xs font-mono text-center">
+        Write Mermaid above to see a live preview.
+      </p>
+    )
+  }
+
   return (
     <div className="flex flex-col h-full bg-page">
       {/* Source pane */}
@@ -96,18 +114,7 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
           )}
         </div>
         <div className="flex-1 overflow-auto px-4 py-4 flex items-center justify-center bg-page">
-          {svg ? (
-            <div
-              dangerouslySetInnerHTML={{ __html: svg }}
-              className="[&_svg]:max-w-full [&_svg]:h-auto"
-            />
-          ) : error ? (
-            <p className="text-danger text-xs font-mono">{error}</p>
-          ) : value.trim() ? null : (
-            <p className="text-muted text-xs font-mono text-center">
-              Write Mermaid above to see a live preview.
-            </p>
-          )}
+          {previewContent}
         </div>
       </div>
     </div>

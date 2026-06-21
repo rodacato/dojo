@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 import { TypeBadge, DifficultyBadge } from './Badge'
 
@@ -43,6 +44,23 @@ export function DenseSessionRow({
   const time = formatElapsed(startedAt, completedAt)
   const rel = formatRelative(startedAt)
 
+  let verdictBadge: ReactNode = null
+  if (verdict) {
+    verdictBadge = (
+      <span
+        className={`font-mono text-xs tracking-[0.08em] uppercase border px-2 py-0.5 rounded-sm ${VERDICT_TONE[verdict]}`}
+      >
+        {VERDICT_LABEL[verdict]}
+      </span>
+    )
+  } else if (expired) {
+    verdictBadge = (
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border px-2 py-0.5 rounded-sm">
+        Expired
+      </span>
+    )
+  }
+
   return (
     <button
       type="button"
@@ -59,17 +77,7 @@ export function DenseSessionRow({
       </div>
       <span className="flex-1 min-w-0 text-primary text-base truncate">{title}</span>
       <div className="w-35 shrink-0 flex justify-end">
-        {verdict ? (
-          <span
-            className={`font-mono text-xs tracking-[0.08em] uppercase border px-2 py-0.5 rounded-sm ${VERDICT_TONE[verdict]}`}
-          >
-            {VERDICT_LABEL[verdict]}
-          </span>
-        ) : expired ? (
-          <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border px-2 py-0.5 rounded-sm">
-            Expired
-          </span>
-        ) : null}
+        {verdictBadge}
       </div>
       <span className="w-15 shrink-0 text-right font-mono text-sm text-muted tabular-nums hidden md:block">
         {time}

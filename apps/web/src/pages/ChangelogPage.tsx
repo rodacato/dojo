@@ -91,7 +91,7 @@ export function ChangelogPage() {
 
         <div className="flex flex-col">
           {ENTRIES.map((entry, i) => (
-            <Entry key={i} entry={entry} divider={i < ENTRIES.length - 1} />
+            <Entry key={entry.title} entry={entry} divider={i < ENTRIES.length - 1} />
           ))}
         </div>
 

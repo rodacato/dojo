@@ -343,13 +343,23 @@ adminKatasRoutes.get('/invitations', async (c) => {
     .orderBy(desc(invitations.createdAt))
 
   return c.json(
-    rows.map((r) => ({
-      id: r.id,
-      token: r.token,
-      status: r.usedBy ? 'used' : new Date(r.expiresAt) < new Date() ? 'expired' : 'pending',
-      usedBy: r.usedByUsername ?? null,
-      expiresAt: r.expiresAt.toISOString(),
-      createdAt: r.createdAt.toISOString(),
-    })),
+    rows.map((r) => {
+      let status: 'used' | 'expired' | 'pending'
+      if (r.usedBy) {
+        status = 'used'
+      } else if (new Date(r.expiresAt) < new Date()) {
+        status = 'expired'
+      } else {
+        status = 'pending'
+      }
+      return {
+        id: r.id,
+        token: r.token,
+        status,
+        usedBy: r.usedByUsername ?? null,
+        expiresAt: r.expiresAt.toISOString(),
+        createdAt: r.createdAt.toISOString(),
+      }
+    }),
   )
 })

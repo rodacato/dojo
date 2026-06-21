@@ -15,6 +15,13 @@ const SIZE_CLASSES: Record<TimerSize, string> = {
   lg: 'text-5xl',
 }
 
+function timerColorClass(expired: boolean, isDanger: boolean, isWarning: boolean): string {
+  if (expired) return 'text-muted'
+  if (isDanger) return 'text-danger'
+  if (isWarning) return 'text-warning'
+  return 'text-primary'
+}
+
 export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: Readonly<TimerProps>) {
   const [remaining, setRemaining] = useState<number>(computeRemaining(durationMinutes, startedAt))
 
@@ -36,13 +43,7 @@ export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: Re
   const isDanger = pct <= 0.1 && !expired
   const isWarning = pct <= 0.2 && pct > 0.1
 
-  const colorClass = expired
-    ? 'text-muted'
-    : isDanger
-      ? 'text-danger'
-      : isWarning
-        ? 'text-warning'
-        : 'text-primary'
+  const colorClass = timerColorClass(expired, isDanger, isWarning)
 
   return (
     <span

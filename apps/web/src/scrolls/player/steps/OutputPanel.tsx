@@ -54,6 +54,19 @@ export function OutputPanel({
     )
   }
 
+  let resultBody: ReactNode
+  if (!result) {
+    resultBody = (
+      <p className="text-xs font-mono text-muted/60">
+        Run your code to see test results and output.
+      </p>
+    )
+  } else if (tab === 'tests') {
+    resultBody = <TestsTab result={result} />
+  } else {
+    resultBody = <OutputTab result={result} />
+  }
+
   return (
     <div className="border-t border-border/40 bg-surface/50 flex flex-col min-h-48 max-h-[34vh]">
       <div className="flex items-center gap-1 px-3 pt-2 border-b border-border/30">
@@ -88,16 +101,8 @@ export function OutputPanel({
             onRetry={onSolutionRetry}
             language={editorLanguage}
           />
-        ) : result ? (
-          tab === 'tests' ? (
-            <TestsTab result={result} />
-          ) : (
-            <OutputTab result={result} />
-          )
         ) : (
-          <p className="text-xs font-mono text-muted/60">
-            Run your code to see test results and output.
-          </p>
+          resultBody
         )}
       </div>
     </div>
@@ -188,18 +193,20 @@ function TabButton({
   disabled?: boolean
   title?: string
 }>) {
+  let stateClasses: string
+  if (active) {
+    stateClasses = 'text-primary border-accent'
+  } else if (disabled) {
+    stateClasses = 'text-muted/40 border-transparent cursor-not-allowed'
+  } else {
+    stateClasses = 'text-muted border-transparent hover:text-secondary'
+  }
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`px-3.5 py-2.5 text-xs font-mono transition-colors border-b-2 -mb-px ${
-        active
-          ? 'text-primary border-accent'
-          : disabled
-            ? 'text-muted/40 border-transparent cursor-not-allowed'
-            : 'text-muted border-transparent hover:text-secondary'
-      }`}
+      className={`px-3.5 py-2.5 text-xs font-mono transition-colors border-b-2 -mb-px ${stateClasses}`}
     >
       {children}
     </button>

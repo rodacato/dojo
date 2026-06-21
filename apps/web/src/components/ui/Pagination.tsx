@@ -25,7 +25,7 @@ export function Pagination({ page, totalPages, onChange, ariaLabel = 'Pagination
       <div className="flex items-center gap-1">
         {pages.map((p, i) =>
           p === '…' ? (
-            <span key={`gap-${i}`} className="text-muted px-1">
+            <span key={`gap-${pages[i - 1]}`} className="text-muted px-1">
               …
             </span>
           ) : (

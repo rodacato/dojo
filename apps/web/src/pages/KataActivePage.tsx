@@ -212,11 +212,40 @@ export function KataActivePage() {
   const orientation = isMobile ? 'vertical' : 'horizontal'
   const language = resolveLanguage(kata.language)
   const filename = isCode ? `solution.${fileExtension(language)}` : null
-  const editorLabel = isCode
-    ? languageLabel(language)
-    : isWhiteboard
-      ? 'Mermaid'
-      : 'Prose'
+  const nonCodeLabel = isWhiteboard ? 'Mermaid' : 'Prose'
+  const editorLabel = isCode ? languageLabel(language) : nonCodeLabel
+
+  let editorPane
+  if (isCode) {
+    editorPane = (
+      <CodeEditor
+        value={userResponse}
+        onChange={setUserResponse}
+        language={language}
+        placeholder="Write your solution..."
+      />
+    )
+  } else if (isWhiteboard) {
+    editorPane = (
+      <Suspense fallback={<div className="p-4 text-muted font-mono text-sm">Loading editor...</div>}>
+        <MermaidEditor value={userResponse} onChange={setUserResponse} />
+      </Suspense>
+    )
+  } else {
+    editorPane = (
+      <ChatEditor
+        value={userResponse}
+        onChange={setUserResponse}
+        font={responseFont}
+        onSubmit={handleSubmit}
+        placeholder={
+          isReview
+            ? 'Write your review. Focus on correctness — what would you ask to change before merging?'
+            : undefined
+        }
+      />
+    )
+  }
 
   return (
     <div className="h-screen bg-page flex flex-col overflow-hidden">
@@ -317,30 +346,7 @@ export function KataActivePage() {
             )}
           </div>
           <div className="flex-1 overflow-hidden">
-            {isCode ? (
-              <CodeEditor
-                value={userResponse}
-                onChange={setUserResponse}
-                language={language}
-                placeholder="Write your solution..."
-              />
-            ) : isWhiteboard ? (
-              <Suspense fallback={<div className="p-4 text-muted font-mono text-sm">Loading editor...</div>}>
-                <MermaidEditor value={userResponse} onChange={setUserResponse} />
-              </Suspense>
-            ) : (
-              <ChatEditor
-                value={userResponse}
-                onChange={setUserResponse}
-                font={responseFont}
-                onSubmit={handleSubmit}
-                placeholder={
-                  isReview
-                    ? 'Write your review. Focus on correctness — what would you ask to change before merging?'
-                    : undefined
-                }
-              />
-            )}
+            {editorPane}
           </div>
         </Panel>
       </PanelGroup>

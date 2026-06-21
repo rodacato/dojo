@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import { Button } from '../components/ui/Button'
@@ -37,6 +37,42 @@ export function HistoryPage() {
     })
   }, [page])
 
+  let sessionList: ReactNode
+  if (loading && sessions.length === 0) {
+    sessionList = <SkeletonList rows={8} />
+  } else if (sessions.length === 0) {
+    sessionList = (
+      <EmptyState
+        eyebrow="Empty · Kata history"
+        headline="No sessions yet. The dojo is patient."
+        microcopy="Your first kata is also the hardest one."
+        action={
+          <Button variant="primary" size="md" onClick={() => navigate('/katas')}>
+            Enter the dojo →
+          </Button>
+        }
+      />
+    )
+  } else {
+    sessionList = (
+      <div className="bg-surface border border-border rounded-md overflow-hidden">
+        {sessions.map((s) => (
+          <DenseSessionRow
+            key={s.id}
+            type={s.kataType as KataType}
+            difficulty={s.difficulty as Difficulty}
+            title={s.kataTitle}
+            verdict={s.verdict as Verdict | null}
+            status={s.status}
+            startedAt={s.startedAt}
+            completedAt={s.completedAt}
+            onClick={() => navigate(`/kata/${s.id}/result`)}
+          />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
       <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-6">
@@ -57,36 +93,7 @@ export function HistoryPage() {
         )}
       </div>
 
-      {loading && sessions.length === 0 ? (
-        <SkeletonList rows={8} />
-      ) : sessions.length === 0 ? (
-        <EmptyState
-          eyebrow="Empty · Kata history"
-          headline="No sessions yet. The dojo is patient."
-          microcopy="Your first kata is also the hardest one."
-          action={
-            <Button variant="primary" size="md" onClick={() => navigate('/katas')}>
-              Enter the dojo →
-            </Button>
-          }
-        />
-      ) : (
-        <div className="bg-surface border border-border rounded-md overflow-hidden">
-          {sessions.map((s) => (
-            <DenseSessionRow
-              key={s.id}
-              type={s.kataType as KataType}
-              difficulty={s.difficulty as Difficulty}
-              title={s.kataTitle}
-              verdict={s.verdict as Verdict | null}
-              status={s.status}
-              startedAt={s.startedAt}
-              completedAt={s.completedAt}
-              onClick={() => navigate(`/kata/${s.id}/result`)}
-            />
-          ))}
-        </div>
-      )}
+      {sessionList}
 
       {totalPages > 1 && (
         <div className="flex justify-center mt-8">

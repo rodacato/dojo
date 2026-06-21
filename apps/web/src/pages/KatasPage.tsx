@@ -352,9 +352,9 @@ function ActivityStrip({ dashboard }: Readonly<{ dashboard: DashboardData | null
         </p>
       </div>
       <div className="flex items-end gap-1 h-8">
-        {last30.map((d, i) => (
+        {last30.map((d) => (
           <div
-            key={i}
+            key={d.date}
             className={`flex-1 rounded-xs ${barClass(d.count)}`}
             title={`${d.date}: ${d.count} kata${d.count === 1 ? '' : 's'}`}
             aria-hidden
@@ -462,6 +462,12 @@ function EmptyResults({ onChange }: Readonly<{ onChange: () => void }>) {
 /*  Customize panel                                                    */
 /* ------------------------------------------------------------------ */
 
+function getRandomLabel(randomness: number): string {
+  if (randomness < 0.34) return 'Predictable'
+  if (randomness < 0.67) return 'Balanced'
+  return 'Wild'
+}
+
 function CustomizePanel({
   open,
   onToggle,
@@ -487,7 +493,7 @@ function CustomizePanel({
   goalWeeklyTarget: number
   onGoal: (v: number) => void
 }>) {
-  const randomLabel = randomness < 0.34 ? 'Predictable' : randomness < 0.67 ? 'Balanced' : 'Wild'
+  const randomLabel = getRandomLabel(randomness)
 
   return (
     <section className="bg-surface border border-border/40 rounded-md overflow-hidden">

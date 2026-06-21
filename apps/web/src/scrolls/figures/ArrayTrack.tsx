@@ -79,8 +79,8 @@ export function ArrayTrack({ data }: Readonly<{ data: ArrayTrackData }>) {
             </div>
             <span className="ml-3 w-24" />
           </div>
-          {data.tracks.map((track, ti) => (
-            <div key={ti} className="flex items-center gap-2">
+          {data.tracks.map((track) => (
+            <div key={track.label} className="flex items-center gap-2">
               <span className="shrink-0 w-32 font-mono text-[11px] text-primary truncate">
                 {track.label}
               </span>

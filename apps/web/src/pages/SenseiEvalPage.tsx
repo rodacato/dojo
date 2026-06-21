@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithKata } from '../lib/api'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
@@ -100,6 +100,43 @@ export function SenseiEvalPage() {
     setFollowUpText('')
     setFollowUpSubmitting(false)
     submit(attemptId)
+  }
+
+  let bottomBandContent: ReactNode
+  if (result && !result.isFinalEvaluation && result.followUpQuestion) {
+    bottomBandContent = (
+      <div className="flex gap-2">
+        <textarea
+          value={followUpText}
+          onChange={(e) => setFollowUpText(e.target.value)}
+          placeholder="Your answer..."
+          rows={2}
+          className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
+        />
+        <Button
+          variant="primary"
+          size="md"
+          onClick={handleFollowUp}
+          disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
+          loading={followUpSubmitting}
+        >
+          Send →
+        </Button>
+      </div>
+    )
+  } else if (result?.isFinalEvaluation) {
+    bottomBandContent = (
+      <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
+        The sensei has spoken.
+      </p>
+    )
+  } else {
+    bottomBandContent = (
+      <div className="text-secondary text-sm font-mono text-center inline-flex items-center justify-center gap-3 w-full">
+        <EnsoLoader size={28} label="The sensei is evaluating" />
+        <span>The sensei is evaluating.</span>
+      </div>
+    )
   }
 
   return (
@@ -215,35 +252,7 @@ export function SenseiEvalPage() {
       {/* Bottom band — 96px tall, status / textarea / final CTA */}
       <div className="h-24 shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3 flex items-center">
         <div className="max-w-220 mx-auto w-full">
-          {result && !result.isFinalEvaluation && result.followUpQuestion ? (
-            <div className="flex gap-2">
-              <textarea
-                value={followUpText}
-                onChange={(e) => setFollowUpText(e.target.value)}
-                placeholder="Your answer..."
-                rows={2}
-                className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
-              />
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleFollowUp}
-                disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
-                loading={followUpSubmitting}
-              >
-                Send →
-              </Button>
-            </div>
-          ) : result?.isFinalEvaluation ? (
-            <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
-              The sensei has spoken.
-            </p>
-          ) : (
-            <div className="text-secondary text-sm font-mono text-center inline-flex items-center justify-center gap-3 w-full">
-              <EnsoLoader size={28} label="The sensei is evaluating" />
-              <span>The sensei is evaluating.</span>
-            </div>
-          )}
+          {bottomBandContent}
         </div>
       </div>
     </div>

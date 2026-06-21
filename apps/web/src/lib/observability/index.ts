@@ -43,10 +43,8 @@ export function installGlobalHandlers(): void {
 
   globalThis.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason
-    const error =
-      reason instanceof Error
-        ? reason
-        : new Error(typeof reason === 'string' ? reason : 'Unhandled rejection')
+    const fallbackMessage = typeof reason === 'string' ? reason : 'Unhandled rejection'
+    const error = reason instanceof Error ? reason : new Error(fallbackMessage)
     void errorReporter.report(toReport(error))
   })
 }
