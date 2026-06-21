@@ -81,7 +81,7 @@ export function SharePage() {
 
   if (!data) return <PageLoader />
 
-  const verdictLabel = VERDICT_LABELS[data.verdict] ?? data.verdict.replace(/_/g, ' ').toUpperCase()
+  const verdictLabel = VERDICT_LABELS[data.verdict] ?? data.verdict.replaceAll('_', ' ').toUpperCase()
   const verdictColor = VERDICT_COLORS[data.verdict] ?? 'text-warning'
   const ogImageUrl = `${API_URL}/share/${sessionId}.png`
 

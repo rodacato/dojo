@@ -75,7 +75,7 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
   if (!row) return c.json({ error: 'Session not found' }, 404)
 
   const verdict = (row.verdict ?? 'needs_work').toLowerCase()
-  const verdictLabel = verdict.replace(/_/g, ' ').toUpperCase()
+  const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
   const verdictColor =
     verdict === 'passed' ? '#10B981' : verdict === 'passed_with_notes' ? '#F59E0B' : '#EF4444'
 

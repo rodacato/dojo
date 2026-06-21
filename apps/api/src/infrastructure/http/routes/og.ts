@@ -35,7 +35,7 @@ function ogHtml(props: { title: string; description: string; image?: string; url
 }
 
 function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 }
 
 // ---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ ogRoutes.get('/og/kata/:sessionId', async (c) => {
 
   if (!row) return c.redirect(`${config.WEB_URL}/kata/${sessionId}/result`)
 
-  const verdict = row.verdict?.replace(/_/g, ' ') ?? 'COMPLETED'
+  const verdict = row.verdict?.replaceAll('_', ' ') ?? 'COMPLETED'
   const apiUrl = c.req.url.replace(/\/og\/kata\/.*/, '')
 
   return c.html(ogHtml({

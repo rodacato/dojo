@@ -22,8 +22,8 @@ export function DotGridBackground({ className = '' }: DotGridBackgroundProps) {
     const radius = 120
 
     for (const dot of dotsRef.current) {
-      const dx = parseFloat(dot.dataset.x ?? '0') - mx
-      const dy = parseFloat(dot.dataset.y ?? '0') - my
+      const dx = Number.parseFloat(dot.dataset.x ?? '0') - mx
+      const dy = Number.parseFloat(dot.dataset.y ?? '0') - my
       const dist = Math.sqrt(dx * dx + dy * dy)
       const opacity = dist < radius ? 0.15 + 0.55 * (1 - dist / radius) : 0.15
       dot.style.opacity = String(opacity)

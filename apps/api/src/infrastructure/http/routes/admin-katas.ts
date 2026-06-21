@@ -277,7 +277,7 @@ adminKatasRoutes.post('/invitations', async (c) => {
   const parsed = createInvitationSchema.safeParse(body)
   const email = parsed.success ? parsed.data.email : undefined
 
-  const token = crypto.randomUUID().replace(/-/g, '').slice(0, 16)
+  const token = crypto.randomUUID().replaceAll('-', '').slice(0, 16)
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
   const inviteUrl = `${config.WEB_URL}/invite/${token}`
 

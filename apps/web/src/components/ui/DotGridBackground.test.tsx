@@ -148,7 +148,7 @@ describe('DotGridBackground', () => {
       // Hover exactly over the first dot (16,16): dist 0 -> 0.15 + 0.55*1 = 0.7.
       root.dispatchEvent(new MouseEvent('mousemove', { clientX: 16, clientY: 16, bubbles: true }))
 
-      expect(parseFloat(dotAt(dots, 0).style.opacity)).toBeCloseTo(0.7, 5)
+      expect(Number.parseFloat(dotAt(dots, 0).style.opacity)).toBeCloseTo(0.7, 5)
     })
 
     it('leaves dots outside the falloff radius at resting opacity', () => {
@@ -172,7 +172,7 @@ describe('DotGridBackground', () => {
       const dots = getDots(root)
 
       root.dispatchEvent(new MouseEvent('mousemove', { clientX: 16, clientY: 16, bubbles: true }))
-      expect(parseFloat(dotAt(dots, 0).style.opacity)).toBeGreaterThan(0.15)
+      expect(Number.parseFloat(dotAt(dots, 0).style.opacity)).toBeGreaterThan(0.15)
 
       root.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }))
       expect(dotAt(dots, 0).style.opacity).toBe('0.15')

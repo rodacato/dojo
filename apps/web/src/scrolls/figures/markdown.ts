@@ -21,5 +21,5 @@ export function markdownToInnerHtml(text: string): string {
     .replace(/^# (.+)$/gm, '<h1 class="text-xl font-mono text-primary mb-4">$1</h1>')
     .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary">$1</strong>')
     .replace(/^- (.+)$/gm, '<li class="text-sm text-muted ml-4 list-disc">$1</li>')
-    .replace(/\n\n/g, '</p><p class="text-sm text-muted mb-3">')
+    .replaceAll('\n\n', '</p><p class="text-sm text-muted mb-3">')
 }

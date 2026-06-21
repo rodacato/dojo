@@ -47,9 +47,9 @@ const SSR_FALLBACK: ThemeTokens = {
 function isDarkHex(hex: string): boolean {
   const h = hex.replace('#', '').trim()
   if (h.length !== 6) return true
-  const r = parseInt(h.slice(0, 2), 16)
-  const g = parseInt(h.slice(2, 4), 16)
-  const b = parseInt(h.slice(4, 6), 16)
+  const r = Number.parseInt(h.slice(0, 2), 16)
+  const g = Number.parseInt(h.slice(2, 4), 16)
+  const b = Number.parseInt(h.slice(4, 6), 16)
   const luma = 0.299 * r + 0.587 * g + 0.114 * b
   return luma < 128
 }
@@ -107,8 +107,8 @@ export function useThemeTokens(): ThemeTokens {
 export function hexToRgba(hex: string, alpha: number): string {
   const h = hex.replace('#', '').trim()
   if (h.length !== 6) return hex
-  const r = parseInt(h.slice(0, 2), 16)
-  const g = parseInt(h.slice(2, 4), 16)
-  const b = parseInt(h.slice(4, 6), 16)
+  const r = Number.parseInt(h.slice(0, 2), 16)
+  const g = Number.parseInt(h.slice(2, 4), 16)
+  const b = Number.parseInt(h.slice(4, 6), 16)
   return `rgba(${r}, ${g}, ${b}, ${alpha})`
 }

@@ -535,7 +535,7 @@ function CustomizePanel({
                     max={1}
                     step={0.05}
                     value={randomness}
-                    onChange={(e) => onRandomness(parseFloat(e.target.value))}
+                    onChange={(e) => onRandomness(Number.parseFloat(e.target.value))}
                     className="w-full accent-accent mt-3"
                   />
                 </div>

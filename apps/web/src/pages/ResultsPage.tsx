@@ -336,7 +336,7 @@ function ShareActions({
   const shareUrl = `${window.location.origin}/share/${sessionId}`
 
   async function handleCopy() {
-    const base = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${kataTitle} | dojo_`
+    const base = `${verdict.replaceAll('_', ' ').toUpperCase()} — ${kataTitle} | dojo_`
     const text = approachNote ? `${base}\n\n"${approachNote}"` : base
     try {
       await navigator.clipboard.writeText(`${text}\n${shareUrl}`)
@@ -348,7 +348,7 @@ function ShareActions({
   }
 
   function handleTwitter() {
-    const text = `${verdict.replace(/_/g, ' ').toUpperCase()} — ${kataTitle} | dojo_`
+    const text = `${verdict.replaceAll('_', ' ').toUpperCase()} — ${kataTitle} | dojo_`
     window.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
       '_blank',
@@ -384,7 +384,7 @@ function ShareCardPreview({
   approachNote?: string | null
   ownerRole?: string
 }) {
-  const verdictLabel = verdict.replace(/_/g, ' ').toUpperCase()
+  const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
   const verdictColor =
     verdict === 'passed'
       ? 'text-success'
