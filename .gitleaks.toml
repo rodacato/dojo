@@ -1,0 +1,23 @@
+# gitleaks config — extends the default ruleset, allowlists known false positives.
+# gitleaks scans full git history; the matches below are teaching fixtures and
+# env-var references, NOT real credentials. Verified 2026-06-21 (S033 security pass).
+[extend]
+useDefault = true
+
+[allowlist]
+description = "False positives: security-kata fixture secrets + env-var curl auth"
+regexes = [
+  # Fixture API key used in the "spot the hardcoded secret" code-review kata
+  # (lives in git history: exercises/security.ts, old seed.ts). Not a real key.
+  '''sk-prod-a8f3c2e1d7b4f9a2c8e1d7b4f9a2c8e1''',
+  # Joke fixture password in the same teaching content.
+  '''hunter2''',
+  # scripts/sonar-dump.sh authenticates with `curl -u "$SONAR_TOKEN:"` — the
+  # value is an env var injected at runtime, never a literal in the file.
+  '''\$SONAR_TOKEN''',
+  '''\$\{SONAR_TOKEN\}''',
+]
+paths = [
+  '''scripts/sonar-dump\.sh''',
+  '''apps/api/src/infrastructure/persistence/exercises/security\.ts''',
+]
