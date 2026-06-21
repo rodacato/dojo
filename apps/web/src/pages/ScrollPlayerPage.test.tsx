@@ -129,9 +129,11 @@ describe('ScrollPlayerPage', () => {
     expect(mockedApi.getScroll).toHaveBeenCalledWith('ruby-basics')
     expect(screen.getByText('ruby')).toBeInTheDocument()
     expect(screen.getByText('0 / 2 steps')).toBeInTheDocument()
-    // The active step's body (read-step markdown) renders in the main pane.
+    // The active step's body renders in the same commit as the header above,
+    // so it's already present once "Ruby Basics" resolved — a synchronous
+    // getByText, not findByText (whose async polling flaked under thread pools).
     expect(
-      await screen.findByText('Welcome to the first step.', { selector: 'p' }),
+      screen.getByText('Welcome to the first step.', { selector: 'p' }),
     ).toBeInTheDocument()
   })
 
