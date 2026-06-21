@@ -20,6 +20,7 @@
 | `0ed59b0` | fix(web): a11y + spacing — batches R1+R2 |
 | `b9a866d` | docs: this worklog |
 | `3862eae` | fix(web,api): replaceAll + Number.* — batches R3+R4+R6 |
+| `cd0ea7f` | fix(sonar): web test-file exclusion (broken Ant glob — the red-gate cause) |
 
 _(Earlier this session, already pushed by Adrian: db8d6c6 lint, cf9e1c3 bug fixes, 6f0cf76 de-flake, + the coverage campaign.)_
 
@@ -59,8 +60,12 @@ Mark the two false-positive HIGHs resolved so the gate stops counting them:
     -f dismissed_comment="SHA-1 is mandated by RFC 4122 v5 UUID generation; deterministic ID derivation, not a security control."
   ```
 
-### Gate scoping (the real red-gate cause — proposed change documented below)
-The gate fails on new-code coverage 0.2% + 137 new issues, both inflated by the campaign's own `*.test.*` files. Proposed (per-project `sonar-project.properties`): add test globs to `sonar.coverage.exclusions` (already?) and consider `sonar.exclusions` for the issue count, OR move the new-code baseline past `8cd6007`. **Not applied yet** — it's a deliberate measurement decision; see catalog §Gate scoping. Status: _to design in detail this cycle ↓._
+### Gate scoping — ✅ ROOT CAUSE FOUND & FIXED (`cd0ea7f`)
+The red gate was **not** a measurement-philosophy call — it was a **bug in `apps/web/sonar-project.properties`**. The exclusion glob `**/*.test.{ts,tsx}` used brace alternation, which **SonarQube's Ant matcher does not support** (silently matches nothing). So 136 test-file issues leaked into `dojo-web` analysis (= the gate's "137 new issues") and the test files — absent from lcov — were counted as uncovered source, dragging new-code coverage to 0.2%. Verified: web 578 issues, **136 in `*.test.*`**. api/packages were unaffected (they use the working `**/*.test.ts`).
+
+**Fixed:** replaced with explicit `**/*.test.ts` + `**/*.test.tsx` (+ `src/test/**`). **Needs a re-scan to confirm** — Adrian, run the *Sector 7g - Quality* `workflow_dispatch` after pushing; expect the 136 phantom issues gone and a real new-code coverage number.
+
+**Caveat (separate, real):** even clean, web's genuine coverage is ~31%, so the 80% new-code gate may still fail — that's a *real* signal for the **S034 web testing backbone**, not a scoping artifact. Deciding whether 80% is the right web threshold is an S034 call, not this cycle's.
 
 ### S035 (deferred by PRD — parallelizable later)
 - Maintainability sweep (640) — pre-designed batch breakdown: _to add this cycle ↓._
