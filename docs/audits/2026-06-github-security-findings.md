@@ -38,6 +38,19 @@
 3. **trivy secret allowlist** (`trivy.yaml`): mirror the `.gitleaks.toml` allowlist so the fixtures stop flagging there too.
 4. **trivy HIGH dep**: pull the CVE, confirm dev-transitive, `.trivyignore` with reason or bump.
 
+## SonarQube Security Hotspots (5) — reviewed → all SAFE
+
+Hotspots are "please review" items, not auto-fails. Reviewed 2026-06-21 and marked **Safe** (with reasons recorded in Sonar) — verified `0 TO_REVIEW` after. None warrant rewriting working code:
+
+| Hotspot | Category | Why Safe |
+|---|---|---|
+| `StreamingText.tsx:38` | ReDoS | `[\s\S]*?` lazy + literal ` ``` ` terminator — no nested quantifier (the real catastrophic-backtracking signature). Input is the sensei's own LLM output. |
+| `slots.ts:21`, `:24` | ReDoS | `(.+?)\s*` on **authored scroll markdown** (`renderSlots`←`markdown.tsx`), not attacker input. No nested quantifier; bounded heading lines. |
+| `stepMeta.ts:21` | ReDoS | `/^#\s+(.+)$/m` — `(.+)$` is linear (`.` excludes newline). Authored `step.instruction`. |
+| `KatasPage.tsx:151` | Weak crypto | `Math.random()` picks a random kata for "Surprise me" — UI randomness, not a security context. A CSPRNG is unnecessary. |
+
+**Stance (cost-justified):** rewriting working markdown parsers to satisfy a heuristic, for trusted input with no nested-quantifier ReDoS, buys nothing. If defense-in-depth is wanted later, the only marginal candidate is `StreamingText` (LLM output) — but it's still non-catastrophic. Left as Safe.
+
 ## What's already done
 
 - ✅ gitleaks: `.gitleaks.toml` allowlist (this commit).
