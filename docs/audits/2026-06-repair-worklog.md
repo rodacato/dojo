@@ -2,7 +2,7 @@
 
 > **Purpose:** resume-here log for the Sonar/CodeQL/Dependabot issue repair driven off [`2026-06-issue-catalog.md`](2026-06-issue-catalog.md). Updated continuously during an autonomous cycle (Adrian away). Everything done is **committed locally** (never pushed — Adrian reviews the diff + pushes). Nothing here mutates remote dashboards.
 >
-> **Last updated:** end of autonomous cycle — R1-R6 done, gate root-cause fixed, S035 pre-planned. **8 unpushed local commits: `git log --oneline origin/master..HEAD` → `84c8f30`..`b376778`** (f1d8633 was already pushed). **Resume:** review/push these, run the Sonar `workflow_dispatch`, then pick from "Next-cycle TODO".
+> **Last updated:** Tier-2 mechanical sweep COMPLETE (web+api, ~270 fixes, all green). Tier-1 refactors deliberately paused (see below). **Unpushed local commits: `git log --oneline origin/master..HEAD`** (through `3517f39` + this worklog). **Resume:** review/push, run the Sonar `workflow_dispatch` (expect a big drop: 136 phantom test issues + ~270 mechanical), then the Tier-1 careful refactor pass.
 
 ## How to resume
 
@@ -57,9 +57,25 @@ Buckets (manifests in `/tmp/sonar-dump/bucket-*.json`, disjoint files): web ×8 
 
 | Wave | Status | Commit |
 |---|---|---|
-| Tier-2 web ×8 | ⏳ launching | — |
-| Tier-2 api ×2 | pending | — |
-| Tier-1 refactors (S3776 ×11, S3358, S6479) test-net-first | pending | — |
+| Tier-2 web ×8 | ✅ done — ~228 fixes, 108 files | `645916b` |
+| Tier-2 api ×2 | ✅ done — ~42 fixes, 19 files | `3517f39` |
+| Tier-1 refactors (S3776 ×11, S3358, S6479) test-net-first | ⏸ **deliberately not rushed** — see below | — |
+
+**Tier-2 result:** ~270 mechanical fixes across 127 files, all behavior-preserving. Verified: web tsc 0 + **1210/1210** tests; api tsc 0 + **545/545** tests. The agents rejected/deferred everything that wasn't trivially safe (see backlog).
+
+**Caught regression:** an agent applied `String.raw` to share.ts's Hono route patterns (S7780) — that broke Hono's literal-type param inference (`param()` → `string|undefined`, 3 tsc errors). Reverted; **S7780 is a false positive on Hono route strings** (they must stay string literals).
+
+### Careful-pass backlog (deferred by agents — refactor-shaped, NOT mechanical)
+These need individual care, not a parallel sweep:
+- **S6478** hoist nested components out of parent render — `KataBody.tsx` (×12, the `react-markdown` renderers), others. Real fix (avoids remount-on-render) but needs prop-threading.
+- **S6819** `role=` → native semantic tag — `EnsoLoader`/`Banner`/`Toast`/`OnboardingOverlay`/`EngawaPage`/`AuthCallbackPage`/`KataActivePage`/`ReadInlineStep`. Each changes default element semantics/layout (`<dialog>` needs `showModal()`, `<output>`/`<fieldset>`/`<progress>` carry built-in styling) — per-case judgment.
+- **S2004** nested functions too deep — `useEvaluationStream`, `Toast`, `TurnstileWidget` (closures over state).
+- **S1874** `FormEvent` "deprecated" — `AdminInvitationsPage`, `LandingPage` (React's type isn't really deprecated; ambiguous).
+- **S4043** `.toSorted()` — needs a TS `lib` bump (target < es2023). Project-wide decision.
+- `index.ts` S3863 side-effect import order; `landing.ts` S6551 `String()` coercion.
+
+### Tier-1 (S3776 ×11, S3358 ×44, S6479 ×28) — why paused, not done
+Targets are in [`2026-06-s035-maintainability-plan.md`](2026-06-s035-maintainability-plan.md). **Brutally honest call:** these reshape control flow in complex orchestration logic (`KataActivePage.tsx:59` is complexity **43**; ws-handlers, stream adapters, the kata session loop). Rushing 11 careful refactors at the tail of a long autonomous session — risking a subtle behavior change that passes existing tests but breaks an untested edge — is exactly what the tests-before-refactor rule guards against. **Recommend a focused, awake session:** per function, confirm/extend the test-net first (own commit), then refactor, then verify. Do `KataActivePage:59` (43) last.
 
 ## Next-cycle TODO (prepared, NOT executed — need Adrian)
 
