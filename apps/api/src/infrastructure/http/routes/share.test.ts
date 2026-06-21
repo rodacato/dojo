@@ -306,24 +306,47 @@ describe('GET /share/:sessionId', () => {
 // ===========================================================================
 // GET /share/scroll/:slug/:userId.png — scroll completion OG card
 //
-// BUG PINNED: the `/share/:sessionId{.+\.png$}` route registered first uses a
-// `.+` regex that greedily matches across slashes, so it SHADOWS the scroll PNG
-// route. `/share/scroll/python/<id>.png` is captured as sessionId
-// "scroll/python/<id>" by the session handler, which queries `sessions`, finds
-// nothing, and returns 404 "Session not found" — the scroll card is never
-// rendered. These tests assert the real shipped behavior (not the intended
-// behavior); if the route is later fixed they should flip and break loudly.
+// The session png route's param regex is `[^/]+\.png$` (single segment), so it
+// no longer shadows this multi-segment route. These tests assert the scroll
+// card actually renders — a `.+` regression on the session route would break
+// them (it would re-capture this path as sessions.id "scroll/python/<id>").
 // ===========================================================================
-describe('GET /share/scroll/:slug/:userId.png (shadowed by session png route)', () => {
-  it('is captured by the session png handler and 404s as "Session not found"', async () => {
-    selectQueue.push([]) // session lookup misses
+describe('GET /share/scroll/:slug/:userId.png', () => {
+  it('renders a 200 image/png for a completed scroll, resolved against scrolls.slug', async () => {
+    selectQueue.push([scrollRow()])
+    const res = await makeApp().request(`/share/scroll/python/${USER_ID}.png`)
+
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toBe('image/png')
+    expect(res.headers.get('cache-control')).toBe('public, max-age=31536000, immutable')
+    expect(satoriMock).toHaveBeenCalledTimes(1)
+    expect(resvgRender).toHaveBeenCalledTimes(1)
+
+    // It hit the scroll handler (scrolls.slug), NOT the session png handler.
+    expect(eqSpy).toHaveBeenCalledWith('scrolls.slug', 'python')
+    expect(eqSpy).not.toHaveBeenCalledWith('sessions.id', `scroll/python/${USER_ID}`)
+
+    const tree = JSON.stringify(firstSatoriArg())
+    expect(tree).toContain('SCROLL COMPLETE')
+    expect(tree).toContain('#10B981') // courseAccentColor
+    expect(tree).toContain('Python Basics') // scrollTitle
+    expect(tree).toContain('@rodacato')
+  })
+
+  it('strips the .png suffix before resolving the userId for the completion lookup', async () => {
+    selectQueue.push([scrollRow()])
+    await makeApp().request(`/share/scroll/python/${USER_ID}.png`)
+    // scrollProgress.userId is matched on the bare id, not "<id>.png".
+    expect(eqSpy).toHaveBeenCalledWith('sp.userId', USER_ID)
+  })
+
+  it('returns 404 JSON when the scroll completion is missing', async () => {
+    selectQueue.push([]) // completion lookup misses
     const res = await makeApp().request(`/share/scroll/python/${USER_ID}.png`)
 
     expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ error: 'Session not found' })
+    expect(await res.json()).toEqual({ error: 'Completion not found' })
     expect(satoriMock).not.toHaveBeenCalled()
-    // It queried sessions with the slash-joined path minus the .png suffix.
-    expect(eqSpy).toHaveBeenCalledWith('sessions.id', `scroll/python/${USER_ID}`)
   })
 })
 

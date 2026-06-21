@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../lib/api'
 import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { EmptyState } from '../components/ui/EmptyState'
+import { Button } from '../components/ui/Button'
 import { HankoBadge } from '../components/ui/HankoBadge'
 import { BrushstrokeUnderline } from '../components/ui/BrushstrokeUnderline'
 import { useAuth } from '../context/AuthContext'
@@ -47,17 +48,31 @@ export function BeltsPage() {
   const [belt, setBelt] = useState<BeltDTO | null>(null)
   const [milestones, setMilestones] = useState<MilestoneDTO[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [retryTick, setRetryTick] = useState(0)
 
   useEffect(() => {
     if (!user) return
+    let cancelled = false
+    setLoading(true)
+    setError(false)
     api
       .getBelts()
       .then((res) => {
+        if (cancelled) return
         setBelt(res.belt)
         setMilestones(res.milestones)
       })
-      .finally(() => setLoading(false))
-  }, [user])
+      .catch(() => {
+        if (!cancelled) setError(true)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user, retryTick])
 
   const earnedMap = useMemo(() => {
     const m = new Map<string, string>()
@@ -74,6 +89,27 @@ export function BeltsPage() {
       })),
     [earnedMap],
   )
+
+  if (error) {
+    return (
+      <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+        <div className="flex items-end justify-between gap-4 mb-6">
+          <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
+            Belts
+          </h1>
+        </div>
+        <EmptyState
+          eyebrow="Error · Belts"
+          headline="We couldn't load your belt progress."
+          action={
+            <Button variant="primary" size="md" onClick={() => setRetryTick((n) => n + 1)}>
+              Try again
+            </Button>
+          }
+        />
+      </div>
+    )
+  }
 
   if (loading || !belt) {
     return (

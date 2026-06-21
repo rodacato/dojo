@@ -38,7 +38,9 @@ function h(type: string, style: Record<string, unknown>, ...children: unknown[])
 // GET /share/:sessionId.png — Generate OG share card image
 // ---------------------------------------------------------------------------
 
-shareRoutes.get('/share/:sessionId{.+\\.png$}', async (c) => {
+// `[^/]+` (not `.+`) keeps this param to a single path segment — a greedy
+// `.+\.png$` matches across slashes and shadows /share/scroll/:slug/:userId.png.
+shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
   const sessionId = c.req.param('sessionId').replace(/\.png$/, '')
 
   const [row] = await db

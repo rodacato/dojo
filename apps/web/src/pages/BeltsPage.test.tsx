@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import type { BeltDTO, MilestoneDTO, UserDTO } from '@dojo/shared'
 import { BeltsPage } from './BeltsPage'
@@ -148,30 +149,29 @@ describe('BeltsPage', () => {
     expect(screen.queryByRole('heading', { name: /green belt/i })).not.toBeInTheDocument()
   })
 
-  it('stays on the skeleton without crashing when the belts request rejects', async () => {
+  it('shows an error state with a retry when the belts request rejects', async () => {
     authed()
-    // The page chains .then().finally() with no .catch, so a rejected request
-    // is an unhandled rejection by design. Intercept it for this test only —
-    // swap vitest's process listeners for a no-op so the genuine rejection
-    // does not fail the run, then assert the page degrades to the skeleton.
-    const prior = process.listeners('unhandledRejection')
-    process.removeAllListeners('unhandledRejection')
-    const noop = () => {}
-    process.on('unhandledRejection', noop)
+    mockedGetBelts.mockRejectedValue(new Error('boom'))
 
-    try {
-      mockedGetBelts.mockRejectedValue(new Error('boom'))
+    renderPage()
 
-      renderPage()
+    expect(await screen.findByText('We couldn\'t load your belt progress.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
+    // The skeleton is gone and no stale rank leaked through.
+    expect(screen.queryByText('Your rank')).not.toBeInTheDocument()
+  })
 
-      // No error UI exists; loading ends but belt is null → skeleton persists.
-      await waitFor(() => expect(mockedGetBelts).toHaveBeenCalled())
-      await Promise.resolve()
-      expect(screen.getByRole('heading', { name: 'Belts' })).toBeInTheDocument()
-      expect(screen.queryByText('Your rank')).not.toBeInTheDocument()
-    } finally {
-      process.removeListener('unhandledRejection', noop)
-      for (const l of prior) process.on('unhandledRejection', l)
-    }
+  it('refetches and recovers when Try again is clicked after a failure', async () => {
+    authed()
+    mockedGetBelts.mockRejectedValueOnce(new Error('boom'))
+    mockedGetBelts.mockResolvedValueOnce({ belt, milestones: [] })
+
+    renderPage()
+
+    const retry = await screen.findByRole('button', { name: 'Try again' })
+    await userEvent.click(retry)
+
+    expect(await screen.findByText('Your rank')).toBeInTheDocument()
+    expect(mockedGetBelts).toHaveBeenCalledTimes(2)
   })
 })
