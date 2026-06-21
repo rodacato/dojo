@@ -17,10 +17,10 @@ export type TwoByTwoData = {
 function Cell({
   cell,
   highlighted,
-}: {
+}: Readonly<{
   cell: TwoByTwoCell
   highlighted: boolean
-}) {
+}>) {
   return (
     <div
       className={
@@ -48,7 +48,7 @@ function Cell({
   )
 }
 
-export function TwoByTwo({ data }: { data: TwoByTwoData }) {
+export function TwoByTwo({ data }: Readonly<{ data: TwoByTwoData }>) {
   const isHighlighted = (row: 0 | 1, col: 0 | 1) =>
     !!data.highlightCell && data.highlightCell[0] === row && data.highlightCell[1] === col
 

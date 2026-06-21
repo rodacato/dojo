@@ -128,10 +128,6 @@ export function AdminScrollsPage() {
     }
   }
 
-  async function copyUrl(slug: string) {
-    await navigator.clipboard.writeText(`${window.location.origin}/scrolls/${slug}`)
-  }
-
   const counts = useMemo(() => {
     const c = { published: 0, draft: 0 }
     for (const scroll of scrolls ?? []) {
@@ -203,7 +199,7 @@ export function AdminScrollsPage() {
                   </td>
                 </tr>
               )}
-              {scrolls && scrolls.length === 0 && (
+              {scrolls?.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-4 py-10 text-center text-muted text-sm">
                     No scrolls yet. Click <span className="font-mono">Re-seed all</span> to populate from seed files.
@@ -346,12 +342,12 @@ function NoticeBanner({
   eyebrow,
   body,
   onDismiss,
-}: {
+}: Readonly<{
   tone: 'ok' | 'err'
   eyebrow: string
   body: string
   onDismiss?: () => void
-}) {
+}>) {
   const accent = tone === 'ok' ? 'border-l-success' : 'border-l-danger'
   const eyebrowColor = tone === 'ok' ? 'text-success' : 'text-danger'
   return (
@@ -382,10 +378,10 @@ function NoticeBanner({
 function Th({
   children,
   align = 'left',
-}: {
+}: Readonly<{
   children: React.ReactNode
   align?: 'left' | 'center' | 'right'
-}) {
+}>) {
   const a = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
   return (
     <th className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${a}`}>
@@ -440,7 +436,7 @@ function IconAction(props: IconActionProps) {
   )
 }
 
-function ExternalIcon({ className }: { className?: string }) {
+function ExternalIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M14 4h6v6" strokeLinecap="round" strokeLinejoin="round" />
@@ -450,7 +446,7 @@ function ExternalIcon({ className }: { className?: string }) {
   )
 }
 
-function ClipboardIcon({ className }: { className?: string }) {
+function ClipboardIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <rect x="6" y="4" width="12" height="16" rx="1" />
@@ -459,7 +455,7 @@ function ClipboardIcon({ className }: { className?: string }) {
   )
 }
 
-function TrashIcon({ className }: { className?: string }) {
+function TrashIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M4 7h16" strokeLinecap="round" />
@@ -467,6 +463,10 @@ function TrashIcon({ className }: { className?: string }) {
       <path d="M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
+}
+
+async function copyUrl(slug: string) {
+  await navigator.clipboard.writeText(`${globalThis.location.origin}/scrolls/${slug}`)
 }
 
 function asMsg(e: unknown): string {

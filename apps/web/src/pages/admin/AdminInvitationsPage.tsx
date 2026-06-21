@@ -214,7 +214,7 @@ export function AdminInvitationsPage() {
                 pageRows.map((inv) => {
                   const expiresMs = new Date(inv.expiresAt).getTime()
                   const expired = inv.status === 'expired' || expiresMs < now
-                  const url = `${window.location.origin}/invite/${inv.token}`
+                  const url = `${globalThis.location.origin}/invite/${inv.token}`
                   return (
                     <tr
                       key={inv.id}
@@ -276,7 +276,7 @@ export function AdminInvitationsPage() {
   )
 }
 
-function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
+function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
     <th
       className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
@@ -288,7 +288,7 @@ function Th({ children, align = 'left' }: { children: React.ReactNode; align?: '
   )
 }
 
-function InviteStatusBadge({ status }: { status: string }) {
+function InviteStatusBadge({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     pending: 'bg-muted/15 text-secondary border-border',
     used: 'bg-success/10 text-success border-success/30',

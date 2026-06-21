@@ -10,7 +10,7 @@ const VARIATION_ACCENTS = [
   'border-l-type-whiteboard',
 ]
 
-export function AdminBreadcrumb({ trail }: { trail: string[] }) {
+export function AdminBreadcrumb({ trail }: Readonly<{ trail: string[] }>) {
   return (
     <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
       {trail.join(' / ')}
@@ -23,12 +23,12 @@ export function FormField({
   hint,
   error,
   children,
-}: {
+}: Readonly<{
   label: string
   hint?: string
   error?: string
   children: ReactNode
-}) {
+}>) {
   return (
     <div>
       <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5">
@@ -52,11 +52,11 @@ export function SectionCard({
   eyebrow,
   rightSlot,
   children,
-}: {
+}: Readonly<{
   eyebrow: string
   rightSlot?: ReactNode
   children: ReactNode
-}) {
+}>) {
   return (
     <section className="rounded-md border border-border bg-surface p-6">
       <div className="flex items-center justify-between mb-5">
@@ -85,11 +85,11 @@ export function BasicsFields({
   value,
   onChange,
   titleError,
-}: {
+}: Readonly<{
   value: BasicsValue
   onChange: (next: BasicsValue) => void
   titleError?: boolean
-}) {
+}>) {
   const set = <K extends keyof BasicsValue>(key: K, v: BasicsValue[K]) =>
     onChange({ ...value, [key]: v })
 
@@ -189,13 +189,13 @@ export function VariationCardItem({
   ownerContext,
   onChange,
   onRemove,
-}: {
+}: Readonly<{
   index: number
   ownerRole: string
   ownerContext: string
   onChange: (field: 'ownerRole' | 'ownerContext', value: string) => void
   onRemove?: () => void
-}) {
+}>) {
   const accent = VARIATION_ACCENTS[index] ?? VARIATION_ACCENTS[0]
   return (
     <div className={`rounded-md border border-border bg-surface border-l-2 ${accent} p-6`}>
@@ -236,7 +236,7 @@ export function VariationCardItem({
   )
 }
 
-export function ValidationBanner({ message }: { message: string }) {
+export function ValidationBanner({ message }: Readonly<{ message: string }>) {
   return (
     <div className="rounded-md border border-danger/40 border-l-4 border-l-danger bg-surface p-4 mb-6">
       <div className="font-mono text-xs uppercase tracking-wider text-danger mb-1">
@@ -250,10 +250,10 @@ export function ValidationBanner({ message }: { message: string }) {
 export function StickyFormBar({
   hint,
   children,
-}: {
+}: Readonly<{
   hint?: string
   children: ReactNode
-}) {
+}>) {
   return (
     <div className="sticky bottom-0 -mx-8 mt-8 px-8 py-4 border-t border-border bg-page/95 backdrop-blur z-10">
       <div className="flex items-center justify-between gap-4">

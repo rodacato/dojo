@@ -43,7 +43,7 @@ export function Banner({
   onDismiss,
   bottomBorder = false,
   className = '',
-}: BannerProps) {
+}: Readonly<BannerProps>) {
   const accentClass = bottomBorder
     ? `border-b-4 ${TONE_BORDER_BOTTOM[tone]}`
     : `border-l-4 ${TONE_BORDER_LEFT[tone]}`

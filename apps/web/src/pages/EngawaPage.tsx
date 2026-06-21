@@ -336,8 +336,7 @@ export function EngawaPage() {
           >
             {run.status === 'running' ? (
               <>
-                Running{' '}
-                <span className="animate-cursor leading-none" aria-hidden>_</span>
+                Running{' '}<span className="animate-cursor leading-none" aria-hidden>_</span>
               </>
             ) : (
               <>▶ Run</>
@@ -485,7 +484,7 @@ export function EngawaPage() {
   )
 }
 
-function DropdownLabel({ label, children }: { label: string; children: React.ReactNode }) {
+function DropdownLabel({ label, children }: Readonly<{ label: string; children: React.ReactNode }>) {
   return (
     <label className="inline-flex items-center gap-2">
       <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{label}</span>
@@ -494,7 +493,7 @@ function DropdownLabel({ label, children }: { label: string; children: React.Rea
   )
 }
 
-function RunStatusChip({ run }: { run: RunState }) {
+function RunStatusChip({ run }: Readonly<{ run: RunState }>) {
   if (run.status === 'idle') {
     return (
       <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border bg-elevated px-2 py-0.5 rounded-sm">
@@ -505,8 +504,7 @@ function RunStatusChip({ run }: { run: RunState }) {
   if (run.status === 'running') {
     return (
       <span className="font-mono text-xs tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
-        Running{' '}
-        <span className="animate-cursor ml-0.5" aria-hidden>_</span>
+        Running{' '}<span className="animate-cursor ml-0.5" aria-hidden>_</span>
       </span>
     )
   }
@@ -525,7 +523,7 @@ function RunStatusChip({ run }: { run: RunState }) {
   )
 }
 
-function OutputPane({ run }: { run: RunState }) {
+function OutputPane({ run }: Readonly<{ run: RunState }>) {
   return (
     <div className="h-full overflow-y-auto bg-surface/40 px-4 py-3 font-mono text-xs">
       <OutputPanel run={run} />
@@ -533,7 +531,7 @@ function OutputPane({ run }: { run: RunState }) {
   )
 }
 
-function OutputPanel({ run }: { run: RunState }) {
+function OutputPanel({ run }: Readonly<{ run: RunState }>) {
   if (run.status === 'idle') {
     return <p className="text-muted/50">output will appear here.</p>
   }

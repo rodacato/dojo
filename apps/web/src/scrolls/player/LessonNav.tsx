@@ -8,13 +8,13 @@ export function LessonNav({
   activeStepId,
   completedSteps,
   onSelectStep,
-}: {
+}: Readonly<{
   lesson: LessonDTO
   index: number
   activeStepId: string | null
   completedSteps: string[]
   onSelectStep: (id: string) => void
-}) {
+}>) {
   const [expanded, setExpanded] = useState(true)
   const lessonNumber = index.toString().padStart(2, '0')
   const lessonStepsDone = lesson.steps.filter((s) => completedSteps.includes(s.id)).length
@@ -72,7 +72,7 @@ export function LessonNav({
   )
 }
 
-function StepStatusIcon({ complete, active }: { complete: boolean; active: boolean }) {
+function StepStatusIcon({ complete, active }: Readonly<{ complete: boolean; active: boolean }>) {
   if (complete) {
     return (
       <span className="font-mono text-xs text-success shrink-0" aria-hidden>

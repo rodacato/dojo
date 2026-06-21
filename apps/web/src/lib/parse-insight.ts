@@ -5,9 +5,9 @@ export interface Insight {
 }
 
 function extractBullets(tag: string, text: string): string[] | null {
-  const regex = new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`)
-  const match = text.match(regex)
-  if (!match || !match[1]) return null
+  const regex = new RegExp(String.raw`<${tag}>([\s\S]*?)</${tag}>`)
+  const match = regex.exec(text)
+  if (!match?.[1]) return null
   const lines = match[1]
     .split('\n')
     .map((l) => l.trim())
@@ -17,7 +17,7 @@ function extractBullets(tag: string, text: string): string[] | null {
 }
 
 export function parseInsight(text: string): Insight {
-  const approachMatch = text.match(/<approach_note>([\s\S]*?)<\/approach_note>/)
+  const approachMatch = /<approach_note>([\s\S]*?)<\/approach_note>/.exec(text)
   const approachNote = approachMatch?.[1] ? approachMatch[1].trim() || null : null
 
   return {

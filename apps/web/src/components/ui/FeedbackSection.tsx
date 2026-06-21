@@ -25,7 +25,7 @@ interface FeedbackSectionProps {
   alreadySubmitted: boolean
 }
 
-export function FeedbackSection({ sessionId, alreadySubmitted }: FeedbackSectionProps) {
+export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<FeedbackSectionProps>) {
   const [open, setOpen] = useState(false)
   const [submitted, setSubmitted] = useState(alreadySubmitted)
   const [submitting, setSubmitting] = useState(false)

@@ -6,7 +6,7 @@ interface AchievementBadgeProps {
   prestige?: boolean
 }
 
-export function AchievementBadge({ name, description, earned, earnedAt, prestige }: AchievementBadgeProps) {
+export function AchievementBadge({ name, description, earned, earnedAt, prestige }: Readonly<AchievementBadgeProps>) {
   if (prestige) {
     return (
       <div

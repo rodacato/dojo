@@ -7,10 +7,10 @@ export function stripLeadingH1(md: string): string {
   return md.replace(/^#\s+.+(\r?\n(\r?\n)?)?/, '').trimStart()
 }
 
-export function PlainMarkdown({ content }: { content: string }) {
+export function PlainMarkdown({ content }: Readonly<{ content: string }>) {
   const segments = splitOnFigureDirectives(content)
   const only = segments[0]
-  if (segments.length === 1 && only && only.kind === 'text') {
+  if (segments.length === 1 && only?.kind === 'text') {
     return (
       <div
         className="text-sm text-muted leading-relaxed"
@@ -52,7 +52,7 @@ const SLOT_LABEL_COLORS: Record<SlotHeading, string> = {
   'Edge cases': 'text-warning',
 }
 
-function SlotCard({ slot, body }: { slot: SlotHeading; body: string }) {
+function SlotCard({ slot, body }: Readonly<{ slot: SlotHeading; body: string }>) {
   return (
     <section className={`p-3 border rounded-sm ${SLOT_STYLES[slot]}`}>
       <p className={`text-xs font-mono uppercase tracking-widest mb-2 ${SLOT_LABEL_COLORS[slot]}`}>
@@ -63,7 +63,7 @@ function SlotCard({ slot, body }: { slot: SlotHeading; body: string }) {
   )
 }
 
-export function MarkdownContent({ content }: { content: string }) {
+export function MarkdownContent({ content }: Readonly<{ content: string }>) {
   const slots = renderSlots(content)
   if (slots) {
     return (

@@ -29,7 +29,7 @@ export async function request<T>(path: string, init?: RequestOptions): Promise<T
   const redirectOnAuth = init?.redirectOnAuth ?? true
   if (res.status === 401 && redirectOnAuth) {
     clearToken()
-    window.location.href = `${window.location.origin}/?error=session_expired`
+    globalThis.location.href = `${globalThis.location.origin}/?error=session_expired`
     throw new Error('Unauthenticated')
   }
   if (!res.ok) {

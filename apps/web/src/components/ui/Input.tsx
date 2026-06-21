@@ -3,7 +3,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   hint?: string
 }
 
-export function Input({ label, hint, className = '', ...props }: InputProps) {
+export function Input({ label, hint, className = '', ...props }: Readonly<InputProps>) {
   return (
     <div>
       {label && (
@@ -23,7 +23,7 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   hint?: string
 }
 
-export function Textarea({ label, hint, className = '', ...props }: TextareaProps) {
+export function Textarea({ label, hint, className = '', ...props }: Readonly<TextareaProps>) {
   return (
     <div>
       {label && (

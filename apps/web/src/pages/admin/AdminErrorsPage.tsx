@@ -171,7 +171,7 @@ export function AdminErrorsPage() {
       {!loading && !error && rows.length === 0 ? (
         source !== 'all' || status !== 'all' ? (
           <EmptyState
-            eyebrow={`No matches · Errors${source !== 'all' ? ` · SOURCE=${source.toUpperCase()}` : ''}${status !== 'all' ? ` · STATUS=${status}` : ''}`}
+            eyebrow={emptyMatchEyebrow(source, status)}
             headline="No errors match the current filters."
             action={
               <Button
@@ -305,7 +305,13 @@ export function AdminErrorsPage() {
   )
 }
 
-function FragmentRow({ children }: { children: React.ReactNode }) {
+function emptyMatchEyebrow(source: string, status: string): string {
+  const sourceSegment = source === 'all' ? '' : ` · SOURCE=${source.toUpperCase()}`
+  const statusSegment = status === 'all' ? '' : ` · STATUS=${status}`
+  return `No matches · Errors${sourceSegment}${statusSegment}`
+}
+
+function FragmentRow({ children }: Readonly<{ children: React.ReactNode }>) {
   return <>{children}</>
 }
 
@@ -313,11 +319,11 @@ function ExpandedDetail({
   row,
   onCopy,
   copied,
-}: {
+}: Readonly<{
   row: ErrorRow
   onCopy: () => void
   copied: boolean
-}) {
+}>) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-4">
@@ -361,7 +367,7 @@ function ExpandedDetail({
   )
 }
 
-function Th({ children }: { children?: React.ReactNode }) {
+function Th({ children }: Readonly<{ children?: React.ReactNode }>) {
   return (
     <th className="h-10 px-4 text-left font-mono text-xs uppercase tracking-wider text-muted">
       {children}
@@ -369,7 +375,7 @@ function Th({ children }: { children?: React.ReactNode }) {
   )
 }
 
-function SourcePill({ source }: { source: string }) {
+function SourcePill({ source }: Readonly<{ source: string }>) {
   return (
     <span className="font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm bg-muted/15 text-secondary border border-border">
       {source}
@@ -400,12 +406,12 @@ function FilterSelect<T extends string>({
   value,
   onChange,
   options,
-}: {
+}: Readonly<{
   label: string
   value: T
   onChange: (v: T) => void
   options: FilterOption<T>[]
-}) {
+}>) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
     <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
@@ -428,7 +434,7 @@ function FilterSelect<T extends string>({
   )
 }
 
-function ChevronDownIcon({ className }: { className?: string }) {
+function ChevronDownIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />

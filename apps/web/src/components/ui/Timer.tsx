@@ -15,7 +15,7 @@ const SIZE_CLASSES: Record<TimerSize, string> = {
   lg: 'text-5xl',
 }
 
-export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: TimerProps) {
+export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: Readonly<TimerProps>) {
   const [remaining, setRemaining] = useState<number>(computeRemaining(durationMinutes, startedAt))
 
   useEffect(() => {

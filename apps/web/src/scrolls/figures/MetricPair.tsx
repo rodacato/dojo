@@ -11,7 +11,7 @@ export type MetricPairData = {
   caption?: string
 }
 
-export function MetricPair({ data }: { data: MetricPairData }) {
+export function MetricPair({ data }: Readonly<{ data: MetricPairData }>) {
   return (
     <figure className="my-6">
       <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted mb-2">

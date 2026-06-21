@@ -21,7 +21,7 @@ export function ScrollPlayerPage() {
   const [error, setError] = useState<string | null>(null)
   const [retryTick, setRetryTick] = useState(0)
   const [sidebarOpen, setSidebarOpen] = useState(
-    () => window.matchMedia('(min-width: 768px)').matches,
+    () => globalThis.matchMedia('(min-width: 768px)').matches,
   )
   const mainRef = useRef<HTMLElement>(null)
 
@@ -52,7 +52,7 @@ export function ScrollPlayerPage() {
   // step is the signal the learner is done navigating.
   const selectStepFromSidebar = useCallback((stepId: string) => {
     navigateToStep(stepId)
-    if (!window.matchMedia('(min-width: 768px)').matches) {
+    if (!globalThis.matchMedia('(min-width: 768px)').matches) {
       setSidebarOpen(false)
     }
   }, [navigateToStep])

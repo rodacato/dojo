@@ -63,7 +63,7 @@ export function NotFoundPage() {
   )
 }
 
-function LinkIcon({ className }: { className?: string }) {
+function LinkIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 1 0-5.66-5.66l-1.5 1.5" strokeLinecap="round" />

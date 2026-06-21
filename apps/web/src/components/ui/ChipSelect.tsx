@@ -7,7 +7,7 @@ interface ChipSelectProps {
   placeholder?: string
 }
 
-export function ChipSelect({ options, selected, onChange, placeholder }: ChipSelectProps) {
+export function ChipSelect({ options, selected, onChange, placeholder }: Readonly<ChipSelectProps>) {
   const [query, setQuery] = useState('')
 
   const filtered = query ? options.filter((o) => o.includes(query) && !selected.includes(o)) : []

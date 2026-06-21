@@ -4,7 +4,7 @@ interface LogoMarkProps {
 }
 
 /** Abstract torii gate mark — 4 strokes, no fill */
-export function LogoMark({ size = 24, className = '' }: LogoMarkProps) {
+export function LogoMark({ size = 24, className = '' }: Readonly<LogoMarkProps>) {
   return (
     <svg
       width={size}
@@ -30,7 +30,7 @@ interface LogoWordmarkProps {
 }
 
 /** Full lockup: optional torii mark + dojo_ wordmark with blinking cursor */
-export function LogoWordmark({ className = '', showMark = true, markSize = 20 }: LogoWordmarkProps) {
+export function LogoWordmark({ className = '', showMark = true, markSize = 20 }: Readonly<LogoWordmarkProps>) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
       {showMark && <LogoMark size={markSize} className="text-primary" />}

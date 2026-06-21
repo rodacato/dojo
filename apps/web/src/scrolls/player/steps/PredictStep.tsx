@@ -17,7 +17,7 @@ export function PredictStep({
   isCompleted,
   onMarkComplete,
   onAdvance,
-}: StepComponentProps) {
+}: Readonly<StepComponentProps>) {
   // Predict: revealing the answer is what marks the step complete (so the
   // learner gets credit for engaging with the prediction even before they hit
   // Next). Continue advances. Splitting the two means the reveal stays on
@@ -63,7 +63,7 @@ export function PredictStep({
 
   const stepTitle = step.title ?? `Step ${step.order}`
   const instructionBody = step.instruction
-    .replace(new RegExp(`^# +${stepTitle}\\s*\\n+`), '')
+    .replace(new RegExp(String.raw`^# +${stepTitle}\s*\n+`), '')
     .trim()
 
   return (
@@ -91,7 +91,7 @@ export function PredictStep({
 
       <div role="radiogroup" aria-label="Predict the result" className="space-y-2">
         {data.options.map((opt, i) => {
-          const letter = String.fromCharCode('A'.charCodeAt(0) + i)
+          const letter = String.fromCodePoint('A'.codePointAt(0)! + i)
           const isSelected = selectedId === opt.id
           const isThisCorrect = opt.id === data.correct
           let stateClass = 'border-border bg-surface hover:border-accent/60 hover:bg-elevated/40'

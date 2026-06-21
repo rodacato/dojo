@@ -15,7 +15,7 @@ interface HeatmapProps {
 // ramp as "ink wash": neutral steps building to an accent pop. The
 // opacity ramp here achieves the same effect against either palette
 // without per-theme code.
-export function Heatmap({ data, days = 30 }: HeatmapProps) {
+export function Heatmap({ data, days = 30 }: Readonly<HeatmapProps>) {
   const map = new Map(data.map((d) => [d.date, d.count]))
 
   const dates = Array.from({ length: days }, (_, i) => {
@@ -32,7 +32,7 @@ export function Heatmap({ data, days = 30 }: HeatmapProps) {
           <div
             key={date}
             className={`w-3 h-3 rounded-sm ${heatmapIntensity(count)}`}
-            title={`${date}: ${count} kata${count !== 1 ? 's' : ''}`}
+            title={`${date}: ${count} kata${count === 1 ? '' : 's'}`}
           />
         )
       })}

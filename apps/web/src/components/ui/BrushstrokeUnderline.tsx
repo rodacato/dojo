@@ -20,7 +20,7 @@ interface BrushstrokeUnderlineProps {
 // GSAP scope contract — only mount this in routes already on the
 // GSAP allowlist (kata flow, scrolls, results, share, landing). Do not
 // import into dashboard or admin chunks.
-export function BrushstrokeUnderline({ seed, className = '' }: BrushstrokeUnderlineProps) {
+export function BrushstrokeUnderline({ seed, className = '' }: Readonly<BrushstrokeUnderlineProps>) {
   const stroke = pickUnderline(seed)
   const pathRef = useRef<SVGPathElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -48,7 +48,7 @@ export function BrushstrokeUnderline({ seed, className = '' }: BrushstrokeUnderl
     const path = pathRef.current
     const svg = svgRef.current
     if (!path || !svg) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const observer = new IntersectionObserver(
       ([entry]) => {

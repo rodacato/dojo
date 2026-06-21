@@ -291,7 +291,7 @@ export function KatasPage() {
 /*  Building blocks                                                    */
 /* ------------------------------------------------------------------ */
 
-function PickCard({ title, children }: { title: string; children: React.ReactNode }) {
+function PickCard({ title, children }: Readonly<{ title: string; children: React.ReactNode }>) {
   return (
     <section className="bg-surface border border-border/40 rounded-md p-5">
       <h2 className="font-mono text-sm text-primary mb-4">{title}</h2>
@@ -306,13 +306,13 @@ function SelectablePill({
   label,
   sub,
   size = 'sm',
-}: {
+}: Readonly<{
   selected: boolean
   onClick: () => void
   label: string
   sub?: string
   size?: 'sm' | 'md'
-}) {
+}>) {
   const heightClass = size === 'md' ? 'py-3' : 'py-3 sm:py-4'
   return (
     <button
@@ -333,7 +333,7 @@ function SelectablePill({
   )
 }
 
-function ActivityStrip({ dashboard }: { dashboard: DashboardData | null }) {
+function ActivityStrip({ dashboard }: Readonly<{ dashboard: DashboardData | null }>) {
   if (!dashboard) {
     return (
       <section className="bg-surface border border-border/40 rounded-md p-5 min-h-22">
@@ -388,12 +388,12 @@ function KataCard({
   onSelect,
   starting,
   disabled,
-}: {
+}: Readonly<{
   kata: KataDTO
   onSelect: () => void
   starting: boolean
   disabled: boolean
-}) {
+}>) {
   return (
     <button
       onClick={onSelect}
@@ -443,7 +443,7 @@ function KataCard({
   )
 }
 
-function EmptyResults({ onChange }: { onChange: () => void }) {
+function EmptyResults({ onChange }: Readonly<{ onChange: () => void }>) {
   return (
     <div className="bg-surface border border-border/40 rounded-md p-10 text-center">
       <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">No matches</p>
@@ -474,7 +474,7 @@ function CustomizePanel({
   onRandomness,
   goalWeeklyTarget,
   onGoal,
-}: {
+}: Readonly<{
   open: boolean
   onToggle: () => void
   loaded: boolean
@@ -486,7 +486,7 @@ function CustomizePanel({
   onRandomness: (v: number) => void
   goalWeeklyTarget: number
   onGoal: (v: number) => void
-}) {
+}>) {
   const randomLabel = randomness < 0.34 ? 'Predictable' : randomness < 0.67 ? 'Balanced' : 'Wild'
 
   return (
@@ -505,9 +505,7 @@ function CustomizePanel({
 
       {open && (
         <div className="border-t border-border/30 p-5 space-y-6">
-          {!loaded ? (
-            <p className="text-muted text-xs font-mono uppercase tracking-wider animate-pulse">Loading preferences...</p>
-          ) : (
+          {loaded ? (
             <>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -595,6 +593,8 @@ function CustomizePanel({
                 </div>
               </div>
             </>
+          ) : (
+            <p className="text-muted text-xs font-mono uppercase tracking-wider animate-pulse">Loading preferences...</p>
           )}
         </div>
       )}
@@ -602,7 +602,7 @@ function CustomizePanel({
   )
 }
 
-function Eyebrow({ children, inline }: { children: React.ReactNode; inline?: boolean }) {
+function Eyebrow({ children, inline }: Readonly<{ children: React.ReactNode; inline?: boolean }>) {
   return (
     <p className={`text-muted text-xs font-mono uppercase tracking-wider ${inline ? '' : 'mb-3'}`}>
       {children}

@@ -111,7 +111,7 @@ function buildEditorTheme(t: ThemeTokens) {
   )
 }
 
-export function CodeEditor({ value, onChange, language = 'javascript', placeholder }: CodeEditorProps) {
+export function CodeEditor({ value, onChange, language = 'javascript', placeholder }: Readonly<CodeEditorProps>) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
   const tokens = useThemeTokens()

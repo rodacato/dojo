@@ -12,7 +12,7 @@ import { splitOnInteractionMarkers } from './readInline'
 // answered. Figures embed via the regular `:figure` markdown directive
 // inside the prose segments; no interaction kind needed.
 
-export function ReadInlineStep({ step, isCompleted, onMarkComplete, onAdvance }: StepComponentProps) {
+export function ReadInlineStep({ step, isCompleted, onMarkComplete, onAdvance }: Readonly<StepComponentProps>) {
   const interactions = isReadInlineData(step.data) ? step.data.interactions : []
   const segments = splitOnInteractionMarkers(step.instruction, interactions)
 
@@ -41,7 +41,7 @@ export function ReadInlineStep({ step, isCompleted, onMarkComplete, onAdvance }:
   )
 }
 
-function InlineInteraction({ interaction }: { interaction: ReadInlineInteraction }) {
+function InlineInteraction({ interaction }: Readonly<{ interaction: ReadInlineInteraction }>) {
   if (interaction.kind === 'reveal') {
     return <Reveal prompt={interaction.prompt} answer={interaction.answer} />
   }
@@ -55,7 +55,7 @@ function InlineInteraction({ interaction }: { interaction: ReadInlineInteraction
   )
 }
 
-function Reveal({ prompt, answer }: { prompt: string; answer: string }) {
+function Reveal({ prompt, answer }: Readonly<{ prompt: string; answer: string }>) {
   const [expanded, setExpanded] = useState(false)
   return (
     <div className="my-5 border border-accent/40 rounded bg-accent/5">
@@ -82,12 +82,12 @@ function MicroQuiz({
   options,
   correct,
   feedback,
-}: {
+}: Readonly<{
   question: string
   options: [string, string]
   correct: 0 | 1
   feedback: [string, string]
-}) {
+}>) {
   const [picked, setPicked] = useState<0 | 1 | null>(null)
   const answered = picked !== null
 

@@ -151,6 +151,7 @@ export const admin = {
     if (params.limit !== undefined) qs.set('limit', String(params.limit))
     if (params.offset !== undefined) qs.set('offset', String(params.offset))
     const suffix = qs.toString()
+    const query = suffix ? `?${suffix}` : ''
     return request<{
       total: number
       limit: number
@@ -168,6 +169,6 @@ export const admin = {
         userId: string | null
         context: Record<string, unknown> | null
       }>
-    }>(`/admin/errors${suffix ? `?${suffix}` : ''}`)
+    }>(`/admin/errors${query}`)
   },
 }

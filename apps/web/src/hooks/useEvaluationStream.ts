@@ -120,7 +120,7 @@ export function useEvaluationStream(sessionId: string) {
     ws.onclose = (e) => {
       if (e.code === 4001) {
         clearToken()
-        window.location.href = '/?error=session_expired'
+        globalThis.location.href = '/?error=session_expired'
         return
       }
       // 1000 is a clean close initiated by either peer after we're done (complete/error).

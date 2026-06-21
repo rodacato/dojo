@@ -191,7 +191,7 @@ export function PublicProfilePage() {
   )
 }
 
-function StatCell({ label, value, colorClass }: { label: string; value: string; colorClass?: string }) {
+function StatCell({ label, value, colorClass }: Readonly<{ label: string; value: string; colorClass?: string }>) {
   return (
     <div className="md:px-6 first:md:pl-0 last:md:pr-0">
       <p className={`font-mono text-2xl md:text-2xl tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
@@ -204,7 +204,7 @@ function StatCell({ label, value, colorClass }: { label: string; value: string; 
   )
 }
 
-function SectionEyebrow({ title }: { title: string }) {
+function SectionEyebrow({ title }: Readonly<{ title: string }>) {
   return (
     <div className="flex items-center gap-3 mb-4">
       <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{title}</p>
@@ -213,7 +213,7 @@ function SectionEyebrow({ title }: { title: string }) {
   )
 }
 
-function BadgeMiniCard({ name, earnedAt }: { name: string; earnedAt: string }) {
+function BadgeMiniCard({ name, earnedAt }: Readonly<{ name: string; earnedAt: string }>) {
   const earnedLabel = new Date(earnedAt).toISOString().slice(0, 10)
   return (
     <div className="bg-page border border-border rounded-md px-4 py-3 min-w-50 shrink-0">

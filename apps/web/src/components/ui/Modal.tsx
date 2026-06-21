@@ -8,7 +8,7 @@ interface ModalProps {
   children: React.ReactNode
 }
 
-export function Modal({ open, onClose, flow = false, children }: ModalProps) {
+export function Modal({ open, onClose, flow = false, children }: Readonly<ModalProps>) {
   const overlayRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

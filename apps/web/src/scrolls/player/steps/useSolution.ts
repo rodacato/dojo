@@ -34,7 +34,7 @@ export function useSolution({
     if (tab !== 'solution') return
     if (!isCompleted) return
     if (solutionCode !== null || solutionError !== null) return
-    const anonId = !isIframeLang ? getAnonymousId() ?? undefined : undefined
+    const anonId = isIframeLang ? undefined : getAnonymousId() ?? undefined
     api
       .getStepSolution(scrollSlug, stepId, anonId)
       .then((r) => {

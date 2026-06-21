@@ -11,7 +11,7 @@ interface SenseiBubbleProps {
 // Sensei (assistant) message: avatar + persona eyebrow + left-aligned bubble.
 // `streaming` appends a 1Hz indigo cursor so the user knows tokens are still
 // arriving — same brand cursor used in the wordmark and timer.
-export function SenseiBubble({ initials, role, streaming = false, children }: SenseiBubbleProps) {
+export function SenseiBubble({ initials, role, streaming = false, children }: Readonly<SenseiBubbleProps>) {
   return (
     <div className="flex gap-3">
       <div
@@ -57,7 +57,7 @@ interface UserBubbleProps {
 
 // User (you) message: right-aligned indigo bubble. Caps the width at 70%
 // so long replies stay readable instead of stretching across the column.
-export function UserBubble({ children }: UserBubbleProps) {
+export function UserBubble({ children }: Readonly<UserBubbleProps>) {
   return (
     <div className="flex justify-end">
       <div className="flex flex-col items-end max-w-[70%] gap-1">

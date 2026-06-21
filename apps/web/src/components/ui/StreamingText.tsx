@@ -4,7 +4,7 @@ interface StreamingTextProps {
   className?: string
 }
 
-export function StreamingText({ text, done, className }: StreamingTextProps) {
+export function StreamingText({ text, done, className }: Readonly<StreamingTextProps>) {
   const parts = parseCodeBlocks(text)
 
   return (
@@ -35,7 +35,7 @@ interface TextPart {
 
 function parseCodeBlocks(text: string): TextPart[] {
   const parts: TextPart[] = []
-  const regex = /```[\w]*\n?([\s\S]*?)```/g
+  const regex = /```\w*\n?([\s\S]*?)```/g
   let lastIndex = 0
   let match: RegExpExecArray | null
 

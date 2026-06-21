@@ -1,13 +1,12 @@
 import type {
   KataDTO,
-  AttemptDTO,
   BeltDTO,
   HeatmapDayDTO,
   SessionSummaryDTO,
   PublicSessionDTO,
 } from '@dojo/shared'
 
-export { type AttemptDTO }
+export { type AttemptDTO } from '@dojo/shared'
 
 export interface DashboardData {
   streak: number

@@ -16,7 +16,7 @@ export function OutputPanel({
   onSolutionRetry,
   editorLanguage,
   isPlayground,
-}: {
+}: Readonly<{
   result: ExecuteStepResponse | null
   tab: OutputTabId
   onTabChange: (t: OutputTabId) => void
@@ -27,7 +27,7 @@ export function OutputPanel({
   onSolutionRetry: () => void
   editorLanguage: string
   isPlayground: boolean
-}) {
+}>) {
   // Playgrounds: only the Output tab. No Tests (the harness is trivially-true
   // so the test list is noise), no Solution (no canonical answer to a free
   // exploration). The current `tab` may carry an outdated value if the step
@@ -38,16 +38,16 @@ export function OutputPanel({
         <div className="flex items-center gap-1 px-3 pt-2 border-b border-border/30">
           <TabButton active={true} onClick={() => onTabChange('output')}>
             Output
-            {result && result.errorKind && <span className="ml-1.5 text-warning">●</span>}
+            {result?.errorKind && <span className="ml-1.5 text-warning">●</span>}
           </TabButton>
         </div>
         <div className="flex-1 overflow-y-auto px-4 py-3">
-          {!result ? (
+          {result ? (
+            <OutputTab result={result} />
+          ) : (
             <p className="text-xs font-mono text-muted/60">
               Try the code above. Change things. Watch the output.
             </p>
-          ) : (
-            <OutputTab result={result} />
           )}
         </div>
       </div>
@@ -67,7 +67,7 @@ export function OutputPanel({
         </TabButton>
         <TabButton active={tab === 'output'} onClick={() => onTabChange('output')}>
           Output
-          {result && result.errorKind && <span className="ml-1.5 text-warning">●</span>}
+          {result?.errorKind && <span className="ml-1.5 text-warning">●</span>}
         </TabButton>
         <TabButton
           active={tab === 'solution'}
@@ -88,14 +88,16 @@ export function OutputPanel({
             onRetry={onSolutionRetry}
             language={editorLanguage}
           />
-        ) : !result ? (
+        ) : result ? (
+          tab === 'tests' ? (
+            <TestsTab result={result} />
+          ) : (
+            <OutputTab result={result} />
+          )
+        ) : (
           <p className="text-xs font-mono text-muted/60">
             Run your code to see test results and output.
           </p>
-        ) : tab === 'tests' ? (
-          <TestsTab result={result} />
-        ) : (
-          <OutputTab result={result} />
         )}
       </div>
     </div>
@@ -109,14 +111,14 @@ function SolutionTab({
   solutionError,
   onRetry,
   language,
-}: {
+}: Readonly<{
   isCompleted: boolean
   solutionCode: string | null
   alternativeApproach: string | null
   solutionError: string | null
   onRetry: () => void
   language: string
-}) {
+}>) {
   if (!isCompleted) {
     return (
       <p className="text-xs font-mono text-muted/60">
@@ -179,13 +181,13 @@ function TabButton({
   onClick,
   disabled,
   title,
-}: {
+}: Readonly<{
   active: boolean
   children: ReactNode
   onClick: () => void
   disabled?: boolean
   title?: string
-}) {
+}>) {
   return (
     <button
       onClick={onClick}
@@ -204,7 +206,7 @@ function TabButton({
   )
 }
 
-function TestsTab({ result }: { result: ExecuteStepResponse }) {
+function TestsTab({ result }: Readonly<{ result: ExecuteStepResponse }>) {
   if (result.errorKind) {
     return (
       <ErrorCard
@@ -244,7 +246,7 @@ function TestsTab({ result }: { result: ExecuteStepResponse }) {
   )
 }
 
-function OutputTab({ result }: { result: ExecuteStepResponse }) {
+function OutputTab({ result }: Readonly<{ result: ExecuteStepResponse }>) {
   const hasStdout = result.stdout.trim().length > 0
   const hasStderr = result.stderr.trim().length > 0
   if (!hasStdout && !hasStderr) {
@@ -280,11 +282,11 @@ function ErrorCard({
   kind,
   message,
   detail,
-}: {
+}: Readonly<{
   kind: NonNullable<ExecuteStepResponse['errorKind']>
   message: string
   detail: string
-}) {
+}>) {
   const trimmed = detail.trim()
   return (
     <div className="p-3 border border-warning/40 bg-warning/5 rounded-sm">

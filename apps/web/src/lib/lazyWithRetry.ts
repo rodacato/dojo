@@ -24,11 +24,11 @@ export function lazyWithRetry<T extends ComponentType<any>>(
       if (!(err instanceof Error) || !CHUNK_ERROR_RE.test(err.message)) throw err
 
       const now = Date.now()
-      const last = Number(window.sessionStorage.getItem(RELOAD_KEY) || 0)
+      const last = Number(globalThis.sessionStorage.getItem(RELOAD_KEY) || 0)
       if (now - last < RELOAD_COOLDOWN_MS) throw err
 
-      window.sessionStorage.setItem(RELOAD_KEY, String(now))
-      window.location.reload()
+      globalThis.sessionStorage.setItem(RELOAD_KEY, String(now))
+      globalThis.location.reload()
       // Keep Suspense in its fallback while the reload takes effect — no
       // flash of the global ErrorBoundary.
       return new Promise<never>(() => {})

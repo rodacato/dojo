@@ -104,7 +104,7 @@ export function ChangelogPage() {
   )
 }
 
-function Entry({ entry, divider }: { entry: ChangelogEntry; divider: boolean }) {
+function Entry({ entry, divider }: Readonly<{ entry: ChangelogEntry; divider: boolean }>) {
   const phaseColor = phaseColorClass(entry.phase)
   return (
     <article className={`py-8 ${divider ? 'border-b border-border/40' : ''}`}>

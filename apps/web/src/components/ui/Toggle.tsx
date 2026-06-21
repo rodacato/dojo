@@ -12,7 +12,7 @@ interface ToggleProps {
 // can drop a single `<Toggle label="..." />` into a row without juggling a
 // separate `<label>` element. If you need a layout where the label is on
 // the opposite side, pass only `ariaLabel` and render the label yourself.
-export function Toggle({ checked, onChange, label, ariaLabel, disabled, id }: ToggleProps) {
+export function Toggle({ checked, onChange, label, ariaLabel, disabled, id }: Readonly<ToggleProps>) {
   const button = (
     <button
       type="button"

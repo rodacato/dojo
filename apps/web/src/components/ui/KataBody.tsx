@@ -1,7 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-export function KataBody({ body }: { body: string }) {
+export function KataBody({ body }: Readonly<{ body: string }>) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}

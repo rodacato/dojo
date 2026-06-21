@@ -19,7 +19,7 @@ export function useFirstVisit(active: boolean): {
   useEffect(() => {
     if (!active) return
     try {
-      setIsFirstVisit(window.localStorage.getItem(STORAGE_KEY) !== 'true')
+      setIsFirstVisit(globalThis.localStorage.getItem(STORAGE_KEY) !== 'true')
     } catch {
       // localStorage blocked (private mode, hardened browser) — treat as
       // already-seen. Worst case the overlay is just never shown.
@@ -30,7 +30,7 @@ export function useFirstVisit(active: boolean): {
   function dismiss() {
     setIsFirstVisit(false)
     try {
-      window.localStorage.setItem(STORAGE_KEY, 'true')
+      globalThis.localStorage.setItem(STORAGE_KEY, 'true')
     } catch {
       // No-op — the in-memory flag flip above keeps the UI responsive.
     }

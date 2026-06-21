@@ -23,7 +23,7 @@ export function BeltRingAvatar({
   size = 48,
   alt = '',
   className = '',
-}: BeltRingAvatarProps) {
+}: Readonly<BeltRingAvatarProps>) {
   const isBlack = rank === 'black'
   return (
     <img

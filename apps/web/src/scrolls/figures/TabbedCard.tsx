@@ -11,7 +11,7 @@ export type TabbedCardData = {
   caption?: string
 }
 
-export function TabbedCard({ data }: { data: TabbedCardData }) {
+export function TabbedCard({ data }: Readonly<{ data: TabbedCardData }>) {
   const initial = clampIndex(data.defaultTab ?? 0, data.tabs.length)
   const [active, setActive] = useState(initial)
   const tablistId = `tabbed-card-${data.id}`

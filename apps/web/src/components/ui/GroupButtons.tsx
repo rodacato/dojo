@@ -5,7 +5,7 @@ interface GroupButtonsProps<T extends string> {
   size?: 'sm' | 'md'
 }
 
-export function GroupButtons<T extends string>({ options, value, onChange, size = 'sm' }: GroupButtonsProps<T>) {
+export function GroupButtons<T extends string>({ options, value, onChange, size = 'sm' }: Readonly<GroupButtonsProps<T>>) {
   return (
     <div className="flex gap-1 bg-surface border border-border/40 rounded-md p-1 w-fit">
       {options.map((opt) => (

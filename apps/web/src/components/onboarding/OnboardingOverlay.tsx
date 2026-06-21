@@ -16,7 +16,7 @@ const STAGES = [
 // First-visit welcome card. Non-modal — clicking the backdrop does NOT
 // dismiss; user must use Skip, X, or the primary CTA. The backdrop is a
 // flat 60% page color (no blur) so the underlying dashboard stays visible.
-export function OnboardingOverlay({ onDismiss }: OnboardingOverlayProps) {
+export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps>) {
   const navigate = useNavigate()
 
   function handleStart() {

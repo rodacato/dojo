@@ -24,7 +24,7 @@ export function EmptyState({
   secondaryAction,
   variant = 'card',
   className = '',
-}: EmptyStateProps) {
+}: Readonly<EmptyStateProps>) {
   const wrapperClass =
     variant === 'card'
       ? 'rounded-md border border-border bg-surface px-6 py-12 text-center'

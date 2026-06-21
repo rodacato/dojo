@@ -69,13 +69,13 @@ export function SenseiNudgePanel({
   feedback,
   onRate,
   onDismiss,
-}: {
+}: Readonly<{
   nudge: { id: string; text: string } | null
   error: string | null
   feedback: 'up' | 'down' | null
   onRate: (rating: 'up' | 'down') => void
   onDismiss: () => void
-}) {
+}>) {
   if (!nudge && !error) return null
 
   return (

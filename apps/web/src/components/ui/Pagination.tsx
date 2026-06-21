@@ -6,7 +6,7 @@ interface PaginationProps {
   size?: 'sm' | 'md'
 }
 
-export function Pagination({ page, totalPages, onChange, ariaLabel = 'Pagination', size = 'md' }: PaginationProps) {
+export function Pagination({ page, totalPages, onChange, ariaLabel = 'Pagination', size = 'md' }: Readonly<PaginationProps>) {
   if (totalPages <= 1) return null
   const pages = pageWindow(page, totalPages)
   const text = size === 'sm' ? 'text-xs' : 'text-sm'

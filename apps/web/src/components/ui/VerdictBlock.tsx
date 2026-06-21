@@ -39,7 +39,7 @@ export function VerdictBlock({
   children,
   topics,
   cta,
-}: VerdictBlockProps) {
+}: Readonly<VerdictBlockProps>) {
   const verdictSize = size === 'lg' ? 'text-4xl md:text-5xl' : 'text-2xl'
   const padding = size === 'lg' ? 'p-6 md:p-8 pl-8 md:pl-10' : 'p-6 pl-8'
   return (

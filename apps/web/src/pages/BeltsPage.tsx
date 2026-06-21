@@ -210,7 +210,7 @@ export function BeltsPage() {
   )
 }
 
-function Factor({ label, value }: { label: string; value: number }) {
+function Factor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
       <dt className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
@@ -219,7 +219,7 @@ function Factor({ label, value }: { label: string; value: number }) {
   )
 }
 
-function MilestoneCard({ milestone }: { milestone: MilestoneView }) {
+function MilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
   const earnedDate = milestone.earnedAt
     ? new Date(milestone.earnedAt).toISOString().slice(0, 10)
     : null
@@ -256,7 +256,7 @@ function MilestoneCard({ milestone }: { milestone: MilestoneView }) {
   )
 }
 
-function PrestigeMilestoneCard({ milestone }: { milestone: MilestoneView }) {
+function PrestigeMilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
   const earnedDate = milestone.earnedAt
     ? new Date(milestone.earnedAt).toISOString().slice(0, 10)
     : null

@@ -13,7 +13,7 @@ interface SkeletonProps {
   flat?: boolean
 }
 
-export function Skeleton({ className = '', flat = false }: SkeletonProps) {
+export function Skeleton({ className = '', flat = false }: Readonly<SkeletonProps>) {
   return (
     <div
       aria-hidden
@@ -27,11 +27,11 @@ export function SkeletonText({
   width = 'full',
   size = 'md',
   className = '',
-}: {
+}: Readonly<{
   width?: 'full' | '3/4' | '2/3' | '1/2' | '1/3' | '1/4'
   size?: 'sm' | 'md' | 'lg'
   className?: string
-}) {
+}>) {
   const widthMap: Record<string, string> = {
     full: 'w-full',
     '3/4': 'w-3/4',
@@ -61,7 +61,7 @@ export function SkeletonListRow() {
 }
 
 /** Wraps N list rows in the standard bordered card. */
-export function SkeletonList({ rows = 6 }: { rows?: number }) {
+export function SkeletonList({ rows = 6 }: Readonly<{ rows?: number }>) {
   return (
     <div className="rounded-md border border-border bg-surface overflow-hidden">
       {Array.from({ length: rows }).map((_, i) => (

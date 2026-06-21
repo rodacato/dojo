@@ -23,7 +23,7 @@ export function TodayCard({
   onStart,
   onResume,
   onViewResults,
-}: TodayCardProps) {
+}: Readonly<TodayCardProps>) {
   if (activeSessionId) {
     return (
       <HeroLayout
@@ -73,12 +73,12 @@ function HeroLayout({
   headline,
   body,
   cta,
-}: {
+}: Readonly<{
   eyebrow: string
   headline: string
   body: string
   cta: React.ReactNode
-}) {
+}>) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
       <div className="flex-1 min-w-0">

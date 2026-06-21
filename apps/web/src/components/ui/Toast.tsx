@@ -14,6 +14,8 @@ interface ToastInput {
   durationMs?: number
 }
 
+type ToastOpts = Omit<ToastInput, 'kind' | 'eyebrow' | 'body'>
+
 interface ToastEntry extends Required<Pick<ToastInput, 'eyebrow'>> {
   id: number
   kind: ToastKind
@@ -64,16 +66,16 @@ export const toast = Object.assign(
     push(input)
   },
   {
-    success(eyebrow: string, body?: ReactNode, opts?: Omit<ToastInput, 'kind' | 'eyebrow' | 'body'>) {
+    success(eyebrow: string, body?: ReactNode, opts?: ToastOpts) {
       push({ kind: 'success', eyebrow, body, ...opts })
     },
-    info(eyebrow: string, body?: ReactNode, opts?: Omit<ToastInput, 'kind' | 'eyebrow' | 'body'>) {
+    info(eyebrow: string, body?: ReactNode, opts?: ToastOpts) {
       push({ kind: 'info', eyebrow, body, ...opts })
     },
-    warning(eyebrow: string, body?: ReactNode, opts?: Omit<ToastInput, 'kind' | 'eyebrow' | 'body'>) {
+    warning(eyebrow: string, body?: ReactNode, opts?: ToastOpts) {
       push({ kind: 'warning', eyebrow, body, ...opts })
     },
-    error(eyebrow: string, body?: ReactNode, opts?: Omit<ToastInput, 'kind' | 'eyebrow' | 'body'>) {
+    error(eyebrow: string, body?: ReactNode, opts?: ToastOpts) {
       push({ kind: 'error', eyebrow, body, ...opts })
     },
   },
@@ -105,9 +107,8 @@ export function ToastContainer() {
   if (toasts.length === 0) return null
 
   return (
-    <div
+    <section
       className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 w-80"
-      role="region"
       aria-label="Notifications"
     >
       {toasts.map((t) => (
@@ -145,7 +146,7 @@ export function ToastContainer() {
           </div>
         </div>
       ))}
-    </div>
+    </section>
   )
 }
 

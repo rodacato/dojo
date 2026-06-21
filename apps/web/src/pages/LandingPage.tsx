@@ -90,7 +90,7 @@ export function LandingPage() {
 /*  Sections                                                           */
 /* ------------------------------------------------------------------ */
 
-function AuthErrorBanner({ errorParam }: { errorParam: string }) {
+function AuthErrorBanner({ errorParam }: Readonly<{ errorParam: string }>) {
   const message =
     errorParam === 'session_expired'
       ? 'Your session expired. Sign in again to continue.'
@@ -321,7 +321,7 @@ function TerminalDemo() {
   // Rotate every 4s after first display. setInterval so each tick is independent
   // of GSAP timeline — no chance of timeline drift causing dead intervals.
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) return
     const interval = setInterval(() => {
       setCurrentIdx((i) => (i + 1) % TERMINAL_SESSIONS.length)
@@ -335,7 +335,7 @@ function TerminalDemo() {
       const sessions = gsap.utils.toArray<HTMLElement>('.tdemo-session')
       if (sessions.length === 0) return
 
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
       const prevIdx = prevIdxRef.current
 
       if (prevIdx === null) {
@@ -738,7 +738,7 @@ function Footer() {
 /*  Sub-components                                                     */
 /* ------------------------------------------------------------------ */
 
-function ClipboardIcon({ className = 'w-4 h-4' }: { className?: string }) {
+function ClipboardIcon({ className = 'w-4 h-4' }: Readonly<{ className?: string }>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden>
       <rect x="8" y="4" width="12" height="16" rx="2" />
@@ -748,7 +748,7 @@ function ClipboardIcon({ className = 'w-4 h-4' }: { className?: string }) {
   )
 }
 
-function CheckIcon({ className = 'w-4 h-4' }: { className?: string }) {
+function CheckIcon({ className = 'w-4 h-4' }: Readonly<{ className?: string }>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className={className} aria-hidden>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

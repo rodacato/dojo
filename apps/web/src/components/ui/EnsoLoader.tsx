@@ -14,7 +14,7 @@ interface EnsoLoaderProps {
 // - Forbidden as a celebration burst — contemplative, not jubilant
 //
 // The gap in the circle is the point — the enso is imperfect by design.
-export function EnsoLoader({ size = 40, label = 'Loading', className = '' }: EnsoLoaderProps) {
+export function EnsoLoader({ size = 40, label = 'Loading', className = '' }: Readonly<EnsoLoaderProps>) {
   const pathRef = useRef<SVGPathElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 

@@ -85,7 +85,7 @@ function DateStrip() {
   )
 }
 
-function BeltStrip({ belt }: { belt: BeltDTO }) {
+function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
   return (
     <section className="bg-surface border border-border/40 rounded-md p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
       <div className="flex items-center gap-3 shrink-0">
@@ -114,7 +114,7 @@ function BeltStrip({ belt }: { belt: BeltDTO }) {
   )
 }
 
-function BeltFactor({ label, value }: { label: string; value: number }) {
+function BeltFactor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
       <dt className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
@@ -128,12 +128,12 @@ function StreakCard({
   heatmapData,
   weeklyGoal,
   spanWhenAlone = false,
-}: {
+}: Readonly<{
   streak: number
   heatmapData: DashboardData['heatmapData']
   weeklyGoal: DashboardData['weeklyGoal']
   spanWhenAlone?: boolean
-}) {
+}>) {
   const week = useMemo(() => weekActivity(heatmapData), [heatmapData])
   return (
     <section
@@ -174,7 +174,7 @@ function formatAvgTime(minutes: number): string {
   return m === 0 ? `${h}h` : `${h}h ${m}m`
 }
 
-function PracticePatternsCard({ practicePatterns }: { practicePatterns: DashboardData['practicePatterns'] }) {
+function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns: DashboardData['practicePatterns'] }>) {
   const rows: Array<{ label: string; value: React.ReactNode }> = [
     {
       label: 'Avg time',
@@ -230,11 +230,11 @@ function RecentActivity({
   sessions,
   onView,
   onAll,
-}: {
+}: Readonly<{
   sessions: DashboardData['recentSessions']
   onView: (id: string) => void
   onAll: () => void
-}) {
+}>) {
   return (
     <section>
       <div className="flex items-baseline justify-between mb-3 px-1">
@@ -260,7 +260,7 @@ function RecentActivity({
   )
 }
 
-function WeakAreasCard({ weakAreas }: { weakAreas: DashboardData['weakAreas'] }) {
+function WeakAreasCard({ weakAreas }: Readonly<{ weakAreas: DashboardData['weakAreas'] }>) {
   if (weakAreas.length === 0) return null
   return (
     <section className="bg-surface border border-border/40 rounded-md p-6">

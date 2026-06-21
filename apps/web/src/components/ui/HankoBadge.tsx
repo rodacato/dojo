@@ -16,7 +16,7 @@ interface HankoBadgeProps {
 // - Black-belt avatar ring uses hanko-square geometry
 // Forbidden: never animate a stamping motion as a celebration. The
 // stamp lands once, no bounce, no sparkle.
-export function HankoBadge({ text, earned = true, size = 'md', className = '' }: HankoBadgeProps) {
+export function HankoBadge({ text, earned = true, size = 'md', className = '' }: Readonly<HankoBadgeProps>) {
   const lines = hankoLines(text)
   const dim = size === 'md' ? 32 : 24
   const fontPx = size === 'md' ? 9 : 7

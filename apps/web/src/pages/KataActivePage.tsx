@@ -9,7 +9,6 @@ import { CodeEditor } from '../components/ui/CodeEditor'
 import { KataBody } from '../components/ui/KataBody'
 import { ErrorState } from '../components/ui/ErrorState'
 import { lazyWithRetry } from '../lib/lazyWithRetry'
-import type { KataType } from '@dojo/shared'
 const MermaidEditor = lazyWithRetry(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
 
 const PREPARING_MESSAGES = [
@@ -270,7 +269,7 @@ export function KataActivePage() {
                   {kata.title}
                 </h1>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <TypeBadge type={kata.type as KataType} />
+                  <TypeBadge type={kata.type} />
                   <DifficultyBadge difficulty={kata.difficulty} />
                   {isWhiteboard && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
                     <span
@@ -355,13 +354,13 @@ function ChatEditor({
   font,
   onSubmit,
   placeholder,
-}: {
+}: Readonly<{
   value: string
   onChange: (v: string) => void
   font: 'mono' | 'sans'
   onSubmit: () => void
   placeholder?: string
-}) {
+}>) {
   const wordCount = value.split(/\s+/).filter(Boolean).length
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -397,11 +396,11 @@ function FontToggle({
   value,
   onChange,
   className = '',
-}: {
+}: Readonly<{
   value: 'mono' | 'sans'
   onChange: (v: 'mono' | 'sans') => void
   className?: string
-}) {
+}>) {
   return (
     <div
       className={`inline-flex items-center font-mono text-xs uppercase tracking-[0.08em] border border-border rounded-sm overflow-hidden ${className}`}
@@ -432,25 +431,27 @@ function FontToggle({
   )
 }
 
-function resolveLanguage(langs: string[]): 'javascript' | 'typescript' | 'python' | 'sql' {
+type Language = 'javascript' | 'typescript' | 'python' | 'sql'
+
+function resolveLanguage(langs: string[]): Language {
   if (langs.includes('typescript')) return 'typescript'
   if (langs.includes('python')) return 'python'
   if (langs.includes('sql')) return 'sql'
   return 'javascript'
 }
 
-function fileExtension(lang: 'javascript' | 'typescript' | 'python' | 'sql'): string {
+function fileExtension(lang: Language): string {
   return { javascript: 'js', typescript: 'ts', python: 'py', sql: 'sql' }[lang]
 }
 
-function languageLabel(lang: 'javascript' | 'typescript' | 'python' | 'sql'): string {
+function languageLabel(lang: Language): string {
   return { javascript: 'JavaScript', typescript: 'TypeScript', python: 'Python', sql: 'SQL' }[lang]
 }
 
 function useIsMobile() {
   const [mobile, setMobile] = useState(() => window.innerWidth < 768)
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 767px)')
+    const mq = globalThis.matchMedia('(max-width: 767px)')
     const handler = (e: MediaQueryListEvent) => setMobile(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)

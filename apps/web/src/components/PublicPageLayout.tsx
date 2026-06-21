@@ -8,7 +8,7 @@ interface PublicPageLayoutProps {
   hideCta?: boolean
 }
 
-export function PublicPageLayout({ children, hideCta = false }: PublicPageLayoutProps) {
+export function PublicPageLayout({ children, hideCta = false }: Readonly<PublicPageLayoutProps>) {
   const location = useLocation()
 
   const navLinks = [

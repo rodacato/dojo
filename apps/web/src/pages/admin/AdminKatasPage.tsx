@@ -163,7 +163,7 @@ export function AdminKatasPage() {
 
       {!loading && katas.length > 0 && pageRows.length === 0 ? (
         <EmptyState
-          eyebrow={`No matches · Katas${activeFilters({ search, typeFilter, difficultyFilter, statusFilter, sort }).map((f) => ` · ${f}`).join('')}`}
+          eyebrow={`No matches · Katas${activeFilters({ search, typeFilter, difficultyFilter, statusFilter, sort }).map((f) => ' · ' + f).join('')}`}
           headline="No katas match. Loosen the filter or wait for more catalog updates."
           action={
             <Button
@@ -250,7 +250,7 @@ export function AdminKatasPage() {
                           ex.avgScore,
                         )}`}
                       >
-                        {ex.avgScore !== null ? `${Math.round(ex.avgScore * 100)}%` : '—'}
+                        {ex.avgScore === null ? '—' : `${Math.round(ex.avgScore * 100)}%`}
                       </td>
                       <td className="px-4 h-14 align-middle">
                         <StatusBadge status={ex.status} />
@@ -297,7 +297,7 @@ function activeFilters(state: {
   return out
 }
 
-function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
+function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
     <th
       className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
@@ -309,7 +309,7 @@ function Th({ children, align = 'left' }: { children: React.ReactNode; align?: '
   )
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     published: 'bg-success/10 text-success border border-success/30',
     draft: 'bg-muted/15 text-secondary border border-border',
@@ -343,12 +343,12 @@ function FilterSelect<T extends string>({
   value,
   onChange,
   options,
-}: {
+}: Readonly<{
   label: string
   value: T
   onChange: (v: T) => void
   options: FilterOption<T>[]
-}) {
+}>) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
     <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
@@ -371,7 +371,7 @@ function FilterSelect<T extends string>({
   )
 }
 
-function SearchIcon({ className }: { className?: string }) {
+function SearchIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <circle cx="11" cy="11" r="7" />
@@ -380,7 +380,7 @@ function SearchIcon({ className }: { className?: string }) {
   )
 }
 
-function ChevronDownIcon({ className }: { className?: string }) {
+function ChevronDownIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />

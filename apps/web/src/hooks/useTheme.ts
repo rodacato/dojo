@@ -15,7 +15,7 @@ export function useTheme(): {
 
   useEffect(() => {
     if (theme !== 'auto') return
-    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const mq = globalThis.matchMedia('(prefers-color-scheme: dark)')
     const onChange = () => applyTheme(resolveTheme('auto', mq.matches))
     mq.addEventListener('change', onChange)
     return () => mq.removeEventListener('change', onChange)
@@ -24,7 +24,7 @@ export function useTheme(): {
   const setTheme = (next: ThemeChoice) => {
     setThemeState(next)
     setStoredTheme(next)
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const prefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches
     applyTheme(resolveTheme(next, prefersDark))
   }
 

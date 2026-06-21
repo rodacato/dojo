@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, useCallback, type ReactNode } from 'react'
 import type { UserDTO } from '@dojo/shared'
 import { api } from '../lib/api'
 import { getToken, clearToken } from '../lib/auth-token'
@@ -11,7 +11,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue>({ user: null, loading: true, logout: async () => {} })
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [user, setUser] = useState<UserDTO | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -33,7 +33,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
-  return <AuthContext.Provider value={{ user, loading, logout }}>{children}</AuthContext.Provider>
+  const value = useMemo(() => ({ user, loading, logout }), [user, loading, logout])
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

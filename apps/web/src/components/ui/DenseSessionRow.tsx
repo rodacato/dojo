@@ -38,7 +38,7 @@ export function DenseSessionRow({
   completedAt,
   onClick,
   highlightUser = false,
-}: DenseSessionRowProps) {
+}: Readonly<DenseSessionRowProps>) {
   const expired = status === 'failed' && !verdict
   const time = formatElapsed(startedAt, completedAt)
   const rel = formatRelative(startedAt)

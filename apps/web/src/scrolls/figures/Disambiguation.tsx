@@ -13,7 +13,7 @@ export type DisambiguationData = {
   caption?: string
 }
 
-export function Disambiguation({ data }: { data: DisambiguationData }) {
+export function Disambiguation({ data }: Readonly<{ data: DisambiguationData }>) {
   return (
     <figure className="my-6">
       <div className="bg-elevated border border-border rounded-sm overflow-hidden">

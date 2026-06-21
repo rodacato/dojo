@@ -14,7 +14,7 @@ interface RecentSessionRowProps {
   isLast?: boolean
 }
 
-export function RecentSessionRow({ session, onClick, isLast }: RecentSessionRowProps) {
+export function RecentSessionRow({ session, onClick, isLast }: Readonly<RecentSessionRowProps>) {
   const verdict = session.verdict ? VERDICT_PILL[session.verdict] : null
   const relativeDate = formatRelativeDate(new Date(session.startedAt))
   return (

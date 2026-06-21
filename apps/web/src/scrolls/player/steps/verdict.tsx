@@ -10,7 +10,7 @@ export function labelForErrorKind(kind: NonNullable<ExecuteStepResponse['errorKi
   }
 }
 
-export function StatusChip({ result }: { result: ExecuteStepResponse }) {
+export function StatusChip({ result }: Readonly<{ result: ExecuteStepResponse }>) {
   if (result.errorKind) {
     return (
       <span className="text-sm font-mono text-warning animate-status-reveal">

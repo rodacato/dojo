@@ -16,7 +16,7 @@ const ALL_FIGURES: Record<string, FigureData> = {
   ...TYPESCRIPT_FIGURES,
 }
 
-export function FigureRenderer({ id }: { id: string }) {
+export function FigureRenderer({ id }: Readonly<{ id: string }>) {
   const figure = ALL_FIGURES[id]
   if (!figure) {
     return (

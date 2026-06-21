@@ -208,7 +208,7 @@ export function ResultsPage() {
   )
 }
 
-function AnalysisProse({ analysis }: { analysis: string }) {
+function AnalysisProse({ analysis }: Readonly<{ analysis: string }>) {
   const paragraphs = analysis.split(/\n\n+/).filter((p) => p.trim().length > 0)
   return (
     <>
@@ -219,7 +219,7 @@ function AnalysisProse({ analysis }: { analysis: string }) {
   )
 }
 
-function CollapsibleRow({ title, children }: { title: string; children: React.ReactNode }) {
+function CollapsibleRow({ title, children }: Readonly<{ title: string; children: React.ReactNode }>) {
   return (
     <details className="group bg-surface border border-border rounded-md">
       <summary className="px-4 py-3 cursor-pointer select-none flex items-center justify-between">
@@ -235,7 +235,7 @@ function CollapsibleRow({ title, children }: { title: string; children: React.Re
   )
 }
 
-function InsightCards({ analysis }: { analysis?: string }) {
+function InsightCards({ analysis }: Readonly<{ analysis?: string }>) {
   if (!analysis) return null
   const insight = parseInsight(analysis)
   const hasAny = insight.strengths || insight.improvements || insight.approachNote
@@ -274,11 +274,11 @@ function InsightCard({
   title,
   tone,
   children,
-}: {
+}: Readonly<{
   title: string
   tone: 'success' | 'warning' | 'accent'
   children: React.ReactNode
-}) {
+}>) {
   const toneClass =
     tone === 'success'
       ? 'text-success'
@@ -295,7 +295,7 @@ function InsightCard({
   )
 }
 
-function NoEvaluationCard({ sessionId }: { sessionId: string }) {
+function NoEvaluationCard({ sessionId }: Readonly<{ sessionId: string }>) {
   const navigate = useNavigate()
   const [retrying, setRetrying] = useState(false)
 
@@ -326,14 +326,14 @@ function ShareActions({
   kataTitle,
   verdict,
   approachNote,
-}: {
+}: Readonly<{
   sessionId: string
   kataTitle: string
   verdict: string
   approachNote?: string | null
-}) {
+}>) {
   const [copied, setCopied] = useState(false)
-  const shareUrl = `${window.location.origin}/share/${sessionId}`
+  const shareUrl = `${globalThis.location.origin}/share/${sessionId}`
 
   async function handleCopy() {
     const base = `${verdict.replaceAll('_', ' ').toUpperCase()} — ${kataTitle} | dojo_`
@@ -349,7 +349,7 @@ function ShareActions({
 
   function handleTwitter() {
     const text = `${verdict.replaceAll('_', ' ').toUpperCase()} — ${kataTitle} | dojo_`
-    window.open(
+    globalThis.open(
       `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
       '_blank',
       'noopener,noreferrer',
@@ -377,13 +377,13 @@ function ShareCardPreview({
   analysis,
   approachNote,
   ownerRole,
-}: {
+}: Readonly<{
   kataTitle: string
   verdict: string
   analysis?: string
   approachNote?: string | null
   ownerRole?: string
-}) {
+}>) {
   const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
   const verdictColor =
     verdict === 'passed'

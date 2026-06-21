@@ -98,7 +98,7 @@ export function AdminLayout() {
   )
 }
 
-function GridIcon({ className }: { className?: string }) {
+function GridIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
@@ -106,7 +106,7 @@ function GridIcon({ className }: { className?: string }) {
   )
 }
 
-function BookIcon({ className }: { className?: string }) {
+function BookIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
@@ -114,7 +114,7 @@ function BookIcon({ className }: { className?: string }) {
   )
 }
 
-function MailIcon({ className }: { className?: string }) {
+function MailIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <rect x="3" y="5" width="18" height="14" rx="1" />
@@ -123,7 +123,7 @@ function MailIcon({ className }: { className?: string }) {
   )
 }
 
-function AlertIcon({ className }: { className?: string }) {
+function AlertIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <circle cx="12" cy="12" r="9" />
@@ -133,7 +133,7 @@ function AlertIcon({ className }: { className?: string }) {
   )
 }
 
-function HeartIcon({ className }: { className?: string }) {
+function HeartIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M3 12h4l2-5 4 10 2-5h6" strokeLinecap="round" strokeLinejoin="round" />
@@ -141,7 +141,7 @@ function HeartIcon({ className }: { className?: string }) {
   )
 }
 
-function PageIcon({ className }: { className?: string }) {
+function PageIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9l-6-6z" />

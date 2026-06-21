@@ -14,12 +14,12 @@ function Pane({
   code,
   annotations = [],
   side,
-}: {
+}: Readonly<{
   title: string
   code: string
   annotations?: Annotation[]
   side: 'left' | 'right'
-}) {
+}>) {
   const lines = code.replace(/\n$/, '').split('\n')
   const annByLine = new Map<number, Annotation>()
   for (const a of annotations) annByLine.set(a.line, a)
@@ -58,7 +58,7 @@ function Pane({
   )
 }
 
-export function BeforeAfter({ data }: { data: BeforeAfterData }) {
+export function BeforeAfter({ data }: Readonly<{ data: BeforeAfterData }>) {
   return (
     <figure className="my-6">
       <div className="flex flex-col md:flex-row gap-3">

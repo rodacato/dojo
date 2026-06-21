@@ -6,7 +6,7 @@ interface ChipInputProps {
   placeholder?: string
 }
 
-export function ChipInput({ value, onChange, placeholder }: ChipInputProps) {
+export function ChipInput({ value, onChange, placeholder }: Readonly<ChipInputProps>) {
   const [input, setInput] = useState('')
 
   function add() {

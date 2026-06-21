@@ -173,7 +173,7 @@ function Card({
   secondary,
   action,
   children,
-}: {
+}: Readonly<{
   title: string
   status: 'ok' | 'down' | 'unconfigured'
   latencyMs: number | null
@@ -181,7 +181,7 @@ function Card({
   secondary?: string | null
   action?: React.ReactNode
   children?: React.ReactNode
-}) {
+}>) {
   const dot =
     status === 'ok'
       ? 'bg-success'
@@ -201,7 +201,7 @@ function Card({
             <h2 className="text-base font-medium text-primary">{title}</h2>
             <span className="font-mono text-xs uppercase tracking-wider text-muted">
               {label}
-              {latencyMs !== null ? ` · ${latencyMs}ms` : ''}
+              {latencyMs === null ? '' : ` · ${latencyMs}ms`}
             </span>
           </div>
           <div className="text-sm text-secondary">{primary}</div>

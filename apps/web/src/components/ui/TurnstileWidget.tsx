@@ -28,6 +28,8 @@ declare global {
   interface Window {
     turnstile?: TurnstileGlobal
   }
+  // eslint-disable-next-line no-var
+  var turnstile: TurnstileGlobal | undefined
 }
 
 export interface TurnstileHandle {
@@ -45,7 +47,7 @@ let scriptPromise: Promise<void> | null = null
 function loadTurnstileScript(): Promise<void> {
   if (scriptPromise) return scriptPromise
   scriptPromise = new Promise((resolve, reject) => {
-    if (window.turnstile) {
+    if (globalThis.turnstile) {
       resolve()
       return
     }
@@ -56,7 +58,7 @@ function loadTurnstileScript(): Promise<void> {
     script.onload = () => {
       // window.turnstile may take a tick to attach after onload.
       const poll = (attempts: number) => {
-        if (window.turnstile) resolve()
+        if (globalThis.turnstile) resolve()
         else if (attempts <= 0) reject(new Error('Turnstile global not available after load'))
         else setTimeout(() => poll(attempts - 1), 50)
       }
@@ -80,9 +82,9 @@ export const TurnstileWidget = forwardRef<TurnstileHandle, TurnstileWidgetProps>
 
     useImperativeHandle(ref, () => ({
       reset: () => {
-        if (widgetIdRef.current && window.turnstile) {
+        if (widgetIdRef.current && globalThis.turnstile) {
           try {
-            window.turnstile.reset(widgetIdRef.current)
+            globalThis.turnstile.reset(widgetIdRef.current)
           } catch {
             // Widget already removed or destroyed — nothing to reset.
           }
@@ -96,8 +98,8 @@ export const TurnstileWidget = forwardRef<TurnstileHandle, TurnstileWidgetProps>
 
       loadTurnstileScript()
         .then(() => {
-          if (cancelled || !containerRef.current || !window.turnstile) return
-          widgetIdRef.current = window.turnstile.render(containerRef.current, {
+          if (cancelled || !containerRef.current || !globalThis.turnstile) return
+          widgetIdRef.current = globalThis.turnstile.render(containerRef.current, {
             sitekey: siteKey,
             callback: (token) => onTokenRef.current(token),
             'error-callback': () => onTokenRef.current(null),
@@ -122,9 +124,9 @@ export const TurnstileWidget = forwardRef<TurnstileHandle, TurnstileWidgetProps>
         cancelled = true
         const id = widgetIdRef.current
         widgetIdRef.current = null
-        if (id && window.turnstile) {
+        if (id && globalThis.turnstile) {
           try {
-            window.turnstile.remove(id)
+            globalThis.turnstile.remove(id)
           } catch {
             // Widget already gone.
           }

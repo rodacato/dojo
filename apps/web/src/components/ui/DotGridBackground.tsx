@@ -4,12 +4,12 @@ interface DotGridBackgroundProps {
   className?: string
 }
 
-export function DotGridBackground({ className = '' }: DotGridBackgroundProps) {
+export function DotGridBackground({ className = '' }: Readonly<DotGridBackgroundProps>) {
   const containerRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<HTMLDivElement[]>([])
   const prefersReduced = useRef(
-    typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    typeof globalThis.window !== 'undefined' &&
+      globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -24,7 +24,7 @@ export function DotGridBackground({ className = '' }: DotGridBackgroundProps) {
     for (const dot of dotsRef.current) {
       const dx = Number.parseFloat(dot.dataset.x ?? '0') - mx
       const dy = Number.parseFloat(dot.dataset.y ?? '0') - my
-      const dist = Math.sqrt(dx * dx + dy * dy)
+      const dist = Math.hypot(dx, dy)
       const opacity = dist < radius ? 0.15 + 0.55 * (1 - dist / radius) : 0.15
       dot.style.opacity = String(opacity)
     }

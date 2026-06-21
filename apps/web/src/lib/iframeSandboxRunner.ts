@@ -40,7 +40,7 @@ export function runInIframe(params: {
 
     function handler(event: MessageEvent) {
       if (event.source !== iframe.contentWindow) return
-      if (!event.data || event.data.type !== 'test-results') return
+      if (event.data?.type !== 'test-results') return
       if (settled) return
       settled = true
       clearTimeout(timer)
@@ -92,7 +92,7 @@ export function runInIframe(params: {
 
     function cleanup() {
       window.removeEventListener('message', handler)
-      if (iframe.parentNode) iframe.parentNode.removeChild(iframe)
+      iframe.remove()
     }
 
     window.addEventListener('message', handler)
@@ -103,8 +103,8 @@ export function runInIframe(params: {
 
 function buildSrcdoc(starterCode: string, testCode: string): string {
   // Escape </script> inside the injected code to prevent early tag closure
-  const safeStarter = starterCode.replace(/<\/script>/gi, '<\\/script>')
-  const safeTest = testCode.replace(/<\/script>/gi, '<\\/script>')
+  const safeStarter = starterCode.replace(/<\/script>/gi, String.raw`<\/script>`)
+  const safeTest = testCode.replace(/<\/script>/gi, String.raw`<\/script>`)
 
   // stdout/stderr capture: override console.log + console.error so the user's
   // own prints show up in the Output panel, separate from the test log.

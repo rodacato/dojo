@@ -11,7 +11,6 @@ import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
 import { EnsoLoader } from '../components/ui/EnsoLoader'
-import type { KataType } from '@dojo/shared'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -67,7 +66,7 @@ export function SenseiEvalPage() {
   const isExecuting = state.status === 'executing'
   const isStreaming = state.status === 'streaming'
   const hasResult = state.status === 'evaluation' || state.status === 'complete'
-  const tokens = 'tokens' in state ? (state.tokens as string) : ''
+  const tokens = 'tokens' in state ? state.tokens : ''
   const executionResult = 'executionResult' in state ? state.executionResult : undefined
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
   const senseiInitials = useMemo(
@@ -117,7 +116,7 @@ export function SenseiEvalPage() {
               {session.kata.title}
             </span>
             <div className="hidden md:flex items-center gap-1.5">
-              <TypeBadge type={session.kata.type as KataType} />
+              <TypeBadge type={session.kata.type} />
               <DifficultyBadge difficulty={session.kata.difficulty} />
             </div>
           </>
@@ -279,7 +278,7 @@ function deriveStatus({
   return 'streaming'
 }
 
-function StatusChip({ kind }: { kind: StatusChipKind }) {
+function StatusChip({ kind }: Readonly<{ kind: StatusChipKind }>) {
   const styles: Record<StatusChipKind, { label: string; color: string; cursor: boolean }> = {
     connecting: { label: 'CONNECTING', color: 'text-muted border-border bg-elevated', cursor: true },
     executing: { label: 'EXECUTING', color: 'text-warning border-warning/40 bg-warning/10', cursor: true },

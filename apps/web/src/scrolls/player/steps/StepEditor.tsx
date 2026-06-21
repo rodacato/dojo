@@ -20,7 +20,7 @@ export function StepEditor({
   isCompleted,
   onMarkComplete,
   onAdvance,
-}: StepComponentProps) {
+}: Readonly<StepComponentProps>) {
   const [code, setCode] = useState(step.starterCode ?? '')
   const [running, setRunning] = useState(false)
   const [result, setResult] = useState<ExecuteStepResponse | null>(null)

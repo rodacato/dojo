@@ -98,8 +98,7 @@ export function AdminEditKataPage() {
   if (!form) return <PageLoader />
 
   const titleInvalid = form.title.trim().length === 0
-  const variationsInvalid =
-    form.variations.length === 0 || form.variations.every((v) => !v.ownerRole.trim())
+  const variationsInvalid = form.variations.every((v) => !v.ownerRole.trim())
   const validationMessage = (() => {
     if (!showErrors) return null
     const issues: string[] = []
@@ -332,7 +331,7 @@ export function AdminEditKataPage() {
   )
 }
 
-function StatusPill({ status }: { status: string }) {
+function StatusPill({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     published: 'bg-success/10 text-success border-success/30',
     draft: 'bg-muted/15 text-secondary border-border',
@@ -380,10 +379,10 @@ function tone(value: number | null): 'emerald' | 'indigo' | 'amber' | 'red' | 'm
 function FeedbackPanel({
   feedback,
   variationLabels,
-}: {
+}: Readonly<{
   feedback: FeedbackData
   variationLabels: Record<string, string>
-}) {
+}>) {
   const clarity = score(feedback.clarity, CLARITY_WEIGHTS)
   const timing = score(feedback.timing, TIMING_WEIGHTS)
   const fairness = score(feedback.evaluation, FAIRNESS_WEIGHTS)
@@ -476,10 +475,10 @@ function FeedbackPanel({
 function SignalCard({
   label,
   score,
-}: {
+}: Readonly<{
   label: string
   score: { value: number; votes: number } | null
-}) {
+}>) {
   const t = tone(score?.value ?? null)
   const fill = score ? Math.min(100, Math.max(0, (score.value / 5) * 100)) : 0
   const barColor = TONE_BAR[t]
@@ -522,7 +521,7 @@ const TONE_VALUE: Record<ReturnType<typeof tone>, string> = {
   muted: 'text-muted',
 }
 
-function ThSm({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
+function ThSm({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
     <th
       className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
@@ -534,7 +533,7 @@ function ThSm({ children, align = 'left' }: { children: React.ReactNode; align?:
   )
 }
 
-function Td({ score }: { score: { value: number; votes: number } | null }) {
+function Td({ score }: Readonly<{ score: { value: number; votes: number } | null }>) {
   const t = tone(score?.value ?? null)
   return (
     <td

@@ -3,7 +3,7 @@ interface AccentCardProps {
   className?: string
 }
 
-export function AccentCard({ children, className = '' }: AccentCardProps) {
+export function AccentCard({ children, className = '' }: Readonly<AccentCardProps>) {
   return (
     <div className={`border-l-[3px] border-accent bg-surface rounded-r-md p-5 ${className}`}>
       {children}

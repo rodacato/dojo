@@ -182,7 +182,7 @@ export function OpenSourcePage() {
   )
 }
 
-function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
+function SectionHeader({ eyebrow, title }: Readonly<{ eyebrow: string; title: string }>) {
   return (
     <div className="mb-6">
       <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-2">
@@ -195,7 +195,7 @@ function SectionHeader({ eyebrow, title }: { eyebrow: string; title: string }) {
   )
 }
 
-function RepoStat({ label, value }: { label: string; value: string }) {
+function RepoStat({ label, value }: Readonly<{ label: string; value: string }>) {
   return (
     <div className="px-4 md:px-6 py-3 md:py-4 flex-1 first:md:pl-6 flex items-baseline gap-2">
       <span className="font-mono text-lg md:text-xl text-primary">{value}</span>
@@ -210,11 +210,11 @@ function BulletList({
   title,
   tone,
   items,
-}: {
+}: Readonly<{
   title: string
   tone: 'success' | 'danger'
   items: readonly string[]
-}) {
+}>) {
   const glyph = tone === 'success' ? '+' : '−'
   const color = tone === 'success' ? 'text-success' : 'text-danger'
   return (

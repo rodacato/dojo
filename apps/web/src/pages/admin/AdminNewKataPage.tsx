@@ -41,7 +41,7 @@ export function AdminNewKataPage() {
   const [showErrors, setShowErrors] = useState(false)
 
   const titleInvalid = form.title.trim().length === 0
-  const variationsInvalid = form.variations.length === 0 || form.variations.every((v) => !v.ownerRole.trim())
+  const variationsInvalid = form.variations.every((v) => !v.ownerRole.trim())
   const validationMessage = (() => {
     if (!showErrors) return null
     const issues: string[] = []
@@ -109,8 +109,8 @@ export function AdminNewKataPage() {
         if (!saving) void handleSave()
       }
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    globalThis.addEventListener('keydown', onKey)
+    return () => globalThis.removeEventListener('keydown', onKey)
   })
 
   return (

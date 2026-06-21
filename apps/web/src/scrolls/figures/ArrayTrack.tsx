@@ -46,7 +46,7 @@ const STATE_STYLES: Record<
   },
 }
 
-function Cell({ value, state }: { value: string | number; state: ArrayTrackState }) {
+function Cell({ value, state }: Readonly<{ value: string | number; state: ArrayTrackState }>) {
   const style = STATE_STYLES[state]
   return (
     <div className={`${CELL_BASE} ${style.cell}`} aria-label={`${value} · ${state}`}>
@@ -56,7 +56,7 @@ function Cell({ value, state }: { value: string | number; state: ArrayTrackState
   )
 }
 
-export function ArrayTrack({ data }: { data: ArrayTrackData }) {
+export function ArrayTrack({ data }: Readonly<{ data: ArrayTrackData }>) {
   const inputLen = data.input.length
   return (
     <figure className="my-6">

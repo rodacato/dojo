@@ -3,8 +3,8 @@ export type ThemeChoice = 'auto' | 'sumi' | 'washi' | 'slate'
 const STORAGE_KEY = 'dojo-theme'
 
 export function getStoredTheme(): ThemeChoice {
-  if (typeof window === 'undefined') return 'auto'
-  const stored = window.localStorage.getItem(STORAGE_KEY)
+  if (typeof globalThis.window === 'undefined') return 'auto'
+  const stored = globalThis.localStorage.getItem(STORAGE_KEY)
   if (stored === 'auto' || stored === 'sumi' || stored === 'washi' || stored === 'slate') {
     return stored
   }
@@ -12,8 +12,8 @@ export function getStoredTheme(): ThemeChoice {
 }
 
 export function setStoredTheme(theme: ThemeChoice): void {
-  if (typeof window === 'undefined') return
-  window.localStorage.setItem(STORAGE_KEY, theme)
+  if (typeof globalThis.window === 'undefined') return
+  globalThis.localStorage.setItem(STORAGE_KEY, theme)
 }
 
 export function resolveTheme(
@@ -27,9 +27,9 @@ export function resolveTheme(
 export function applyTheme(resolved: 'sumi' | 'washi' | 'slate'): void {
   if (typeof document === 'undefined') return
   if (resolved === 'slate') {
-    document.documentElement.removeAttribute('data-theme')
+    delete document.documentElement.dataset.theme
   } else {
-    document.documentElement.setAttribute('data-theme', resolved)
+    document.documentElement.dataset.theme = resolved
   }
 }
 
@@ -39,6 +39,6 @@ export function applyTheme(resolved: 'sumi' | 'washi' | 'slate'): void {
 // based on the OS prefers-color-scheme.
 export function initTheme(): void {
   const choice = getStoredTheme()
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  const prefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches
   applyTheme(resolveTheme(choice, prefersDark))
 }

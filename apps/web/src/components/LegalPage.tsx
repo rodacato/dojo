@@ -14,7 +14,7 @@ interface LegalPageProps {
   sections: LegalSection[]
 }
 
-export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
+export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPageProps>) {
   const first = sections[0]?.id
   const [activeSection, setActiveSection] = useState(first ?? '')
 
@@ -114,11 +114,11 @@ export function LegalPage({ title, lastUpdated, sections }: LegalPageProps) {
   )
 }
 
-export function LegalList({ children }: { children: ReactNode }) {
+export function LegalList({ children }: Readonly<{ children: ReactNode }>) {
   return <ul className="space-y-2 pl-0">{children}</ul>
 }
 
-export function LegalListItem({ children }: { children: ReactNode }) {
+export function LegalListItem({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <li className="flex gap-3 items-baseline">
       <span aria-hidden className="text-muted shrink-0 select-none leading-none">·</span>
@@ -127,7 +127,7 @@ export function LegalListItem({ children }: { children: ReactNode }) {
   )
 }
 
-export function LegalCallout({ children }: { children: ReactNode }) {
+export function LegalCallout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <div className="rounded-md border border-border border-l-2 border-l-accent bg-page px-4 py-3 text-primary">
       {children}
@@ -135,7 +135,7 @@ export function LegalCallout({ children }: { children: ReactNode }) {
   )
 }
 
-export function LegalCode({ children }: { children: ReactNode }) {
+export function LegalCode({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <code className="font-mono text-sm text-accent bg-surface border border-border rounded-sm px-1.5 py-0.5">
       {children}

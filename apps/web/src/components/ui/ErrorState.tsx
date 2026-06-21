@@ -32,7 +32,9 @@ interface ErrorStateProps {
   variant?: 'full' | 'inline'
 }
 
-const KIND_DEFAULTS: Record<ErrorKind, { eyebrow: string; title: string; tone: 'red' | 'amber' | 'muted' }> = {
+type Tone = 'red' | 'amber' | 'muted'
+
+const KIND_DEFAULTS: Record<ErrorKind, { eyebrow: string; title: string; tone: Tone }> = {
   unauthorized: { eyebrow: 'ERR · 401 · UNAUTHORIZED', title: 'Sign in to continue.', tone: 'red' },
   forbidden:    { eyebrow: 'ERR · 403 · FORBIDDEN',    title: 'Not yours. Not yet.',  tone: 'red' },
   'not-found':  { eyebrow: 'ERR · 404 · NOT FOUND',    title: "That isn't here.",      tone: 'red' },
@@ -42,13 +44,13 @@ const KIND_DEFAULTS: Record<ErrorKind, { eyebrow: string; title: string; tone: '
   generic:      { eyebrow: 'ERROR',                    title: 'Something went wrong.', tone: 'muted' },
 }
 
-const TONE_TEXT: Record<'red' | 'amber' | 'muted', string> = {
+const TONE_TEXT: Record<Tone, string> = {
   red: 'text-danger',
   amber: 'text-warning',
   muted: 'text-muted',
 }
 
-const TONE_DOT: Record<'red' | 'amber' | 'muted', string> = {
+const TONE_DOT: Record<Tone, string> = {
   red: 'bg-danger',
   amber: 'bg-warning',
   muted: 'bg-muted',
@@ -64,7 +66,7 @@ export function ErrorState({
   primaryAction,
   secondaryAction,
   variant = 'full',
-}: ErrorStateProps) {
+}: Readonly<ErrorStateProps>) {
   const defaults = KIND_DEFAULTS[kind]
   const finalEyebrow = eyebrow ?? defaults.eyebrow
   const finalTitle = title ?? defaults.title
@@ -106,7 +108,7 @@ export function ErrorState({
   )
 }
 
-function ErrorAction({ action, kind }: { action: Action; kind: 'primary' | 'secondary' }) {
+function ErrorAction({ action, kind }: Readonly<{ action: Action; kind: 'primary' | 'secondary' }>) {
   const variant = kind === 'primary' ? 'primary' : 'ghost'
   if ('to' in action) {
     return (
@@ -129,7 +131,7 @@ function ErrorAction({ action, kind }: { action: Action; kind: 'primary' | 'seco
   )
 }
 
-function RequestIdCard({ id }: { id: string }) {
+function RequestIdCard({ id }: Readonly<{ id: string }>) {
   const [copied, setCopied] = useState(false)
   async function copy() {
     await navigator.clipboard.writeText(id)

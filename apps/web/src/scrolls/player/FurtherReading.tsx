@@ -8,7 +8,7 @@ const KIND_ICON: Record<ExternalReferenceKind, string> = {
   article: '📝',
 }
 
-export function FurtherReading({ refs }: { refs: ExternalReference[] }) {
+export function FurtherReading({ refs }: Readonly<{ refs: ExternalReference[] }>) {
   const [open, setOpen] = useState(false)
   if (refs.length === 0) return null
 

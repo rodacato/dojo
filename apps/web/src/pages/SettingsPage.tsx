@@ -338,7 +338,7 @@ export function SettingsPage() {
   )
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children }: Readonly<{ title: string; children: React.ReactNode }>) {
   return (
     <section className="mb-10">
       <div className="flex items-center gap-3 mb-4">
@@ -354,11 +354,11 @@ function Field({
   label,
   hint,
   children,
-}: {
+}: Readonly<{
   label: string
   hint?: string
   children: React.ReactNode
-}) {
+}>) {
   return (
     <div className="flex flex-col gap-2">
       <div>
@@ -374,11 +374,11 @@ function PillButton({
   active,
   onClick,
   children,
-}: {
+}: Readonly<{
   active: boolean
   onClick: () => void
   children: React.ReactNode
-}) {
+}>) {
   return (
     <button
       type="button"
@@ -393,7 +393,7 @@ function PillButton({
   )
 }
 
-function SaveIndicator({ state }: { state: SaveState }) {
+function SaveIndicator({ state }: Readonly<{ state: SaveState }>) {
   if (state === 'idle') return <div className="h-4" aria-hidden />
   return (
     <div className="font-mono text-xs tracking-[0.08em] uppercase">

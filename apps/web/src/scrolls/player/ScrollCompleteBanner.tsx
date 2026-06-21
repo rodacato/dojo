@@ -8,7 +8,7 @@ export function ScrollCompleteBanner({
   userId,
   lessonCount,
   stepCount,
-}: {
+}: Readonly<{
   scrollTitle: string
   scrollSlug: string
   // Null for anonymous finishers — they get the same completion moment, but the
@@ -16,12 +16,12 @@ export function ScrollCompleteBanner({
   userId?: string | null
   lessonCount: number
   stepCount: number
-}) {
+}>) {
   const [copied, setCopied] = useState(false)
 
   async function handleShare() {
     if (!userId) return
-    const shareUrl = `${window.location.origin}/share/scroll/${scrollSlug}/${userId}`
+    const shareUrl = `${globalThis.location.origin}/share/scroll/${scrollSlug}/${userId}`
     const text = `Completed ${scrollTitle} in dojo_`
     if (navigator.share) {
       try {

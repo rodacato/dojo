@@ -47,7 +47,7 @@ const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage').then(m =
 const EngawaPage = lazyWithRetry(() => import('./pages/EngawaPage').then(m => ({ default: m.EngawaPage })))
 import { OptionalSidebarLayout } from './components/layout/OptionalSidebarLayout'
 
-function LazyRoute({ children }: { children: React.ReactNode }) {
+function LazyRoute({ children }: Readonly<{ children: React.ReactNode }>) {
   return <Suspense fallback={<PageLoader />}>{children}</Suspense>
 }
 

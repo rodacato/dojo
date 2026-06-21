@@ -9,7 +9,7 @@ interface ErrorPageProps {
   requestId?: string
 }
 
-export function ErrorPage({ message, requestId }: ErrorPageProps) {
+export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
   const [copied, setCopied] = useState(false)
 
   async function copyRequestId() {
@@ -83,8 +83,8 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
           )}
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button onClick={() => window.location.reload()}>↻ Retry</Button>
-            <Button variant="ghost" onClick={() => { window.location.href = '/dashboard' }}>
+            <Button onClick={() => globalThis.location.reload()}>↻ Retry</Button>
+            <Button variant="ghost" onClick={() => { globalThis.location.href = '/dashboard' }}>
               Go to dashboard
             </Button>
           </div>
@@ -103,7 +103,7 @@ export function ErrorPage({ message, requestId }: ErrorPageProps) {
   )
 }
 
-function ClipboardIcon({ className }: { className?: string }) {
+function ClipboardIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <rect x="6" y="4" width="12" height="16" rx="1" />

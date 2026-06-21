@@ -1,7 +1,7 @@
 import type { StepComponentProps } from './types'
 import { MarkdownContent } from '../markdown'
 
-export function ReadStep({ step, isCompleted, onMarkComplete, onAdvance }: StepComponentProps) {
+export function ReadStep({ step, isCompleted, onMarkComplete, onAdvance }: Readonly<StepComponentProps>) {
   // Read steps: the Continue button both marks-and-advances. There's nothing
   // to unlock on a read step (no solution tab), so the chained behaviour is
   // the right UX.

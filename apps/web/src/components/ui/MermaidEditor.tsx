@@ -33,7 +33,7 @@ function initMermaid(t: ThemeTokens): void {
   })
 }
 
-export function MermaidEditor({ value, onChange }: MermaidEditorProps) {
+export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>) {
   const [svg, setSvg] = useState<string>('')
   const [error, setError] = useState<string | null>(null)
   const renderCounter = useRef(0)
@@ -103,11 +103,11 @@ export function MermaidEditor({ value, onChange }: MermaidEditorProps) {
             />
           ) : error ? (
             <p className="text-danger text-xs font-mono">{error}</p>
-          ) : !value.trim() ? (
+          ) : value.trim() ? null : (
             <p className="text-muted text-xs font-mono text-center">
               Write Mermaid above to see a live preview.
             </p>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

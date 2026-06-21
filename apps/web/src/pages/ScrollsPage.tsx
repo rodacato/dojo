@@ -107,7 +107,7 @@ export function ScrollsPage() {
             <p className="text-secondary text-sm leading-relaxed">
               <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted mr-2">
                 Progress
-              </span>
+              </span>{' '}
               Saved in this browser. Sign in to keep it across devices — you can keep going either way.
             </p>
             <a
@@ -183,10 +183,10 @@ export function ScrollsPage() {
 function ScrollSection({
   title,
   items,
-}: {
+}: Readonly<{
   title: string
   items: { scroll: ScrollDTO; state: ScrollState }[]
-}) {
+}>) {
   return (
     <section>
       <h2 className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-4">{title}</h2>
@@ -199,7 +199,7 @@ function ScrollSection({
   )
 }
 
-function ScrollCard({ scroll, state }: { scroll: ScrollDTO; state: ScrollState }) {
+function ScrollCard({ scroll, state }: Readonly<{ scroll: ScrollDTO; state: ScrollState }>) {
   const meta = STATE_META[state]
   return (
     <Link
@@ -238,7 +238,7 @@ function ScrollCard({ scroll, state }: { scroll: ScrollDTO; state: ScrollState }
   )
 }
 
-function EmptyState({ message }: { message: string }) {
+function EmptyState({ message }: Readonly<{ message: string }>) {
   return (
     <div className="bg-surface border border-border rounded-md py-16 px-4 text-center">
       <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-2">Empty</p>

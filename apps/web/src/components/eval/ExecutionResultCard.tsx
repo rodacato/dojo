@@ -5,7 +5,7 @@ interface Props {
   result: ExecutionResult
 }
 
-export function ExecutionResultCard({ result }: Props) {
+export function ExecutionResultCard({ result }: Readonly<Props>) {
   const [expanded, setExpanded] = useState(false)
   const passed = result.exitCode === 0
   const timedOut = result.timedOut
