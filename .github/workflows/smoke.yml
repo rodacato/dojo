@@ -16,6 +16,9 @@ on:
           - prod
           - staging
 
+permissions:
+  contents: read
+
 jobs:
   smoke:
     name: Smoke (${{ inputs.environment }})

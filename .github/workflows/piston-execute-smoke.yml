@@ -15,6 +15,9 @@ on:
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   smoke:
     name: Execute one hello-world per language
