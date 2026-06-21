@@ -26,13 +26,19 @@ describe('stripLeadingH1', () => {
 })
 
 describe('PlainMarkdown', () => {
-  it('renders inline-code markdown as escaped HTML inside a paragraph', () => {
+  it('renders inline-code markdown inside a paragraph', () => {
     const { container } = render(<PlainMarkdown content="Call `len(x)` now" />)
     const code = container.querySelector('code')
     expect(code).not.toBeNull()
     expect(code).toHaveTextContent('len(x)')
-    // markdownToInnerHtml escapes raw angle brackets before formatting.
-    expect(container.innerHTML).not.toContain('<script>')
+  })
+
+  it('escapes raw HTML instead of rendering it', () => {
+    const { container } = render(
+      <PlainMarkdown content="Watch out for <script>alert(1)</script>" />,
+    )
+    expect(container.querySelector('script')).toBeNull()
+    expect(container.innerHTML).toContain('&lt;script&gt;')
   })
 
   it('routes a figure directive to FigureRenderer and keeps surrounding text', () => {

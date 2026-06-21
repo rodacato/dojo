@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  HINT_TIER_LABELS,
-  resolveTieredHints,
-  visibleHintTiers,
-} from './hintReveal'
+import { resolveTieredHints, visibleHintTiers } from './hintReveal'
 
 describe('resolveTieredHints', () => {
   it('prefers tiered hints when present', () => {
@@ -39,11 +35,5 @@ describe('visibleHintTiers', () => {
 
   it('never exposes a tier 2 that does not exist even past the threshold', () => {
     expect(visibleHintTiers(['t1'], 5)).toEqual(['t1'])
-  })
-})
-
-describe('HINT_TIER_LABELS', () => {
-  it('labels the two tiers in escalation order', () => {
-    expect(HINT_TIER_LABELS).toEqual(['hint', 'hint · closer'])
   })
 })
