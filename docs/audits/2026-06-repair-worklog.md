@@ -2,7 +2,7 @@
 
 > **Purpose:** resume-here log for the Sonar/CodeQL/Dependabot issue repair driven off [`2026-06-issue-catalog.md`](2026-06-issue-catalog.md). Updated continuously during an autonomous cycle (Adrian away). Everything done is **committed locally** (never pushed — Adrian reviews the diff + pushes). Nothing here mutates remote dashboards.
 >
-> **Last updated:** after R1+R2 commit. **Session:** Max 5x, ~77% used, resets ~3h.
+> **Last updated:** after R1-R6 complete + commit `3862eae`. **Session:** Max 5x, ~77%+ used, resets ~3h.
 
 ## How to resume
 
@@ -18,6 +18,8 @@
 | `f1d8633` | ci(security): workflow `contents: read` ×5 + Task 0 baseline |
 | `84c8f30` | docs: cross-tool issue catalog + `scripts/sonar-dump.sh` |
 | `0ed59b0` | fix(web): a11y + spacing — batches R1+R2 |
+| `b9a866d` | docs: this worklog |
+| `3862eae` | fix(web,api): replaceAll + Number.* — batches R3+R4+R6 |
 
 _(Earlier this session, already pushed by Adrian: db8d6c6 lint, cf9e1c3 bug fixes, 6f0cf76 de-flake, + the coverage campaign.)_
 
@@ -27,16 +29,22 @@ _(Earlier this session, already pushed by Adrian: db8d6c6 lint, cf9e1c3 bug fixe
 |---|---|---|---|---|
 | R1 — a11y forms/landing | SettingsPage, LandingPage | ✅ done | `0ed59b0` | S6438 left (visible UI text, not a comment) |
 | R2 — a11y handlers | EngawaPage, Modal | ✅ done | `0ed59b0` | role=presentation + Escape on Engawa dialog |
-| R3 — numerics theme/canvas | useThemeTokens, DotGridBackground(.tsx/.test), brushstrokes | ⏳ running | — | S7773/S7767/S7758 |
-| R4 — content/results pages | KatasPage, ScrollsPage, FurtherReading, ResultsPage, SharePage, markdown.ts, PredictStep | ⏳ running | — | incl. S3923 (read carefully) |
-| R5 — misc pages spacing | ErrorPage, NotFoundPage, AdminErrorsPage, ChangelogPage, AuthCallbackPage | ⏳ running | — | S6772 only |
-| R6 — api replaceAll | practice, admin-katas, share, og | ⏳ running | — | S7781 |
+| R3 — numerics theme/canvas | useThemeTokens, DotGridBackground(.tsx/.test), brushstrokes | ✅ done | `3862eae` | 10× S7773 applied; **brushstrokes S7767+S7758 rejected (FP)** |
+| R4 — content/results pages | KatasPage, ScrollsPage, FurtherReading, ResultsPage, SharePage, markdown.ts, PredictStep | ✅ done | `3862eae` | 5× S7781 + 1× S7773; **S3923 = real bug, ambiguous (Adrian)**; 4× S6772 FP |
+| R5 — misc pages spacing | ErrorPage, NotFoundPage, AdminErrorsPage, ChangelogPage, AuthCallbackPage | ✅ done | — (no edits) | **all 6 S6772 are FP** — CSS gap/margin or flush cursor |
+| R6 — api replaceAll | practice, admin-katas, share, og | ✅ done | `3862eae` | 8× S7781 applied; clean |
+
+**Net applied:** ~25 issues fixed (Number.* ×11, replaceAll ×13, +R1/R2 a11y). **~15 confirmed false positives** the agents correctly refused (would regress UI or break tests). **1 real bug needing Adrian** (S3923).
 
 ## Findings / decisions log
 
 - **R1:** `S6438` at LandingPage:647 is a **false positive** — the `// invites are issued…` is rendered UI text (fake-code-comment styling), not a JSX comment. Converting would delete content. Leave; mark won't-fix in Sonar.
 - **R2:** Engawa ask-dialog had no keyboard dismiss (unlike `Modal`, which has a document `keydown` Escape listener). Added Escape-to-close + `tabIndex={-1}`. Inner click-catcher divs → `role="presentation"` (their only handler is `stopPropagation`, no keyboard analog).
 - Both HIGH security findings remain **false positives** (see catalog §1): Sonar `S2819` (event.source identity guard) + CodeQL `uuidv5` (spec-mandated SHA-1).
+- **R3 — `brushstrokes.ts:31` is a double false positive.** `(h * 31 + s.charCodeAt(i)) | 0` is a polynomial rolling hash; the `| 0` is a deliberate **32-bit signed wraparound** (load-bearing for the seed→value contract, DESIGN.md §Decided #3), not truncation. `Math.trunc` (S7767) changes the output — verified it breaks the pinned `brushstrokes.test.ts` value. `charCodeAt` (S7758) is fine for ASCII seeds; unicode-aware methods would change the hash for non-BMP input that never occurs. **Mark both won't-fix in Sonar.**
+- **R4/R5 — ~10 `S6772` "inline spacing" hits are false positives.** Every flagged spot already spaces via CSS (`gap-*`, `mr-*`, `ml-*`) or is an **intentional flush terminal-cursor** (`text_<span class="animate-cursor">_</span>`). Inserting `{' '}` detaches cursors / doubles gaps — a visible regression. The correct Sonar action is to suppress these lines, not "fix" them.
+- **R4 — REAL BUG, needs Adrian's call:** `KatasPage.tsx:328` (`SelectablePill`) has `${size === 'md' ? 'text-xs' : 'text-xs'}` — both ternary branches identical (S3923). The `size` prop genuinely differentiates elsewhere (height at :316), so one branch was likely meant to be a different size (e.g. `text-sm` for `md`), OR the ternary is vestigial and should collapse to `'text-xs'`. **Two opposite fixes, no signal to disambiguate — Adrian decides.**
+- **R4 — `PredictStep.tsx:94` (S7758):** `String.fromCharCode('A'.charCodeAt(0) + i)` generates option letters A/B/C from an ASCII base — no unicode risk. Low-value, left.
 
 ## Next-cycle TODO (prepared, NOT executed — need Adrian)
 
