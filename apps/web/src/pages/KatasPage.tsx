@@ -325,7 +325,7 @@ function SelectablePill({
           : 'border-border bg-page text-secondary hover:border-secondary'
       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent`}
     >
-      <span className={`block uppercase tracking-wider ${size === 'md' ? 'text-xs' : 'text-xs'}`}>
+      <span className="block uppercase tracking-wider text-xs">
         {label}
       </span>
       {sub && <span className="block text-xs text-muted normal-case mt-0.5">{sub}</span>}

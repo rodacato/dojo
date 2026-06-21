@@ -398,15 +398,15 @@ export function EngawaPage() {
           graded practice. */}
       {user && ask.open && (
         <div
-          role="dialog"
-          aria-label="Ask the sensei"
-          tabIndex={-1}
+          role="presentation"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
           onClick={() => ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
           onKeyDown={(e) => e.key === 'Escape' && ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
         >
           <div
-            role="presentation"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Ask the sensei"
             className="bg-page border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
             onClick={(e) => e.stopPropagation()}
           >
