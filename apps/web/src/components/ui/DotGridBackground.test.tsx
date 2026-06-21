@@ -182,7 +182,7 @@ describe('DotGridBackground', () => {
       stubLayoutBox(320, 64)
       const { container } = render(<DotGridBackground />)
 
-      expect(getDots(getRoot(container))[0].style.transition).toBe('opacity 0.3s ease')
+      expect(dotAt(getDots(getRoot(container)), 0).style.transition).toBe('opacity 0.3s ease')
     })
   })
 
@@ -195,7 +195,7 @@ describe('DotGridBackground', () => {
       stubLayoutBox(320, 64)
       const { container } = render(<DotGridBackground />)
 
-      expect(getDots(getRoot(container))[0].style.transition).toBe('none')
+      expect(dotAt(getDots(getRoot(container)), 0).style.transition).toBe('none')
     })
 
     it('does not react to pointer movement (dots stay at resting opacity)', () => {
@@ -207,7 +207,7 @@ describe('DotGridBackground', () => {
 
       root.dispatchEvent(new MouseEvent('mousemove', { clientX: 16, clientY: 16, bubbles: true }))
 
-      expect(dots[0].style.opacity).toBe('0.15')
+      expect(dotAt(dots, 0).style.opacity).toBe('0.15')
     })
   })
 })
