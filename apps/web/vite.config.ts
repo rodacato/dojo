@@ -31,6 +31,8 @@ const uploadSourcemaps = !!(sentryAuth && sentryOrg && sentryProject)
 export default defineConfig({
   envDir: '../..',
   test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'lcov'], // lcov → coverage/lcov.info for SonarQube
