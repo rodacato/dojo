@@ -77,6 +77,27 @@ These need individual care, not a parallel sweep:
 ### Tier-1 (S3776 ×11, S3358 ×44, S6479 ×28) — why paused, not done
 Targets are in [`2026-06-s035-maintainability-plan.md`](2026-06-s035-maintainability-plan.md). **Brutally honest call:** these reshape control flow in complex orchestration logic (`KataActivePage.tsx:59` is complexity **43**; ws-handlers, stream adapters, the kata session loop). Rushing 11 careful refactors at the tail of a long autonomous session — risking a subtle behavior change that passes existing tests but breaks an untested edge — is exactly what the tests-before-refactor rule guards against. **Recommend a focused, awake session:** per function, confirm/extend the test-net first (own commit), then refactor, then verify. Do `KataActivePage:59` (43) last.
 
+## Post-sweep Sonar gate diagnosis (2026-06-21, re-scan on 91eb9ba)
+
+**Huge wins:** new issues 137→**12**, coverage 0.2%→**69.7%** (the `cd0ea7f` glob fix worked). But the gate is **still red on 3 conditions** — and the honest finding is that **the campaign itself caused most of the remaining new-code damage:**
+
+1. **12 new issues** — mostly self-inflicted:
+   - **8× S7741** (`typeof globalThis.window === 'undefined'` → compare directly) — created by the Tier-2 `S7764 window→globalThis` + `S7735` edits, which pulled these SSR-guard lines into "new code". Trivial to fix (`globalThis.window === undefined`).
+   - **2× S6819** (`role="presentation"` → `<img alt>`) — from the **R2 a11y fix** (Modal/Engawa backdrops). Sonar's suggestion is nonsense for a click-catcher div. **FP — won't-fix.**
+   - **2× S3358** nested ternary (`config.ts:13`, `OutputPanel.tsx:92`) — pre-existing, Tier-1.
+2. **Coverage 69.7% < 80%** — real web gap (S034). 80% is aspirational for web right now.
+3. **Duplications 4.52% > 3%** — pre-existing duplication (`BottomNav` 55%, `Sidebar` 25% repeated SVG icons; admin form boilerplate) **pulled into "new code" because the sweep touched those files**. Real S035 refactor (extract shared icons), not a quick fix.
+
+**Brutally honest conclusion (for the retro):** the Tier-2 mechanical sweep — approved as "todo" *after* I flagged it as ceremony — **made the new-code gate worse**, not better. It churned 127 files, dragging pre-existing duplication + new typeof/role nits into the new-code window, while the real lever (coverage) is untouched. It improved the *Overall Code* trend but the gate scores *New Code*. **This vindicates the original "skip Tier-2" recommendation.**
+
+**Fixing the 12 issues will NOT green the gate** — coverage (80%) and duplications (3%) remain. The honest options (Adrian's call, not whack-a-mole):
+- **(a)** Move the Sonar new-code baseline past the sweep commits → the churn stops counting as "new"; the gate scores future work cleanly. *Recommended.*
+- **(b)** Treat the web gate as aspirational (PRD-033 already called it "decorative") — track Overall Code, not the New Code gate, until S034 raises web coverage.
+- **(c)** Tune web thresholds (80% cov / 3% dup) to realistic values for the current web state.
+
+## GitHub security backlog (sector-7g — report-only)
+Full triage in [`2026-06-github-security-findings.md`](2026-06-github-security-findings.md). gitleaks: 4 FP → **fixed** (`.gitleaks.toml`). trivy (Dockerfile IaC, 1 HIGH dep, secret fixtures) + semgrep (12 replaceall-sanitization **from this sweep**, 1 shell-injection, 1 missing-USER) → documented, non-blocking. Real items: Dockerfile non-root USER + the one workflow shell-injection.
+
 ## Next-cycle TODO (prepared, NOT executed — need Adrian)
 
 ### Dashboard hygiene (remote mutations — left for Adrian to run)
