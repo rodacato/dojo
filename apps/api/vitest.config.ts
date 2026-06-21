@@ -34,7 +34,7 @@ export default defineConfig({
       // VITEST_NO_COVERAGE_THRESHOLD.
       thresholds: process.env.VITEST_NO_COVERAGE_THRESHOLD
         ? undefined
-        : { lines: 60, statements: 60, functions: 54, branches: 52 },
+        : { lines: 80, statements: 80, functions: 70, branches: 72 },
     },
   },
 })

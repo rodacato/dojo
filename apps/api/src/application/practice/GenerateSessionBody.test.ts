@@ -3,7 +3,7 @@ import { Kata } from '../../domain/content/kata'
 import { KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import { GenerateSessionBody } from './GenerateSessionBody'
 
-const makeKata = () =>
+const makeKata = (overrides: Partial<Parameters<typeof Kata.create>[0]> = {}) =>
   Kata.create({
     title: 'Test Kata',
     description: 'A test code review kata',
@@ -16,7 +16,18 @@ const makeKata = () =>
     topics: ['review'],
     createdBy: UserId('creator-1'),
     variations: [{ ownerRole: 'Tech Lead', ownerContext: 'Startup context' }],
+    ...overrides,
   })
+
+async function* streamOf(chunks: string[]): AsyncIterable<string> {
+  for (const c of chunks) yield c
+}
+
+const collect = async (it: AsyncIterable<string>): Promise<string[]> => {
+  const out: string[] = []
+  for await (const c of it) out.push(c)
+  return out
+}
 
 const makeStubSessionRepo = () => ({
   save: vi.fn(),
@@ -144,5 +155,188 @@ describe('GenerateSessionBody', () => {
         }),
       }),
     )
+  })
+
+  it('review kata persists the description verbatim and skips the LLM', async () => {
+    const kata = makeKata({ type: 'review', description: 'Deterministic diff to review' })
+    const variation = kata.variations[0]!
+    const sessionRepo = makeStubSessionRepo()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
+    await useCase.execute({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id })
+
+    expect(llm.generateSessionBody).not.toHaveBeenCalled()
+    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'Deterministic diff to review')
+  })
+})
+
+describe('GenerateSessionBody.executeStream', () => {
+  it('streams LLM chunks, accumulates them, and persists the full body', async () => {
+    const kata = makeKata()
+    const variation = kata.variations[0]!
+    const sessionRepo = makeStubSessionRepo()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn().mockReturnValue(streamOf(['You are ', 'reviewing ', 'a PR.'])),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
+    const chunks = await collect(
+      useCase.executeStream({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id }),
+    )
+
+    expect(chunks).toEqual(['You are ', 'reviewing ', 'a PR.'])
+    expect(llm.generateSessionBodyStream).toHaveBeenCalledWith({
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Startup context',
+      kataDescription: 'A test code review kata',
+    })
+    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR.')
+  })
+
+  it('review kata yields the description as a single chunk and persists it without the LLM', async () => {
+    const kata = makeKata({ type: 'review', description: 'Diff body' })
+    const variation = kata.variations[0]!
+    const sessionRepo = makeStubSessionRepo()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
+    const chunks = await collect(
+      useCase.executeStream({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id }),
+    )
+
+    expect(chunks).toEqual(['Diff body'])
+    expect(llm.generateSessionBodyStream).not.toHaveBeenCalled()
+    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'Diff body')
+  })
+
+  it('deletes the session and never persists a body when the kata is missing', async () => {
+    const sessionRepo = makeStubSessionRepo()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(null), save: vi.fn() }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
+    const chunks = await collect(
+      useCase.executeStream({
+        sessionId: SessionId('session-1'),
+        kataId: KataId('missing'),
+        variationId: VariationId('var-1'),
+      }),
+    )
+
+    expect(chunks).toEqual([])
+    expect(llm.generateSessionBodyStream).not.toHaveBeenCalled()
+    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
+  })
+
+  it('deletes the session when the variation is missing and never opens the stream', async () => {
+    const kata = makeKata()
+    const sessionRepo = makeStubSessionRepo()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm })
+    const chunks = await collect(
+      useCase.executeStream({
+        sessionId: SessionId('session-1'),
+        kataId: kata.id,
+        variationId: VariationId('nope'),
+      }),
+    )
+
+    expect(chunks).toEqual([])
+    expect(llm.generateSessionBodyStream).not.toHaveBeenCalled()
+    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
+  })
+
+  it('treats an empty/whitespace-only stream as a failure: throws, deletes, does not persist', async () => {
+    const kata = makeKata()
+    const variation = kata.variations[0]!
+    const sessionRepo = makeStubSessionRepo()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn().mockReturnValue(streamOf(['   ', '\n'])),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+    const errorReporter = { report: vi.fn().mockResolvedValue(undefined) }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter })
+
+    await expect(
+      collect(useCase.executeStream({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id })),
+    ).rejects.toThrow('LLM returned empty session body')
+
+    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
+    expect(errorReporter.report).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'LLM returned empty session body',
+        context: expect.objectContaining({ useCase: 'GenerateSessionBody.executeStream' }),
+      }),
+    )
+  })
+
+  it('propagates a mid-stream LLM error and deletes the session', async () => {
+    const kata = makeKata()
+    const variation = kata.variations[0]!
+    const sessionRepo = makeStubSessionRepo()
+    // eslint-disable-next-line require-yield
+    async function* boom(): AsyncIterable<string> {
+      throw new Error('stream blew up')
+    }
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn().mockReturnValue(boom()),
+      nudge: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+    const errorReporter = { report: vi.fn().mockResolvedValue(undefined) }
+
+    const useCase = new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter })
+
+    await expect(
+      collect(useCase.executeStream({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id })),
+    ).rejects.toThrow('stream blew up')
+
+    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 })
