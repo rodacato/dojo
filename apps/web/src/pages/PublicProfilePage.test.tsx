@@ -3,11 +3,12 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type { PublicProfileData } from '../lib/api'
+import type * as ApiModule from '../lib/api'
 import { api, ApiError } from '../lib/api'
 import { PublicProfilePage } from './PublicProfilePage'
 
 vi.mock('../lib/api', async () => {
-  const actual = await vi.importActual<typeof import('../lib/api')>('../lib/api')
+  const actual = await vi.importActual<typeof ApiModule>('../lib/api')
   return {
     ...actual,
     api: { ...actual.api, getPublicProfile: vi.fn() },

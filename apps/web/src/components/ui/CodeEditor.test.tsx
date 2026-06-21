@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
+import type * as CodeMirrorView from '@codemirror/view'
 
 import { CodeEditor } from './CodeEditor'
 
@@ -43,7 +44,7 @@ function emitDocChange(editorIndex: number, nextDoc: string, docChanged = true) 
 }
 
 vi.mock('@codemirror/view', async () => {
-  const actual = await vi.importActual<typeof import('@codemirror/view')>('@codemirror/view')
+  const actual = await vi.importActual<typeof CodeMirrorView>('@codemirror/view')
 
   // Each EditorView construction grabs the most recently registered listener;
   // updateListener.of runs inside the same synchronous build as the

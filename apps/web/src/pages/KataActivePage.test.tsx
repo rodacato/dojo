@@ -2,7 +2,9 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import type * as RouterDom from 'react-router-dom'
 import type { SessionWithKata } from '../lib/api'
+import type * as ApiModule from '../lib/api'
 import { ApiError } from '../lib/api'
 import { KataActivePage } from './KataActivePage'
 
@@ -18,7 +20,7 @@ vi.stubGlobal('ResizeObserver', ResizeObserverStub)
 const navigate = vi.fn()
 
 vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('react-router-dom')>()
+  const actual = await importOriginal<typeof RouterDom>()
   return { ...actual, useNavigate: () => navigate }
 })
 
@@ -27,7 +29,7 @@ const submitAttempt = vi.fn()
 const streamSessionBody = vi.fn()
 
 vi.mock('../lib/api', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../lib/api')>()
+  const actual = await importOriginal<typeof ApiModule>()
   return {
     ...actual,
     api: {

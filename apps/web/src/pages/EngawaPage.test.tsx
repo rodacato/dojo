@@ -3,6 +3,8 @@ import type { ReactNode } from 'react'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import type * as RouterDom from 'react-router-dom'
+import type * as ApiClientModule from '../lib/api/client'
 import type { UserDTO } from '@dojo/shared'
 import { EngawaPage } from './EngawaPage'
 import { useAuth } from '../context/AuthContext'
@@ -44,7 +46,7 @@ vi.mock('../context/AuthContext', () => ({
 // observable so we can assert changeLanguage's redirect target.
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+  const actual = await vi.importActual<typeof RouterDom>('react-router-dom')
   return { ...actual, useNavigate: () => mockNavigate }
 })
 
@@ -53,7 +55,7 @@ vi.mock('react-router-dom', async () => {
 // network surface is stubbed.
 vi.mock('../lib/api', async () => {
   const actual =
-    await vi.importActual<typeof import('../lib/api/client')>('../lib/api/client')
+    await vi.importActual<typeof ApiClientModule>('../lib/api/client')
   return {
     ApiError: actual.ApiError,
     api: {
