@@ -336,7 +336,7 @@ export function EngawaPage() {
           >
             {run.status === 'running' ? (
               <>
-                Running
+                Running{' '}
                 <span className="animate-cursor leading-none" aria-hidden>_</span>
               </>
             ) : (
@@ -401,10 +401,13 @@ export function EngawaPage() {
         <div
           role="dialog"
           aria-label="Ask the sensei"
+          tabIndex={-1}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
           onClick={() => ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
+          onKeyDown={(e) => e.key === 'Escape' && ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
         >
           <div
+            role="presentation"
             className="bg-page border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
             onClick={(e) => e.stopPropagation()}
           >
@@ -502,7 +505,7 @@ function RunStatusChip({ run }: { run: RunState }) {
   if (run.status === 'running') {
     return (
       <span className="font-mono text-xs tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
-        Running
+        Running{' '}
         <span className="animate-cursor ml-0.5" aria-hidden>_</span>
       </span>
     )

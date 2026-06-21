@@ -29,6 +29,7 @@ export function Modal({ open, onClose, flow = false, children }: ModalProps) {
   return (
     <div
       ref={overlayRef}
+      role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={(e) => {
         if (!flow && onClose && e.target === overlayRef.current) onClose()

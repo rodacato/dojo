@@ -281,10 +281,11 @@ export function SettingsPage() {
             <>
               <div className="grid md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
+                  <label htmlFor="reminder-email" className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
                     Email
                   </label>
                   <input
+                    id="reminder-email"
                     type="email"
                     value={prefs.email ?? ''}
                     onChange={(e) => update({ email: e.target.value || null })}
@@ -293,10 +294,11 @@ export function SettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
+                  <label htmlFor="reminder-hour" className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
                     Hour (0–23 local)
                   </label>
                   <input
+                    id="reminder-hour"
                     type="number"
                     min={0}
                     max={23}

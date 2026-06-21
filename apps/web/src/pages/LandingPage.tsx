@@ -648,10 +648,11 @@ function RequestAccessForm() {
         </p>
       </div>
       <div>
-        <label className="block text-xs text-muted mb-2 font-mono uppercase tracking-wider">
+        <label htmlFor="github-handle" className="block text-xs text-muted mb-2 font-mono uppercase tracking-wider">
           GITHUB_HANDLE
         </label>
         <input
+          id="github-handle"
           type="text"
           value={githubHandle}
           onChange={(e) => setGithubHandle(e.target.value)}
@@ -660,11 +661,13 @@ function RequestAccessForm() {
         />
       </div>
       <div>
-        <label className="block text-xs text-muted mb-2 font-mono uppercase tracking-wider">
+        <label htmlFor="intent-statement" className="block text-xs text-muted mb-2 font-mono uppercase tracking-wider">
           INTENT_STATEMENT
+          {' '}
           <span className="ml-1 normal-case text-muted/60">(optional, max 500)</span>
         </label>
         <textarea
+          id="intent-statement"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           placeholder="Why do you want to enter the dojo?"
