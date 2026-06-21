@@ -2,7 +2,7 @@
 
 > **Purpose:** resume-here log for the Sonar/CodeQL/Dependabot issue repair driven off [`2026-06-issue-catalog.md`](2026-06-issue-catalog.md). Updated continuously during an autonomous cycle (Adrian away). Everything done is **committed locally** (never pushed — Adrian reviews the diff + pushes). Nothing here mutates remote dashboards.
 >
-> **Last updated:** end of autonomous cycle — R1-R6 done, gate root-cause fixed, S035 pre-planned. 8 local commits (`f1d8633`..`cd0ea7f` + the S035 plan). **Resume:** review/push the local commits, run the Sonar `workflow_dispatch`, then pick from "Next-cycle TODO".
+> **Last updated:** end of autonomous cycle — R1-R6 done, gate root-cause fixed, S035 pre-planned. **8 unpushed local commits: `git log --oneline origin/master..HEAD` → `84c8f30`..`b376778`** (f1d8633 was already pushed). **Resume:** review/push these, run the Sonar `workflow_dispatch`, then pick from "Next-cycle TODO".
 
 ## How to resume
 
