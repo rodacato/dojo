@@ -27,15 +27,14 @@ export default defineConfig({
         'src/infrastructure/persistence/drizzle/**',
         'src/infrastructure/persistence/migrate.ts',
       ],
-      // Enforced floor = the honest measured number (S033), not aspiration —
-      // set just under current so it ratchets up, never silently regresses.
-      // The integration tests mock the DB, so there is no hidden coverage a
-      // CI postgres would unlock; 33%/21% is the real number. Raising it is
-      // the S034 testing-backbone work. Neutralized in the Sonar job (which
-      // only reports) via VITEST_NO_COVERAGE_THRESHOLD.
+      // Enforced floor — ratchets up as coverage rises, never silently
+      // regresses. Set just under the current measured number (S033 Phase 1
+      // brought every HTTP route under test: ~63% lines / ~54% branches).
+      // Neutralized in the Sonar job (which only reports) via
+      // VITEST_NO_COVERAGE_THRESHOLD.
       thresholds: process.env.VITEST_NO_COVERAGE_THRESHOLD
         ? undefined
-        : { lines: 32, statements: 30, functions: 29, branches: 20 },
+        : { lines: 60, statements: 60, functions: 54, branches: 52 },
     },
   },
 })
