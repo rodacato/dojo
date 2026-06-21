@@ -2,7 +2,7 @@
 
 > **Purpose:** resume-here log for the Sonar/CodeQL/Dependabot issue repair driven off [`2026-06-issue-catalog.md`](2026-06-issue-catalog.md). Updated continuously during an autonomous cycle (Adrian away). Everything done is **committed locally** (never pushed — Adrian reviews the diff + pushes). Nothing here mutates remote dashboards.
 >
-> **Last updated:** after R1-R6 complete + commit `3862eae`. **Session:** Max 5x, ~77%+ used, resets ~3h.
+> **Last updated:** end of autonomous cycle — R1-R6 done, gate root-cause fixed, S035 pre-planned. 8 local commits (`f1d8633`..`cd0ea7f` + the S035 plan). **Resume:** review/push the local commits, run the Sonar `workflow_dispatch`, then pick from "Next-cycle TODO".
 
 ## How to resume
 
@@ -67,6 +67,7 @@ The red gate was **not** a measurement-philosophy call — it was a **bug in `ap
 
 **Caveat (separate, real):** even clean, web's genuine coverage is ~31%, so the 80% new-code gate may still fail — that's a *real* signal for the **S034 web testing backbone**, not a scoping artifact. Deciding whether 80% is the right web threshold is an S034 call, not this cycle's.
 
-### S035 (deferred by PRD — parallelizable later)
-- Maintainability sweep (640) — pre-designed batch breakdown: _to add this cycle ↓._
-- Refactor-shaped `needs-test-net`: `S3776` cognitive-complexity (api ×6), `S3358` nested ternaries — write characterization tests FIRST. Candidate targets: _to identify this cycle ↓._
+### S035 (deferred by PRD — pre-designed this cycle)
+Full plan: **[`2026-06-s035-maintainability-plan.md`](2026-06-s035-maintainability-plan.md)** (`cd0ea7f`+). Honest split:
+- **Tier 1 (real value):** `S3776` cognitive-complexity (11 functions, targets + complexity scores in the plan — worst is `KataActivePage.tsx:59` at 43), `S3358` nested ternaries (44), `S6479` array-index keys (28). The `S3776`/`S3358` set is **needs-test-net** (tests first, own commit).
+- **Tier 2 (~400, low value):** `S6759` readonly-props ×193 etc. — mostly cosmetic. **Recommendation: skip / opt-in only.** Don't green a rating with ceremony.
