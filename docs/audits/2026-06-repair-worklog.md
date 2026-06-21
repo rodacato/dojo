@@ -47,6 +47,20 @@ _(Earlier this session, already pushed by Adrian: db8d6c6 lint, cf9e1c3 bug fixe
 - **R4 — REAL BUG, needs Adrian's call:** `KatasPage.tsx:328` (`SelectablePill`) has `${size === 'md' ? 'text-xs' : 'text-xs'}` — both ternary branches identical (S3923). The `size` prop genuinely differentiates elsewhere (height at :316), so one branch was likely meant to be a different size (e.g. `text-sm` for `md`), OR the ternary is vestigial and should collapse to `'text-xs'`. **Two opposite fixes, no signal to disambiguate — Adrian decides.**
 - **R4 — `PredictStep.tsx:94` (S7758):** `String.fromCharCode('A'.charCodeAt(0) + i)` generates option letters A/B/C from an ASCII base — no unicode risk. Low-value, left.
 
+## Tier-2 mechanical sweep — IN PROGRESS (Adrian approved "todo")
+
+Adrian chose **Tier-1 + Tier-2**. Executing Tier-2 first (parallel, disjoint-file buckets), then Tier-1 refactors (test-net-first, careful).
+
+**Scope correction:** test-file maintainability issues are EXCLUDED — they vanish on the next re-scan (the `cd0ea7f` exclusion fix). Real Tier-2 = **source-only: web 361 / api 63 = 424 issues**.
+
+Buckets (manifests in `/tmp/sonar-dump/bucket-*.json`, disjoint files): web ×8 (~45 issues/14 files each), api ×2 (~32 each). Rules: S6759 readonly-props (193), S7764 window→globalThis (127), S7761 dataset, S7735 negated-else, S6478 nested-components, S4325 redundant-casts, S6819, S6582, S1186, S3863, etc. — all mechanical/auto-fixable.
+
+| Wave | Status | Commit |
+|---|---|---|
+| Tier-2 web ×8 | ⏳ launching | — |
+| Tier-2 api ×2 | pending | — |
+| Tier-1 refactors (S3776 ×11, S3358, S6479) test-net-first | pending | — |
+
 ## Next-cycle TODO (prepared, NOT executed — need Adrian)
 
 ### Dashboard hygiene (remote mutations — left for Adrian to run)
