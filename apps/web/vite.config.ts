@@ -43,6 +43,11 @@ export default defineConfig({
         'src/main.tsx',
         'src/vite-env.d.ts',
       ],
+      // Enforced floor — ratchets up as coverage rises, never silently
+      // regresses. Neutralized in the Sonar job via VITEST_NO_COVERAGE_THRESHOLD.
+      thresholds: process.env['VITEST_NO_COVERAGE_THRESHOLD']
+        ? undefined
+        : { lines: 85, statements: 80, functions: 78, branches: 78 },
     },
   },
   plugins: [
