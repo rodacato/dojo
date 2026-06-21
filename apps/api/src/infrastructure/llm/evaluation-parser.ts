@@ -25,29 +25,29 @@ export class EvaluationStreamParser {
 
     this.buffer += chunk
 
-    if (!this.inEvaluation) {
-      const openIdx = this.buffer.indexOf(EVALUATION_OPEN)
-      if (openIdx === -1) {
-        // No evaluation block yet — everything is prose
-        const prose = this.buffer
-        this.buffer = ''
-        this.proseChunks.push(prose)
-        return prose
-      } else {
-        // Prose up to the opening tag
-        const prose = this.buffer.slice(0, openIdx)
-        if (prose) this.proseChunks.push(prose)
-        this.evalBuffer = this.buffer.slice(openIdx + EVALUATION_OPEN.length)
-        this.buffer = ''
-        this.inEvaluation = true
-        return prose
-      }
-    } else {
+    if (this.inEvaluation) {
       // Accumulate evaluation block — don't forward to client
       this.evalBuffer += chunk
       this.buffer = ''
       return ''
     }
+
+    const openIdx = this.buffer.indexOf(EVALUATION_OPEN)
+    if (openIdx === -1) {
+      // No evaluation block yet — everything is prose
+      const prose = this.buffer
+      this.buffer = ''
+      this.proseChunks.push(prose)
+      return prose
+    }
+
+    // Prose up to the opening tag
+    const prose = this.buffer.slice(0, openIdx)
+    if (prose) this.proseChunks.push(prose)
+    this.evalBuffer = this.buffer.slice(openIdx + EVALUATION_OPEN.length)
+    this.buffer = ''
+    this.inEvaluation = true
+    return prose
   }
 
   /**
@@ -79,11 +79,11 @@ export class EvaluationStreamParser {
   }
 }
 
-const VALID_VERDICTS: Verdict[] = ['passed', 'passed_with_notes', 'needs_work']
+const VALID_VERDICTS = new Set<Verdict>(['passed', 'passed_with_notes', 'needs_work'])
 
 function validateEvaluationResult(raw: Record<string, unknown>): EvaluationResult {
   const verdict = raw['verdict']
-  if (!VALID_VERDICTS.includes(verdict as Verdict)) {
+  if (!VALID_VERDICTS.has(verdict as Verdict)) {
     throw new Error(`Invalid verdict: ${String(verdict)}`)
   }
 
@@ -94,7 +94,7 @@ function validateEvaluationResult(raw: Record<string, unknown>): EvaluationResul
 
   const topicsToReview = raw['topicsToReview']
   if (!Array.isArray(topicsToReview)) {
-    throw new Error('topicsToReview must be an array')
+    throw new TypeError('topicsToReview must be an array')
   }
 
   const followUpQuestion = raw['followUpQuestion']
@@ -104,7 +104,7 @@ function validateEvaluationResult(raw: Record<string, unknown>): EvaluationResul
 
   const isFinalEvaluation = raw['isFinalEvaluation']
   if (typeof isFinalEvaluation !== 'boolean') {
-    throw new Error('isFinalEvaluation must be a boolean')
+    throw new TypeError('isFinalEvaluation must be a boolean')
   }
 
   return {

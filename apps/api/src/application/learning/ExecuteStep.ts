@@ -158,7 +158,7 @@ interface StructuredResult {
 }
 
 function extractStructuredResult(output: string): StructuredResult | null {
-  const match = output.match(RESULT_MARKER)
+  const match = RESULT_MARKER.exec(output)
   if (!match) return null
   try {
     const parsed = JSON.parse(match[1]) as {
@@ -186,8 +186,8 @@ function parseLegacyTestOutput(output: string): { name: string; passed: boolean;
   const results: { name: string; passed: boolean; message?: string }[] = []
 
   for (const line of lines) {
-    const passMatch = line.match(/[✓✔]\s+(.+)/) || line.match(/PASS\s+(.+)/) || line.match(/ok\s+\d+\s+-\s+(.+)/)
-    const failMatch = line.match(/[✗✘×]\s+(.+)/) || line.match(/FAIL\s+(.+)/) || line.match(/not ok\s+\d+\s+-\s+(.+)/)
+    const passMatch = /[✓✔]\s+(.+)/.exec(line) || /PASS\s+(.+)/.exec(line) || /ok\s+\d+\s+-\s+(.+)/.exec(line)
+    const failMatch = /[✗✘×]\s+(.+)/.exec(line) || /FAIL\s+(.+)/.exec(line) || /not ok\s+\d+\s+-\s+(.+)/.exec(line)
 
     if (passMatch) {
       results.push({ name: (passMatch[1] ?? '').trim(), passed: true })

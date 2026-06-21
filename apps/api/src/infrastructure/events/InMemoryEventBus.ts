@@ -2,7 +2,7 @@ import type { EventBusPort } from '../../domain/practice/ports'
 import type { DomainEvent } from '../../domain/shared/events'
 
 export class InMemoryEventBus implements EventBusPort {
-  private handlers = new Map<string, Array<(event: DomainEvent) => Promise<void>>>()
+  private readonly handlers = new Map<string, Array<(event: DomainEvent) => Promise<void>>>()
 
   async publish(event: DomainEvent): Promise<void> {
     const handlers = this.handlers.get(event.type) ?? []

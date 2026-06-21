@@ -61,8 +61,8 @@ adminScrollsRoutes.patch('/:id', async (c) => {
   const [updated] = await db
     .update(scrolls)
     .set({
-      ...(patch.isPublic !== undefined ? { isPublic: patch.isPublic } : {}),
-      ...(patch.status !== undefined ? { status: patch.status } : {}),
+      ...(patch.isPublic === undefined ? {} : { isPublic: patch.isPublic }),
+      ...(patch.status === undefined ? {} : { status: patch.status }),
     })
     .where(eq(scrolls.id, id))
     .returning()

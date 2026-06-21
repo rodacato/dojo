@@ -125,7 +125,7 @@ export class PostgresScrollRepository implements ScrollRepositoryPort {
       starterCode: row.starterCode,
       testCode: row.testCode,
       hint: row.hint,
-      hints: (row.hints ?? null) as string[] | null,
+      hints: row.hints ?? null,
       solution: row.solution,
       alternativeApproach: row.alternativeApproach,
       data: (row.data ?? null) as PredictData | null,

@@ -410,7 +410,7 @@ practiceRoutes.post('/sessions/:id/retry-evaluation', requireAuth, async (c) => 
   if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
 
   // Only allow retry on sessions with unevaluated attempts
-  const lastAttempt = session.attempts[session.attempts.length - 1]
+  const lastAttempt = session.attempts.at(-1)
   if (!lastAttempt) return c.json({ error: 'No attempt to retry' }, 400)
 
   const hasEvaluation = lastAttempt.evaluationResult !== null

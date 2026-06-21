@@ -128,7 +128,7 @@ const EVAL_BLOCK = /<evaluation>\s*([\s\S]*?)\s*<\/evaluation>/
 
 function extractVerdict(text: string): Verdict {
   const match = EVAL_BLOCK.exec(text)
-  if (!match || !match[1]) return 'parse_error'
+  if (!match?.[1]) return 'parse_error'
   try {
     const obj = JSON.parse(match[1]) as { verdict?: string }
     const v = (obj.verdict ?? '').toLowerCase()
@@ -148,7 +148,7 @@ interface LLMRunner {
 }
 
 class AnthropicRunner implements LLMRunner {
-  private client: Anthropic
+  private readonly client: Anthropic
   constructor(apiKey: string, private readonly model: string, baseUrl?: string) {
     this.client = new Anthropic({ apiKey, ...(baseUrl ? { baseURL: baseUrl } : {}) })
   }
@@ -159,7 +159,7 @@ class AnthropicRunner implements LLMRunner {
       messages: [{ role: 'user', content: prompt }],
     })
     const block = res.content[0]
-    return block && block.type === 'text' ? block.text : ''
+    return block?.type === 'text' ? block.text : ''
   }
 }
 

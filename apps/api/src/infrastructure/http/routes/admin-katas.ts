@@ -53,7 +53,7 @@ adminKatasRoutes.get('/katas', async (c) => {
       status: r.status,
       variationCount: Number(r.variationCount),
       sessionCount: Number(r.sessionCount),
-      avgScore: r.avgScore !== null ? Number(r.avgScore) : null,
+      avgScore: r.avgScore === null ? null : Number(r.avgScore),
       createdAt: r.createdAt.toISOString(),
     })),
   )
@@ -188,7 +188,7 @@ adminKatasRoutes.put('/katas/:id', async (c) => {
       tags: JSON.stringify(tags),
       topics: JSON.stringify(topics),
       ...(status ? { status } : {}),
-      ...(adminNotes !== undefined ? { adminNotes } : {}),
+      ...(adminNotes === undefined ? {} : { adminNotes }),
       version: sql`${katas.version} + 1`,
       updatedAt: new Date(),
     })

@@ -12,7 +12,7 @@ interface QueueItem {
 
 export class ExecutionQueue {
   private running = 0
-  private queue: QueueItem[] = []
+  private readonly queue: QueueItem[] = []
 
   constructor(
     private readonly executor: CodeExecutionPort,

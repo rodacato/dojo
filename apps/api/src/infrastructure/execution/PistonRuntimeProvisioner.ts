@@ -93,8 +93,9 @@ export class PistonRuntimeProvisioner {
     })
     if (!res.ok) {
       const body = await res.text().catch(() => '')
+      const bodySuffix = body ? `: ${body}` : ''
       throw new Error(
-        `Piston install ${spec.language} ${spec.version} → HTTP ${res.status} ${res.statusText}${body ? `: ${body}` : ''}`,
+        `Piston install ${spec.language} ${spec.version} → HTTP ${res.status} ${res.statusText}${bodySuffix}`,
       )
     }
   }

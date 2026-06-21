@@ -17,7 +17,7 @@ export class SentryErrorReporter implements ErrorReporterPort {
     Sentry.init({
       dsn: config.dsn,
       environment: config.environment ?? 'production',
-      tracesSampleRate: config.tracesSampleRate ?? 0.0,
+      tracesSampleRate: config.tracesSampleRate ?? 0,
       release: config.release,
       // Scrub request bodies / URL query strings that could carry PII.
       sendDefaultPii: false,

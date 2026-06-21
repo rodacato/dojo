@@ -12,7 +12,7 @@ import { config } from '../../config'
 const REQUEST_TIMEOUT_MS = 90_000
 
 export class AnthropicStreamAdapter implements LLMPort {
-  private client: Anthropic
+  private readonly client: Anthropic
 
   constructor(apiKey: string) {
     this.client = new Anthropic({
@@ -100,7 +100,7 @@ export class AnthropicStreamAdapter implements LLMPort {
       })
 
       const block = response.content[0]
-      if (!block || block.type !== 'text') {
+      if (block?.type !== 'text') {
         throw new Error('Unexpected response type from Anthropic')
       }
 
@@ -199,7 +199,7 @@ export class AnthropicStreamAdapter implements LLMPort {
       messages: [{ role: 'user', content: prompt }],
     })
     const block = response.content[0]
-    if (!block || block.type !== 'text') {
+    if (block?.type !== 'text') {
       throw new Error('Unexpected response type from Anthropic')
     }
     return block.text.trim()
@@ -345,22 +345,26 @@ function buildMessages(params: {
         category: params.category,
       }),
     })
-    messages.push({ role: 'assistant', content: firstTurn.llmResponse })
-    messages.push({
-      role: 'user',
-      content: buildFollowUpPrompt({
-        followUpResponse: params.userResponse,
-        originalFollowUpQuestion: extractFollowUpQuestion(firstTurn.llmResponse),
-      }),
-    })
+    messages.push(
+      { role: 'assistant', content: firstTurn.llmResponse },
+      {
+        role: 'user',
+        content: buildFollowUpPrompt({
+          followUpResponse: params.userResponse,
+          originalFollowUpQuestion: extractFollowUpQuestion(firstTurn.llmResponse),
+        }),
+      },
+    )
   }
 
   return messages
 }
 
+const FOLLOW_UP_QUESTION = /"followUpQuestion"\s*:\s*"([^"]+)"/
+
 function extractFollowUpQuestion(llmResponse: string): string {
   try {
-    const match = llmResponse.match(/"followUpQuestion"\s*:\s*"([^"]+)"/)
+    const match = FOLLOW_UP_QUESTION.exec(llmResponse)
     return match?.[1] ?? 'Can you elaborate on your approach?'
   } catch {
     return 'Can you elaborate on your approach?'

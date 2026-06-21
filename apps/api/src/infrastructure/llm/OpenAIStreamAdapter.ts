@@ -12,8 +12,8 @@ interface ChatMessage {
 }
 
 export class OpenAIStreamAdapter implements LLMPort {
-  private baseURL: string
-  private apiKey: string
+  private readonly baseURL: string
+  private readonly apiKey: string
 
   constructor(apiKey: string, baseURL: string) {
     this.apiKey = apiKey
@@ -313,14 +313,16 @@ function buildMessages(params: {
         category: params.category,
       }),
     })
-    messages.push({ role: 'assistant', content: firstTurn.llmResponse })
-    messages.push({
-      role: 'user',
-      content: buildFollowUpPrompt({
-        followUpResponse: params.userResponse,
-        originalFollowUpQuestion: extractFollowUpQuestion(firstTurn.llmResponse),
-      }),
-    })
+    messages.push(
+      { role: 'assistant', content: firstTurn.llmResponse },
+      {
+        role: 'user',
+        content: buildFollowUpPrompt({
+          followUpResponse: params.userResponse,
+          originalFollowUpQuestion: extractFollowUpQuestion(firstTurn.llmResponse),
+        }),
+      },
+    )
   }
 
   return messages
@@ -328,7 +330,7 @@ function buildMessages(params: {
 
 function extractFollowUpQuestion(llmResponse: string): string {
   try {
-    const match = llmResponse.match(/"followUpQuestion"\s*:\s*"([^"]+)"/)
+    const match = /"followUpQuestion"\s*:\s*"([^"]+)"/.exec(llmResponse)
     return match?.[1] ?? 'Can you elaborate on your approach?'
   } catch {
     return 'Can you elaborate on your approach?'

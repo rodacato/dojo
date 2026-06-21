@@ -54,7 +54,7 @@ type StepLike = {
 
 function fallbackTitle(s: StepLike): string {
   if (s.title) return s.title
-  const m = s.instruction.match(/^#\s+(.+)$/m)
+  const m = /^#\s+(.+)$/m.exec(s.instruction)
   return m?.[1]?.trim() ?? `step ${s.id}`
 }
 
@@ -154,17 +154,20 @@ async function main() {
       { code: step.solution, testCode: step.testCode, language: scrollLanguage },
       `${scrollSlug} / ${fallbackTitle(step)}`,
     )
-    if (!result.passed) {
+    if (result.passed) {
+      console.log(`OK    ${scrollSlug} / ${fallbackTitle(step)}`)
+    } else {
       failures++
       console.error(`FAIL  ${scrollSlug} / ${fallbackTitle(step)}`)
       const failedSummary = result.testResults
         .filter((t) => !t.passed)
-        .map((t) => `  ✗ ${t.name}${t.message ? `: ${t.message}` : ''}`)
+        .map((t) => {
+          const suffix = t.message ? `: ${t.message}` : ''
+          return `  ✗ ${t.name}${suffix}`
+        })
         .join('\n')
       const detail = result.errorMessage ?? (failedSummary || result.output.slice(0, 400))
       console.error(detail)
-    } else {
-      console.log(`OK    ${scrollSlug} / ${fallbackTitle(step)}`)
     }
   }
 

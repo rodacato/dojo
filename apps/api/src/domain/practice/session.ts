@@ -25,7 +25,7 @@ export class Session {
   readonly variationId: VariationId
   readonly body: string
   private _status: SessionStatus
-  private _attempts: Attempt[]
+  private readonly _attempts: Attempt[]
   readonly startedAt: Date
   private _completedAt: Date | null
   private _pendingEvents: DomainEvent[] = []

@@ -1,5 +1,5 @@
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
-import { join } from 'path'
+import { join } from 'node:path'
 import { db } from './drizzle/client'
 
 export async function runMigrations() {

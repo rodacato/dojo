@@ -26,7 +26,7 @@ export class PostgresKataRepository implements KataRepositoryPort {
       : sql``
 
     // Interest-based ordering: weight katas matching user interests
-    const randomness = filters.randomness ?? 1.0
+    const randomness = filters.randomness ?? 1
     const focusWeight = 1 - randomness
 
     const interestClause = filters.interests && filters.interests.length > 0

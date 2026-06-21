@@ -293,8 +293,8 @@ function scrubPistonNoise(stderr: string): string {
     .split('\n')
     .filter(
       (line) =>
-        !/^Sandbox keeper received fatal signal/.test(line) &&
-        !/^chmod: cannot access 'binary'/.test(line),
+        !line.startsWith('Sandbox keeper received fatal signal') &&
+        !line.startsWith("chmod: cannot access 'binary'"),
     )
     .join('\n')
     .trimEnd()
