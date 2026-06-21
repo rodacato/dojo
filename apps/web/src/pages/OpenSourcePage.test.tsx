@@ -85,12 +85,20 @@ describe('OpenSourcePage', () => {
     renderPage()
     const main = getMain()
 
-    expect(within(main).getByText("What's welcome.")).toBeInTheDocument()
-    expect(within(main).getByText("What's not.")).toBeInTheDocument()
+    const welcomeList = within(main)
+      .getByRole('heading', { name: "What's welcome." })
+      .closest('div') as HTMLElement
+    const rejectedList = within(main)
+      .getByRole('heading', { name: "What's not." })
+      .closest('div') as HTMLElement
 
-    // A welcome item and a not-welcome item both render, but under different headings.
-    expect(within(main).getByText('Accessibility fixes')).toBeInTheDocument()
-    expect(within(main).getByText('Scoring leaderboards')).toBeInTheDocument()
+    // Each item must live in its own list and be absent from the other,
+    // so swapping the WELCOME / NOT_WELCOME arrays would fail here.
+    expect(within(welcomeList).getByText('Accessibility fixes')).toBeInTheDocument()
+    expect(within(welcomeList).queryByText('Scoring leaderboards')).not.toBeInTheDocument()
+
+    expect(within(rejectedList).getByText('Scoring leaderboards')).toBeInTheDocument()
+    expect(within(rejectedList).queryByText('Accessibility fixes')).not.toBeInTheDocument()
   })
 
   it('links the architecture section to a specific ADR', () => {

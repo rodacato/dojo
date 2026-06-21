@@ -40,6 +40,14 @@ vi.mock('../context/AuthContext', () => ({
   useAuth: vi.fn(),
 }))
 
+// Keep real routing (the page reads useParams), but make useNavigate
+// observable so we can assert changeLanguage's redirect target.
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom')
+  return { ...actual, useNavigate: () => mockNavigate }
+})
+
 // Keep the real ApiError class so the page's `instanceof ApiError`
 // branches (and describeApiError) exercise real behavior; only the
 // network surface is stubbed.
@@ -248,6 +256,8 @@ describe('EngawaPage', () => {
     // Run state reset back to Ready / idle pane.
     expect(screen.getByText('Ready')).toBeInTheDocument()
     expect(screen.getAllByText('output will appear here.').length).toBeGreaterThan(0)
+    // ...and the URL is rewritten to the new runtime.
+    expect(mockNavigate).toHaveBeenCalledWith('/playground/ruby', { replace: true })
   })
 
   it('streams an ask-the-sensei answer in the modal for authed users', async () => {

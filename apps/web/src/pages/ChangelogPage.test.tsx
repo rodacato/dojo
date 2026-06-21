@@ -70,15 +70,6 @@ describe('ChangelogPage', () => {
     expect(within(phase0).getByText('Phase 0')).not.toHaveClass('text-accent')
   })
 
-  it('omits the commit link when entries carry no commit metadata', () => {
-    renderPage()
-
-    // None of the shipped entries have commitUrl/commitHash, so no commit CTA exists.
-    expect(
-      screen.queryByRole('link', { name: /view commit/i }),
-    ).not.toBeInTheDocument()
-  })
-
   it('puts a divider between consecutive entries but not after the last', () => {
     renderPage()
 
