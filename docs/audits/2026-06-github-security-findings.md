@@ -51,10 +51,24 @@ Hotspots are "please review" items, not auto-fails. Reviewed 2026-06-21 and mark
 
 **Stance (cost-justified):** rewriting working markdown parsers to satisfy a heuristic, for trusted input with no nested-quantifier ReDoS, buys nothing. If defense-in-depth is wanted later, the only marginal candidate is `StreamingText` (LLM output) — but it's still non-catastrophic. Left as Safe.
 
-## What's already done
+## Resolution status (2026-06-21)
 
-- ✅ gitleaks: `.gitleaks.toml` allowlist (this commit).
-- The 10 `actions/missing-workflow-permissions` (CodeQL) were fixed earlier (`f1d8633`).
+| Finding | Action |
+|---|---|
+| gitleaks ×4 (all FP) | ✅ `.gitleaks.toml` allowlist (value-regex + path) |
+| semgrep `missing-user` (api Dockerfile) | ✅ `USER node` in the runner stage (`cac1f60`) |
+| semgrep `run-shell-injection` (accessory-reboot.yml) | ✅ `HOST_IP` / `inputs.accessory` moved to `env:` |
+| semgrep `detect-replaceall-sanitization` ×12 | ✅ real `escapeHtml` rewritten to single-pass `.replace(/[…]/g,…)`; the rest are formatting (not sanitization) — `// nosemgrep` with reason |
+| semgrep `unsafe-formatstring` ×3 (console.error) | ✅ `// nosemgrep` (JS console has no format-string injection) |
+| semgrep `detect-non-literal-regexp` ×2 | ✅ `// nosemgrep` — patterns built from authored/static content, not attacker input |
+| trivy secrets ×3 (same fixtures) | ✅ `trivy.yaml` `secret.skip-paths` |
+| trivy IaC: api Dockerfile root | ✅ fixed (USER node) |
+| trivy IaC: **web nginx Dockerfile root** | ⏳ **accepted known-issue** — nginx behind CF Tunnel + Kamal proxy isn't directly exposed; non-root needs the `nginx-unprivileged` image + port/temp-dir changes (a deploy-risking change). Deferred deliberately. |
+| trivy deps: 1 HIGH (pnpm-lock) | ⏳ overlaps the dev-transitive Dependabot set (catalog §1). Confirm the CVE on next scan; `.trivyignore` if dev-only, else bump. |
+| CodeQL `missing-workflow-permissions` ×10 | ✅ fixed earlier (`f1d8633`) |
+| CodeQL `weak-cryptographic-algorithm` (uuidv5) | ⏳ dismiss on the dashboard (FP — reason in catalog §1) |
+
+**Note:** sector-7g runs semgrep with `p/default p/security-audit`. The `security-audit` ruleset is the source of the noisy audit-level FPs (replaceall/formatstring/non-literal-regexp). If the noise persists, the cleaner lever is dropping `p/security-audit` in sector-7g (Adrian's repo) — it's an audit ruleset, not a blocking-severity one.
 
 ## Honest note
 

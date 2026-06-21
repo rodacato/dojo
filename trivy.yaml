@@ -1,0 +1,12 @@
+# Trivy config — auto-loaded from the repo root. Keeps the (report-only)
+# sector-7g security scan as signal by skipping known/accepted findings.
+# Verified 2026-06-21 (S033 security pass). See docs/audits/2026-06-github-security-findings.md.
+secret:
+  skip-paths:
+    # Teaching fixtures in the "spot the hardcoded secret" code-review kata
+    # (sk-prod-… / DB_PASSWORD='hunter2'). Also allowlisted for gitleaks in
+    # .gitleaks.toml. Not real credentials — they render as exercise content.
+    - "apps/api/src/infrastructure/persistence/exercises/**"
+    - "apps/api/src/infrastructure/persistence/seed.ts"
+    # curl authenticates with the $SONAR_TOKEN env var, never a literal.
+    - "scripts/sonar-dump.sh"
