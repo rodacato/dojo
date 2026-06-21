@@ -65,6 +65,7 @@ export function PredictStep({
 
   const stepTitle = step.title ?? `Step ${step.order}`
   const instructionBody = step.instruction
+    // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp -- stepTitle is authored scroll content, not user input
     .replace(new RegExp(String.raw`^# +${stepTitle}\s*\n+`), '')
     .trim()
 

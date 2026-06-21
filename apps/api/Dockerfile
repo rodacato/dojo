@@ -29,6 +29,9 @@ COPY --from=builder /app/node_modules ./node_modules
 RUN rm -rf ./node_modules/@dojo/shared
 COPY --from=builder /app/packages/shared/package.json ./node_modules/@dojo/shared/package.json
 COPY --from=builder /app/packages/shared/dist ./node_modules/@dojo/shared/dist
+# Drop to the unprivileged `node` user (present in node:alpine). Copied files
+# are world-readable and the app binds 3001 (>1024), so no chown is needed.
+USER node
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://localhost:3001/health || exit 1

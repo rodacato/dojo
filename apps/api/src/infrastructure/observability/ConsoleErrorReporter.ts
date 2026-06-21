@@ -6,6 +6,7 @@ export class ConsoleErrorReporter implements ErrorReporterPort {
     // the stack is still available when inspected. Matches the previous
     // `console.error('Unhandled error:', err)` behaviour closely enough that
     // existing log greps keep working.
+    // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring -- console has no format-string injection
     console.error(
       `[${report.source}] ${report.status} ${report.method ?? ''} ${report.route ?? ''} — ${report.message}`,
       report,

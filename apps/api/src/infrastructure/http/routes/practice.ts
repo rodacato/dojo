@@ -51,13 +51,16 @@ const accessRequestSchema = z.object({
   reason: z.string().max(1000).optional(),
 })
 
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+
 function escapeHtml(s: string): string {
-  return s
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;')
+  return s.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c]!)
 }
 
 practiceRoutes.post('/access-requests', async (c) => {

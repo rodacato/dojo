@@ -5,6 +5,7 @@ export interface Insight {
 }
 
 function extractBullets(tag: string, text: string): string[] | null {
+  // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp -- tag is a static internal literal, not user input
   const regex = new RegExp(String.raw`<${tag}>([\s\S]*?)</${tag}>`)
   const match = regex.exec(text)
   if (!match?.[1]) return null

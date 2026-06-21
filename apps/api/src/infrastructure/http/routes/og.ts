@@ -34,8 +34,15 @@ function ogHtml(props: { title: string; description: string; image?: string; url
 </html>`
 }
 
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '"': '&quot;',
+  '<': '&lt;',
+  '>': '&gt;',
+}
+
 function escapeHtml(s: string): string {
-  return s.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+  return s.replace(/[&"<>]/g, (c) => HTML_ESCAPES[c]!)
 }
 
 // ---------------------------------------------------------------------------

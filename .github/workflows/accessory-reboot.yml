@@ -87,10 +87,13 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add VPS to known hosts
-        run: ssh-keyscan ${{ vars.HOST_IP }} >> ~/.ssh/known_hosts
+        # HOST_IP via env (job-level), not inline ${{ }}, to avoid shell injection.
+        run: ssh-keyscan "$HOST_IP" >> ~/.ssh/known_hosts
 
       - name: Reboot ${{ inputs.accessory }}
         # kamal v2.7 does not wire --confirmed/-y on `accessory reboot`
         # (Thor parses it as a second positional NAME). Pipe a 'y' to its
         # confirmation prompt instead — works across kamal versions.
-        run: printf 'y\n' | kamal accessory reboot "${{ inputs.accessory }}" --config-file config/deploy.api.yml
+        env:
+          ACCESSORY: ${{ inputs.accessory }}
+        run: printf 'y\n' | kamal accessory reboot "$ACCESSORY" --config-file config/deploy.api.yml
