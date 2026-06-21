@@ -67,6 +67,8 @@ export default defineConfig({
     // can resolve @codemirror/state from two URLs → two module instances
     // → `instanceof Extension` checks fail with "Unrecognized extension".
     dedupe: [
+      'react',
+      'react-dom',
       '@codemirror/state',
       '@codemirror/view',
       '@codemirror/language',
