@@ -26,7 +26,13 @@ export function useTypingReveal(text: string, done: boolean): string {
     const startIdx = indexRef.current
     const charsPerFrame = Math.max(2, Math.floor(delta / 60)) // ~1s reveal at 60fps
 
+    // A frame already queued when the effect tears down must not re-schedule:
+    // after unmount the rAF global may be gone (test env teardown), and a
+    // stale tick rescheduling itself would throw. The flag short-circuits it.
+    let cancelled = false
+
     function tick() {
+      if (cancelled) return
       indexRef.current = Math.min(indexRef.current + charsPerFrame, text.length)
       setRevealed(text.slice(0, indexRef.current))
 
@@ -39,7 +45,10 @@ export function useTypingReveal(text: string, done: boolean): string {
       rafRef.current = requestAnimationFrame(tick)
     }
 
-    return () => cancelAnimationFrame(rafRef.current)
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(rafRef.current)
+    }
   }, [text])
 
   // When done, ensure full text is shown
