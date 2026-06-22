@@ -38,7 +38,6 @@ For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs
 | `docs/adr/` | `docs/adr/` | History (immutable) | Architecture Decision Records — never deleted |
 | `docs/specs/` | `docs/specs/` | History (immutable) | Sprint-tied implementation specs |
 | `docs/sprints/archive/` | `docs/sprints/archive/` | History (immutable) | Closed blocks with retros |
-| `docs/audits/` | `docs/audits/` | History | Time-stamped audits (friend feedback, security, etc.) |
 | `docs/prd/` | `docs/prd/` | Exploratory (disposable) | Pre-spec PRDs. Close each with: `Materialized in spec-NNN` / `Discarded` / `Archived to research/` |
 | `docs/research/` | `docs/research/` | Archived research | Background plans/analyses that informed past decisions, kept for traceability |
 | `docs/research/prd-archive/` | `docs/research/prd-archive/` | Archived research | PRDs that served their purpose during early planning phases |

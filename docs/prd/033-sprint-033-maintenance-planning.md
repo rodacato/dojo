@@ -29,7 +29,7 @@ S033 opens **after** S032 closes. S032's mandatory blocker is deploying the five
 
 This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findings" without the list.
 
-- Run the Sonar `workflow_dispatch`; export the issue list (bugs / vulns / code smells / coverage-on-new-code) to `docs/audits/2026-06-sonar-baseline.md`.
+- Run the Sonar `workflow_dispatch`; export and triage the issue list (bugs / vulns / code smells / coverage-on-new-code).
 - Decide whether CodeQL enters the repo as a first-class workflow or stays inside `sector-7g`. If it runs in `sector-7g`, get its SARIF/findings out and into the same audit doc. If it does **not** run anywhere, that is the finding — record it and decide whether to add `github/codeql-action` (default-setup is one toggle).
 - Triage both lists into: (a) fix this sprint, (b) S035 arch debt, (c) won't-fix-with-reason. No silent drops.
 - **Tests-before-refactor (Adrian's call, 2026-06-20).** Reliability/maintainability findings that need a *refactor* (not a one-line fix) carry a `needs-test-net` tag in the triage. They do **not** get refactored — this sprint or in S035 — until a unit-test net pins the affected code's current behavior first. The test lands before the refactor, in its own commit, so the refactor's diff is provably behavior-preserving. A maintainability cleanup without a test net is how you ship a reliability regression. Trivial one-line fixes (a null guard, a `===`) are exempt — this gate is for structural changes.
@@ -49,7 +49,7 @@ This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findin
 
 ### 3. Dead-code & findings tooling
 
-- Add `knip` at the root (monorepo-aware: unused files, exports, deps). Run it, commit the report to `docs/audits/2026-06-knip-baseline.md`, fix the unambiguous wins (orphaned files, unused deps), defer the judgment calls. Wire `knip` into `pnpm lint` or a `quality` script only after the baseline is clean enough not to be noise.
+- Add `knip` at the root (monorepo-aware: unused files, exports, deps). Run it, capture the baseline, fix the unambiguous wins (orphaned files, unused deps), defer the judgment calls. Wire `knip` into `pnpm lint` or a `quality` script only after the baseline is clean enough not to be noise.
 - This is what makes "dead code" measurable for S034/S035 instead of a vibe.
 
 ## Scope — what does NOT ship
@@ -81,7 +81,7 @@ This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findin
 - [ ] api coverage gate is **enforced in CI** (`VITEST_NO_COVERAGE_THRESHOLD` removed from the gating path) at an honest, ratcheting threshold.
 - [ ] `apps/api/src/scripts/**` excluded from coverage; the api number reflects business logic only.
 - [ ] `knip` installed, baseline committed, unambiguous wins fixed.
-- [ ] Sonar + CodeQL findings exported to `docs/audits/`, triaged into fix-now / S035 / won't-fix — **no silent drops**.
+- [ ] Sonar + CodeQL findings exported and triaged into fix-now / S035 / won't-fix — **no silent drops**.
 - [ ] S034 (web testing backbone) and S035 (architecture debt) opened with the baselines this sprint produced.
 - [ ] Docs sync per CLAUDE.md table (CHANGELOG, ROADMAP if a roadmap item closes).
 

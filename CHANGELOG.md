@@ -223,7 +223,7 @@ The sprint where the platform got its first top-of-funnel surface, the prep loop
 - **Smoke suite** — six specs (`sign-in`, `view-profile`, `view-dashboard`, `complete-course-step`, `complete-kata`, `playground-anon-run`). `complete-kata` and `playground-anon-run` skip cleanly on prod runs that don't carry `SMOKE_USE_MOCK_LLM=1` / `SMOKE_PLAYGROUND_ENABLED=1` so a single workflow definition works against staging and prod.
 - **Operational floor** — Errors retention cron (`/cron/cleanup-errors`, 30-day window). Piston liveness: GHA `piston-liveness.yml` workflow probes `/health/piston` every 30 minutes, two consecutive failures alert via GitHub's email path (ADR 019). `scripts/piston-reprovision.sh` is idempotent and documented in the README runbook.
 - **Runtime bumps blocked upstream** — Go / Ruby / Rust bumps deferred to backlog. `engineer-man/piston` ships only Go 1.16.2, Ruby up to 3.0.1, Rust up to 1.68.2; bumping to current stable requires either a maintained fork or a custom package layer.
-- **First friend invite carried to S023** — code surface ready (S021 + S022); dispatch is humans-only and was not blocked by anything in this sprint. Audit doc scaffolded at `docs/audits/2026-04-friend-feedback.md` with a 7-day populate-or-cut rule.
+- **First friend invite carried to S023** — code surface ready (S021 + S022); dispatch is humans-only and was not blocked by anything in this sprint.
 - **Verification** — typecheck ✓, lint ✓, API test suite green (123 tests). Three new feature flags all default-off. Frontend's SSE-first / polling-fallback path makes flag flips reversible without redeploy.
 
 ---
