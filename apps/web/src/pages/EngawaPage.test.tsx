@@ -311,4 +311,24 @@ describe('EngawaPage', () => {
       ),
     ).toBeInTheDocument()
   })
+
+  it('dismisses the ask-the-sensei modal on a backdrop click but not on a click inside it', async () => {
+    const u = userEvent.setup()
+    asUser()
+
+    renderAt('/engawa/python')
+
+    await u.click(screen.getByRole('button', { name: 'Ask the sensei' }))
+    const dialog = await screen.findByRole('dialog', { name: 'Ask the sensei' })
+
+    // A click inside the panel must not dismiss it.
+    await u.click(dialog)
+    expect(screen.getByRole('dialog', { name: 'Ask the sensei' })).toBeInTheDocument()
+
+    // A click on the backdrop (the panel's container) dismisses it.
+    const backdrop = dialog.parentElement
+    if (!backdrop) throw new Error('expected a backdrop wrapping the dialog')
+    await u.click(backdrop)
+    expect(screen.queryByRole('dialog', { name: 'Ask the sensei' })).not.toBeInTheDocument()
+  })
 })

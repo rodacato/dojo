@@ -384,7 +384,7 @@ export function EngawaPage() {
         <div
           role="presentation"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-          onClick={() => ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
+          onClick={(e) => e.target === e.currentTarget && ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
           onKeyDown={(e) => e.key === 'Escape' && ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
         >
           <div
@@ -392,7 +392,6 @@ export function EngawaPage() {
             aria-modal="true"
             aria-label="Ask the sensei"
             className="bg-page border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
-            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs text-secondary">ask the sensei</span>
