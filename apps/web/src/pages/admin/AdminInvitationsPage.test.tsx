@@ -60,7 +60,7 @@ describe('AdminInvitationsPage', () => {
     renderPage()
     await screen.findByText('redeemed')
     // Two cells say "expired" (status badge + the expires column) for the expired row.
-    expect(screen.getAllByText('expired').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('expired')).toHaveLength(2)
   })
 
   it('only renders a Copy URL action for pending invitations', async () => {

@@ -31,7 +31,7 @@ function makeKata(over: Partial<AdminKataDTO> & { id: string; title: string }): 
 const katas: AdminKataDTO[] = [
   makeKata({ id: 'k1', title: 'Rate limiter', type: 'code', difficulty: 'hard', status: 'published', sessionCount: 50, avgScore: 0.9, createdAt: '2026-03-01T00:00:00.000Z' }),
   makeKata({ id: 'k2', title: 'Idempotency keys', type: 'chat', difficulty: 'medium', status: 'draft', sessionCount: 10, avgScore: 0.3, createdAt: '2026-02-01T00:00:00.000Z' }),
-  makeKata({ id: 'k3', title: 'Backpressure review', type: 'review', difficulty: 'easy', status: 'archived', sessionCount: 200, avgScore: null, createdAt: '2026-01-15T00:00:00.000Z' }),
+  makeKata({ id: 'k3', title: 'Backpressure review', type: 'review', difficulty: 'easy', status: 'archived', sessionCount: 1234, avgScore: null, createdAt: '2026-01-15T00:00:00.000Z' }),
 ]
 
 function renderPage() {
@@ -58,9 +58,10 @@ describe('AdminKatasPage', () => {
     expect(await screen.findByText('Rate limiter')).toBeInTheDocument()
     expect(screen.getByText('Idempotency keys')).toBeInTheDocument()
     expect(screen.getByText('Backpressure review')).toBeInTheDocument()
-    // sessionCount is rendered with toLocaleString — 200 stays "200" but proves the value flows through.
+    // sessionCount is rendered with toLocaleString — the 4-digit count proves
+    // the thousands separator is actually applied, not just that the value flows.
     expect(screen.getByText('50')).toBeInTheDocument()
-    expect(screen.getByText('200')).toBeInTheDocument()
+    expect(screen.getByText('1,234')).toBeInTheDocument()
   })
 
   it('shows the status counts derived from the catalog', async () => {
