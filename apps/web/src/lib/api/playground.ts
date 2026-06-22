@@ -1,6 +1,7 @@
 import { API_URL } from '../config'
 import { getToken } from '../auth-token'
 import { request, ApiError } from './client'
+import { streamSseTokens } from './sse'
 
 export interface PlaygroundRunRequest {
   language: string
@@ -42,53 +43,20 @@ async function* askSensei(body: AskSenseiRequest): AsyncGenerator<string> {
     body: JSON.stringify(body),
   })
   if (!res.ok || !res.body) {
-    let errMessage = res.statusText
-    try {
-      const j = (await res.json()) as { error?: string }
-      if (j.error) errMessage = j.error
-    } catch {
-      // empty body / not JSON — keep statusText
-    }
-    throw new ApiError(res.status, errMessage)
+    throw new ApiError(res.status, await errorMessageFrom(res))
   }
 
-  const reader = res.body.getReader()
-  const decoder = new TextDecoder()
-  let buffer = ''
-  let event = 'message'
-  let dataLines: string[] = []
+  yield* streamSseTokens(res.body)
+}
 
-  function flush(): { event: string; data: string } | null {
-    if (dataLines.length === 0) return null
-    const out = { event, data: dataLines.join('\n') }
-    event = 'message'
-    dataLines = []
-    return out
+async function errorMessageFrom(res: Response): Promise<string> {
+  try {
+    const j = (await res.json()) as { error?: string }
+    if (j.error) return j.error
+  } catch {
+    // empty body / not JSON — fall through to statusText
   }
-
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    buffer += decoder.decode(value, { stream: true })
-
-    const lines = buffer.split('\n')
-    buffer = lines.pop() ?? ''
-
-    for (const raw of lines) {
-      const line = raw.replace(/\r$/, '')
-      if (line === '') {
-        const evt = flush()
-        if (!evt) continue
-        if (evt.event === 'token') yield evt.data
-        else if (evt.event === 'done') return
-        else if (evt.event === 'error') throw new ApiError(500, evt.data || 'stream_error')
-        continue
-      }
-      if (line.startsWith(':')) continue
-      if (line.startsWith('event:')) event = line.slice(6).trim()
-      else if (line.startsWith('data:')) dataLines.push(line.slice(5).replace(/^ /, ''))
-    }
-  }
+  return res.statusText
 }
 
 export const playground = {

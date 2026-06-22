@@ -36,33 +36,12 @@ export class AnthropicStreamAdapter implements LLMPort {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
 
-    if (config.LLM_STREAM) {
-      const stream = this.client.messages.stream({
-        model: config.LLM_MODEL,
-        max_tokens: 2048,
-        messages,
-      })
+    const tokens = config.LLM_STREAM
+      ? this.evaluateStreaming(messages, parser)
+      : this.evaluateOnce(messages, parser)
 
-      for await (const event of stream) {
-        if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-          const prose = parser.push(event.delta.text)
-          if (prose) {
-            yield { chunk: prose, isFinal: false, result: null }
-          }
-        }
-      }
-    } else {
-      const response = await this.client.messages.create({
-        model: config.LLM_MODEL,
-        max_tokens: 2048,
-        messages,
-      })
-
-      const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
-      const prose = parser.push(text)
-      if (prose) {
-        yield { chunk: prose, isFinal: false, result: null }
-      }
+    for await (const token of tokens) {
+      yield token
     }
 
     const { result, error } = parser.finalize()
@@ -72,6 +51,42 @@ export class AnthropicStreamAdapter implements LLMPort {
     }
 
     yield { chunk: '', isFinal: true, result }
+  }
+
+  private async *evaluateStreaming(
+    messages: Anthropic.Messages.MessageParam[],
+    parser: EvaluationStreamParser,
+  ): AsyncIterable<EvaluationToken> {
+    const stream = this.client.messages.stream({
+      model: config.LLM_MODEL,
+      max_tokens: 2048,
+      messages,
+    })
+
+    for await (const event of stream) {
+      if (event.type !== 'content_block_delta' || event.delta.type !== 'text_delta') continue
+      const prose = parser.push(event.delta.text)
+      if (prose) {
+        yield { chunk: prose, isFinal: false, result: null }
+      }
+    }
+  }
+
+  private async *evaluateOnce(
+    messages: Anthropic.Messages.MessageParam[],
+    parser: EvaluationStreamParser,
+  ): AsyncIterable<EvaluationToken> {
+    const response = await this.client.messages.create({
+      model: config.LLM_MODEL,
+      max_tokens: 2048,
+      messages,
+    })
+
+    const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
+    const prose = parser.push(text)
+    if (prose) {
+      yield { chunk: prose, isFinal: false, result: null }
+    }
   }
 
   async generateSessionBody(params: {

@@ -33,60 +33,12 @@ export class OpenAIStreamAdapter implements LLMPort {
     const messages = buildMessages(params)
     const parser = new EvaluationStreamParser()
 
-    if (config.LLM_STREAM) {
-      const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: config.LLM_MODEL,
-          max_tokens: 2048,
-          stream: true,
-          messages,
-        }),
-      })
+    const tokens = config.LLM_STREAM
+      ? this.evaluateStreaming(messages, parser)
+      : this.evaluateOnce(messages, parser)
 
-      if (!response.ok) {
-        const body = await response.text()
-        throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-      }
-
-      for await (const chunk of parseSSEStream(response)) {
-        const content = chunk.choices?.[0]?.delta?.content
-        if (content) {
-          const prose = parser.push(content)
-          if (prose) {
-            yield { chunk: prose, isFinal: false, result: null }
-          }
-        }
-      }
-    } else {
-      const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({
-          model: config.LLM_MODEL,
-          max_tokens: 2048,
-          messages,
-        }),
-      })
-
-      if (!response.ok) {
-        const body = await response.text()
-        throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-      }
-
-      const data = (await response.json()) as OpenAIResponse
-      const text = data.choices?.[0]?.message?.content ?? ''
-      const prose = parser.push(text)
-      if (prose) {
-        yield { chunk: prose, isFinal: false, result: null }
-      }
+    for await (const token of tokens) {
+      yield token
     }
 
     const { result, error } = parser.finalize()
@@ -96,6 +48,54 @@ export class OpenAIStreamAdapter implements LLMPort {
     }
 
     yield { chunk: '', isFinal: true, result }
+  }
+
+  private async *evaluateStreaming(
+    messages: ChatMessage[],
+    parser: EvaluationStreamParser,
+  ): AsyncIterable<EvaluationToken> {
+    const response = await this.chatCompletion({ max_tokens: 2048, stream: true, messages })
+
+    for await (const chunk of parseSSEStream(response)) {
+      const content = chunk.choices?.[0]?.delta?.content
+      if (!content) continue
+      const prose = parser.push(content)
+      if (prose) {
+        yield { chunk: prose, isFinal: false, result: null }
+      }
+    }
+  }
+
+  private async *evaluateOnce(
+    messages: ChatMessage[],
+    parser: EvaluationStreamParser,
+  ): AsyncIterable<EvaluationToken> {
+    const response = await this.chatCompletion({ max_tokens: 2048, messages })
+
+    const data = (await response.json()) as OpenAIResponse
+    const text = data.choices?.[0]?.message?.content ?? ''
+    const prose = parser.push(text)
+    if (prose) {
+      yield { chunk: prose, isFinal: false, result: null }
+    }
+  }
+
+  private async chatCompletion(body: Record<string, unknown>): Promise<Response> {
+    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({ model: config.LLM_MODEL, ...body }),
+    })
+
+    if (!response.ok) {
+      const text = await response.text()
+      throw new Error(`OpenAI-compatible API error ${response.status}: ${text}`)
+    }
+
+    return response
   }
 
   async generateSessionBody(params: {

@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react'
 
 export type ToastKind = 'success' | 'info' | 'warning' | 'error'
 
@@ -48,6 +55,10 @@ const TONE_TEXT: Record<ToastKind, string> = {
 let nextId = 0
 let pushFn: ((t: ToastEntry) => void) | null = null
 
+function removeToastById(setToasts: Dispatch<SetStateAction<ToastEntry[]>>, id: number) {
+  setToasts((prev) => prev.filter((t) => t.id !== id))
+}
+
 function push(input: ToastInput) {
   const kind = input.kind ?? 'info'
   const durationMs = input.durationMs ?? DEFAULT_DURATIONS[kind]
@@ -87,9 +98,7 @@ export function ToastContainer() {
   const addToast = useCallback((entry: ToastEntry) => {
     setToasts((prev) => [...prev, entry])
     if (entry.durationMs != null) {
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.id !== entry.id))
-      }, entry.durationMs)
+      setTimeout(() => removeToastById(setToasts, entry.id), entry.durationMs)
     }
   }, [])
 
@@ -101,7 +110,7 @@ export function ToastContainer() {
   }, [addToast])
 
   function dismiss(id: number) {
-    setToasts((prev) => prev.filter((t) => t.id !== id))
+    removeToastById(setToasts, id)
   }
 
   if (toasts.length === 0) return null

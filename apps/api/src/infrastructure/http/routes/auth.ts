@@ -1,7 +1,7 @@
 import { GitHub } from 'arctic'
 import { and, eq, gt, isNull } from 'drizzle-orm'
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
-import { Hono } from 'hono'
+import { Hono, type Context } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { config } from '../../../config'
 import { errorReporter, useCases } from '../../container'
@@ -45,32 +45,14 @@ authRoutes.get('/auth/github/callback', async (c) => {
     return c.redirect(`${config.WEB_URL}?error=auth`)
   }
 
-  // Exchange code for tokens
-  let tokens
-  try {
-    tokens = await github.validateAuthorizationCode(code ?? '')
-  } catch {
+  const accessToken = await exchangeCodeForToken(code)
+  if (!accessToken) {
     return c.redirect(`${config.WEB_URL}?error=auth`)
   }
 
-  const accessToken = tokens.accessToken()
-
-  // Fetch GitHub user profile
-  const githubUserRes = await fetch('https://api.github.com/user', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      'User-Agent': 'dojo.notdefined.dev',
-    },
-  })
-
-  if (!githubUserRes.ok) {
+  const githubUser = await fetchGithubUser(accessToken)
+  if (!githubUser) {
     return c.redirect(`${config.WEB_URL}?error=auth`)
-  }
-
-  const githubUser = (await githubUserRes.json()) as {
-    id: number
-    login: string
-    avatar_url: string
   }
 
   // Resolve primary verified email via /user/emails (requires user:email scope).
@@ -87,23 +69,10 @@ authRoutes.get('/auth/github/callback', async (c) => {
 
   // New users must be the creator or have a valid invitation
   if (!existingUser && !isCreator) {
-    // Check for pending invitation by looking at oauth_invite cookie
-    const inviteToken = getCookie(c, 'oauth_invite')
-    if (!inviteToken) {
-      return c.redirect(`${config.WEB_URL}?error=invite_required`)
-    }
-
-    const invitation = await db.query.invitations.findFirst({
-      where: and(
-        eq(invitations.token, inviteToken),
-        isNull(invitations.usedBy),
-        gt(invitations.expiresAt, new Date()),
-      ),
-    })
-
-    if (!invitation) {
-      deleteCookie(c, 'oauth_invite')
-      return c.redirect(`${config.WEB_URL}?error=invite_invalid`)
+    const gate = await checkInviteGate(getCookie(c, 'oauth_invite'))
+    if (gate.redirect) {
+      if (gate.clearInviteCookie) deleteCookie(c, 'oauth_invite')
+      return c.redirect(`${config.WEB_URL}?error=${gate.redirect}`)
     }
   }
 
@@ -124,32 +93,7 @@ authRoutes.get('/auth/github/callback', async (c) => {
   // Mark invitation as used (if this was a new user via invite)
   const justRedeemedInvite = !existingUser && !isCreator
   if (justRedeemedInvite) {
-    const inviteToken = getCookie(c, 'oauth_invite')
-    if (inviteToken) {
-      await db
-        .update(invitations)
-        .set({ usedBy: user.id })
-        .where(eq(invitations.token, inviteToken))
-      deleteCookie(c, 'oauth_invite')
-    }
-
-    // Fire-and-forget welcome email. The redeem flow must redirect regardless
-    // of whether Resend succeeds; failures go through the error reporter so we
-    // don't silently lose them the way invite-send failures did pre-S021.
-    if (email) {
-      void sendWelcomeEmail({ email, username: githubUser.login }).catch((err: unknown) => {
-        errorReporter.report({
-          message: 'Failed to send welcome email',
-          stack: err instanceof Error ? err.stack : undefined,
-          status: 500,
-          source: 'api',
-          route: '/auth/github/callback',
-          method: 'GET',
-          userId: user.id,
-          context: { email },
-        }).catch(() => {})
-      })
-    }
+    await redeemInvite(c, user.id, email, githubUser.login)
   }
 
   // Create a server-side session (30 days)
@@ -216,6 +160,91 @@ authRoutes.delete('/auth/session', async (c) => {
   await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
   return c.json({ ok: true })
 })
+
+interface GithubUser {
+  id: number
+  login: string
+  avatar_url: string
+}
+
+async function exchangeCodeForToken(code: string | undefined): Promise<string | null> {
+  try {
+    const tokens = await github.validateAuthorizationCode(code ?? '')
+    return tokens.accessToken()
+  } catch {
+    return null
+  }
+}
+
+async function fetchGithubUser(accessToken: string): Promise<GithubUser | null> {
+  const res = await fetch('https://api.github.com/user', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'User-Agent': 'dojo.notdefined.dev',
+    },
+  })
+  if (!res.ok) return null
+  return (await res.json()) as GithubUser
+}
+
+interface InviteGate {
+  redirect: 'invite_required' | 'invite_invalid' | null
+  clearInviteCookie: boolean
+}
+
+async function checkInviteGate(inviteToken: string | undefined): Promise<InviteGate> {
+  if (!inviteToken) {
+    return { redirect: 'invite_required', clearInviteCookie: false }
+  }
+
+  const invitation = await db.query.invitations.findFirst({
+    where: and(
+      eq(invitations.token, inviteToken),
+      isNull(invitations.usedBy),
+      gt(invitations.expiresAt, new Date()),
+    ),
+  })
+
+  if (!invitation) {
+    return { redirect: 'invite_invalid', clearInviteCookie: true }
+  }
+
+  return { redirect: null, clearInviteCookie: false }
+}
+
+async function redeemInvite(
+  c: Context,
+  userId: string,
+  email: string | null,
+  username: string,
+): Promise<void> {
+  const inviteToken = getCookie(c, 'oauth_invite')
+  if (inviteToken) {
+    await db
+      .update(invitations)
+      .set({ usedBy: userId })
+      .where(eq(invitations.token, inviteToken))
+    deleteCookie(c, 'oauth_invite')
+  }
+
+  // Fire-and-forget welcome email. The redeem flow must redirect regardless
+  // of whether Resend succeeds; failures go through the error reporter so we
+  // don't silently lose them the way invite-send failures did pre-S021.
+  if (email) {
+    void sendWelcomeEmail({ email, username }).catch((err: unknown) => {
+      errorReporter.report({
+        message: 'Failed to send welcome email',
+        stack: err instanceof Error ? err.stack : undefined,
+        status: 500,
+        source: 'api',
+        route: '/auth/github/callback',
+        method: 'GET',
+        userId,
+        context: { email },
+      }).catch(() => {})
+    })
+  }
+}
 
 interface GithubEmailEntry {
   email: string

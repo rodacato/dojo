@@ -19,110 +19,19 @@ export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
     const { userId, aggregateId: sessionId } = event
 
     const earned = await getEarnedSlugs(db, userId)
+    const tryAward = (slug: string, qualifies: () => Promise<boolean>) =>
+      awardWhen(db, earned, userId, sessionId, slug, qualifies)
 
-    // FIRST_KATA: first completed session
-    if (!earned.has('FIRST_KATA')) {
-      await award(db, userId, 'FIRST_KATA', sessionId)
-    }
-
-    // 5_STREAK: 5 consecutive days
-    if (!earned.has('5_STREAK')) {
-      const streak = await getCurrentStreak(db, userId)
-      if (streak >= 5) await award(db, userId, '5_STREAK', sessionId)
-    }
-
-    // CONSISTENT: 30-day streak
-    if (!earned.has('CONSISTENT')) {
-      const streak = await getCurrentStreak(db, userId)
-      if (streak >= 30) await award(db, userId, 'CONSISTENT', sessionId)
-    }
-
-    // POLYGLOT: completed kata in all 3 types (CODE, CHAT, WHITEBOARD)
-    if (!earned.has('POLYGLOT')) {
-      const types = await db
-        .selectDistinct({ type: katas.type })
-        .from(sessions)
-        .innerJoin(katas, eq(sessions.kataId, katas.id))
-        .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
-      if (types.length >= 3) await award(db, userId, 'POLYGLOT', sessionId)
-    }
-
-    // ARCHITECT: 3+ WHITEBOARD kata completed
-    if (!earned.has('ARCHITECT')) {
-      const [row] = await db
-        .select({ count: count() })
-        .from(sessions)
-        .innerJoin(katas, eq(sessions.kataId, katas.id))
-        .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), eq(katas.type, 'WHITEBOARD')))
-      if (Number(row?.count ?? 0) >= 3) await award(db, userId, 'ARCHITECT', sessionId)
-    }
-
-    // RUBBER_DUCK: 3+ CHAT kata completed
-    if (!earned.has('RUBBER_DUCK')) {
-      const [row] = await db
-        .select({ count: count() })
-        .from(sessions)
-        .innerJoin(katas, eq(sessions.kataId, katas.id))
-        .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), eq(katas.type, 'CHAT')))
-      if (Number(row?.count ?? 0) >= 3) await award(db, userId, 'RUBBER_DUCK', sessionId)
-    }
-
-    // BRUTAL_TRUTH: 3+ NEEDS_WORK verdicts
-    if (!earned.has('BRUTAL_TRUTH')) {
-      const [row] = await db
-        .select({ count: count() })
-        .from(attempts)
-        .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
-        .where(
-          and(
-            eq(sessions.userId, userId),
-            eq(attempts.isFinalEvaluation, true),
-            sql`${attempts.llmResponse}::jsonb->>'verdict' = 'NEEDS_WORK'`,
-          ),
-        )
-      if (Number(row?.count ?? 0) >= 3) await award(db, userId, 'BRUTAL_TRUTH', sessionId)
-    }
-
-    // SENSEI_APPROVED: 5+ clean PASSED verdicts (not PASSED_WITH_NOTES)
-    if (!earned.has('SENSEI_APPROVED')) {
-      const [row] = await db
-        .select({ count: count() })
-        .from(attempts)
-        .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
-        .where(
-          and(
-            eq(sessions.userId, userId),
-            eq(attempts.isFinalEvaluation, true),
-            sql`${attempts.llmResponse}::jsonb->>'verdict' = 'PASSED'`,
-          ),
-        )
-      if (Number(row?.count ?? 0) >= 5) await award(db, userId, 'SENSEI_APPROVED', sessionId)
-    }
-
-    // SQL_SURVIVOR: 3+ kata with SQL-related topics
-    if (!earned.has('SQL_SURVIVOR')) {
-      const [row] = await db
-        .select({ count: count() })
-        .from(sessions)
-        .innerJoin(katas, eq(sessions.kataId, katas.id))
-        .where(
-          and(
-            eq(sessions.userId, userId),
-            eq(sessions.status, 'completed'),
-            sql`${katas.topics}::jsonb ?| ARRAY['sql', 'SQL', 'database', 'postgresql', 'postgres', 'mysql', 'queries']`,
-          ),
-        )
-      if (Number(row?.count ?? 0) >= 3) await award(db, userId, 'SQL_SURVIVOR', sessionId)
-    }
-
-    // UNDEFINED_NO_MORE: 50+ total completed kata (prestige)
-    if (!earned.has('UNDEFINED_NO_MORE')) {
-      const [row] = await db
-        .select({ count: count() })
-        .from(sessions)
-        .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
-      if (Number(row?.count ?? 0) >= 50) await award(db, userId, 'UNDEFINED_NO_MORE', sessionId)
-    }
+    await tryAward('FIRST_KATA', async () => true)
+    await tryAward('5_STREAK', async () => (await getCurrentStreak(db, userId)) >= 5)
+    await tryAward('CONSISTENT', async () => (await getCurrentStreak(db, userId)) >= 30)
+    await tryAward('POLYGLOT', () => hasCompletedDistinctTypes(db, userId, 3))
+    await tryAward('ARCHITECT', () => completedKataTypeCount(db, userId, 'WHITEBOARD', 3))
+    await tryAward('RUBBER_DUCK', () => completedKataTypeCount(db, userId, 'CHAT', 3))
+    await tryAward('BRUTAL_TRUTH', () => finalVerdictCount(db, userId, 'NEEDS_WORK', 3))
+    await tryAward('SENSEI_APPROVED', () => finalVerdictCount(db, userId, 'PASSED', 5))
+    await tryAward('SQL_SURVIVOR', () => completedSqlTopicCount(db, userId, 3))
+    await tryAward('UNDEFINED_NO_MORE', () => completedSessionCount(db, userId, 50))
   })
 
   eventBus.subscribe<ScrollCompleted>('ScrollCompleted', async (event) => {
@@ -135,6 +44,86 @@ export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
     // session_id is kata-only — scroll completion milestones leave it null.
     await db.insert(userMilestones).values({ userId: event.userId, milestoneSlug })
   })
+}
+
+// Only runs `qualifies` (and its query) when the slug isn't already earned,
+// preserving the original short-circuit and query order.
+async function awardWhen(
+  db: DB,
+  earned: Set<string>,
+  userId: string,
+  sessionId: string,
+  slug: string,
+  qualifies: () => Promise<boolean>,
+): Promise<void> {
+  if (earned.has(slug)) return
+  if (await qualifies()) await award(db, userId, slug, sessionId)
+}
+
+async function hasCompletedDistinctTypes(db: DB, userId: string, min: number): Promise<boolean> {
+  const types = await db
+    .selectDistinct({ type: katas.type })
+    .from(sessions)
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+  return types.length >= min
+}
+
+async function completedKataTypeCount(
+  db: DB,
+  userId: string,
+  type: string,
+  min: number,
+): Promise<boolean> {
+  const [row] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), eq(katas.type, type)))
+  return Number(row?.count ?? 0) >= min
+}
+
+async function finalVerdictCount(
+  db: DB,
+  userId: string,
+  verdict: string,
+  min: number,
+): Promise<boolean> {
+  const [row] = await db
+    .select({ count: count() })
+    .from(attempts)
+    .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
+    .where(
+      and(
+        eq(sessions.userId, userId),
+        eq(attempts.isFinalEvaluation, true),
+        sql`${attempts.llmResponse}::jsonb->>'verdict' = ${verdict}`,
+      ),
+    )
+  return Number(row?.count ?? 0) >= min
+}
+
+async function completedSqlTopicCount(db: DB, userId: string, min: number): Promise<boolean> {
+  const [row] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .innerJoin(katas, eq(sessions.kataId, katas.id))
+    .where(
+      and(
+        eq(sessions.userId, userId),
+        eq(sessions.status, 'completed'),
+        sql`${katas.topics}::jsonb ?| ARRAY['sql', 'SQL', 'database', 'postgresql', 'postgres', 'mysql', 'queries']`,
+      ),
+    )
+  return Number(row?.count ?? 0) >= min
+}
+
+async function completedSessionCount(db: DB, userId: string, min: number): Promise<boolean> {
+  const [row] = await db
+    .select({ count: count() })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+  return Number(row?.count ?? 0) >= min
 }
 
 async function getEarnedSlugs(db: DB, userId: string): Promise<Set<string>> {

@@ -143,6 +143,15 @@ export function EngawaPage() {
     navigate(`/playground/${next}`, { replace: true })
   }
 
+  function trackRun(extra: Record<string, unknown>): void {
+    trackEvent('playground_run', {
+      language: selectedLanguage,
+      version: selectedVersion,
+      authed: Boolean(user),
+      ...extra,
+    })
+  }
+
   async function handleRun(): Promise<void> {
     if (run.status === 'running') return
     if (requiresTurnstile && !turnstileToken) {
@@ -169,24 +178,11 @@ export function EngawaPage() {
         runtimeMs: result.runtimeMs,
         errorMessage: null,
       })
-      trackEvent('playground_run', {
-        language: selectedLanguage,
-        version: selectedVersion,
-        exitCode: result.exitCode,
-        runtimeMs: result.runtimeMs,
-        authed: Boolean(user),
-        codeChars: code.length,
-      })
+      trackRun({ exitCode: result.exitCode, runtimeMs: result.runtimeMs, codeChars: code.length })
     } catch (err) {
       const message = err instanceof ApiError ? describeApiError(err) : messageFromError(err, 'Run failed.')
       setRun({ ...INITIAL_RUN, status: 'error', errorMessage: message })
-      trackEvent('playground_run', {
-        language: selectedLanguage,
-        version: selectedVersion,
-        exitCode: null,
-        authed: Boolean(user),
-        error: err instanceof ApiError ? err.message : 'unknown',
-      })
+      trackRun({ exitCode: null, error: err instanceof ApiError ? err.message : 'unknown' })
     } finally {
       // Turnstile tokens are single-use server-side. Reset the widget
       // so the next run has a fresh token ready.

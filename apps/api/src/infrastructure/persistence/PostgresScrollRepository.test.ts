@@ -55,6 +55,7 @@ function scrollRow(over: Record<string, unknown> = {}) {
     status: 'published',
     isPublic: true,
     estimatedMinutes: 30,
+    createdAt: new Date('2026-01-01T00:00:00.000Z'),
     externalReferences: [{ label: 'docs', url: 'https://x' }],
     lessons: [lessonRow()],
     ...over,

@@ -55,6 +55,77 @@ export function KataActivePage() {
       }
     }
 
+    // Resolve a not-active session: error UI when prep failed with no attempt,
+    // otherwise route to the result screen.
+    function resolveTerminalSession(s: SessionWithKata): void {
+      if (s.status === 'failed' && !s.finalAttempt) {
+        setPrepareError(true)
+        return
+      }
+      navigate(`/kata/${sessionId}/result`, { replace: true })
+    }
+
+    function scheduleRetryOrFail(): void {
+      pollCount.current++
+      if (pollCount.current >= PREPARE_MAX_POLLS) {
+        setPrepareError(true)
+        return
+      }
+      if (pollCount.current >= PREPARE_SLOW_NOTICE_AFTER) {
+        setPrepareSlow(true)
+      }
+      setTimeout(load, PREPARE_POLL_INTERVAL_MS)
+    }
+
+    // SSE stream first (S022 Part 6). Returns true once it has handled the
+    // session terminally; false means the caller should fall back to polling
+    // (FF off / pre-S022 deploys → the stream 404s).
+    async function consumeStream(): Promise<boolean> {
+      try {
+        for await (const _chunk of api.streamSessionBody(sessionId!)) {
+          if (cancelled) return true
+          // Visible token-by-token feedback would need a body-progressive
+          // surface in the prepare UI; for now we just confirm the
+          // stream is alive so the slow-notice doesn't fire while the
+          // model is producing.
+        }
+        if (cancelled) return true
+        // Stream finished — body is persisted. Refetch once to
+        // pull the now-active session shape (kata, ownerRole).
+        const final = await api.getSession(sessionId!)
+        if (cancelled) return true
+        if (final.status === 'active') {
+          applyActiveSession(final)
+        } else {
+          resolveTerminalSession(final)
+        }
+        return true
+      } catch (sseErr) {
+        if (cancelled) return true
+        if (sseErr instanceof ApiError && sseErr.status === 404) {
+          return false
+        }
+        setPrepareError(true)
+        return true
+      }
+    }
+
+    async function handlePreparing(): Promise<void> {
+      setPreparing(true)
+      const handled = await consumeStream()
+      if (cancelled || handled) return
+      scheduleRetryOrFail()
+    }
+
+    function isNonRetryableApiError(err: unknown): boolean {
+      return (
+        err instanceof ApiError &&
+        err.status !== undefined &&
+        err.status !== 0 &&
+        err.status < 500
+      )
+    }
+
     async function load() {
       try {
         const s = await api.getSession(sessionId!)
@@ -65,78 +136,17 @@ export function KataActivePage() {
           return
         }
         if (s.status === 'preparing') {
-          setPreparing(true)
-          // Try the SSE stream first (S022 Part 6). If it 404s the flag
-          // is off on the API side and we fall back to the polling
-          // path. Any other error surfaces the prepare-error UI.
-          try {
-            for await (const _chunk of api.streamSessionBody(sessionId!)) {
-              if (cancelled) return
-              // Visible token-by-token feedback would need a body-progressive
-              // surface in the prepare UI; for now we just confirm the
-              // stream is alive so the slow-notice doesn't fire while the
-              // model is producing.
-            }
-            if (cancelled) return
-            // Stream finished — body is persisted. Refetch once to
-            // pull the now-active session shape (kata, ownerRole).
-            const final = await api.getSession(sessionId!)
-            if (cancelled) return
-            if (final.status === 'active') {
-              applyActiveSession(final)
-              return
-            }
-            if (final.status === 'failed' && !final.finalAttempt) {
-              setPrepareError(true)
-              return
-            }
-            navigate(`/kata/${sessionId}/result`, { replace: true })
-            return
-          } catch (sseErr) {
-            if (cancelled) return
-            if (sseErr instanceof ApiError && sseErr.status === 404) {
-              // SSE flag off on the API — fall back to the polling path.
-            } else {
-              setPrepareError(true)
-              return
-            }
-          }
-          // Polling fallback (also covers FF off and pre-S022 deploys).
-          pollCount.current++
-          if (pollCount.current >= PREPARE_MAX_POLLS) {
-            setPrepareError(true)
-            return
-          }
-          if (pollCount.current >= PREPARE_SLOW_NOTICE_AFTER) {
-            setPrepareSlow(true)
-          }
-          setTimeout(load, PREPARE_POLL_INTERVAL_MS)
+          await handlePreparing()
           return
         }
-        // Preparation failed on the server — show the error UI instead of
-        // routing to results (there is no attempt to render).
-        if (s.status === 'failed' && !s.finalAttempt) {
-          setPrepareError(true)
-          return
-        }
-        // completed or failed with an attempt to show
-        navigate(`/kata/${sessionId}/result`, { replace: true })
+        resolveTerminalSession(s)
       } catch (err) {
         if (cancelled) return
-        // Non-retryable API errors: show the error UI immediately instead of polling blindly.
-        if (err instanceof ApiError && err.status !== undefined && err.status !== 0 && err.status < 500) {
+        if (isNonRetryableApiError(err)) {
           setPrepareError(true)
           return
         }
-        pollCount.current++
-        if (pollCount.current >= PREPARE_MAX_POLLS) {
-          setPrepareError(true)
-          return
-        }
-        if (pollCount.current >= PREPARE_SLOW_NOTICE_AFTER) {
-          setPrepareSlow(true)
-        }
-        setTimeout(load, PREPARE_POLL_INTERVAL_MS)
+        scheduleRetryOrFail()
       }
     }
 
@@ -205,47 +215,9 @@ export function KataActivePage() {
 
   const { kata } = session
   const isCode = kata.type === 'code'
-  const isWhiteboard = kata.type === 'whiteboard'
-  const isReview = kata.type === 'review'
   // All formats land side-by-side on desktop — the chat panel mirrors the
   // code/whiteboard shell so the redesign reads as one product.
   const orientation = isMobile ? 'vertical' : 'horizontal'
-  const language = resolveLanguage(kata.language)
-  const filename = isCode ? `solution.${fileExtension(language)}` : null
-  const nonCodeLabel = isWhiteboard ? 'Mermaid' : 'Prose'
-  const editorLabel = isCode ? languageLabel(language) : nonCodeLabel
-
-  let editorPane
-  if (isCode) {
-    editorPane = (
-      <CodeEditor
-        value={userResponse}
-        onChange={setUserResponse}
-        language={language}
-        placeholder="Write your solution..."
-      />
-    )
-  } else if (isWhiteboard) {
-    editorPane = (
-      <Suspense fallback={<div className="p-4 text-muted font-mono text-sm">Loading editor...</div>}>
-        <MermaidEditor value={userResponse} onChange={setUserResponse} />
-      </Suspense>
-    )
-  } else {
-    editorPane = (
-      <ChatEditor
-        value={userResponse}
-        onChange={setUserResponse}
-        font={responseFont}
-        onSubmit={handleSubmit}
-        placeholder={
-          isReview
-            ? 'Write your review. Focus on correctness — what would you ask to change before merging?'
-            : undefined
-        }
-      />
-    )
-  }
 
   return (
     <div className="h-screen bg-page flex flex-col overflow-hidden">
@@ -300,7 +272,7 @@ export function KataActivePage() {
                 <div className="flex items-center gap-2 flex-wrap">
                   <TypeBadge type={kata.type} />
                   <DifficultyBadge difficulty={kata.difficulty} />
-                  {isWhiteboard && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
+                  {kata.type === 'whiteboard' && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
                       className="text-warning text-xs font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
@@ -325,32 +297,121 @@ export function KataActivePage() {
           ${orientation === 'horizontal' ? 'w-px cursor-col-resize' : 'h-px cursor-row-resize'}
         `} />
 
-        {/* Response panel */}
-        <Panel defaultSize={isCode ? 60 : 50} minSize={20} className="flex flex-col">
-          <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
-            {isCode || isWhiteboard ? (
-              <>
-                <span className="font-mono text-xs text-primary">
-                  {filename ?? 'architecture.md'}
-                </span>
-                <span className="h-3 w-px bg-border" />
-                <span className="font-mono text-xs text-muted">{editorLabel}</span>
-              </>
-            ) : (
-              <>
-                <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
-                  {isReview ? 'Code Review' : 'Your Response'}
-                </span>
-                <FontToggle value={responseFont} onChange={setResponseFont} className="ml-auto" />
-              </>
-            )}
-          </div>
-          <div className="flex-1 overflow-hidden">
-            {editorPane}
-          </div>
-        </Panel>
+        <ResponsePanel
+          kata={kata}
+          value={userResponse}
+          onChange={setUserResponse}
+          font={responseFont}
+          onFontChange={setResponseFont}
+          onSubmit={handleSubmit}
+        />
       </PanelGroup>
     </div>
+  )
+}
+
+function ResponsePanel({
+  kata,
+  value,
+  onChange,
+  font,
+  onFontChange,
+  onSubmit,
+}: Readonly<{
+  kata: SessionWithKata['kata']
+  value: string
+  onChange: (v: string) => void
+  font: 'mono' | 'sans'
+  onFontChange: (v: 'mono' | 'sans') => void
+  onSubmit: () => void
+}>) {
+  const isCode = kata.type === 'code'
+  const isWhiteboard = kata.type === 'whiteboard'
+  const isReview = kata.type === 'review'
+  const language = resolveLanguage(kata.language)
+  const filename = isCode ? `solution.${fileExtension(language)}` : 'architecture.md'
+  const editorLabel = isCode
+    ? languageLabel(language)
+    : isWhiteboard
+      ? 'Mermaid'
+      : 'Prose'
+
+  return (
+    <Panel defaultSize={isCode ? 60 : 50} minSize={20} className="flex flex-col">
+      <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
+        {isCode || isWhiteboard ? (
+          <>
+            <span className="font-mono text-xs text-primary">{filename}</span>
+            <span className="h-3 w-px bg-border" />
+            <span className="font-mono text-xs text-muted">{editorLabel}</span>
+          </>
+        ) : (
+          <>
+            <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+              {isReview ? 'Code Review' : 'Your Response'}
+            </span>
+            <FontToggle value={font} onChange={onFontChange} className="ml-auto" />
+          </>
+        )}
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <ResponseEditor
+          kata={kata}
+          language={language}
+          value={value}
+          onChange={onChange}
+          font={font}
+          onSubmit={onSubmit}
+        />
+      </div>
+    </Panel>
+  )
+}
+
+function ResponseEditor({
+  kata,
+  language,
+  value,
+  onChange,
+  font,
+  onSubmit,
+}: Readonly<{
+  kata: SessionWithKata['kata']
+  language: Language
+  value: string
+  onChange: (v: string) => void
+  font: 'mono' | 'sans'
+  onSubmit: () => void
+}>) {
+  if (kata.type === 'code') {
+    return (
+      <CodeEditor
+        value={value}
+        onChange={onChange}
+        language={language}
+        placeholder="Write your solution..."
+      />
+    )
+  }
+  if (kata.type === 'whiteboard') {
+    return (
+      <Suspense fallback={<div className="p-4 text-muted font-mono text-sm">Loading editor...</div>}>
+        <MermaidEditor value={value} onChange={onChange} />
+      </Suspense>
+    )
+  }
+  return (
+    <ChatEditor
+      value={value}
+      onChange={onChange}
+      font={font}
+      onSubmit={onSubmit}
+      placeholder={
+        kata.type === 'review'
+          ? 'Write your review. Focus on correctness — what would you ask to change before merging?'
+          : undefined
+      }
+    />
   )
 }
 

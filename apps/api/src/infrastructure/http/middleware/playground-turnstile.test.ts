@@ -111,14 +111,14 @@ describe('playgroundTurnstileMiddleware — enforced (secret set)', () => {
     stubSiteverify({ ok: false })
     const res = await post({ turnstileToken: 'good-token' })
     expect(res.status).toBe(403)
-    expect((await res.json()).codes).toContain('siteverify_http_error')
+    expect(((await res.json()) as { codes: string[] }).codes).toContain('siteverify_http_error')
   })
 
   it('fails closed (403) when the siteverify call throws (network error)', async () => {
     stubSiteverify({ throws: true })
     const res = await post({ turnstileToken: 'good-token' })
     expect(res.status).toBe(403)
-    expect((await res.json()).codes).toContain('siteverify_network_error')
+    expect(((await res.json()) as { codes: string[] }).codes).toContain('siteverify_network_error')
   })
 
   it('returns an empty codes array when siteverify omits error-codes', async () => {

@@ -44,6 +44,16 @@ interface TurnstileWidgetProps {
 const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
 let scriptPromise: Promise<void> | null = null
 
+function pollForTurnstile(
+  attempts: number,
+  resolve: () => void,
+  reject: (err: Error) => void,
+) {
+  if (globalThis.turnstile) resolve()
+  else if (attempts <= 0) reject(new Error('Turnstile global not available after load'))
+  else setTimeout(() => pollForTurnstile(attempts - 1, resolve, reject), 50)
+}
+
 function loadTurnstileScript(): Promise<void> {
   if (scriptPromise) return scriptPromise
   scriptPromise = new Promise((resolve, reject) => {
@@ -57,12 +67,7 @@ function loadTurnstileScript(): Promise<void> {
     script.defer = true
     script.onload = () => {
       // window.turnstile may take a tick to attach after onload.
-      const poll = (attempts: number) => {
-        if (globalThis.turnstile) resolve()
-        else if (attempts <= 0) reject(new Error('Turnstile global not available after load'))
-        else setTimeout(() => poll(attempts - 1), 50)
-      }
-      poll(20)
+      pollForTurnstile(20, resolve, reject)
     }
     script.onerror = () => {
       scriptPromise = null

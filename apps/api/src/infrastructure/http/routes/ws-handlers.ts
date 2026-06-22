@@ -1,7 +1,7 @@
 import { useCases, executionQueue } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
-import type { EvaluationResult } from '../../../domain/practice/values'
+import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { db } from '../../persistence/drizzle/client'
 import { attempts as attemptsTable } from '../../persistence/drizzle/schema'
@@ -70,33 +70,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
 
   pendingAttempts.delete(attemptId)
 
-  // ── Code execution (if kata has testCode) ──────────────────────────────
-  let executionContext: string | undefined
-  const testCode = kata?.testCode
-  if (testCode && pending.userResponse.trim()) {
-    send(ws, { type: 'executing' })
-    try {
-      const execResult = await executionQueue.enqueue({
-        language: kata?.languages?.[0] ?? 'javascript',
-        code: pending.userResponse,
-        testCode,
-      })
-      send(ws, { type: 'execution_result', result: execResult })
-
-      // Build context string for the sensei
-      if (execResult.exitCode === 0) {
-        executionContext = `## Test Results\nAll tests passed.\nExit code: 0 | Execution time: ${execResult.executionTimeMs}ms\n\nFocus your evaluation on code quality, not correctness.`
-      } else if (execResult.timedOut) {
-        executionContext = `## Test Results\nExecution timed out.\n\nEvaluate the attempt and consider why it might hang or loop infinitely.`
-      } else if (execResult.stderr && !execResult.stdout) {
-        executionContext = `## Test Results\nCode did not compile or crashed.\nError: ${execResult.stderr.slice(0, 500)}\n\nEvaluate the attempt and the error.`
-      } else {
-        executionContext = `## Test Results\nSome tests failed.\nstdout: ${execResult.stdout.slice(0, 500)}\nstderr: ${execResult.stderr.slice(0, 300)}\nExit code: ${execResult.exitCode} | Execution time: ${execResult.executionTimeMs}ms\n\nFocus on WHY the failing tests fail.`
-      }
-    } catch (err) {
-      console.warn('Code execution failed, continuing without results:', err)
-    }
-  }
+  const executionContext = await runTestCode(ws, kata, pending.userResponse)
 
   try {
     for await (const token of useCases.submitAttempt.execute({
@@ -109,39 +83,12 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       category: kata?.category,
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
     })) {
-      if (token.chunk) {
-        send(ws, { type: 'token', content: token.chunk })
-        cache.tokens.push(token.chunk)
-      }
-
-      if (token.isFinal && token.result) {
-        cache.result = token.result
-        cache.complete = true
-        cache.isFinal = token.result.isFinalEvaluation
-
-        send(ws, { type: 'evaluation', result: token.result })
-        send(ws, { type: 'complete', isFinal: cache.isFinal })
-
-        if (cache.isFinal) ws.close(1000, 'Evaluation complete')
-      }
+      streamToken(ws, cache, token)
     }
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : 'Unknown LLM error'
-    const partialTokens = cache.tokens.join('')
     console.error('LLM stream error for session', pending.sessionId, ':', errorMsg)
-
-    // Persist the attempt with partial stream so retry can find it
-    await db
-      .insert(attemptsTable)
-      .values({
-        id: attemptId,
-        sessionId: pending.sessionId,
-        userResponse: pending.userResponse,
-        llmResponse: partialTokens || JSON.stringify({ error: errorMsg }),
-        isFinalEvaluation: false,
-        submittedAt: new Date(),
-      })
-      .onConflictDoNothing()
+    await persistPartialAttempt(attemptId, pending, cache.tokens.join('') || JSON.stringify({ error: errorMsg }))
     send(ws, { type: 'error', code: 'LLM_STREAM_ERROR' })
     cache.complete = true
   } finally {
@@ -166,4 +113,79 @@ export function handleReconnect(ws: WSInstance, attemptId: string) {
     send(ws, { type: 'complete', isFinal: cache.isFinal })
     if (cache.isFinal) ws.close(1000, 'Evaluation complete')
   }
+}
+
+// Runs the kata's testCode (if any) through the execution queue, emitting
+// `executing` + `execution_result`, and returns the sensei context string.
+// Returns undefined when there's no testCode, an empty response, or a failure.
+async function runTestCode(
+  ws: WSInstance,
+  kata: { testCode?: string | null; languages?: string[] | null } | null | undefined,
+  userResponse: string,
+): Promise<string | undefined> {
+  const testCode = kata?.testCode
+  if (!testCode || !userResponse.trim()) return undefined
+
+  send(ws, { type: 'executing' })
+  try {
+    const execResult = await executionQueue.enqueue({
+      language: kata?.languages?.[0] ?? 'javascript',
+      code: userResponse,
+      testCode,
+    })
+    send(ws, { type: 'execution_result', result: execResult })
+    return buildExecutionContext(execResult)
+  } catch (err) {
+    console.warn('Code execution failed, continuing without results:', err)
+    return undefined
+  }
+}
+
+function buildExecutionContext(r: ExecutionResult): string {
+  if (r.exitCode === 0) {
+    return `## Test Results\nAll tests passed.\nExit code: 0 | Execution time: ${r.executionTimeMs}ms\n\nFocus your evaluation on code quality, not correctness.`
+  }
+  if (r.timedOut) {
+    return `## Test Results\nExecution timed out.\n\nEvaluate the attempt and consider why it might hang or loop infinitely.`
+  }
+  if (r.stderr && !r.stdout) {
+    return `## Test Results\nCode did not compile or crashed.\nError: ${r.stderr.slice(0, 500)}\n\nEvaluate the attempt and the error.`
+  }
+  return `## Test Results\nSome tests failed.\nstdout: ${r.stdout.slice(0, 500)}\nstderr: ${r.stderr.slice(0, 300)}\nExit code: ${r.exitCode} | Execution time: ${r.executionTimeMs}ms\n\nFocus on WHY the failing tests fail.`
+}
+
+function streamToken(ws: WSInstance, cache: StreamCache, token: EvaluationToken): void {
+  if (token.chunk) {
+    send(ws, { type: 'token', content: token.chunk })
+    cache.tokens.push(token.chunk)
+  }
+
+  if (token.isFinal && token.result) {
+    cache.result = token.result
+    cache.complete = true
+    cache.isFinal = token.result.isFinalEvaluation
+
+    send(ws, { type: 'evaluation', result: token.result })
+    send(ws, { type: 'complete', isFinal: cache.isFinal })
+
+    if (cache.isFinal) ws.close(1000, 'Evaluation complete')
+  }
+}
+
+async function persistPartialAttempt(
+  attemptId: string,
+  pending: { sessionId: string; userResponse: string },
+  llmResponse: string,
+): Promise<void> {
+  await db
+    .insert(attemptsTable)
+    .values({
+      id: attemptId,
+      sessionId: pending.sessionId,
+      userResponse: pending.userResponse,
+      llmResponse,
+      isFinalEvaluation: false,
+      submittedAt: new Date(),
+    })
+    .onConflictDoNothing()
 }

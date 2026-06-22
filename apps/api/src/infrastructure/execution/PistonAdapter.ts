@@ -57,44 +57,9 @@ export class PistonAdapter implements CodeExecutionPort {
         signal: AbortSignal.timeout(PLAYGROUND_RUN_TIMEOUT_MS + 5_000),
       })
 
-      if (!response.ok) {
-        const body = await response.text().catch(() => '')
-        return {
-          stdout: '',
-          stderr: formatPistonHttpError(response.status, response.statusText, body),
-          exitCode: 1,
-          timedOut: false,
-          outputExceeded: false,
-          runTimeoutMs,
-          executionTimeMs: Date.now() - start,
-        }
-      }
-
-      const result = (await response.json()) as PistonExecuteResponse
-
-      if (result.compile && result.compile.code !== 0) {
-        return {
-          stdout: result.compile.stdout,
-          stderr: scrubPistonNoise(result.compile.stderr),
-          exitCode: result.compile.code ?? 1,
-          timedOut: false,
-          outputExceeded: false,
-          runTimeoutMs,
-          executionTimeMs: Date.now() - start,
-        }
-      }
-
-      return classifyRunResult(result.run, runTimeoutMs, Date.now() - start)
+      return await handlePistonResponse(response, runTimeoutMs, start)
     } catch (err) {
-      return {
-        stdout: '',
-        stderr: err instanceof Error ? err.message : 'Execution failed',
-        exitCode: 1,
-        timedOut: err instanceof Error && err.name === 'TimeoutError',
-        outputExceeded: false,
-        runTimeoutMs,
-        executionTimeMs: Date.now() - start,
-      }
+      return errorResult(err, runTimeoutMs, Date.now() - start)
     }
   }
 
@@ -119,47 +84,8 @@ export class PistonAdapter implements CodeExecutionPort {
     }
 
     const isSql = params.language.toLowerCase() === 'sql'
-    const isRust = params.language.toLowerCase() === 'rust'
-    const isGo = params.language.toLowerCase() === 'go'
-    // Combine solution + test into one file so all symbols are in scope.
-    // Two-file mode loses stdout in Piston's TypeScript runtime.
-    // Rust: a learner-written `fn main` is renamed to `fn __learner_main` so
-    // the test harness owns the real entry point. Learner code stays at the
-    // top level of the file (same-file items are accessible without `pub` —
-    // a `mod` wrapper was tried first and failed on module privacy, validated
-    // against real rustc 1.68.2 at the L1 smoke). Zero line-number offset.
-    // Playground testCode calls `__learner_main()` to run the learner's main.
-    // Go: the order is inverted — Go demands `package main` + one import block
-    // at the file top and rejects unused imports, so the learner's code can't
-    // lead. The testCode is the full file (package, imports, harness helpers,
-    // a `// __DOJO_SOLUTION__` marker, then `func main`); the learner's code is
-    // spliced in at the marker. A replacement function avoids `$`-pattern
-    // surprises from arbitrary learner code. Validated against Piston Go
-    // 1.16.2 (S031): the harness hand-rolls JSON because `encoding/json`
-    // crashes the sandbox keeper there.
-    let combined: string
-    if (isRust) {
-      combined = `${params.code.replace(/\bfn\s+main\s*\(/g, 'fn __learner_main(')}\n\n${params.testCode}`
-    } else if (isGo) {
-      combined = params.testCode.replace('// __DOJO_SOLUTION__', () => params.code)
-    } else {
-      combined = `${params.code}\n\n${params.testCode}`
-    }
-    // Rust file is named main.rs so rustc's error paths match the scroll prose
-    // ("main.rs:LINE"); Go is main.go for the same reason; others keep test.*.
-    let runFile: string
-    if (isSql) {
-      runFile = 'query.sql'
-    } else if (isRust) {
-      runFile = 'main.rs'
-    } else if (isGo) {
-      runFile = 'main.go'
-    } else {
-      runFile = `test.${ext(params.language)}`
-    }
-    const files = isSql
-      ? [{ name: 'query.sql', content: buildSqlScript(params.code, params.testCode) }]
-      : [{ name: runFile, content: combined }]
+    const runFile = runFileName(params.language)
+    const files = buildExecuteFiles(params.language, params.code, params.testCode, runFile)
     const timeout = params.timeoutMs ?? config.PISTON_RUN_TIMEOUT
 
     const start = Date.now()
@@ -181,48 +107,104 @@ export class PistonAdapter implements CodeExecutionPort {
         signal: AbortSignal.timeout(timeout + 5000),
       })
 
-      if (!response.ok) {
-        const body = await response.text().catch(() => '')
-        return {
-          stdout: '',
-          stderr: formatPistonHttpError(response.status, response.statusText, body),
-          exitCode: 1,
-          timedOut: false,
-          outputExceeded: false,
-          runTimeoutMs,
-          executionTimeMs: Date.now() - start,
-        }
-      }
-
-      const result = (await response.json()) as PistonExecuteResponse
-
-      // If compilation failed, return compile error
-      if (result.compile && result.compile.code !== 0) {
-        return {
-          stdout: result.compile.stdout,
-          stderr: scrubPistonNoise(result.compile.stderr),
-          // Piston reports a null code when the compile stage dies on a
-          // signal (observed with rustc); normalize to 1.
-          exitCode: result.compile.code ?? 1,
-          timedOut: false,
-          outputExceeded: false,
-          runTimeoutMs,
-          executionTimeMs: Date.now() - start,
-        }
-      }
-
-      return classifyRunResult(result.run, runTimeoutMs, Date.now() - start)
+      return await handlePistonResponse(response, runTimeoutMs, start)
     } catch (err) {
-      return {
-        stdout: '',
-        stderr: err instanceof Error ? err.message : 'Execution failed',
-        exitCode: 1,
-        timedOut: err instanceof Error && err.name === 'TimeoutError',
-        outputExceeded: false,
-        runTimeoutMs,
-        executionTimeMs: Date.now() - start,
-      }
+      return errorResult(err, runTimeoutMs, Date.now() - start)
     }
+  }
+}
+
+// Combine solution + test into one file so all symbols are in scope.
+// Two-file mode loses stdout in Piston's TypeScript runtime.
+// Rust: a learner-written `fn main` is renamed to `fn __learner_main` so
+// the test harness owns the real entry point. Learner code stays at the
+// top level of the file (same-file items are accessible without `pub` —
+// a `mod` wrapper was tried first and failed on module privacy, validated
+// against real rustc 1.68.2 at the L1 smoke). Zero line-number offset.
+// Playground testCode calls `__learner_main()` to run the learner's main.
+// Go: the order is inverted — Go demands `package main` + one import block
+// at the file top and rejects unused imports, so the learner's code can't
+// lead. The testCode is the full file (package, imports, harness helpers,
+// a `// __DOJO_SOLUTION__` marker, then `func main`); the learner's code is
+// spliced in at the marker. A replacement function avoids `$`-pattern
+// surprises from arbitrary learner code. Validated against Piston Go
+// 1.16.2 (S031): the harness hand-rolls JSON because `encoding/json`
+// crashes the sandbox keeper there.
+function combineSources(language: string, code: string, testCode: string): string {
+  const lang = language.toLowerCase()
+  if (lang === 'rust') {
+    return `${code.replace(/\bfn\s+main\s*\(/g, 'fn __learner_main(')}\n\n${testCode}`
+  }
+  if (lang === 'go') {
+    return testCode.replace('// __DOJO_SOLUTION__', () => code)
+  }
+  return `${code}\n\n${testCode}`
+}
+
+// Rust file is named main.rs so rustc's error paths match the scroll prose
+// ("main.rs:LINE"); Go is main.go for the same reason; others keep test.*.
+function runFileName(language: string): string {
+  switch (language.toLowerCase()) {
+    case 'sql': return 'query.sql'
+    case 'rust': return 'main.rs'
+    case 'go': return 'main.go'
+    default: return `test.${ext(language)}`
+  }
+}
+
+function buildExecuteFiles(language: string, code: string, testCode: string, runFile: string) {
+  if (language.toLowerCase() === 'sql') {
+    return [{ name: 'query.sql', content: buildSqlScript(code, testCode) }]
+  }
+  return [{ name: runFile, content: combineSources(language, code, testCode) }]
+}
+
+async function handlePistonResponse(
+  response: Response,
+  runTimeoutMs: number,
+  start: number,
+): Promise<ExecutionResult> {
+  if (!response.ok) {
+    const body = await response.text().catch(() => '')
+    return {
+      stdout: '',
+      stderr: formatPistonHttpError(response.status, response.statusText, body),
+      exitCode: 1,
+      timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs,
+      executionTimeMs: Date.now() - start,
+    }
+  }
+
+  const result = (await response.json()) as PistonExecuteResponse
+
+  if (result.compile && result.compile.code !== 0) {
+    return {
+      stdout: result.compile.stdout,
+      stderr: scrubPistonNoise(result.compile.stderr),
+      // Piston reports a null code when the compile stage dies on a
+      // signal (observed with rustc); normalize to 1.
+      exitCode: result.compile.code ?? 1,
+      timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs,
+      executionTimeMs: Date.now() - start,
+    }
+  }
+
+  return classifyRunResult(result.run, runTimeoutMs, Date.now() - start)
+}
+
+function errorResult(err: unknown, runTimeoutMs: number, executionTimeMs: number): ExecutionResult {
+  return {
+    stdout: '',
+    stderr: err instanceof Error ? err.message : 'Execution failed',
+    exitCode: 1,
+    timedOut: err instanceof Error && err.name === 'TimeoutError',
+    outputExceeded: false,
+    runTimeoutMs,
+    executionTimeMs,
   }
 }
 

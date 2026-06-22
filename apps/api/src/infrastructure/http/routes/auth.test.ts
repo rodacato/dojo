@@ -131,7 +131,7 @@ function freshIp(): string {
   ipCounter += 1
   return `10.0.${Math.floor(ipCounter / 250)}.${ipCounter % 250}`
 }
-function authRequest(path: string, init: RequestInit = {}): Promise<Response> {
+async function authRequest(path: string, init: RequestInit = {}): Promise<Response> {
   const headers = { 'x-forwarded-for': freshIp(), ...(init.headers as Record<string, string>) }
   return createRouter().request(path, { ...init, headers })
 }
