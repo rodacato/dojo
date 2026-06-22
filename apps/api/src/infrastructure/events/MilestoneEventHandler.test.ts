@@ -35,12 +35,11 @@ class FakeDb {
   // The chain object: every builder method returns `this`, and `.then` makes it
   // awaitable. getEarnedSlugs is detected by its `{ slug }` projection.
   private chain(isEarnedQuery: boolean) {
-    const self = this
     const builder: Record<string, unknown> = {}
     const passthrough = () => builder
     for (const m of ['from', 'innerJoin', 'where', 'groupBy']) builder[m] = passthrough
     builder.then = (resolve: (rows: unknown[]) => unknown) =>
-      Promise.resolve(isEarnedQuery ? self.earnedRows() : self.nextSelect()).then(resolve)
+      Promise.resolve(isEarnedQuery ? this.earnedRows() : this.nextSelect()).then(resolve)
     return builder
   }
 
@@ -54,10 +53,9 @@ class FakeDb {
   }
 
   insert() {
-    const self = this
     return {
-      values(row: { milestoneSlug: string; sessionId?: string | null }) {
-        self.awarded.push({ milestoneSlug: row.milestoneSlug, sessionId: row.sessionId ?? null })
+      values: (row: { milestoneSlug: string; sessionId?: string | null }) => {
+        this.awarded.push({ milestoneSlug: row.milestoneSlug, sessionId: row.sessionId ?? null })
         return Promise.resolve()
       },
     }
