@@ -8,7 +8,7 @@ export function DotGridBackground({ className = '' }: Readonly<DotGridBackground
   const containerRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<HTMLDivElement[]>([])
   const prefersReduced = useRef(
-    typeof globalThis.window !== 'undefined' &&
+    globalThis.window !== undefined &&
       globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
 

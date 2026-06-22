@@ -35,7 +35,7 @@ export const errorReporter: ErrorReporter = new CompositeErrorReporter(reporters
 // that never bubble to React's boundary still get reported. Call once at
 // app bootstrap.
 export function installGlobalHandlers(): void {
-  if (typeof globalThis.window === 'undefined') return
+  if (globalThis.window === undefined) return
 
   globalThis.addEventListener('error', (event) => {
     void errorReporter.report(toReport(event.error, event.message))
@@ -54,12 +54,12 @@ function toReport(err: unknown, fallback?: string): WebErrorReport {
     return {
       message: err.message || fallback || 'Unknown error',
       stack: err.stack,
-      route: typeof globalThis.window === 'undefined' ? undefined : globalThis.window.location.pathname,
+      route: globalThis.window === undefined ? undefined : globalThis.window.location.pathname,
     }
   }
   return {
     message: fallback ?? 'Unknown error',
-    route: typeof globalThis.window === 'undefined' ? undefined : globalThis.window.location.pathname,
+    route: globalThis.window === undefined ? undefined : globalThis.window.location.pathname,
   }
 }
 

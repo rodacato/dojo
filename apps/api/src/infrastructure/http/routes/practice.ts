@@ -60,7 +60,7 @@ const HTML_ESCAPES: Record<string, string> = {
 }
 
 function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c]!)
+  return s.replace(/[&<>"']/g, (c) => HTML_ESCAPES[c])
 }
 
 practiceRoutes.post('/access-requests', async (c) => {
