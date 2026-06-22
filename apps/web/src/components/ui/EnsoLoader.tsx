@@ -16,7 +16,7 @@ interface EnsoLoaderProps {
 // The gap in the circle is the point — the enso is imperfect by design.
 export function EnsoLoader({ size = 40, label = 'Loading', className = '' }: Readonly<EnsoLoaderProps>) {
   const pathRef = useRef<SVGPathElement>(null)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLOutputElement>(null)
 
   useGSAP(
     () => {
@@ -54,7 +54,7 @@ export function EnsoLoader({ size = 40, label = 'Loading', className = '' }: Rea
   )
 
   return (
-    <div ref={containerRef} className={`inline-block text-accent ${className}`} role="status" aria-label={label}>
+    <output ref={containerRef} className={`inline-block text-accent ${className}`} aria-label={label}>
       <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden>
         {/* Arc from 20° to 340° clockwise — leaves a ~40° gap at the right side */}
         <path
@@ -67,6 +67,6 @@ export function EnsoLoader({ size = 40, label = 'Loading', className = '' }: Rea
         />
       </svg>
       <span className="sr-only">{label}</span>
-    </div>
+    </output>
   )
 }

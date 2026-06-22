@@ -52,7 +52,7 @@ export function Banner({
     : `rounded-md border border-border bg-surface ${accentClass} px-4 py-3`
 
   return (
-    <div role="status" className={`${wrapperClass} flex items-start justify-between gap-4 ${className}`}>
+    <output className={`${wrapperClass} flex items-start justify-between gap-4 ${className}`}>
       <div className="min-w-0">
         <div className={`font-mono text-xs uppercase tracking-wider mb-1 ${TONE_TEXT[tone]}`}>
           {eyebrow}
@@ -72,6 +72,6 @@ export function Banner({
           </button>
         )}
       </div>
-    </div>
+    </output>
   )
 }
