@@ -51,19 +51,7 @@ export class GenerateSessionBody {
 
       await this.deps.sessionRepo.updateBody(params.sessionId, body)
     } catch (err) {
-      await this.deps.sessionRepo.delete(params.sessionId).catch(() => {})
-      await this.deps.errorReporter?.report({
-        message: err instanceof Error ? err.message : String(err),
-        stack: err instanceof Error ? err.stack : undefined,
-        status: 500,
-        source: 'api',
-        context: {
-          useCase: 'GenerateSessionBody',
-          sessionId: params.sessionId,
-          kataId: params.kataId,
-          variationId: params.variationId,
-        },
-      })
+      await this.cleanupAndReport(params, err, 'GenerateSessionBody')
       throw err
     }
   }
@@ -116,20 +104,30 @@ export class GenerateSessionBody {
 
       await this.deps.sessionRepo.updateBody(params.sessionId, acc)
     } catch (err) {
-      await this.deps.sessionRepo.delete(params.sessionId).catch(() => {})
-      await this.deps.errorReporter?.report({
-        message: err instanceof Error ? err.message : String(err),
-        stack: err instanceof Error ? err.stack : undefined,
-        status: 500,
-        source: 'api',
-        context: {
-          useCase: 'GenerateSessionBody.executeStream',
-          sessionId: params.sessionId,
-          kataId: params.kataId,
-          variationId: params.variationId,
-        },
-      })
+      await this.cleanupAndReport(params, err, 'GenerateSessionBody.executeStream')
       throw err
     }
+  }
+
+  // Failed prep deletes the half-born session and reports; the caller still
+  // rethrows so the request surfaces the error.
+  private async cleanupAndReport(
+    params: { sessionId: SessionId; kataId: KataId; variationId: VariationId },
+    err: unknown,
+    useCase: string,
+  ): Promise<void> {
+    await this.deps.sessionRepo.delete(params.sessionId).catch(() => {})
+    await this.deps.errorReporter?.report({
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+      status: 500,
+      source: 'api',
+      context: {
+        useCase,
+        sessionId: params.sessionId,
+        kataId: params.kataId,
+        variationId: params.variationId,
+      },
+    })
   }
 }
