@@ -3,7 +3,7 @@ export type ThemeChoice = 'auto' | 'sumi' | 'washi' | 'slate'
 const STORAGE_KEY = 'dojo-theme'
 
 export function getStoredTheme(): ThemeChoice {
-  if (typeof globalThis.window === 'undefined') return 'auto'
+  if (globalThis.window === undefined) return 'auto'
   const stored = globalThis.localStorage.getItem(STORAGE_KEY)
   if (stored === 'auto' || stored === 'sumi' || stored === 'washi' || stored === 'slate') {
     return stored
@@ -12,7 +12,7 @@ export function getStoredTheme(): ThemeChoice {
 }
 
 export function setStoredTheme(theme: ThemeChoice): void {
-  if (typeof globalThis.window === 'undefined') return
+  if (globalThis.window === undefined) return
   globalThis.localStorage.setItem(STORAGE_KEY, theme)
 }
 

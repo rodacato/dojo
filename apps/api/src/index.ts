@@ -1,6 +1,5 @@
-import './config' // validates env at startup — must be first
+import { config } from './config' // validates env at startup — must be first
 import { serve } from '@hono/node-server'
-import { config } from './config'
 import { createRouter } from './infrastructure/http/router'
 import { initWebSocket, injectWebSocket } from './infrastructure/http/ws-adapter'
 import { createWsRoutes } from './infrastructure/http/routes/ws'

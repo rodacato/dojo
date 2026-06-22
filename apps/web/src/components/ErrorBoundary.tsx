@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
     void errorReporter.report({
       message: error.message,
       stack: error.stack,
-      route: typeof globalThis.window === 'undefined' ? undefined : globalThis.window.location.pathname,
+      route: globalThis.window === undefined ? undefined : globalThis.window.location.pathname,
       context: { componentStack: info.componentStack },
     })
   }

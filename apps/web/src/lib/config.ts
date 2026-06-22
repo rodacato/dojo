@@ -10,7 +10,7 @@ function deriveWsUrl(): string {
   if (API_URL) {
     return API_URL.replace(/^https/, 'wss').replace(/^http/, 'ws')
   }
-  if (typeof globalThis.window === 'undefined') {
+  if (globalThis.window === undefined) {
     return ''
   }
   const wsProtocol = globalThis.location.protocol === 'https:' ? 'wss:' : 'ws:'
