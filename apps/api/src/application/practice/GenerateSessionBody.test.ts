@@ -316,7 +316,6 @@ describe('GenerateSessionBody.executeStream', () => {
     const kata = makeKata()
     const variation = kata.variations[0]!
     const sessionRepo = makeStubSessionRepo()
-    // eslint-disable-next-line require-yield
     async function* boom(): AsyncIterable<string> {
       throw new Error('stream blew up')
     }
