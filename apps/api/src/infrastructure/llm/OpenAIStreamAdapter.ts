@@ -1,10 +1,9 @@
-import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
+import type { LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { EvaluationStreamParser } from './evaluation-parser'
 import { buildSessionBodyPrompt, buildNudgePrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
-import type { Rubric } from '@dojo/shared'
 import { config } from '../../config'
-import { runEvaluation, type SenseiMessage } from './sensei-evaluation'
+import { runEvaluation, type SenseiMessage, type BuildMessagesParams } from './sensei-evaluation'
 
 export class OpenAIStreamAdapter implements LLMPort {
   private readonly baseURL: string
@@ -15,16 +14,7 @@ export class OpenAIStreamAdapter implements LLMPort {
     this.baseURL = baseURL.replace(/\/$/, '')
   }
 
-  async *evaluate(params: {
-    ownerRole: string
-    ownerContext: string
-    kataTitle: string
-    sessionBody: string
-    userResponse: string
-    history: ConversationTurn[]
-    category?: string
-    rubric?: Rubric
-  }): AsyncIterable<EvaluationToken> {
+  async *evaluate(params: BuildMessagesParams): AsyncIterable<EvaluationToken> {
     yield* runEvaluation(params, (messages, parser) =>
       config.LLM_STREAM ? this.evaluateStreaming(messages, parser) : this.evaluateOnce(messages, parser),
     )

@@ -66,18 +66,18 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
   } else {
     // Follow-up exchange — reconstruct the conversation
     const firstTurn = params.history[0]
-    messages.push({
-      role: 'user',
-      content: buildPrompt({
-        ownerRole: params.ownerRole,
-        ownerContext: params.ownerContext,
-        kataTitle: params.kataTitle,
-        kataDescription: params.sessionBody,
-        userResponse: firstTurn.userResponse,
-        category: params.category,
-      }),
-    })
     messages.push(
+      {
+        role: 'user',
+        content: buildPrompt({
+          ownerRole: params.ownerRole,
+          ownerContext: params.ownerContext,
+          kataTitle: params.kataTitle,
+          kataDescription: params.sessionBody,
+          userResponse: firstTurn.userResponse,
+          category: params.category,
+        }),
+      },
       { role: 'assistant', content: firstTurn.llmResponse },
       {
         role: 'user',
