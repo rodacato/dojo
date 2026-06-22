@@ -28,7 +28,6 @@ declare global {
   interface Window {
     turnstile?: TurnstileGlobal
   }
-  // eslint-disable-next-line no-var
   var turnstile: TurnstileGlobal | undefined
 }
 
