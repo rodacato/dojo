@@ -1,15 +1,10 @@
 import type { ConversationTurn, LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
-import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildSessionBodyPrompt, buildNudgePrompt, buildReviewPrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
+import type { EvaluationStreamParser } from './evaluation-parser'
+import { buildSessionBodyPrompt, buildNudgePrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
 import type { Rubric } from '@dojo/shared'
 import { config } from '../../config'
-import { LLMParseError } from './AnthropicStreamAdapter'
-
-interface ChatMessage {
-  role: 'user' | 'assistant'
-  content: string
-}
+import { runEvaluation, type SenseiMessage } from './sensei-evaluation'
 
 export class OpenAIStreamAdapter implements LLMPort {
   private readonly baseURL: string
@@ -30,28 +25,13 @@ export class OpenAIStreamAdapter implements LLMPort {
     category?: string
     rubric?: Rubric
   }): AsyncIterable<EvaluationToken> {
-    const messages = buildMessages(params)
-    const parser = new EvaluationStreamParser()
-
-    const tokens = config.LLM_STREAM
-      ? this.evaluateStreaming(messages, parser)
-      : this.evaluateOnce(messages, parser)
-
-    for await (const token of tokens) {
-      yield token
-    }
-
-    const { result, error } = parser.finalize()
-
-    if (error || !result) {
-      throw new LLMParseError(error ?? 'Unknown parse error')
-    }
-
-    yield { chunk: '', isFinal: true, result }
+    yield* runEvaluation(params, (messages, parser) =>
+      config.LLM_STREAM ? this.evaluateStreaming(messages, parser) : this.evaluateOnce(messages, parser),
+    )
   }
 
   private async *evaluateStreaming(
-    messages: ChatMessage[],
+    messages: SenseiMessage[],
     parser: EvaluationStreamParser,
   ): AsyncIterable<EvaluationToken> {
     const response = await this.chatCompletion({ max_tokens: 2048, stream: true, messages })
@@ -67,7 +47,7 @@ export class OpenAIStreamAdapter implements LLMPort {
   }
 
   private async *evaluateOnce(
-    messages: ChatMessage[],
+    messages: SenseiMessage[],
     parser: EvaluationStreamParser,
   ): AsyncIterable<EvaluationToken> {
     const response = await this.chatCompletion({ max_tokens: 2048, messages })
@@ -257,83 +237,6 @@ export class OpenAIStreamAdapter implements LLMPort {
       throw new Error('Unexpected response from OpenAI-compatible API')
     }
     return content.trim()
-  }
-}
-
-function buildMessages(params: {
-  ownerRole: string
-  ownerContext: string
-  kataTitle: string
-  sessionBody: string
-  userResponse: string
-  history: ConversationTurn[]
-  category?: string
-  rubric?: Rubric
-}): ChatMessage[] {
-  const messages: ChatMessage[] = []
-
-  // Review kata short-circuit — same rule as the Anthropic adapter.
-  if (params.rubric) {
-    messages.push({
-      role: 'user',
-      content: buildReviewPrompt({
-        ownerRole: params.ownerRole,
-        ownerContext: params.ownerContext,
-        kataTitle: params.kataTitle,
-        diff: params.sessionBody,
-        review: params.userResponse,
-        rubric: params.rubric,
-      }),
-    })
-    return messages
-  }
-
-  if (params.history.length === 0) {
-    messages.push({
-      role: 'user',
-      content: buildPrompt({
-        ownerRole: params.ownerRole,
-        ownerContext: params.ownerContext,
-        kataTitle: params.kataTitle,
-        kataDescription: params.sessionBody,
-        userResponse: params.userResponse,
-        category: params.category,
-      }),
-    })
-  } else {
-    const firstTurn = params.history[0]
-    messages.push({
-      role: 'user',
-      content: buildPrompt({
-        ownerRole: params.ownerRole,
-        ownerContext: params.ownerContext,
-        kataTitle: params.kataTitle,
-        kataDescription: params.sessionBody,
-        userResponse: firstTurn.userResponse,
-        category: params.category,
-      }),
-    })
-    messages.push(
-      { role: 'assistant', content: firstTurn.llmResponse },
-      {
-        role: 'user',
-        content: buildFollowUpPrompt({
-          followUpResponse: params.userResponse,
-          originalFollowUpQuestion: extractFollowUpQuestion(firstTurn.llmResponse),
-        }),
-      },
-    )
-  }
-
-  return messages
-}
-
-function extractFollowUpQuestion(llmResponse: string): string {
-  try {
-    const match = /"followUpQuestion"\s*:\s*"([^"]+)"/.exec(llmResponse)
-    return match?.[1] ?? 'Can you elaborate on your approach?'
-  } catch {
-    return 'Can you elaborate on your approach?'
   }
 }
 
