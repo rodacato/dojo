@@ -12,7 +12,14 @@ updates:
     directory: "/apps/api"
     schedule:
       interval: weekly
+    ignore:
+      # Node major is a deliberate LTS decision, not an auto-bump.
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker
     directory: "/apps/web"
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]

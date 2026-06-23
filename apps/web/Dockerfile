@@ -1,6 +1,6 @@
 # Stage 1: build
-FROM node:26-alpine AS builder
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+FROM node:24-alpine AS builder
+RUN npm install -g pnpm@9.15.4
 WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY apps/web/package.json ./apps/web/

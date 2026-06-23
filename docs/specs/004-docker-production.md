@@ -21,8 +21,8 @@ Multi-stage. Final image contains only the compiled output and production depend
 
 ```dockerfile
 # Stage 1: base with pnpm
-FROM node:22-alpine AS base
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+FROM node:24-alpine AS base
+RUN npm install -g pnpm@9.15.4
 WORKDIR /app
 
 # Stage 2: install all dependencies (including dev — needed for build)
@@ -62,8 +62,8 @@ Multi-stage. Final image is Nginx serving the Vite build — not `vite preview`.
 
 ```dockerfile
 # Stage 1: build
-FROM node:22-alpine AS builder
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+FROM node:24-alpine AS builder
+RUN npm install -g pnpm@9.15.4
 WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY apps/web/package.json ./apps/web/
