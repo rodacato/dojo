@@ -2,6 +2,9 @@
   "name": "dojo",
   "private": true,
   "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",

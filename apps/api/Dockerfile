@@ -1,6 +1,6 @@
 # Stage 1: base with pnpm
-FROM node:26-alpine AS base
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+FROM node:24-alpine AS base
+RUN npm install -g pnpm@9.15.4
 WORKDIR /app
 
 # Stage 2: install all dependencies (including dev — needed for build)
