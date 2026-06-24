@@ -1,4 +1,4 @@
-name: Deploy
+name: Sector 7g - Deploy
 
 on:
   push:
@@ -69,43 +69,18 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: ruby/setup-ruby@v1
+      # reboot-accessories: piston — its config (timeouts, runtime list) drifts most
+      # often, and an idempotent boot won't apply env/cmd/options changes; a reboot does.
+      # db is left alone: its config rarely moves and a mid-deploy reboot is disruptive.
+      - uses: rodacato/sector-7g/actions/kamal-deploy@master
         with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-
-      - name: Install Kamal
-        run: gem install kamal -v "$KAMAL_VERSION"
-
-      - uses: docker/setup-buildx-action@v3
-
-      - uses: webfactory/ssh-agent@v0.10.0
-        with:
+          action: ${{ env.ACTION }}
+          config-file: config/deploy.api.yml
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add VPS to known hosts
-        run: ssh-keyscan ${{ vars.HOST_IP }} >> ~/.ssh/known_hosts
-
-      - name: Boot accessories (idempotent — only for deploy/redeploy; setup boots them itself)
-        if: env.ACTION != 'setup'
-        run: kamal accessory boot all --config-file config/deploy.api.yml || true
-
-      - name: Run kamal ${{ env.ACTION }}
-        run: kamal "$ACTION" --config-file config/deploy.api.yml
-
-      # `kamal accessory boot` above is no-op if the accessory is already running,
-      # so it does NOT pick up changes to env / cmd / options in deploy.api.yml.
-      # `kamal accessory reboot` does stop+rm+run, which is the only way to apply
-      # accessory config drift without manual intervention. We always reboot Piston
-      # on deploy because it's the accessory whose config changes most often
-      # (timeouts, runtime list) — db is left alone because its config rarely
-      # moves and a reboot of postgres mid-deploy is more disruptive than helpful.
-      #
-      # Cost: ~30s window where executes fail with sandbox-unavailable. Acceptable
-      # given low deploy frequency. The persisted `dojo-piston-packages` volume
-      # is unaffected, so installed runtimes survive.
-      - name: Reboot Piston to pick up accessory config changes
-        if: env.ACTION != 'setup'
-        run: printf 'y\n' | kamal accessory reboot piston --config-file config/deploy.api.yml
+          host: ${{ vars.HOST_IP }}
+          ruby-version: ${{ env.RUBY_VERSION }}
+          kamal-version: ${{ env.KAMAL_VERSION }}
+          reboot-accessories: piston
 
   deploy-web:
     name: Deploy web (${{ inputs.action || 'deploy' }})
@@ -133,21 +108,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: ruby/setup-ruby@v1
+      - uses: rodacato/sector-7g/actions/kamal-deploy@master
         with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-
-      - name: Install Kamal
-        run: gem install kamal -v "$KAMAL_VERSION"
-
-      - uses: docker/setup-buildx-action@v3
-
-      - uses: webfactory/ssh-agent@v0.10.0
-        with:
+          action: ${{ env.ACTION }}
+          config-file: config/deploy.web.yml
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Add VPS to known hosts
-        run: ssh-keyscan ${{ vars.HOST_IP }} >> ~/.ssh/known_hosts
-
-      - name: Run kamal ${{ env.ACTION }}
-        run: kamal "$ACTION" --config-file config/deploy.web.yml
+          host: ${{ vars.HOST_IP }}
+          ruby-version: ${{ env.RUBY_VERSION }}
+          kamal-version: ${{ env.KAMAL_VERSION }}
+          boot-accessories: "false"
