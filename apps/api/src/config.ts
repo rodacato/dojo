@@ -81,7 +81,12 @@ const envSchema = z.object({
   TURNSTILE_SITE_KEY: z.string().default(''),
   // Prometheus metrics at GET /metrics. Opt-in: OFF mounts nothing (zero
   // overhead). The token alone enables nothing — METRICS_ENABLED is the gate.
-  METRICS_ENABLED: z.coerce.boolean().default(false),
+  // Not z.coerce.boolean(): that does Boolean(value), so the string "false"
+  // (what the deploy renders when the flag is off) would read as true.
+  METRICS_ENABLED: z
+    .string()
+    .default('false')
+    .transform((v) => v === 'true' || v === '1'),
   // Bearer token guarding /metrics. Required in production when enabled —
   // with metrics on and no token, the endpoint 404s rather than serve data
   // unauthenticated. Generate with `openssl rand -hex 32`.
