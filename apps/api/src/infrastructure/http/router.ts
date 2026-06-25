@@ -26,6 +26,7 @@ import { errorRoutes } from './routes/errors'
 import { landingRoutes } from './routes/landing'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 import { requestIdMiddleware } from './middleware/requestId'
+import { registerMetrics } from './registerMetrics'
 import { errorReporter } from '../container'
 import type { AppEnv } from './app-env'
 
@@ -40,6 +41,15 @@ export function createRouter() {
   // here doesn't widen the auth surface; oauth_state and the playground cookie
   // are both HttpOnly.
   app.use('*', cors({ origin: config.WEB_URL, credentials: true }))
+
+  // Metrics mount before the limiters so scraping is never throttled and 429s
+  // are still measured — same treatment as /health. No-op when disabled.
+  registerMetrics(app, {
+    enabled: config.METRICS_ENABLED,
+    token: config.METRICS_TOKEN,
+    isProduction: config.NODE_ENV === 'production',
+  })
+
   app.use('*', globalLimiter)
   app.use('/auth/*', authLimiter)
 

@@ -4,6 +4,13 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 033 — Maintenance: security & foundation (2026-06-25)
+**Phase 1 — Alpha**
+
+**Prometheus metrics, opt-in and token-gated.** The API can now expose `GET /metrics` on the main app port — same hostname, behind kamal-proxy and Cloudflare, no separate metrics port (that was rejected for coupling the app to host network topology). Off by default: `METRICS_ENABLED=false` mounts nothing — no endpoint, no `collectDefaultMetrics`, no middleware — so a self-hoster who doesn't want it pays zero overhead. When on, a `METRICS_TOKEN` Bearer guards the endpoint (constant-time compare); in production with metrics on and no token, `/metrics` 404s rather than serve data unauthenticated. Mounted before the rate limiters, like `/health`, so scraping is never throttled. Exposed: default process metrics, an `http_request_duration_seconds` histogram labelled by the matched route *pattern* (never the raw URL — bounded cardinality), and `dojo_sensei_evaluations_total` by verdict — the one business signal that is both the kata-loop's throughput and its main cost driver, since every evaluation is an LLM streaming call. New env: `METRICS_ENABLED` (variable), `METRICS_TOKEN` (secret), wired through `deploy.api.yml`, `.kamal/secrets`, and the deploy workflow.
+
+---
+
 ## Sprint 032 — Ship the set, then close the reshape loop (2026-06-20)
 **Phase 1 — Alpha**
 

@@ -5,6 +5,7 @@ import type { EvaluationResult, EvaluationToken } from '../../../domain/practice
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { db } from '../../persistence/drizzle/client'
 import { attempts as attemptsTable } from '../../persistence/drizzle/schema'
+import { recordSenseiEvaluation } from '../../observability/prometheus'
 
 // ── Minimal WebSocket interface used by handlers ──────────────────────────────
 export interface WSInstance {
@@ -164,6 +165,7 @@ function streamToken(ws: WSInstance, cache: StreamCache, token: EvaluationToken)
     cache.result = token.result
     cache.complete = true
     cache.isFinal = token.result.isFinalEvaluation
+    recordSenseiEvaluation(token.result.verdict)
 
     send(ws, { type: 'evaluation', result: token.result })
     send(ws, { type: 'complete', isFinal: cache.isFinal })

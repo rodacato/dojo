@@ -79,6 +79,13 @@ const envSchema = z.object({
   // site key is ALSO required by the web app as VITE_TURNSTILE_SITE_KEY.
   TURNSTILE_SECRET_KEY: z.string().default(''),
   TURNSTILE_SITE_KEY: z.string().default(''),
+  // Prometheus metrics at GET /metrics. Opt-in: OFF mounts nothing (zero
+  // overhead). The token alone enables nothing — METRICS_ENABLED is the gate.
+  METRICS_ENABLED: z.coerce.boolean().default(false),
+  // Bearer token guarding /metrics. Required in production when enabled —
+  // with metrics on and no token, the endpoint 404s rather than serve data
+  // unauthenticated. Generate with `openssl rand -hex 32`.
+  METRICS_TOKEN: z.string().default(''),
 })
 
 const result = envSchema.safeParse(process.env)
