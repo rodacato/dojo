@@ -186,6 +186,47 @@ Errors logged in Postgres are listed at `/admin/errors` with filters for source 
 
 **Errors retention.** The `errors` table can be purged manually via `POST /cron/cleanup-errors` (deletes rows older than 30 days). Auth: `Authorization: Bearer ${CRON_SECRET}`. The scheduled GitHub Action that called this daily was disabled — pending a replacement scheduling solution.
 
+### Metrics (Prometheus)
+
+The API can expose Prometheus metrics at `GET /metrics` on the main app port — same hostname as everything else, behind kamal-proxy and Cloudflare. There is no separate metrics port. Prometheus scrapes it like any external service.
+
+| Env var | Type | Default | Notes |
+|---|---|---|---|
+| `METRICS_ENABLED` | variable | `false` | The gate. OFF mounts nothing — no endpoint, no default metrics, no middleware (zero overhead). |
+| `METRICS_TOKEN` | secret | — | Bearer token guarding `/metrics`. Generate with `openssl rand -hex 32`. |
+
+**Opt-in and token-gated.** Metrics are off by default. The token alone enables nothing — `METRICS_ENABLED` turns it on. With metrics enabled in production and **no** token set, `/metrics` returns `404` rather than serve data unauthenticated. In development with no token, the endpoint is open for convenience. The token is compared in constant time (SHA-256 + `timingSafeEqual`).
+
+`/metrics` is mounted **before** the rate limiters — like `/health`, scraping is never throttled.
+
+**What's exposed:**
+
+- Default process metrics (memory, GC, event-loop lag) via `collectDefaultMetrics`.
+- `http_request_duration_seconds` — request latency histogram labelled by `method`, `route` (the matched route *pattern*, e.g. `/sessions/:id`, never the raw URL; unmatched requests collapse to `"unmatched"`), and `status_code`.
+- `dojo_sensei_evaluations_total` — counter of completed sensei evaluations, labelled by `verdict` (`passed` / `passed_with_notes` / `needs_work`). One increment per finished kata-loop evaluation; each is an LLM streaming call, so this is both the core-value throughput and the main cost driver. Per-process — sum across instances in PromQL.
+
+**Scrape config** (`prometheus.yml`):
+
+```yaml
+scrape_configs:
+  - job_name: dojo-api
+    metrics_path: /metrics
+    scheme: https
+    authorization:
+      credentials: ${METRICS_TOKEN}   # same value as the API's METRICS_TOKEN
+    static_configs:
+      - targets: ['dojo-api.notdefined.dev']
+```
+
+Validate from the shell:
+
+```bash
+# 200 with a valid token
+curl -fsS -H "Authorization: Bearer $METRICS_TOKEN" https://dojo-api.notdefined.dev/metrics | head
+# 401 without a token (when a token is configured)
+curl -s -o /dev/null -w '%{http_code}\n' https://dojo-api.notdefined.dev/metrics
+```
+
 ---
 
 ## Operations

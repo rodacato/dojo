@@ -66,6 +66,8 @@ jobs:
       SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
       SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
       SENTRY_RELEASE: ${{ github.sha }}
+      METRICS_ENABLED: ${{ vars.METRICS_ENABLED || 'false' }}
+      METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
     steps:
       - uses: actions/checkout@v7
 
