@@ -316,7 +316,7 @@ export function EngawaPage() {
             type="button"
             onClick={handleRun}
             disabled={runDisabled}
-            className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-primary hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-3 h-7 inline-flex items-center gap-1.5 rounded-sm"
+            className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-on-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-3 h-7 inline-flex items-center gap-1.5 rounded-sm"
           >
             {run.status === 'running' ? (
               <>
@@ -422,7 +422,7 @@ export function EngawaPage() {
                 type="button"
                 onClick={handleAsk}
                 disabled={ask.status === 'streaming' || !ask.question.trim()}
-                className="px-3 py-1 bg-accent text-primary font-mono text-xs rounded-sm hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1 bg-accent text-on-accent font-mono text-xs rounded-sm hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 {ask.status === 'streaming' ? 'thinking...' : 'ask'}
               </button>

@@ -116,7 +116,7 @@ function ErrorAction({ action, kind }: Readonly<{ action: Action; kind: 'primary
         to={action.to}
         className={
           variant === 'primary'
-            ? 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-accent text-primary border border-accent text-sm transition-colors hover:bg-accent/90'
+            ? 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-accent text-on-accent border border-accent text-sm transition-colors hover:bg-accent/90'
             : 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-transparent text-primary border border-border text-sm transition-colors hover:border-accent'
         }
       >

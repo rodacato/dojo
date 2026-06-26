@@ -33,7 +33,7 @@ describe('Button', () => {
   describe('variants', () => {
     it('defaults to the primary (filled accent) variant', () => {
       render(<Button>CTA</Button>)
-      expect(screen.getByRole('button')).toHaveClass('bg-accent', 'text-primary')
+      expect(screen.getByRole('button')).toHaveClass('bg-accent', 'text-on-accent')
     })
 
     it('renders the ghost variant with a border and transparent background', () => {

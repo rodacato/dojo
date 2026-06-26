@@ -23,7 +23,7 @@ export function HankoBadge({ text, earned = true, size = 'md', className = '' }:
 
   return (
     <div
-      className={`inline-flex flex-col items-center justify-center bg-accent text-page rounded-sm font-mono uppercase font-bold leading-none tracking-tight ${
+      className={`inline-flex flex-col items-center justify-center bg-accent text-on-accent rounded-sm font-mono uppercase font-bold leading-none tracking-tight ${
         earned ? '' : 'opacity-30 grayscale'
       } ${className}`}
       style={{ minWidth: dim, paddingInline: 4, paddingBlock: 5, gap: 2 }}

@@ -37,7 +37,7 @@ export function LoginPage() {
         {/* GitHub login */}
         <a
           href={`${API_URL}/auth/github`}
-          className="flex items-center gap-3 px-6 py-3 bg-accent text-primary rounded-sm font-mono hover:brightness-110 transition-all duration-150"
+          className="flex items-center gap-3 px-6 py-3 bg-accent text-on-accent rounded-sm font-mono hover:brightness-110 transition-all duration-150"
         >
           <GitHubIcon className="w-5 h-5" />
           <span>Enter the dojo.</span>

@@ -54,7 +54,7 @@ describe('GroupButtons', () => {
     render(<GroupButtons options={rangeOptions} value="week" onChange={vi.fn()} />)
 
     const active = screen.getByRole('button', { name: 'Week' })
-    expect(active).toHaveClass('bg-accent', 'text-primary')
+    expect(active).toHaveClass('bg-accent', 'text-on-accent')
     expect(active).not.toHaveClass('text-muted')
 
     const inactive = screen.getByRole('button', { name: 'Day' })

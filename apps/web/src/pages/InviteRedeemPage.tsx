@@ -34,7 +34,7 @@ export function InviteRedeemPage() {
         {/* CTA */}
         <a
           href={`${API_URL}/auth/invite/${token ?? ''}`}
-          className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-primary font-mono text-sm tracking-[0.04em] rounded-sm hover:bg-accent/90 transition-colors"
+          className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-on-accent font-mono text-sm tracking-[0.04em] rounded-sm hover:bg-accent/90 transition-colors"
         >
           <GitHubIcon className="w-4 h-4" />
           Enter the dojo. →
