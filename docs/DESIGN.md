@@ -103,6 +103,7 @@ Tokens are referenced by name everywhere in code. Never raw hex. Both themes use
 | Token | Slate Indigo (shipped) | Sumi-e (both variants) | Usage |
 |---|---|---|---|
 | `--color-accent` | `#6366F1` (Indigo 500) | `#B73A2F` (hanko vermillion) | CTAs, focus rings, links, active state |
+| `--color-on-accent` | `#FFFFFF` | `#FAF7F0` washi · `#F2EDE3` sumi (ink-white) | Foreground on a filled `bg-accent` (button label, user bubble, active segment, hanko caps) — keeps AA contrast where `--color-primary` inverts to near-black under washi |
 | `--color-success` | `#10B981` (Emerald) | `#5C7A4E` washi · `#7D9B6A` sumi (matcha) | Passed verdict, completion, streak active |
 | `--color-danger` | `#EF4444` (Red 500) | `#9C2D24` (deeper than accent) | Failed sessions, errors, expired timer |
 | `--color-warning` | `#F59E0B` (Amber 500) | `#BC8E37` washi · `#D4A547` sumi (gold ink) | Timer near limit, warnings, "passed with notes" |

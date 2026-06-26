@@ -15,6 +15,7 @@
 
   /* Accent */
   --color-accent:         #6366F1;
+  --color-on-accent:      #FFFFFF;
   --color-success:        #10B981;
   --color-danger:         #EF4444;
   --color-warning:        #F59E0B;
@@ -130,6 +131,7 @@ html {
   --color-secondary: #A39A8C;
   --color-muted: #5C544A;
   --color-accent: #B73A2F;
+  --color-on-accent: #F2EDE3;
   --color-success: #7D9B6A;
   --color-danger: #9C2D24;
   --color-warning: #D4A547;
@@ -155,6 +157,7 @@ html {
   --color-secondary: #5C5448;
   --color-muted: #8A8071;
   --color-accent: #B73A2F;
+  --color-on-accent: #FAF7F0;
   --color-success: #5C7A4E;
   --color-danger: #9C2D24;
   --color-warning: #BC8E37;
@@ -188,21 +191,21 @@ html {
 /* Vertical brushstroke reveal — used on VerdictBlock to replace the
    solid left-bar with a drawn ink stroke. Stroke length overestimated
    so the animation reads as a single down-stroke regardless of the
-   card's actual height. prefers-reduced-motion shows the stroke
-   already drawn (no animation). */
+   card's actual height. Resting state is the drawn stroke, so print,
+   SSR and reduced-motion all render it visible; the draw-in runs only
+   under prefers-reduced-motion: no-preference. */
 .brushstroke-path-vertical {
   stroke-dasharray: 280;
-  stroke-dashoffset: 280;
-  animation: brushstroke-draw 600ms ease-out forwards;
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .brushstroke-path-vertical {
+    animation: brushstroke-draw 600ms ease-out;
+  }
 }
 @keyframes brushstroke-draw {
-  to { stroke-dashoffset: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .brushstroke-path-vertical {
-    animation: none;
-    stroke-dashoffset: 0;
-  }
+  from { stroke-dashoffset: 280; }
+  to   { stroke-dashoffset: 0; }
 }
 
 /* ── Scroll player motion (ADR 022) ─────────────────────────────────────

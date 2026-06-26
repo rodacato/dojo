@@ -16,7 +16,7 @@ export function GroupButtons<T extends string>({ options, value, onChange, size 
             size === 'sm' ? 'px-3 py-1 text-xs' : 'px-4 py-1.5 text-sm'
           } ${
             value === opt.value
-              ? 'bg-accent text-primary'
+              ? 'bg-accent text-on-accent'
               : 'text-muted hover:text-secondary'
           }`}
         >

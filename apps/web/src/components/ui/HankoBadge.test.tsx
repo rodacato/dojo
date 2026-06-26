@@ -41,7 +41,7 @@ describe('HankoBadge', () => {
     render(<HankoBadge text="dan" />)
 
     const badge = screen.getByLabelText('dan')
-    expect(badge).toHaveClass('bg-accent', 'text-page')
+    expect(badge).toHaveClass('bg-accent', 'text-on-accent')
     expect(badge).not.toHaveClass('opacity-30')
     expect(badge).not.toHaveClass('grayscale')
   })

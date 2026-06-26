@@ -124,7 +124,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
         <button
           onClick={handleSubmit}
           disabled={submitting || (!clarity && !timing && !evaluation && !note.trim())}
-          className="flex-1 py-2 bg-accent text-primary text-xs font-mono rounded-sm hover:bg-accent/90 disabled:opacity-30 transition-colors"
+          className="flex-1 py-2 bg-accent text-on-accent text-xs font-mono rounded-sm hover:bg-accent/90 disabled:opacity-30 transition-colors"
         >
           {submitting ? '...' : 'send'}
         </button>

@@ -87,7 +87,7 @@ export function ScrollCompleteBanner({
         )}
         <Link
           to="/"
-          className="font-mono text-xs tracking-[0.08em] uppercase bg-accent text-primary hover:bg-accent/90 transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
+          className="font-mono text-xs tracking-[0.08em] uppercase bg-accent text-on-accent hover:bg-accent/90 transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
         >
           Try the dojo →
         </Link>
