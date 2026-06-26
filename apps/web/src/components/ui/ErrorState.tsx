@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Button } from './Button'
+import { Button, buttonClasses } from './Button'
 
 type ActionTo = { label: string; to: string }
 type ActionHandler = { label: string; onClick: () => void; disabled?: boolean }
@@ -112,14 +112,7 @@ function ErrorAction({ action, kind }: Readonly<{ action: Action; kind: 'primary
   const variant = kind === 'primary' ? 'primary' : 'ghost'
   if ('to' in action) {
     return (
-      <Link
-        to={action.to}
-        className={
-          variant === 'primary'
-            ? 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-accent text-on-accent border border-accent text-sm transition-colors hover:bg-accent/90'
-            : 'inline-flex items-center justify-center h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-transparent text-primary border border-border text-sm transition-colors hover:border-accent'
-        }
-      >
+      <Link to={action.to} className={buttonClasses({ variant })}>
         {action.label}
       </Link>
     )

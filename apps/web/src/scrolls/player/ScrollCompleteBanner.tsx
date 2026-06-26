@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../lib/config'
+import { buttonClasses } from '../../components/ui/Button'
 
 export function ScrollCompleteBanner({
   scrollTitle,
@@ -85,10 +86,7 @@ export function ScrollCompleteBanner({
             Sign in to save &amp; share →
           </a>
         )}
-        <Link
-          to="/"
-          className="font-mono text-xs tracking-[0.08em] uppercase bg-accent text-on-accent hover:bg-accent/90 transition-colors px-4 h-9 inline-flex items-center justify-center rounded-sm"
-        >
+        <Link to="/" className={buttonClasses({ variant: 'primary', size: 'md' })}>
           Try the dojo →
         </Link>
       </div>
