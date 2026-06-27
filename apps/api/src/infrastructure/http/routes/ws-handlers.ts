@@ -4,8 +4,6 @@ import { SessionId } from '../../../domain/shared/types'
 import { MAX_ATTEMPTS } from '../../../domain/practice/session'
 import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
-import { db } from '../../persistence/drizzle/client'
-import { attempts as attemptsTable } from '../../persistence/drizzle/schema'
 import { recordSenseiEvaluation } from '../../observability/prometheus'
 
 // ── Minimal WebSocket interface used by handlers ──────────────────────────────
@@ -92,7 +90,12 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : 'Unknown LLM error'
     console.error('LLM stream error for session', pending.sessionId, ':', errorMsg)
-    await persistPartialAttempt(attemptId, pending, cache.tokens.join('') || JSON.stringify({ error: errorMsg }))
+    await useCases.submitAttempt.recordIncompleteAttempt({
+      attemptId,
+      sessionId: pending.sessionId,
+      userResponse: pending.userResponse,
+      llmResponse: cache.tokens.join('') || JSON.stringify({ error: errorMsg }),
+    })
     send(ws, { type: 'error', code: 'LLM_STREAM_ERROR' })
     cache.complete = true
   } finally {
@@ -177,20 +180,3 @@ function streamToken(ws: WSInstance, cache: StreamCache, token: EvaluationToken)
   }
 }
 
-async function persistPartialAttempt(
-  attemptId: string,
-  pending: { sessionId: string; userResponse: string },
-  llmResponse: string,
-): Promise<void> {
-  await db
-    .insert(attemptsTable)
-    .values({
-      id: attemptId,
-      sessionId: pending.sessionId,
-      userResponse: pending.userResponse,
-      llmResponse,
-      isFinalEvaluation: false,
-      submittedAt: new Date(),
-    })
-    .onConflictDoNothing()
-}

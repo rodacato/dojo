@@ -1,5 +1,5 @@
 import type { DomainEvent } from '../shared/events'
-import type { SessionId, UserId } from '../shared/types'
+import type { AttemptId, SessionId, UserId } from '../shared/types'
 import type { Session } from './session'
 import type { EvaluationToken } from './values'
 import type { Rubric } from '@dojo/shared'
@@ -74,6 +74,17 @@ export interface SessionRepositoryPort {
   save(session: Session): Promise<void>
   updateBody(id: SessionId, body: string): Promise<void>
   delete(id: SessionId): Promise<void>
+  /**
+   * Persist an incomplete attempt (no evaluation) when an LLM stream errors
+   * mid-response, so a retry can find it. The session stays active — a stream
+   * error is not a session failure.
+   */
+  saveIncompleteAttempt(params: {
+    attemptId: AttemptId
+    sessionId: SessionId
+    userResponse: string
+    llmResponse: string
+  }): Promise<void>
   findById(id: SessionId): Promise<Session | null>
   findActiveByUserId(userId: UserId): Promise<Session | null>
   /**

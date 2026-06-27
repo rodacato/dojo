@@ -33,9 +33,10 @@ const makeStubSessionRepo = () => ({
   save: vi.fn(),
   updateBody: vi.fn().mockResolvedValue(undefined),
   delete: vi.fn().mockResolvedValue(undefined),
+  saveIncompleteAttempt: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn(),
   findActiveByUserId: vi.fn(),
-      listCompletedKataHistoryForBelt: vi.fn(),
+  listCompletedKataHistoryForBelt: vi.fn(),
 })
 
 describe('GenerateSessionBody', () => {

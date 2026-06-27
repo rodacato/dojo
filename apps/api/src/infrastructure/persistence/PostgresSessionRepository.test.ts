@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { PostgresSessionRepository } from './PostgresSessionRepository'
 import type { DB } from './drizzle/client'
-import { UserId } from '../../domain/shared/types'
+import { AttemptId, SessionId, UserId } from '../../domain/shared/types'
 import type { EvaluationResult } from '../../domain/practice/values'
 
 // Boundary = the injected drizzle `db`. We feed raw rows through
@@ -167,5 +167,33 @@ describe('PostgresSessionRepository.listCompletedKataHistoryForBelt', () => {
     const db = makeSelectDb([])
     const repo = new PostgresSessionRepository(db)
     expect(await repo.listCompletedKataHistoryForBelt(UserId('user-1'))).toEqual([])
+  })
+})
+
+describe('PostgresSessionRepository.saveIncompleteAttempt', () => {
+  it('inserts a non-final attempt with onConflictDoNothing', async () => {
+    const onConflictDoNothing = vi.fn().mockResolvedValue(undefined)
+    const values = vi.fn().mockReturnValue({ onConflictDoNothing })
+    const insert = vi.fn().mockReturnValue({ values })
+    const db = { insert } as unknown as DB
+    const repo = new PostgresSessionRepository(db)
+
+    await repo.saveIncompleteAttempt({
+      attemptId: AttemptId('att-9'),
+      sessionId: SessionId('sess-9'),
+      userResponse: 'half an answer',
+      llmResponse: 'partial tokens',
+    })
+
+    expect(values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: 'att-9',
+        sessionId: 'sess-9',
+        userResponse: 'half an answer',
+        llmResponse: 'partial tokens',
+        isFinalEvaluation: false,
+      }),
+    )
+    expect(onConflictDoNothing).toHaveBeenCalled()
   })
 })

@@ -1,5 +1,5 @@
 import { SessionNotFoundError } from '../../domain/shared/errors'
-import type { SessionId } from '../../domain/shared/types'
+import { AttemptId, SessionId } from '../../domain/shared/types'
 import { Attempt } from '../../domain/practice/attempt'
 import type { ConversationTurn, EventBusPort, LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
@@ -72,5 +72,20 @@ export class SubmitAttempt {
         await this.deps.eventBus.publish(event)
       }
     }
+  }
+
+  /** Persist a partial attempt when the LLM stream errors mid-response. */
+  async recordIncompleteAttempt(params: {
+    attemptId: string
+    sessionId: string
+    userResponse: string
+    llmResponse: string
+  }): Promise<void> {
+    await this.deps.sessionRepo.saveIncompleteAttempt({
+      attemptId: AttemptId(params.attemptId),
+      sessionId: SessionId(params.sessionId),
+      userResponse: params.userResponse,
+      llmResponse: params.llmResponse,
+    })
   }
 }

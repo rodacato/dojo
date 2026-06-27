@@ -8,7 +8,7 @@ import type { WSInstance } from './ws-handlers'
 vi.mock('../../container', () => ({
   useCases: {
     getSession: { execute: vi.fn() },
-    submitAttempt: { execute: vi.fn() },
+    submitAttempt: { execute: vi.fn(), recordIncompleteAttempt: vi.fn() },
     getKataById: { execute: vi.fn() },
   },
   executionQueue: { enqueue: vi.fn() },
@@ -18,14 +18,9 @@ vi.mock('./pending-attempts', () => ({
   pendingAttempts: new Map(),
 }))
 
-vi.mock('../../persistence/drizzle/client', () => ({
-  db: { insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ onConflictDoNothing: vi.fn() }) }) },
-}))
-
 // Must import AFTER vi.mock declarations
 import { handleSubmit, handleReconnect, streamCache } from './ws-handlers'
 import { useCases, executionQueue } from '../../container'
-import { db } from '../../persistence/drizzle/client'
 import { pendingAttempts } from './pending-attempts'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -307,8 +302,16 @@ describe('handleSubmit — LLM stream error', () => {
     const msgs = parsed(ws)
     expect(msgs).toContainEqual({ type: 'token', content: 'partial ' })
     expect(msgs.at(-1)).toEqual({ type: 'error', code: 'LLM_STREAM_ERROR' })
-    // The attempt is persisted so a retry can find it.
-    expect(db.insert).toHaveBeenCalledTimes(1)
+    // The partial attempt is persisted through the use case (not a raw DB write)
+    // so a retry can find it.
+    expect(useCases.submitAttempt.recordIncompleteAttempt).toHaveBeenCalledTimes(1)
+    expect(useCases.submitAttempt.recordIncompleteAttempt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        attemptId: 'attempt-1',
+        sessionId: 'session-1',
+        llmResponse: 'partial ',
+      }),
+    )
     err.mockRestore()
   })
 })

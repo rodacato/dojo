@@ -57,6 +57,25 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     await this.db.delete(sessions).where(eq(sessions.id, id))
   }
 
+  async saveIncompleteAttempt(params: {
+    attemptId: AttemptId
+    sessionId: SessionId
+    userResponse: string
+    llmResponse: string
+  }): Promise<void> {
+    await this.db
+      .insert(attempts)
+      .values({
+        id: params.attemptId,
+        sessionId: params.sessionId,
+        userResponse: params.userResponse,
+        llmResponse: params.llmResponse,
+        isFinalEvaluation: false,
+        submittedAt: new Date(),
+      })
+      .onConflictDoNothing()
+  }
+
   async findById(id: SessionId): Promise<Session | null> {
     const row = await this.db.query.sessions.findFirst({
       where: eq(sessions.id, id),
