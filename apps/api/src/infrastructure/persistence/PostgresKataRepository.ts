@@ -8,6 +8,34 @@ import type { DB } from './drizzle/client'
 import { katas, variations } from './drizzle/schema'
 import type { Rubric } from '@dojo/shared'
 
+type EligibleRow = {
+  id: string
+  title: string
+  description: string
+  duration: number
+  difficulty: string
+  category: string
+  type: string
+  status: string
+  language: string[]
+  tags: string[]
+  topics: string[]
+  owner_role: string
+  owner_context: string
+  test_code: string | null
+  starter_code: string | null
+  rubric: Rubric | null
+  version: number
+  admin_notes: string | null
+  created_by: string
+  created_at: Date
+  updated_at: Date | null
+  variation_id: string
+  v_owner_role: string
+  v_owner_context: string
+  v_created_at: Date
+}
+
 export class PostgresKataRepository implements KataRepositoryPort {
   constructor(private readonly db: DB) {}
 
@@ -51,34 +79,16 @@ export class PostgresKataRepository implements KataRepositoryPort {
 
     const orderClause = sql`(${interestClause} + ${levelClause}) DESC, RANDOM()`
 
-    const rows = await this.db.execute<{
-      id: string
-      title: string
-      description: string
-      duration: number
-      difficulty: string
-      category: string
-      type: string
-      status: string
-      language: string[]
-      tags: string[]
-      topics: string[]
-      owner_role: string
-      owner_context: string
-      created_by: string
-      created_at: Date
-      variation_id: string
-      v_owner_role: string
-      v_owner_context: string
-      v_created_at: Date
-    }>(sql`
+    const rows = await this.db.execute<EligibleRow>(sql`
       SELECT
         e.id, e.title, e.description, e.duration, e.difficulty,
         e.category, e.type, e.status, e.language, e.tags, e.topics,
-        e.owner_role, e.owner_context, e.created_by, e.created_at,
+        e.owner_role, e.owner_context, e.test_code, e.starter_code,
+        e.rubric, e.version, e.admin_notes, e.created_by, e.created_at,
+        e.updated_at,
         v.id as variation_id, v.owner_role as v_owner_role,
         v.owner_context as v_owner_context, v.created_at as v_created_at
-      FROM katas e
+      FROM exercises e
       JOIN variations v ON v.exercise_id = e.id
       WHERE e.status = 'published'
         AND e.id NOT IN (
@@ -93,20 +103,16 @@ export class PostgresKataRepository implements KataRepositoryPort {
 
     // Fallback: if all katas exhausted within 6 months, allow repeats
     if (rows.length === 0) {
-      const fallbackRows = await this.db.execute<{
-        id: string; title: string; description: string; duration: number;
-        difficulty: string; category: string; type: string; status: string;
-        language: string[]; tags: string[]; topics: string[];
-        owner_role: string; owner_context: string; created_by: string; created_at: Date;
-        variation_id: string; v_owner_role: string; v_owner_context: string; v_created_at: Date;
-      }>(sql`
+      const fallbackRows = await this.db.execute<EligibleRow>(sql`
         SELECT
           e.id, e.title, e.description, e.duration, e.difficulty,
           e.category, e.type, e.status, e.language, e.tags, e.topics,
-          e.owner_role, e.owner_context, e.created_by, e.created_at,
+          e.owner_role, e.owner_context, e.test_code, e.starter_code,
+          e.rubric, e.version, e.admin_notes, e.created_by, e.created_at,
+          e.updated_at,
           v.id as variation_id, v.owner_role as v_owner_role,
           v.owner_context as v_owner_context, v.created_at as v_created_at
-        FROM katas e
+        FROM exercises e
         JOIN variations v ON v.exercise_id = e.id
         WHERE e.status = 'published'
           ${maxDurationClause}
@@ -195,30 +201,8 @@ export class PostgresKataRepository implements KataRepositoryPort {
     })
   }
 
-  private groupRowsToKatas(
-    rows: Array<{
-      id: string
-      title: string
-      description: string
-      duration: number
-      difficulty: string
-      category: string
-      type: string
-      status: string
-      language: string[]
-      tags: string[]
-      topics: string[]
-      owner_role: string
-      owner_context: string
-      created_by: string
-      created_at: Date
-      variation_id: string
-      v_owner_role: string
-      v_owner_context: string
-      v_created_at: Date
-    }>,
-  ): Kata[] {
-    const map = new Map<string, { row: (typeof rows)[0]; variations: Variation[] }>()
+  private groupRowsToKatas(rows: EligibleRow[]): Kata[] {
+    const map = new Map<string, { row: EligibleRow; variations: Variation[] }>()
 
     for (const row of rows) {
       const existing = map.get(row.id)
@@ -249,15 +233,15 @@ export class PostgresKataRepository implements KataRepositoryPort {
         languages: row.language,
         tags: row.tags,
         topics: row.topics,
-        testCode: (row as Record<string, unknown>).test_code as string | null ?? null,
-        starterCode: (row as Record<string, unknown>).starter_code as string | null ?? null,
-        rubric: ((row as Record<string, unknown>).rubric as Rubric | null) ?? null,
+        testCode: row.test_code ?? null,
+        starterCode: row.starter_code ?? null,
+        rubric: row.rubric ?? null,
         variations: domainVariations,
-        version: (row as Record<string, unknown>).version as number ?? 1,
-        adminNotes: (row as Record<string, unknown>).admin_notes as string | null ?? null,
+        version: row.version ?? 1,
+        adminNotes: row.admin_notes ?? null,
         createdBy: UserId(row.created_by),
         createdAt: row.created_at,
-        updatedAt: (row as Record<string, unknown>).updated_at as Date | null ?? null,
+        updatedAt: row.updated_at ?? null,
       }),
     )
   }

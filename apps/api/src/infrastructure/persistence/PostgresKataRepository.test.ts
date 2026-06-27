@@ -74,8 +74,14 @@ function eligibleRow(over: Record<string, unknown> = {}) {
     topics: ['arrays'],
     owner_role: 'staff',
     owner_context: 'context A',
+    test_code: 'assert',
+    starter_code: 'pass',
+    rubric: { criteria: ['x'] },
+    version: 3,
+    admin_notes: 'note',
     created_by: 'user-1',
     created_at: CREATED,
+    updated_at: new Date('2026-03-03T00:00:00.000Z'),
     variation_id: 'var-1',
     v_owner_role: 'staff',
     v_owner_context: 'context A',
@@ -169,9 +175,38 @@ describe('PostgresKataRepository.findEligible (groupRowsToKatas folding)', () =>
     expect(kata?.durationMinutes).toBe(30) // duration
     expect(kata?.languages).toEqual(['python']) // language
     expect(kata?.variations[0]?.createdAt).toBe(V_CREATED) // v_created_at
-    // Columns absent from the JOIN projection default cleanly.
-    expect(kata?.version).toBe(1)
+    // Columns now projected by the JOIN must survive the mapping (regression:
+    // they were silently dropped when the SELECT omitted them).
+    expect(kata?.testCode).toBe('assert') // test_code
+    expect(kata?.starterCode).toBe('pass') // starter_code
+    expect(kata?.rubric).toEqual({ criteria: ['x'] }) // rubric
+    expect(kata?.version).toBe(3) // version
+    expect(kata?.adminNotes).toBe('note') // admin_notes
+    expect(kata?.updatedAt).toEqual(new Date('2026-03-03T00:00:00.000Z')) // updated_at
+  })
+
+  it('defaults absent optional columns cleanly (version->1, nulls)', async () => {
+    const repo = new PostgresKataRepository(
+      makeExecuteDb([
+        [
+          eligibleRow({
+            test_code: null,
+            starter_code: null,
+            rubric: null,
+            version: undefined,
+            admin_notes: undefined,
+            updated_at: undefined,
+          }),
+        ],
+      ]),
+    )
+    const kata = (await repo.findEligible(UserId('u'), {}))[0]
+
     expect(kata?.testCode).toBeNull()
+    expect(kata?.starterCode).toBeNull()
+    expect(kata?.rubric).toBeNull()
+    expect(kata?.version).toBe(1) // undefined -> default 1
+    expect(kata?.adminNotes).toBeNull()
     expect(kata?.updatedAt).toBeNull()
   })
 
