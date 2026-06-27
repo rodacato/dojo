@@ -68,6 +68,15 @@ describe('enum schemas', () => {
       expect(schema.safeParse('__not_a_member__').success).toBe(false)
     })
   }
+
+  // Regression: `preparing` (body-generation window) must stay in sync with the
+  // domain's 4-state SessionStatus — it drifted out of the DTO once already.
+  it('sessionStatusSchema accepts every domain status including preparing', () => {
+    for (const status of ['preparing', 'active', 'completed', 'failed'] as const) {
+      expect(sessionStatusSchema.parse(status)).toBe(status)
+    }
+    expect(sessionStatusSchema.safeParse('__not_a_member__').success).toBe(false)
+  })
 })
 
 describe('rubricIssueSchema', () => {

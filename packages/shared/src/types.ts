@@ -17,7 +17,7 @@
 export type Difficulty = 'easy' | 'medium' | 'hard'
 export type KataType = 'code' | 'chat' | 'whiteboard' | 'review'
 export type KataStatus = 'draft' | 'published' | 'archived'
-export type SessionStatus = 'active' | 'completed' | 'failed'
+export type SessionStatus = 'preparing' | 'active' | 'completed' | 'failed'
 export type Verdict = 'passed' | 'passed_with_notes' | 'needs_work'
 export type UserLevel = 'junior' | 'mid' | 'senior'
 export type RubricSeverity = 'high' | 'medium' | 'low'

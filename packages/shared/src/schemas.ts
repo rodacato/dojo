@@ -14,7 +14,7 @@ import { z } from 'zod'
 export const difficultySchema = z.enum(['easy', 'medium', 'hard'])
 export const kataTypeSchema = z.enum(['code', 'chat', 'whiteboard', 'review'])
 export const kataStatusSchema = z.enum(['draft', 'published', 'archived'])
-export const sessionStatusSchema = z.enum(['active', 'completed', 'failed'])
+export const sessionStatusSchema = z.enum(['preparing', 'active', 'completed', 'failed'])
 export const verdictSchema = z.enum(['passed', 'passed_with_notes', 'needs_work'])
 export const rubricSeveritySchema = z.enum(['high', 'medium', 'low'])
 export const rubricIssueSchema = z.object({
