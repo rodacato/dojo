@@ -21,7 +21,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-sonarjs": "^4.1.0",
     "knip": "^6.17.1",
-    "prettier": "^3.4.0",
+    "prettier": "^3.8.4",
     "turbo": "^2.9.14",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.0.0",
