@@ -1,7 +1,8 @@
 import { SessionNotFoundError } from '../../domain/shared/errors'
 import { AttemptId, SessionId } from '../../domain/shared/types'
 import { Attempt } from '../../domain/practice/attempt'
-import type { ConversationTurn, EventBusPort, LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
+import type { ConversationTurn, LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
+import type { EventBusPort } from '../../domain/shared/events'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { Rubric } from '@dojo/shared'
 

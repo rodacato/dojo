@@ -1,4 +1,3 @@
-import type { DomainEvent } from '../shared/events'
 import type { AttemptId, SessionId, UserId } from '../shared/types'
 import type { Session } from './session'
 import type { EvaluationToken } from './values'
@@ -134,9 +133,4 @@ export interface CodeExecutionPort {
     version: string
     code: string
   }): Promise<ExecutionResult>
-}
-
-export interface EventBusPort {
-  publish(event: DomainEvent): Promise<void>
-  subscribe<T extends DomainEvent>(eventType: string, handler: (event: T) => Promise<void>): void
 }
