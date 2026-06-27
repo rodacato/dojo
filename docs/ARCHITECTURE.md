@@ -1,6 +1,6 @@
 # Architecture
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-05
+> **Status:** Canonical · **Last reviewed:** 2026-06-27
 
 Everything you need to understand the system before writing a line of code — the ecosystem, domain model, bounded contexts, ports, events, and key decisions.
 
@@ -29,9 +29,9 @@ Dojo consumes Drawhaus and the LLM provider via HTTP. The user never knows what'
 [dojo.notdefined.dev — React + Vite]
     ↓ WebSocket (sensei streams in real time)
 [Dojo API — Hono + Node.js]
-    ↓                     ↓
+    ↓                     ┊
 [LLM Endpoint]      [Drawhaus API]
-(any compatible)    (whiteboard kata)
+(any compatible)    (whiteboard kata — planned, not built)
     ↓
 [PostgreSQL]
 ```
@@ -42,7 +42,7 @@ WebSockets are used for the sensei evaluation flow — tokens stream from the LL
 
 ## Bounded Contexts
 
-The domain is split into four contexts with explicit boundaries. Events crossing boundaries are the only coupling between them.
+The domain is split into five contexts with explicit boundaries. Events crossing boundaries are the only coupling between them.
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -63,15 +63,19 @@ The domain is split into four contexts with explicit boundaries. Events crossing
 │ ShareCard   │        │                     │
 └─────────────┘        └─────────────────────┘
 
-┌─────────────────────┐
-│ Identity (Generic)  │
-│ User · GitHub auth  │
-└─────────────────────┘
+┌─────────────────────────────┐   ┌─────────────────────┐
+│ Learning (Supporting, thin) │   │ Identity (Generic)  │
+│ Scroll · Lesson · Step      │   │ User · GitHub auth  │
+│ Scroll progress             │   │                     │
+│                             │   └─────────────────────┘
+│ publishes: ScrollCompleted  │
+└─────────────────────────────┘
 ```
 
 - **Practice** is the core domain — where value is created. Everything else supports it.
 - **Content** provides the raw material (katas, variations) that Practice consumes.
 - **Recognition** reacts to Practice events to update milestones, streaks, and generate share cards.
+- **Learning** is the Scrolls / crash-course domain — a deliberately thin content + progress context. It holds scrolls (a slug, lessons, and ordered steps) and tracks per-owner progress (`completedSteps`) for both authenticated users and anonymous sessions. It is not a rich transactional domain: there is no aggregate orchestration beyond progress tracking. It publishes `ScrollCompleted` (user accounts only — anonymous completions are not emitted) and exposes three ports: `ScrollRepositoryPort`, `ScrollProgressPort`, and `NudgeRepositoryPort`.
 - **Identity** is generic infrastructure — user management and authentication.
 
 ---
@@ -91,8 +95,8 @@ class Session {
   kataId: KataId
   variationId: VariationId
   body: string               // generated at creation, immutable
-  status: SessionStatus      // "active" | "completed" | "failed"
-  attempts: Attempt[]        // max 3 exchanges before forced verdict
+  status: SessionStatus      // "preparing" | "active" | "completed" | "failed"
+  attempts: Attempt[]        // capped at MAX_ATTEMPTS (2) before forced verdict
   startedAt: Date
   completedAt: Date | null
 
@@ -153,7 +157,7 @@ class Kata {
   duration: number           // minutes
   difficulty: Difficulty     // "easy" | "medium" | "hard"
   category: string
-  type: KataType         // "code" | "chat" | "whiteboard"
+  type: KataType         // "code" | "chat" | "whiteboard" | "review"
   status: KataStatus     // "draft" | "published" | "archived"
   language: string[]         // ["ruby", "typescript", "agnostic", ...]
   tags: string[]
@@ -205,11 +209,11 @@ Events published by aggregates. The only coupling between bounded contexts.
 |---|---|---|
 | `SessionCreated` | Session | (internal — triggers body generation) |
 | `AttemptSubmitted` | Session | (internal — triggers sensei evaluation) |
-| `EvaluationCompleted` | Session | (internal — checks for final verdict) |
 | `SessionCompleted` | Session | Recognition (belt, milestone, share card) |
 | `SessionFailed` | Session | Recognition (streak reset check, belt recalculation) |
 | `KataPublished` | Kata | Content catalog query cache invalidation |
 | `MilestoneEarned` | Recognition | (future: notification context) |
+| `ScrollCompleted` | Scroll (Learning) | Recognition (milestones / share — emitted only for authenticated users) |
 
 ---
 
@@ -228,14 +232,53 @@ External Services
 ### Ports (interfaces defined by the domain)
 
 ```typescript
-// Sensei evaluation — primary port for LLM integration
+// Sensei + scroll LLM integration — primary port for all model calls.
+// Every method takes a single params object (no positional args).
 interface LLMPort {
-  evaluate(
-    ownerRole: string,
-    ownerContext: string,
-    sessionBody: string,
-    conversationHistory: ConversationTurn[],
-  ): AsyncIterator<EvaluationToken>
+  // Streaming kata evaluation. `rubric` switches review-kata behavior (PRD-027).
+  evaluate(params: {
+    ownerRole: string
+    ownerContext: string
+    kataTitle: string
+    sessionBody: string
+    userResponse: string
+    history: ConversationTurn[]
+    category?: string
+    rubric?: Rubric
+  }): AsyncIterable<EvaluationToken>
+
+  // Blocking kata-body generation.
+  generateSessionBody(params: {
+    ownerRole: string
+    ownerContext: string
+    kataDescription: string
+  }): Promise<string>
+
+  // Streaming variant used by the SSE prep endpoint; blocking path kept as fallback.
+  generateSessionBodyStream(params: {
+    ownerRole: string
+    ownerContext: string
+    kataDescription: string
+  }): AsyncIterable<string>
+
+  // Scroll-player nudge — one short hint toward the gap, never the answer.
+  nudge(params: {
+    stepInstruction: string
+    testCode: string | null
+    userCode: string
+    stdout?: string
+    stderr?: string
+  }): Promise<string>
+
+  // Free-form streaming Q&A; resolves usage metadata alongside the stream.
+  askSensei(params: {
+    question: string
+    code?: string
+    language?: string
+  }): {
+    stream: AsyncIterable<string>
+    usage: Promise<{ inputTokens: number | null; outputTokens: number | null }>
+  }
 }
 
 // Persistence ports
@@ -256,12 +299,6 @@ interface UserRepositoryPort {
   save(user: User): Promise<void>
 }
 
-// Whiteboard integration (whiteboard kata type)
-interface WhiteboardPort {
-  createBoard(): Promise<BoardId>
-  getBoard(id: BoardId): Promise<Board>
-}
-
 // Event bus — in-memory for Phase 0, upgradeable to Redis/BullMQ
 interface EventBusPort {
   publish(event: DomainEvent): Promise<void>
@@ -278,8 +315,17 @@ interface EventBusPort {
 | `SessionRepositoryPort` | `PostgresSessionRepository` | Primary persistence |
 | `KataRepositoryPort` | `PostgresKataRepository` | Includes eligibility filter (6-month window) |
 | `UserRepositoryPort` | `PostgresUserRepository` | |
-| `WhiteboardPort` | `DrawhausHttpClient` | HTTP client for Drawhaus API |
 | `EventBusPort` | `InMemoryEventBus` | Phase 0; synchronous, in-process |
+
+### Planned, not built
+
+The following port + adapter were designed but are **not in the code**. They are documented here as future work, not current behavior:
+
+| Port | Adapter | Status |
+|---|---|---|
+| `WhiteboardPort` | `DrawhausHttpClient` | **Not built.** No `WhiteboardPort`, `createBoard`, or `BoardId` exists in the codebase. `whiteboard` exists only as a `KataType` enum value — there is no execution path for it. |
+
+`DRAWHAUS_URL` is declared in `apps/api/src/config.ts` but is currently **dead config**: nothing in the code reads it. It is kept pending the Drawhaus integration decision (owner's call), not removed.
 
 ---
 
@@ -295,7 +341,7 @@ StartSession(userId, mood, duration)          → Session
   → saves via SessionRepositoryPort
   → publishes SessionCreated
 
-SubmitAttempt(sessionId, userResponse)        → AsyncIterator<EvaluationToken>
+SubmitAttempt(sessionId, userResponse)        → AsyncIterable<EvaluationToken>
   → loads Session via SessionRepositoryPort
   → streams evaluation via LLMPort
   → on EvaluationResult received:
@@ -355,8 +401,8 @@ The kata is the template. The session is the instance. The body is generated onc
 **Mood and time are filters, not persisted data.**
 Query parameters that filter available katas — not saved to the database. No complexity, no tracking, no inferred behavior. Honor code.
 
-**No fixed attempt counter — the sensei decides.**
-The sensei determines when it has enough to evaluate. It can ask follow-up questions (max 2 exchanges) before giving a final verdict. This mirrors real technical discussions.
+**Hard attempt cap, enforced in the aggregate.**
+The sensei decides when it has enough to evaluate and can ask follow-up questions before giving a final verdict, mirroring real technical discussions — but the conversation is bounded by `MAX_ATTEMPTS` (currently `2`), a named constant in `Session`. The aggregate's `addAttempt` throws `AttemptLimitReachedError` once that many attempts have been recorded, so the cap is a domain invariant, not just prompt guidance.
 
 **The sensei evaluates the process, not the answer.**
 Evaluation focuses on reasoning, tradeoffs identified, and communication — not whether the solution was optimal. This is enforced in the prompt architecture, not in application code.
@@ -380,8 +426,11 @@ Split-panel view. Left: context and requirements. Right: code editor (no autocom
 ### chat
 Technical roleplay. The sensei takes a role (tech lead, PM with an ambiguous requirement, a junior asking for help) and the user responds as they would in real life. Evaluated on reasoning and communication.
 
-### whiteboard
-System design and architecture. The user works in an embedded Drawhaus instance via the `WhiteboardPort`. The sensei evaluates the proposal — not the perfect solution, but what the user considered, what they missed, and why they made the choices they did.
+### whiteboard (planned, not built)
+System design and architecture. The user would work in an embedded Drawhaus instance via the `WhiteboardPort`, with the sensei evaluating the proposal — not the perfect solution, but what the user considered, what they missed, and why. Today `whiteboard` exists only as a `KataType` enum value; there is no execution path, port, or adapter for it yet (see §Ports & Adapters → Planned, not built).
+
+### review
+Rubric-graded katas (PRD-027). The learner writes prose, and the sensei evaluates it against a structured `Rubric` rather than running a generic code evaluation. When a `rubric` is present, the `LLMPort.evaluate` adapter switches to the review prompt variant.
 
 ---
 
