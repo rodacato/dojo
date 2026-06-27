@@ -40,7 +40,7 @@ interface WsMessage {
 }
 
 function scheduleResultRedirect(navigate: (path: string) => void, sessionId: string) {
-  return setTimeout(() => navigate(`/kata/${sessionId}/result`), 1500)
+  return setTimeout(() => navigate(`/katas/${sessionId}/result`), 1500)
 }
 
 export function useEvaluationStream(sessionId: string) {

@@ -67,9 +67,9 @@ function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata 
 
 function renderPage(sessionId = 'sess-1') {
   return render(
-    <MemoryRouter initialEntries={[`/kata/${sessionId}`]}>
+    <MemoryRouter initialEntries={[`/katas/${sessionId}`]}>
       <Routes>
-        <Route path="/kata/:id" element={<KataActivePage />} />
+        <Route path="/katas/:id" element={<KataActivePage />} />
       </Routes>
     </MemoryRouter>,
   )
@@ -159,7 +159,7 @@ describe('KataActivePage', () => {
     renderPage('sess-done')
 
     await waitFor(() =>
-      expect(navigate).toHaveBeenCalledWith('/kata/sess-done/result', { replace: true }),
+      expect(navigate).toHaveBeenCalledWith('/katas/sess-done/result', { replace: true }),
     )
   })
 
@@ -183,7 +183,7 @@ describe('KataActivePage', () => {
     await waitFor(() =>
       expect(submitAttempt).toHaveBeenCalledWith('sess-1', 'My approach: token bucket.'),
     )
-    expect(navigate).toHaveBeenCalledWith('/kata/sess-1/eval')
+    expect(navigate).toHaveBeenCalledWith('/katas/sess-1/eval')
   })
 
   it('keeps Submit disabled until the user writes a response, then enables it', async () => {

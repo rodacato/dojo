@@ -43,8 +43,8 @@ function renderDashboard(initialEntry = '/dashboard') {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/katas" element={<div>katas page</div>} />
         <Route path="/belts" element={<div>belts page</div>} />
-        <Route path="/kata/:id" element={<div>resume kata page</div>} />
-        <Route path="/kata/:id/result" element={<div>kata result page</div>} />
+        <Route path="/katas/:id" element={<div>resume kata page</div>} />
+        <Route path="/katas/:id/result" element={<div>kata result page</div>} />
         <Route path="/history" element={<div>history page</div>} />
       </Routes>
     </MemoryRouter>,
@@ -168,7 +168,7 @@ describe('DashboardPage', () => {
       expect(screen.getByText('katas page')).toBeInTheDocument()
     })
 
-    it('resumes an active session, routing to /kata/:id', async () => {
+    it('resumes an active session, routing to /katas/:id', async () => {
       const user = userEvent.setup()
       mockedGetDashboard.mockResolvedValue(baseDashboard({ activeSessionId: 'sess-42' }))
 

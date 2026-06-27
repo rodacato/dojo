@@ -4,13 +4,11 @@ import { Sidebar } from './Sidebar'
 import { BottomNav } from './BottomNav'
 import { OfflineBanner } from './OfflineBanner'
 
-/** Routes where nav is hidden — focused work screens */
-const FOCUSED_ROUTES = ['/kata/', '/eval']
+/** Active-kata work screens (/katas/:id and /katas/:id/eval) hide the nav; the /katas list keeps it */
+const FOCUSED_ROUTE = /^\/katas\/[^/]+/
 
 function isFocusedRoute(pathname: string): boolean {
-  // Match /kata/:id and /kata/:id/eval but NOT /kata (selection)
-  if (pathname === '/kata') return false
-  return FOCUSED_ROUTES.some((r) => pathname.includes(r))
+  return FOCUSED_ROUTE.test(pathname)
 }
 
 export function AppShell() {

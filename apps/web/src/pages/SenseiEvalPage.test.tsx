@@ -85,9 +85,9 @@ function makeResult(overrides: Partial<EvaluationResult> = {}): EvaluationResult
 
 function renderPage(sessionId = 'sess-1') {
   return render(
-    <MemoryRouter initialEntries={[`/kata/${sessionId}/eval`]}>
+    <MemoryRouter initialEntries={[`/katas/${sessionId}/eval`]}>
       <Routes>
-        <Route path="/kata/:id/eval" element={<SenseiEvalPage />} />
+        <Route path="/katas/:id/eval" element={<SenseiEvalPage />} />
       </Routes>
     </MemoryRouter>,
   )
@@ -163,7 +163,7 @@ describe('SenseiEvalPage', () => {
     renderPage('sess-9')
 
     await user.click(await screen.findByRole('button', { name: /View full analysis/i }))
-    expect(navigate).toHaveBeenCalledWith('/kata/sess-9/result')
+    expect(navigate).toHaveBeenCalledWith('/katas/sess-9/result')
   })
 
   it('shows the follow-up question with an answer box and submits it', async () => {
@@ -216,6 +216,6 @@ describe('SenseiEvalPage', () => {
     expect(connect.mock.calls.length).toBe(connectCallsBefore + 1)
 
     await user.click(screen.getByRole('button', { name: 'Back to kata' }))
-    expect(navigate).toHaveBeenCalledWith('/kata/sess-5')
+    expect(navigate).toHaveBeenCalledWith('/katas/sess-5')
   })
 })

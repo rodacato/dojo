@@ -62,7 +62,7 @@ export function KataActivePage() {
         setPrepareError(true)
         return
       }
-      navigate(`/kata/${sessionId}/result`, { replace: true })
+      navigate(`/katas/${sessionId}/result`, { replace: true })
     }
 
     function scheduleRetryOrFail(): void {
@@ -179,10 +179,10 @@ export function KataActivePage() {
     try {
       const { attemptId } = await api.submitAttempt(sessionId, userResponse)
       sessionStorage.setItem(`dojo-attempt-${sessionId}`, attemptId)
-      navigate(`/kata/${sessionId}/eval`)
+      navigate(`/katas/${sessionId}/eval`)
     } catch (err) {
       if (err instanceof ApiError && err.status === 408) {
-        navigate(`/kata/${sessionId}/result`)
+        navigate(`/katas/${sessionId}/result`)
       } else {
         setSubmitting(false)
       }

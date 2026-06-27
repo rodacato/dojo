@@ -27,9 +27,9 @@ function renderShell(route: string) {
       <Routes>
         <Route element={<AppShell />}>
           <Route path="/dashboard" element={<div>dashboard outlet</div>} />
-          <Route path="/kata" element={<div>kata selection outlet</div>} />
-          <Route path="/kata/:id" element={<div>kata work outlet</div>} />
-          <Route path="/kata/:id/eval" element={<div>kata eval outlet</div>} />
+          <Route path="/katas" element={<div>kata selection outlet</div>} />
+          <Route path="/katas/:id" element={<div>kata work outlet</div>} />
+          <Route path="/katas/:id/eval" element={<div>kata eval outlet</div>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -44,27 +44,27 @@ describe('AppShell — focused-route chrome', () => {
     expect(screen.getByText('dashboard outlet')).toBeInTheDocument()
   })
 
-  it('hides sidebar and bottom nav on a focused /kata/:id route', () => {
-    renderShell('/kata/closures')
+  it('hides sidebar and bottom nav on a focused /katas/:id route', () => {
+    renderShell('/katas/closures')
     expect(screen.queryByTestId('sidebar')).not.toBeInTheDocument()
     expect(screen.queryByTestId('bottom-nav')).not.toBeInTheDocument()
     expect(screen.getByText('kata work outlet')).toBeInTheDocument()
   })
 
   it('hides chrome on an /eval route', () => {
-    renderShell('/kata/closures/eval')
+    renderShell('/katas/closures/eval')
     expect(screen.queryByTestId('sidebar')).not.toBeInTheDocument()
     expect(screen.getByText('kata eval outlet')).toBeInTheDocument()
   })
 
-  it('keeps full chrome on the /kata selection screen (exact match, not focused)', () => {
-    renderShell('/kata')
+  it('keeps full chrome on the /katas selection screen (list page, not focused)', () => {
+    renderShell('/katas')
     expect(screen.getByTestId('sidebar')).toBeInTheDocument()
     expect(screen.getByText('kata selection outlet')).toBeInTheDocument()
   })
 
   it('always shows the offline banner, even on focused routes', () => {
-    renderShell('/kata/closures')
+    renderShell('/katas/closures')
     expect(screen.getByTestId('offline-banner')).toBeInTheDocument()
   })
 })
