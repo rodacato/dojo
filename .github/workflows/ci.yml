@@ -43,7 +43,7 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Test (with enforced coverage gate)
+      - name: Test api (enforced coverage gate)
         # Runs coverage so the vitest.config threshold gates here (the Sonar job
         # neutralizes it via VITEST_NO_COVERAGE_THRESHOLD; this job does not, so
         # the honest ratcheting floor is enforced). E2E runs in its own job.
@@ -60,6 +60,14 @@ jobs:
           LLM_API_KEY: ci-test-api-key
           WEB_URL: http://localhost:5173
           NODE_ENV: test
+
+      - name: Test web (enforced coverage gate)
+        # Gate was decorative before S034 — the threshold lived in vitest.config
+        # but CI never ran it. Now enforced here, same as api.
+        run: pnpm --filter=@dojo/web test:coverage
+
+      - name: Test shared (enforced coverage gate)
+        run: pnpm --filter=@dojo/shared test:coverage
 
   e2e:
     name: E2E Smoke Tests
