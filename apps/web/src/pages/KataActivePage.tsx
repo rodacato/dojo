@@ -330,11 +330,8 @@ function ResponsePanel({
   const isReview = kata.type === 'review'
   const language = resolveLanguage(kata.language)
   const filename = isCode ? `solution.${fileExtension(language)}` : 'architecture.md'
-  const editorLabel = isCode
-    ? languageLabel(language)
-    : isWhiteboard
-      ? 'Mermaid'
-      : 'Prose'
+  const nonCodeLabel = isWhiteboard ? 'Mermaid' : 'Prose'
+  const editorLabel = isCode ? languageLabel(language) : nonCodeLabel
 
   return (
     <Panel defaultSize={isCode ? 60 : 50} minSize={20} className="flex flex-col">

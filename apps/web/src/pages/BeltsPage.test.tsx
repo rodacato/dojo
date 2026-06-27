@@ -65,7 +65,7 @@ describe('BeltsPage', () => {
     expect(screen.getByRole('heading', { name: 'Belts' })).toBeInTheDocument()
     expect(screen.queryByText(/your rank/i)).not.toBeInTheDocument()
     // Six SkeletonCards render while the request is pending.
-    expect(container.querySelectorAll('.bg-surface.p-6').length).toBe(6)
+    expect(container.querySelectorAll('.bg-surface.p-6')).toHaveLength(6)
   })
 
   it('renders the rank header, factors, and milestone progress once data loads', async () => {

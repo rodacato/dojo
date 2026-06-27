@@ -138,7 +138,7 @@ describe('GET /landing/repo-stats', () => {
   })
 
   it('coalesces concurrent requests into a single upstream fetch (inflight)', async () => {
-    let resolveUpstream: (r: Response) => void = () => undefined
+    let resolveUpstream: (r: Response) => void = (_r) => undefined
     const upstream = new Promise<Response>((resolve) => {
       resolveUpstream = resolve
     })

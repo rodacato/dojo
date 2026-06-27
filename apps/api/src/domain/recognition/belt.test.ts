@@ -124,8 +124,11 @@ describe('computeBeltFromHistory', () => {
     // Need 40 total completed, 4 clusters, 10 active days in 30, 21 days at yellow
     for (let i = 0; i < 40; i++) {
       const dayOffset = 10 + i  // days 10..49
-      const cluster =
-        i < 10 ? 'typescript' : i < 20 ? 'system-design' : i < 30 ? 'api-versioning' : 'database'
+      let cluster: string
+      if (i < 10) cluster = 'typescript'
+      else if (i < 20) cluster = 'system-design'
+      else if (i < 30) cluster = 'api-versioning'
+      else cluster = 'database'
       const topicByCluster: Record<string, string> = {
         typescript: 'typescript',
         'system-design': 'system-design',

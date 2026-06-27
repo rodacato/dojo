@@ -33,7 +33,7 @@ describe('PYTHON_FIGURES', () => {
       if (figure.type !== 'array-track') continue
       expect(figure.tracks.length).toBeGreaterThan(0)
       for (const track of figure.tracks) {
-        expect(track.states.length).toBe(figure.input.length)
+        expect(track.states).toHaveLength(figure.input.length)
       }
     }
   })

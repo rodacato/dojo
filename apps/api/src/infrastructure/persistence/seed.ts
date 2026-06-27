@@ -38,7 +38,8 @@ function validateKatas(katas: SeedKata[]): void {
   }
 
   if (errors.length > 0) {
-    throw new Error(`Seed validation failed:\n${errors.map((e) => `  - ${e}`).join('\n')}`)
+    const details = errors.map((e) => `  - ${e}`).join('\n')
+    throw new Error(`Seed validation failed:\n${details}`)
   }
 }
 

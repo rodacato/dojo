@@ -213,7 +213,7 @@ describe('SenseiEvalPage', () => {
     // connect ran once on mount; Try again fires it again.
     const connectCallsBefore = connect.mock.calls.length
     await user.click(screen.getByRole('button', { name: 'Try again' }))
-    expect(connect.mock.calls.length).toBe(connectCallsBefore + 1)
+    expect(connect.mock.calls).toHaveLength(connectCallsBefore + 1)
 
     await user.click(screen.getByRole('button', { name: 'Back to kata' }))
     expect(navigate).toHaveBeenCalledWith('/katas/sess-5')
