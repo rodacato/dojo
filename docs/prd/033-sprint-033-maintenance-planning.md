@@ -1,7 +1,8 @@
 # PRD-033: Sprint 033 — Maintenance: Security & Foundation
 
-> **Status:** Planning. Opens after S032 ships the five-language set (Go incl.). Does not interrupt S032 — see [Sequencing](#sequencing).
-> **Scope discipline:** This is the *focused* cut of a 2–3 sprint maintenance block. The web testing backbone and the architecture debt are explicitly deferred to S034/S035 (see [What does NOT ship](#scope--what-does-not-ship)). Trying to do all of it in one sprint does not close.
+> **Status:** Closed 2026-06-27. See the [S033 retro](../sprints/archive/sprint-033-maintenance-security-foundation.md).
+> **Reframe at close:** the "web testing backbone deferred to S034" assumption did not survive the sprint — the web backbone got built *and* coverage hit ~87% inside S033, retiring S034's planned premise. The real residual (the web/shared gates are defined but never run in CI) plus the architecture debt now both land in S034. See the retro's honest findings.
+> **Scope discipline:** This was the *focused* cut of a 2–3 sprint maintenance block. The architecture debt was deferred (now pulled into S034); the web testing backbone was *not* deferred in the end — it landed here.
 
 ## Sprint goal in one sentence
 
@@ -76,14 +77,14 @@ This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findin
 
 ## Definition of done
 
-- [ ] `pnpm audit` reports **0 critical, 0 high**; deferred moderates/majors logged.
-- [ ] Coverage is measured and reported for **api, web, and shared**; all three feed Sonar.
-- [ ] api coverage gate is **enforced in CI** (`VITEST_NO_COVERAGE_THRESHOLD` removed from the gating path) at an honest, ratcheting threshold.
-- [ ] `apps/api/src/scripts/**` excluded from coverage; the api number reflects business logic only.
-- [ ] `knip` installed, baseline committed, unambiguous wins fixed.
-- [ ] Sonar + CodeQL findings exported and triaged into fix-now / S035 / won't-fix — **no silent drops**.
-- [ ] S034 (web testing backbone) and S035 (architecture debt) opened with the baselines this sprint produced.
-- [ ] Docs sync per CLAUDE.md table (CHANGELOG, ROADMAP if a roadmap item closes).
+- [x] `pnpm audit` reports **0 critical, 0 high**; deferred moderates/majors logged.
+- [x] Coverage is measured and reported for **api, web, and shared**; all three feed Sonar.
+- [x] api coverage gate is **enforced in CI** (`VITEST_NO_COVERAGE_THRESHOLD` removed from the gating path) at an honest, ratcheting threshold (~83.6% lines).
+- [x] `apps/api/src/scripts/**` excluded from coverage; the api number reflects business logic only.
+- [x] `knip` installed, baseline committed, unambiguous wins fixed.
+- [x] Sonar + CodeQL findings exported and triaged into fix-now / S034–S035 / won't-fix — **no silent drops**.
+- [x] S034 opened with the baselines this sprint produced. _(Reframed: it absorbs the architecture debt and the web-gate residual; the planned "web backbone" S035 split is revised — see status note above.)_
+- [x] Docs sync per CLAUDE.md table (CHANGELOG, ROADMAP). The web/shared coverage gates are defined but **not** wired into CI — carried to S034, not silently closed.
 
 ## Next step
 
