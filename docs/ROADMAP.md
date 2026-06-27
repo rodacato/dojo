@@ -13,7 +13,7 @@ Ideas and next block: [`docs/sprints/backlog.md`](sprints/backlog.md)
 
 | Milestone | Goal | Phase |
 |---|---|---|
-| **MVP** | The creator can complete a kata end-to-end in production without technical friction | Phase 0 — in progress |
+| **MVP** | The creator can complete a kata end-to-end in production without technical friction | Phase 0 — complete |
 | **Alpha** | 3–5 invited users complete kata consistently and come back | Phase 1 |
 | **Beta** | Content scales beyond the creator — contributors propose exercises | Phase 3 |
 | **Opening decision** | Evaluate whether to open to the public, waitlist, or stay invite-only | Phase 4 |
@@ -76,7 +76,11 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-027 — Python crash scroll + scroll hardening](sprints/archive/sprint-027-python-crash-scroll.md) | Python scroll end-to-end; 6 figure components shipped + `:figure` parser; XSS closed in the markdown renderer; player UX debt paid. | ✅ Closed |
 | [sprint-028 — Rust + TypeScript crash scrolls](sprints/archive/sprint-028-rust-typescript-crash-scrolls.md) | Two scrolls end-to-end at 2× cadence, each smoked against real Piston (rustc 1.68.2, TS 5.0.3); execution infra hardened (compiler-error `errorKind`, `fn main` rename, timeouts). Both `isPublic:false` pending the full-set smoke. | ✅ Closed |
 | [sprint-029 — Scroll format revision + publish all four](sprints/archive/sprint-029-scroll-format-revision.md) | Unplanned interlude (the Go scroll moved to S030). Broken→fix katas + tiered `hints` mechanism (ADR 023, `steps.hints` + migration 0023), piloted on Ruby (4 katas) then rolled to Rust/Python/TS (L0 contract, tiered hints; Python +3 broken→fix; Rust/TS write-from-scratch by design). **Published the four existing scrolls** (`status: published` + `isPublic: true`); ruby+rust joined the anonymous-execution whitelist. Jumped the S030 smoke gate — full-set Piston smoke + TS Piston config (`max_run_timeout`/`output_max_size`) now carry into S030. | ✅ Closed |
-| [sprint-030 — Go crash scroll + full-set smoke gate](sprints/current.md) | Go (the fifth scroll, Piston Go 1.16.2) + the deferred full-set real-Piston smoke of all five, the publish/infra gates (TS `max_run_timeout`≥8000 + `output_max_size`), render-test infra. | 🚧 In flight |
+| [sprint-030 — Scrolls presentation reshape](sprints/archive/sprint-030-scrolls-reshape.md) | Re-scoped mid-flight from the Go scroll: catalog/landing/player presentation reshape to Rustlings-style clarity (clear contract, time-on-card, binary progress + filters, orientation landing at `/scrolls/:slug`). Go moved to S031. | ✅ Closed |
+| [sprint-031 — Go crash scroll + the carried smoke](sprints/archive/sprint-031-go-scroll.md) | Go (the fifth scroll, Piston Go 1.16.2) authored + the carried full-set real-Piston smoke, which caught a dead kata in the published Ruby scroll on its first run. `PistonAdapter` `isGo` file-template branch + hand-rolled JSON (encoding/json crashes the 1.16.2 sandbox). Staged `published`+`isPublic`, live on next deploy+reseed. | ✅ Closed |
+| [sprint-032 — Ship the set, then close the reshape loop](sprints/archive/sprint-032-ship-and-reshape-loop.md) | Five-language set deployed + reseeded to prod (Go live, Ruby `parameters_of` fix carried); solo-authored Go prose got its fresh-eyes read as the deploy gate (2 real gaps fixed); reshape's deferred player/share layer landed; per-workspace Sonar split + coverage measurement groundwork. | ✅ Closed |
+| [sprint-033 — Maintenance: security & foundation](sprints/archive/sprint-033-maintenance-security-foundation.md) | Security/deps debt (`pnpm audit` crit+high → 0), honest coverage measured + gated across api/web/shared (api gate enforced at 80/72; web reached ~87% but its gate stayed unwired in CI — carried), knip dead-code baseline + unambiguous wins, Sonar/CodeQL triage into fix-now/S034/won't-fix. Over-delivered web coverage; the planned "web backbone" S034 premise was retired. | ✅ Closed |
+| [sprint-034 — Wire the web gate + architecture debt](sprints/current.md) | The cheap residual S033 surfaced (enforce the web/shared coverage gates in CI — they exist but never run) plus the deferred architecture debt (P-1..P-6, F-4..F-6, in-memory rate limiters, `TelemetrySinkPort`), scoped from S033's baselines and gated tests-before-refactor. | 🚧 In flight |
 
 ---
 

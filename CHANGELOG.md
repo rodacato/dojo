@@ -4,8 +4,22 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
-## Sprint 033 — Maintenance: security & foundation (2026-06-25)
+## Sprint 033 — Maintenance: security & foundation (2026-06-20 – 06-26)
 **Phase 1 — Alpha**
+
+> The scrolls product shipped fast and accrued the usual debt. This sprint stopped the bleeding before the next thing built on top of it: security-relevant deps, coverage measured and gated honestly, dead-code tooling. It over-delivered on coverage.
+
+**Security/dependency debt — critical + high to zero.** `pnpm audit` had 78 vulns (1 critical, 12 high) when the sprint opened. Patched the non-breaking set in one batch and manually bumped the advisories behind `dompurify` (via `mermaid`) and `hono`. Prod `pnpm audit` is now **0 critical, 0 high** — 2 transitive moderates remain (a `brace-expansion` DoS reachable only through `@sentry/node` → `@fastify/otel` → `minimatch`), logged and deferred. Majors (eslint 10, `@types/node` 26, vite-plugin-react 6, `@hono/node-server` 2, arctic 3) were explicitly out of this track.
+
+**Coverage — measured across all three workspaces, gated honestly.** The gate was decorative before: an 80% threshold that CI neutralized, so it gated nothing. Brought every HTTP route under test and **enforced the api gate for real** (`80/80/70/72`, ratcheting, measured at ~83.6% lines / ~77.7% branches over business logic — `src/scripts/**` excluded so dev CLIs stop dragging the number). Added the jsdom + Testing Library backbone to web and a vitest backbone + Zod smoke tests to shared; both now feed lcov into Sonar. Web coverage **over-delivered to ~87% lines** in the process — but its gate (`85/80/78/78`, defined in `vitest.config`) is still not run in CI, so it can silently regress. That residual carries to S034.
+
+**Dead-code tooling.** Added `knip` at the root, captured the baseline, removed the unambiguous wins (2 unused web deps + others). The judgment calls (unused exports/types that are part of a public-ish surface, the `eslint-plugin-react-hooks` listing that knip flags as both unlisted and unused) are logged for S035.
+
+**Findings triaged, no silent drops.** Sonar + Dependabot findings exported and split into fix-now (landed this sprint), S034/S035 (architecture-shaped, gated on tests-before-refactor), and won't-fix-with-reason. The maintainability long tail is S035.
+
+---
+
+_Shipped during the maintenance window, outside the sprint's three tracks:_
 
 **Prometheus metrics, opt-in and token-gated.** The API can now expose `GET /metrics` on the main app port — same hostname, behind kamal-proxy and Cloudflare, no separate metrics port (that was rejected for coupling the app to host network topology). Off by default: `METRICS_ENABLED=false` mounts nothing — no endpoint, no `collectDefaultMetrics`, no middleware — so a self-hoster who doesn't want it pays zero overhead. When on, a `METRICS_TOKEN` Bearer guards the endpoint (constant-time compare); in production with metrics on and no token, `/metrics` 404s rather than serve data unauthenticated. Mounted before the rate limiters, like `/health`, so scraping is never throttled. Exposed: default process metrics, an `http_request_duration_seconds` histogram labelled by the matched route *pattern* (never the raw URL — bounded cardinality), and `dojo_sensei_evaluations_total` by verdict — the one business signal that is both the kata-loop's throughput and its main cost driver, since every evaluation is an LLM streaming call. New env: `METRICS_ENABLED` (variable), `METRICS_TOKEN` (secret), wired through `deploy.api.yml`, `.kamal/secrets`, and the deploy workflow.
 

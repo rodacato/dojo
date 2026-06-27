@@ -28,8 +28,8 @@ export default defineConfig({
         'src/infrastructure/persistence/migrate.ts',
       ],
       // Enforced floor — ratchets up as coverage rises, never silently
-      // regresses. Set just under the current measured number (S033 Phase 1
-      // brought every HTTP route under test: ~63% lines / ~54% branches).
+      // regresses. Set just under the current measured number (S033 brought
+      // every HTTP route under test: ~83.6% lines / ~77.7% branches).
       // Neutralized in the Sonar job (which only reports) via
       // VITEST_NO_COVERAGE_THRESHOLD.
       thresholds: process.env.VITEST_NO_COVERAGE_THRESHOLD
