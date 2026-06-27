@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { BeltDTO } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
+import { useAsync } from '../hooks/useAsync'
 import { PageLoader } from '../components/PageLoader'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
@@ -19,11 +20,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
 
 export function DashboardPage() {
   const navigate = useNavigate()
-  const [dashboard, setDashboard] = useState<DashboardData | null>(null)
-
-  useEffect(() => {
-    api.getDashboard().then(setDashboard)
-  }, [])
+  const { data: dashboard } = useAsync(() => api.getDashboard(), [])
 
   const isFirstVisit = !!dashboard && dashboard.streak === 0 && dashboard.recentSessions.length === 0
   const onboarding = useFirstVisit(isFirstVisit)

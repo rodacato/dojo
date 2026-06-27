@@ -1,6 +1,7 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
+import { useAsync } from '../hooks/useAsync'
 import { Button } from '../components/ui/Button'
 import { Pagination } from '../components/ui/Pagination'
 import { SkeletonList } from '../components/ui/SkeletonLoader'
@@ -21,21 +22,12 @@ interface HistorySession {
 
 export function HistoryPage() {
   const navigate = useNavigate()
-  const [sessions, setSessions] = useState<HistorySession[]>([])
   const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const { data, loading } = useAsync(() => api.getHistory(page), [page])
 
-  useEffect(() => {
-    setLoading(true)
-    api.getHistory(page).then((data) => {
-      setSessions(data.sessions)
-      setTotalPages(data.totalPages)
-      setTotal(data.total)
-      setLoading(false)
-    })
-  }, [page])
+  const sessions: HistorySession[] = data?.sessions ?? []
+  const totalPages = data?.totalPages ?? 1
+  const total = data?.total ?? 0
 
   let sessionList: ReactNode
   if (loading && sessions.length === 0) {

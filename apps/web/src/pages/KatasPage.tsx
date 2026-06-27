@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { KataDTO } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
+import { useAsync } from '../hooks/useAsync'
 import { Button } from '../components/ui/Button'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 
@@ -49,7 +50,7 @@ const MOOD_LABEL: Record<Mood, string> = {
 export function KatasPage() {
   const [mood, setMood] = useState<Mood | null>(null)
   const [duration, setDuration] = useState<Duration | null>(null)
-  const [dashboard, setDashboard] = useState<DashboardData | null>(null)
+  const { data: dashboard } = useAsync(() => api.getDashboard(), [])
   const [showCustomize, setShowCustomize] = useState(true)
   const [level, setLevel] = useState<UserLevel>('mid')
   const [interests, setInterests] = useState<string[]>([])
@@ -64,7 +65,6 @@ export function KatasPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    api.getDashboard().then(setDashboard)
     api.getPreferences().then((prefs) => {
       setLevel((prefs.level as UserLevel) || 'mid')
       setInterests(prefs.interests || [])

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { api, ApiError, type PublicProfileData } from '../lib/api'
+import { api, ApiError } from '../lib/api'
+import { useAsync } from '../hooks/useAsync'
 import { PublicPageLayout } from '../components/PublicPageLayout'
 import { ErrorState } from '../components/ui/ErrorState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
@@ -28,27 +28,10 @@ const BADGE_NAMES: Record<string, string> = {
 export function PublicProfilePage() {
   const { username } = useParams<{ username: string }>()
   const navigate = useNavigate()
-  const [profile, setProfile] = useState<PublicProfileData | null>(null)
-  const [error, setError] = useState<'notfound' | 'network' | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [retryTick, setRetryTick] = useState(0)
-
-  useEffect(() => {
-    if (!username) return
-    let cancelled = false
-    setLoading(true)
-    setError(null)
-    api
-      .getPublicProfile(username)
-      .then((p) => { if (!cancelled) setProfile(p) })
-      .catch((err) => {
-        if (cancelled) return
-        const is404 = err instanceof ApiError && err.status === 404
-        setError(is404 ? 'notfound' : 'network')
-      })
-      .finally(() => { if (!cancelled) setLoading(false) })
-    return () => { cancelled = true }
-  }, [username, retryTick])
+  const { data: profile, loading, error, reload } = useAsync(
+    () => api.getPublicProfile(username!),
+    [username],
+  )
 
   if (loading) {
     return (
@@ -60,7 +43,8 @@ export function PublicProfilePage() {
     )
   }
 
-  if (error === 'notfound') {
+  const isNotFound = error instanceof ApiError && error.status === 404
+  if (isNotFound) {
     return (
       <ErrorState
         kind="not-found"
@@ -71,12 +55,12 @@ export function PublicProfilePage() {
     )
   }
 
-  if (error === 'network' || !profile) {
+  if (error || !profile) {
     return (
       <ErrorState
         kind="internal"
         message="We couldn't load this profile."
-        primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
+        primaryAction={{ label: 'Try again', onClick: reload }}
         secondaryAction={{ label: 'Go home', to: '/' }}
       />
     )

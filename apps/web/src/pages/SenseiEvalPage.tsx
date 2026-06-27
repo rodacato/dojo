@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { api, type SessionWithKata } from '../lib/api'
+import { api } from '../lib/api'
+import { useAsync } from '../hooks/useAsync'
 import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluationStream'
 import { useTypingReveal } from '../hooks/useTypingReveal'
 import { useRotatingMessage } from '../hooks/useRotatingMessage'
@@ -32,18 +33,13 @@ type StatusChipKind = 'connecting' | 'executing' | 'streaming' | 'follow-up' | '
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [session, setSession] = useState<SessionWithKata | null>(null)
+  const { data: session } = useAsync(() => api.getSession(sessionId!), [sessionId])
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
   const [history, setHistory] = useState<Exchange[]>([])
   const { state, connect, submit } = useEvaluationStream(sessionId!)
   const scrollRef = useRef<HTMLDivElement>(null)
   const evalMessage = useRotatingMessage(EVAL_MESSAGES)
-
-  useEffect(() => {
-    if (!sessionId) return
-    api.getSession(sessionId).then(setSession)
-  }, [sessionId])
 
   useEffect(() => {
     if (!sessionId) return
