@@ -1,5 +1,5 @@
 import type { ScrollProgressPort, ScrollRepositoryPort, ProgressOwner } from '../../domain/learning/ports'
-import type { EventBusPort } from '../../domain/practice/ports'
+import type { EventBusPort } from '../../domain/shared/events'
 import type { ScrollCompleted } from '../../domain/learning/events'
 
 interface Deps {

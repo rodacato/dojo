@@ -1,7 +1,8 @@
 import type { KataRepositoryPort } from '../../domain/content/ports'
 import { KataNotFoundError } from '../../domain/shared/errors'
 import type { KataId, UserId, VariationId } from '../../domain/shared/types'
-import type { EventBusPort, SessionRepositoryPort } from '../../domain/practice/ports'
+import type { SessionRepositoryPort } from '../../domain/practice/ports'
+import type { EventBusPort } from '../../domain/shared/events'
 import { Session } from '../../domain/practice/session'
 
 interface Deps {

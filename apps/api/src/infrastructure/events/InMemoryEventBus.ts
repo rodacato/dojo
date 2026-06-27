@@ -1,5 +1,4 @@
-import type { EventBusPort } from '../../domain/practice/ports'
-import type { DomainEvent } from '../../domain/shared/events'
+import type { DomainEvent, EventBusPort } from '../../domain/shared/events'
 
 export class InMemoryEventBus implements EventBusPort {
   private readonly handlers = new Map<string, Array<(event: DomainEvent) => Promise<void>>>()
