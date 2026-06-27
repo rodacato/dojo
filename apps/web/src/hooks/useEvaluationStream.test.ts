@@ -14,7 +14,7 @@ interface SentFrame {
 }
 
 class FakeWebSocket {
-  static instances: FakeWebSocket[] = []
+  static readonly instances: FakeWebSocket[] = []
   static last(): FakeWebSocket {
     const ws = FakeWebSocket.instances.at(-1)
     if (!ws) throw new Error('no WebSocket was constructed')
@@ -75,7 +75,7 @@ function setup() {
 
 describe('useEvaluationStream', () => {
   beforeEach(() => {
-    FakeWebSocket.instances = []
+    FakeWebSocket.instances.length = 0
     navigateMock.mockClear()
     localStorage.clear()
     vi.stubGlobal('WebSocket', FakeWebSocket as unknown as typeof WebSocket)

@@ -27,7 +27,7 @@ import { pickUnderline } from '../../lib/brushstrokes'
 type ObservedNode = Element
 
 class FakeIntersectionObserver {
-  static instances: FakeIntersectionObserver[] = []
+  static readonly instances: FakeIntersectionObserver[] = []
   observed: ObservedNode[] = []
   disconnected = false
   readonly callback: IntersectionObserverCallback
@@ -63,7 +63,7 @@ beforeEach(() => {
   gsapTo.mockClear()
   gsapSet.mockClear()
   matchMediaAdd.mockClear()
-  FakeIntersectionObserver.instances = []
+  FakeIntersectionObserver.instances.length = 0
   vi.stubGlobal('IntersectionObserver', FakeIntersectionObserver)
 })
 

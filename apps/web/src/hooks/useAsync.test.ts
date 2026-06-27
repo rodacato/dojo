@@ -81,6 +81,7 @@ describe('useAsync', () => {
   })
 
   it('does not throw when a fetch resolves after unmount', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
     const d = deferred<string>()
     const { unmount } = renderHook(() => useAsync(() => d.promise, []))
 
@@ -89,7 +90,10 @@ describe('useAsync', () => {
       d.resolve('late')
       await d.promise
     })
-    // No assertion needed beyond "no throw / no act warning" — the cancel guard
-    // swallows the post-unmount resolution.
+
+    // The cancel guard swallows the post-unmount resolution: no act() warning or
+    // state-update-after-unmount error is logged.
+    expect(consoleError).not.toHaveBeenCalled()
+    consoleError.mockRestore()
   })
 })

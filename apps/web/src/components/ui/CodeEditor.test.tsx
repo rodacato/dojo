@@ -52,9 +52,9 @@ vi.mock('@codemirror/view', async () => {
   let pendingListener: ((update: DocChangeUpdate) => void) | undefined
 
   class FakeEditorView {
-    static theme = actual.EditorView.theme
-    static contentAttributes = actual.EditorView.contentAttributes
-    static updateListener = {
+    static readonly theme = actual.EditorView.theme
+    static readonly contentAttributes = actual.EditorView.contentAttributes
+    static readonly updateListener = {
       of: (cb: (update: DocChangeUpdate) => void) => {
         pendingListener = cb
         return actual.EditorView.updateListener.of(cb)

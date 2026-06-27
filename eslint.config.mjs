@@ -24,19 +24,14 @@ export default tseslint.config(
       'sonarjs/no-hardcoded-ip': 'off', // 4 — test fixtures / localhost
       'sonarjs/pseudo-random': 'off', // 2 — Math.random in UI only
       'sonarjs/no-clear-text-protocols': 'off', // 3 — http://localhost in dev/test
-      // Real backlog — clear via /quality-sweep, then remove to re-enable.
-      'sonarjs/void-use': 'off', // 9
-      'sonarjs/public-static-readonly': 'off', // 5
-      'sonarjs/no-nested-conditional': 'off', // 3
-      'sonarjs/todo-tag': 'off', // 3
-      'sonarjs/prefer-specific-assertions': 'off', // 3
-      'sonarjs/no-identical-functions': 'off', // 2
-      'sonarjs/cognitive-complexity': 'off', // 1
-      'sonarjs/no-nested-template-literals': 'off', // 1
-      'sonarjs/no-extra-arguments': 'off', // 1
-      'sonarjs/hashing': 'off', // 1
-      'sonarjs/generator-without-yield': 'off', // 1
-      'sonarjs/assertions-in-tests': 'off', // 1
+      'sonarjs/hashing': 'off', // 1 — sha1 is the RFC 4122 UUIDv5 algorithm, not security hashing
+      // Deferred — judgment calls, not mechanical quick-wins. Re-enable per rule
+      // once addressed.
+      'sonarjs/void-use': 'off', // 9 — deliberate fire-and-forget (vs no-floating-promises)
+      'sonarjs/todo-tag': 'off', // 3 — legitimate TODO markers in seed/content
+      'sonarjs/cognitive-complexity': 'off', // 1 — seed.ts, a real refactor
+      'sonarjs/no-identical-functions': 'off', // 2 — test-setup locality
+      'sonarjs/generator-without-yield': 'off', // 1 — single test mock
     },
   },
   {
