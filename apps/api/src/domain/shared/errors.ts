@@ -37,3 +37,9 @@ export class SessionExpiredError extends DomainError {
     super(`Session time limit exceeded: ${id}`, 'SESSION_EXPIRED')
   }
 }
+
+export class AttemptLimitReachedError extends DomainError {
+  constructor(id: string) {
+    super(`Session has reached its attempt limit: ${id}`, 'ATTEMPT_LIMIT_REACHED')
+  }
+}
