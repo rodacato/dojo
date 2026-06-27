@@ -305,7 +305,7 @@ function NoEvaluationCard({ sessionId }: Readonly<{ sessionId: string }>) {
     try {
       const { attemptId } = await api.retryEvaluation(sessionId)
       sessionStorage.setItem(`dojo-attempt-${sessionId}`, attemptId)
-      navigate(`/kata/${sessionId}/eval`)
+      navigate(`/katas/${sessionId}/eval`)
     } catch {
       setRetrying(false)
     }

@@ -208,7 +208,7 @@ describe('useEvaluationStream', () => {
 
     expect(navigateMock).not.toHaveBeenCalled()
     act(() => vi.advanceTimersByTime(1500))
-    expect(navigateMock).toHaveBeenCalledWith(`/kata/${SESSION}/result`)
+    expect(navigateMock).toHaveBeenCalledWith(`/katas/${SESSION}/result`)
   })
 
   it('surfaces an error message from the server', () => {

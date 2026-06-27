@@ -53,7 +53,7 @@ function renderHistory(initialEntry = '/history') {
       <Routes>
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/katas" element={<div>katas browser</div>} />
-        <Route path="/kata/:id/result" element={<div>kata result page</div>} />
+        <Route path="/katas/:id/result" element={<div>kata result page</div>} />
       </Routes>
     </MemoryRouter>,
   )

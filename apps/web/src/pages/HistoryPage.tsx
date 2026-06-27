@@ -66,7 +66,7 @@ export function HistoryPage() {
             status={s.status}
             startedAt={s.startedAt}
             completedAt={s.completedAt}
-            onClick={() => navigate(`/kata/${s.id}/result`)}
+            onClick={() => navigate(`/katas/${s.id}/result`)}
           />
         ))}
       </div>

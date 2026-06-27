@@ -42,8 +42,8 @@ export function DashboardPage() {
           activeSessionId={dashboard.activeSessionId}
           isFirstVisit={isFirstVisit}
           onStart={() => navigate('/katas')}
-          onResume={(id) => navigate(`/kata/${id}`)}
-          onViewResults={(id) => navigate(`/kata/${id}/result`)}
+          onResume={(id) => navigate(`/katas/${id}`)}
+          onViewResults={(id) => navigate(`/katas/${id}/result`)}
         />
       </section>
 
@@ -62,7 +62,7 @@ export function DashboardPage() {
       </div>
 
       {dashboard.recentSessions.length > 0 && (
-        <RecentActivity sessions={dashboard.recentSessions} onView={(id) => navigate(`/kata/${id}/result`)} onAll={() => navigate('/history')} />
+        <RecentActivity sessions={dashboard.recentSessions} onView={(id) => navigate(`/katas/${id}/result`)} onAll={() => navigate('/history')} />
       )}
 
       {dashboard.totalCompleted >= 3 && dashboard.weakAreas.length > 0 && (

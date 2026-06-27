@@ -215,7 +215,7 @@ export function SenseiEvalPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  onClick={() => navigate(`/kata/${sessionId}/result`)}
+                  onClick={() => navigate(`/katas/${sessionId}/result`)}
                 >
                   View full analysis →
                 </Button>
@@ -240,7 +240,7 @@ export function SenseiEvalPage() {
                 <Button variant="primary" size="md" onClick={() => connect()}>
                   Try again
                 </Button>
-                <Button variant="ghost" size="md" onClick={() => navigate(`/kata/${sessionId}`)}>
+                <Button variant="ghost" size="md" onClick={() => navigate(`/katas/${sessionId}`)}>
                   Back to kata
                 </Button>
               </div>

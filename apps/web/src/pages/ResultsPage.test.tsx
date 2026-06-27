@@ -86,7 +86,7 @@ function renderAt(path = '/results/s1') {
         <Route path="/results/:id" element={<ResultsPage />} />
         <Route path="/dashboard" element={<div>dashboard screen</div>} />
         <Route path="/katas" element={<div>katas screen</div>} />
-        <Route path="/kata/:id/eval" element={<div>eval screen</div>} />
+        <Route path="/katas/:id/eval" element={<div>eval screen</div>} />
       </Routes>
     </MemoryRouter>,
   )
