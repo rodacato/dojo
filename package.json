@@ -19,6 +19,7 @@
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-sonarjs": "^4.1.0",
     "knip": "^6.17.1",
     "prettier": "^3.4.0",
     "turbo": "^2.9.14",
