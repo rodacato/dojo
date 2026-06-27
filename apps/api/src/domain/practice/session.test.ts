@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { SessionAlreadyCompletedError } from '../shared/errors'
+import { AttemptLimitReachedError, SessionAlreadyCompletedError } from '../shared/errors'
 import { KataId, SessionId, UserId, VariationId } from '../shared/types'
 import { Attempt } from './attempt'
-import { Session } from './session'
+import { MAX_ATTEMPTS, Session } from './session'
 import type { EvaluationResult } from './values'
 
 const makeEvalResult = (verdict: EvaluationResult['verdict']): EvaluationResult => ({
@@ -59,6 +59,22 @@ describe('Session', () => {
     session.pullEvents()
 
     expect(() => session.addAttempt(makeAttempt(false))).toThrow(SessionAlreadyCompletedError)
+  })
+
+  it('addAttempt() accepts up to MAX_ATTEMPTS non-final attempts', () => {
+    const session = makeSession()
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+      expect(() => session.addAttempt(makeAttempt(false))).not.toThrow()
+    }
+    expect(session.attempts).toHaveLength(MAX_ATTEMPTS)
+  })
+
+  it('addAttempt() throws AttemptLimitReachedError past MAX_ATTEMPTS', () => {
+    const session = makeSession()
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+      session.addAttempt(makeAttempt(false))
+    }
+    expect(() => session.addAttempt(makeAttempt(false))).toThrow(AttemptLimitReachedError)
   })
 
   it('final attempt with passed verdict transitions to completed and emits SessionCompleted', () => {

@@ -1,6 +1,7 @@
 import { useCases, executionQueue } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
+import { MAX_ATTEMPTS } from '../../../domain/practice/session'
 import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { db } from '../../persistence/drizzle/client'
@@ -56,7 +57,9 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
     send(ws, { type: 'error', code: 'SESSION_NOT_FOUND' })
     return
   }
-  if (currentSession.attempts.length >= 2) {
+  // Fast-path so we don't spend an LLM stream on a submit the aggregate will
+  // reject anyway; Session.addAttempt is the actual invariant.
+  if (currentSession.attempts.length >= MAX_ATTEMPTS) {
     send(ws, { type: 'error', code: 'ATTEMPT_LIMIT_REACHED' })
     return
   }

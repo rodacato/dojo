@@ -1,4 +1,4 @@
-import { SessionAlreadyCompletedError } from '../shared/errors'
+import { AttemptLimitReachedError, SessionAlreadyCompletedError } from '../shared/errors'
 import type { DomainEvent } from '../shared/events'
 import { SessionId } from '../shared/types'
 import type { KataId, UserId, VariationId } from '../shared/types'
@@ -17,6 +17,9 @@ export interface SessionProps {
   startedAt: Date
   completedAt: Date | null
 }
+
+/** Max attempts a session accepts before the sensei must force a verdict. */
+export const MAX_ATTEMPTS = 2
 
 export class Session {
   readonly id: SessionId
@@ -125,6 +128,10 @@ export class Session {
   addAttempt(attempt: Attempt): void {
     if (this._status !== 'active') {
       throw new SessionAlreadyCompletedError(this.id)
+    }
+
+    if (this._attempts.length >= MAX_ATTEMPTS) {
+      throw new AttemptLimitReachedError(this.id)
     }
 
     this._attempts.push(attempt)
