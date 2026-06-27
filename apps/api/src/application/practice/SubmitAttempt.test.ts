@@ -23,9 +23,10 @@ const makeStubSessionRepo = (session: Session | null = null) => ({
   save: vi.fn().mockResolvedValue(undefined),
   updateBody: vi.fn(),
   delete: vi.fn(),
+  saveIncompleteAttempt: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn().mockResolvedValue(session),
   findActiveByUserId: vi.fn(),
-      listCompletedKataHistoryForBelt: vi.fn(),
+  listCompletedKataHistoryForBelt: vi.fn(),
 })
 
 async function* fakeEvaluationStream(tokens: EvaluationToken[]): AsyncIterable<EvaluationToken> {
@@ -141,5 +142,26 @@ describe('SubmitAttempt', () => {
     })
 
     await expect(async () => { for await (const _ of stream) { /* consume */ } }).rejects.toThrow(SessionNotFoundError)
+  })
+
+  it('recordIncompleteAttempt persists a partial attempt through the repo', async () => {
+    const sessionRepo = makeStubSessionRepo()
+    const eventBus = new InMemoryEventBus()
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
+    const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus })
+
+    await useCase.recordIncompleteAttempt({
+      attemptId: 'attempt-9',
+      sessionId: 'session-9',
+      userResponse: 'half an answer',
+      llmResponse: 'partial tokens',
+    })
+
+    expect(sessionRepo.saveIncompleteAttempt).toHaveBeenCalledWith({
+      attemptId: 'attempt-9',
+      sessionId: 'session-9',
+      userResponse: 'half an answer',
+      llmResponse: 'partial tokens',
+    })
   })
 })

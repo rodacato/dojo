@@ -12,6 +12,7 @@ function makeSessionRepo(
     save: vi.fn(),
     updateBody: vi.fn(),
     delete: vi.fn(),
+    saveIncompleteAttempt: vi.fn(),
     findById: vi.fn(),
     findActiveByUserId: vi.fn(),
     listCompletedKataHistoryForBelt: vi.fn().mockResolvedValue(history),
