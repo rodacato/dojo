@@ -35,9 +35,9 @@ if [ ! -f .env ]; then
 fi
 
 # Enable Piston in dev by default
-if grep -q "^CODE_EXECUTION_ENABLED=false" .env 2>/dev/null; then
-  sed -i 's/^CODE_EXECUTION_ENABLED=false/CODE_EXECUTION_ENABLED=true/' .env
-  echo "Enabled CODE_EXECUTION_ENABLED in .env"
+if grep -q "^FF_CODE_EXECUTION_ENABLED=false" .env 2>/dev/null; then
+  sed -i 's/^FF_CODE_EXECUTION_ENABLED=false/FF_CODE_EXECUTION_ENABLED=true/' .env
+  echo "Enabled FF_CODE_EXECUTION_ENABLED in .env"
 fi
 
 # Install Piston runtimes — delegated to the canonical, idempotent
@@ -53,8 +53,8 @@ echo "Running database migrations..."
 pnpm --filter=@dojo/api db:migrate
 echo "Migrations complete."
 
-echo "Seeding course data..."
-pnpm --filter=@dojo/api db:seed:courses 2>/dev/null || echo "Course seed skipped (may already exist)."
+echo "Seeding scroll catalog..."
+pnpm --filter=@dojo/api db:seed:scrolls 2>/dev/null || echo "Scroll seed skipped (may already exist)."
 
 # Playwright browsers for E2E smoke tests — skipped silently in hosts where
 # the browser cache is already warm. System deps (libnss3, libasound2, etc.)
