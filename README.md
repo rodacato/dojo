@@ -93,26 +93,12 @@ dojo/
 
 ## Getting Started
 
-### Prerequisites
+The fastest path is the Dev Container (`Reopen in Container` → `pnpm dev`). To run a full
+instance without VS Code, `docker compose up --build`. Both run with a `mock` sensei, so no
+LLM key is needed — you only need a GitHub OAuth app to sign in.
 
-- Node.js >= 24 (LTS)
-- pnpm >= 9
-- Docker + Docker Compose
-- A GitHub OAuth App ([create one here](https://github.com/settings/applications/new))
-- An LLM API key (Anthropic, OpenAI, or compatible)
-
-### Setup
-
-```bash
-git clone https://github.com/rodacato/dojo
-cd dojo
-cp .env.example .env
-# fill in your .env values
-pnpm install
-pnpm dev
-```
-
-Web app: `http://localhost:5173` — API: `http://localhost:3001`
+**See [GETTING_STARTED.md](GETTING_STARTED.md) for the full guide** (all three run paths,
+GitHub sign-in setup, first-run check, and troubleshooting).
 
 ### Commands
 
@@ -247,7 +233,7 @@ The script is idempotent — present runtimes are skipped, missing ones are inst
 
 ## Why self-host?
 
-Your data stays on your server. Your kata history, your verdicts, your progression — none of it goes to a third party. `docker compose up` is all it takes to run a full instance. See `docs/ARCHITECTURE.md` for the full system design and `SECURITY.md` for self-hosting recommendations.
+Your data stays on your server. Your kata history, your verdicts, your progression — none of it goes to a third party. `docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md). See `docs/ARCHITECTURE.md` for the full system design and `SECURITY.md` for self-hosting recommendations.
 
 ---
 
@@ -267,6 +253,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 
 | Document | Purpose |
 |---|---|
+| [GETTING_STARTED.md](GETTING_STARTED.md) | Run dojo locally — all paths, sign-in setup, troubleshooting |
 | [docs/VISION.md](docs/VISION.md) | Why Dojo exists, philosophy, who it's for |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | What's shipped, what's next, what's out of scope |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
