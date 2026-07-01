@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Bare-metal local setup. For the zero-toolchain path use the dev container or
+# `docker compose up`. See GETTING_STARTED.md.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+if [ ! -f .env ]; then
+  cp .env.example .env
+  echo "Created .env from .env.example — set DATABASE_URL (localhost) + the GitHub OAuth values."
+fi
+
+pnpm install
+
+echo
+echo "Setup complete. Next:"
+echo "  1. Ensure PostgreSQL is running and DATABASE_URL in .env points at it."
+echo "  2. pnpm --filter=@dojo/api db:migrate"
+echo "  3. pnpm --filter=@dojo/api db:seed:scrolls   # optional: seed the scroll catalog"
+echo "  4. pnpm dev"
