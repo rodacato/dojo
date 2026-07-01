@@ -50,11 +50,10 @@ tooling) — create content via `/admin`, or use Path 1 to seed a shared databas
 Requires your own PostgreSQL 16 reachable on `localhost`.
 
 ```bash
-cp .env.example .env
+bin/setup                                  # copies .env, installs dependencies
 # edit .env → DATABASE_URL=postgresql://<user>:<pass>@localhost:5432/dojo_dev
 #             plus the GitHub OAuth values (see "Sign-in setup")
 createdb dojo_dev                          # or create it with your own PG tooling
-pnpm install
 pnpm --filter=@dojo/api db:migrate         # create the schema so the seed has tables
 pnpm --filter=@dojo/api db:seed:scrolls    # optional: seed the public scroll catalog
 pnpm dev
