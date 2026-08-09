@@ -30,7 +30,7 @@
     "@lezer/highlight": "^1.2.3",
     "@sentry/react": "^10.49.0",
     "gsap": "^3.15.0",
-    "mermaid": "^11.15.0",
+    "mermaid": "^11.16.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
