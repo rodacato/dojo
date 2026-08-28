@@ -95,6 +95,31 @@ Then set in `.env`:
 | Sign-in fails / redirect error | The OAuth app's callback URL must be exactly `http://localhost:3001/auth/github/callback`. |
 | Code kata return mocked results | `FF_CODE_EXECUTION_ENABLED=false` (the default). Path 1 enables it automatically; otherwise set it to `true` with Piston running. |
 
+## Inspecting production from the devcontainer
+
+The devcontainer ships Kamal so you can run the *read-only* deploy commands without holding
+a single secret. Copy the example file once and fill in the server address:
+
+```bash
+cp .devcontainer/local.env.example .devcontainer/local.env
+$EDITOR .devcontainer/local.env      # HOST_IP, WEB_URL, API_URL — the file is gitignored
+```
+
+`.devcontainer/kamal-env.sh` is sourced by every shell and supplies what GitHub Actions
+supplies for free in CI: `GITHUB_USERNAME` derived from the git remote, plus the values in
+that file. Without it the ERB in `config/deploy.*.yml` renders empty and Kamal aborts.
+
+```bash
+kamal config -c config/deploy.api.yml          # Resolved config — check before changing anything
+kamal app details -c config/deploy.api.yml     # Running containers, image and uptime
+kamal app logs -f -c config/deploy.api.yml     # Production logs
+kamal audit -c config/deploy.api.yml           # Deploy history with timestamps
+```
+
+Not available, because they need the production secrets or a local Docker daemon: `deploy`,
+`rollback`, `build`, `env push`, and the interactive aliases (`shell`, `db`, `piston-shell`).
+Run those from the host, or deploy through GitHub Actions as usual.
+
 ## More
 
 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/WORKFLOW.md](docs/WORKFLOW.md) ·

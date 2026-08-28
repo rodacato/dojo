@@ -14,7 +14,10 @@
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/rails/devcontainer/features/postgres-client": {}
+    "ghcr.io/rails/devcontainer/features/postgres-client": {},
+    "ghcr.io/devcontainers/features/ruby:1": {
+      "version": "3.3"
+    }
   },
   "remoteUser": "vscode",
   "updateRemoteUserUID": true,
