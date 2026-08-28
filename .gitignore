@@ -15,6 +15,9 @@ coverage/
 .env.prod
 .env.production
 
+# Local, non-secret Kamal values for the devcontainer.
+.devcontainer/local.env
+
 # Logs
 *.log
 npm-debug.log*

@@ -63,6 +63,25 @@ pnpm --filter=@dojo/api db:seed:scrolls 2>/dev/null || echo "Scroll seed skipped
 echo "Installing Playwright browser (chromium)..."
 pnpm exec playwright install chromium 2>/dev/null || echo "Playwright install skipped."
 
+# Kamal, for the read-only deploy commands (`kamal config`, `app details`,
+# `logs`, `audit`). Deploys still run in CI — nothing installed here holds a
+# secret. Version tracks .github/workflows/deploy.yml's KAMAL_VERSION.
+if ! gem list -i '^kamal$' >/dev/null 2>&1; then
+  echo "Installing Kamal..."
+  gem install kamal -v '~> 2.7' --no-document
+fi
+
+# Load the non-secret Kamal environment in every shell. Idempotent across rebuilds.
+for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
+  [ -f "$rc" ] || continue
+  grep -q 'devcontainer/kamal-env.sh' "$rc" && continue
+  {
+    echo ''
+    echo 'export DOJO_ROOT="/workspaces/dojo"'
+    echo '[ -r "$DOJO_ROOT/.devcontainer/kamal-env.sh" ] && . "$DOJO_ROOT/.devcontainer/kamal-env.sh"'
+  } >> "$rc"
+done
+
 echo ""
 echo "  dojo_ ready."
 echo "  Run: pnpm dev"
