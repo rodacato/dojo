@@ -513,8 +513,11 @@ function OpenSourceStrip() {
   return (
     <section data-anim="reveal" className="bg-surface/40 border-y border-border/20 py-16">
       <div className="max-w-3xl mx-auto px-4 md:px-8 text-center">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-6">
-            The core engine is open source
+          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
+            Open source — run your own dojo
+          </p>
+          <p className="text-secondary text-sm leading-relaxed max-w-lg mx-auto mb-6">
+            For yourself, your friends, or your team. Your keys, your access, your data.
           </p>
           <div className="flex items-center justify-center gap-2 max-w-xl mx-auto">
             <code className="flex-1 bg-page border border-border/60 rounded-sm px-4 py-3 font-mono text-sm text-secondary text-left overflow-hidden whitespace-nowrap">
