@@ -47,13 +47,14 @@ jobs:
       LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
       LLM_MODEL: ${{ vars.LLM_MODEL }}
       LLM_STREAM: ${{ vars.LLM_STREAM }}
-      WEB_URL: ${{ vars.WEB_URL }}
-      API_URL: ${{ vars.API_URL }}
+      APP_HOST: ${{ vars.APP_HOST }}
+      API_HOST: ${{ vars.API_HOST }}
       CREATOR_GITHUB_ID: ${{ secrets.CREATOR_GITHUB_ID }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       FF_CODE_EXECUTION_ENABLED: ${{ vars.FF_CODE_EXECUTION_ENABLED }}
+      FF_COURSE_NUDGE_ENABLED: ${{ vars.FF_COURSE_NUDGE_ENABLED || 'false' }}
       FF_LLM_PREP_STREAMING_ENABLED: ${{ vars.FF_LLM_PREP_STREAMING_ENABLED || 'false' }}
       FF_PLAYGROUND_ASK_SENSEI_ENABLED: ${{ vars.FF_PLAYGROUND_ASK_SENSEI_ENABLED || 'false' }}
       FF_PLAYGROUND_CONSOLE_ENABLED: ${{ vars.FF_PLAYGROUND_CONSOLE_ENABLED || 'false' }}
@@ -69,6 +70,11 @@ jobs:
       METRICS_ENABLED: ${{ vars.METRICS_ENABLED || 'false' }}
       METRICS_TOKEN: ${{ secrets.METRICS_TOKEN }}
     steps:
+      - name: Require APP_HOST and API_HOST
+        run: |
+          [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }
+          [ -n "$API_HOST" ] || { echo "::error::Set the API_HOST variable on the production environment"; exit 1; }
+
       - uses: actions/checkout@v7
 
       - uses: ruby/setup-ruby@v1
@@ -112,8 +118,8 @@ jobs:
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_USERNAME: ${{ github.repository_owner }}
       HOST_IP: ${{ vars.HOST_IP }}
-      WEB_URL: ${{ vars.WEB_URL }}
-      API_URL: ${{ vars.API_URL }}
+      APP_HOST: ${{ vars.APP_HOST }}
+      API_HOST: ${{ vars.API_HOST }}
       TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
       VITE_SENTRY_ENVIRONMENT: ${{ vars.VITE_SENTRY_ENVIRONMENT || 'production' }}
@@ -125,6 +131,11 @@ jobs:
       SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
       SENTRY_RELEASE: ${{ github.sha }}
     steps:
+      - name: Require APP_HOST and API_HOST
+        run: |
+          [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }
+          [ -n "$API_HOST" ] || { echo "::error::Set the API_HOST variable on the production environment"; exit 1; }
+
       - uses: actions/checkout@v7
 
       - uses: ruby/setup-ruby@v1

@@ -32,13 +32,13 @@ jobs:
     steps:
       - name: Call /cron/piston-smoke
         env:
-          API_URL: ${{ vars.API_URL }}
+          API_HOST: ${{ vars.API_HOST }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           set -uo pipefail
           response=$(mktemp)
           status=$(curl -sS -o "$response" -w '%{http_code}' --max-time 90 \
-            -X POST "$API_URL/cron/piston-smoke" \
+            -X POST "https://$API_HOST/cron/piston-smoke" \
             -H "Authorization: Bearer $CRON_SECRET" || echo 000)
           echo "status=$status"
           echo "--- body ---"
