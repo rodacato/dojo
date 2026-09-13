@@ -156,8 +156,8 @@ export const TYPESCRIPT_COURSE_DATA = {
   // PISTON_OUTPUT_MAX_SIZE=65536) — TS compiles at run (~2.7s floor) and the
   // capstone output exceeds the 1024-byte default. The piston-execute-smoke CI
   // job (every 30 min, prod) goes red if these regress. See CHANGELOG (S029).
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 100,
   externalReferences: [
     {

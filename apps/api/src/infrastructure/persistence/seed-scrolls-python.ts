@@ -17,7 +17,7 @@
 // Authoring drafts live in docs/courses/curricula/python/lesson-{0..5}.md;
 // figures registered in apps/web/src/scrolls/figures/data/python-figures.ts.
 //
-// Status: published. isPublic: true (S029). Python execution allows anonymous
+// Status/visibility default to opt-in (draft, private) as of S034 — admin publishes via /admin/scrolls. Python execution allows anonymous
 // calls (allowlisted at /scrolls/execute). Prod reseed precondition: full-set
 // Piston smoke green.
 //
@@ -113,8 +113,8 @@ export const PYTHON_COURSE_DATA = {
     'The dojo\'s Python crash course. For developers who already program in another language and need confidence in Python by Friday. The protocol surface (dunders + iterables + context managers + decorators) and EAFP as the cultural reflex, in ~100 minutes. Django, Flask, FastAPI, pandas, numpy, PyTorch are not Python; this scroll teaches the language, not the framework stack.',
   language: 'python',
   accentColor: '#3776AB',
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 85,
   externalReferences: [
     {

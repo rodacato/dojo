@@ -19,7 +19,8 @@ Best for contributing. Works in VS Code or GitHub Codespaces.
 
 1. Clone, open the folder in VS Code, and run **Dev Containers: Reopen in Container**.
 2. `.devcontainer/post-install.sh` runs automatically: installs deps, waits for Postgres,
-   creates `.env`, runs migrations, seeds the public scroll catalog, and provisions Piston.
+   creates `.env`, runs migrations, seeds the scroll catalog (as opt-in drafts —
+   publish from `/admin/scrolls`), and provisions Piston.
 3. Fill in the GitHub OAuth values in `.env` (see [Sign-in setup](#sign-in-setup)).
 4. Start the dev servers:
    ```bash
@@ -42,7 +43,7 @@ docker compose up --build
 ```
 
 Web → `http://localhost` (port 80) · API → `http://localhost:3001`. Migrations run on boot.
-The public scroll catalog is **not** seeded on this path (the production image has no seed
+The scroll catalog is **not** seeded on this path (the production image has no seed
 tooling) — create content via `/admin`, or use Path 1 to seed a shared database.
 
 ## Path 3 — Bare metal (advanced)
@@ -55,7 +56,7 @@ bin/setup                                  # copies .env, installs dependencies
 #             plus the GitHub OAuth values (see "Sign-in setup")
 createdb dojo_dev                          # or create it with your own PG tooling
 pnpm --filter=@dojo/api db:migrate         # create the schema so the seed has tables
-pnpm --filter=@dojo/api db:seed:scrolls    # optional: seed the public scroll catalog
+pnpm --filter=@dojo/api db:seed:scrolls    # optional: seed the scroll catalog (opt-in drafts; publish via /admin/scrolls)
 pnpm dev
 ```
 

@@ -28,7 +28,7 @@
 // Authoring drafts live in docs/courses/curricula/rust/lesson-{0..6}.md;
 // figures registered in apps/web/src/scrolls/figures/data/rust-figures.ts.
 //
-// Status: published. isPublic: true (S029). Rust joined the anonymous-execution
+// Status/visibility default to opt-in (draft, private) as of S034 — admin publishes via /admin/scrolls. Rust joined the anonymous-execution
 // whitelist in /scrolls/execute (apps/api/src/infrastructure/http/routes/
 // scrolls.ts) so logged-out visitors can run the katas. Prod reseed
 // precondition: full-set Piston smoke green.
@@ -198,8 +198,8 @@ export const RUST_COURSE_DATA = {
     'The dojo\'s Rust crash course. For developers who already program in another language and need to read Rust by Friday. One mental model taught from scratch — ownership and borrowing — with the compiler as co-teacher: the error messages are the curriculum, not the obstacle. Traits, enums, Result and ? land as deltas, in ~120 minutes.',
   language: 'rust',
   accentColor: '#CE422B',
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 120,
   externalReferences: [
     {

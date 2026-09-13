@@ -109,8 +109,8 @@ export const DOM_COURSE_DATA = {
   description: 'Learn to select, modify, and react to the DOM with vanilla JavaScript. No frameworks — just the browser APIs every developer needs to know.',
   language: 'javascript-dom',
   accentColor: '#F7DF1E',
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 75,
   externalReferences: [
     { title: 'MDN: Introduction to the DOM', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction', kind: 'docs' as const },
@@ -577,13 +577,13 @@ async function seedOneScroll(
     .values({ ...courseData, isPublic: courseData.isPublic ?? false })
     .onConflictDoUpdate({
       target: scrolls.slug,
+      // Content propagates on reseed; status/isPublic do NOT — publish state is
+      // admin-owned (/admin/scrolls), so a reseed never clobbers a host's choice.
       set: {
         title: courseData.title,
         description: courseData.description,
         language: courseData.language,
         accentColor: courseData.accentColor,
-        status: courseData.status,
-        isPublic: courseData.isPublic ?? false,
         estimatedMinutes: courseData.estimatedMinutes ?? null,
         externalReferences: courseData.externalReferences ?? [],
       },
