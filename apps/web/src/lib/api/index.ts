@@ -4,8 +4,10 @@ import { admin } from './admin'
 import { profile } from './profile'
 import { scrolls } from './scrolls'
 import { playground } from './playground'
+import { share } from './share'
 
 export { ApiError } from './client'
+export type { ShareData } from './share'
 
 export type {
   AttemptDTO,
@@ -28,5 +30,6 @@ export const api = {
   ...admin,
   ...profile,
   ...scrolls,
+  ...share,
   playground,
 }

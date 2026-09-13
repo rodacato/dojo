@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Difficulty, KataType } from '@dojo/shared'
 import { api } from '../../lib/api'
+import { errorReporter } from '../../lib/observability'
 import { Button } from '../../components/ui/Button'
 import { ConfirmModal } from '../../components/ui/ConfirmModal'
 import { Toggle } from '../../components/ui/Toggle'
@@ -85,8 +86,12 @@ export function AdminEditKataPage() {
       })
       setVariationLabels(labels)
     })
-    api.getKataFeedback(id).then(setFeedback).catch((err) => {
-      console.error('Failed to fetch kata feedback:', err)
+    api.getKataFeedback(id).then(setFeedback).catch((err: unknown) => {
+      errorReporter.report({
+        message: err instanceof Error ? err.message : 'Failed to fetch kata feedback',
+        stack: err instanceof Error ? err.stack : undefined,
+        route: '/admin/katas/:id',
+      })
     })
   }, [id])
 

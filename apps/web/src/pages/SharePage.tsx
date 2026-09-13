@@ -1,24 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '../lib/config'
+import { api, ApiError } from '../lib/api'
+import type { ShareData } from '../lib/api'
 import { PublicPageLayout } from '../components/PublicPageLayout'
 import { PageLoader } from '../components/PageLoader'
 import { ErrorState } from '../components/ui/ErrorState'
 import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
 import { buttonClasses } from '../components/ui/Button'
-
-interface ShareData {
-  sessionId: string
-  kataTitle: string
-  kataType: string
-  difficulty: string
-  verdict: string
-  pullQuote: string | null
-  completionMinutes: number | null
-  username: string
-  avatarUrl: string
-  ownerRole: string | null
-}
 
 const VERDICT_LABELS: Record<string, string> = {
   passed: 'PASSED',
@@ -42,21 +31,13 @@ export function SharePage() {
     if (!sessionId) return
     let cancelled = false
     setError(null)
-    fetch(`${API_URL}/share/${sessionId}`)
-      .then((r) => {
+    api
+      .getShareCard(sessionId)
+      .then((d) => { if (!cancelled) setData(d) })
+      .catch((err: unknown) => {
         if (cancelled) return
-        if (r.status === 404) {
-          setError('notfound')
-          return null
-        }
-        if (!r.ok) {
-          setError('network')
-          return null
-        }
-        return r.json()
+        setError(err instanceof ApiError && err.status === 404 ? 'notfound' : 'network')
       })
-      .then((d) => { if (!cancelled && d) setData(d as ShareData) })
-      .catch(() => { if (!cancelled) setError('network') })
     return () => { cancelled = true }
   }, [sessionId, retryTick])
 
