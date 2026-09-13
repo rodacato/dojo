@@ -11,4 +11,5 @@ export {
   type SubmitAttemptResponse,
   type AdminKataDTO,
   type PublicProfileData,
+  type ShareData,
 } from './api/index'

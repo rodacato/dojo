@@ -80,7 +80,10 @@ describe('SharePage', () => {
 
     renderAt('/s/abc123def456')
 
-    expect(fetchMock).toHaveBeenCalledWith('https://api.test/share/abc123def456')
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.test/share/abc123def456',
+      expect.anything(),
+    )
   })
 
   it('renders the verdict, kata details and quote once the data resolves', async () => {
@@ -143,7 +146,7 @@ describe('SharePage', () => {
   })
 
   it('shows the not-found error UI for a 404 response', async () => {
-    fetchMock.mockResolvedValue(jsonResponse(404, null))
+    fetchMock.mockResolvedValue(jsonResponse(404, { error: 'Not found' }))
 
     renderAt('/s/missing')
 
