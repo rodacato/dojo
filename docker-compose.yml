@@ -21,7 +21,12 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3001
+        VITE_APP_HOST: localhost
     restart: unless-stopped
+    environment:
+      API_HOST: localhost:3001
     depends_on:
       - dojo-api
     ports:
