@@ -246,6 +246,14 @@ Dojo is built to be self-hosted, not signed up for. No SaaS, no multi-tenancy, n
 
 ---
 
+## Your content
+
+The base scrolls are seeded with `pnpm --filter=api db:seed:scrolls` and managed at `/admin/scrolls` — publish/unpublish and toggle public/private per scroll. Author your own by following [docs/courses/AUTHORING.md](docs/courses/AUTHORING.md) and adding a seed file; your scrolls use the same sensei, execution sandbox, and player as the base ones.
+
+_Planned — [scroll content ecosystem](https://github.com/rodacato/dojo/issues/75):_ ship the base scrolls **opt-in** (each host enables only what it wants) and **import scroll packs from other repos** — link, clone, or download a set (e.g. a Rails pack) into your instance.
+
+---
+
 ## Honor Code
 
 The dojo does not enforce rules technically. It trusts you.
