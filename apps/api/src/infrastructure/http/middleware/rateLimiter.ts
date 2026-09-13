@@ -24,30 +24,13 @@ export const authLimiter = rateLimiter({
   message: { error: 'Too many authentication attempts. Try again later.' },
 })
 
-// 5 requests per hour per IP — applied to POST /sessions (starts a kata)
-// Each session start triggers an LLM call — this is the primary cost control.
-export const sessionLimiter = rateLimiter({
-  windowMs: 60 * 60 * 1000,
-  limit: 5,
-  keyGenerator,
-  message: { error: 'Session limit reached. You can start up to 5 kata per hour.' },
-})
-
-// 10 requests per minute per IP — for anonymous Piston code execution (scrolls)
-// Authenticated users get 60/min. Per Marta: anonymous is the biggest attack surface.
+// 10 requests per minute per IP — for Piston code execution (scrolls),
+// anonymous or authenticated alike. Per Marta: anonymous is the biggest attack surface.
 export const executionLimiter = rateLimiter({
   windowMs: 60 * 1000,
   limit: 10,
   keyGenerator,
   message: { error: 'Execution limit reached. Sign in for higher limits.' },
-})
-
-// 60 requests per minute per IP — for authenticated Piston code execution
-export const authExecutionLimiter = rateLimiter({
-  windowMs: 60 * 1000,
-  limit: 60,
-  keyGenerator,
-  message: { error: 'Execution limit reached. Try again in a minute.' },
 })
 
 // 30 reports per minute per IP — for POST /errors from the web client.
