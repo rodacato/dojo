@@ -9,8 +9,12 @@ RUN pnpm install --frozen-lockfile
 COPY tsconfig.base.json ./
 COPY apps/web/ ./apps/web/
 COPY packages/shared/ ./packages/shared/
-ARG VITE_API_URL=https://dojo-api.notdefined.dev
+ARG VITE_API_URL
+ARG VITE_APP_HOST
+RUN test -n "$VITE_API_URL" && test -n "$VITE_APP_HOST" \
+  || { echo "Build args VITE_API_URL and VITE_APP_HOST are required" >&2; exit 1; }
 ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_APP_HOST=$VITE_APP_HOST
 
 # Sentry runtime config baked into the bundle.
 ARG VITE_SENTRY_DSN=
@@ -44,5 +48,6 @@ RUN pnpm --filter=@dojo/web build
 # Stage 2: serve with Nginx
 FROM nginx:alpine AS runner
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
-COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/web/nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY --chmod=755 apps/web/require-api-host.sh /docker-entrypoint.d/10-require-api-host.sh
 EXPOSE 80
