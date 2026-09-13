@@ -3,9 +3,9 @@
 > The dojo for developers who still have something to prove. To themselves.
 
 [![CI](https://github.com/rodacato/dojo/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/dojo/actions/workflows/ci.yml)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Hono](https://img.shields.io/badge/Hono-4-E36002?logo=hono&logoColor=white)](https://hono.dev/)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
@@ -23,7 +23,9 @@ Vibe coding is making developers faster and their instincts weaker. Dojo is the 
 
 It is not a certification platform. It is not a leaderboard. It is a daily practice for developers who want to stay technically alive.
 
-Live at [dojo.notdefined.dev](https://dojo.notdefined.dev)
+**Dojo is self-hosted — you run your own.** For yourself, your friends, or your team. Bring your own LLM key, decide your own access (public, private, VPN — your call), and grow it with your own katas and scrolls. Not everyone wants the kata loop, and that is fine: the scrolls (crash courses) are free to read without an account, so a dojo can be a place to learn as much as a place to be tested.
+
+Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev)
 
 ---
 
@@ -119,7 +121,7 @@ pnpm --filter=api db:seed:scrolls     # Seed scroll catalog (TypeScript, JS DOM,
 |---|---|
 | `code` | Refactor, debug, review, or complete code in a split-panel editor |
 | `chat` | Technical roleplay — respond to a scenario as you would in real life |
-| `whiteboard` | System design and architecture using [Drawhaus](https://drawhaus.notdefined.dev) |
+| `whiteboard` _(planned)_ | System design and architecture via [Drawhaus](https://drawhaus.notdefined.dev) — designed, not yet built (exists as a kata type; no execution path yet) |
 
 **60+ katas** across 10 categories: backend, frontend, architecture, security, DevOps, SQL, design patterns, algorithms, testing, and process. Each kata has 2 sensei variations with distinct evaluation perspectives.
 
@@ -231,9 +233,16 @@ The script is idempotent — present runtimes are skipped, missing ones are inst
 
 ---
 
-## Why self-host?
+## Run your own
 
-Your data stays on your server. Your kata history, your verdicts, your progression — none of it goes to a third party. `docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md). See `docs/ARCHITECTURE.md` for the full system design and `SECURITY.md` for self-hosting recommendations.
+Dojo is built to be self-hosted, not signed up for. No SaaS, no multi-tenancy, no waitlist — you run your own instance and own everything in it.
+
+- **Your data, your server.** Kata history, verdicts, progression — none of it leaves your box.
+- **Your keys.** Bring your own LLM endpoint (Anthropic, OpenAI, or a proxy). Evaluation cost is yours, not a subscription.
+- **Your access model.** Public, invite-only, VPN-gated, or a single-user dojo — dojo does not impose one. Deploy it however and wherever you want.
+- **Built-in observability.** An error view at `/admin/errors` out of the box — no need to stand up Sentry to see what breaks; plug in an external tracker only if you want (see [Observability](#observability)).
+
+`docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md). See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and [SECURITY.md](SECURITY.md) for self-hosting security.
 
 ---
 
