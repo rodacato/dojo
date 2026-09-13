@@ -126,6 +126,7 @@ function failingAsk(err: unknown): AsyncGenerator<string> {
     [Symbol.asyncIterator]() {
       return this
     },
+    [Symbol.asyncDispose]: () => Promise.resolve(),
   }
 }
 
