@@ -67,7 +67,7 @@ describe('PublicPageLayout', () => {
   it('renders footer chrome with legal links distinct from the nav', () => {
     renderAt('/')
     const footer = screen.getByRole('contentinfo')
-    expect(within(footer).getByText('dojo.notdefined.dev')).toBeInTheDocument()
+    expect(within(footer).getByText(globalThis.location.host)).toBeInTheDocument()
     expect(within(footer).getByRole('link', { name: 'Terms' })).toHaveAttribute(
       'href',
       '/terms',

@@ -60,6 +60,6 @@ describe('NotFoundPage', () => {
   it('renders inside the public layout chrome', () => {
     renderAt('/nope')
     const footer = screen.getByRole('contentinfo')
-    expect(within(footer).getByText('dojo.notdefined.dev')).toBeInTheDocument()
+    expect(within(footer).getByText(globalThis.location.host)).toBeInTheDocument()
   })
 })

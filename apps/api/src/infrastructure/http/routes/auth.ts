@@ -180,7 +180,7 @@ async function fetchGithubUser(accessToken: string): Promise<GithubUser | null> 
   const res = await fetch('https://api.github.com/user', {
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'User-Agent': 'dojo.notdefined.dev',
+      'User-Agent': 'dojo',
     },
   })
   if (!res.ok) return null
@@ -257,7 +257,7 @@ async function fetchPrimaryEmail(accessToken: string): Promise<string | null> {
     const res = await fetch('https://api.github.com/user/emails', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'User-Agent': 'dojo.notdefined.dev',
+        'User-Agent': 'dojo',
       },
     })
     if (!res.ok) return null

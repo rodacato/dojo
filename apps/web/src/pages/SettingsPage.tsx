@@ -153,7 +153,7 @@ export function SettingsPage() {
           <p className="text-muted text-xs font-mono tracking-[0.04em] mt-4 truncate">
             Your profile is public at{' '}
             <Link to={`/u/${user.username}`} className="text-accent underline">
-              dojo.notdefined.dev/u/{user.username}
+              {globalThis.location.host}/u/{user.username}
             </Link>
           </p>
           <div className="border-t border-border mt-4 pt-4 flex items-center justify-between">
