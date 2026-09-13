@@ -103,12 +103,12 @@ a single secret. Copy the example file once and fill in the server address:
 
 ```bash
 cp .devcontainer/local.env.example .devcontainer/local.env
-$EDITOR .devcontainer/local.env      # HOST_IP, WEB_URL, API_URL — the file is gitignored
+$EDITOR .devcontainer/local.env      # HOST_IP, APP_HOST, API_HOST — the file is gitignored
 ```
 
 `.devcontainer/kamal-env.sh` is sourced by every shell and supplies what GitHub Actions
 supplies for free in CI: `GITHUB_USERNAME` derived from the git remote, plus the values in
-that file. Without it the ERB in `config/deploy.*.yml` renders empty and Kamal aborts.
+that file. Without `APP_HOST` and `API_HOST` the ERB in `config/deploy.*.yml` raises and Kamal aborts.
 
 ```bash
 kamal config -c config/deploy.api.yml          # Resolved config — check before changing anything

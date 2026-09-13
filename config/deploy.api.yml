@@ -1,3 +1,7 @@
+<% app_host = ENV["APP_HOST"].to_s.strip %>
+<% raise "APP_HOST must be set to the instance's public web hostname" if app_host.empty? %>
+<% api_host = ENV["API_HOST"].to_s.strip %>
+<% raise "API_HOST must be set to the instance's public API hostname" if api_host.empty? %>
 service: dojo-api
 image: <%= ENV["GITHUB_USERNAME"] %>/dojo-api
 
@@ -11,7 +15,7 @@ servers:
 
 proxy:
   ssl: false
-  host: "<%= ENV["API_URL"].to_s.sub(%r{^https?://}, "") %>"
+  host: "<%= api_host %>"
   app_port: 3001
   healthcheck:
     interval: 10
@@ -28,7 +32,7 @@ env:
   clear:
     NODE_ENV: production
     PORT: '3001'
-    WEB_URL: "<%= ENV.fetch("WEB_URL", "") %>"
+    WEB_URL: "https://<%= app_host %>"
     SENTRY_ENVIRONMENT: "<%= ENV.fetch("SENTRY_ENVIRONMENT", "production") %>"
     SENTRY_TRACES_SAMPLE_RATE: "<%= ENV.fetch("SENTRY_TRACES_SAMPLE_RATE", "0") %>"
     SENTRY_RELEASE: "<%= ENV.fetch("SENTRY_RELEASE", "") %>"
@@ -54,7 +58,6 @@ env:
     - FF_PLAYGROUND_ASK_SENSEI_ENABLED
     - FF_PLAYGROUND_CONSOLE_ENABLED
     - PISTON_URL
-    - PISTON_HEALTH_URL
     - PLAYGROUND_ASK_SENSEI_DAILY_QUOTA
     - TURNSTILE_SITE_KEY
     - TURNSTILE_SECRET_KEY

@@ -203,16 +203,16 @@ scrape_configs:
     authorization:
       credentials: ${METRICS_TOKEN}   # same value as the API's METRICS_TOKEN
     static_configs:
-      - targets: ['dojo-api.notdefined.dev']
+      - targets: ['dojo-api.example.com']   # your API_HOST
 ```
 
 Validate from the shell:
 
 ```bash
 # 200 with a valid token
-curl -fsS -H "Authorization: Bearer $METRICS_TOKEN" https://dojo-api.notdefined.dev/metrics | head
+curl -fsS -H "Authorization: Bearer $METRICS_TOKEN" https://$API_HOST/metrics | head
 # 401 without a token (when a token is configured)
-curl -s -o /dev/null -w '%{http_code}\n' https://dojo-api.notdefined.dev/metrics
+curl -s -o /dev/null -w '%{http_code}\n' https://$API_HOST/metrics
 ```
 
 ---
@@ -242,7 +242,18 @@ Dojo is built to be self-hosted, not signed up for. No SaaS, no multi-tenancy, n
 - **Your access model.** Public, invite-only, VPN-gated, or a single-user dojo — dojo does not impose one. Deploy it however and wherever you want.
 - **Built-in observability.** An error view at `/admin/errors` out of the box — no need to stand up Sentry to see what breaks; plug in an external tracker only if you want (see [Observability](#observability)).
 
-`docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md). See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and [SECURITY.md](SECURITY.md) for self-hosting security.
+`docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md).
+
+**Deploying with Kamal** (`.github/workflows/deploy.yml`) needs two variables on the `production` GitHub Environment, both bare hostnames without a scheme:
+
+| Variable | Example | Derives |
+|---|---|---|
+| `APP_HOST` | `dojo.example.com` | web's kamal-proxy host, the API's `WEB_URL` (CORS origin, redirects, share links), the Open Graph URLs baked into the web build |
+| `API_HOST` | `dojo-api.example.com` | API's kamal-proxy host, the web build's `VITE_API_URL`, the CSP `connect-src` nginx writes at start, the Piston execute smoke |
+
+Neither has a default. The workflow stops before Kamal runs, Kamal's config refuses to render, and the web container refuses to start without them — an empty proxy host would route every hostname to the app.
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and [SECURITY.md](SECURITY.md) for self-hosting security.
 
 ---
 
