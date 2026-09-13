@@ -52,8 +52,8 @@ export const SQL_DEEP_CUTS_COURSE = {
     'The queries nobody taught you. Window functions, CTEs, and real-world analysis patterns for developers who already know SELECT.',
   language: 'sql',
   accentColor: '#336791',
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 120,
   externalReferences: [
     { title: 'Use The Index, Luke!', url: 'https://use-the-index-luke.com/', kind: 'docs' as const },

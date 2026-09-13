@@ -163,8 +163,8 @@ export const GO_COURSE_DATA = {
     "The dojo's Go crash course. For developers who already program in another language and need confidence in Go by Friday. Errors as values, structural interfaces, composition over inheritance, and just enough concurrency — taught as deltas from the model you already hold, in ~100 minutes. The sandbox runs Go 1.16.2; the prose flags where modern Go differs.",
   language: 'go',
   accentColor: '#00ADD8',
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 100,
   externalReferences: [
     {

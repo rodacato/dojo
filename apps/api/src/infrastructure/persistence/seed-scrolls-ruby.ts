@@ -25,7 +25,7 @@
 // data.kind === 'playground') are both wired in ScrollPlayerPage. The
 // playground scope decision lives in docs/courses/curricula/ruby/ruby.md §2.3.
 //
-// Status: published. isPublic: true (S029). Ruby joined the anonymous-execution
+// Status/visibility default to opt-in (draft, private) as of S034 — admin publishes via /admin/scrolls. Ruby joined the anonymous-execution
 // whitelist in /scrolls/execute (apps/api/src/infrastructure/http/routes/scrolls.ts)
 // so logged-out visitors can run the katas. Prod reseed precondition: full-set
 // Piston smoke green.
@@ -94,8 +94,8 @@ export const RUBY_COURSE_DATA = {
     'The dojo\'s Ruby crash course. For developers who already program in another language and need confidence in Ruby by Friday. Object model + the idioms a polyglot needs + the surprises that bite, in ~90 minutes. Rails is not Ruby; this scroll teaches the language, not the framework.',
   language: 'ruby',
   accentColor: '#CC342D',
-  status: 'published' as const,
-  isPublic: true,
+  status: 'draft' as const,
+  isPublic: false,
   estimatedMinutes: 90,
   externalReferences: [
     {
