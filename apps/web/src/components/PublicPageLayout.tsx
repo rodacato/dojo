@@ -59,7 +59,7 @@ export function PublicPageLayout({ children, hideCta = false }: Readonly<PublicP
           <div className="flex items-center gap-3">
             <LogoMark size={14} className="text-muted" />
             <span className="text-muted text-xs font-mono tracking-[0.04em]">
-              dojo.notdefined.dev
+              {globalThis.location.host}
             </span>
           </div>
           <div className="flex items-center gap-5">

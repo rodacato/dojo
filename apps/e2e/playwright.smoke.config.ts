@@ -11,7 +11,7 @@ const apiURL = process.env['SMOKE_API_URL']
 if (!baseURL || !apiURL) {
   throw new Error(
     'Smoke tests require SMOKE_BASE_URL and SMOKE_API_URL. ' +
-      'Example: SMOKE_BASE_URL=https://dojo.notdefined.dev SMOKE_API_URL=https://dojo-api.notdefined.dev',
+      'Example: SMOKE_BASE_URL=https://dojo.example.com SMOKE_API_URL=https://dojo-api.example.com',
   )
 }
 

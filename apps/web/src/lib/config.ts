@@ -1,11 +1,11 @@
 // API base URL — injected at build time via VITE_API_URL
 // Dev: empty string (Vite proxy or nginx handles /api/ routing)
-// Prod: https://dojo-api.notdefined.dev
+// Prod: https://<API_HOST>
 export const API_URL = import.meta.env['VITE_API_URL'] ?? ''
 
 // WebSocket base URL — derived from API_URL
 // Dev: ws://localhost:5173 (or wherever Vite serves)
-// Prod: wss://dojo-api.notdefined.dev
+// Prod: wss://<API_HOST>
 function deriveWsUrl(): string {
   if (API_URL) {
     return API_URL.replace(/^https/, 'wss').replace(/^http/, 'ws')

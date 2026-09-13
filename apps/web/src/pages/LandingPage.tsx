@@ -706,7 +706,7 @@ function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
             <LogoMark size={16} className="text-muted" />
-            <span className="text-muted text-xs font-mono">dojo.notdefined.dev</span>
+            <span className="text-muted text-xs font-mono">{globalThis.location.host}</span>
           </div>
           <div className="flex items-center gap-4">
             <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">

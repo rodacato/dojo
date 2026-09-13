@@ -153,7 +153,7 @@ export function SharePage() {
               Find yours. Enter the dojo →
             </Link>
             <p className="text-muted text-xs font-mono tracking-[0.04em] mt-3">
-              Daily practice. Invite-only. dojo.notdefined.dev
+              Daily practice. Invite-only. {globalThis.location.host}
             </p>
           </article>
 
