@@ -4,6 +4,32 @@
 > **Predecessor:** [Sprint 033 — Maintenance: security & foundation](archive/sprint-033-maintenance-security-foundation.md)
 > **Baselines:** S033's measured numbers — api ~83.6% / web ~87.3% lines, knip baseline, Sonar triage. No re-measuring from a guess.
 
+## Progress — 2026-06-27 (9 PRs merged)
+
+The gate-wiring and a chunk of the architecture debt shipped; the big spine and the sprint close remain. A 6-agent architecture audit informed the scoping — its findings live in the PR bodies (the standalone report was not kept, by decision).
+
+**Shipped (merged to master):**
+
+- ✅ **Web + shared coverage gates wired into CI** (#30). `shared` had no threshold — added one (100 lines/funcs, 90 branches, enforcing the smoke-per-export rule). The gates were decorative before; they gate now.
+- ✅ **Three shipped correctness bugs the audit surfaced** (#31) — the kata **result page 404'd** (singular `/kata/` navigations vs the plural routes since the S023 rename), `findEligible` **queried a non-existent table** (`FROM katas` — the DB table is `exercises`), and `SessionStatus` had **drifted** (DTO missing `preparing`). The kata loop was doubly broken, invisible through the scrolls era.
+- ✅ **Attempt-limit invariant into the `Session` aggregate** (#32) — was a magic `>= 2` in the WS handler; unforgeable now.
+- ✅ **Partial-attempt persistence behind `SessionRepositoryPort`** (#33) — transport no longer imports Drizzle.
+- ✅ **`EventBusPort` → `domain/shared`** + **`ARCHITECTURE.md` reconciled with the as-built system** (#34) — killed learning→practice / recognition→practice coupling; the doc had described a system never built (phantom Drawhaus/`WhiteboardPort`, wrong `LLMPort` signature, missing `learning` context).
+- ✅ **`useAsync` hook + 5 pages migrated** (#35) — killed the stale-set-after-unmount bug class.
+- ✅ **`eslint-plugin-sonarjs` adopted, baselined** (#36) + **quick-win backlog cleared, 6 rules ratcheted to error** (#37) — Sonar's per-file rules now ride `pnpm lint`, caught in-editor and by agents before a PR.
+
+**Remaining:**
+
+- ⏳ **The big spine** — collapse `handleSubmit`'s orchestration + `practice.ts`'s fat route into use cases. Needs the WS-progress **stream redesign** (use case emits execution-phase events the handler translates); deferred to a dedicated slice with a formal Yemi + Tomás design, since it touches the sensei flow.
+- ⏳ **`TelemetrySinkPort`** — LLM telemetry is still three mechanisms across three layers.
+- ⏳ **knip judgment calls**, **`validate()` convergence**, **`apps/api/tsconfig.json` extends base**, and the **sonarjs deferred rules** (below).
+- ⏳ **Sprint close** — retro / archive / CHANGELOG, and the S035 decision.
+
+**Decisions parked for Adrian:**
+
+- **Dead rate limiters** — `sessionLimiter` is commented "the primary cost control" but is wired nowhere; `POST /sessions` (one LLM call each) has no per-IP limit. Wire it (is 5/hr too tight for dogfooding?) or delete it + fix the comment.
+- **`sonarjs/void-use`** — 9 deliberate fire-and-forget `void promise` uses, left `off`. Enable the rule (and change the pattern) or keep it off — it conflicts with no-floating-promises. Other deferred sonarjs rules: `todo-tag`, `cognitive-complexity`, `no-identical-functions`, `generator-without-yield`.
+
 ## Why this sprint changed shape
 
 The original plan (PRD-033 carry, ROADMAP) had S034 = "web testing backbone, 7/109 → meaningful coverage" and S035 = "architecture debt." But the ~30 web test commits that landed in S033 (2026-06-21) built the backbone *and* took web to ~87% lines / ~83% branches. The "7/109" baseline the plan was written against no longer exists. Opening a sprint to build something already built would be theater. So:
