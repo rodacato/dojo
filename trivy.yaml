@@ -1,5 +1,5 @@
 # Trivy config — auto-loaded from the repo root. Keeps the (report-only)
-# sector-7g security scan as signal by skipping known/accepted findings.
+# security scan in quality.yml as signal by skipping known/accepted findings.
 # Verified 2026-06-21 (S033 security pass). See docs/audits/2026-06-github-security-findings.md.
 secret:
   skip-paths:

@@ -1,4 +1,4 @@
-name: Sector 7g - Deploy
+name: Deploy
 
 on:
   push:
@@ -71,18 +71,35 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # reboot-accessories: piston — its config (timeouts, runtime list) drifts most
-      # often, and an idempotent boot won't apply env/cmd/options changes; a reboot does.
-      # db is left alone: its config rarely moves and a mid-deploy reboot is disruptive.
-      - uses: rodacato/sector-7g/actions/kamal-deploy@master
+      - uses: ruby/setup-ruby@v1
         with:
-          action: ${{ env.ACTION }}
-          config-file: config/deploy.api.yml
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ vars.HOST_IP }}
           ruby-version: ${{ env.RUBY_VERSION }}
-          kamal-version: ${{ env.KAMAL_VERSION }}
-          reboot-accessories: piston
+
+      - name: Install Kamal
+        run: gem install kamal -v "$KAMAL_VERSION"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add VPS to known hosts
+        run: ssh-keyscan "$HOST_IP" >> ~/.ssh/known_hosts
+
+      # Idempotent. Setup boots the accessories itself.
+      - name: Boot accessories
+        if: ${{ env.ACTION != 'setup' }}
+        run: kamal accessory boot all --config-file config/deploy.api.yml || true
+
+      - name: Run kamal ${{ env.ACTION }}
+        run: kamal "$ACTION" --config-file config/deploy.api.yml
+
+      # Piston's config (timeouts, runtime list) drifts most often, and an idempotent
+      # boot won't apply env/cmd/options changes; a reboot does. db is left alone.
+      - name: Reboot piston
+        if: ${{ env.ACTION != 'setup' }}
+        run: printf 'y\n' | kamal accessory reboot piston --config-file config/deploy.api.yml
 
   deploy-web:
     name: Deploy web (${{ inputs.action || 'deploy' }})
@@ -110,12 +127,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: rodacato/sector-7g/actions/kamal-deploy@master
+      - uses: ruby/setup-ruby@v1
         with:
-          action: ${{ env.ACTION }}
-          config-file: config/deploy.web.yml
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          host: ${{ vars.HOST_IP }}
           ruby-version: ${{ env.RUBY_VERSION }}
-          kamal-version: ${{ env.KAMAL_VERSION }}
-          boot-accessories: "false"
+
+      - name: Install Kamal
+        run: gem install kamal -v "$KAMAL_VERSION"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add VPS to known hosts
+        run: ssh-keyscan "$HOST_IP" >> ~/.ssh/known_hosts
+
+      - name: Run kamal ${{ env.ACTION }}
+        run: kamal "$ACTION" --config-file config/deploy.web.yml
