@@ -11,12 +11,8 @@ cd /workspaces/dojo
 # subsequent rebuilds with already-correct ownership are no-ops.
 sudo chown -R vscode:nvm /usr/local/share/nvm/current/lib/node_modules 2>/dev/null || true
 
-# Enable corepack for pnpm
+# Enable corepack; it resolves pnpm from packageManager in package.json.
 corepack enable
-corepack prepare pnpm@latest --activate
-
-# Install turbo globally
-npm install -g turbo
 
 # Install dependencies
 pnpm install
@@ -61,7 +57,7 @@ pnpm --filter=@dojo/api db:seed:scrolls 2>/dev/null || echo "Scroll seed skipped
 # must be installed by the container image or manually via
 # `sudo pnpm exec playwright install-deps`.
 echo "Installing Playwright browser (chromium)..."
-pnpm exec playwright install chromium 2>/dev/null || echo "Playwright install skipped."
+pnpm exec playwright install chromium || echo "WARNING: Playwright chromium install failed; E2E tests will not run." >&2
 
 # Kamal, for the read-only deploy commands (`kamal config`, `app details`,
 # `logs`, `audit`). Deploys still run in CI — nothing installed here holds a
