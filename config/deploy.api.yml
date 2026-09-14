@@ -98,8 +98,8 @@ accessories:
     #      reach the node process. Bypass kamal's accessory `env.clear:`
     #      block, which silently failed to apply on `accessory reboot` in our
     #      setup (docker inspect showed env_count = image defaults only).
-    #      `su` (used inside the entrypoint) preserves custom env vars across
-    #      the user switch — confirmed by hand. Keep aligned with config.ts.
+    #      `su` preserves custom env vars across the user switch — confirmed
+    #      by hand. Keep aligned with config.ts.
     #
     #      - PISTON_RUN_TIMEOUT / PISTON_COMPILE_TIMEOUT raise the per-request
     #        timeout caps. Defaults of 3000/10000 are too tight for our TS
@@ -112,15 +112,13 @@ accessories:
     #        signal 6" — misleading enough that we spent hours misdiagnosing
     #        it as a kernel / cgroup / sandbox issue. 64KB is generous and
     #        safe; raise further only if a scroll genuinely needs it.
-    #   2. Removes the orphan /sys/fs/cgroup/isolate{,/init} cgroup subtrees
-    #      left over from any prior container. With `cgroupns: host` the
-    #      subtree lives on the HOST's cgroup tree, not in the container's
-    #      writable layer, so it survives teardown. Without this cleanup the
-    #      image's `mkdir isolate/` in the entrypoint fails EEXIST and Docker
-    #      enters an infinite restart loop.
-    #   3. Execs the original image entrypoint at the path verified by
-    #      `docker run --rm --entrypoint cat <image> /piston_api/src/docker-entrypoint.sh`.
-    cmd: '-c "rmdir /sys/fs/cgroup/isolate/init 2>/dev/null; rmdir /sys/fs/cgroup/isolate 2>/dev/null; exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 PISTON_OUTPUT_MAX_SIZE=65536 /piston_api/src/docker-entrypoint.sh"'
+    #   2. Replaces the image's /piston_api/src/docker-entrypoint.sh with the
+    #      same cgroup setup made idempotent. With `cgroupns: host` the
+    #      isolate/ subtree lives on the HOST's cgroup tree and outlives the
+    #      container; the image's bare `mkdir isolate/` then fails EEXIST and
+    #      Docker restart-loops. Removing the leftover with rmdir is not enough:
+    #      it fails EBUSY whenever the old container's cgroup is still busy.
+    cmd: '-c "cd /sys/fs/cgroup && mkdir -p isolate/init && echo 1 > isolate/init/cgroup.procs && echo ''+cpuset +cpu +io +memory +pids'' > cgroup.subtree_control && echo ''+cpuset +memory'' > isolate/cgroup.subtree_control && chown -R piston:piston /piston && exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 PISTON_OUTPUT_MAX_SIZE=65536 su -- piston -c ''ulimit -n 65536 && node /piston_api/src''"'
     volumes:
       # Persist installed runtimes so a container recreate doesn't wipe them.
       - dojo-piston-packages:/piston/packages
@@ -132,8 +130,7 @@ accessories:
       privileged: true
       cgroupns: host
       tmpfs: /piston/jobs:exec,size=256m
-      # /bin/sh replaces the image's ENTRYPOINT; cmd above runs the cleanup
-      # then exec's the original entrypoint.
+      # /bin/sh replaces the image's ENTRYPOINT so cmd above can run the setup.
       entrypoint: /bin/sh
 
 logging:

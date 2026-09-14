@@ -65,6 +65,7 @@ Most likely trigger: a host kernel or Docker upgrade that flipped cgroup v2 stri
 - After the fix, the named volume starts empty. Runtimes must be installed once via `POST /api/v2/packages` (one call per language + version). Versions matching our previous snapshot: python=3.12.0, typescript=5.0.3, sqlite3=3.36.0, go=1.16.2, ruby=3.0.1, rust=1.68.2.
 - `/health/piston` returns `{ runtimes: [{language, version}] }` so the list is verifiable from a browser.
 - Kamal does not recreate accessories on a normal `kamal deploy` — only the app container. Changes to the accessory options require `kamal accessory reboot piston -c config/deploy.api.yml`.
+- With `cgroupns: host` the `isolate/` cgroup outlives the container, so the accessory `cmd` runs its own idempotent copy of the image's cgroup setup (`mkdir -p`) instead of `docker-entrypoint.sh`. A digest bump must re-diff that `cmd` against the new image's `/piston_api/src/docker-entrypoint.sh`.
 
 ## Ref
 
