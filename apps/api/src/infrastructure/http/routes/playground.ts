@@ -108,8 +108,9 @@ playgroundRoutes.post(
     const parsed = runSchema.safeParse(body)
     if (!parsed.success) {
       const flat = parsed.error.flatten()
-      const codeTooLarge =
-        flat.fieldErrors['code']?.some((m) => m.toLowerCase().includes('most')) ?? false
+      const codeTooLarge = parsed.error.issues.some(
+        (issue) => issue.code === 'too_big' && issue.path[0] === 'code',
+      )
       return c.json(
         { error: codeTooLarge ? 'code_too_large' : 'invalid_request', details: flat },
         400,
