@@ -322,7 +322,7 @@ GSAP **is already in the landing page** (`apps/web/src/pages/LandingPage.tsx`) a
 - `ScrollTrigger.batch` drives the section reveals (one wrapper instead of four IntersectionObservers)
 - TerminalDemo cycles three sample sessions with cross-fade — not possible cleanly without a timeline
 
-This is the marketing exception, not a precedent. Cost: ~60KB gzipped, isolated to the landing chunk. Tradeoffs and decision rationale: see [`.kwik-e/memory/project_animation_scope.md`](../.kwik-e/memory/project_animation_scope.md) if present.
+This is the marketing exception, not a precedent. Cost: ~60KB gzipped, isolated to the landing chunk. The tradeoffs and decision rationale were worked out in local notes that are not part of the repo.
 
 ### Ink motion (Sumi-e direction)
 

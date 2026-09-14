@@ -2,7 +2,7 @@
 
 > **Status:** Closed 2026-06-19. Re-scoped mid-flight from the Go scroll to the scrolls catalog/landing/player presentation reshape; Go moved to S031.
 > **Phase:** 1 — Alpha
-> **Direction:** [`docs/courses/README.md`](../../courses/README.md) §4.5/§4.6 · design work staged in `.kwik-e/tmp/scrolls-reshape/` (prompts, prototype review, action plan).
+> **Direction:** [`docs/courses/README.md`](../../courses/README.md) §4.5/§4.6 · design work staged in workspace-local notes (prompts, prototype review, action plan).
 
 ## What triggered it
 

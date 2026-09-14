@@ -141,7 +141,7 @@ Sprint 026 midpoint: triage. Promote one, discard the rest, or carry forward wit
   - Lesson 5 NEW — Methods (4 steps)
 - **[`docs/courses/AUDIENCE.md`](../../courses/AUDIENCE.md)** — 4-persona authoring toolkit (A1 Mariana JS senior, A2 Esteban Python mid-senior, A3 Yui Java senior, A4 Felipe TS modernizer). Started at 6 personas; cut to 4 after leverage analysis.
 - **[`docs/courses/AUTHORING.md`](../../courses/AUTHORING.md)** — 15-stage retrospective flow reference for future scrolls, written explicitly as reference (not contract).
-- **5 embeddable figures canonicalized** in `INTERACTIVITY-PATTERNS.md` (sister-session work, see [`PROTOTYPES-101-REVIEW.md`](../../../.kwik-e/local/scrolls/PROTOTYPES-101-REVIEW.md)): `before-after`, `two-by-two`, `disambiguation`, `array-track`, `tabbed-card`. Schema + authoring rules + anti-patterns documented. Ruby lesson drafts propose figure embeds in 4 places.
+- **5 embeddable figures canonicalized** in `INTERACTIVITY-PATTERNS.md` (sister-session work, from a workspace-local panel review): `before-after`, `two-by-two`, `disambiguation`, `array-track`, `tabbed-card`. Schema + authoring rules + anti-patterns documented. Ruby lesson drafts propose figure embeds in 4 places.
 - **Playground frontend B2** — kata variant with `data.kind: "playground"` flag; renderer hides verdict UI, replaces StatusChip with `↻ explored` chip.
 - **CodeEditor Ruby support** via `@codemirror/legacy-modes/mode/ruby` + fallback for unknown languages (prevents future crashes).
 - **Legacy slug cleanup helper** — `removeLegacyScrollBySlug` in seed orchestrator. Retires `ruby-fundamentals` cleanly (walks the FK chain manually since schema has no ON DELETE CASCADE).
