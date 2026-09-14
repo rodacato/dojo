@@ -62,9 +62,9 @@ pnpm exec playwright install chromium || echo "WARNING: Playwright chromium inst
 # Kamal, for the read-only deploy commands (`kamal config`, `app details`,
 # `logs`, `audit`). Deploys still run in CI — nothing installed here holds a
 # secret. Version tracks .github/workflows/deploy.yml's KAMAL_VERSION.
-if ! gem list -i '^kamal$' >/dev/null 2>&1; then
+if ! gem list -i '^kamal$' -v 2.12.0 >/dev/null 2>&1; then
   echo "Installing Kamal..."
-  gem install kamal -v '~> 2.7' --no-document
+  gem install kamal -v 2.12.0 --no-document
 fi
 
 # Load the non-secret Kamal environment in every shell. Idempotent across rebuilds.
