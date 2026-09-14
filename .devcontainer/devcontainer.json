@@ -15,7 +15,7 @@
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/rails/devcontainer/features/postgres-client": {},
     "ghcr.io/devcontainers/features/ruby:2": {
-      "version": "3.3"
+      "version": "4.0"
     }
   },
   "remoteUser": "vscode",

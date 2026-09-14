@@ -24,7 +24,7 @@ permissions:
 
 env:
   KAMAL_VERSION: "~> 2.7"
-  RUBY_VERSION: "3.3"
+  RUBY_VERSION: "4.0"
 
 jobs:
   deploy-api:
