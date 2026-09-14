@@ -39,7 +39,7 @@ preferencesRoutes.get('/preferences', requireAuth, async (c) => {
 const preferencesSchema = z.object({
   reminderEnabled: z.boolean(),
   reminderHour: z.number().int().min(0).max(23),
-  email: z.string().email().optional().nullable(),
+  email: z.email().optional().nullable(),
   level: z.enum(['junior', 'mid', 'senior']).optional(),
   interests: z.array(z.string()).optional(),
   randomness: z.number().min(0).max(1).optional(),

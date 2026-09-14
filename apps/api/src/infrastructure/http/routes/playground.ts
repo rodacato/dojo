@@ -107,7 +107,7 @@ playgroundRoutes.post(
     const body = await c.req.json().catch(() => null)
     const parsed = runSchema.safeParse(body)
     if (!parsed.success) {
-      const flat = parsed.error.flatten()
+      const flat = z.flattenError(parsed.error)
       const codeTooLarge = parsed.error.issues.some(
         (issue) => issue.code === 'too_big' && issue.path[0] === 'code',
       )
@@ -197,7 +197,7 @@ playgroundRoutes.post('/engawa/ask', requireAuth, async (c) => {
   const body = await c.req.json().catch(() => null)
   const parsed = askSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'invalid_request', details: parsed.error.flatten() }, 400)
+    return c.json({ error: 'invalid_request', details: z.flattenError(parsed.error) }, 400)
   }
 
   // Daily quota — reset at UTC midnight, enforced server-side.

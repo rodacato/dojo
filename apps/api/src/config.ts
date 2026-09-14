@@ -5,8 +5,8 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
-  GITHUB_CALLBACK_URL: z.string().url(),
-  LLM_BASE_URL: z.string().url().optional(),
+  GITHUB_CALLBACK_URL: z.url(),
+  LLM_BASE_URL: z.url().optional(),
   LLM_API_KEY: z.string().default(''),
   LLM_MODEL: z.string().default('claude-opus-4-6'),
   LLM_ADAPTER_FORMAT: z.enum(['mock', 'anthropic', 'openai']).default('mock'),
@@ -16,7 +16,7 @@ const envSchema = z.object({
   MOCK_LLM_RESPONSE_TOKENS: z.coerce.number().int().min(1).default(20),
   MOCK_LLM_FOLLOW_UP: z.coerce.boolean().default(false),
   FF_CODE_EXECUTION_ENABLED: z.coerce.boolean().default(false),
-  PISTON_URL: z.string().url().default('http://piston:2000'),
+  PISTON_URL: z.url().default('http://piston:2000'),
   PISTON_MAX_CONCURRENT: z.coerce.number().int().min(1).default(3),
   // 3000 was too tight for the TypeScript runtime: Piston compiles TS at run
   // (tsc + node), a ~2.7s fixed floor even for `console.log`, so the heavier
@@ -26,13 +26,13 @@ const envSchema = z.object({
   // value is silently clamped. See seed-scrolls-typescript.ts header.
   PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(8000),
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
-  DRAWHAUS_URL: z.string().url().optional(),
+  DRAWHAUS_URL: z.url().optional(),
   RESEND_API_KEY: z.string().default(''),
   RESEND_FROM_EMAIL: z.string().default('dojo <noreply@notdefined.dev>'),
   CRON_SECRET: z.string().default(''),
   CREATOR_GITHUB_ID: z.string().default(''),
   API_PORT: z.coerce.number().default(3001),
-  WEB_URL: z.string().url(),
+  WEB_URL: z.url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   SENTRY_DSN: z.string().default(''),
   SENTRY_ENVIRONMENT: z.string().default(''), // defaults to NODE_ENV after parse
@@ -97,7 +97,7 @@ const result = envSchema.safeParse(process.env)
 
 if (!result.success) {
   console.error('❌ Invalid or missing environment variables:')
-  console.error(result.error.flatten().fieldErrors)
+  console.error(z.flattenError(result.error).fieldErrors)
   process.exit(1)
 }
 

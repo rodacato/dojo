@@ -28,14 +28,14 @@ export const rubricSchema = z.object({
 })
 
 export const userDTOSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   username: z.string(),
-  avatarUrl: z.string().url(),
-  createdAt: z.string().datetime(),
+  avatarUrl: z.url(),
+  createdAt: z.iso.datetime(),
 })
 
 export const kataDTOSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   title: z.string(),
   description: z.string(),
   duration: z.number().int().positive(),
@@ -46,31 +46,31 @@ export const kataDTOSchema = z.object({
 })
 
 export const variationDTOSchema = z.object({
-  id: z.string().uuid(),
-  kataId: z.string().uuid(),
+  id: z.uuid(),
+  kataId: z.uuid(),
   ownerRole: z.string(),
   ownerContext: z.string(),
 })
 
 export const sessionDTOSchema = z.object({
-  id: z.string().uuid(),
-  kataId: z.string().uuid(),
-  variationId: z.string().uuid(),
+  id: z.uuid(),
+  kataId: z.uuid(),
+  variationId: z.uuid(),
   body: z.string(),
   status: sessionStatusSchema,
-  startedAt: z.string().datetime(),
-  completedAt: z.string().datetime().nullable(),
+  startedAt: z.iso.datetime(),
+  completedAt: z.iso.datetime().nullable(),
 })
 
 export const attemptDTOSchema = z.object({
-  id: z.string().uuid(),
-  sessionId: z.string().uuid(),
+  id: z.uuid(),
+  sessionId: z.uuid(),
   userResponse: z.string(),
   verdict: verdictSchema.nullable(),
   analysis: z.string().nullable(),
   topicsToReview: z.array(z.string()),
   isFinalEvaluation: z.boolean(),
-  submittedAt: z.string().datetime(),
+  submittedAt: z.iso.datetime(),
 })
 
 // Feedback
@@ -148,17 +148,17 @@ export const executeStepSchema = z.object({
 })
 
 export const trackProgressSchema = z.object({
-  scrollId: z.string().uuid(),
-  stepId: z.string().uuid(),
-  anonymousSessionId: z.string().uuid().optional(),
+  scrollId: z.uuid(),
+  stepId: z.uuid(),
+  anonymousSessionId: z.uuid().optional(),
 })
 
 export const mergeAnonymousProgressSchema = z.object({
-  anonymousSessionId: z.string().uuid(),
+  anonymousSessionId: z.uuid(),
 })
 
 export const stepDTOSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   order: z.number().int(),
   type: stepTypeSchema,
   title: z.string().nullable(),
@@ -176,7 +176,7 @@ export const stepDTOSchema = z.object({
 })
 
 export const lessonDTOSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   order: z.number().int(),
   title: z.string(),
   outcome: z.string().nullable(),
@@ -187,12 +187,12 @@ export const externalReferenceKindSchema = z.enum(['book', 'docs', 'talk', 'arti
 
 export const externalReferenceSchema = z.object({
   title: z.string().min(1).max(200),
-  url: z.string().url(),
+  url: z.url(),
   kind: externalReferenceKindSchema,
 })
 
 export const scrollDTOSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   slug: z.string(),
   title: z.string(),
   description: z.string(),
@@ -229,6 +229,6 @@ export const beltDTOSchema = z.object({
 
 export const milestoneDTOSchema = z.object({
   id: z.string(),
-  earnedAt: z.string().datetime(),
+  earnedAt: z.iso.datetime(),
   contextRef: z.string().nullable(),
 })
