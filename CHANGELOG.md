@@ -4,6 +4,17 @@ All notable changes to this project are documented here. First-person decision v
 
 ---
 
+## Sprint 034 — Wire the web gate + architecture debt (open since 2026-06-27)
+**Phase 1 — Alpha**
+
+_Shipped during the sprint, outside its tracks:_
+
+**Deploys only ship what is on `master`.** Nothing stopped a manual run of the Deploy workflow from putting an unmerged branch into production, and two pushes to `production` could cancel a `kamal deploy` halfway and leave Kamal's lock held. Every job that runs Kamal — both deploy jobs and the accessory reboot — now starts by asking GitHub whether the commit is on `master` and stops if it is not, and the `deploy` concurrency group no longer cancels a run in progress. Promotion is a fast-forward push of `origin/master` to `production`; a hotfix is a PR like anything else.
+
+**`HOST_IP` is a secret now, not a variable.** Kamal and `ssh-keyscan` print the host address, this repo's Actions logs are public, and only secrets get masked — every deploy run still in retention had the IP in plain text. The configs also read the runner's own `GITHUB_REPOSITORY_OWNER` and `GITHUB_ACTOR` instead of a `GITHUB_USERNAME` the workflow had to invent, lowercase the image owner for GHCR, and fail naming the variable when a required one is empty instead of rendering a blank host. Kamal is pinned to 2.12.0 — `~> 2.7` let any 2.x reach production unannounced — and every alias passes `--reuse`, so `shell`, `db` and `piston-shell` exec into the running container instead of starting one that needs a registry login only CI can do. The runbook these steps were missing lives at `docs/ops/deploy.md`.
+
+---
+
 ## Sprint 033 — Maintenance: security & foundation (2026-06-20 – 06-26)
 **Phase 1 — Alpha**
 
