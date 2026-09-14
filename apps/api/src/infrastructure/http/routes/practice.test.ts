@@ -178,7 +178,7 @@ function makeApp() {
   return app
 }
 
-const KATA_UUID = '11111111-1111-1111-1111-111111111111'
+const KATA_UUID = '11111111-1111-4111-8111-111111111111'
 const SESSION_ID = 'sess-1'
 
 function authedUser(over: Record<string, unknown> = {}) {

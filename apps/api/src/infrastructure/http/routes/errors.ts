@@ -8,7 +8,7 @@ const webReportSchema = z.object({
   message: z.string().min(1).max(2000),
   stack: z.string().max(20_000).optional(),
   route: z.string().max(500).optional(),
-  context: z.record(z.unknown()).optional(),
+  context: z.record(z.string(), z.unknown()).optional(),
 })
 
 export const errorRoutes = new Hono<AppEnv>()

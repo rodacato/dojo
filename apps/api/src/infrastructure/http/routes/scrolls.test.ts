@@ -125,9 +125,9 @@ function makeApp() {
   return app
 }
 
-const STEP_ID = '11111111-1111-1111-1111-111111111111'
-const SCROLL_UUID = '22222222-2222-2222-2222-222222222222'
-const ANON_ID = '33333333-3333-3333-3333-333333333333'
+const STEP_ID = '11111111-1111-4111-8111-111111111111'
+const SCROLL_UUID = '22222222-2222-4222-8222-222222222222'
+const ANON_ID = '33333333-3333-4333-8333-333333333333'
 
 function scrollDetail(overrides: Record<string, unknown> = {}) {
   return {
@@ -496,7 +496,7 @@ describe('GET /scrolls/:slug/steps/:stepId/solution', () => {
   it('returns 404 when the step is not part of the scroll', async () => {
     authState.user = { id: 'user-1' }
     getScrollBySlug.mockResolvedValue(scrollDetail())
-    const res = await solution('python', '99999999-9999-9999-9999-999999999999')
+    const res = await solution('python', '99999999-9999-4999-8999-999999999999')
     expect(res.status).toBe(404)
     expect(await res.json()).toEqual({ error: 'Step not found' })
     expect(getScrollProgress).not.toHaveBeenCalled()
