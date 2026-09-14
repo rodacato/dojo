@@ -34,14 +34,12 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
-# LLM / AI assistants
-.claude/
-.cursorrules
-.cursorignore
-.cursor/
+# AI assistants: only per-contributor state each tool documents as local; shared config stays committable
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
+.claude/agent-memory-local/
 .aider*
-.copilot/
-.github/copilot/
 
 # TypeScript
 *.tsbuildinfo
@@ -49,9 +47,3 @@ Thumbs.db
 # Playwright
 test-results/
 playwright-report/
-
-.kwik-e/
-.mcp.json
-CLAUDE.local.md
-.claude/rules/kwik-e/
-CLAUDE.kwik.md
