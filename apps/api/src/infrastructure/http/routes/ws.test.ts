@@ -1,7 +1,7 @@
 import type { Context } from 'hono'
 import type * as DrizzleOrm from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
-import type { UpgradeWebSocket } from '../ws-adapter'
+import type { UpgradeWebSocket } from './ws'
 import type { WSInstance, ClientMessage } from './ws-handlers'
 import type * as WsHandlers from './ws-handlers'
 

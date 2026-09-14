@@ -4,7 +4,7 @@ import { db } from '../../persistence/drizzle/client'
 import { userSessions } from '../../persistence/drizzle/schema'
 import { useCases } from '../../container'
 import { SessionId } from '../../../domain/shared/types'
-import type { UpgradeWebSocket } from '../ws-adapter'
+import type { upgradeWebSocket as nodeUpgradeWebSocket } from '@hono/node-server'
 import {
   activeConnections,
   handleSubmit,
@@ -14,7 +14,8 @@ import {
   type ClientMessage,
 } from './ws-handlers'
 
-// ── Factory — called from index.ts after initWebSocket ────────────────────────
+export type UpgradeWebSocket = typeof nodeUpgradeWebSocket
+
 export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
   const wsRoutes = new Hono()
 
