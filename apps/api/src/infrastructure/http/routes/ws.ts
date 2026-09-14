@@ -1,7 +1,5 @@
-import { and, eq, gt } from 'drizzle-orm'
 import { Hono } from 'hono'
-import { db } from '../../persistence/drizzle/client'
-import { userSessions } from '../../persistence/drizzle/schema'
+import { findActiveSession } from '../middleware/auth'
 import { useCases } from '../../container'
 import { SessionId } from '../../../domain/shared/types'
 import type { upgradeWebSocket as nodeUpgradeWebSocket } from '@hono/node-server'
@@ -29,10 +27,7 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
         return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4001, 'Unauthorized') }
       }
 
-      const userSession = await db.query.userSessions.findFirst({
-        where: and(eq(userSessions.id, token), gt(userSessions.expiresAt, new Date())),
-        with: { user: true },
-      })
+      const userSession = await findActiveSession(token)
 
       if (!userSession) {
         return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4001, 'Unauthorized') }

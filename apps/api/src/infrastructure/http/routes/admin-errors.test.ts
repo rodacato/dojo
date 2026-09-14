@@ -129,7 +129,7 @@ function seedNonCreatorSession() {
   })
 }
 
-const CREATOR_AUTH = { Authorization: 'Bearer session-1' }
+const CREATOR_AUTH = { Authorization: 'Bearer 11111111-1111-4111-8111-111111111111' }
 
 describe('GET /admin/errors — auth & role', () => {
   beforeEach(() => {
@@ -159,7 +159,7 @@ describe('GET /admin/errors — auth & role', () => {
   it('returns 403 when an authenticated non-creator user requests', async () => {
     seedNonCreatorSession()
     const res = await makeApp().request('/admin/errors', {
-      headers: { Authorization: 'Bearer session-2' },
+      headers: { Authorization: 'Bearer 22222222-2222-4222-8222-222222222222' },
     })
     expect(res.status).toBe(403)
     // Role gate fires before any data query runs.
