@@ -11,7 +11,7 @@ S030 deferred Go to ship the scrolls presentation reshape, carrying two things i
 ## What shipped
 
 - **W1 — the carried full-set smoke, and it caught a live bug.** `validate:scrolls` against real Piston flagged `parameters_of` in the *published* Ruby scroll: its fixtures lived in `starterCode` not `testCode` (the recorded solution had nothing to introspect), and `fixture_mixed` used invalid Ruby parameter order (`*rest` after a keyword — a parse error). The kata never compiled; every learner Run failed. Fixed both; smoke green.
-- **W2 — graduated the reviewed Go spec** from `.kwik-e/` to `docs/courses/curricula/go/go.md` (the S030 reshape was the "courses refactor" it was parked behind).
+- **W2 — graduated the reviewed Go spec** from workspace-local drafts to `docs/courses/curricula/go/go.md` (the S030 reshape was the "courses refactor" it was parked behind).
 - **W3 infra — the Go harness, de-risked before any lesson seeded.** `PistonAdapter` `isGo` branch (marker-insertion combine, `main.go`); the harness hand-rolls JSON because `encoding/json` crashes the sandbox keeper on 1.16.2. Validated against Piston Go 1.16.2.
 - **W3 content — the Go scroll, 22 steps / 6 lessons.** Context, errors-as-values, structural interfaces, structs/composition, concurrency, and a 3-lesson capstone. 10 katas (incl. two broken→fix), 4 predicts, 6 reads, a mid-scroll challenge. All 10 katas smoke green (`validated=64`).
 - **W4 — published** (staged): `status: published`, `isPublic: true`, `go` whitelisted. Final full-set smoke green. Voice gate clean (no minimizers).

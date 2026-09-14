@@ -60,7 +60,7 @@ These types are pedagogical bets. Each must justify its authoring cost and its i
 | **`build`** (drag tokens) | Construct a valid expression by ordering tokens | Tests recognition, not production. The learner who drags may not type from scratch (Elif). | Rejected — v2 only if signal forces it |
 | **`match`** (concept ↔ definition) | Pair related items | Association is shallow for code concepts. Drag-with-lines is fragile on mobile (Soren). | Rejected — v2 only if signal forces it |
 
-The pedagogical reasoning for the rejections lives in the panel review in [.kwik-e/tmp/scroll-redesign/](../../.kwik-e/tmp/scroll-redesign/) (workspace-local), and a short summary is in the per-scroll designs.
+The pedagogical reasoning for the rejections lives in a workspace-local panel review (not in the repo), and a short summary is in the per-scroll designs.
 
 ---
 
@@ -306,7 +306,7 @@ An earlier draft of this section proposed a third `Interaction` kind (`{ kind: '
 
 ## Acceleration principles — what earns "aha per minute"
 
-> Distilled 2026-06-11 from the 101 prototypes (Algorithms / Architectures / Design Patterns; workspace-local review at `.kwik-e/local/scrolls/PROTOTYPES-101-REVIEW.md`). The step types and figures in this document are *implementations* of these principles. The principles outlive any single component: when authoring, apply each one with the cheapest tool available — most have a prose-only or existing-figure version today. A device that embodies none of them is decoration.
+> Distilled 2026-06-11 from the 101 prototypes (Algorithms / Architectures / Design Patterns; workspace-local review, not in the repo). The step types and figures in this document are *implementations* of these principles. The principles outlive any single component: when authoring, apply each one with the cheapest tool available — most have a prose-only or existing-figure version today. A device that embodies none of them is decoration.
 
 1. **Prediction before revelation.** The aha doesn't happen on seeing the answer; it happens when a committed prediction turns out wrong. Any surface that can ask for commitment before showing the result should.
    *Today:* `predict` step, `micro-quiz` in `read+inline`, or a plain prose prompt before a code block ("what does this print? decide before reading on").
@@ -468,7 +468,7 @@ The order step types ship, based on panel converge:
 3. **`trace`** — implement after `predict` proves engagement signal. JS DOM scroll is the first target; SQL second (query-plan variant); Python third.
 4. **Tier 2 deferred** — `spot-the-bug`, `build`, `match`: reconsider only if v1's engagement metrics show interactive steps are working but a specific concept isn't covered by predict/trace/read+inline.
 
-Per-scroll layout proposals live in [`.kwik-e/tmp/scroll-redesign/`](../../.kwik-e/tmp/scroll-redesign/) (workspace-local) — those are the working prompts and mockup reviews, not canonical curriculum docs.
+Per-scroll layout proposals live in workspace-local notes (not in the repo) — those are the working prompts and mockup reviews, not canonical curriculum docs.
 
 ---
 

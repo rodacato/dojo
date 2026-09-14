@@ -16,7 +16,7 @@ Honest framing on risk: Python ran ~8-12 hours because its surprise surface was 
 
 ## Mandatory (sprint blockers if not done)
 
-- **Rust crash scroll end-to-end.** Björn (S8) lens with compiler-as-tutor as the central pedagogical bet. ~120 min target (vs ~100-115 for the others) per Rust's surprise surface. Scratch draft at `.kwik-e/tmp/curricula-drafts/rust/` informs the scope block. Capstone + production-gesture from outline. Sandbox honesty: Piston ships Rust 1.68.2 — the scroll declares what that excludes up front.
+- **Rust crash scroll end-to-end.** Björn (S8) lens with compiler-as-tutor as the central pedagogical bet. ~120 min target (vs ~100-115 for the others) per Rust's surprise surface. The workspace-local Rust scratch draft informs the scope block. Capstone + production-gesture from outline. Sandbox honesty: Piston ships Rust 1.68.2 — the scroll declares what that excludes up front.
 - **TypeScript crash scroll end-to-end.** Leo (S9) lens (language pedagogy; infra TS stays with Tomás). Open decision below on migrate-vs-rebuild for the legacy TS scroll. Capstone + production-gesture from outline.
 - **Sprint admin discipline.** Close with retro, archive, CHANGELOG, S029 open. Two commits.
 
@@ -72,7 +72,7 @@ Still genuinely open:
 3. [`docs/courses/README.md`](../courses/README.md) §5.3 + §4.4 — the S027 canon additions.
 4. [`docs/courses/AUDIENCE.md`](../courses/AUDIENCE.md) — personas; note open question #1 (TS audience).
 5. [`docs/courses/INTERACTIVITY-PATTERNS.md`](../courses/INTERACTIVITY-PATTERNS.md) — step types (read+inline now shipped), figures (6), acceleration principles, deferred kit.
-6. `.kwik-e/tmp/curricula-drafts/{rust,typescript}/` — the S026 parallel-draft scratch material.
+6. The workspace-local Rust and TypeScript scratch drafts — the S026 parallel-draft material (not in the repo).
 7. [`docs/sprints/archive/sprint-027-python-crash-scroll.md`](archive/sprint-027-python-crash-scroll.md) §Retro — carry-forwards and the smoke-gate consolidation.
 8. This file.
 

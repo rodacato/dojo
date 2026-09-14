@@ -10,13 +10,13 @@ S026 shipped Ruby end-to-end and validated the polyglot-first format. The AUTHOR
 
 Honest framing on size: Python's surprise surface for the polyglot is lower than Ruby's (the polyglot already knows what a dict is). Estimated 8-12 hours scoped to ~22 steps / ~100 min. The audience contract (A1 Mariana JS Senior + A4 Felipe TS Modernizer primary; A3 Yui Java Senior secondary; A2 Esteban out-of-scope as Python mid-senior) is tighter than Ruby's. Less drift expected.
 
-Rust is queued — **visible-but-deferred** — so the order from S026 (Python → Rust → TypeScript → Go) doesn't drift. **We do not start Rust until Python ships.** The scratch draft from S026's cross-language parallel run lives at `.kwik-e/tmp/curricula-drafts/rust/` and informs scope when we get there.
+Rust is queued — **visible-but-deferred** — so the order from S026 (Python → Rust → TypeScript → Go) doesn't drift. **We do not start Rust until Python ships.** The workspace-local scratch draft from S026's cross-language parallel run informs scope when we get there.
 
 ## Working method
 
 Same flow as Ruby in S026, codified in [`docs/courses/AUTHORING.md`](../courses/AUTHORING.md). For Python specifically:
 
-1. **Scope block.** Confirm lens, panel (Nadia S7 + Elif S5 + Valentina S2 + Maya S11), audience matrix per [`AUDIENCE.md`](../courses/AUDIENCE.md), §2 gates (Python equivalents to Ruby's "paragraph test" and "hint discipline"). Promote the scratch drafts at `.kwik-e/tmp/curricula-drafts/python/` to canon at `docs/courses/curricula/python.md` + `docs/courses/curricula/python/python.md`.
+1. **Scope block.** Confirm lens, panel (Nadia S7 + Elif S5 + Valentina S2 + Maya S11), audience matrix per [`AUDIENCE.md`](../courses/AUDIENCE.md), §2 gates (Python equivalents to Ruby's "paragraph test" and "hint discipline"). Promote the workspace-local Python scratch drafts to canon at `docs/courses/curricula/python.md` + `docs/courses/curricula/python/python.md`.
 2. **Authoring block.** Lesson drafts in `lesson-N.md` files (one per lesson). Self-review per lesson against §2 gates. Final voice audit as suite. Formal panel + audience review. Feedback loop. Apply changes. Seed via subagents.
 3. **Smoke.** Real Piston Ruby smoke first (carry-forward from S026). Then Python lesson-by-lesson smoke as each lesson seeds — *not* all at once. S026's anti-pattern documented in AUTHORING.md §"What we'd do differently".
 
@@ -35,12 +35,12 @@ Same flow as Ruby in S026, codified in [`docs/courses/AUTHORING.md`](../courses/
 
 ## Queued behind Python — do not start until Python ships
 
-- **Rust scope block.** Per S026's order: Ruby → Python → Rust. The scratch draft at `.kwik-e/tmp/curricula-drafts/rust/` informs scope; Björn (S8) lens with compiler-as-tutor as the central pedagogical bet.
+- **Rust scope block.** Per S026's order: Ruby → Python → Rust. The workspace-local Rust scratch draft informs scope; Björn (S8) lens with compiler-as-tutor as the central pedagogical bet.
 
 ## Out of scope (deferred, not blocking)
 
 - **TypeScript and Go scrolls.** Carry to S028+.
-- **Algo-trace step type, /atlas surface, algorithms deep-dive.** Rejected for v1 in [`PROTOTYPES-101-REVIEW.md`](../../.kwik-e/local/scrolls/PROTOTYPES-101-REVIEW.md); revisit only when an algorithms scroll becomes a real commitment.
+- **Algo-trace step type, /atlas surface, algorithms deep-dive.** Rejected for v1 in the workspace-local 101 prototypes review; revisit only when an algorithms scroll becomes a real commitment.
 - **DESIGN.md §Motion reconcile** with `INTERACTIVITY-PATTERNS.md §Animation tech` (Sprint 026 GSAP+CSS reversal). Five-minute fix; do it when drift bites or as part of the Sumi-e migration sprint that will rewrite that section anyway.
 - **Sensei calibration real run** (S023 carry). Stale; promote when a prompt change needs validation.
 - **Staging smoke environment** (S022 carry). Same; review at S027 midpoint.
@@ -84,7 +84,7 @@ Real timing depends on what Ruby smoke surfaces and on how cleanly figures slot 
 3. [`docs/courses/AUDIENCE.md`](../courses/AUDIENCE.md) — the 4 personas and which scrolls each one applies to.
 4. [`docs/courses/INTERACTIVITY-PATTERNS.md`](../courses/INTERACTIVITY-PATTERNS.md) §Embeddable visual figures — the 5 figures canonicalized in S026.
 5. [`docs/courses/curricula/ruby.md`](../courses/curricula/ruby.md) + [`docs/courses/curricula/ruby/ruby.md`](../courses/curricula/ruby/ruby.md) — the Ruby precedent.
-6. `.kwik-e/tmp/curricula-drafts/python/` — the parallel-subagent scratch drafts for Python (outer + inner). Lens candidate, lesson outline, §2 gates proposals. Workspace-local, not in repo.
+6. The parallel-subagent scratch drafts for Python (outer + inner). Lens candidate, lesson outline, §2 gates proposals. Workspace-local, not in repo.
 7. [`docs/sprints/archive/sprint-026-ruby-crash-course.md`](archive/sprint-026-ruby-crash-course.md) §Retro — the carry-forwards list.
 8. This file — what we said we'd do.
 

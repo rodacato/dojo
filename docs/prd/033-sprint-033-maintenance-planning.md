@@ -17,7 +17,7 @@ Measured 2026-06-20 (not estimates):
 - **Coverage — shared:** 0 tests, no vitest config. Zod schemas are the API's validation contract and are untested.
 - **Dependencies:** `pnpm audit` → **78 vulnerabilities: 1 critical, 12 high, 57 moderate, 8 low.** Named: `dompurify ≤3.4.10` (ALLOWED_ATTR pollution, via `mermaid@11.13.0`), `hono@4.12.8` advisory (GHSA-wgpf-jwqj-8h8p). Outdated majors: `@hono/node-server 1→2`, `eslint 9→10`, `@types/node 22→26`, `@vitest/coverage-istanbul 2→4`, `arctic 2→3`, `@vitejs/plugin-react 4→6`.
 - **Dead code:** no detection tooling installed (no knip / ts-prune / depcheck). The `apps/api/src/scripts/` block reports 0% coverage but is **not dead** — they are dev CLIs (`calibrate-sensei.ts`, `validate-scroll-solutions.ts`); they just leak into the coverage denominator because the config's `exclude` omits `src/scripts/**`.
-- **CodeQL:** **does not run in this repo.** Security is the remote `rodacato/sector-7g/.github/workflows/security.yml`, called with `blocking: false` (report-only). Whether that even runs CodeQL is unknown from here — task 0 confirms it.
+- **CodeQL:** **does not run in this repo.** Security is a reusable workflow in a separate repository, called with `blocking: false` (report-only). Whether that even runs CodeQL is unknown from here — task 0 confirms it.
 - **SonarQube:** runs `workflow_dispatch`-only, thresholds neutralized. Findings live on the Sonar host (`vars.SONAR_HOST_URL`) and **cannot be enumerated from the repo.** Task 0 pulls them.
 
 ## Sequencing
@@ -31,7 +31,7 @@ S033 opens **after** S032 closes. S032's mandatory blocker is deploying the five
 This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findings" without the list.
 
 - Run the Sonar `workflow_dispatch`; export and triage the issue list (bugs / vulns / code smells / coverage-on-new-code).
-- Decide whether CodeQL enters the repo as a first-class workflow or stays inside `sector-7g`. If it runs in `sector-7g`, get its SARIF/findings out and into the same audit doc. If it does **not** run anywhere, that is the finding — record it and decide whether to add `github/codeql-action` (default-setup is one toggle).
+- Decide whether CodeQL enters the repo as a first-class workflow or stays in that external workflow. If it runs there, get its SARIF/findings out and into the same audit doc. If it does **not** run anywhere, that is the finding — record it and decide whether to add `github/codeql-action` (default-setup is one toggle).
 - Triage both lists into: (a) fix this sprint, (b) S035 arch debt, (c) won't-fix-with-reason. No silent drops.
 - **Tests-before-refactor (Adrian's call, 2026-06-20).** Reliability/maintainability findings that need a *refactor* (not a one-line fix) carry a `needs-test-net` tag in the triage. They do **not** get refactored — this sprint or in S035 — until a unit-test net pins the affected code's current behavior first. The test lands before the refactor, in its own commit, so the refactor's diff is provably behavior-preserving. A maintainability cleanup without a test net is how you ship a reliability regression. Trivial one-line fixes (a null guard, a `===`) are exempt — this gate is for structural changes.
 
