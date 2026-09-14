@@ -145,7 +145,7 @@ pnpm lint                     # lint all workspaces
 ```
 
 ### 7. Release
-On merge to `main`, update `CHANGELOG.md`. Mark completed Roadmap items as done.
+On merge to `master`, update `CHANGELOG.md`. Mark completed Roadmap items as done.
 
 ---
 
@@ -330,11 +330,11 @@ When making changes that affect behavior, update the corresponding docs in the s
 
 ## Branching
 
-- `main` — production. Protected. Nothing goes here without a PR.
-- `dev` — integration branch for Phase 0 while the creator is the only user. Merge to `main` on each stable increment with a PR for review.
+- `master` — the default branch. Every change lands through a PR.
+- `production` — the deploy pointer. It only fast-forwards to a commit already on `master`; see [ops/deploy.md](ops/deploy.md).
 - Feature branches: `feat/short-description`, `fix/short-description`, `docs/short-description`
 
-Branch from `dev` during Phase 0. Branch from `main` once Phase 1 ships.
+Branch from `master`.
 
 ---
 

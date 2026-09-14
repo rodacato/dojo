@@ -43,7 +43,7 @@ The web app runs at `http://localhost:5173`, the API at `http://localhost:3001`.
 
 ### Branching
 
-Branch from `main`. Use the convention:
+Branch from `master`. Use the convention:
 
 ```
 feat/short-description

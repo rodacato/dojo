@@ -244,14 +244,7 @@ Dojo is built to be self-hosted, not signed up for. No SaaS, no multi-tenancy, n
 
 `docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md).
 
-**Deploying with Kamal** (`.github/workflows/deploy.yml`) needs two variables on the `production` GitHub Environment, both bare hostnames without a scheme:
-
-| Variable | Example | Derives |
-|---|---|---|
-| `APP_HOST` | `dojo.example.com` | web's kamal-proxy host, the API's `WEB_URL` (CORS origin, redirects, share links), the Open Graph URLs baked into the web build |
-| `API_HOST` | `dojo-api.example.com` | API's kamal-proxy host, the web build's `VITE_API_URL`, the CSP `connect-src` nginx writes at start, the Piston execute smoke |
-
-Neither has a default. The workflow stops before Kamal runs, Kamal's config refuses to render, and the web container refuses to start without them — an empty proxy host would route every hostname to the app.
+**Deploying with Kamal** — the GitHub Environment, the first `setup`, promotion and hotfixes are in [docs/ops/deploy.md](docs/ops/deploy.md).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and [SECURITY.md](SECURITY.md) for self-hosting security.
 
@@ -287,6 +280,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [docs/BRANDING.md](docs/BRANDING.md) | Colors, typography, voice, UI components |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build cycle, testing strategy, definition of done |
+| [docs/ops/deploy.md](docs/ops/deploy.md) | Deploy runbook — Environment, first setup, promotion, hotfix |
 | [docs/EXPERTS.md](docs/EXPERTS.md) | Virtual advisory panel |
 | [docs/IDENTITY.md](docs/IDENTITY.md) | Primary build persona |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
