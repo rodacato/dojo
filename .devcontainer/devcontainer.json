@@ -21,6 +21,7 @@
   "remoteUser": "vscode",
   "updateRemoteUserUID": true,
   "forwardPorts": [3001, 5173],
+  "initializeCommand": "sh .devcontainer/initialize.sh || exit 0",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
