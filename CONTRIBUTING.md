@@ -37,6 +37,9 @@ pnpm dev
 
 The web app runs at `http://localhost:5173`, the API at `http://localhost:3001`.
 
+Prefer the Dev Container: [GETTING_STARTED.md](GETTING_STARTED.md) (Path 1) sets it up, and
+[.devcontainer/README.md](.devcontainer/README.md) covers what it inherits from your host.
+
 ---
 
 ## Workflow
