@@ -37,8 +37,7 @@ jobs:
       # Mirror deploy-api: Kamal parses config/deploy.api.yml with ERB and
       # references these env vars regardless of which subcommand it runs.
       KAMAL_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_USERNAME: ${{ github.repository_owner }}
-      HOST_IP: ${{ vars.HOST_IP }}
+      HOST_IP: ${{ secrets.HOST_IP }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
       OAUTH_CLIENT_ID: ${{ vars.OAUTH_CLIENT_ID }}
@@ -68,14 +67,22 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_ENVIRONMENT: ${{ vars.SENTRY_ENVIRONMENT || 'production' }}
       SENTRY_TRACES_SAMPLE_RATE: ${{ vars.SENTRY_TRACES_SAMPLE_RATE || '0' }}
-      # deploy.api.yml interpolates ENV["SENTRY_RELEASE"] via ERB; missing it
-      # fails kamal's config validation with "should be a string" even though
-      # this job doesn't ship a new release. Use the workflow SHA as a stable
-      # placeholder so the parse succeeds.
-      SENTRY_RELEASE: ${{ github.sha }}
     steps:
-      - name: Require APP_HOST and API_HOST
+      # master only takes PRs whose required checks passed on an up-to-date branch, so a
+      # commit on master is a tested commit. Anything else never went through that gate.
+      - name: Require a commit that is on master
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          status=$(gh api "repos/$GITHUB_REPOSITORY/compare/master...$GITHUB_SHA" --jq .status)
+          case "$status" in
+            identical|behind) ;;
+            *) echo "::error::$GITHUB_SHA is not on master ($status); only merged commits deploy"; exit 1 ;;
+          esac
+
+      - name: Require HOST_IP, APP_HOST and API_HOST
+        run: |
+          [ -n "$HOST_IP" ] || { echo "::error::Set the HOST_IP secret on the production environment"; exit 1; }
           [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }
           [ -n "$API_HOST" ] || { echo "::error::Set the API_HOST variable on the production environment"; exit 1; }
 
