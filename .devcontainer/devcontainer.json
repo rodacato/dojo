@@ -22,7 +22,7 @@
   "remoteUser": "vscode",
   "updateRemoteUserUID": true,
   "forwardPorts": [3001, 5173],
-  "postCreateCommand": "bash .devcontainer/post-install.sh",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
       "extensions": [

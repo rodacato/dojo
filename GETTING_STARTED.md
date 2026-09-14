@@ -18,7 +18,7 @@ to run. The one thing you must set up for any path is GitHub sign-in (see below)
 Best for contributing. Works in VS Code or GitHub Codespaces.
 
 1. Clone, open the folder in VS Code, and run **Dev Containers: Reopen in Container**.
-2. `.devcontainer/post-install.sh` runs automatically: installs deps, waits for Postgres,
+2. `.devcontainer/post-create.sh` runs automatically: installs deps, waits for Postgres,
    creates `.env`, runs migrations, seeds the scroll catalog (as opt-in drafts —
    publish from `/admin/scrolls`), and provisions Piston.
 3. Fill in the GitHub OAuth values in `.env` (see [Sign-in setup](#sign-in-setup)).
