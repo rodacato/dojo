@@ -12,7 +12,11 @@ const { config, execute } = vi.hoisted(() => ({
 vi.mock('../../../config', () => ({ config }))
 
 vi.mock('../../execution/PistonAdapter', () => ({
-  PistonAdapter: vi.fn(() => ({ execute })),
+  PistonAdapter: vi.fn(
+    class {
+      execute = execute
+    },
+  ),
 }))
 
 import { cronPistonSmokeRoutes } from './cron-piston-smoke'

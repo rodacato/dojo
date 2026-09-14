@@ -1,6 +1,6 @@
 import type { Context } from 'hono'
 import type * as DrizzleOrm from 'drizzle-orm'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import type { UpgradeWebSocket } from '../ws-adapter'
 import type { WSInstance, ClientMessage } from './ws-handlers'
 import type * as WsHandlers from './ws-handlers'
@@ -84,7 +84,7 @@ function makeContext(sessionId: string, token: string | null): Context {
   } as unknown as Context
 }
 
-function makeSocket(): WSInstance & { close: ReturnType<typeof vi.fn>; send: ReturnType<typeof vi.fn> } {
+function makeSocket(): WSInstance & { close: Mock; send: Mock } {
   return { close: vi.fn(), send: vi.fn() }
 }
 

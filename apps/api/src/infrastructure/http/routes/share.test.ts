@@ -43,7 +43,11 @@ const { db, selectQueue, satoriMock, resvgRender, resvgCtor } = vi.hoisted(() =>
 
   const satoriMock = vi.fn(() => Promise.resolve('<svg>card</svg>'))
   const resvgRender = vi.fn(() => ({ asPng: () => Buffer.from('PNGDATA') }))
-  const resvgCtor = vi.fn().mockImplementation(() => ({ render: resvgRender }))
+  const resvgCtor = vi.fn(
+    class {
+      render = resvgRender
+    },
+  )
 
   return {
     selectQueue,

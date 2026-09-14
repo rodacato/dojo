@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest'
 import type * as ReactModule from 'react'
 
 // `lazyWithRetry` wraps its retry/reload logic inside the async function it
@@ -36,7 +36,7 @@ function innerFactory(
   }>
 }
 
-let reloadSpy: ReturnType<typeof vi.fn>
+let reloadSpy: Mock
 
 beforeEach(() => {
   window.sessionStorage.clear()

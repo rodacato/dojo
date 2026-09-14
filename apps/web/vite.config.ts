@@ -32,6 +32,7 @@ export default defineConfig({
   envDir: '../..',
   test: {
     environment: 'jsdom',
+    include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['./src/test/setup.ts'],
     coverage: {
       provider: 'istanbul',
