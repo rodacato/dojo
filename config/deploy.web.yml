@@ -60,6 +60,7 @@ logging:
     max-size: 10m
     max-file: "3"
 
+# Aliases reuse the running container: a fresh one needs a registry login, and that token exists only in CI.
 aliases:
-  shell: app exec --interactive 'sh'
+  shell: app exec --reuse --interactive 'sh'
   logs: app logs -f

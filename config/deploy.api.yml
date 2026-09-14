@@ -142,8 +142,9 @@ logging:
     max-size: 50m
     max-file: '3'
 
+# Aliases reuse the running container: a fresh one needs a registry login, and that token exists only in CI.
 aliases:
-  shell: app exec --interactive 'sh'
-  db: accessory exec db --interactive 'psql -U dojo dojo'
-  piston-shell: accessory exec piston --interactive 'sh'
+  shell: app exec --reuse --interactive 'sh'
+  db: accessory exec db --reuse --interactive 'psql -U dojo dojo'
+  piston-shell: accessory exec piston --reuse --interactive 'sh'
   logs: app logs -f
