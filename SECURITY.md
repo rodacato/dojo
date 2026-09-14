@@ -4,7 +4,7 @@
 
 Do not open a public GitHub Issue for security vulnerabilities.
 
-Report to: **security@notdefined.dev**
+Report it privately through [GitHub Security Advisories](https://github.com/rodacato/dojo/security/advisories/new).
 
 Include:
 - Description of the vulnerability
