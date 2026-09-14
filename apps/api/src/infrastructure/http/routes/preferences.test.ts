@@ -67,7 +67,7 @@ vi.mock('../../container', () => ({
 
 import { createRouter } from '../router'
 
-const VALID_TOKEN = 'valid-session-id'
+const VALID_TOKEN = '5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f'
 
 function authUser(id = 'user-1') {
   // requireAuth resolves c.get('user') from session.user.
@@ -96,7 +96,9 @@ describe('GET /preferences', () => {
   it('returns 401 when the bearer token resolves no session', async () => {
     state.session = undefined
     const app = createRouter()
-    const res = await app.request('/preferences', { headers: bearer('bogus') })
+    const res = await app.request('/preferences', {
+      headers: bearer('0e0e0e0e-0e0e-4e0e-8e0e-0e0e0e0e0e0e'),
+    })
 
     expect(res.status).toBe(401)
   })

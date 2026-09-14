@@ -52,7 +52,7 @@ function seedSession(user: SessionUser | null) {
 const creator: SessionUser = { id: 'user-creator', githubId: CREATOR_GITHUB_ID }
 const nonCreator: SessionUser = { id: 'user-other', githubId: 'someone-else' }
 
-const BEARER = { Authorization: 'Bearer valid-session-id' }
+const BEARER = { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' }
 
 describe('POST /admin/piston/reprovision', () => {
   beforeEach(() => {

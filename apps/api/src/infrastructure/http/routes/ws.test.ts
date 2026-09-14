@@ -89,6 +89,7 @@ function makeSocket(): WSInstance & { close: Mock; send: Mock } {
 }
 
 const VALID_USER = { id: 'user-1', githubId: 'gh-1' }
+const TOKEN = '5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f'
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -118,9 +119,18 @@ describe('createWsRoutes — auth on upgrade', () => {
     expect(events.onMessage).toBeUndefined()
   })
 
+  it('closes 4001 for a malformed token without querying the DB', async () => {
+    const events = await buildEvents('sess-1', 'not-a-uuid')
+    const ws = makeSocket()
+    events.onOpen?.(null, ws)
+
+    expect(ws.close).toHaveBeenCalledWith(4001, 'Unauthorized')
+    expect(findFirst).not.toHaveBeenCalled()
+  })
+
   it('closes 4001 when the token resolves to no session', async () => {
     findFirst.mockResolvedValue(undefined)
-    const events = await buildEvents('sess-1', 'bad-token')
+    const events = await buildEvents('sess-1', TOKEN)
     const ws = makeSocket()
     events.onOpen?.(null, ws)
 
@@ -131,9 +141,9 @@ describe('createWsRoutes — auth on upgrade', () => {
 
   it('builds the WHERE from the token id AND an expiry guard', async () => {
     findFirst.mockResolvedValue(undefined)
-    await buildEvents('sess-1', 'tok-abc')
+    await buildEvents('sess-1', TOKEN)
 
-    expect(eq).toHaveBeenCalledWith('userSessions.id', 'tok-abc')
+    expect(eq).toHaveBeenCalledWith('userSessions.id', TOKEN)
     // The expiry guard: gt(expiresAt, <now>) — second arg is a Date.
     const gtCall = vi.mocked(gt).mock.calls[0]
     expect(gtCall[0]).toBe('userSessions.expiresAt')
@@ -147,7 +157,7 @@ describe('createWsRoutes — auth on upgrade', () => {
   it('closes 4004 when the session does not exist', async () => {
     findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue(null)
-    const events = await buildEvents('sess-missing', 'tok')
+    const events = await buildEvents('sess-missing', TOKEN)
     const ws = makeSocket()
     events.onOpen?.(null, ws)
 
@@ -158,7 +168,7 @@ describe('createWsRoutes — auth on upgrade', () => {
   it('closes 4003 when the session belongs to another user', async () => {
     findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: 'someone-else' })
-    const events = await buildEvents('sess-1', 'tok')
+    const events = await buildEvents('sess-1', TOKEN)
     const ws = makeSocket()
     events.onOpen?.(null, ws)
 
@@ -172,7 +182,7 @@ describe('createWsRoutes — onOpen for an owned session', () => {
   async function ownedEvents() {
     findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
-    return buildEvents('sess-1', 'tok')
+    return buildEvents('sess-1', TOKEN)
   }
 
   it('registers the connection and sends {type:ready}', async () => {
@@ -201,7 +211,7 @@ describe('createWsRoutes — onMessage', () => {
   async function ownedEvents() {
     findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
-    return buildEvents('sess-1', 'tok')
+    return buildEvents('sess-1', TOKEN)
   }
 
   it('sends INVALID_MESSAGE on non-JSON payloads', async () => {
@@ -249,7 +259,7 @@ describe('createWsRoutes — onClose / onError', () => {
   async function ownedEventsConnected(ws: WSInstance) {
     findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
-    const events = await buildEvents('sess-1', 'tok')
+    const events = await buildEvents('sess-1', TOKEN)
     events.onOpen?.(null, ws)
     return events
   }

@@ -7,6 +7,7 @@ import { config } from '../../../config'
 import { errorReporter, useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
 import { invitations, userSessions, users } from '../../persistence/drizzle/schema'
+import { isSessionId } from '../middleware/auth'
 
 export const authRoutes = new Hono()
 
@@ -157,7 +158,9 @@ authRoutes.delete('/auth/session', async (c) => {
     throw new HTTPException(401, { message: 'Authentication required' })
   }
 
-  await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
+  if (isSessionId(sessionId)) {
+    await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
+  }
   return c.json({ ok: true })
 })
 

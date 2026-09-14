@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRouter } from '../router'
+import { db } from '../../persistence/drizzle/client'
 
 // ---------------------------------------------------------------------------
 // Hoisted state the mock factories close over. The real boundaries we control:
@@ -341,12 +342,23 @@ describe('DELETE /auth/session', () => {
     expect(res.status).toBe(401)
   })
 
-  it('returns 200 when a valid Bearer token is provided', async () => {
+  it('returns 200 and deletes the session when a valid Bearer token is provided', async () => {
     const res = await authRequest('/auth/session', {
       method: 'DELETE',
-      headers: { Authorization: 'Bearer valid-session-id' },
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
     })
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
+    expect(db.delete).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns 200 without touching the DB for a malformed token', async () => {
+    const res = await authRequest('/auth/session', {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer not-a-uuid' },
+    })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ ok: true })
+    expect(db.delete).not.toHaveBeenCalled()
   })
 })

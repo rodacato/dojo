@@ -70,7 +70,7 @@ describe('GET /belts', () => {
 
     const app = createRouter()
     const res = await app.request('/belts', {
-      headers: { Authorization: 'Bearer expired-session' },
+      headers: { Authorization: 'Bearer 0e0e0e0e-0e0e-4e0e-8e0e-0e0e0e0e0e0e' },
     })
 
     expect(res.status).toBe(401)
@@ -80,7 +80,7 @@ describe('GET /belts', () => {
   it('returns 200 with belt and empty milestones for an authenticated user', async () => {
     const app = createRouter()
     const res = await app.request('/belts', {
-      headers: { Authorization: 'Bearer valid-session' },
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
     })
 
     expect(res.status).toBe(200)
@@ -95,7 +95,7 @@ describe('GET /belts', () => {
   it('passes the authenticated user id to both use cases', async () => {
     const app = createRouter()
     await app.request('/belts', {
-      headers: { Authorization: 'Bearer valid-session' },
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
     })
 
     expect(calculateBelt).toHaveBeenCalledWith('user-1')
@@ -111,7 +111,7 @@ describe('GET /belts', () => {
 
     const app = createRouter()
     const res = await app.request('/belts', {
-      headers: { Authorization: 'Bearer valid-session' },
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
     })
 
     expect(res.status).toBe(200)
@@ -141,7 +141,7 @@ describe('GET /belts', () => {
 
     const app = createRouter()
     const res = await app.request('/belts', {
-      headers: { Authorization: 'Bearer valid-session' },
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
     })
 
     const body = (await res.json()) as { belt: typeof yellowBelt }
@@ -153,7 +153,7 @@ describe('GET /belts', () => {
 
     const app = createRouter()
     const res = await app.request('/belts', {
-      headers: { Authorization: 'Bearer valid-session' },
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
     })
 
     expect(res.status).toBe(500)

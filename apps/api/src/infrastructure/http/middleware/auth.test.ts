@@ -15,7 +15,9 @@ vi.mock('../../persistence/drizzle/schema', () => ({
   userSessions: { id: 'id', expiresAt: 'expiresAt' },
 }))
 
-import { requireAuth } from './auth'
+import { optionalAuth, requireAuth } from './auth'
+
+const SESSION_ID = '5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f'
 
 function createTestApp() {
   const app = new Hono()
@@ -54,12 +56,24 @@ describe('requireAuth middleware', () => {
     expect(res.status).toBe(401)
   })
 
+  it('returns 401 for a malformed token without querying the DB', async () => {
+    mockFindFirst.mockClear()
+
+    const app = createTestApp()
+    const res = await app.request('/protected/resource', {
+      headers: { Authorization: 'Bearer not-a-uuid' },
+    })
+
+    expect(res.status).toBe(401)
+    expect(mockFindFirst).not.toHaveBeenCalled()
+  })
+
   it('returns 401 when session is not found in DB', async () => {
     mockFindFirst.mockResolvedValue(null)
 
     const app = createTestApp()
     const res = await app.request('/protected/resource', {
-      headers: { Authorization: 'Bearer invalid-session-id' },
+      headers: { Authorization: `Bearer ${SESSION_ID}` },
     })
 
     expect(res.status).toBe(401)
@@ -77,7 +91,7 @@ describe('requireAuth middleware', () => {
     })
 
     const res = await app.request('/protected/resource', {
-      headers: { Authorization: 'Bearer valid-session-id' },
+      headers: { Authorization: `Bearer ${SESSION_ID}` },
     })
 
     expect(res.status).toBe(200)
@@ -95,5 +109,36 @@ describe('requireAuth middleware', () => {
 
     // Should still be 401 — cookies are ignored
     expect(res.status).toBe(401)
+  })
+})
+
+describe('optionalAuth middleware', () => {
+  function createOptionalApp() {
+    const app = new Hono<AppEnv>()
+    app.use('/public/*', optionalAuth)
+    app.get('/public/resource', (c) => c.json({ userId: c.get('user')?.id ?? null }))
+    return app
+  }
+
+  it('treats a malformed token as anonymous without querying the DB', async () => {
+    mockFindFirst.mockClear()
+
+    const res = await createOptionalApp().request('/public/resource', {
+      headers: { Authorization: 'Bearer not-a-uuid' },
+    })
+
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ userId: null })
+    expect(mockFindFirst).not.toHaveBeenCalled()
+  })
+
+  it('sets the user when the session is valid', async () => {
+    mockFindFirst.mockResolvedValue({ user: { id: 'user-1' } })
+
+    const res = await createOptionalApp().request('/public/resource', {
+      headers: { Authorization: `Bearer ${SESSION_ID}` },
+    })
+
+    expect(await res.json()).toEqual({ userId: 'user-1' })
   })
 })
