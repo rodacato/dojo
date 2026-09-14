@@ -65,11 +65,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
       '@hono/node-server':
-        specifier: ^1.19.17
-        version: 1.19.17(hono@4.13.7)
+        specifier: ^2.1.1
+        version: 2.1.1(hono@4.13.7)
       '@hono/node-ws':
         specifier: ^1.3.1
-        version: 1.3.1(@hono/node-server@1.19.17(hono@4.13.7))(hono@4.13.7)
+        version: 1.3.1(@hono/node-server@2.1.1(hono@4.13.7))(hono@4.13.7)
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
@@ -801,9 +801,9 @@ packages:
       gsap: ^3.12.5
       react: '>=17'
 
-  '@hono/node-server@1.19.17':
-    resolution: {integrity: sha512-dSneS5qhiauZWGDCeK4o695Xd9nUNjviSZCMQrj10eetr8Uln1ucn6bbphOM6UynAMMtNIzZNSpL9vnASJwrPQ==}
-    engines: {node: '>=18.14.1'}
+  '@hono/node-server@2.1.1':
+    resolution: {integrity: sha512-ELuehkj5VCBdgEw9zs+ivkKwyzzUCSQuE96YmiPvn1ECBoZCczbFXJLeEGMTYjphP6gydh4pHMqEYPVMYUVgQg==}
+    engines: {node: '>=20'}
     peerDependencies:
       hono: ^4
 
@@ -4925,13 +4925,13 @@ snapshots:
       gsap: 3.15.0
       react: 19.3.0
 
-  '@hono/node-server@1.19.17(hono@4.13.7)':
+  '@hono/node-server@2.1.1(hono@4.13.7)':
     dependencies:
       hono: 4.13.7
 
-  '@hono/node-ws@1.3.1(@hono/node-server@1.19.17(hono@4.13.7))(hono@4.13.7)':
+  '@hono/node-ws@1.3.1(@hono/node-server@2.1.1(hono@4.13.7))(hono@4.13.7)':
     dependencies:
-      '@hono/node-server': 1.19.17(hono@4.13.7)
+      '@hono/node-server': 2.1.1(hono@4.13.7)
       hono: 4.13.7
       ws: 8.21.3
     transitivePeerDependencies:
