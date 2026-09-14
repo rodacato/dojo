@@ -2,8 +2,12 @@
 <% raise "APP_HOST must be set to the instance's public web hostname" if app_host.empty? %>
 <% api_host = ENV["API_HOST"].to_s.strip %>
 <% raise "API_HOST must be set to the instance's public API hostname" if api_host.empty? %>
+<% host_ip = ENV["HOST_IP"].to_s.strip %>
+<% raise "HOST_IP must be set to the server's address" if host_ip.empty? %>
+<% owner = ENV["GITHUB_REPOSITORY_OWNER"].to_s.strip.downcase %>
+<% raise "GITHUB_REPOSITORY_OWNER must be set to the GHCR owner of the image" if owner.empty? %>
 service: dojo-web
-image: <%= ENV["GITHUB_USERNAME"] %>/dojo-web
+image: <%= owner %>/dojo-web
 
 ssh:
   user: deploy
@@ -11,7 +15,7 @@ ssh:
 servers:
   web:
     hosts:
-      - <%= ENV["HOST_IP"] %>
+      - <%= host_ip %>
 
 proxy:
   ssl: false
@@ -29,7 +33,7 @@ env:
 
 registry:
   server: ghcr.io
-  username: <%= ENV["GITHUB_USERNAME"] %>
+  username: <%= ENV.fetch("GITHUB_ACTOR") %>
   password:
     - KAMAL_REGISTRY_PASSWORD
 

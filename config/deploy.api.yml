@@ -2,8 +2,12 @@
 <% raise "APP_HOST must be set to the instance's public web hostname" if app_host.empty? %>
 <% api_host = ENV["API_HOST"].to_s.strip %>
 <% raise "API_HOST must be set to the instance's public API hostname" if api_host.empty? %>
+<% host_ip = ENV["HOST_IP"].to_s.strip %>
+<% raise "HOST_IP must be set to the server's address" if host_ip.empty? %>
+<% owner = ENV["GITHUB_REPOSITORY_OWNER"].to_s.strip.downcase %>
+<% raise "GITHUB_REPOSITORY_OWNER must be set to the GHCR owner of the image" if owner.empty? %>
 service: dojo-api
-image: <%= ENV["GITHUB_USERNAME"] %>/dojo-api
+image: <%= owner %>/dojo-api
 
 ssh:
   user: deploy
@@ -11,7 +15,7 @@ ssh:
 servers:
   web:
     hosts:
-      - <%= ENV["HOST_IP"] %>
+      - <%= host_ip %>
 
 proxy:
   ssl: false
@@ -24,7 +28,7 @@ proxy:
 
 registry:
   server: ghcr.io
-  username: <%= ENV["GITHUB_USERNAME"] %>
+  username: <%= ENV.fetch("GITHUB_ACTOR") %>
   password:
     - KAMAL_REGISTRY_PASSWORD
 
@@ -74,7 +78,7 @@ builder:
 accessories:
   db:
     image: postgres:16-alpine
-    host: <%= ENV["HOST_IP"] %>
+    host: <%= host_ip %>
     env:
       clear:
         POSTGRES_DB: dojo
@@ -88,7 +92,7 @@ accessories:
     # Pinned digest: engineer-man/piston is released as :latest only; pinning
     # the digest guards against silent upstream updates breaking prod again.
     image: ghcr.io/engineer-man/piston@sha256:2f66b7456189c4d713aa986d98eccd0b6ee16d26c7ec5f21b30e942756fd127a
-    host: <%= ENV["HOST_IP"] %>
+    host: <%= host_ip %>
     # The wrapper does three things in one cmd, in order:
     #   1. Embeds Piston server-side config via `env VAR=val` so the values
     #      reach the node process. Bypass kamal's accessory `env.clear:`
