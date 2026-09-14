@@ -86,7 +86,7 @@ jobs:
           version: 9.15.4 # must match packageManager in root package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
@@ -119,7 +119,7 @@ jobs:
       # that once got it dropped — mitigated by the per-workspace bridge +
       # maxspace ceiling in its sonar-project.properties; bump that if it OOMs.
       - name: Scan api
-        uses: sonarsource/sonarqube-scan-action@v8.2.0
+        uses: sonarsource/sonarqube-scan-action@v8.2.1
         with:
           projectBaseDir: apps/api
           args: -Dsonar.projectVersion=${{ github.sha }}
@@ -128,7 +128,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Scan web
-        uses: sonarsource/sonarqube-scan-action@v8.2.0
+        uses: sonarsource/sonarqube-scan-action@v8.2.1
         with:
           projectBaseDir: apps/web
           args: -Dsonar.projectVersion=${{ github.sha }}
@@ -137,7 +137,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Scan shared
-        uses: sonarsource/sonarqube-scan-action@v8.2.0
+        uses: sonarsource/sonarqube-scan-action@v8.2.1
         with:
           projectBaseDir: packages/shared
           args: -Dsonar.projectVersion=${{ github.sha }}
