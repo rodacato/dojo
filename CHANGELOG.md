@@ -13,6 +13,8 @@ _Shipped during the sprint, outside its tracks:_
 
 **`HOST_IP` is a secret now, not a variable.** Kamal and `ssh-keyscan` print the host address, this repo's Actions logs are public, and only secrets get masked — every deploy run still in retention had the IP in plain text. The configs also read the runner's own `GITHUB_REPOSITORY_OWNER` and `GITHUB_ACTOR` instead of a `GITHUB_USERNAME` the workflow had to invent, lowercase the image owner for GHCR, and fail naming the variable when a required one is empty instead of rendering a blank host. Kamal is pinned to 2.12.0 — `~> 2.7` let any 2.x reach production unannounced — and every alias passes `--reuse`, so `shell`, `db` and `piston-shell` exec into the running container instead of starting one that needs a registry login only CI can do. The runbook these steps were missing lives at `docs/ops/deploy.md`.
 
+**The devcontainer gets its credentials from the host.** Kamal used to render in the container through `kamal-env.sh`, sourced from `~/.bashrc` — which an agent's non-interactive shell never reads, and `gh` started logged out after every rebuild. `initialize.sh` now runs on the host before each start and writes `.devcontainer/.host.env` (the host's `gh` token plus the repo identity derived from `origin`); Compose loads it together with the hand-written `local.env`. Both the rc hook and `kamal-env.sh` are gone, and `.devcontainer/README.md` spells out what the container inherits, what survives a rebuild, and what deploy tooling can and cannot do from inside it.
+
 ---
 
 ## Sprint 033 — Maintenance: security & foundation (2026-06-20 – 06-26)
