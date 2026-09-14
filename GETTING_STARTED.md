@@ -30,6 +30,9 @@ Best for contributing. Works in VS Code or GitHub Codespaces.
 Web → `http://localhost:5173` · API → `http://localhost:3001`. Code execution (Piston) is
 enabled automatically in the container.
 
+What the container inherits from your host (`gh`, SSH) and how to run Kamal from it:
+[.devcontainer/README.md](.devcontainer/README.md).
+
 ## Path 2 — A full instance (Docker only, no VS Code)
 
 Best for self-hosting or a quick look. Builds production images and runs the whole stack.
@@ -95,31 +98,6 @@ Then set in `.env`:
 | API can't reach the DB on `pnpm dev` | `DATABASE_URL` uses `db:5432` (Docker-only DNS). On bare metal, point it at `localhost`. |
 | Sign-in fails / redirect error | The OAuth app's callback URL must be exactly `http://localhost:3001/auth/github/callback`. |
 | Code kata return mocked results | `FF_CODE_EXECUTION_ENABLED=false` (the default). Path 1 enables it automatically; otherwise set it to `true` with Piston running. |
-
-## Inspecting production from the devcontainer
-
-The devcontainer ships Kamal so you can run the *read-only* deploy commands without holding
-a single secret. Copy the example file once and fill in the server address:
-
-```bash
-cp .devcontainer/local.env.example .devcontainer/local.env
-$EDITOR .devcontainer/local.env      # HOST_IP, APP_HOST, API_HOST — the file is gitignored
-```
-
-`.devcontainer/kamal-env.sh` is sourced by every shell and supplies what GitHub Actions
-supplies for free in CI: `GITHUB_USERNAME` derived from the git remote, plus the values in
-that file. Without `APP_HOST` and `API_HOST` the ERB in `config/deploy.*.yml` raises and Kamal aborts.
-
-```bash
-kamal config -c config/deploy.api.yml          # Resolved config — check before changing anything
-kamal app details -c config/deploy.api.yml     # Running containers, image and uptime
-kamal app logs -f -c config/deploy.api.yml     # Production logs
-kamal audit -c config/deploy.api.yml           # Deploy history with timestamps
-```
-
-Not available, because they need the production secrets or a local Docker daemon: `deploy`,
-`rollback`, `build`, `env push`, and the interactive aliases (`shell`, `db`, `piston-shell`).
-Run those from the host, or deploy through GitHub Actions as usual.
 
 ## More
 
