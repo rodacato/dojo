@@ -4,8 +4,8 @@
   <!-- Inner frame, subtle -->
   <rect x="32" y="32" width="1136" height="566" fill="none" stroke="#334155" stroke-width="1"/>
 
-  <!-- Top-left wordmark with full URL + indigo cursor -->
-  <text x="64" y="100" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700" fill="#F8FAFC">dojo.notdefined.dev<tspan fill="#6366F1">_</tspan></text>
+  <!-- Top-left wordmark + indigo cursor -->
+  <text x="64" y="100" font-family="'JetBrains Mono', monospace" font-size="28" font-weight="700" fill="#F8FAFC">dojo<tspan fill="#6366F1">_</tspan></text>
 
   <!-- Top-right torii mark (muted, companion role) -->
   <g transform="translate(1098, 70) scale(1.1)">

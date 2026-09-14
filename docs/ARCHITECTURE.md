@@ -11,7 +11,7 @@ Everything you need to understand the system before writing a line of code — t
 Four services, two public, two private:
 
 ```
-dojo.notdefined.dev          # this repo — the practice platform
+dojo                         # this repo — the practice platform (reference instance: dojo.notdefined.dev)
 drawhaus.notdefined.dev      # separate repo — Excalidraw with MCP + API
 shellm (github.com/rodacato/SheLLM)  # separate repo — LLM proxy (optional)
 dojocho (private, future)    # curation tool for building kata
@@ -26,7 +26,7 @@ Dojo consumes Drawhaus and the LLM provider via HTTP. The user never knows what'
 ```
 [Browser]
     ↓ HTTPS (Cloudflare Tunnel)
-[dojo.notdefined.dev — React + Vite]
+[dojo web — React + Vite]
     ↓ WebSocket (sensei streams in real time)
 [Dojo API — Hono + Node.js]
     ↓                     ┊
