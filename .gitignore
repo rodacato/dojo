@@ -15,8 +15,10 @@ coverage/
 .env.prod
 .env.production
 
-# Local, non-secret Kamal values for the devcontainer.
-.devcontainer/local.env
+# Devcontainer: local.env is yours; initialize.sh rewrites .host.env on every start.
+/.devcontainer/local.env
+/.devcontainer/.host.env
+/.devcontainer/.host.env.tmp
 
 # Logs
 *.log
