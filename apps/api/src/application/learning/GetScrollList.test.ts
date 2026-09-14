@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, type Mock } from 'vitest'
 import { GetScrollList } from './GetScrollList'
 import type { Scroll } from '../../domain/learning/scroll'
 import type { ScrollRepositoryPort } from '../../domain/learning/ports'
@@ -38,7 +38,7 @@ const makeScroll = (overrides: Partial<Scroll> = {}): Scroll => ({
   ...overrides,
 })
 
-function makeRepo(overrides: Partial<Record<keyof ScrollRepositoryPort, ReturnType<typeof vi.fn>>> = {}) {
+function makeRepo(overrides: Partial<Record<keyof ScrollRepositoryPort, Mock>> = {}) {
   return {
     findById: vi.fn(),
     findBySlug: vi.fn(),

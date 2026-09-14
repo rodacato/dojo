@@ -152,7 +152,11 @@ vi.mock('../middleware/auth', () => ({
 
 // Mocked dynamically-imported 'resend' SDK. The route does `await import('resend')`.
 vi.mock('resend', () => ({
-  Resend: vi.fn(() => ({ emails: { send: resendSend } })),
+  Resend: vi.fn(
+    class {
+      emails = { send: resendSend }
+    },
+  ),
 }))
 
 import { adminKatasRoutes } from './admin-katas'

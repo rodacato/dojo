@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { Hono } from 'hono'
 
 const REPO_URL = 'https://api.github.com/repos/rodacato/dojo'
@@ -41,7 +41,7 @@ async function loadApp() {
   return app
 }
 
-let fetchMock: ReturnType<typeof vi.fn>
+let fetchMock: Mock
 
 beforeEach(() => {
   vi.resetModules()

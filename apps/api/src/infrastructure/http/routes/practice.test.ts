@@ -120,7 +120,11 @@ vi.mock('../../persistence/drizzle/schema', () => ({
 // network call ever fires. The Resend ctor returns an object whose
 // emails.send is our spy.
 vi.mock('resend', () => ({
-  Resend: vi.fn(() => ({ emails: { send: resendSend } })),
+  Resend: vi.fn(
+    class {
+      emails = { send: resendSend }
+    },
+  ),
 }))
 
 // Auth boundary: requireAuth throws the same 401 HTTPException the real
