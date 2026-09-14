@@ -122,7 +122,7 @@ scrollRoutes.post('/scrolls/execute', optionalAuth, executionLimiter, async (c) 
   const body = await c.req.json()
   const parsed = executeStepSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+    return c.json({ error: 'Invalid request', details: z.flattenError(parsed.error) }, 422)
   }
 
   const user = c.get('user')
@@ -164,7 +164,7 @@ scrollRoutes.post('/scrolls/progress', optionalAuth, async (c) => {
   const body = await c.req.json()
   const parsed = trackProgressSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+    return c.json({ error: 'Invalid request', details: z.flattenError(parsed.error) }, 422)
   }
 
   const user = c.get('user')
@@ -203,7 +203,7 @@ scrollRoutes.post('/scrolls/progress/merge', requireAuth, async (c) => {
   const body = await c.req.json()
   const parsed = mergeAnonymousProgressSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+    return c.json({ error: 'Invalid request', details: z.flattenError(parsed.error) }, 422)
   }
 
   const user = c.get('user')
@@ -275,7 +275,7 @@ scrollRoutes.get('/scrolls/:slug/steps/:stepId/solution', optionalAuth, async (c
 
 const nudgeRequestSchema = z.object({
   scrollSlug: z.string().min(1).max(100),
-  stepId: z.string().uuid(),
+  stepId: z.uuid(),
   userCode: z.string().max(8_000),
   stdout: z.string().max(4_000).optional(),
   stderr: z.string().max(4_000).optional(),
@@ -289,7 +289,7 @@ scrollRoutes.post('/scrolls/nudge', nudgeLimiter, optionalAuth, async (c) => {
   const body = await c.req.json().catch(() => null)
   const parsed = nudgeRequestSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+    return c.json({ error: 'Invalid request', details: z.flattenError(parsed.error) }, 422)
   }
 
   const user = c.get('user')
@@ -322,7 +322,7 @@ scrollRoutes.post('/scrolls/nudge/:id/feedback', nudgeLimiter, optionalAuth, asy
   const body = await c.req.json().catch(() => null)
   const parsed = nudgeFeedbackSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+    return c.json({ error: 'Invalid request', details: z.flattenError(parsed.error) }, 422)
   }
 
   await useCases.submitNudgeFeedback.execute({ id, feedback: parsed.data.feedback })

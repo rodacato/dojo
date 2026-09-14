@@ -50,7 +50,7 @@ adminScrollsRoutes.patch('/:id', async (c) => {
   const body = await c.req.json()
   const parsed = patchSchema.safeParse(body)
   if (!parsed.success) {
-    return c.json({ error: 'Invalid request', details: parsed.error.flatten() }, 422)
+    return c.json({ error: 'Invalid request', details: z.flattenError(parsed.error) }, 422)
   }
 
   const patch = parsed.data

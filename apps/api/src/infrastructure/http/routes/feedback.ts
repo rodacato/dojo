@@ -25,7 +25,7 @@ feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
     note: z.string().max(280).nullable().default(null),
   })
   const parsed = feedbackSchema.safeParse(body)
-  if (!parsed.success) return c.json({ error: 'Invalid feedback', details: parsed.error.flatten() }, 400)
+  if (!parsed.success) return c.json({ error: 'Invalid feedback', details: z.flattenError(parsed.error) }, 400)
 
   // Verify session exists, belongs to user, and is completed
   const session = await db.query.sessions.findFirst({

@@ -143,7 +143,7 @@ practiceRoutes.get('/katas', requireAuth, async (c) => {
 // ---------------------------------------------------------------------------
 
 const startSessionSchema = z.object({
-  kataId: z.string().uuid(),
+  kataId: z.uuid(),
 })
 
 practiceRoutes.post('/sessions', requireAuth, async (c) => {

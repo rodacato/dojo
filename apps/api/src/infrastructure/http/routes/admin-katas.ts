@@ -268,7 +268,7 @@ adminKatasRoutes.post('/katas', async (c) => {
 // ---------------------------------------------------------------------------
 
 const createInvitationSchema = z.object({
-  email: z.string().email().optional(),
+  email: z.email().optional(),
 })
 
 adminKatasRoutes.post('/invitations', async (c) => {
