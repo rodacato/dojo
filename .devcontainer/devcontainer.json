@@ -20,9 +20,15 @@
   },
   "remoteUser": "vscode",
   "updateRemoteUserUID": true,
-  "forwardPorts": [3001, 5173],
+  "forwardPorts": [3001, 5173, "db:5432"],
+  "portsAttributes": {
+    "3001": { "label": "API" },
+    "5173": { "label": "Web (Vite)" },
+    "db:5432": { "label": "PostgreSQL", "onAutoForward": "silent" }
+  },
   "initializeCommand": "sh .devcontainer/initialize.sh || exit 0",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "waitFor": "postCreateCommand",
   "customizations": {
     "vscode": {
       "extensions": [

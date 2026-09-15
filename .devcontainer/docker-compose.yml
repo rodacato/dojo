@@ -21,6 +21,8 @@ services:
       - db
       - piston
 
+  # No host ports on db or piston: the workspace reaches both over the compose network, and
+  # forwardPorts exposes db on a free local port, so repos sharing a host never collide.
   db:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -30,8 +32,6 @@ services:
       POSTGRES_DB: dojo_dev
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   piston:
     image: ghcr.io/engineer-man/piston
@@ -68,8 +68,6 @@ services:
         exec su -- piston -c 'ulimit -n 65536 && node /piston_api/src'
     tmpfs:
       - /piston/jobs:exec,size=256m
-    ports:
-      - "2000:2000"
 
 volumes:
   postgres-data:
