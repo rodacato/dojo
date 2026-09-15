@@ -1,7 +1,7 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
-cd /workspaces/dojo
+cd "$(dirname "$0")/.."
 
 # The devcontainer image ships some global node_modules subdirs (pnpm,
 # @anthropic-ai/claude-code) as root-owned, which blocks `npm i -g X` and
