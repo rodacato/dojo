@@ -87,6 +87,18 @@ jobs:
           [ -n "$APP_HOST" ] || { echo "::error::Set the APP_HOST variable on the production environment"; exit 1; }
           [ -n "$API_HOST" ] || { echo "::error::Set the API_HOST variable on the production environment"; exit 1; }
 
+      # The API refuses to boot with a key and no sender (apps/api/src/config.ts).
+      # Catch it here: a container that exits 1 only surfaces as a healthcheck
+      # timeout minutes into `kamal deploy`, with the reason buried in the logs.
+      - name: Require RESEND_FROM_EMAIL when email is enabled
+        run: |
+          # Whitespace-stripped to match the schema's own .trim() check — a
+          # variable holding only spaces must fail here, not at boot.
+          if [ -n "$RESEND_API_KEY" ] && [ -z "$(printf '%s' "$RESEND_FROM_EMAIL" | tr -d '[:space:]')" ]; then
+            echo "::error::RESEND_API_KEY is set, so the RESEND_FROM_EMAIL variable must be set on the production environment too — an address on a domain verified in your Resend account. Clear RESEND_API_KEY to turn email off instead."
+            exit 1
+          fi
+
       - uses: actions/checkout@v7
 
       - uses: ruby/setup-ruby@v1
