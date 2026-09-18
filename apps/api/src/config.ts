@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const envSchema = z.object({
+const baseEnvSchema = z.object({
   DATABASE_URL: z.string().min(1),
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   GITHUB_CLIENT_ID: z.string().min(1),
@@ -28,7 +28,11 @@ const envSchema = z.object({
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
   DRAWHAUS_URL: z.url().optional(),
   RESEND_API_KEY: z.string().default(''),
-  RESEND_FROM_EMAIL: z.string().default('dojo <noreply@notdefined.dev>'),
+  // No default on purpose: a baked-in sender would be the maintainer's domain,
+  // which Resend rejects from anyone else's account. Required only when
+  // RESEND_API_KEY is set — see the refinement below. Doubles as the operator
+  // inbox: POST /access-requests mails this address.
+  RESEND_FROM_EMAIL: z.string().default(''),
   CRON_SECRET: z.string().default(''),
   CREATOR_GITHUB_ID: z.string().default(''),
   API_PORT: z.coerce.number().default(3001),
@@ -92,6 +96,19 @@ const envSchema = z.object({
   // unauthenticated. Generate with `openssl rand -hex 32`.
   METRICS_TOKEN: z.string().default(''),
 })
+
+// Email is opt-in (empty RESEND_API_KEY disables it). Once it is on, the sender
+// has to be an address verified in the operator's own Resend account — there is
+// no sane default we can pick for them, so fail the boot naming the variable
+// instead of sending as someone else's domain.
+export const envSchema = baseEnvSchema.refine(
+  (env) => !env.RESEND_API_KEY || env.RESEND_FROM_EMAIL.trim().length > 0,
+  {
+    path: ['RESEND_FROM_EMAIL'],
+    message:
+      'RESEND_FROM_EMAIL is required when RESEND_API_KEY is set — use an address on a domain verified in your Resend account, e.g. "dojo <noreply@your-domain.com>"',
+  },
+)
 
 const result = envSchema.safeParse(process.env)
 
