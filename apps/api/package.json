@@ -28,7 +28,7 @@
     "@hono/node-server": "^2.1.1",
     "@resvg/resvg-js": "^2.6.2",
     "@sentry/node": "^10.74.0",
-    "arctic": "^2.3.4",
+    "arctic": "^3.7.0",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.13.7",
     "hono-rate-limiter": "^0.5.4",
