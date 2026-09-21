@@ -1,5 +1,10 @@
 # Security Policy
 
+## Supported Versions
+
+Only the latest released version receives security patches. dojo is self-hosted, so the version
+that matters is the one on your instance, not the one on `master`.
+
 ## Reporting a Vulnerability
 
 Do not open a public GitHub Issue for security vulnerabilities.
@@ -16,6 +21,11 @@ Include:
 - Acknowledgment within 48 hours
 - Assessment within 7 days
 - Fix + advisory within 30 days for confirmed vulnerabilities
+
+The advisory is the part that reaches you. dojo is self-hosted, so an operator running an older
+copy learns they must upgrade from the published advisory and from nothing else. It is drafted
+privately and published only once the fix has shipped — unlike an issue, which describes an
+unpatched weakness from the moment it is written, and which is why issues are not the channel.
 
 Security researchers who report valid vulnerabilities in good faith will be credited in release notes (with permission).
 
