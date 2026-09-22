@@ -1,0 +1,137 @@
+name: Release
+
+# Cutting a release is a decision, not seven steps. `prepare` pushes a branch carrying the version
+# bump and the generated CHANGELOG entry; `publish` tags and publishes once that branch lands on
+# master. Nothing here pushes to master directly.
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Version bump
+        required: true
+        type: choice
+        options: [patch, minor, major]
+  push:
+    branches: [master]
+    # The manifest is the only file whose change can carry a new version.
+    paths: [package.json]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false # a cancelled run can leave a tag without its release
+
+jobs:
+  prepare:
+    name: Prepare the release branch
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the changelog is generated from the commits since the last tag
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 9.15.4 # must match packageManager in root package.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # Nothing is installed: the generator uses only Node builtins, and the release branch gets
+      # its real checks from the pull request a person opens below.
+      - name: Bump the version and generate the changelog entry
+        id: bump
+        run: |
+          pnpm version "${{ inputs.bump }}" --no-git-tag-version
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      # The branch is pushed and the pull request is opened by a person. Letting Actions open it
+      # needs a repository setting that also lets Actions *approve* pull requests, which is more
+      # than this needs — and a token-authored pull request runs no CI, so opening it by hand is
+      # what gives the release branch its checks.
+      - name: Push the release branch
+        run: |
+          VERSION="${{ steps.bump.outputs.version }}"
+          BRANCH="release/v$VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add package.json CHANGELOG.md
+          git commit -m "chore(release): v$VERSION"
+          git push origin "$BRANCH:$BRANCH"
+
+      - name: Say what to do next
+        run: |
+          VERSION="${{ steps.bump.outputs.version }}"
+          {
+            echo "## Release v$VERSION is ready for review"
+            echo
+            echo "[Open the pull request](${{ github.server_url }}/${{ github.repository }}/compare/master...release/v$VERSION?expand=1)"
+            echo
+            echo "Read the changelog entry before merging: anything that breaks an existing"
+            echo "install belongs under **Breaking Changes**, and it only lands there when the"
+            echo "commit was written as \`type!:\`. Check the run log above for commits the"
+            echo "generator could not file. Merging publishes the tag and the release."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    name: Tag and publish
+    # Runs on every push to master that touched the manifest and decides for itself whether there
+    # is a release to cut: a version in the manifest that has no tag yet. The commit is on master
+    # by construction of the trigger, and the code was gated by the release pull request's own
+    # required checks — this job re-runs no part of CI, so there is only one definition of green.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Decide whether this version is already released
+        id: check
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "v$VERSION is already tagged; nothing to publish." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tag and publish
+        if: steps.check.outputs.publish == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.check.outputs.version }}"
+          # Stops at any `## ` heading, not only the next `## [version]`: the oldest version
+          # section is followed by the historical sprint log, which would land in the notes.
+          awk -v h="## [$VERSION]" 'index($0, h) == 1 { f = 1; next } f && /^## / { exit } f' \
+            CHANGELOG.md > /tmp/release-notes.md
+
+          # A v* tag with no changelog section is drift. Fail before the tag exists, not after.
+          if [ ! -s /tmp/release-notes.md ]; then
+            echo "::error::CHANGELOG.md has no section for $VERSION; refusing to tag"
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" -m "dojo v$VERSION"
+          git push origin "refs/tags/v$VERSION"
+
+          gh release create "v$VERSION" \
+            --title "dojo v$VERSION" \
+            --notes-file /tmp/release-notes.md \
+            --verify-tag
