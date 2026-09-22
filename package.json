@@ -23,7 +23,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-sonarjs": "~4.1.0",
+    "eslint-plugin-sonarjs": "~4.2.1",
     "knip": "^6.35.1",
     "prettier": "^3.9.6",
     "turbo": "^2.10.12",
