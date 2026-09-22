@@ -9,3 +9,7 @@ process.env['LLM_BASE_URL'] = 'http://localhost:11434'
 process.env['LLM_API_KEY'] = 'test-api-key'
 process.env['WEB_URL'] = 'http://localhost:5173'
 process.env['NODE_ENV'] = 'test'
+// Pinned empty, not just left alone: a real key in the ambient shell would make
+// config.ts require RESEND_FROM_EMAIL and exit(1) at import, failing every file
+// that loads the real config. Tests that need email on set it on their own mock.
+process.env['RESEND_API_KEY'] = ''

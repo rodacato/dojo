@@ -36,8 +36,8 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `CREATOR_GITHUB_ID` | secret | no | Numeric GitHub id that unlocks `/admin` |
 | `LLM_ADAPTER_FORMAT`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_STREAM` | var | no | Sensei endpoint |
 | `LLM_API_KEY` | secret | no | Sensei endpoint key |
-| `RESEND_FROM_EMAIL` | var | no | Sender address |
-| `RESEND_API_KEY` | secret | no | Email delivery |
+| `RESEND_API_KEY` | secret | no | Email delivery. Empty disables email entirely |
+| `RESEND_FROM_EMAIL` | var | only with `RESEND_API_KEY` | Sender address on a domain verified in your Resend account, e.g. `dojo <noreply@your-domain.com>`. Also the inbox access requests are mailed to. With the key set and this empty the deploy stops before Kamal runs, and the API would refuse to boot |
 | `CRON_SECRET` | secret | no | Bearer for `/cron/*`, also used by the Piston execute smoke |
 | `PISTON_URL` | var | no | Piston accessory URL as the API sees it |
 | `FF_CODE_EXECUTION_ENABLED`, `FF_COURSE_NUDGE_ENABLED`, `FF_LLM_PREP_STREAMING_ENABLED`, `FF_PLAYGROUND_ASK_SENSEI_ENABLED`, `FF_PLAYGROUND_CONSOLE_ENABLED` | var | no | Feature flags |
