@@ -23,7 +23,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.105.0",
+    "@anthropic-ai/sdk": "^0.127.0",
     "@dojo/shared": "workspace:*",
     "@hono/node-server": "^2.1.1",
     "@resvg/resvg-js": "^2.6.2",
