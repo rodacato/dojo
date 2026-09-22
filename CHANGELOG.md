@@ -1,6 +1,28 @@
 # Changelog
 
-All notable changes to this project are documented here. First-person decision voice — not feature announcements.
+All notable changes to this project are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Entries from `v0.2.0` on are
+generated from the conventional commits since the previous tag — see [RELEASING.md](RELEASING.md).
+
+## [Unreleased]
+
+## [0.1.0] - 2026-09-22
+
+First tagged version. It marks the dojo at the end of Sprint 034 — Phase 1 (Alpha), invite-only,
+with the kata loop and the five-language scroll set in production — and gives later releases
+something to diff against.
+
+There is no change list here on purpose. The commits that got the project to this point are the
+sprint log below; rewriting them into version sections would invent a release history that was
+never cut.
+
+## Historical sprint log
+
+Everything below predates versioning: the sprint-by-sprint record from Phase 0 through Sprint 034,
+in first-person decision voice — not feature announcements. It is kept verbatim and is not
+converted into versions. New entries go above, under `[Unreleased]`.
 
 ---
 
