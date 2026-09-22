@@ -43,6 +43,10 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Test release tooling
+        # The changelog generator is not in a workspace, so `turbo test` never walks it.
+        run: pnpm test:scripts
+
       - name: Test api (enforced coverage gate)
         # Runs coverage so the vitest.config threshold gates here (the Sonar job
         # neutralizes it via VITEST_NO_COVERAGE_THRESHOLD; this job does not, so

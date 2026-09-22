@@ -1,5 +1,6 @@
 {
   "name": "dojo",
+  "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "engines": {
@@ -11,6 +12,8 @@
     "typecheck": "turbo typecheck",
     "lint": "turbo lint",
     "test": "turbo test",
+    "test:scripts": "vitest run --root scripts",
+    "version": "node scripts/release-changelog.mjs",
     "clean": "turbo clean",
     "format": "prettier --write ."
   },
