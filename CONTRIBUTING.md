@@ -57,16 +57,27 @@ test/short-description
 
 ### Commits
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
+Follow [Conventional Commits](https://www.conventionalcommits.org/). The prefix is not cosmetic: it
+decides which section of the [CHANGELOG](CHANGELOG.md) the commit lands in at release time, and a
+prefix outside this table is reported as dropped rather than filed somewhere approximate.
 
-| Prefix | When |
-|---|---|
-| `feat:` | New user-facing feature |
-| `fix:` | Bug fix |
-| `docs:` | Documentation only |
-| `chore:` | Tooling, dependencies, config |
-| `refactor:` | No behavior change |
-| `test:` | Adding or fixing tests |
+| Prefix | When | Changelog section |
+|---|---|---|
+| `feat:` | New user-facing feature | Added |
+| `fix:` | Bug fix | Fixed |
+| `security:` | Closing a vulnerability | Security |
+| `perf:` | Faster, same behavior | Changed |
+| `refactor:` | No behavior change | Changed |
+| `style:` | Formatting only | Changed |
+| `revert:` | Undoing an earlier commit | Changed |
+| `docs:` | Documentation only | Documentation |
+| `chore:` | Tooling, dependencies, config | Maintenance |
+| `build:` | Build setup | Maintenance |
+| `test:` | Adding or fixing tests | Testing |
+| `ci:` | Workflows and CI config | CI |
+
+Write `type!:` — `feat(api)!:` — when the change breaks an existing install. That `!` is the only
+thing that puts a commit under **Breaking Changes**; prose in the body does not.
 
 ### Before Opening a PR
 
@@ -77,6 +88,12 @@ pnpm test --filter=api  # must pass
 ```
 
 One feature or fix per PR. Keep changes small and reviewable.
+
+### Releases
+
+You do not need to cut one to contribute, and merging your PR does not trigger a deploy. When a
+release is cut, the version bump and the changelog entry land by PR like any other change —
+[RELEASING.md](RELEASING.md) has the process.
 
 ---
 
