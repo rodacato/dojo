@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dojo — practice without the prompt</title>
+  <meta name="description" content="A self-hosted, open-source practice space for developers. No AI during the kata. The timer runs. The sensei tells you the truth.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0A0908" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">
+  <meta property="og:title" content="dojo — practice without the prompt">
+  <meta property="og:description" content="The dojo for developers who still have something to prove. To themselves. Self-hosted, MIT.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="wordmark" href="#" aria-label="dojo, home">dojo<span class="cursor" aria-hidden="true">_</span></a>
+      <nav class="top__nav" aria-label="Sections">
+        <a href="#loop">The loop</a>
+        <a href="#run">Run your own</a>
+        <a href="#contribute">Contribute</a>
+        <a class="top__gh" href="https://github.com/rodacato/dojo">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap">
+      <p class="eyebrow">Open source · MIT · Self-hosted</p>
+      <h1 class="hero__title">
+        The dojo for developers who still have something to prove.
+        <span class="hero__turn">To themselves.<svg class="stroke" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M 5 12 Q 50 7 100 11 T 195 10" pathLength="1"/></svg></span>
+      </h1>
+      <p class="hero__lede">
+        Vibe coding is making developers faster and their instincts weaker. Dojo is the
+        counter-practice: a place where you think for yourself, work through discomfort, and
+        submit something imperfect. No AI during the kata. The timer runs. The sensei tells you
+        the truth.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#run">Run your own</a>
+        <a class="btn btn--ghost" href="https://github.com/rodacato/dojo">View on GitHub</a>
+      </div>
+      <p class="status">
+        <span class="status__tag">Revamping</span>
+        Dojo started as a private, invite-only practice space and is being reshaped into a
+        self-hosted open-source project. The kata loop and the scrolls work today; the
+        self-host story still has rough edges. Reference instance:
+        <a href="https://dojo.notdefined.dev">dojo.notdefined.dev</a>.
+      </p>
+    </section>
+
+    <section id="loop" class="section wrap">
+      <header class="section__head">
+        <p class="eyebrow">How it works</p>
+        <h2>Three kata. No skip. No reroll.</h2>
+      </header>
+      <div class="loop">
+        <ol class="steps">
+          <li><span class="steps__n">01</span><span>Pick your mood and the time you have.</span></li>
+          <li><span class="steps__n">02</span><span>Get three kata — a refactor, a design question, a technical conversation. Choose one.</span></li>
+          <li><span class="steps__n">03</span><span>Work through it. Timer running, no AI, no autocomplete.</span></li>
+          <li><span class="steps__n">04</span><span>Submit. The sensei — an LLM playing a senior in that domain — evaluates in real time, token by token.</span></li>
+          <li><span class="steps__n">05</span><span>Read the verdict and the full analysis: what you showed, what you missed, what to review.</span></li>
+        </ol>
+        <figure class="verdict">
+          <svg class="verdict__stroke" viewBox="0 0 12 200" preserveAspectRatio="none" aria-hidden="true"><path d="M 6 3 C 3 60, 10 130, 6 197"/></svg>
+          <span class="verdict__label">Example verdict</span>
+          <p class="verdict__word">Needs work</p>
+          <blockquote class="verdict__body">
+            15 minutes on a 10-minute problem. The runtime was O(n²) when O(n log n) was
+            available. Good intent, careless execution.
+          </blockquote>
+          <figcaption class="verdict__foot">Passed · Passed with notes · Needs work — there is no score.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <header class="section__head">
+        <p class="eyebrow">What's inside</p>
+        <h2>Practice, and a place to learn.</h2>
+      </header>
+      <dl class="surfaces">
+        <div class="surface">
+          <dt>Katas <span class="tag">shipped</span></dt>
+          <dd>Timed practice units evaluated by the sensei. Code katas run in a Piston sandbox, so the sensei sees real test results, not just your code.</dd>
+        </div>
+        <div class="surface">
+          <dt>Scrolls <span class="tag">shipped</span></dt>
+          <dd>Crash courses for developers who already program — Ruby, Python, Rust, TypeScript, Go, SQL. <a href="https://dojo.notdefined.dev/scrolls">Readable without an account.</a></dd>
+        </div>
+        <div class="surface">
+          <dt>Engawa <span class="tag">shipped</span></dt>
+          <dd>An anonymous code playground. No account, no tracking — drop a snippet and run it.</dd>
+        </div>
+        <div class="surface">
+          <dt>Belts <span class="tag">shipped</span></dt>
+          <dd>One rank, white to black, computed from sustained practice and variety. The sensei never influences it.</dd>
+        </div>
+        <div class="surface surface--soon">
+          <dt>Kumite <span class="tag tag--muted">planned</span></dt>
+          <dd>1v1 sparring on the same kata, reasoning compared side by side. Not built yet.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="section wrap honor">
+      <header class="section__head">
+        <p class="eyebrow">Honor code</p>
+        <h2>The dojo does not enforce rules. It trusts you.</h2>
+      </header>
+      <ul class="honor__list">
+        <li>No AI during the kata — debrief with AI after.</li>
+        <li>No skipping katas you find uncomfortable.</li>
+        <li>The timer runs. You submit what you have.</li>
+      </ul>
+      <p class="honor__coda">If you cheat yourself here, you cheat yourself everywhere.</p>
+    </section>
+
+    <section id="run" class="section wrap">
+      <header class="section__head">
+        <p class="eyebrow">Run your own</p>
+        <h2>Self-hosted, not signed up for.</h2>
+      </header>
+      <div class="run">
+        <ul class="points">
+          <li><strong>Your data, your server.</strong> Kata history, verdicts and progression never leave your box.</li>
+          <li><strong>Your keys.</strong> Bring any streaming LLM endpoint — Anthropic, OpenAI or a proxy. Evaluation cost is yours, not a subscription.</li>
+          <li><strong>Your access model.</strong> Public, invite-only, VPN-gated or single-user. Dojo does not impose one.</li>
+        </ul>
+        <div class="terminal">
+          <div class="terminal__bar"><span>full instance</span></div>
+<pre><code><span class="c"># needs Docker and a GitHub OAuth app</span>
+git clone https://github.com/rodacato/dojo
+cd dojo
+cp .env.example .env
+<span class="c"># set the GitHub OAuth values in .env</span>
+docker compose up --build</code></pre>
+          <p class="terminal__note">The sensei defaults to <code>mock</code>, so no LLM key is needed to try it.</p>
+        </div>
+      </div>
+      <p class="more">
+        <a href="https://github.com/rodacato/dojo/blob/master/GETTING_STARTED.md">Getting started</a>
+        <a href="https://github.com/rodacato/dojo/blob/master/docs/ops/deploy.md">Deploy with Kamal</a>
+        <a href="https://github.com/rodacato/dojo/blob/master/SECURITY.md">Self-hosting security</a>
+      </p>
+    </section>
+
+    <section class="section wrap">
+      <header class="section__head">
+        <p class="eyebrow">Architecture</p>
+        <h2>Boring on purpose.</h2>
+      </header>
+      <p class="prose">
+        A Turborepo monorepo in TypeScript. Domain-driven design with hexagonal architecture on the
+        API, domain events between bounded contexts, PostgreSQL underneath. The sensei streams over
+        WebSockets; code runs in a Piston sandbox. Decisions are written down as ADRs.
+      </p>
+      <p class="more">
+        <a href="https://github.com/rodacato/dojo/blob/master/docs/ARCHITECTURE.md">Architecture</a>
+        <a href="https://github.com/rodacato/dojo/tree/master/docs/adr">Decision records</a>
+        <a href="https://github.com/rodacato/dojo/blob/master/docs/VISION.md">Vision</a>
+      </p>
+    </section>
+
+    <section id="contribute" class="section wrap">
+      <header class="section__head">
+        <p class="eyebrow">Contribute</p>
+        <h2>What's welcome — and what's not.</h2>
+      </header>
+      <div class="contrib">
+        <ul class="contrib__list contrib__list--yes" aria-label="Welcome">
+          <li>New kata variations</li>
+          <li>Prompt improvements</li>
+          <li>Bug fixes with reproductions</li>
+          <li>Accessibility fixes</li>
+          <li>Infra hardening</li>
+        </ul>
+        <ul class="contrib__list contrib__list--no" aria-label="Not welcome">
+          <li>Gamification features</li>
+          <li>Tone-softening on the sensei</li>
+          <li>AI assistance during the kata</li>
+          <li>Scoring leaderboards</li>
+          <li>Ad-driven monetization</li>
+        </ul>
+      </div>
+      <p class="more">
+        <a href="https://github.com/rodacato/dojo/blob/master/CONTRIBUTING.md">Contributing guide</a>
+        <a href="https://github.com/rodacato/dojo/issues">Open issues</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot__inner">
+      <span class="wordmark wordmark--sm">dojo<span class="cursor cursor--still" aria-hidden="true">_</span></span>
+      <span>MIT licensed</span>
+      <a href="https://github.com/rodacato/dojo">Source</a>
+      <a href="https://github.com/rodacato/dojo/blob/master/CHANGELOG.md">Changelog</a>
+      <a href="https://dojo.notdefined.dev">Reference instance</a>
+    </div>
+  </footer>
+</body>
+</html>
