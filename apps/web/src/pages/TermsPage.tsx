@@ -7,12 +7,13 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Dojo is a daily practice tool for software engineers. It assigns you a timed kata
-          (a "kata"), evaluates your response with an AI sensei, and gives you a verdict.
+          Dojo is a daily practice tool for software engineers. It assigns you a timed kata,
+          evaluates your response with an AI sensei, and gives you a verdict.
         </p>
         <p>
-          The product is invite-only during its early phase. Access is granted through
-          invitation links created by existing practitioners or by the creator.
+          Dojo is open-source software that anyone can run. This instance is run by its
+          operator, not by the dojo project, and these terms describe how it works. Access is by
+          invitation: the operator issues the invitation links.
         </p>
       </>
     ),
@@ -63,10 +64,9 @@ const SECTIONS: LegalSection[] = [
     label: 'Account termination',
     body: (
       <>
-        <p>We can terminate your account if you violate these terms. You can leave at any time.</p>
         <p>
-          If your account is terminated, your session data may be retained for integrity of the
-          leaderboard, but your profile will no longer be publicly visible.
+          The operator of this instance can close your account if you violate these terms. You can
+          leave at any time.
         </p>
       </>
     ),
@@ -82,8 +82,8 @@ const SECTIONS: LegalSection[] = [
           secret.
         </p>
         <p>
-          "Open source" means you can read, fork, and learn from the code. It does not mean
-          you can run a competing instance using our kata catalog without attribution.
+          You can read, fork, and run your own instance, kata catalog included. The license asks
+          only that its copyright notice travels with the code.
         </p>
       </>
     ),
@@ -93,8 +93,8 @@ const SECTIONS: LegalSection[] = [
     label: 'Changes to these terms',
     body: (
       <p>
-        We may update these terms. Changes will be reflected on this page with an updated
-        effective date. If a change is significant, we'll note it in the changelog.
+        The operator may update these terms. Changes will be reflected on this page with an
+        updated effective date.
       </p>
     ),
   },
@@ -103,13 +103,13 @@ const SECTIONS: LegalSection[] = [
     label: 'Contact',
     body: (
       <p>
-        Questions about these terms? Open an issue on GitHub or reach out via the channels
-        listed on the open source page.
+        Questions about this instance go to its operator. Questions about the dojo software
+        itself: open an issue on GitHub.
       </p>
     ),
   },
 ]
 
 export function TermsPage() {
-  return <LegalPage title="Terms of Service" lastUpdated="2026-04-15" sections={SECTIONS} />
+  return <LegalPage title="Terms of Service" lastUpdated="2026-09-28" sections={SECTIONS} />
 }

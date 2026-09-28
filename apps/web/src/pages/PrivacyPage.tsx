@@ -13,7 +13,11 @@ const SECTIONS: LegalSection[] = [
     label: 'What we collect',
     body: (
       <>
-        <p>When you use dojo, we store:</p>
+        <p>
+          Dojo is open-source software that anyone can run. This instance is run by its operator,
+          not by the dojo project, and its data stays on the operator&apos;s server. When you use
+          it, it stores:
+        </p>
         <LegalList>
           <LegalListItem>
             Your GitHub profile information (username, avatar URL, email).
@@ -34,7 +38,7 @@ const SECTIONS: LegalSection[] = [
     label: "What we don't collect",
     body: (
       <>
-        <p>We deliberately do not collect:</p>
+        <p>Dojo deliberately does not collect:</p>
         <LegalList>
           <LegalListItem>
             Analytics or tracking data (no Google Analytics, no Mixpanel, no Segment).
@@ -43,9 +47,7 @@ const SECTIONS: LegalSection[] = [
             Your GitHub repositories, code, or commit history.
           </LegalListItem>
           <LegalListItem>Browser fingerprints or device identifiers.</LegalListItem>
-          <LegalListItem>
-            Cookies beyond the session token required for authentication.
-          </LegalListItem>
+          <LegalListItem>Cookies beyond the ones sign-in needs.</LegalListItem>
         </LegalList>
       </>
     ),
@@ -61,16 +63,17 @@ const SECTIONS: LegalSection[] = [
             Run the kata loop (assign katas, evaluate submissions, track progress).
           </LegalListItem>
           <LegalListItem>
-            Display your profile and streak to other practitioners.
-          </LegalListItem>
-          <LegalListItem>
-            Generate the leaderboard (ranked by consistency, not score).
+            Compute your belt and milestones, and publish a verdict only when you share it.
           </LegalListItem>
         </LegalList>
         <p>
-          Your submissions are sent to Anthropic's Claude API for evaluation. They are not
-          stored by Anthropic beyond the API request. We do not use your data to train any
-          models.
+          Your submissions are sent for evaluation to the LLM provider the operator of this
+          instance configured. What that provider keeps is governed by its own terms. Dojo does
+          not use your data to train any models.
+        </p>
+        <p>
+          If the operator enables external error reporting (Sentry), error reports are sent
+          there as well.
         </p>
       </>
     ),
@@ -80,17 +83,15 @@ const SECTIONS: LegalSection[] = [
     label: 'GitHub OAuth',
     body: (
       <>
-        <p>We request the minimum GitHub OAuth scopes:</p>
+        <p>Dojo requests a single GitHub OAuth scope:</p>
         <LegalList>
           <LegalListItem>
-            <LegalCode>read:user</LegalCode> — your public profile (username, avatar).
-          </LegalListItem>
-          <LegalListItem>
             <LegalCode>user:email</LegalCode> — your email address (for account identification).
+            Your public profile (username, avatar) needs no extra scope.
           </LegalListItem>
         </LegalList>
         <p>
-          We do not request access to your repositories, organizations, or any other GitHub
+          Dojo does not request access to your repositories, organizations, or any other GitHub
           data. You can revoke access at any time from your GitHub settings.
         </p>
       </>
@@ -103,14 +104,13 @@ const SECTIONS: LegalSection[] = [
       <>
         <LegalCallout>
           <p className="text-base font-medium leading-relaxed">
-            Sessions are yours. We don't sell them, share them, or use them to train models.
+            Sessions are yours. Dojo doesn&apos;t sell them, share them, or train models on them.
           </p>
         </LegalCallout>
         <p>
-          Your session data is stored on a self-hosted VPS (Hetzner, Germany). It is not
-          replicated to third-party analytics platforms. If you delete your account, your
-          profile is removed. Anonymized session data may be retained for leaderboard
-          integrity.
+          Your session data lives in this instance&apos;s database, on the server its operator
+          runs. It is not replicated to third-party analytics platforms. Ask the operator to
+          delete your account and your data goes with it.
         </p>
       </>
     ),
@@ -120,16 +120,16 @@ const SECTIONS: LegalSection[] = [
     label: 'Your rights',
     body: (
       <>
-        <p>You can:</p>
+        <p>You can ask the operator of this instance to:</p>
         <LegalList>
           <LegalListItem>
-            Request a copy of all data associated with your account.
+            Send you a copy of all data associated with your account.
           </LegalListItem>
           <LegalListItem>
-            Request deletion of your account and associated data.
+            Delete your account and associated data.
           </LegalListItem>
-          <LegalListItem>Revoke GitHub OAuth access at any time.</LegalListItem>
         </LegalList>
+        <p>You can revoke GitHub OAuth access yourself at any time.</p>
       </>
     ),
   },
@@ -138,13 +138,13 @@ const SECTIONS: LegalSection[] = [
     label: 'Contact',
     body: (
       <p>
-        Privacy questions? Open an issue on GitHub or reach out via the channels listed on the
-        open source page.
+        Privacy questions about this instance go to its operator. Questions about the dojo
+        software itself: open an issue on GitHub.
       </p>
     ),
   },
 ]
 
 export function PrivacyPage() {
-  return <LegalPage title="Privacy Policy" lastUpdated="2026-04-15" sections={SECTIONS} />
+  return <LegalPage title="Privacy Policy" lastUpdated="2026-09-28" sections={SECTIONS} />
 }
