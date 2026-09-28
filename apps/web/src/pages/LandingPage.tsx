@@ -92,7 +92,7 @@ export function LandingPage() {
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
   session_expired: 'Your session expired. Sign in again to continue.',
-  invite_required: 'The dojo is invite-only. Request access below or use an invitation link.',
+  invite_required: 'This dojo is invite-only. Request access below or use an invitation link.',
   invite_invalid: 'This invitation is invalid or has already been used.',
 }
 
@@ -594,13 +594,13 @@ function AccessSection() {
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div>
           <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">
-            The dojo is invite-only.
+            This dojo is invite-only.
           </h2>
           <p className="text-secondary text-base leading-relaxed mb-4">
             We are not building a platform. We are building a practice.
           </p>
           <p className="text-secondary text-base leading-relaxed">
-            Invitations go to people we know or people those people know. Tell us why you want in.
+            Whoever runs this instance issues the invitations. Tell them why you want in.
           </p>
         </div>
         <RequestAccessForm />
@@ -621,7 +621,7 @@ function RequestAccessForm() {
       <div className="bg-surface border border-accent/30 rounded-md p-6">
         <p className="font-mono text-accent text-xs uppercase tracking-wider mb-2">[ Received ]</p>
         <p className="text-secondary text-sm leading-relaxed">
-          No newsletter. No notifications. We will reach out directly if we have space.
+          No newsletter. No notifications. The owner of this dojo will reach out directly.
         </p>
       </div>
     )
@@ -636,7 +636,7 @@ function RequestAccessForm() {
       await api.requestAccess(githubHandle.trim(), reason.trim() || undefined)
       setSubmitted(true)
     } catch {
-      setError("Didn't go through. Try again, or ping @rodacato on github.")
+      setError("Didn't go through. Try again in a moment.")
       setSubmitting(false)
     }
   }

@@ -32,7 +32,7 @@ describe('TermsPage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Terms of Service' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Last updated 2026-04-15')).toBeInTheDocument()
+    expect(screen.getByText('Last updated 2026-09-28')).toBeInTheDocument()
   })
 
   it('renders an on-this-page table of contents linking to every section anchor', () => {

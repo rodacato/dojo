@@ -48,7 +48,7 @@ describe('PrivacyPage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Privacy Policy' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Last updated 2026-04-15')).toBeInTheDocument()
+    expect(screen.getByText('Last updated 2026-09-28')).toBeInTheDocument()
   })
 
   it('lists every privacy section in the table of contents in order', () => {
@@ -81,12 +81,12 @@ describe('PrivacyPage', () => {
     renderPrivacy()
 
     expect(
-      screen.getByText(/We do not use your data to train any/),
+      screen.getByText(/Dojo does\s+not use your data to train any/),
     ).toBeInTheDocument()
-    expect(screen.getByText('read:user')).toBeInTheDocument()
     expect(screen.getByText('user:email')).toBeInTheDocument()
+    expect(screen.queryByText('read:user')).not.toBeInTheDocument()
     expect(
-      screen.getByText(/We don't sell them, share them, or use them to train models\./),
+      screen.getByText(/Dojo doesn't sell them, share them, or train models on them\./),
     ).toBeInTheDocument()
   })
 
