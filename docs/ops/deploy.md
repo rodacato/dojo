@@ -37,13 +37,14 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `OAUTH_CLIENT_SECRET` | secret | yes | Arrives as `GITHUB_CLIENT_SECRET` |
 | `OAUTH_CALLBACK_URL` | var | yes | Arrives as `GITHUB_CALLBACK_URL` |
 | `CREATOR_GITHUB_ID` | secret | no | Numeric GitHub id that unlocks `/admin` |
-| `LLM_ADAPTER_FORMAT`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_STREAM` | var | no | Sensei endpoint |
+| `LLM_ADAPTER_FORMAT`, `LLM_BASE_URL`, `LLM_MODEL` | var | no | Sensei endpoint |
+| `LLM_STREAM` | var | no | `false` evaluates in one request instead of streaming. Workflow falls back to `true` |
 | `LLM_API_KEY` | secret | no | Sensei endpoint key |
 | `RESEND_FROM_EMAIL` | var | no | Sender address; required when `RESEND_API_KEY` is set, otherwise the API refuses to start |
 | `RESEND_API_KEY` | secret | no | Email delivery |
 | `CRON_SECRET` | secret | no | Bearer for `/cron/*`, also used by the Piston execute smoke |
 | `PISTON_URL` | var | no | Piston accessory URL as the API sees it |
-| `FF_CODE_EXECUTION_ENABLED`, `FF_LLM_PREP_STREAMING_ENABLED`, `FF_PLAYGROUND_ASK_SENSEI_ENABLED`, `FF_PLAYGROUND_CONSOLE_ENABLED` | var | no | Feature flags |
+| `FF_CODE_EXECUTION_ENABLED`, `FF_LLM_PREP_STREAMING_ENABLED`, `FF_PLAYGROUND_ASK_SENSEI_ENABLED`, `FF_PLAYGROUND_CONSOLE_ENABLED` | var | no | Feature flags. Unset means off |
 | `PLAYGROUND_ASK_SENSEI_DAILY_QUOTA` | var | no | Workflow falls back to `30` |
 | `TURNSTILE_SITE_KEY` | var | no | Public Turnstile key (API and web build) |
 | `TURNSTILE_SECRET_KEY` | secret | no | Turnstile verification |
@@ -54,6 +55,9 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `SENTRY_AUTH_TOKEN` | secret | no | Source map upload during the web build |
 | `METRICS_ENABLED` | var | no | See [Metrics](observability.md#metrics-prometheus) |
 | `METRICS_TOKEN` | secret | no | Bearer for `/metrics` |
+
+Boolean variables take `true`/`1` or `false`/`0`. Any other value stops the API at boot, so the
+deploy fails instead of shipping a flag that picked a side on its own.
 
 GitHub refuses secret and variable names that start with `GITHUB_`, which is why the OAuth values
 are stored as `OAUTH_*` and renamed in [`.kamal/secrets`](../../.kamal/secrets).
