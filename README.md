@@ -5,19 +5,61 @@
 [![CI](https://github.com/rodacato/dojo/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/dojo/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Hono](https://img.shields.io/badge/Hono-4-E36002?logo=hono&logoColor=white)](https://hono.dev/)
 [![Node.js](https://img.shields.io/badge/Node.js-%E2%89%A524-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
+A self-hosted, open-source practice space for developers. Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
 
-It is not a certification platform. It is not a leaderboard. It is a daily practice for developers who want to stay technically alive.
+It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, through the scrolls, a place to learn as much as a place to be tested.
 
-**Dojo is self-hosted — you run your own.** For yourself, your friends, or your team. Bring your own LLM key, decide your own access (public, private, VPN — your call), and grow it with your own katas and scrolls. Not everyone wants the kata loop, and that is fine: the scrolls (crash courses) are free to read without an account, so a dojo can be a place to learn as much as a place to be tested.
+**There is no hosted service to sign up for — you run your own**, for yourself, your friends, or your team.
 
-Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev)
+> **Status:** dojo started as a private, invite-only practice space and is being reshaped into a self-hosted open-source project. The kata loop and the scrolls work today; the self-host story still has rough edges. Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev) · Project site: [rodacato.github.io/dojo](https://rodacato.github.io/dojo/)
+
+---
+
+## Run your own
+
+- **Your data, your server.** Kata history, verdicts and progression never leave your box.
+- **Your keys.** Bring any streaming LLM endpoint — Anthropic, OpenAI, or a compatible proxy. Evaluation cost is yours, not a subscription.
+- **Your network.** Public, VPN-gated, or on a laptop — deploy it wherever you want.
+
+```bash
+# needs Docker and a GitHub OAuth app
+git clone https://github.com/rodacato/dojo
+cd dojo
+cp .env.example .env    # set the GitHub OAuth values
+docker compose up --build
+```
+
+The sensei defaults to `mock`, so no LLM key is needed to try it. The full guide — all run paths, GitHub sign-in setup, first-run check, troubleshooting — is [GETTING_STARTED.md](GETTING_STARTED.md).
+
+| Next | Where |
+|---|---|
+| Deploy to a server with Kamal | [docs/ops/deploy.md](docs/ops/deploy.md) |
+| Monitoring, metrics, recovery | [docs/ops/observability.md](docs/ops/observability.md) |
+| Securing your instance | [SECURITY.md](SECURITY.md) |
+
+### Connect a real sensei
+
+```env
+LLM_ADAPTER_FORMAT=anthropic      # mock | anthropic | openai
+LLM_BASE_URL=https://api.anthropic.com
+LLM_API_KEY=your_key_here
+LLM_MODEL=claude-opus-4-6
+```
+
+### Who can sign in
+
+Sign-in is GitHub OAuth. The account whose numeric id is `CREATOR_GITHUB_ID` owns the instance and reaches `/admin`. Anyone else needs an invitation link the creator issues from `/admin/invitations`; once in, returning users are always allowed. There is no open sign-up mode yet. Anonymous visitors can still read public scrolls and use the Engawa playground.
+
+### Your content
+
+The base scrolls seed **opt-in**: `pnpm --filter=api db:seed:scrolls` inserts them as unpublished drafts, and you enable the ones you want from `/admin/scrolls` (publish + public/private per scroll). Reseeding refreshes their content but never touches your publish choices. Author your own by following [docs/courses/AUTHORING.md](docs/courses/AUTHORING.md) and adding a seed file; your scrolls use the same sensei, execution sandbox, and player as the base ones.
+
+_Planned — [scroll content ecosystem](https://github.com/rodacato/dojo/issues/75):_ **import scroll packs from other repos** — link, clone, or download a set (e.g. a Rails pack) into your instance.
 
 ---
 
@@ -41,73 +83,7 @@ Verdict: Passed / Passed with notes / Needs work
 Full analysis + topics to review
 ```
 
----
-
-## Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | React + Vite |
-| Backend | Hono + Node.js |
-| Database | PostgreSQL |
-| Realtime | WebSockets (sensei streams token by token) |
-| Auth | GitHub OAuth |
-| Architecture | DDD + Hexagonal (Ports & Adapters) + Event-Driven |
-| LLM | Any compatible streaming endpoint |
-| Code Execution | Piston (sandboxed, nsjail) |
-| Infra | Docker + Kamal on Hetzner VPS |
-| E2E Tests | Playwright |
-
-### LLM Provider
-
-Works with any streaming-compatible endpoint — Anthropic, OpenAI, or your own proxy:
-
-```env
-LLM_BASE_URL=https://api.anthropic.com
-LLM_API_KEY=your_key_here
-LLM_MODEL=claude-sonnet-4-20250514
-```
-
----
-
-## Monorepo Structure
-
-```
-dojo/
-  apps/
-    web/          # React + Vite frontend
-    api/          # Hono + Node.js (domain / application / infrastructure)
-  packages/
-    shared/       # TypeScript types, Zod schemas
-  docker-compose.yml
-  turbo.json
-```
-
----
-
-## Getting Started
-
-The fastest path is the Dev Container (`Reopen in Container` → `pnpm dev`). To run a full
-instance without VS Code, `docker compose up --build`. Both run with a `mock` sensei, so no
-LLM key is needed — you only need a GitHub OAuth app to sign in.
-
-**See [GETTING_STARTED.md](GETTING_STARTED.md) for the full guide** (all three run paths,
-GitHub sign-in setup, first-run check, and troubleshooting).
-
-### Commands
-
-```bash
-pnpm dev                              # Start web + api in watch mode
-pnpm build                            # Build all workspaces
-pnpm lint                             # Lint all workspaces
-pnpm typecheck                        # Type-check all workspaces
-pnpm test --filter=api                # Run API unit + integration tests
-pnpm --filter=api db:seed:scrolls     # Seed scroll catalog (TypeScript, JS DOM, SQL Deep Cuts)
-```
-
----
-
-## Kata Types
+### Kata types
 
 | Type | Description |
 |---|---|
@@ -117,140 +93,7 @@ pnpm --filter=api db:seed:scrolls     # Seed scroll catalog (TypeScript, JS DOM,
 
 **60+ katas** across 10 categories: backend, frontend, architecture, security, DevOps, SQL, design patterns, algorithms, testing, and process. Each kata has 2 sensei variations with distinct evaluation perspectives.
 
----
-
-## Features
-
-| Feature | Description |
-|---|---|
-| **Scrolls** | Public learning paths at `/scrolls` — step-by-step katas with instant feedback. TypeScript and SQL Deep Cuts run via Piston; JavaScript DOM katas run in a browser iframe sandbox. Public scrolls (e.g. SQL Deep Cuts) can be followed without an account — progress persists in `localStorage` and merges into your account if you later sign in |
-| **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
-| **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
-| **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
-| **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
-| **Admin review** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle |
-| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The sensei never influences advancement (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
-| **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, scroll completions, consistency streaks. Surfaced alongside the belt on `/belts` |
-| **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
-| **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel that explains what kumite will be — not a relabel of the old leaderboard |
-| **Responsive** | Mobile-first with sidebar (desktop) and bottom nav (mobile) |
-| **Error reporting** | Every unhandled error fans out to three sinks (console, Postgres, Sentry) via the `ErrorReporterPort` — see [docs/adr/017-error-reporting-port.md](docs/adr/017-error-reporting-port.md). Sentry is opt-in; without a DSN the Postgres + console fallback still captures everything, visible at `/admin/errors` |
-
----
-
-## Observability
-
-Three sinks run in parallel (Console + Postgres + Sentry) via a `CompositeErrorReporter` — see [ADR 017](docs/adr/017-error-reporting-port.md). Sentry is opt-in; empty DSN leaves it off.
-
-**Environment gating.** Sentry is skipped when the environment is `development` or `test`, even if a DSN is present. This stops a prod `.env` copied to a laptop from spraying dev errors into your prod Sentry project. Override by setting `SENTRY_ENVIRONMENT` / `VITE_SENTRY_ENVIRONMENT` to `staging` or `production`.
-
-```env
-# API (@sentry/node) — empty env defaults to NODE_ENV
-SENTRY_DSN=                     # https://xxx.ingest.sentry.io/yyy
-SENTRY_ENVIRONMENT=             # staging | production (empty → NODE_ENV)
-SENTRY_TRACES_SAMPLE_RATE=0     # 0..1 — keep at 0 until tracing is used
-SENTRY_RELEASE=                 # usually the deploy's git SHA
-
-# Web (@sentry/react) — empty env defaults to Vite MODE
-VITE_SENTRY_DSN=
-VITE_SENTRY_ENVIRONMENT=        # staging | production (empty → Vite MODE)
-VITE_SENTRY_RELEASE=
-
-# Source map upload (build-time only, web). All three required together.
-SENTRY_AUTH_TOKEN=              # org token with org:ci scope
-SENTRY_ORG=
-SENTRY_PROJECT=dojo-web
-```
-
-Errors logged in Postgres are listed at `/admin/errors` with filters for source (api/web) and HTTP status — useful even when Sentry is down or over quota.
-
-**Errors retention.** The `errors` table can be purged manually via `POST /cron/cleanup-errors` (deletes rows older than 30 days). Auth: `Authorization: Bearer ${CRON_SECRET}`. The scheduled GitHub Action that called this daily was disabled — pending a replacement scheduling solution.
-
-### Metrics (Prometheus)
-
-The API can expose Prometheus metrics at `GET /metrics` on the main app port — same hostname as everything else, behind kamal-proxy and Cloudflare. There is no separate metrics port. Prometheus scrapes it like any external service.
-
-| Env var | Type | Default | Notes |
-|---|---|---|---|
-| `METRICS_ENABLED` | variable | `false` | The gate. OFF mounts nothing — no endpoint, no default metrics, no middleware (zero overhead). |
-| `METRICS_TOKEN` | secret | — | Bearer token guarding `/metrics`. Generate with `openssl rand -hex 32`. |
-
-**Opt-in and token-gated.** Metrics are off by default. The token alone enables nothing — `METRICS_ENABLED` turns it on. With metrics enabled in production and **no** token set, `/metrics` returns `404` rather than serve data unauthenticated. In development with no token, the endpoint is open for convenience. The token is compared in constant time (SHA-256 + `timingSafeEqual`).
-
-`/metrics` is mounted **before** the rate limiters — like `/health`, scraping is never throttled.
-
-**What's exposed:**
-
-- Default process metrics (memory, GC, event-loop lag) via `collectDefaultMetrics`.
-- `http_request_duration_seconds` — request latency histogram labelled by `method`, `route` (the matched route *pattern*, e.g. `/sessions/:id`, never the raw URL; unmatched requests collapse to `"unmatched"`), and `status_code`.
-- `dojo_sensei_evaluations_total` — counter of completed sensei evaluations, labelled by `verdict` (`passed` / `passed_with_notes` / `needs_work`). One increment per finished kata-loop evaluation; each is an LLM streaming call, so this is both the core-value throughput and the main cost driver. Per-process — sum across instances in PromQL.
-
-**Scrape config** (`prometheus.yml`):
-
-```yaml
-scrape_configs:
-  - job_name: dojo-api
-    metrics_path: /metrics
-    scheme: https
-    authorization:
-      credentials: ${METRICS_TOKEN}   # same value as the API's METRICS_TOKEN
-    static_configs:
-      - targets: ['dojo-api.example.com']   # your API_HOST
-```
-
-Validate from the shell:
-
-```bash
-# 200 with a valid token
-curl -fsS -H "Authorization: Bearer $METRICS_TOKEN" https://$API_HOST/metrics | head
-# 401 without a token (when a token is configured)
-curl -s -o /dev/null -w '%{http_code}\n' https://$API_HOST/metrics
-```
-
----
-
-## Operations
-
-### Piston recovery
-
-Piston runs as a Kamal accessory with a persisted `/piston/packages` volume (ADR 018). If the volume is ever reset or the six runtimes drift out of sync, rerun:
-
-```bash
-PISTON_URL=http://<host_ip>:2000 ./scripts/piston-reprovision.sh
-```
-
-The script is idempotent — present runtimes are skipped, missing ones are installed via Piston's `POST /api/v2/packages`. The source-of-truth list of runtimes lives in the script.
-
-**Liveness.** A GitHub Actions workflow (`.github/workflows/piston-liveness.yml`) probes `/health/piston` every 30 minutes. Two consecutive failures 30s apart fail the workflow run — an email goes out via GitHub's default notifications. See ADR 019. Requires the `PISTON_HEALTH_URL` repo variable (set to the app's `/health/piston`, not Piston directly — the app endpoint also catches API↔Piston network breaks). The URL is public, so it lives under Variables, not Secrets.
-
----
-
-## Run your own
-
-Dojo is built to be self-hosted, not signed up for. No SaaS, no multi-tenancy, no waitlist — you run your own instance and own everything in it.
-
-- **Your data, your server.** Kata history, verdicts, progression — none of it leaves your box.
-- **Your keys.** Bring your own LLM endpoint (Anthropic, OpenAI, or a proxy). Evaluation cost is yours, not a subscription.
-- **Your access model.** Public, invite-only, VPN-gated, or a single-user dojo — dojo does not impose one. Deploy it however and wherever you want.
-- **Built-in observability.** An error view at `/admin/errors` out of the box — no need to stand up Sentry to see what breaks; plug in an external tracker only if you want (see [Observability](#observability)).
-
-`docker compose up --build` runs a full instance — see [GETTING_STARTED.md](GETTING_STARTED.md).
-
-**Deploying with Kamal** — the GitHub Environment, the first `setup`, promotion and hotfixes are in [docs/ops/deploy.md](docs/ops/deploy.md).
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and [SECURITY.md](SECURITY.md) for self-hosting security.
-
----
-
-## Your content
-
-The base scrolls seed **opt-in**: `pnpm --filter=api db:seed:scrolls` inserts them as unpublished drafts, and you enable the ones you want from `/admin/scrolls` (publish + public/private per scroll). Reseeding refreshes their content but never touches your publish choices. Author your own by following [docs/courses/AUTHORING.md](docs/courses/AUTHORING.md) and adding a seed file; your scrolls use the same sensei, execution sandbox, and player as the base ones.
-
-_Planned — [scroll content ecosystem](https://github.com/rodacato/dojo/issues/75):_ **import scroll packs from other repos** — link, clone, or download a set (e.g. a Rails pack) into your instance.
-
----
-
-## Honor Code
+### Honor code
 
 The dojo does not enforce rules technically. It trusts you.
 
@@ -262,26 +105,98 @@ If you cheat yourself here, you cheat yourself everywhere.
 
 ---
 
+## Features
+
+| Feature | Description |
+|---|---|
+| **Scrolls** | Learning paths at `/scrolls` — step-by-step katas with instant feedback. TypeScript and SQL Deep Cuts run via Piston; JavaScript DOM katas run in a browser iframe sandbox. Public scrolls can be followed without an account — progress persists in `localStorage` and merges into your account if you later sign in |
+| **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
+| **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
+| **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
+| **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
+| **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations, scroll publishing |
+| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The sensei never influences advancement (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
+| **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, scroll completions, consistency streaks. Surfaced alongside the belt on `/belts` |
+| **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
+| **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel |
+| **Error view** | Every unhandled error lands in Postgres and is visible at `/admin/errors` — no external tracker required. Sentry is opt-in ([ADR 017](docs/adr/017-error-reporting-port.md)) |
+
+### Operational endpoints
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /health` | Liveness |
+| `GET /health/piston` | API ↔ Piston reachability |
+| `GET /metrics` | Prometheus metrics — off unless `METRICS_ENABLED`, bearer-token guarded |
+| `POST /cron/cleanup-errors` | Purge errors older than 30 days — `Authorization: Bearer ${CRON_SECRET}` |
+
+Details in [docs/ops/observability.md](docs/ops/observability.md).
+
+---
+
+## Development
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite |
+| Backend | Hono + Node.js |
+| Database | PostgreSQL |
+| Realtime | WebSockets (sensei streams token by token) |
+| Auth | GitHub OAuth |
+| Architecture | DDD + Hexagonal (Ports & Adapters) + Event-Driven |
+| LLM | Any compatible streaming endpoint |
+| Code execution | Piston (sandboxed, nsjail) |
+| Deploy | Docker Compose, or Kamal to any VPS |
+| E2E tests | Playwright |
+
+```
+dojo/
+  apps/
+    web/          # React + Vite frontend
+    api/          # Hono + Node.js (domain / application / infrastructure)
+  packages/
+    shared/       # TypeScript types, Zod schemas
+  site/           # Static project site (GitHub Pages)
+  docker-compose.yml
+  turbo.json
+```
+
+The fastest path to hacking on it is the Dev Container (`Reopen in Container` → `pnpm dev`).
+
+```bash
+pnpm dev                              # Start web + api in watch mode
+pnpm build                            # Build all workspaces
+pnpm lint                             # Lint all workspaces
+pnpm typecheck                        # Type-check all workspaces
+pnpm test --filter=api                # Run API unit + integration tests
+pnpm --filter=api db:seed:scrolls     # Seed scroll catalog as unpublished drafts
+```
+
+Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it says what fits the dojo and what does not.
+
+---
+
 ## Documentation
 
 | Document | Purpose |
 |---|---|
 | [GETTING_STARTED.md](GETTING_STARTED.md) | Run dojo locally — all paths, sign-in setup, troubleshooting |
+| [docs/ops/deploy.md](docs/ops/deploy.md) | Deploy runbook — Environment, first setup, promotion, hotfix |
+| [docs/ops/observability.md](docs/ops/observability.md) | Error reporting, Prometheus metrics, Piston recovery |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting and self-hosting security |
+| [RELEASING.md](RELEASING.md) | How a release is cut |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
 | [docs/VISION.md](docs/VISION.md) | Why Dojo exists, philosophy, who it's for |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | What's shipped, what's next, what's out of scope |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
+| [docs/adr/](docs/adr/) | Architecture decision records |
 | [docs/BRANDING.md](docs/BRANDING.md) | Colors, typography, voice, UI components |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build cycle, testing strategy, definition of done |
-| [docs/ops/deploy.md](docs/ops/deploy.md) | Deploy runbook — Environment, first setup, promotion, hotfix |
-| [docs/EXPERTS.md](docs/EXPERTS.md) | Virtual advisory panel |
-| [docs/IDENTITY.md](docs/IDENTITY.md) | Primary build persona |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
-| [SECURITY.md](SECURITY.md) | Vulnerability reporting and self-hosting security |
 | [AGENTS.md](AGENTS.md) | AI agent behavior and working rules |
 
 ---
 
-## Related Projects
+## Related projects
 
 - [Drawhaus](https://drawhaus.notdefined.dev) — Excalidraw-based whiteboard with MCP integration, used for whiteboard kata
 - [SheLLM](https://github.com/rodacato/SheLLM) — Turn your LLM CLI subscriptions into a compatible REST API
