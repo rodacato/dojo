@@ -54,6 +54,8 @@ LLM_MODEL=claude-opus-4-6
 
 To run the sensei on your own Claude or ChatGPT subscription instead of API credits, see [docs/ops/shellm.md](docs/ops/shellm.md).
 
+**Boolean environment variables** (`LLM_STREAM`, `MOCK_LLM_FOLLOW_UP`, `FF_*`, `METRICS_ENABLED`) take `true`/`1` or `false`/`0`, case-insensitive. Empty means the default; any other value stops the API at boot, naming the variable.
+
 ### Who can sign in
 
 Sign-up is by invitation, and the invitations belong to whoever runs the instance — not to the dojo project. That operator sets `CREATOR_GITHUB_ID` to their own numeric GitHub id: that account signs in without an invitation, is the only one with `/admin`, and issues invitation links from `/admin/invitations`. Everyone else needs one of those links; once in, returning users are always allowed.

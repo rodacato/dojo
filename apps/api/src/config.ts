@@ -2,7 +2,13 @@ import { z } from 'zod'
 import { insecureProductionSettings, mailSettingsProblems } from './config-checks'
 import { parseFrameOrigins } from './domain/scrolls/origins'
 
-const envSchema = z.object({
+const envFlag = (fallback: boolean) =>
+  z.preprocess(
+    (value) => (typeof value === 'string' ? value.trim() || undefined : value),
+    z.stringbool({ truthy: ['true', '1'], falsy: ['false', '0'] }).default(fallback),
+  )
+
+export const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   GITHUB_CLIENT_ID: z.string().min(1),
@@ -12,12 +18,12 @@ const envSchema = z.object({
   LLM_API_KEY: z.string().default(''),
   LLM_MODEL: z.string().default('claude-opus-4-6'),
   LLM_ADAPTER_FORMAT: z.enum(['mock', 'anthropic', 'openai']).default('mock'),
-  LLM_STREAM: z.coerce.boolean().default(true),
+  LLM_STREAM: envFlag(true),
   MOCK_LLM_STREAM_DELAY_MS: z.coerce.number().int().min(0).default(50),
   MOCK_LLM_VERDICT: z.enum(['passed', 'passed_with_notes', 'needs_work']).default('needs_work'),
   MOCK_LLM_RESPONSE_TOKENS: z.coerce.number().int().min(1).default(20),
-  MOCK_LLM_FOLLOW_UP: z.coerce.boolean().default(false),
-  FF_CODE_EXECUTION_ENABLED: z.coerce.boolean().default(false),
+  MOCK_LLM_FOLLOW_UP: envFlag(false),
+  FF_CODE_EXECUTION_ENABLED: envFlag(false),
   PISTON_URL: z.url().default('http://piston:2000'),
   PISTON_MAX_CONCURRENT: z.coerce.number().int().min(1).default(3),
   // 3000 was too tight for the TypeScript runtime: Piston compiles TS at run
@@ -49,19 +55,19 @@ const envSchema = z.object({
   // The four-layer abuse stack (Turnstile + per-IP RL + per-session RL
   // + global daily quota) arrives in subsequent commits — do not flip
   // this flag in prod before they all land.
-  FF_PLAYGROUND_CONSOLE_ENABLED: z.coerce.boolean().default(false),
+  FF_PLAYGROUND_CONSOLE_ENABLED: envFlag(false),
   // Stream the kata-prep body via SSE instead of the 2s polling path
   // (S022 Part 6). When on, POST /sessions stops kicking off the
   // background generate and the new GET /sessions/:id/body-stream
   // endpoint owns the LLM call. Off by default — flip to on only after
   // a smoke run in staging confirms both the streaming path and the
   // fallback polling path still work.
-  FF_LLM_PREP_STREAMING_ENABLED: z.coerce.boolean().default(false),
+  FF_LLM_PREP_STREAMING_ENABLED: envFlag(false),
   // Ask-sensei free-form Q&A on the playground (S022 Part 5, PRD 029
   // v1). Authenticated users only — anonymous LLM access is explicitly
   // out of scope. Off by default; flip to on after Yemi reviews the
   // prompt in staging.
-  FF_PLAYGROUND_ASK_SENSEI_ENABLED: z.coerce.boolean().default(false),
+  FF_PLAYGROUND_ASK_SENSEI_ENABLED: envFlag(false),
   // Daily ceiling for ask-sensei requests per authenticated user. Hard
   // cap, server-side. Counted against the `llm_requests_log` table.
   PLAYGROUND_ASK_SENSEI_DAILY_QUOTA: z.coerce.number().int().min(1).default(30),
@@ -84,12 +90,7 @@ const envSchema = z.object({
   TURNSTILE_SITE_KEY: z.string().default(''),
   // Prometheus metrics at GET /metrics. Opt-in: OFF mounts nothing (zero
   // overhead). The token alone enables nothing — METRICS_ENABLED is the gate.
-  // Not z.coerce.boolean(): that does Boolean(value), so the string "false"
-  // (what the deploy renders when the flag is off) would read as true.
-  METRICS_ENABLED: z
-    .string()
-    .default('false')
-    .transform((v) => v === 'true' || v === '1'),
+  METRICS_ENABLED: envFlag(false),
   // Bearer token guarding /metrics. Required in production when enabled —
   // with metrics on and no token, the endpoint 404s rather than serve data
   // unauthenticated. Generate with `openssl rand -hex 32`.
