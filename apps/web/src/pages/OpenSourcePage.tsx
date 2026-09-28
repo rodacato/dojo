@@ -2,28 +2,28 @@ import { PublicPageLayout } from '../components/PublicPageLayout'
 import { GitHubIcon } from '../components/GitHubIcon'
 import { buttonClasses } from '../components/ui/Button'
 
-const REPO_URL = 'https://github.com/anthropics/dojo'
+const REPO_URL = 'https://github.com/rodacato/dojo'
 
 const REPO_CARDS = [
   {
     name: 'apps/web',
     body: 'React + Vite frontend. Tailwind 4, CodeMirror editor, WebSocket streaming client.',
-    href: `${REPO_URL}/tree/main/apps/web`,
+    href: `${REPO_URL}/tree/master/apps/web`,
   },
   {
     name: 'apps/api',
     body: 'Hono + Node.js API. Hexagonal architecture, domain-driven design, PostgreSQL.',
-    href: `${REPO_URL}/tree/main/apps/api`,
+    href: `${REPO_URL}/tree/master/apps/api`,
   },
   {
     name: 'packages/shared',
     body: 'Shared types and Zod schemas. The contract between frontend and backend.',
-    href: `${REPO_URL}/tree/main/packages/shared`,
+    href: `${REPO_URL}/tree/master/packages/shared`,
   },
   {
-    name: 'infra/',
-    body: 'Docker + Kamal 2 deploy targets. Cloudflare Tunnel ingress. Self-hosted on Hetzner.',
-    href: `${REPO_URL}/tree/main/infra`,
+    name: 'config/',
+    body: 'Kamal deploy config for the API and web. docker-compose.yml at the root runs a full instance.',
+    href: `${REPO_URL}/tree/master/config`,
   },
 ] as const
 
@@ -160,19 +160,19 @@ export function OpenSourcePage() {
           <div className="text-secondary text-base leading-relaxed space-y-3 max-w-3xl">
             <p>
               Turborepo monorepo. Hexagonal architecture with DDD on the API. Domain events
-              for decoupling bounded contexts. PostgreSQL. Self-hosted on Hetzner with Kamal 2
-              and Cloudflare Tunnel. Boring is a feature.
+              for decoupling bounded contexts. PostgreSQL. Runs anywhere Docker does, with Kamal
+              config included for a single VPS. Boring is a feature.
             </p>
             <p>
               Decisions are written down as ADRs in{' '}
               <code className="text-accent font-mono text-sm">docs/adr/</code>.{' '}
               <a
-                href={`${REPO_URL}/blob/main/docs/adr/015-bounded-contexts.md`}
+                href={`${REPO_URL}/tree/master/docs/adr`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent underline"
               >
-                Read ADR 015: Bounded contexts →
+                Browse the decision records →
               </a>
             </p>
           </div>

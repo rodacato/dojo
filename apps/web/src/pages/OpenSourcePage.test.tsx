@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { OpenSourcePage } from './OpenSourcePage'
 
-const REPO_URL = 'https://github.com/anthropics/dojo'
+const REPO_URL = 'https://github.com/rodacato/dojo'
 
 function renderPage() {
   return render(
@@ -55,10 +55,10 @@ describe('OpenSourcePage', () => {
     const main = getMain()
 
     const cards: Array<[string, string]> = [
-      ['apps/web', `${REPO_URL}/tree/main/apps/web`],
-      ['apps/api', `${REPO_URL}/tree/main/apps/api`],
-      ['packages/shared', `${REPO_URL}/tree/main/packages/shared`],
-      ['infra/', `${REPO_URL}/tree/main/infra`],
+      ['apps/web', `${REPO_URL}/tree/master/apps/web`],
+      ['apps/api', `${REPO_URL}/tree/master/apps/api`],
+      ['packages/shared', `${REPO_URL}/tree/master/packages/shared`],
+      ['config/', `${REPO_URL}/tree/master/config`],
     ]
 
     for (const [name, href] of cards) {
@@ -101,15 +101,12 @@ describe('OpenSourcePage', () => {
     expect(within(rejectedList).queryByText('Accessibility fixes')).not.toBeInTheDocument()
   })
 
-  it('links the architecture section to a specific ADR', () => {
+  it('links the architecture section to the decision records', () => {
     renderPage()
     const main = getMain()
 
-    const adrLink = within(main).getByRole('link', { name: /Read ADR 015/ })
-    expect(adrLink).toHaveAttribute(
-      'href',
-      `${REPO_URL}/blob/main/docs/adr/015-bounded-contexts.md`,
-    )
+    const adrLink = within(main).getByRole('link', { name: /Browse the decision records/ })
+    expect(adrLink).toHaveAttribute('href', `${REPO_URL}/tree/master/docs/adr`)
     expect(adrLink).toHaveAttribute('target', '_blank')
   })
 })
