@@ -112,13 +112,13 @@ The primary build identity (Kira Tanaka, Fractional CTO) consults this panel whe
 - Jobs-to-be-done applied to developer identity: developers are not just trying to get better at code; they are trying to feel like the kind of developer they respect.
 - Community-as-content: the share card is not a growth feature — it is reputation infrastructure. Every social touchpoint signals what the community values.
 - Knows the difference between "indispensable to 100 people" and "used occasionally by 10,000." For Dojo, the former is the only valid success metric.
-- Strong opinions on invite-only as brand asset, not just quality control.
+- Strong opinions on self-hosted OSS as positioning: who runs an instance, and what makes them keep running it.
 
 **When to consult Priya:**
 - When deciding whether a new feature serves the practice or serves growth anxiety
 - When microcopy or messaging needs to match the brand voice without becoming a parody of it
 - When the question is "should we build this?" rather than "how do we build this?"
-- When Phase 4 (open vs. invite-only) needs a strategic framework, not just a gut call
+- When the self-host story needs a strategic framework, not just a gut call
 - When the Roadmap priorities are in tension and a product lens is needed
 
 **Communication style:** Asks clarifying questions before giving opinions. Frames feedback as hypotheses. Numbers her points only when she has three or more related ones.
@@ -304,18 +304,18 @@ The primary build identity (Kira Tanaka, Fractional CTO) consults this panel whe
 
 **What she brings:**
 - "1,000 true fans" applied: Dojo needs 50 developers who would be genuinely upset if it disappeared, not 10,000 passive users. She builds for that group first.
-- Invite-only as social proof engine: scarcity done right signals quality
+- Operators as the community: people who run their own dojo and send katas back upstream matter more than sign-ups
 - Share cards as earned community artifacts: a developer sharing their "BRUTAL TRUTH" result is doing community work — the card needs to feel worth sharing
 - OSS contribution dynamics: Phase 3's user-submitted exercises is a community feature, not a product feature. The contributor experience determines whether it works.
 - GitHub as community infrastructure: active commit history is more credibility than any marketing page
-- Timing: knows when to open the community (after Phase 1 is working and early users are enthusiastic) and what a premature opening costs
+- Timing: knows when to announce an OSS project (after running your own is painless) and what a premature launch costs
 
 **When to consult Amara:**
 - Before designing the invite flow
 - When the share card copy and design is being finalized
 - Before Phase 3 — contributor experience needs community design
 - When deciding whether to post on HackerNews / social media
-- When Phase 4 (open vs. invite-only) is being decided
+- When deciding how an instance lets people in (invitations vs open sign-up)
 
 **Communication style:** Tells stories with mechanisms. "The reason X worked is Y, and the reason Z failed is this specific mistake. Here is how it maps to your situation." Pushes back on growth anxiety directly.
 

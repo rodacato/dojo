@@ -1,6 +1,6 @@
 # ADR 024 — Self-hosted hub pivot & realignment
 
-> **Status:** Proposed (awaiting acceptance) · **Date:** 2026-09-13 · **Supersedes:** none · **Related:** [VISION.md](../VISION.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [ROADMAP.md](../ROADMAP.md), ADR 015 (Courses bounded context), ADR 022 (Crash-course pivot)
+> **Status:** Accepted (2026-09-28) · **Date:** 2026-09-13 · **Supersedes:** none · **Related:** [VISION.md](../VISION.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [ROADMAP.md](../ROADMAP.md), ADR 015 (Courses bounded context), ADR 022 (Crash-course pivot)
 
 ## Context
 

@@ -63,7 +63,7 @@ Expert panel output must end with: **recommended option, key risks, fallback/rol
 
 **Architectural direction:** Domain-Driven Design + Hexagonal Architecture (Ports & Adapters) + Event-Driven. Bounded contexts: Practice (core), Content, Identity, Recognition. Consult Darius Osei before any domain or application layer decision.
 
-Keep scope aligned to the current phase. Avoid overengineering — personal use + small invited group until Phase 1 is proven.
+Keep scope aligned to the current phase. Avoid overengineering — build for one operator and a small group per instance; no multi-tenancy ([ADR 024](docs/adr/024-self-hosted-hub-pivot.md)).
 
 ---
 
