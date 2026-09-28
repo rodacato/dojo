@@ -49,7 +49,7 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `VITE_SENTRY_DSN` | secret | no | Web error tracking |
 | `VITE_SENTRY_ENVIRONMENT`, `SENTRY_ORG`, `SENTRY_PROJECT` | var | no | Web build; source maps upload only with `SENTRY_AUTH_TOKEN` |
 | `SENTRY_AUTH_TOKEN` | secret | no | Source map upload during the web build |
-| `METRICS_ENABLED` | var | no | See [Metrics](../../README.md#metrics-prometheus) |
+| `METRICS_ENABLED` | var | no | See [Metrics](observability.md#metrics-prometheus) |
 | `METRICS_TOKEN` | secret | no | Bearer for `/metrics` |
 
 GitHub refuses secret and variable names that start with `GITHUB_`, which is why the OAuth values
