@@ -16,7 +16,7 @@ Ideas and next block: [`docs/sprints/backlog.md`](sprints/backlog.md)
 | **MVP** | The creator can complete a kata end-to-end in production without technical friction | Phase 0 — complete |
 | **Alpha** | 3–5 invited users complete kata consistently and come back | Phase 1 |
 | **Beta** | Content scales beyond the creator — contributors propose exercises | Phase 3 |
-| **Opening decision** | Evaluate whether to open to the public, waitlist, or stay invite-only | Phase 4 |
+| **Opening decision** | Resolved by [ADR 024](adr/024-self-hosted-hub-pivot.md): no hosted service — dojo is self-hosted OSS | Phase 4 — decided |
 
 ---
 
@@ -38,8 +38,10 @@ Does not start until Phase 0 is in real daily use.
 ### Phase 3 — Feed the Dojo
 **Goal:** Content creation scales beyond the creator — users propose exercises with an LLM QA gate and human review.
 
-### Phase 4 — Evaluate Opening
+### Phase 4 — Evaluate Opening *(decided)*
 **Goal:** Decision — open to the public, waitlist, or stay invite-only? This phase is a decision, not a build.
+
+**Outcome:** none of the three. [ADR 024](adr/024-self-hosted-hub-pivot.md) repositions dojo as self-hosted open source: there is no hosted service to open, and each operator decides who gets into their own instance.
 
 ---
 
