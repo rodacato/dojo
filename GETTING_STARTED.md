@@ -82,13 +82,14 @@ Then set in `.env`:
 |---|---|
 | `GITHUB_CLIENT_ID` | the app's Client ID |
 | `GITHUB_CLIENT_SECRET` | a generated client secret |
-| `CREATOR_GITHUB_ID` | your GitHub **numeric** id (unlocks `/admin`) — find it at `https://api.github.com/users/<your-username>` |
+| `CREATOR_GITHUB_ID` | your GitHub **numeric** id — find it at `https://api.github.com/users/<your-username>`. It makes you the instance's operator: you sign in without an invitation, own `/admin`, and invite everyone else. Left empty, nobody can sign up |
 
 ## First-run check
 
 1. API log shows migrations applied, then `dojo_ api running on port 3001`.
 2. Open the web URL and sign in with GitHub.
 3. `/admin` is reachable if `CREATOR_GITHUB_ID` matches your account.
+4. Invite others from `/admin/invitations` — sign-up is by invitation only.
 
 ## Troubleshooting
 

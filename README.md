@@ -53,7 +53,9 @@ LLM_MODEL=claude-opus-4-6
 
 ### Who can sign in
 
-Sign-in is GitHub OAuth. The account whose numeric id is `CREATOR_GITHUB_ID` owns the instance and reaches `/admin`. Anyone else needs an invitation link the creator issues from `/admin/invitations`; once in, returning users are always allowed. There is no open sign-up mode yet. Anonymous visitors can still read public scrolls and use the Engawa playground.
+Sign-up is by invitation, and the invitations belong to whoever runs the instance — not to the dojo project. That operator sets `CREATOR_GITHUB_ID` to their own numeric GitHub id: that account signs in without an invitation, is the only one with `/admin`, and issues invitation links from `/admin/invitations`. Everyone else needs one of those links; once in, returning users are always allowed.
+
+Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors can still read public scrolls and use the Engawa playground.
 
 ### Your content
 
