@@ -6,7 +6,6 @@
   "runServices": ["workspace", "db", "piston"],
   "features": {
     "ghcr.io/devcontainers/features/sshd:1": {},
-    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
     "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
     "ghcr.io/devcontainers/features/node:2": {
       "version": "24"
