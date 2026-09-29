@@ -3,7 +3,7 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-    # tini as PID 1 — `sleep infinity` never reaps, so git/node/claude zombies pile up.
+    # tini as PID 1 — `sleep infinity` never reaps, so git/node zombies pile up.
     init: true
     volumes:
       - ..:/workspaces/dojo:cached
