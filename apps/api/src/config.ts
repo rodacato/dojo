@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { insecureProductionSettings, mailSettingsProblems } from './config-checks'
+import { parseFrameOrigins } from './domain/scrolls/origins'
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
@@ -90,6 +91,9 @@ const envSchema = z.object({
   // with metrics on and no token, the endpoint 404s rather than serve data
   // unauthenticated. Generate with `openssl rand -hex 32`.
   METRICS_TOKEN: z.string().default(''),
+  // Comma-separated exact origins a scroll's `entry` may point at (ADR 025).
+  // The web CSP frame-src is built from the same variable at deploy time.
+  SCROLL_FRAME_ORIGINS: z.string().default(''),
 })
 
 const result = envSchema.safeParse(process.env)
@@ -100,7 +104,13 @@ if (!result.success) {
   process.exit(1)
 }
 
-const problems = [...insecureProductionSettings(result.data), ...mailSettingsProblems(result.data)]
+const frameOrigins = parseFrameOrigins(result.data.SCROLL_FRAME_ORIGINS, result.data.NODE_ENV === 'production')
+
+const problems = [
+  ...insecureProductionSettings(result.data),
+  ...mailSettingsProblems(result.data),
+  ...frameOrigins.problems,
+]
 if (problems.length > 0) {
   console.error('❌ Refusing to start:')
   for (const problem of problems) console.error(`  - ${problem}`)
@@ -112,6 +122,7 @@ if (problems.length > 0) {
 // env name automatically.
 const resolved = {
   ...result.data,
+  SCROLL_FRAME_ORIGINS: frameOrigins.origins,
   SENTRY_ENVIRONMENT: result.data.SENTRY_ENVIRONMENT || result.data.NODE_ENV,
 }
 
