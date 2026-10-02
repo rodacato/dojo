@@ -22,6 +22,7 @@ vi.mock('../../config', () => ({ config: mockConfig }))
 
 import { OpenAIStreamAdapter } from './OpenAIStreamAdapter'
 import { LLMParseError } from './AnthropicStreamAdapter'
+import { LLMHttpError } from './llm-endpoint'
 
 // A complete, valid model output: a bit of prose then the <evaluation> block.
 const VALID_EVALUATION = JSON.stringify({
@@ -231,6 +232,50 @@ describe('OpenAIStreamAdapter.evaluate (streaming)', () => {
     await expect(collect(adapter())).rejects.toThrow(/502.*upstream exploded/s)
   })
 
+  it('reads the message out of an OpenAI-shaped error body and keeps the status on the error', async () => {
+    fetchSpy.mockResolvedValue(
+      new Response(JSON.stringify({ error: { message: 'queue is full', type: 'rate_limit_error' } }), {
+        status: 429,
+      }),
+    )
+
+    const err = await collect(adapter()).catch((e: unknown) => e)
+
+    expect(err).toBeInstanceOf(LLMHttpError)
+    expect(err).toMatchObject({ status: 429, message: 'OpenAI-compatible API error 429: queue is full' })
+  })
+
+  it('surfaces an error event sent inside the stream instead of finishing as if complete', async () => {
+    fetchSpy.mockResolvedValue(
+      okStream([sseLine(deltaChunk('Nice work')), sseLine({ error: { message: 'cli killed' } })]),
+    )
+
+    await expect(collect(adapter())).rejects.toThrow('stream error: cli killed')
+  })
+
+  it('fails a stream that is cut before [DONE] even when a full verdict already arrived', async () => {
+    fetchSpy.mockResolvedValue(okStream([sseLine(deltaChunk(FULL_OUTPUT))]))
+
+    await expect(collect(adapter())).rejects.toThrow('ended before [DONE]')
+  })
+
+  it('bounds every request with a timeout signal', async () => {
+    fetchSpy.mockResolvedValue(sseResponse(FULL_OUTPUT, 1))
+
+    await collect(adapter())
+
+    const init = fetchSpy.mock.calls[0]![1] as RequestInit
+    expect(init.signal).toBeInstanceOf(AbortSignal)
+  })
+
+  it('does not double /v1 when the base URL already ends with it', async () => {
+    fetchSpy.mockResolvedValue(sseResponse(FULL_OUTPUT, 1))
+
+    await collect(new OpenAIStreamAdapter('test-key', 'http://llm.local/v1/'))
+
+    expect(fetchSpy.mock.calls[0]![0]).toBe('http://llm.local/v1/chat/completions')
+  })
+
   it('POSTs to the configured baseURL with the model, stream flag and bearer auth', async () => {
     fetchSpy.mockResolvedValue(sseResponse(FULL_OUTPUT, 1))
 
@@ -276,5 +321,100 @@ describe('OpenAIStreamAdapter.evaluate (non-streaming)', () => {
     )
 
     await expect(collect(adapter())).rejects.toBeInstanceOf(LLMParseError)
+  })
+})
+
+function jsonResponse(content: string | null, status = 200): Response {
+  return new Response(JSON.stringify({ choices: [{ message: { content } }] }), { status })
+}
+
+const SESSION_PARAMS = { ownerRole: 'staff', ownerContext: 'ctx', kataDescription: 'Review a caching PR' }
+
+async function drain(stream: AsyncIterable<string>): Promise<string> {
+  let text = ''
+  for await (const c of stream) text += c
+  return text
+}
+
+describe('OpenAIStreamAdapter.generateSessionBody / nudge', () => {
+  it('returns the message content and sends a bounded non-streaming request', async () => {
+    fetchSpy.mockResolvedValue(jsonResponse('## PR body'))
+
+    expect(await adapter().generateSessionBody(SESSION_PARAMS)).toBe('## PR body')
+
+    const body = JSON.parse((fetchSpy.mock.calls[0]![1] as RequestInit).body as string)
+    expect(body).toMatchObject({ model: 'test-model', max_tokens: 1024 })
+    expect(body.stream).toBeUndefined()
+  })
+
+  it('rejects an empty completion instead of returning an empty session body', async () => {
+    fetchSpy.mockResolvedValue(jsonResponse(null))
+
+    await expect(adapter().generateSessionBody(SESSION_PARAMS)).rejects.toThrow('Unexpected response')
+  })
+
+  it('propagates the upstream status when generation is refused', async () => {
+    fetchSpy.mockResolvedValue(new Response('{"error":{"message":"not logged in"}}', { status: 503 }))
+
+    await expect(adapter().generateSessionBody(SESSION_PARAMS)).rejects.toMatchObject({
+      status: 503,
+      message: expect.stringContaining('not logged in'),
+    })
+  })
+
+  it('trims the nudge text', async () => {
+    fetchSpy.mockResolvedValue(jsonResponse('  look at the call to reduce \n'))
+
+    const out = await adapter().nudge({ stepInstruction: 'sum', testCode: null, userCode: 'a.reduce' })
+
+    expect(out).toBe('look at the call to reduce')
+  })
+})
+
+describe('OpenAIStreamAdapter.generateSessionBodyStream', () => {
+  it('yields each content delta in order', async () => {
+    fetchSpy.mockResolvedValue(sseResponse('## PR body, streamed', 4))
+
+    expect(await drain(adapter().generateSessionBodyStream(SESSION_PARAMS))).toBe('## PR body, streamed')
+  })
+
+  it('throws when the stream is cut, so a truncated body is never persisted as complete', async () => {
+    fetchSpy.mockResolvedValue(okStream([sseLine(deltaChunk('## PR bo'))]))
+
+    await expect(drain(adapter().generateSessionBodyStream(SESSION_PARAMS))).rejects.toThrow(
+      'ended before [DONE]',
+    )
+  })
+})
+
+describe('OpenAIStreamAdapter.askSensei', () => {
+  const ASK = { question: 'What is idempotency?' }
+
+  it('streams the answer and resolves usage from the final chunk', async () => {
+    fetchSpy.mockResolvedValue(
+      okStream([
+        sseLine(deltaChunk('An operation ')),
+        sseLine(deltaChunk('safe to repeat.')),
+        sseLine({ choices: [], usage: { prompt_tokens: 183, completion_tokens: 17 } }),
+        'data: [DONE]\n\n',
+      ]),
+    )
+
+    const { stream, usage } = adapter().askSensei(ASK)
+
+    expect(await drain(stream)).toBe('An operation safe to repeat.')
+    expect(await usage).toEqual({ inputTokens: 183, outputTokens: 17 })
+    const body = JSON.parse((fetchSpy.mock.calls[0]![1] as RequestInit).body as string)
+    expect(body.stream_options).toEqual({ include_usage: true })
+  })
+
+  it('rejects the usage promise as well when the stream fails', async () => {
+    fetchSpy.mockResolvedValue(okStream([sseLine(deltaChunk('partial'))]))
+
+    const { stream, usage } = adapter().askSensei(ASK)
+    const usageRejected = expect(usage).rejects.toThrow('ended before [DONE]')
+
+    await expect(drain(stream)).rejects.toThrow('ended before [DONE]')
+    await usageRejected
   })
 })
