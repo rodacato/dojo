@@ -1,11 +1,11 @@
 name: Piston Execute Smoke
 
 # Synthetic end-to-end check of Piston: a real /api/v2/execute per language,
-# going through PistonAdapter.execute() — the same path scrolls take. Catches
+# going through PistonAdapter.execute() — the same path code execution takes. Catches
 # what piston-liveness.yml misses: timeouts/caps misconfigured, runtime
 # missing for a specific language, or the API↔Piston payload contract drifting.
 # That gap is what hid the compile-timeout regression for hours: /health/piston
-# kept returning 200 while every Ruby/Rust/TS scroll was 400ing.
+# kept returning 200 while every Ruby/Rust/TS execution was 400ing.
 #
 # Six languages × every 30 min × ~30s wall-clock = cheap. Fails the run on
 # any per-language miss; GitHub emails the maintainer on red.
