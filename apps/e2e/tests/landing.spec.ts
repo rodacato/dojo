@@ -19,9 +19,4 @@ test.describe('Landing page', () => {
       page.getByText('Not for everyone. Exactly as intended.'),
     ).toBeVisible()
   })
-
-  // Removed: '"Try a free course" CTA navigates to /learn' — the CTA was
-  // dropped from the landing during a copy refactor, and Sprint 023's
-  // ubiquitous-language pass (ADR 020) renamed /learn to /scrolls.
-  // Both references died with no replacement to test.
 })
