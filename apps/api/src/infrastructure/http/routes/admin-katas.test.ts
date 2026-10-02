@@ -122,7 +122,7 @@ vi.mock('../../container', () => ({
   errorReporter: { report: vi.fn() },
 }))
 
-// Mock the auth boundary like admin-scrolls.test.ts: requireAuth resolves a
+// Mock the auth boundary: requireAuth resolves a
 // user, requireCreator gates on githubId. Both throw the HTTPExceptions the
 // real middleware throws so onError maps them to 401/403.
 vi.mock('../middleware/auth', () => ({

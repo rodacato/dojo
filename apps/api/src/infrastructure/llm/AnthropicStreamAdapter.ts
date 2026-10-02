@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import type { LLMPort } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { EvaluationStreamParser } from './evaluation-parser'
-import { buildSessionBodyPrompt, buildNudgePrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
+import { buildSessionBodyPrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
 import { config } from '../../config'
 import { runEvaluation, type SenseiMessage, type BuildMessagesParams } from './sensei-evaluation'
 import { REQUEST_TIMEOUT_MS, normalizeBaseURL } from './llm-endpoint'
@@ -172,26 +172,6 @@ export class AnthropicStreamAdapter implements LLMPort {
       }))
       throw err
     }
-  }
-
-  async nudge(params: {
-    stepInstruction: string
-    testCode: string | null
-    userCode: string
-    stdout?: string
-    stderr?: string
-  }): Promise<string> {
-    const prompt = buildNudgePrompt(params)
-    const response = await this.client.messages.create({
-      model: config.LLM_MODEL,
-      max_tokens: 256,
-      messages: [{ role: 'user', content: prompt }],
-    })
-    const block = response.content[0]
-    if (block?.type !== 'text') {
-      throw new Error('Unexpected response type from Anthropic')
-    }
-    return block.text.trim()
   }
 
   askSensei(params: {

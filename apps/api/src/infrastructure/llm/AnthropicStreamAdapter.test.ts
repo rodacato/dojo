@@ -254,7 +254,7 @@ async function drain(stream: AsyncIterable<string>): Promise<string> {
 
 const SESSION_PARAMS = { ownerRole: 'staff', ownerContext: 'ctx', kataDescription: 'Review a caching PR' }
 
-describe('AnthropicStreamAdapter.generateSessionBody / nudge', () => {
+describe('AnthropicStreamAdapter.generateSessionBody', () => {
   beforeEach(() => {
     vi.spyOn(console, 'log').mockImplementation(() => undefined)
     vi.spyOn(console, 'error').mockImplementation(() => undefined)
@@ -279,18 +279,6 @@ describe('AnthropicStreamAdapter.generateSessionBody / nudge', () => {
     createImpl.mockRejectedValue(apiError)
 
     await expect(new AnthropicStreamAdapter('k').generateSessionBody(SESSION_PARAMS)).rejects.toBe(apiError)
-  })
-
-  it('trims the nudge text', async () => {
-    createImpl.mockResolvedValue({ content: [{ type: 'text', text: ' check the call \n' }] })
-
-    const out = await new AnthropicStreamAdapter('k').nudge({
-      stepInstruction: 'sum',
-      testCode: null,
-      userCode: 'a.reduce',
-    })
-
-    expect(out).toBe('check the call')
   })
 })
 

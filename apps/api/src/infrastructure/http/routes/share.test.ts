@@ -24,7 +24,7 @@ const { db, selectQueue, satoriMock, resvgRender, resvgCtor } = vi.hoisted(() =>
   // Proxy that answers every property access with another callable proxy and is
   // awaitable — `await db.select(...)...limit(1)` resolves to the next queued
   // row set. Mirrors og.test.ts's pattern; operands are irrelevant here because
-  // WHERE verification is done via the eq/and spies, not this proxy.
+  // WHERE verification is done via the eq spy, not this proxy.
   function chainable(rows: unknown[]): unknown {
     const handler: ProxyHandler<() => unknown> = {
       get(_target, prop) {
@@ -63,33 +63,28 @@ const { db, selectQueue, satoriMock, resvgRender, resvgCtor } = vi.hoisted(() =>
 vi.mock('../../persistence/drizzle/client', () => ({ db }))
 
 // Table refs feed eq()/and()/sql`` operands. Plain objects suffice — the
-// chainable proxy never inspects them, and the eq/and spies record them.
+// chainable proxy never inspects them, and the eq spy record them.
 vi.mock('../../persistence/drizzle/schema', () => ({
   sessions: { id: 'sessions.id', kataId: 'sessions.kataId', userId: 'sessions.userId' },
   katas: { id: 'katas.id' },
   attempts: { sessionId: 'attempts.sessionId', isFinalEvaluation: 'attempts.isFinal' },
   users: { id: 'users.id' },
-  scrolls: { id: 'scrolls.id', slug: 'scrolls.slug' },
-  lessons: { id: 'lessons.id', scrollId: 'lessons.scrollId' },
-  steps: { lessonId: 'steps.lessonId' },
-  scrollProgress: { scrollId: 'sp.scrollId', userId: 'sp.userId' },
 }))
 
 vi.mock('satori', () => ({ default: satoriMock }))
 vi.mock('@resvg/resvg-js', () => ({ Resvg: resvgCtor }))
 
-// drizzle-orm: real operators (sql`` must work), eq/and spied to assert WHERE
+// drizzle-orm: real operators (sql`` must work), eq spied to assert WHERE
 // is param-derived.
 vi.mock('drizzle-orm', async (importOriginal) => {
   const actual = await importOriginal<typeof DrizzleOrm>()
-  return { ...actual, eq: vi.fn(actual.eq), and: vi.fn(actual.and) }
+  return { ...actual, eq: vi.fn(actual.eq) }
 })
 
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { shareRoutes } from './share'
 
 const eqSpy = vi.mocked(eq)
-const andSpy = vi.mocked(and)
 
 // The element tree built by share.ts's h() helper and handed to satori. The
 // mock is declared with no params, so its inferred calls tuple is empty; read
@@ -110,7 +105,6 @@ function makeApp() {
 }
 
 const SESSION_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
-const USER_ID = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
 
 // A long, specific analysis whose extractPullQuote picks the second sentence
 // (the first is short; the "specific" finder needs 40<len<200, not "overall").
@@ -131,22 +125,6 @@ function sessionRow(overrides: Record<string, unknown> = {}) {
     verdict: 'passed',
     analysis: ANALYSIS,
     ownerRole: 'staff',
-    ...overrides,
-  }
-}
-
-function scrollRow(overrides: Record<string, unknown> = {}) {
-  return {
-    scrollId: 'scroll-1',
-    scrollTitle: 'Python Basics',
-    courseAccentColor: '#10B981',
-    scrollLanguage: 'python',
-    isPublic: true,
-    totalSteps: 3,
-    completedSteps: ['s1', 's2', 's3'],
-    lastAccessedAt: new Date('2026-06-18T08:00:00.000Z'),
-    username: 'rodacato',
-    avatarUrl: 'https://avatars/rodacato.png',
     ...overrides,
   }
 }
@@ -304,115 +282,5 @@ describe('GET /share/:sessionId', () => {
     const res = await makeApp().request(`/share/${SESSION_ID}`)
     expect(res.status).toBe(500)
     expect(await res.json()).toEqual({ error: 'Internal server error' })
-  })
-})
-
-// ===========================================================================
-// GET /share/scroll/:slug/:userId.png — scroll completion OG card
-//
-// The session png route's param regex is `[^/]+\.png$` (single segment), so it
-// no longer shadows this multi-segment route. These tests assert the scroll
-// card actually renders — a `.+` regression on the session route would break
-// them (it would re-capture this path as sessions.id "scroll/python/<id>").
-// ===========================================================================
-describe('GET /share/scroll/:slug/:userId.png', () => {
-  it('renders a 200 image/png for a completed scroll, resolved against scrolls.slug', async () => {
-    selectQueue.push([scrollRow()])
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}.png`)
-
-    expect(res.status).toBe(200)
-    expect(res.headers.get('content-type')).toBe('image/png')
-    expect(res.headers.get('cache-control')).toBe('public, max-age=31536000, immutable')
-    expect(satoriMock).toHaveBeenCalledTimes(1)
-    expect(resvgRender).toHaveBeenCalledTimes(1)
-
-    // It hit the scroll handler (scrolls.slug), NOT the session png handler.
-    expect(eqSpy).toHaveBeenCalledWith('scrolls.slug', 'python')
-    expect(eqSpy).not.toHaveBeenCalledWith('sessions.id', `scroll/python/${USER_ID}`)
-
-    const tree = JSON.stringify(firstSatoriArg())
-    expect(tree).toContain('SCROLL COMPLETE')
-    expect(tree).toContain('#10B981') // courseAccentColor
-    expect(tree).toContain('Python Basics') // scrollTitle
-    expect(tree).toContain('@rodacato')
-  })
-
-  it('strips the .png suffix before resolving the userId for the completion lookup', async () => {
-    selectQueue.push([scrollRow()])
-    await makeApp().request(`/share/scroll/python/${USER_ID}.png`)
-    // scrollProgress.userId is matched on the bare id, not "<id>.png".
-    expect(eqSpy).toHaveBeenCalledWith('sp.userId', USER_ID)
-  })
-
-  it('returns 404 JSON when the scroll completion is missing', async () => {
-    selectQueue.push([]) // completion lookup misses
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}.png`)
-
-    expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ error: 'Completion not found' })
-    expect(satoriMock).not.toHaveBeenCalled()
-  })
-})
-
-// ===========================================================================
-// GET /share/scroll/:slug/:userId — scroll completion JSON
-// ===========================================================================
-describe('GET /share/scroll/:slug/:userId', () => {
-  it('returns mapped completion JSON for a finished scroll', async () => {
-    selectQueue.push([scrollRow()])
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}`)
-
-    expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({
-      scrollSlug: 'python',
-      scrollTitle: 'Python Basics',
-      scrollLanguage: 'python',
-      scrollAccentColor: '#10B981',
-      totalSteps: 3,
-      completedAt: '2026-06-18T08:00:00.000Z',
-      username: 'rodacato',
-      avatarUrl: 'https://avatars/rodacato.png',
-    })
-    expect(satoriMock).not.toHaveBeenCalled()
-    expect(eqSpy).toHaveBeenCalledWith('scrolls.slug', 'python')
-    expect(eqSpy).toHaveBeenCalledWith('sp.userId', USER_ID)
-  })
-
-  it('returns 404 when the completion is missing', async () => {
-    selectQueue.push([])
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}`)
-    expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ error: 'Not found' })
-  })
-
-  it('returns 404 when the user has progress but has not finished every step', async () => {
-    selectQueue.push([scrollRow({ completedSteps: ['s1', 's2'], totalSteps: 3 })])
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}`)
-    expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ error: 'Not found' })
-  })
-
-  it('returns 404 when the scroll has zero steps (incomplete by definition)', async () => {
-    selectQueue.push([scrollRow({ completedSteps: [], totalSteps: 0 })])
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}`)
-    expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ error: 'Not found' })
-  })
-
-  it('treats a non-array completedSteps column as empty (404, not a crash)', async () => {
-    // Defensive branch: completedSteps may come back null/non-array from the db.
-    selectQueue.push([scrollRow({ completedSteps: null, totalSteps: 3 })])
-    const res = await makeApp().request(`/share/scroll/python/${USER_ID}`)
-    expect(res.status).toBe(404)
-    expect(await res.json()).toEqual({ error: 'Not found' })
-  })
-
-  it('builds the WHERE/JOIN from the slug and userId params', async () => {
-    selectQueue.push([scrollRow()])
-    await makeApp().request(`/share/scroll/python/${USER_ID}`)
-    expect(eqSpy).toHaveBeenCalledWith('scrolls.slug', 'python')
-    expect(eqSpy).toHaveBeenCalledWith('sp.userId', USER_ID)
-    expect(eqSpy).toHaveBeenCalledWith('sp.scrollId', 'scrolls.id')
-    expect(andSpy).toHaveBeenCalled()
   })
 })
