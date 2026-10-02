@@ -67,9 +67,6 @@ echo "Migrations complete."
 echo "Seeding katas..."
 pnpm --filter=@dojo/api db:seed
 
-echo "Seeding scroll catalog..."
-pnpm --filter=@dojo/api db:seed:scrolls 2>/dev/null || echo "Scroll seed skipped (may already exist)."
-
 echo ""
 echo "  dojo_ ready."
 echo "  Run: pnpm dev"
