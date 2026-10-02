@@ -44,6 +44,9 @@ Does not start until Phase 0 is in real daily use.
 
 **Outcome:** none of the three. [ADR 024](adr/024-self-hosted-hub-pivot.md) repositions dojo as self-hosted open source: there is no hosted service to open, and each operator decides who gets into their own instance.
 
+### Scrolls — rebuilt as external apps *(in progress)*
+The native scroll system was removed; its implementation is archived at the tag `archive/scrolls-final`. Scrolls are being rebuilt as external apps embedded in Dojo by iframe over a versioned `postMessage` protocol, with Dojo as a minimal host. See [ADR 025](adr/025-external-embedded-scrolls.md) and epic [#116](https://github.com/rodacato/dojo/issues/116).
+
 ---
 
 ## History — Sprints
@@ -183,13 +186,14 @@ Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61]
 | 012 | [AppShell sidebar navigation](adr/012-appshell-sidebar-navigation.md) | Sidebar nav with AppShell layout | ✅ Accepted |
 | 013 | [Route file split](adr/013-route-file-split.md) | Split monolithic practice.ts into multiple route files | ✅ Accepted |
 | 014 | [Piston code execution](adr/014-piston-code-execution.md) | Piston sandbox for testCode exercises | ✅ Accepted |
-| 015 | [Courses bounded context](adr/015-courses-bounded-context.md) | Learning as separate bounded context from Practice | ✅ Accepted |
-| 016 | [iframe sandbox browser execution](adr/016-iframe-sandbox-browser-execution.md) | Browser-side execution for javascript-dom courses via iframe sandbox | ✅ Accepted |
+| 015 | [Courses bounded context](adr/015-courses-bounded-context.md) | Learning as separate bounded context from Practice | Superseded by [025](adr/025-external-embedded-scrolls.md) |
+| 016 | [iframe sandbox browser execution](adr/016-iframe-sandbox-browser-execution.md) | Browser-side execution for javascript-dom courses via iframe sandbox | Superseded by [025](adr/025-external-embedded-scrolls.md) |
 | 017 | [Error reporting port](adr/017-error-reporting-port.md) | `ErrorReporterPort` with Console / Postgres / Sentry / Composite adapters | ✅ Accepted |
 | 018 | [Piston cgroup namespace host](adr/018-piston-cgroupns-host.md) | `privileged: true` + `cgroupns: host` + named volume on Piston accessory after host kernel upgrade tightened cgroup v2 | ✅ Accepted |
 | 019 | [Piston liveness and reprovision](adr/019-piston-liveness-and-reprovision.md) | GHA liveness probe + idempotent reprovision script as the operational floor for an anonymous-traffic Piston surface | ✅ Accepted |
 | 020 | [Ubiquitous language pass](adr/020-ubiquitous-language-pass.md) | Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object; schema.ts exports dojo-native names while DB tables/columns stay legacy via pgTable arg; /leaderboard deleted (not renamed to /kumite); /kumite reserved as future feature placeholder | ✅ Accepted |
 | 021 | [Sumi-e dual-theme architecture](adr/021-sumi-e-dual-theme-architecture.md) | Two complete palettes (Slate Indigo shipped + Sumi/Washi target) share the same `--color-*` token names; `[data-theme="sumi"\|"washi"]` selectors override `@theme` defaults; user picks via toggle with OS auto-detect default + `localStorage` persistence; no feature flag (single-user constraint, `'slate'` choice is the kill switch); editor-style libraries (CodeMirror, Mermaid) read tokens via `useThemeTokens` MutationObserver hook | ✅ Accepted |
+| 025 | [External embedded scrolls](adr/025-external-embedded-scrolls.md) | Scrolls become external apps embedded by iframe over a versioned postMessage protocol; native scrolls removed and archived; supersedes 015, 016, 022 | ✅ Accepted |
 
 ---
 
