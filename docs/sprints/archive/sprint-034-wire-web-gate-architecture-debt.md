@@ -1,5 +1,9 @@
 # Sprint 034 — Wire the web gate + architecture debt
 
+> **Archived 2026-10-02.** Sprint docs were retired when work tracking moved to GitHub
+> ([#61](https://github.com/rodacato/dojo/issues/61)). This is the last one; the live record of this
+> block is the milestone `S034`.
+
 > **Status:** Open 2026-06-27. S033 over-delivered: it didn't just make web coverage *visible*, it raised it to ~87%. So the planned "web testing backbone" sprint has no backbone left to build. S034 absorbs the cheap residual S033 surfaced (the web/shared coverage gates exist but never run in CI) and pulls forward the architecture debt that was planned as S035.
 > **Predecessor:** [Sprint 033 — Maintenance: security & foundation](archive/sprint-033-maintenance-security-foundation.md)
 > **Baselines:** S033's measured numbers — api ~83.6% / web ~87.3% lines, knip baseline, Sonar triage. No re-measuring from a guess.
