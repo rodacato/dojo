@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>E2E fixture scroll</title>
+  </head>
+  <body>
+    <h1>E2E fixture</h1>
+    <p id="state">waiting</p>
+    <button id="progress" type="button">Progress</button>
+    <button id="complete" type="button">Complete</button>
+    <script>
+      // The shim is loaded from the host origin given in ?host=
+      var host = new URLSearchParams(location.search).get('host')
+      if (host) {
+        document.write(
+          '<script src="' + new URL('/scroll-kit/v0.js', host).href + '"' +
+            ' data-scroll-id="e2e-fixture" data-scroll-version="0.0.1"' +
+            ' data-capabilities="progress"><\/script>',
+        )
+      }
+    </script>
+    <script>
+      var state = document.getElementById('state')
+      if (window.DojoScroll) {
+        DojoScroll.onInit(function () { state.textContent = 'init' })
+        document.getElementById('progress').onclick = function () {
+          DojoScroll.progress('unit-1', { step: 1 })
+        }
+        document.getElementById('complete').onclick = function () {
+          DojoScroll.complete('unit-1')
+        }
+      } else {
+        state.textContent = 'standalone'
+      }
+    </script>
+  </body>
+</html>
