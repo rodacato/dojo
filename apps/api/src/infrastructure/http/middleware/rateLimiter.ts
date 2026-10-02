@@ -24,15 +24,6 @@ export const authLimiter = rateLimiter({
   message: { error: 'Too many authentication attempts. Try again later.' },
 })
 
-// 10 requests per minute per IP — for Piston code execution (scrolls),
-// anonymous or authenticated alike. Per Marta: anonymous is the biggest attack surface.
-export const executionLimiter = rateLimiter({
-  windowMs: 60 * 1000,
-  limit: 10,
-  keyGenerator,
-  message: { error: 'Execution limit reached. Sign in for higher limits.' },
-})
-
 // 30 reports per minute per IP — for POST /errors from the web client.
 // Spikes during a buggy deploy are expected; we just need a ceiling so a
 // malicious client cannot fill the errors table.
@@ -41,14 +32,4 @@ export const errorReportLimiter = rateLimiter({
   limit: 30,
   keyGenerator,
   message: { error: 'Too many error reports.' },
-})
-
-// Scroll-player nudge — each call is an LLM request, so the limit is tight.
-// 4/min/IP leaves room for a genuine back-and-forth; past that we would
-// rather the learner wait or look at the solution.
-export const nudgeLimiter = rateLimiter({
-  windowMs: 60 * 1000,
-  limit: 4,
-  keyGenerator,
-  message: { error: 'Too many nudges. Give the code a moment.' },
 })

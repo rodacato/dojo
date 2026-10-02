@@ -1,18 +1,8 @@
 import { and, count, eq, gte, sql } from 'drizzle-orm'
 import type { SessionCompleted } from '../../domain/practice/events'
-import type { ScrollCompleted } from '../../domain/learning/events'
 import type { InMemoryEventBus } from './InMemoryEventBus'
 import { attempts, katas, sessions, userMilestones } from '../persistence/drizzle/schema'
 import type { DB } from '../persistence/drizzle/client'
-
-// Per-scroll completion milestones. Adding a new scroll means: create its
-// definition row via migration and extend this map. Keeping the mapping in
-// infrastructure (not domain) because it's awarding policy, not a domain
-// invariant.
-const SCROLL_MILESTONE_BY_SLUG: Record<string, string> = {
-  'javascript-dom-fundamentals': 'COURSE_JAVASCRIPT_DOM_FUNDAMENTALS',
-  'sql-deep-cuts': 'COURSE_SQL_DEEP_CUTS',
-}
 
 export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
   eventBus.subscribe<SessionCompleted>('SessionCompleted', async (event) => {
@@ -32,17 +22,6 @@ export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
     await tryAward('SENSEI_APPROVED', () => finalVerdictCount(db, userId, 'PASSED', 5))
     await tryAward('SQL_SURVIVOR', () => completedSqlTopicCount(db, userId, 3))
     await tryAward('UNDEFINED_NO_MORE', () => completedSessionCount(db, userId, 50))
-  })
-
-  eventBus.subscribe<ScrollCompleted>('ScrollCompleted', async (event) => {
-    const milestoneSlug = SCROLL_MILESTONE_BY_SLUG[event.scrollSlug]
-    if (!milestoneSlug) return // unknown scroll — no milestone configured, skip silently
-
-    const earned = await getEarnedSlugs(db, event.userId)
-    if (earned.has(milestoneSlug)) return
-
-    // session_id is kata-only — scroll completion milestones leave it null.
-    await db.insert(userMilestones).values({ userId: event.userId, milestoneSlug })
   })
 }
 
