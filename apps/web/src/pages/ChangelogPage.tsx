@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-10-02',
+    phase: 'Self-hosted',
+    title: 'Dojo is self-hosted open source',
+    description:
+      'There is no hosted service. You run an instance for yourself, your friends or your team, and whoever runs it owns its invitations, its data and its LLM bill. This release makes that path real: a fresh install now loads the katas, there is an operator runbook for upgrades, backups and secrets, the security page describes what the code does, and mail never goes out from an address the operator does not own.',
+  },
+  {
     date: '2026-06-20',
     phase: 'Phase 1',
     title: 'The five-language scroll set is live',
@@ -85,8 +92,11 @@ export function ChangelogPage() {
         <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
           What we shipped.
         </h1>
-        <p className="text-secondary text-base mt-2 mb-12">
+        <p className="text-secondary text-base mt-2">
           Sprint by sprint. No marketing. Just done.
+        </p>
+        <p className="text-muted text-sm mt-2 mb-12">
+          This is the dojo project&apos;s own history. Which release an instance runs is up to its operator.
         </p>
 
         <div className="flex flex-col">
@@ -133,6 +143,6 @@ function Entry({ entry, divider }: Readonly<{ entry: ChangelogEntry; divider: bo
 }
 
 function phaseColorClass(phase: string): string {
-  if (phase.includes('Phase 1') || phase.includes('Phase 2')) return 'text-accent'
+  if (phase.includes('Phase 1') || phase.includes('Phase 2') || phase === 'Self-hosted') return 'text-accent'
   return 'text-muted'
 }

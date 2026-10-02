@@ -34,8 +34,8 @@ describe('ChangelogPage', () => {
     renderPage()
 
     const articles = screen.getAllByRole('article')
-    // Distinct from the single-entry/empty case: the fixed set ships 9 entries.
-    expect(articles).toHaveLength(9)
+    // Distinct from the single-entry/empty case: the fixed set ships 10 entries.
+    expect(articles).toHaveLength(10)
 
     expect(
       screen.getByRole('heading', {
@@ -49,10 +49,27 @@ describe('ChangelogPage', () => {
 
     // The date renders in its own <time> element next to the newest entry.
     const newest = screen
-      .getByRole('heading', { level: 2, name: 'The five-language scroll set is live' })
+      .getByRole('heading', { level: 2, name: 'Dojo is self-hosted open source' })
       .closest('article')
     expect(newest).not.toBeNull()
-    expect(within(newest as HTMLElement).getByText('2026-06-20').tagName).toBe('TIME')
+    expect(within(newest as HTMLElement).getByText('2026-10-02').tagName).toBe('TIME')
+    expect(articles[0]).toBe(newest)
+  })
+
+  it('says the changelog is the project history, not the instance release', () => {
+    renderPage()
+
+    expect(screen.getByText(/Which release an instance runs is up to its operator\./)).toBeInTheDocument()
+  })
+
+  it('accents the self-hosted entry', () => {
+    renderPage()
+
+    const entry = screen
+      .getByRole('heading', { level: 2, name: 'Dojo is self-hosted open source' })
+      .closest('article') as HTMLElement
+
+    expect(within(entry).getByText('Self-hosted')).toHaveClass('text-accent')
   })
 
   it('accents Phase 1 entries and mutes Phase 0 entries', () => {
