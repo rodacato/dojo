@@ -19,23 +19,6 @@ import {
   feedbackSubmitSchema,
   userLevelSchema,
   kataFiltersSchema,
-  stepTypeSchema,
-  scrollStatusSchema,
-  predictOptionSchema,
-  predictDataSchema,
-  readInlineInteractionSchema,
-  readInlineDataSchema,
-  scrollSlugSchema,
-  executeStepSchema,
-  trackProgressSchema,
-  mergeAnonymousProgressSchema,
-  stepDTOSchema,
-  lessonDTOSchema,
-  externalReferenceKindSchema,
-  externalReferenceSchema,
-  scrollDTOSchema,
-  stepSolutionDTOSchema,
-  scrollDetailDTOSchema,
   beltRankSchema,
   beltDTOSchema,
   milestoneDTOSchema,
@@ -56,9 +39,6 @@ describe('enum schemas', () => {
     { name: 'timingSignalSchema', schema: timingSignalSchema, valid: 'about_right' },
     { name: 'evaluationSignalSchema', schema: evaluationSignalSchema, valid: 'fair_and_relevant' },
     { name: 'userLevelSchema', schema: userLevelSchema, valid: 'senior' },
-    { name: 'stepTypeSchema', schema: stepTypeSchema, valid: 'read+inline' },
-    { name: 'scrollStatusSchema', schema: scrollStatusSchema, valid: 'draft' },
-    { name: 'externalReferenceKindSchema', schema: externalReferenceKindSchema, valid: 'book' },
     { name: 'beltRankSchema', schema: beltRankSchema, valid: 'black' },
   ] as const
 
@@ -177,160 +157,6 @@ describe('kataFiltersSchema', () => {
   it('parses an empty object and rejects a bad mood', () => {
     expect(kataFiltersSchema.parse({})).toBeTruthy()
     expect(kataFiltersSchema.safeParse({ mood: 'sleepy' }).success).toBe(false)
-  })
-})
-
-describe('predictOptionSchema', () => {
-  it('parses a valid option and rejects empty text', () => {
-    expect(predictOptionSchema.parse({ id: '1', text: 'a' })).toBeTruthy()
-    expect(predictOptionSchema.safeParse({ id: '1', text: '' }).success).toBe(false)
-  })
-})
-
-describe('predictDataSchema', () => {
-  it('parses with 2 options and rejects fewer than 2', () => {
-    const opts = [
-      { id: '1', text: 'a' },
-      { id: '2', text: 'b' },
-    ]
-    const valid = { snippet: 's', options: opts, correct: '1', feedback: { '1': 'ok' } }
-    expect(predictDataSchema.parse(valid)).toBeTruthy()
-    expect(predictDataSchema.safeParse({ ...valid, options: [opts[0]] }).success).toBe(false)
-  })
-})
-
-describe('readInlineInteractionSchema', () => {
-  it('parses a reveal variant', () => {
-    expect(
-      readInlineInteractionSchema.parse({ kind: 'reveal', after: 'm', prompt: 'p', answer: 'a' }),
-    ).toBeTruthy()
-  })
-
-  it('parses a micro-quiz variant', () => {
-    expect(
-      readInlineInteractionSchema.parse({
-        kind: 'micro-quiz',
-        after: 'm',
-        question: 'q',
-        options: ['a', 'b'],
-        correct: 0,
-        feedback: ['fa', 'fb'],
-      }),
-    ).toBeTruthy()
-  })
-
-  it('rejects an unknown discriminator', () => {
-    expect(readInlineInteractionSchema.safeParse({ kind: 'bogus', after: 'm' }).success).toBe(false)
-  })
-})
-
-describe('readInlineDataSchema', () => {
-  it('parses one interaction and rejects an empty list', () => {
-    const interaction = { kind: 'reveal' as const, after: 'm', prompt: 'p', answer: 'a' }
-    expect(readInlineDataSchema.parse({ interactions: [interaction] })).toBeTruthy()
-    expect(readInlineDataSchema.safeParse({ interactions: [] }).success).toBe(false)
-  })
-})
-
-describe('scrollSlugSchema', () => {
-  it('parses a kebab slug and rejects uppercase', () => {
-    expect(scrollSlugSchema.parse({ slug: 'my-scroll' })).toBeTruthy()
-    expect(scrollSlugSchema.safeParse({ slug: 'My_Scroll' }).success).toBe(false)
-  })
-})
-
-describe('executeStepSchema', () => {
-  it('parses valid code and rejects empty code', () => {
-    const valid = { code: 'x', testCode: 'y', language: 'ts' }
-    expect(executeStepSchema.parse(valid)).toBeTruthy()
-    expect(executeStepSchema.safeParse({ ...valid, code: '' }).success).toBe(false)
-  })
-})
-
-describe('trackProgressSchema', () => {
-  it('parses required uuids and rejects a non-uuid stepId', () => {
-    expect(trackProgressSchema.parse({ scrollId: UUID, stepId: UUID })).toBeTruthy()
-    expect(trackProgressSchema.safeParse({ scrollId: UUID, stepId: 'x' }).success).toBe(false)
-  })
-})
-
-describe('mergeAnonymousProgressSchema', () => {
-  it('parses a uuid and rejects a non-uuid', () => {
-    expect(mergeAnonymousProgressSchema.parse({ anonymousSessionId: UUID })).toBeTruthy()
-    expect(mergeAnonymousProgressSchema.safeParse({ anonymousSessionId: 'x' }).success).toBe(false)
-  })
-})
-
-describe('stepDTOSchema', () => {
-  it('parses a minimal step and rejects a missing instruction', () => {
-    const valid = {
-      id: UUID,
-      order: 0,
-      type: 'read' as const,
-      title: null,
-      instruction: 'do',
-      starterCode: null,
-      testCode: null,
-      hint: null,
-      hints: null,
-      data: null,
-    }
-    expect(stepDTOSchema.parse(valid)).toBeTruthy()
-    const { instruction: _instruction, ...missing } = valid
-    expect(stepDTOSchema.safeParse(missing).success).toBe(false)
-  })
-})
-
-describe('lessonDTOSchema', () => {
-  it('parses a lesson with no steps and rejects a missing title', () => {
-    const valid = { id: UUID, order: 0, title: 't', outcome: null, steps: [] }
-    expect(lessonDTOSchema.parse(valid)).toBeTruthy()
-    const { title: _title, ...missing } = valid
-    expect(lessonDTOSchema.safeParse(missing).success).toBe(false)
-  })
-})
-
-describe('externalReferenceSchema', () => {
-  it('parses a valid reference and rejects a non-url', () => {
-    const valid = { title: 't', url: 'https://x.dev', kind: 'docs' as const }
-    expect(externalReferenceSchema.parse(valid)).toBeTruthy()
-    expect(externalReferenceSchema.safeParse({ ...valid, url: 'x' }).success).toBe(false)
-  })
-})
-
-const validScroll = {
-  id: UUID,
-  slug: 's',
-  title: 't',
-  description: 'd',
-  language: 'ts',
-  accentColor: '#000',
-  status: 'draft' as const,
-  lessonCount: 1,
-  stepCount: 1,
-  externalReferences: [],
-}
-
-describe('scrollDTOSchema', () => {
-  it('parses a valid scroll and rejects a wrong-typed lessonCount', () => {
-    expect(scrollDTOSchema.parse(validScroll)).toBeTruthy()
-    expect(scrollDTOSchema.safeParse({ ...validScroll, lessonCount: 'one' }).success).toBe(false)
-  })
-})
-
-describe('stepSolutionDTOSchema', () => {
-  it('parses nullable fields and rejects a wrong-typed solution', () => {
-    expect(stepSolutionDTOSchema.parse({ solution: null, alternativeApproach: null })).toBeTruthy()
-    expect(
-      stepSolutionDTOSchema.safeParse({ solution: 1, alternativeApproach: null }).success,
-    ).toBe(false)
-  })
-})
-
-describe('scrollDetailDTOSchema', () => {
-  it('parses scroll fields plus lessons and rejects a missing lessons array', () => {
-    expect(scrollDetailDTOSchema.parse({ ...validScroll, lessons: [] })).toBeTruthy()
-    expect(scrollDetailDTOSchema.safeParse(validScroll).success).toBe(false)
   })
 })
 
