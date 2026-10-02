@@ -37,9 +37,9 @@ The product speaks one vocabulary. Each term below is load-bearing — it does p
 |---|---|---|---|
 | **Kata** | A single practice unit — one prompt, one sit, one sensei verdict. Atomic. | *"completed five katas this week"* | *"completed five exercises"* |
 | **Sensei** | The LLM evaluator. Honest, structured, never softens. Voice register matters: noted, observed, recognized — not master/zen/wisdom. | *"the sensei noted the gap in your reasoning"* | *"the master grants you wisdom"* |
-| **Scroll** | A multi-step learning path — read, code, exercise, challenge — followed in order, with instant Piston/iframe feedback. The scroll is the curriculum; the steps are inside it. | *"finish the SQL Deep Cuts scroll"* | *"finish the SQL Deep Cuts course"* |
+| **Scroll** | A learning path built as an external app and embedded in Dojo by iframe. Dojo hosts it (progress, session, code execution) and does not prescribe its content or format. Being rebuilt — see [#116](https://github.com/rodacato/dojo/issues/116). | *"finish the Pattern Circuit scroll"* | *"finish the Pattern Circuit course"* |
 | **Belt** | A single rank per user — white / yellow / green / brown / black — computed from session history. Earned, kept (no decay in v1). The sensei does not influence advancement. | *"I'm working toward brown belt"* | *"I unlocked the brown belt trophy"* |
-| **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`, scroll completions). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
+| **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
 | **Engawa** | The transitional veranda. Lives at `/engawa` as the anonymous code playground (no account required to try a snippet), but the *concept* is broader — see §Engawa as a philosophy below. | *"opened the engawa to test a Ruby idea"* | *"opened the playground"* (in our product surface) |
 | **Kumite** | The planned 1v1 sparring feature — paired evaluation, shared kata, side-by-side reasoning compared by the sensei. **Not built yet** — the route exists as an honest placeholder. Not a relabel of the deleted leaderboard. | *"when kumite ships I want to spar against another reviewer"* | *"check the kumite leaderboard"* |
 
@@ -63,7 +63,7 @@ One more that is *not* dojo-flavored on purpose:
 The engawa is the transitional veranda of a Japanese house — neither inside nor outside, a place where things sit while the household decides what to do with them. In Dojo it does double duty:
 
 - **As a surface:** `/engawa` is the anonymous code playground. No account, no tracking, no consequence — just a place to drop a snippet and run it.
-- **As a stance:** it's the explicit home for unfinished work. GSAP experiments that may never ship. Scrolls in draft. Half-formed ideas the creator wants on the site without committing to polish them.
+- **As a stance:** it's the explicit home for unfinished work. GSAP experiments that may never ship. Half-formed ideas the creator wants on the site without committing to polish them.
 
 This matters. A product that demands every surface be shipped-quality stagnates — the bar for "good enough to put up" becomes so high that nothing new appears. One with a legitimate home for *"still drying"* stays alive. The engawa is that home. If something is interesting but rough, it lives in `/engawa` until it either earns promotion to a real surface or quietly disappears.
 
@@ -94,7 +94,7 @@ Cinco surfaces, plana y expandible. Está optimizada para velocidad de iteració
 | Surface | Estado | Propósito |
 |---|---|---|
 | **Katas** (`/katas`) | shipped | Práctica de código atómica — Piston ejecuta, sensei evalúa. El corazón del producto. |
-| **Scrolls** (`/scrolls`) | parcial | Catálogos visuales, paths multi-step. Tres prototipos hoy; el "almanaque técnico" del dojo. |
+| **Scrolls** | en reconstrucción | Apps externas embebidas por iframe (epic [#116](https://github.com/rodacato/dojo/issues/116)). Los scrolls nativos se retiraron; no hay ruta `/scrolls` por ahora. |
 | **Belts** (`/belts`) | shipped | Progreso transversal — rank + milestones derivados de session history. |
 | **Kumite** (`/kumite`) | placeholder honesto | 1v1 sparring planeado. La ruta existe vacía a propósito; cuando se construya, será PvP donde dos developers atacan el mismo kata y el sensei compara sus razonamientos lado a lado. |
 | **Engawa** (`/engawa`) | shipped (playground) + filosofía | Anonymous code playground + el espacio explícito para lo no terminado. Ver §Engawa as a philosophy. |
@@ -117,7 +117,7 @@ Dark mode "terminal meets product" — Linear / Raycast / Warp como referencia. 
 
 Tinta japonesa, dos temas bajo el mismo sistema de tokens:
 
-- **Washi** (papel cálido) — para reading: catalogo de scrolls, prosa de los pasos, sensei en modo análisis largo. El light variant cumple un trabajo real, no es modo claro por completionismo.
+- **Washi** (papel cálido) — para reading: sensei en modo análisis largo. El light variant cumple un trabajo real, no es modo claro por completionismo.
 - **Sumi** (tinta profunda) — para sesiones largas: dark variant del kata flow, results, share cards.
 
 Un solo acento — **hanko vermillion** (el rojo del sello del nombre japonés). Reemplaza al indigo cuando la migración cierra. Si es interactivo, es vermillion. Si no, no.
@@ -155,20 +155,9 @@ Transiciones CSS funcionales 150-200ms. El cursor `_` parpadeando 1Hz como únic
 
 ### Sumi-e (mañana)
 
-GSAP + DrawSVG + ScrollTrigger como motion language del sitio. La tinta es el pretexto ideal: el enso se dibuja al cargar, la brushstroke se traza bajo el H1 cuando entra al viewport, el hanko se planta (no rebota) cuando el verdict aterriza, las transiciones entre pasos del scroll fluyen como tinta secándose. GSAP deja de ser experimento suelto y se vuelve la **firma de movimiento del producto**.
+GSAP + DrawSVG + ScrollTrigger como motion language del sitio. La tinta es el pretexto ideal: el enso se dibuja al cargar, la brushstroke se traza bajo el H1 cuando entra al viewport, el hanko se planta (no rebota) cuando el verdict aterriza, las transiciones entre pantallas fluyen como tinta secándose. GSAP deja de ser experimento suelto y se vuelve la **firma de movimiento del producto**.
 
-Carga lazy en rutas que lo usan: kata flow, scroll player, results, share. Dashboard y admin no pagan el bundle. Contratos completos en [`DESIGN.md`](DESIGN.md) §Motion.
-
-### Rive — interactividad pedagógica dentro de scrolls
-
-**GSAP no es el único library de motion**. Para los pasos interactivos dentro de un scroll — predict reveals, trace step transitions, state machines tipo `unanswered → reviewing → revealed` — la responsabilidad es de **Rive**. La razón es operativa: el state-machine editor de Rive permite iterar animaciones pedagógicas sin escribir TypeScript, y el step type es la superficie de mayor leverage didáctico del producto.
-
-División de dominios:
-
-- **GSAP** — motion de identidad del sitio (loaders, reveals, transitions, brand motifs). Cualquier movimiento que sea estructural o expresivo.
-- **Rive** — motion interactiva dentro de scrolls. Cualquier movimiento que responda a estado del learner (predict answered, trace path drawn).
-
-Las dos librerías co-cargan solo en `/scrolls/*`. Bundle combinado ~90KB — abajo del noise floor en rutas que ya cargan CodeMirror (200KB) o Mermaid (400KB).
+Carga lazy en rutas que lo usan: kata flow, results, share. Dashboard y admin no pagan el bundle. Contratos completos en [`DESIGN.md`](DESIGN.md) §Motion.
 
 ### Prohibido en ambos temas
 
@@ -292,9 +281,6 @@ Eventos one-shot que se ganan en un instante específico. No son rank; son la me
 - **`SENSEI_APPROVED`** — 5 verdicts PASSED limpios
 - **`UNDEFINED_NO_MORE`** — 50 katas en total (prestige milestone — conecta con `notdefined.dev`)
 - **`RUBBER_DUCK`** — 3 katas CHAT
-- **`COURSE_TYPESCRIPT_FUNDAMENTALS`** / **`COURSE_JAVASCRIPT_DOM_FUNDAMENTALS`** / **`COURSE_SQL_DEEP_CUTS`** — scroll completions
-
-Los stored slugs siguen con prefijo `COURSE_` por compatibilidad con datos persistidos; el surface visible al usuario habla de "scroll completions" (ADR 020).
 
 Los milestones no tienen puntos ni XP. Son colecciones — están o no están. El nombre `UNDEFINED_NO_MORE` conecta directamente con `notdefined.dev` y es el milestone de progreso más significativo.
 
@@ -328,6 +314,5 @@ Simple. No necesita más. Estable a través de la migración de temas — el wor
 
 - [`DESIGN.md`](DESIGN.md) — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion specs. Source of truth para todo lo visual/operativo.
 - [`VISION.md`](VISION.md) — product strategy.
-- [`courses/INTERACTIVITY-PATTERNS.md`](courses/INTERACTIVITY-PATTERNS.md) — step-type animations within scrolls.
 - [`prd/031-belt-progression-rubric.md`](prd/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
 - [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md) — Sprint 023's rename que introdujo `scroll / kata / belt / milestone` como vocabulario visible.
