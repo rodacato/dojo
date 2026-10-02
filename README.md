@@ -12,11 +12,11 @@
 
 A self-hosted, open-source practice space for developers. Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
 
-It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, through the scrolls, a place to learn as much as a place to be tested.
+It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, once scrolls return as external apps, a place to learn as much as a place to be tested.
 
 **There is no hosted service to sign up for — you run your own**, for yourself, your friends, or your team.
 
-> **Status:** dojo started as a private, invite-only practice space and is being reshaped into a self-hosted open-source project. The kata loop and the scrolls work today; the self-host story still has rough edges. Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev) · Project site: [rodacato.github.io/dojo](https://rodacato.github.io/dojo/)
+> **Status:** dojo started as a private, invite-only practice space and is being reshaped into a self-hosted open-source project. The kata loop works today; scrolls are being rebuilt as external apps (see below), and the self-host story still has rough edges. Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev) · Project site: [rodacato.github.io/dojo](https://rodacato.github.io/dojo/)
 
 ---
 
@@ -58,13 +58,11 @@ To run the sensei on your own Claude or ChatGPT subscription instead of API cred
 
 Sign-up is by invitation, and the invitations belong to whoever runs the instance — not to the dojo project. That operator sets `CREATOR_GITHUB_ID` to their own numeric GitHub id: that account signs in without an invitation, is the only one with `/admin`, and issues invitation links from `/admin/invitations`. Everyone else needs one of those links; once in, returning users are always allowed.
 
-Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors can still read public scrolls and use the Engawa playground.
+Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors can still use the Engawa playground.
 
-### Your content
+### Scrolls
 
-The base scrolls seed **opt-in**: `pnpm --filter=api db:seed:scrolls` inserts them as unpublished drafts, and you enable the ones you want from `/admin/scrolls` (publish + public/private per scroll). Reseeding refreshes their content but never touches your publish choices. Author your own by following [docs/courses/AUTHORING.md](docs/courses/AUTHORING.md) and adding a seed file; your scrolls use the same sensei, execution sandbox, and player as the base ones.
-
-_Planned — [scroll content ecosystem](https://github.com/rodacato/dojo/issues/75):_ **import scroll packs from other repos** — link, clone, or download a set (e.g. a Rails pack) into your instance.
+Scrolls are being rebuilt. The native scroll system was removed; the new model is independent web apps, hosted anywhere, embedded in Dojo by iframe, with Dojo offering progress, session and code execution. It is not available yet — follow [epic #116](https://github.com/rodacato/dojo/issues/116).
 
 ---
 
@@ -114,14 +112,14 @@ If you cheat yourself here, you cheat yourself everywhere.
 
 | Feature | Description |
 |---|---|
-| **Scrolls** | Learning paths at `/scrolls` — step-by-step katas with instant feedback. TypeScript and SQL Deep Cuts run via Piston; JavaScript DOM katas run in a browser iframe sandbox. Public scrolls can be followed without an account — progress persists in `localStorage` and merges into your account if you later sign in |
+| **Scrolls** | Being rebuilt as external apps embedded in Dojo — not available yet ([#116](https://github.com/rodacato/dojo/issues/116)) |
 | **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
 | **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
 | **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
 | **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
-| **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations, scroll publishing |
+| **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations |
 | **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The sensei never influences advancement (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
-| **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, scroll completions, consistency streaks. Surfaced alongside the belt on `/belts` |
+| **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, consistency streaks. Surfaced alongside the belt on `/belts` |
 | **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
 | **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel |
 | **Error view** | Every unhandled error lands in Postgres and is visible at `/admin/errors` — no external tracker required. Sentry is opt-in ([ADR 017](docs/adr/017-error-reporting-port.md)) |
@@ -174,7 +172,6 @@ pnpm build                            # Build all workspaces
 pnpm lint                             # Lint all workspaces
 pnpm typecheck                        # Type-check all workspaces
 pnpm test --filter=api                # Run API unit + integration tests
-pnpm --filter=api db:seed:scrolls     # Seed scroll catalog as unpublished drafts
 ```
 
 Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it says what fits the dojo and what does not.
