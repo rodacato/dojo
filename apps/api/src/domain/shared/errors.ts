@@ -43,3 +43,27 @@ export class AttemptLimitReachedError extends DomainError {
     super(`Session has reached its attempt limit: ${id}`, 'ATTEMPT_LIMIT_REACHED')
   }
 }
+
+export class ScrollNotFoundError extends DomainError {
+  constructor(key: string) {
+    super(`Scroll not found: ${key}`, 'SCROLL_NOT_FOUND')
+  }
+}
+
+export class ScrollLoginRequiredError extends DomainError {
+  constructor() {
+    super('This scroll requires a signed-in user', 'SCROLL_LOGIN_REQUIRED')
+  }
+}
+
+export class ScrollSlugTakenError extends DomainError {
+  constructor(slug: string) {
+    super(`A scroll with slug "${slug}" already exists`, 'SCROLL_SLUG_TAKEN')
+  }
+}
+
+export class ScrollOriginNotAllowedError extends DomainError {
+  constructor(message: string) {
+    super(message, 'SCROLL_ORIGIN_NOT_ALLOWED')
+  }
+}
