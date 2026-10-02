@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { and, eq, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import { db } from '../../persistence/drizzle/client'
@@ -8,10 +8,6 @@ import {
   katas,
   attempts,
   users,
-  scrolls,
-  lessons,
-  steps,
-  scrollProgress,
 } from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
 
@@ -38,8 +34,6 @@ function h(type: string, style: Record<string, unknown>, ...children: unknown[])
 // GET /share/:sessionId.png — Generate OG share card image
 // ---------------------------------------------------------------------------
 
-// `[^/]+` (not `.+`) keeps this param to a single path segment — a greedy
-// `.+\.png$` matches across slashes and shadows /share/scroll/:slug/:userId.png.
 shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
   const sessionId = c.req.param('sessionId').replace(/\.png$/, '')
 
@@ -237,181 +231,3 @@ function extractPullQuote(analysis: string): string | null {
   if (!quote) return null
   return quote.length > 150 ? quote.slice(0, 147) + '...' : quote
 }
-
-// ---------------------------------------------------------------------------
-// Scroll completion share
-// ---------------------------------------------------------------------------
-
-interface ScrollCompletionRow {
-  scrollId: string
-  scrollTitle: string
-  courseAccentColor: string
-  scrollLanguage: string
-  isPublic: boolean
-  totalSteps: number
-  completedSteps: string[]
-  lastAccessedAt: Date
-  username: string
-  avatarUrl: string
-}
-
-async function loadScrollCompletion(
-  slug: string,
-  userId: string,
-): Promise<ScrollCompletionRow | null> {
-  // One round-trip: scroll + progress + step count + user, joined. We
-  // aggregate step count via a correlated subquery so every step of every
-  // lesson is counted without another N+1 risk.
-  const [row] = await db
-    .select({
-      scrollId: scrolls.id,
-      scrollTitle: scrolls.title,
-      courseAccentColor: scrolls.accentColor,
-      scrollLanguage: scrolls.language,
-      isPublic: scrolls.isPublic,
-      totalSteps: sql<number>`(
-        SELECT COUNT(*)::int FROM ${steps}
-        INNER JOIN ${lessons} ON ${lessons.id} = ${steps.lessonId}
-        WHERE ${lessons.scrollId} = ${scrolls.id}
-      )`,
-      completedSteps: scrollProgress.completedSteps,
-      lastAccessedAt: scrollProgress.lastAccessedAt,
-      username: users.username,
-      avatarUrl: users.avatarUrl,
-    })
-    .from(scrolls)
-    .innerJoin(
-      scrollProgress,
-      and(eq(scrollProgress.scrollId, scrolls.id), eq(scrollProgress.userId, userId)),
-    )
-    .innerJoin(users, eq(users.id, userId))
-    .where(eq(scrolls.slug, slug))
-    .limit(1)
-
-  if (!row) return null
-
-  const completedSteps = Array.isArray(row.completedSteps)
-    ? (row.completedSteps as string[])
-    : []
-
-  if (completedSteps.length < row.totalSteps || row.totalSteps === 0) {
-    // The user exists and has progress but hasn't finished — share card
-    // is not applicable.
-    return null
-  }
-
-  return {
-    scrollId: row.scrollId,
-    scrollTitle: row.scrollTitle,
-    courseAccentColor: row.courseAccentColor,
-    scrollLanguage: row.scrollLanguage,
-    isPublic: row.isPublic,
-    totalSteps: row.totalSteps,
-    completedSteps,
-    lastAccessedAt: row.lastAccessedAt,
-    username: row.username,
-    avatarUrl: row.avatarUrl,
-  }
-}
-
-// GET /share/scroll/:slug/:userId.png — OG image for scroll completion.
-shareRoutes.get('/share/scroll/:slug/:userId{.+\\.png$}', async (c) => {
-  const slug = c.req.param('slug')
-  const userIdRaw = c.req.param('userId').replace(/\.png$/, '')
-
-  const completion = await loadScrollCompletion(slug, userIdRaw)
-  if (!completion) return c.json({ error: 'Completion not found' }, 404)
-
-  const font = await getFont()
-  const completedDate = new Date(completion.lastAccessedAt).toLocaleDateString('en-US', {
-    month: 'short',
-    year: 'numeric',
-  })
-
-  const element = h(
-    'div',
-    {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      width: '1200px',
-      height: '630px',
-      backgroundColor: '#0F172A',
-      padding: '60px',
-      fontFamily: 'JetBrains Mono',
-      color: '#F8FAFC',
-    },
-    h(
-      'div',
-      { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
-      h('span', { fontSize: '28px', color: '#6366F1', letterSpacing: '-0.05em' }, 'dojo_'),
-      h(
-        'span',
-        {
-          fontSize: '18px',
-          color: completion.courseAccentColor,
-          padding: '6px 16px',
-          border: `2px solid ${completion.courseAccentColor}`,
-          borderRadius: '4px',
-        },
-        'SCROLL COMPLETE',
-      ),
-    ),
-    h(
-      'div',
-      { display: 'flex', flexDirection: 'column', gap: '12px', flex: '1', justifyContent: 'center' },
-      h('span', { fontSize: '18px', color: '#94A3B8' }, 'Completed'),
-      h('span', { fontSize: '48px', color: '#F8FAFC', lineHeight: '1.2' }, completion.scrollTitle),
-      h(
-        'span',
-        { fontSize: '18px', color: completion.courseAccentColor },
-        `${completion.totalSteps} step${completion.totalSteps === 1 ? '' : 's'} · ${completion.scrollLanguage}`,
-      ),
-    ),
-    h(
-      'div',
-      { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' },
-      h('span', { fontSize: '16px', color: '#64748B' }, `@${completion.username}`),
-      h('span', { fontSize: '16px', color: '#64748B' }, completedDate),
-    ),
-  )
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const svg = await satori(element as any, {
-    width: 1200,
-    height: 630,
-    fonts: [{ name: 'JetBrains Mono', data: font, weight: 400, style: 'normal' as const }],
-  })
-
-  const pngBuffer = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng()
-
-  return new Response(pngBuffer, {
-    status: 200,
-    headers: {
-      'Content-Type': 'image/png',
-      'Cache-Control': 'public, max-age=31536000, immutable',
-    },
-  })
-})
-
-// GET /share/scroll/:slug/:userId — JSON payload for the scroll share page.
-shareRoutes.get('/share/scroll/:slug/:userId', async (c) => {
-  const slug = c.req.param('slug')
-  const userId = c.req.param('userId')
-
-  if (userId.endsWith('.png')) return c.notFound()
-
-  const completion = await loadScrollCompletion(slug, userId)
-  if (!completion) return c.json({ error: 'Not found' }, 404)
-
-  return c.json({
-    scrollSlug: slug,
-    scrollTitle: completion.scrollTitle,
-    scrollLanguage: completion.scrollLanguage,
-    scrollAccentColor: completion.courseAccentColor,
-    totalSteps: completion.totalSteps,
-    completedAt: completion.lastAccessedAt.toISOString(),
-    username: completion.username,
-    avatarUrl: completion.avatarUrl,
-  })
-})

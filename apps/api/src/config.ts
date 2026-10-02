@@ -24,7 +24,7 @@ const envSchema = z.object({
   // steps (the TS capstone) tipped past 3s. 8000 gives compiled languages
   // headroom. NOTE: the self-hosted Piston also caps run_timeout server-side
   // (max_run_timeout in its config) — raise that to >=8000 at deploy or this
-  // value is silently clamped. See seed-scrolls-typescript.ts header.
+  // value is silently clamped.
   PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(8000),
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
   DRAWHAUS_URL: z.url().optional(),
@@ -40,9 +40,6 @@ const envSchema = z.object({
   SENTRY_ENVIRONMENT: z.string().default(''), // defaults to NODE_ENV after parse
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
   SENTRY_RELEASE: z.string().default(''),
-  // Scroll-player "Ask the sensei" — PRD 026. Feature-flagged so ops can
-  // turn it off without redeploying if prompt drift surfaces.
-  FF_COURSE_NUDGE_ENABLED: z.coerce.boolean().default(false),
   // Public playground console — PRD 029, spec 027 Part 4. Off by default.
   // When on, exposes anonymous code execution at POST /playground/run.
   // The four-layer abuse stack (Turnstile + per-IP RL + per-session RL
@@ -72,7 +69,7 @@ const envSchema = z.object({
   PLAYGROUND_RATE_LIMIT_AUTHED_PER_MIN: z.coerce.number().int().min(1).default(60),
   PLAYGROUND_RATE_LIMIT_AUTHED_PER_DAY: z.coerce.number().int().min(1).default(1000),
   // Global ceiling across all playground traffic (anon + authed). Separate
-  // bucket from kata/scrolls — hitting it returns 503 from /playground/run
+  // bucket from kata — hitting it returns 503 from /playground/run
   // only. Reset at UTC midnight.
   PLAYGROUND_DAILY_QUOTA_GLOBAL: z.coerce.number().int().min(1).default(5000),
   // Cloudflare Turnstile — Layer 1 of the playground abuse stack. When

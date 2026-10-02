@@ -6,7 +6,7 @@ import type { AppEnv } from '../app-env'
 export const cronPistonSmokeRoutes = new Hono<AppEnv>()
 
 // Minimal hello-world per language. Each must print expectedStdout. Goes
-// through PistonAdapter.execute() (same path scrolls use) so a bad
+// through PistonAdapter.execute() so a bad
 // PISTON_RUN_TIMEOUT / PISTON_COMPILE_TIMEOUT in config.ts surfaces here
 // before a learner hits it — the gap that hid the compile-timeout regression
 // behind a working /health/piston for hours.

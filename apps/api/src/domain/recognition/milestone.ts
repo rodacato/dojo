@@ -4,7 +4,7 @@ export interface Milestone {
   readonly userId: UserId
   readonly milestoneId: string  // FIRST_KATA, POLYGLOT, CONSISTENT, 5_STREAK, SCROLL_*
   readonly earnedAt: Date
-  readonly contextRef: string | null  // session id or scroll slug
+  readonly contextRef: string | null  // session id
 }
 
 export interface MilestoneRepositoryPort {

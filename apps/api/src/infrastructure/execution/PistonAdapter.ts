@@ -141,8 +141,8 @@ function combineSources(language: string, code: string, testCode: string): strin
   return `${code}\n\n${testCode}`
 }
 
-// Rust file is named main.rs so rustc's error paths match the scroll prose
-// ("main.rs:LINE"); Go is main.go for the same reason; others keep test.*.
+// Rust file is named main.rs so rustc's error paths match
+// "main.rs:LINE"; Go is main.go for the same reason; others keep test.*.
 function runFileName(language: string): string {
   switch (language.toLowerCase()) {
     case 'sql': return 'query.sql'

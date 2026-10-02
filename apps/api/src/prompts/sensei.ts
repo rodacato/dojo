@@ -364,46 +364,6 @@ Then the structured evaluation:
 </evaluation>`
 }
 
-// Scroll-player nudge prompt — see PRD 026.
-//
-// Design rules baked into this prompt:
-// - The sensei never writes code, never names the exact fix.
-// - Points toward the gap (what to re-read, which test case to inspect,
-//   which idea is worth questioning).
-// - Capped at a short paragraph; the goal is a nudge, not a tutoring session.
-export function buildNudgePrompt(p: {
-  stepInstruction: string
-  testCode: string | null
-  userCode: string
-  stdout?: string
-  stderr?: string
-}): string {
-  const testBlock = p.testCode
-    ? `\n\nHIDDEN TEST CODE (for your reference — do not mention specific test internals verbatim):\n${p.testCode}`
-    : ''
-  const executionBlock =
-    p.stdout || p.stderr
-      ? `\n\nLAST EXECUTION OUTPUT:\n- stdout: ${p.stdout ?? '(empty)'}\n- stderr: ${p.stderr ?? '(empty)'}`
-      : ''
-
-  return `You are a patient, direct senior engineer guiding a developer who has asked for help on a specific coding step. You DO NOT give the answer. You point toward what to re-examine.
-
-Strict rules:
-- Never write code or a code snippet.
-- Never name the exact fix (e.g. do not say "change X to Y").
-- Redirect the developer's attention to the area worth re-examining. Be specific about *where* to look, not *what* to change.
-- ≤ 80 words. One short paragraph. No lists. No preamble like "Sure," or "Good question,".
-- If the developer's code looks correct and the issue is elsewhere, say so plainly.
-
-STEP INSTRUCTION (what the developer is trying to do):
-${p.stepInstruction}
-
-DEVELOPER'S CURRENT CODE:
-${p.userCode}${testBlock}${executionBlock}
-
-Write the nudge now. One paragraph, ≤ 80 words.`
-}
-
 // Ask-sensei free-form Q&A — S022 Part 5, PRD 029 v1.
 //
 // Context: this is a free exploration tool, not graded practice. The

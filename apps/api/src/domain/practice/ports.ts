@@ -39,16 +39,6 @@ export interface LLMPort {
     kataDescription: string
   }): AsyncIterable<string>
 
-  // Scroll-player nudge — a single short hint pointing the learner toward
-  // the gap without giving the answer. Returns the full nudge text.
-  nudge(params: {
-    stepInstruction: string
-    testCode: string | null
-    userCode: string
-    stdout?: string
-    stderr?: string
-  }): Promise<string>
-
   // Ask-sensei free-form streaming Q&A (S022 Part 5). Streams the answer
   // token-by-token; the final element of the iterable carries usage
   // metadata so the route can log cost. The text deltas are yielded as

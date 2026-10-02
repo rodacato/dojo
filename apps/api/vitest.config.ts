@@ -18,7 +18,7 @@ export default defineConfig({
         'src/index.ts',
         'src/config.ts',
         'src/infrastructure/container.ts',
-        // Dev CLIs (calibrate-sensei, validate-scroll-solutions) — run by hand,
+        // Dev CLIs (calibrate-sensei) — run by hand,
         // not business logic; they only drag the denominator.
         'src/scripts/**',
         // Data-as-code and generated/glue — not coverage-worthy. The rest of

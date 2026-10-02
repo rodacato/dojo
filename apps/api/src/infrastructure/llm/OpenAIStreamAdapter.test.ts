@@ -336,7 +336,7 @@ async function drain(stream: AsyncIterable<string>): Promise<string> {
   return text
 }
 
-describe('OpenAIStreamAdapter.generateSessionBody / nudge', () => {
+describe('OpenAIStreamAdapter.generateSessionBody', () => {
   it('returns the message content and sends a bounded non-streaming request', async () => {
     fetchSpy.mockResolvedValue(jsonResponse('## PR body'))
 
@@ -360,14 +360,6 @@ describe('OpenAIStreamAdapter.generateSessionBody / nudge', () => {
       status: 503,
       message: expect.stringContaining('not logged in'),
     })
-  })
-
-  it('trims the nudge text', async () => {
-    fetchSpy.mockResolvedValue(jsonResponse('  look at the call to reduce \n'))
-
-    const out = await adapter().nudge({ stepInstruction: 'sum', testCode: null, userCode: 'a.reduce' })
-
-    expect(out).toBe('look at the call to reduce')
   })
 })
 

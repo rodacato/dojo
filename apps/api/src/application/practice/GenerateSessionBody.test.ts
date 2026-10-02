@@ -48,7 +48,6 @@ describe('GenerateSessionBody', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn().mockResolvedValue('You are reviewing a PR that...'),
       generateSessionBodyStream: vi.fn(),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = {
@@ -74,7 +73,7 @@ describe('GenerateSessionBody', () => {
 
   it('deletes session when kata is not found', async () => {
     const sessionRepo = makeStubSessionRepo()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), askSensei: vi.fn() }
     const kataRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
@@ -96,7 +95,7 @@ describe('GenerateSessionBody', () => {
   it('deletes session when variation is not found', async () => {
     const kata = makeKata()
     const sessionRepo = makeStubSessionRepo()
-    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), nudge: vi.fn(), askSensei: vi.fn() }
+    const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), askSensei: vi.fn() }
     const kataRepo = {
       findEligible: vi.fn(),
       findById: vi.fn().mockResolvedValue(kata),
@@ -124,7 +123,6 @@ describe('GenerateSessionBody', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn().mockRejectedValue(llmError),
       generateSessionBodyStream: vi.fn(),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = {
@@ -166,7 +164,6 @@ describe('GenerateSessionBody', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn(),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
@@ -188,7 +185,6 @@ describe('GenerateSessionBody.executeStream', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn().mockReturnValue(streamOf(['You are ', 'reviewing ', 'a PR.'])),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
@@ -215,7 +211,6 @@ describe('GenerateSessionBody.executeStream', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn(),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
@@ -236,7 +231,6 @@ describe('GenerateSessionBody.executeStream', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn(),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(null), save: vi.fn() }
@@ -263,7 +257,6 @@ describe('GenerateSessionBody.executeStream', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn(),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
@@ -291,7 +284,6 @@ describe('GenerateSessionBody.executeStream', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn().mockReturnValue(streamOf(['   ', '\n'])),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
@@ -324,7 +316,6 @@ describe('GenerateSessionBody.executeStream', () => {
       evaluate: vi.fn(),
       generateSessionBody: vi.fn(),
       generateSessionBodyStream: vi.fn().mockReturnValue(boom()),
-      nudge: vi.fn(),
       askSensei: vi.fn(),
     }
     const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
