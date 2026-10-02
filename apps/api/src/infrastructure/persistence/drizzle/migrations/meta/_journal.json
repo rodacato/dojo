@@ -190,6 +190,13 @@
       "when": 1790972496723,
       "tag": "0026_drop_native_scrolls",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1790985482581,
+      "tag": "0027_scroll_registry",
+      "breakpoints": true
     }
   ]
 }

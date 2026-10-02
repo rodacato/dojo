@@ -236,3 +236,15 @@ export const llmRequestsLog = pgTable('llm_requests_log', {
   inputTokens: integer('input_tokens'),
   outputTokens: integer('output_tokens'),
 })
+
+// Registry of external embedded scrolls (ADR 025). Manifest is the validated
+// scroll manifest as pasted by the creator; entry origins are gated at write time.
+export const scrolls = pgTable('scrolls', {
+  id: uuid('id').primaryKey(),
+  slug: varchar('slug', { length: 64 }).unique().notNull(),
+  manifest: jsonb('manifest').notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('draft'),
+  visibility: varchar('visibility', { length: 20 }).notNull().default('public'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
