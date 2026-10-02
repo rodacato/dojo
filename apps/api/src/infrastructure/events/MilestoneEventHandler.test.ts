@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { SessionCompleted } from '../../domain/practice/events'
-import type { ScrollCompleted } from '../../domain/learning/events'
 import type { UserId } from '../../domain/shared/types'
 import { InMemoryEventBus } from './InMemoryEventBus'
 import { registerMilestoneHandlers } from './MilestoneEventHandler'
@@ -106,7 +105,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual(['FIRST_KATA'])
-    // FIRST_KATA carries the session id; scroll-less awards carry it too here.
+    // FIRST_KATA carries the session id.
     expect(db.awarded.find((a) => a.milestoneSlug === 'FIRST_KATA')?.sessionId).toBe('session-1')
   })
 
@@ -251,46 +250,6 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual([])
-  })
-})
-
-describe('MilestoneEventHandler — ScrollCompleted', () => {
-  const scrollCompleted = (overrides: Partial<ScrollCompleted> = {}): ScrollCompleted => ({
-    type: 'ScrollCompleted',
-    aggregateId: 'scroll-1',
-    occurredAt: new Date(),
-    userId: 'user-1',
-    scrollSlug: 'javascript-dom-fundamentals',
-    totalSteps: 10,
-    ...overrides,
-  })
-
-  const fireScrollCompleted = async (db: FakeDb, event: ScrollCompleted) => {
-    const bus = new InMemoryEventBus()
-    registerMilestoneHandlers(bus, db as never)
-    await bus.publish(event)
-  }
-
-  it('maps a known scroll slug to its milestone and awards it with a null session id', async () => {
-    const db = new FakeDb()
-    await fireScrollCompleted(db, scrollCompleted({ scrollSlug: 'sql-deep-cuts' }))
-
-    expect(db.awarded).toEqual([{ milestoneSlug: 'COURSE_SQL_DEEP_CUTS', sessionId: null }])
-  })
-
-  it('silently skips an unknown scroll slug (no milestone configured)', async () => {
-    const db = new FakeDb()
-    await fireScrollCompleted(db, scrollCompleted({ scrollSlug: 'totally-unknown-scroll' }))
-
-    expect(db.awarded).toEqual([])
-  })
-
-  it('does not re-award a scroll milestone the user already earned', async () => {
-    const db = new FakeDb()
-    db.earnedSlugs = ['COURSE_JAVASCRIPT_DOM_FUNDAMENTALS']
-    await fireScrollCompleted(db, scrollCompleted({ scrollSlug: 'javascript-dom-fundamentals' }))
-
-    expect(db.awarded).toEqual([])
   })
 })
 

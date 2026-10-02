@@ -9,16 +9,6 @@ import { SubmitAttempt } from '../application/practice/SubmitAttempt'
 import { GetKataById } from '../application/content/GetKataById'
 import { CreateKata } from '../application/content/CreateKata'
 import { UpsertUser } from '../application/identity/UpsertUser'
-import { GetScrollList } from '../application/learning/GetScrollList'
-import { GetScrollBySlug } from '../application/learning/GetScrollBySlug'
-import { ExecuteStep } from '../application/learning/ExecuteStep'
-import { TrackProgress } from '../application/learning/TrackProgress'
-import { GetScrollProgress } from '../application/learning/GetScrollProgress'
-import { GetAllScrollProgress } from '../application/learning/GetAllScrollProgress'
-import { MergeAnonymousProgress } from '../application/learning/MergeAnonymousProgress'
-import { GenerateNudge } from '../application/learning/GenerateNudge'
-import { SubmitNudgeFeedback } from '../application/learning/SubmitNudgeFeedback'
-import { PostgresNudgeRepository } from './persistence/PostgresNudgeRepository'
 import { db } from './persistence/drizzle/client'
 import { PostgresKataRepository } from './persistence/PostgresKataRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
@@ -30,8 +20,6 @@ import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
 import { registerMilestoneHandlers } from './events/MilestoneEventHandler'
 import { PostgresPreferencesRepository } from './persistence/PostgresPreferencesRepository'
-import { PostgresScrollRepository } from './persistence/PostgresScrollRepository'
-import { PostgresScrollProgressRepository } from './persistence/PostgresScrollProgressRepository'
 import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
 import { ExecutionQueue } from './execution/ExecutionQueue'
@@ -47,9 +35,6 @@ const sessionRepo = new PostgresSessionRepository(db)
 const kataRepo = new PostgresKataRepository(db)
 const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
-export const scrollRepo = new PostgresScrollRepository(db)
-const scrollProgressRepo = new PostgresScrollProgressRepository(db)
-const nudgeRepo = new PostgresNudgeRepository(db)
 const milestoneRepo = new PostgresMilestoneRepository(db)
 
 function createLLMAdapter(): LLMPort {
@@ -124,15 +109,6 @@ export const useCases = {
   createKata: new CreateKata({ kataRepo }),
   getSession: new GetSession({ sessionRepo }),
   upsertUser: new UpsertUser({ userRepo }),
-  getScrollList: new GetScrollList({ scrollRepo }),
-  getScrollBySlug: new GetScrollBySlug({ scrollRepo }),
-  executeStep: new ExecuteStep({ executionPort: createExecutionAdapter() }),
-  trackProgress: new TrackProgress({ progressRepo: scrollProgressRepo, scrollRepo, eventBus }),
-  getScrollProgress: new GetScrollProgress({ progressRepo: scrollProgressRepo }),
-  getAllScrollProgress: new GetAllScrollProgress({ progressRepo: scrollProgressRepo }),
-  mergeAnonymousProgress: new MergeAnonymousProgress({ progressRepo: scrollProgressRepo }),
-  generateNudge: new GenerateNudge({ scrollRepo, llm, nudgeRepo }),
-  submitNudgeFeedback: new SubmitNudgeFeedback({ nudgeRepo }),
   calculateBelt: new CalculateBelt({ sessionRepo }),
   listUserMilestones: new ListUserMilestones({ milestoneRepo }),
 }
