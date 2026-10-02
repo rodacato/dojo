@@ -35,12 +35,12 @@ When the user asks for debate, alternatives, tradeoffs, or recommendations — o
 | S2 | Valentina Cruz | Kata content design, learning progressions | Situational | Phase 3: content, quality bar, contributor flow |
 | S3 | Joel Ferreira | Marketing, launch strategy, developer audience | Situational | Phase 4: public opening, ProductHunt, Show HN |
 | S4 | Lucía Navarro | Product workflow, PRDs, indie builder execution | Situational | "tengo una idea", exploratory PRDs, idea triage |
-| S5 | Dr. Elif Yıldız | Learning science, curriculum architecture, deliberate practice | Situational | Scroll curriculum design, cross-sub-scroll learning progressions |
-| S6 | Kenji Watanabe | Go language pedagogy & scroll content | Situational | `docs/scrolls/go.md` design or review |
-| S7 | Nadia Petrov | Python language pedagogy & scroll content | Situational | `docs/scrolls/python.md` design or review |
-| S8 | Björn Lindqvist | Rust language pedagogy & scroll content | Situational | `docs/scrolls/rust.md` design or review |
-| S9 | Leo Barros | TypeScript language pedagogy & scroll content (infra TS → Tomás) | Situational | `docs/scrolls/typescript.md` design or review |
-| S10 | Rhea Kapoor | Ruby language pedagogy & scroll content | Situational | `docs/scrolls/ruby.md` design or review |
+| S5 | Dr. Elif Yıldız | Learning science, curriculum architecture, deliberate practice | Situational | Learning-science review of external scrolls and their progressions |
+| S6 | Kenji Watanabe | Go language pedagogy & scroll content | Situational | Go scroll content design or review |
+| S7 | Nadia Petrov | Python language pedagogy & scroll content | Situational | Python scroll content design or review |
+| S8 | Björn Lindqvist | Rust language pedagogy & scroll content | Situational | Rust scroll content design or review |
+| S9 | Leo Barros | TypeScript language pedagogy & scroll content (infra TS → Tomás) | Situational | TypeScript scroll content design or review |
+| S10 | Rhea Kapoor | Ruby language pedagogy & scroll content | Situational | Ruby scroll content design or review |
 
 Expert panel output must end with: **recommended option, key risks, fallback/rollback path.**
 
