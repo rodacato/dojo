@@ -32,7 +32,6 @@ For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs
 | `docs/BRANDING.md` | `docs/BRANDING.md` | Canonical | Voice, vocabulary, IA, UX principles, microcopy |
 | `docs/DESIGN.md` | `docs/DESIGN.md` | Canonical | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
 | `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | Canonical | DDD model, bounded contexts, ports, events, decisions |
-| `docs/courses/` | `docs/courses/` | Canonical | Per-language course design + `testcode-pattern.md` authoring reference |
 | `docs/adr/` | `docs/adr/` | History (immutable) | Architecture Decision Records — never deleted |
 | `docs/specs/` | `docs/specs/` | History (immutable) | Sprint-tied implementation specs |
 | `docs/sprints/archive/` | `docs/sprints/archive/` | History (immutable) | Closed sprint blocks with retros. Retired as a practice; sprint 034 is the last |
