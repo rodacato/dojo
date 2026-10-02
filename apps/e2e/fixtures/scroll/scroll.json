@@ -1,0 +1,12 @@
+{
+  "id": "e2e-fixture",
+  "version": "0.0.1",
+  "protocol": 0,
+  "entry": "http://localhost:4010/index.html",
+  "locales": ["en"],
+  "title": { "en": "E2E fixture" },
+  "description": { "en": "Minimal scroll used by the Playwright suite." },
+  "programmingLanguages": ["javascript"],
+  "units": [{ "id": "unit-1", "title": { "en": "Unit 1" } }],
+  "capabilities": ["progress"]
+}
