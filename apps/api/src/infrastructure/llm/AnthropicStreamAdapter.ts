@@ -5,13 +5,9 @@ import type { EvaluationStreamParser } from './evaluation-parser'
 import { buildSessionBodyPrompt, buildNudgePrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
 import { config } from '../../config'
 import { runEvaluation, type SenseiMessage, type BuildMessagesParams } from './sensei-evaluation'
+import { REQUEST_TIMEOUT_MS, normalizeBaseURL } from './llm-endpoint'
 
 export { LLMParseError } from './sensei-evaluation'
-
-// Shellm and similar proxies frequently exceed 30s p50 for session-body
-// generation. 90s covers typical p99 without letting a dead upstream keep
-// the background task alive forever.
-const REQUEST_TIMEOUT_MS = 90_000
 
 export class AnthropicStreamAdapter implements LLMPort {
   private readonly client: Anthropic
@@ -21,7 +17,7 @@ export class AnthropicStreamAdapter implements LLMPort {
       apiKey,
       timeout: REQUEST_TIMEOUT_MS,
       maxRetries: 1,
-      ...(config.LLM_BASE_URL ? { baseURL: config.LLM_BASE_URL } : {}),
+      ...(config.LLM_BASE_URL ? { baseURL: normalizeBaseURL(config.LLM_BASE_URL) } : {}),
     })
   }
 

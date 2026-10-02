@@ -4,6 +4,7 @@ import type { EvaluationStreamParser } from './evaluation-parser'
 import { buildSessionBodyPrompt, buildNudgePrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
 import { config } from '../../config'
 import { runEvaluation, type SenseiMessage, type BuildMessagesParams } from './sensei-evaluation'
+import { REQUEST_TIMEOUT_MS, httpErrorFrom, normalizeBaseURL } from './llm-endpoint'
 
 export class OpenAIStreamAdapter implements LLMPort {
   private readonly baseURL: string
@@ -11,7 +12,7 @@ export class OpenAIStreamAdapter implements LLMPort {
 
   constructor(apiKey: string, baseURL: string) {
     this.apiKey = apiKey
-    this.baseURL = baseURL.replace(/\/$/, '')
+    this.baseURL = normalizeBaseURL(baseURL)
   }
 
   async *evaluate(params: BuildMessagesParams): AsyncIterable<EvaluationToken> {
@@ -58,12 +59,10 @@ export class OpenAIStreamAdapter implements LLMPort {
         Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({ model: config.LLM_MODEL, ...body }),
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     })
 
-    if (!response.ok) {
-      const text = await response.text()
-      throw new Error(`OpenAI-compatible API error ${response.status}: ${text}`)
-    }
+    if (!response.ok) throw await httpErrorFrom(response)
 
     return response
   }
@@ -75,23 +74,10 @@ export class OpenAIStreamAdapter implements LLMPort {
   }): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
 
-    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: config.LLM_MODEL,
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: prompt }],
-      }),
+    const response = await this.chatCompletion({
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
     })
-
-    if (!response.ok) {
-      const body = await response.text()
-      throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-    }
 
     const data = (await response.json()) as OpenAIResponse
     const content = data.choices?.[0]?.message?.content
@@ -111,8 +97,6 @@ export class OpenAIStreamAdapter implements LLMPort {
     usage: Promise<{ inputTokens: number | null; outputTokens: number | null }>
   } {
     const prompt = buildAskSenseiPrompt(params)
-    const baseURL = this.baseURL
-    const apiKey = this.apiKey
 
     let resolveUsage: (u: { inputTokens: number | null; outputTokens: number | null }) => void = () => {}
     let rejectUsage: (e: unknown) => void = () => {}
@@ -121,27 +105,16 @@ export class OpenAIStreamAdapter implements LLMPort {
       rejectUsage = rej
     })
 
+    const chatCompletion = this.chatCompletion.bind(this)
+
     async function* generator(): AsyncIterable<string> {
       try {
-        const response = await fetch(`${baseURL}/v1/chat/completions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            model: config.LLM_MODEL,
-            max_tokens: 512,
-            stream: true,
-            stream_options: { include_usage: true },
-            messages: [{ role: 'user', content: prompt }],
-          }),
+        const response = await chatCompletion({
+          max_tokens: 512,
+          stream: true,
+          stream_options: { include_usage: true },
+          messages: [{ role: 'user', content: prompt }],
         })
-
-        if (!response.ok) {
-          const body = await response.text()
-          throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-        }
 
         let inputTokens: number | null = null
         let outputTokens: number | null = null
@@ -172,24 +145,11 @@ export class OpenAIStreamAdapter implements LLMPort {
   }): AsyncIterable<string> {
     const prompt = buildSessionBodyPrompt(params)
 
-    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: config.LLM_MODEL,
-        max_tokens: 1024,
-        stream: true,
-        messages: [{ role: 'user', content: prompt }],
-      }),
+    const response = await this.chatCompletion({
+      max_tokens: 1024,
+      stream: true,
+      messages: [{ role: 'user', content: prompt }],
     })
-
-    if (!response.ok) {
-      const body = await response.text()
-      throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-    }
 
     for await (const chunk of parseSSEStream(response)) {
       const content = chunk.choices?.[0]?.delta?.content
@@ -205,22 +165,10 @@ export class OpenAIStreamAdapter implements LLMPort {
     stderr?: string
   }): Promise<string> {
     const prompt = buildNudgePrompt(params)
-    const response = await fetch(`${this.baseURL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: config.LLM_MODEL,
-        max_tokens: 256,
-        messages: [{ role: 'user', content: prompt }],
-      }),
+    const response = await this.chatCompletion({
+      max_tokens: 256,
+      messages: [{ role: 'user', content: prompt }],
     })
-    if (!response.ok) {
-      const body = await response.text()
-      throw new Error(`OpenAI-compatible API error ${response.status}: ${body}`)
-    }
     const data = (await response.json()) as OpenAIResponse
     const content = data.choices?.[0]?.message?.content
     if (!content) {
@@ -233,6 +181,7 @@ export class OpenAIStreamAdapter implements LLMPort {
 interface OpenAIChunk {
   choices?: { index: number; delta: { role?: string; content?: string }; finish_reason: string | null }[]
   usage?: { prompt_tokens?: number; completion_tokens?: number }
+  error?: { message?: string }
 }
 
 interface OpenAIResponse {
@@ -257,11 +206,18 @@ async function* parseSSEStream(response: Response): AsyncGenerator<OpenAIChunk> 
       if (!trimmed.startsWith('data: ')) continue
       const data = trimmed.slice(6)
       if (data === '[DONE]') return
+      let chunk: OpenAIChunk
       try {
-        yield JSON.parse(data)
+        chunk = JSON.parse(data)
       } catch {
-        // skip malformed chunks
+        continue
       }
+      if (chunk.error) {
+        throw new Error(`OpenAI-compatible stream error: ${chunk.error.message ?? 'unknown'}`)
+      }
+      yield chunk
     }
   }
+
+  throw new Error('OpenAI-compatible stream ended before [DONE]')
 }

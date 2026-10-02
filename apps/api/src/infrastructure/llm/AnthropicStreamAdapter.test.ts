@@ -10,16 +10,20 @@ import type { EvaluationToken } from '../../domain/practice/values'
 // NOT mocked — this asserts the actual <evaluation> extraction.
 // ---------------------------------------------------------------------------
 
-const { mockConfig, streamImpl, createImpl } = vi.hoisted(() => ({
+const { mockConfig, streamImpl, createImpl, clientOptions } = vi.hoisted(() => ({
   mockConfig: { LLM_STREAM: true, LLM_MODEL: 'claude-test', LLM_BASE_URL: undefined as string | undefined },
   streamImpl: vi.fn(),
   createImpl: vi.fn(),
+  clientOptions: [] as { baseURL?: string }[],
 }))
 
 vi.mock('../../config', () => ({ config: mockConfig }))
 
 vi.mock('@anthropic-ai/sdk', () => ({
   default: class {
+    constructor(options: { baseURL?: string }) {
+      clientOptions.push(options)
+    }
     messages = { stream: streamImpl, create: createImpl }
   },
 }))
@@ -71,6 +75,7 @@ async function collect(history: ConversationTurn[] = []): Promise<EvaluationToke
 
 beforeEach(() => {
   vi.clearAllMocks()
+  clientOptions.length = 0
   mockConfig.LLM_STREAM = true
   mockConfig.LLM_MODEL = 'claude-test'
   mockConfig.LLM_BASE_URL = undefined
@@ -217,5 +222,133 @@ describe('AnthropicStreamAdapter.evaluate (non-streaming)', () => {
     createImpl.mockResolvedValue({ content: [{ type: 'tool_use', id: 't', name: 'x', input: {} }] })
 
     await expect(collect()).rejects.toBeInstanceOf(LLMParseError)
+  })
+})
+
+describe('AnthropicStreamAdapter base URL', () => {
+  it.each([
+    ['https://shellm.example.com', 'https://shellm.example.com'],
+    ['https://shellm.example.com/', 'https://shellm.example.com'],
+    ['https://shellm.example.com/v1', 'https://shellm.example.com'],
+    ['https://api.anthropic.com/v1/', 'https://api.anthropic.com'],
+  ])('hands %s to the SDK as %s, which appends /v1 itself', (configured, expected) => {
+    mockConfig.LLM_BASE_URL = configured
+
+    expect(new AnthropicStreamAdapter('test-key')).toBeInstanceOf(AnthropicStreamAdapter)
+
+    expect(clientOptions[0]!.baseURL).toBe(expected)
+  })
+
+  it('leaves the SDK default in place when no base URL is configured', () => {
+    expect(new AnthropicStreamAdapter('test-key')).toBeInstanceOf(AnthropicStreamAdapter)
+
+    expect(clientOptions[0]).not.toHaveProperty('baseURL')
+  })
+})
+
+async function drain(stream: AsyncIterable<string>): Promise<string> {
+  let text = ''
+  for await (const c of stream) text += c
+  return text
+}
+
+const SESSION_PARAMS = { ownerRole: 'staff', ownerContext: 'ctx', kataDescription: 'Review a caching PR' }
+
+describe('AnthropicStreamAdapter.generateSessionBody / nudge', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  })
+
+  it('returns the text of the first content block', async () => {
+    createImpl.mockResolvedValue({ content: [{ type: 'text', text: '## PR body' }], usage: {}, stop_reason: 'end_turn' })
+
+    expect(await new AnthropicStreamAdapter('k').generateSessionBody(SESSION_PARAMS)).toBe('## PR body')
+  })
+
+  it('rejects a response whose first block is not text instead of returning undefined', async () => {
+    createImpl.mockResolvedValue({ content: [{ type: 'tool_use' }], usage: {}, stop_reason: 'end_turn' })
+
+    await expect(new AnthropicStreamAdapter('k').generateSessionBody(SESSION_PARAMS)).rejects.toThrow(
+      'Unexpected response type',
+    )
+  })
+
+  it('rethrows the SDK error unchanged so its status survives for the caller', async () => {
+    const apiError = Object.assign(new Error('429 queue is full'), { status: 429 })
+    createImpl.mockRejectedValue(apiError)
+
+    await expect(new AnthropicStreamAdapter('k').generateSessionBody(SESSION_PARAMS)).rejects.toBe(apiError)
+  })
+
+  it('trims the nudge text', async () => {
+    createImpl.mockResolvedValue({ content: [{ type: 'text', text: ' check the call \n' }] })
+
+    const out = await new AnthropicStreamAdapter('k').nudge({
+      stepInstruction: 'sum',
+      testCode: null,
+      userCode: 'a.reduce',
+    })
+
+    expect(out).toBe('check the call')
+  })
+})
+
+describe('AnthropicStreamAdapter.generateSessionBodyStream', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  })
+
+  it('yields only text deltas, in order', async () => {
+    streamImpl.mockReturnValue(eventStream(['## PR ', 'body']))
+
+    expect(await drain(new AnthropicStreamAdapter('k').generateSessionBodyStream(SESSION_PARAMS))).toBe(
+      '## PR body',
+    )
+  })
+
+  it('propagates a mid-stream failure so a truncated body is not treated as complete', async () => {
+    streamImpl.mockReturnValue({
+      async *[Symbol.asyncIterator]() {
+        yield { type: 'content_block_delta', delta: { type: 'text_delta', text: '## PR bo' } }
+        throw new Error('stream killed')
+      },
+    })
+
+    await expect(drain(new AnthropicStreamAdapter('k').generateSessionBodyStream(SESSION_PARAMS))).rejects.toThrow(
+      'stream killed',
+    )
+  })
+})
+
+describe('AnthropicStreamAdapter.askSensei', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => undefined)
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  })
+
+  it('streams the answer and resolves usage from message_start and message_delta', async () => {
+    streamImpl.mockReturnValue(eventStream(['An operation ', 'safe to repeat.']))
+
+    const { stream, usage } = new AnthropicStreamAdapter('k').askSensei({ question: 'What is idempotency?' })
+
+    expect(await drain(stream)).toBe('An operation safe to repeat.')
+    expect(await usage).toEqual({ inputTokens: 10, outputTokens: 20 })
+  })
+
+  it('rejects the usage promise as well when the stream fails', async () => {
+    streamImpl.mockReturnValue({
+      async *[Symbol.asyncIterator]() {
+        yield { type: 'content_block_delta', delta: { type: 'text_delta', text: 'partial' } }
+        throw new Error('stream killed')
+      },
+    })
+
+    const { stream, usage } = new AnthropicStreamAdapter('k').askSensei({ question: 'q' })
+    const usageRejected = expect(usage).rejects.toThrow('stream killed')
+
+    await expect(drain(stream)).rejects.toThrow('stream killed')
+    await usageRejected
   })
 })
