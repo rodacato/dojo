@@ -3,6 +3,14 @@ import type { EvaluationResult, Verdict } from '../../domain/practice/values'
 const EVALUATION_OPEN = '<evaluation>'
 const EVALUATION_CLOSE = '</evaluation>'
 
+// A chunk boundary can fall inside the opening tag, so a trailing prefix of it is held back.
+function partialOpenTagLength(text: string): number {
+  for (let n = Math.min(text.length, EVALUATION_OPEN.length - 1); n > 0; n--) {
+    if (EVALUATION_OPEN.startsWith(text.slice(-n))) return n
+  }
+  return 0
+}
+
 /**
  * Incrementally accumulates stream chunks and detects the <evaluation> block.
  * Call `push(chunk)` for each streamed token, then `finalize()` when the
@@ -34,10 +42,10 @@ export class EvaluationStreamParser {
 
     const openIdx = this.buffer.indexOf(EVALUATION_OPEN)
     if (openIdx === -1) {
-      // No evaluation block yet — everything is prose
-      const prose = this.buffer
-      this.buffer = ''
-      this.proseChunks.push(prose)
+      const held = partialOpenTagLength(this.buffer)
+      const prose = this.buffer.slice(0, this.buffer.length - held)
+      this.buffer = this.buffer.slice(this.buffer.length - held)
+      if (prose) this.proseChunks.push(prose)
       return prose
     }
 

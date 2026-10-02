@@ -98,15 +98,14 @@ describe('AnthropicStreamAdapter.evaluate (streaming)', () => {
   })
 
   it('reassembles prose and evaluation JSON split across text_delta events', async () => {
-    // Deliberate boundaries: prose split, JSON split mid-object across events.
-    // The <evaluation> open tag lands whole in one delta — the parser stitches
-    // the JSON across events but needs the open tag intact in a single chunk.
+    // Deliberate boundaries: prose split, the <evaluation> tag split across two
+    // events, and the JSON split mid-object.
     const half = Math.floor(VALID_EVALUATION.length / 2)
     streamImpl.mockReturnValue(
       eventStream([
         'Good ',
-        'answer.',
-        `<evaluation>${VALID_EVALUATION.slice(0, half)}`,
+        'answer.<eval',
+        `uation>${VALID_EVALUATION.slice(0, half)}`,
         `${VALID_EVALUATION.slice(half)}</evaluation>`,
       ]),
     )

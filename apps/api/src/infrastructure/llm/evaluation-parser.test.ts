@@ -199,20 +199,39 @@ describe('EvaluationStreamParser', () => {
       expect(forwarded.join('')).not.toContain('<evaluation>')
     })
 
-    it('does NOT detect an opening tag split across two chunks (documented limitation)', () => {
-      // The parser matches the tag against the per-call buffer, which is cleared
-      // when no tag is found. A tag straddling a chunk boundary is therefore
-      // missed and the whole payload leaks as prose. This test pins that real
-      // behavior so a future "fix" that changes it is a deliberate, visible change.
+    it('detects an opening tag split across two chunks and never leaks the tag as prose', () => {
       const parser = new EvaluationStreamParser()
       const a = parser.push('prose <eval')
       const b = parser.push(`uation>${JSON.stringify(wellFormed)}</evaluation>`)
       const { result, error } = parser.finalize()
 
-      expect(a).toBe('prose <eval')
-      expect(b).toContain('uation>') // leaked as prose
-      expect(result).toBeNull()
-      expect(error).toBe('Stream ended without <evaluation> block')
+      expect(a + b).toBe('prose ')
+      expect(error).toBeNull()
+      expect(result?.verdict).toBe('passed')
+    })
+
+    it('detects the opening tag when the stream arrives one character at a time', () => {
+      const parser = new EvaluationStreamParser()
+      let forwarded = ''
+      for (const ch of wrapStream('Reasoning here. ', wellFormed)) forwarded += parser.push(ch)
+      const { result, error } = parser.finalize()
+
+      expect(forwarded).toBe('Reasoning here. ')
+      expect(error).toBeNull()
+      expect(result?.analysis).toBe('Solid reasoning, clean separation of concerns.')
+    })
+
+    it('releases held-back text as prose once it turns out not to be the tag', () => {
+      const parser = new EvaluationStreamParser()
+      const a = parser.push('is a < b and <eval')
+      const b = parser.push('uator> too. ')
+      const c = parser.push(wrapStream('', wellFormed))
+
+      expect(a).toBe('is a < b and ')
+      expect(b).toBe('<evaluator> too. ')
+      expect(c).toBe('')
+      expect(parser.proseChunks.join('')).toBe('is a < b and <evaluator> too. ')
+      expect(parser.finalize().result?.verdict).toBe('passed')
     })
   })
 })

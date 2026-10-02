@@ -130,15 +130,13 @@ describe('OpenAIStreamAdapter.evaluate (streaming)', () => {
   })
 
   it('reassembles prose and evaluation JSON spread across many SSE delta chunks', async () => {
-    // Deliberate boundaries: prose is split, and the JSON body is split mid-
-    // object across deltas. The <evaluation> open tag lands whole inside one
-    // delta — the parser stitches the JSON across chunks but needs the open tag
-    // intact (it doesn't buffer a partial open tag across push() calls).
+    // Deliberate boundaries: prose is split, the <evaluation> tag is split across
+    // two deltas, and the JSON body is split mid-object.
     const half = Math.floor(VALID_EVALUATION.length / 2)
     const segments = [
       sseLine(deltaChunk('Nice ')),
-      sseLine(deltaChunk('work so far.')),
-      sseLine(deltaChunk(`<evaluation>${VALID_EVALUATION.slice(0, half)}`)),
+      sseLine(deltaChunk('work so far.<eval')),
+      sseLine(deltaChunk(`uation>${VALID_EVALUATION.slice(0, half)}`)),
       sseLine(deltaChunk(`${VALID_EVALUATION.slice(half)}</evaluation>`)),
       'data: [DONE]\n\n',
     ]
