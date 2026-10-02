@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "hello"
+        },
+        "scroll": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,62}$"
+            },
+            "version": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?(\\+[0-9A-Za-z.-]+)?$"
+            }
+          },
+          "required": [
+            "id",
+            "version"
+          ]
+        },
+        "nonce": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 128
+        },
+        "capabilities": {
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "progress",
+              "run",
+              "llm"
+            ]
+          }
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "scroll",
+        "nonce",
+        "capabilities"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "progress"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "unitId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "state": {
+          "$ref": "#/$defs/__schema0"
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "session",
+        "unitId"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "complete"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "unitId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "session"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "resize"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "session",
+        "height"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "error"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "code",
+        "message"
+      ]
+    }
+  ],
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

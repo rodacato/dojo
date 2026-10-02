@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "init"
+        },
+        "nonce": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 128
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+        },
+        "theme": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 256
+          }
+        },
+        "progress": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "completed": {
+                "type": "boolean"
+              },
+              "state": {
+                "$ref": "#/$defs/__schema0"
+              }
+            },
+            "required": [
+              "completed"
+            ]
+          }
+        },
+        "capabilities": {
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "progress",
+              "run",
+              "llm"
+            ]
+          }
+        },
+        "userRef": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authenticated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "nonce",
+        "session",
+        "locale",
+        "theme",
+        "progress",
+        "capabilities",
+        "userRef",
+        "authenticated"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "setLocale"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$"
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "session",
+        "locale"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
+          "const": "setTheme"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "theme": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "session",
+        "theme"
+      ]
+    }
+  ],
+  "$defs": {
+    "__schema0": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/__schema0"
+          }
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "type": "string"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/__schema0"
+          }
+        }
+      ]
+    }
+  }
+}

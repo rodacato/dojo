@@ -19,7 +19,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "clean": "rm -rf dist"
+    "scroll-schema": "tsx scripts/generate-scroll-json-schema.ts",
+    "clean":"rm -rf dist"
   },
   "dependencies": {
     "zod": "^4.6.4"
