@@ -36,7 +36,7 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `CREATOR_GITHUB_ID` | secret | no | Numeric GitHub id that unlocks `/admin` |
 | `LLM_ADAPTER_FORMAT`, `LLM_BASE_URL`, `LLM_MODEL`, `LLM_STREAM` | var | no | Sensei endpoint |
 | `LLM_API_KEY` | secret | no | Sensei endpoint key |
-| `RESEND_FROM_EMAIL` | var | no | Sender address |
+| `RESEND_FROM_EMAIL` | var | no | Sender address; required when `RESEND_API_KEY` is set, otherwise the API refuses to start |
 | `RESEND_API_KEY` | secret | no | Email delivery |
 | `CRON_SECRET` | secret | no | Bearer for `/cron/*`, also used by the Piston execute smoke |
 | `PISTON_URL` | var | no | Piston accessory URL as the API sees it |

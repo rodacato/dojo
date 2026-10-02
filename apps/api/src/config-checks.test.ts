@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { insecureProductionSettings } from './config-checks'
+import { insecureProductionSettings, mailSettingsProblems } from './config-checks'
 
 const DEV_SECRET = 'dev-secret-change-me-in-production-must-be-at-least-32-characters'
 
@@ -19,5 +19,24 @@ describe('insecureProductionSettings', () => {
 
   it.each(['development', 'test'])('leaves the dev secret alone in %s so a fresh clone still boots', (NODE_ENV) => {
     expect(insecureProductionSettings({ NODE_ENV, SESSION_SECRET: DEV_SECRET })).toEqual([])
+  })
+})
+
+describe('mailSettingsProblems', () => {
+  it('names RESEND_FROM_EMAIL when a key is set without a sender', () => {
+    const problems = mailSettingsProblems({ RESEND_API_KEY: 're_live', RESEND_FROM_EMAIL: '' })
+
+    expect(problems).toHaveLength(1)
+    expect(problems[0]).toContain('RESEND_FROM_EMAIL')
+  })
+
+  it('accepts a key with a sender', () => {
+    expect(
+      mailSettingsProblems({ RESEND_API_KEY: 're_live', RESEND_FROM_EMAIL: 'dojo <noreply@example.dev>' }),
+    ).toEqual([])
+  })
+
+  it('lets an instance without email boot with neither value set', () => {
+    expect(mailSettingsProblems({ RESEND_API_KEY: '', RESEND_FROM_EMAIL: '' })).toEqual([])
   })
 })

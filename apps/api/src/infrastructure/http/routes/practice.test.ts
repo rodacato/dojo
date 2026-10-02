@@ -54,7 +54,7 @@ const {
     mockConfig: {
       FF_LLM_PREP_STREAMING_ENABLED: false,
       RESEND_API_KEY: '',
-      RESEND_FROM_EMAIL: 'dojo <noreply@notdefined.dev>',
+      RESEND_FROM_EMAIL: 'dojo <noreply@example.dev>',
       CRON_SECRET: 'cron-secret',
       CREATOR_GITHUB_ID: 'creator-gh',
       WEB_URL: 'https://dojo.test',

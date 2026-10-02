@@ -32,7 +32,7 @@ const {
     NODE_ENV: 'test' as 'test' | 'production' | 'development',
     CREATOR_GITHUB_ID: '',
     RESEND_API_KEY: '',
-    RESEND_FROM_EMAIL: 'dojo <noreply@notdefined.dev>',
+    RESEND_FROM_EMAIL: 'dojo <noreply@example.dev>',
   },
   validateAuthorizationCode: vi.fn(),
   accessToken: vi.fn(() => 'gh-access-token'),
