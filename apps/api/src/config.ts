@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { insecureProductionSettings } from './config-checks'
+import { insecureProductionSettings, mailSettingsProblems } from './config-checks'
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
@@ -103,10 +103,10 @@ if (!result.success) {
   process.exit(1)
 }
 
-const insecure = insecureProductionSettings(result.data)
-if (insecure.length > 0) {
-  console.error('❌ Refusing to start in production:')
-  for (const problem of insecure) console.error(`  - ${problem}`)
+const problems = [...insecureProductionSettings(result.data), ...mailSettingsProblems(result.data)]
+if (problems.length > 0) {
+  console.error('❌ Refusing to start:')
+  for (const problem of problems) console.error(`  - ${problem}`)
   process.exit(1)
 }
 

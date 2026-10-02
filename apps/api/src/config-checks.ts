@@ -7,3 +7,10 @@ export function insecureProductionSettings(env: { NODE_ENV: string; SESSION_SECR
   }
   return []
 }
+
+export function mailSettingsProblems(env: { RESEND_API_KEY: string; RESEND_FROM_EMAIL: string }): string[] {
+  if (env.RESEND_API_KEY && !env.RESEND_FROM_EMAIL) {
+    return ['RESEND_API_KEY is set but RESEND_FROM_EMAIL is not; set a sender you have verified in Resend, e.g. dojo <noreply@your-domain>']
+  }
+  return []
+}
