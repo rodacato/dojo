@@ -14,10 +14,18 @@ export default defineConfig({
   projects: [
     { name: 'chromium', use: { browserName: 'chromium' } },
   ],
-  webServer: {
-    command: 'pnpm --filter=@dojo/web dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    cwd: '../..',
-  },
+  webServer: [
+    {
+      command: 'pnpm --filter=@dojo/web dev',
+      url: 'http://localhost:5173',
+      reuseExistingServer: !process.env.CI,
+      cwd: '../..',
+    },
+    {
+      command: 'node apps/e2e/fixtures/scroll/serve.mjs',
+      url: 'http://localhost:4010/scroll.json',
+      reuseExistingServer: !process.env.CI,
+      cwd: '../..',
+    },
+  ],
 })
