@@ -40,7 +40,7 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `RESEND_API_KEY` | secret | no | Email delivery |
 | `CRON_SECRET` | secret | no | Bearer for `/cron/*`, also used by the Piston execute smoke |
 | `PISTON_URL` | var | no | Piston accessory URL as the API sees it |
-| `FF_CODE_EXECUTION_ENABLED`, `FF_COURSE_NUDGE_ENABLED`, `FF_LLM_PREP_STREAMING_ENABLED`, `FF_PLAYGROUND_ASK_SENSEI_ENABLED`, `FF_PLAYGROUND_CONSOLE_ENABLED` | var | no | Feature flags |
+| `FF_CODE_EXECUTION_ENABLED`, `FF_LLM_PREP_STREAMING_ENABLED`, `FF_PLAYGROUND_ASK_SENSEI_ENABLED`, `FF_PLAYGROUND_CONSOLE_ENABLED` | var | no | Feature flags |
 | `PLAYGROUND_ASK_SENSEI_DAILY_QUOTA` | var | no | Workflow falls back to `30` |
 | `TURNSTILE_SITE_KEY` | var | no | Public Turnstile key (API and web build) |
 | `TURNSTILE_SECRET_KEY` | secret | no | Turnstile verification |
