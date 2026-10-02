@@ -2,7 +2,7 @@
 
 > **Status:** Canonical · **Last reviewed:** 2026-10-02
 
-> **Direction:** [ADR 024](adr/024-self-hosted-hub-pivot.md) replaced the hosted plan. Phases 1 to 3 below were written for it (invited users, a leaderboard, user-proposed exercises) and the leaderboard no longer exists (ADR 020). Read them as history unless the sprint plan says otherwise; what is current is in [`docs/sprints/current.md`](sprints/current.md).
+> **Direction:** [ADR 024](adr/024-self-hosted-hub-pivot.md) replaced the hosted plan. Phases 1 to 3 below were written for it (invited users, a leaderboard, user-proposed exercises) and the leaderboard no longer exists (ADR 020). Read them as history; what is current lives in GitHub issues and milestones ([Tracking Work](WORKFLOW.md#tracking-work)).
 
 This document is the project map: where it came from, where it is, and where it is going. No dates — this is a personal project. Each milestone is defined by what becomes possible, not by when.
 
