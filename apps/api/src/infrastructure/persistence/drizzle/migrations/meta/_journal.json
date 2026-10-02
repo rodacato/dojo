@@ -183,6 +183,13 @@
       "when": 1781964699383,
       "tag": "0025_curly_nuke",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1790972496723,
+      "tag": "0026_drop_native_scrolls",
+      "breakpoints": true
     }
   ]
 }
