@@ -82,38 +82,6 @@ export const admin = {
       createdAt: string
     }>>('/admin/invitations'),
 
-  getAdminScrolls: () =>
-    request<Array<{
-      id: string
-      slug: string
-      title: string
-      description: string
-      language: string
-      accentColor: string
-      status: 'draft' | 'published'
-      isPublic: boolean
-      lessonCount: number
-      stepCount: number
-      createdAt: string
-    }>>('/admin/scrolls'),
-
-  updateScroll: (
-    id: string,
-    patch: { isPublic?: boolean; status?: 'draft' | 'published' },
-  ) =>
-    request<{ id: string; isPublic: boolean; status: 'draft' | 'published' }>(
-      `/admin/scrolls/${id}`,
-      { method: 'PATCH', body: JSON.stringify(patch) },
-    ),
-
-  seedScrolls: () =>
-    request<{
-      seeded: Array<{ slug: string; title: string; lessonCount: number; stepCount: number }>
-    }>('/admin/scrolls/seed', { method: 'POST' }),
-
-  wipeScrollContent: (id: string) =>
-    request<{ ok: boolean }>(`/admin/scrolls/${id}/wipe`, { method: 'POST' }),
-
   reprovisionPiston: () =>
     request<{
       installed: Array<{ language: string; version: string }>

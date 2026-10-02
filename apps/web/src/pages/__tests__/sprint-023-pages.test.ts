@@ -19,9 +19,6 @@ const pages = [
   { name: 'BeltsPage', loader: () => import('../BeltsPage') },
   { name: 'KumitePlaceholderPage', loader: () => import('../KumitePlaceholderPage') },
   { name: 'EngawaPage', loader: () => import('../EngawaPage') },
-  { name: 'ScrollsPage', loader: () => import('../ScrollsPage') },
-  { name: 'ScrollPlayerPage', loader: () => import('../ScrollPlayerPage') },
-  { name: 'ScrollSharePage', loader: () => import('../ScrollSharePage') },
   { name: 'KatasPage', loader: () => import('../KatasPage') },
   { name: 'KataActivePage', loader: () => import('../KataActivePage') },
   { name: 'LandingPage', loader: () => import('../LandingPage') },
@@ -41,7 +38,6 @@ const adminPages = [
   { name: 'AdminKatasPage', loader: () => import('../admin/AdminKatasPage') },
   { name: 'AdminNewKataPage', loader: () => import('../admin/AdminNewKataPage') },
   { name: 'AdminEditKataPage', loader: () => import('../admin/AdminEditKataPage') },
-  { name: 'AdminScrollsPage', loader: () => import('../admin/AdminScrollsPage') },
 ] as const
 
 describe('Sprint 023 admin pages — import smoke', () => {
@@ -54,13 +50,6 @@ describe('Sprint 023 admin pages — import smoke', () => {
 })
 
 describe('Sprint 023 API client — surface', () => {
-  it('exposes `scrolls` namespace with the renamed endpoints', async () => {
-    const { scrolls } = await import('../../lib/api/scrolls')
-    expect(typeof scrolls.getScrolls).toBe('function')
-    expect(typeof scrolls.getScroll).toBe('function')
-    expect(typeof scrolls.trackProgress).toBe('function')
-  })
-
   it('exposes `profile.getBelts` for the BeltsPage', async () => {
     const { profile } = await import('../../lib/api/profile')
     expect(typeof profile.getBelts).toBe('function')

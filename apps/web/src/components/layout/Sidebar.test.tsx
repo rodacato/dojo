@@ -47,7 +47,6 @@ describe('Sidebar — navigation', () => {
     const expected: Array<[string, string]> = [
       ['dashboard', '/dashboard'],
       ['katas', '/katas'],
-      ['scrolls', '/scrolls'],
       ['engawa', '/engawa'],
       ['kumite', '/kumite'],
       ['belts', '/belts'],
@@ -68,12 +67,12 @@ describe('Sidebar — navigation', () => {
   })
 
   it('highlights the active route with the accent classes', () => {
-    renderSidebar({ route: '/scrolls' })
+    renderSidebar({ route: '/katas' })
 
-    const active = screen.getByRole('link', { name: /scrolls/ })
+    const active = screen.getByRole('link', { name: /^katas$/ })
     expect(active.className).toContain('text-accent')
 
-    const inactive = screen.getByRole('link', { name: /^katas$/ })
+    const inactive = screen.getByRole('link', { name: /^belts$/ })
     expect(inactive.className).not.toContain('text-accent')
   })
 })

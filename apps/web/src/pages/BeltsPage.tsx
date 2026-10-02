@@ -36,9 +36,6 @@ const ALL_MILESTONES: Array<{
   { slug: 'SENSEI_APPROVED', name: 'Sensei Approved', description: 'Received a clean PASSED verdict five times.', category: 'mastery', isPrestige: false },
   { slug: 'ARCHITECT', name: 'Architect', description: 'Completed ten WHITEBOARD kata.', category: 'architect', isPrestige: false },
   { slug: 'UNDEFINED_NO_MORE', name: 'Undefined No More', description: "Fifty kata completed. You're not undefined anymore. The cursor disagrees and keeps blinking.", category: 'mastery', isPrestige: true },
-  { slug: 'COURSE_TYPESCRIPT_FUNDAMENTALS', name: 'TypeScript Fundamentals', description: 'Completed every step of the TypeScript Fundamentals scroll.', category: 'mastery', isPrestige: false },
-  { slug: 'COURSE_JAVASCRIPT_DOM_FUNDAMENTALS', name: 'DOM Wrangler', description: 'Completed every step of the JavaScript DOM Fundamentals scroll.', category: 'mastery', isPrestige: false },
-  { slug: 'COURSE_SQL_DEEP_CUTS', name: 'SQL Deep Cuts', description: 'Completed every step of the SQL Deep Cuts scroll.', category: 'mastery', isPrestige: false },
 ]
 
 const CATEGORY_ORDER = ['practice', 'consistency', 'mastery', 'architect'] as const
