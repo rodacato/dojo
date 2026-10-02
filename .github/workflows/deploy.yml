@@ -130,6 +130,7 @@ jobs:
       HOST_IP: ${{ secrets.HOST_IP }}
       APP_HOST: ${{ vars.APP_HOST }}
       API_HOST: ${{ vars.API_HOST }}
+      SCROLL_FRAME_ORIGINS: ${{ vars.SCROLL_FRAME_ORIGINS }}
       TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
       VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
       VITE_SENTRY_ENVIRONMENT: ${{ vars.VITE_SENTRY_ENVIRONMENT || 'production' }}

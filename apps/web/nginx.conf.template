@@ -25,7 +25,7 @@ server {
   # (api.js loader + the invisible challenge iframe). Siteverify runs
   # server-to-server so it does not appear in connect-src.
   # A scheme-less API_HOST matches https/wss on an https page and http/ws locally.
-  add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com data:; connect-src 'self' ${API_HOST} https://*.ingest.us.sentry.io; frame-src 'self' https://challenges.cloudflare.com; font-src 'self' data:;";
+  add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com data:; connect-src 'self' ${API_HOST} https://*.ingest.us.sentry.io; frame-src 'self' https://challenges.cloudflare.com ${SCROLL_FRAME_ORIGINS}; font-src 'self' data:;";
 
   gzip on;
   gzip_types text/plain text/css application/json application/javascript text/xml;

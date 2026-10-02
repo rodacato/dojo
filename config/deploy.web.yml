@@ -2,6 +2,7 @@
 <% raise "APP_HOST must be set to the instance's public web hostname" if app_host.empty? %>
 <% api_host = ENV["API_HOST"].to_s.strip %>
 <% raise "API_HOST must be set to the instance's public API hostname" if api_host.empty? %>
+<% scroll_origins = ENV["SCROLL_FRAME_ORIGINS"].to_s.strip %>
 <% host_ip = ENV["HOST_IP"].to_s.strip %>
 <% raise "HOST_IP must be set to the server's address" if host_ip.empty? %>
 <% owner = ENV["GITHUB_REPOSITORY_OWNER"].to_s.strip.downcase %>
@@ -30,6 +31,8 @@ env:
   clear:
     # nginx writes it into the CSP connect-src at container start.
     API_HOST: "<%= api_host %>"
+    # nginx writes it into the CSP frame-src; empty allows no scroll origin.
+    SCROLL_FRAME_ORIGINS: "<%= scroll_origins %>"
 
 registry:
   server: ghcr.io
