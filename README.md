@@ -23,7 +23,7 @@ It is not a certification platform, and it is not a leaderboard. It is a daily p
 ## Run your own
 
 - **Your data, your server.** Kata history, verdicts and progression never leave your box.
-- **Your keys.** Bring any streaming LLM endpoint — Anthropic, OpenAI, or a compatible proxy. Evaluation cost is yours, not a subscription.
+- **Your keys.** Bring any streaming LLM endpoint — Anthropic, OpenAI, or a compatible proxy. Evaluation cost is yours: API credits, or your own subscription through a proxy.
 - **Your network.** Public, VPN-gated, or on a laptop — deploy it wherever you want.
 
 ```bash
@@ -50,6 +50,8 @@ LLM_BASE_URL=https://api.anthropic.com
 LLM_API_KEY=your_key_here
 LLM_MODEL=claude-opus-4-6
 ```
+
+To run the sensei on your own Claude or ChatGPT subscription instead of API credits, see [docs/ops/shellm.md](docs/ops/shellm.md).
 
 ### Who can sign in
 
