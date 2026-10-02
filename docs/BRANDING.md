@@ -19,7 +19,7 @@ No es competencia. No es certificación. Es disciplina personal — el lugar don
 - Carga cultural correcta: artes marciales, repetición, maestría progresiva
 - Corto, memorable, pronunciable en cualquier idioma
 
-**Dominio:** `dojo.notdefined.dev`
+**Dominio de la instancia de referencia:** `dojo.notdefined.dev`. Cada instancia usa su propio host (`APP_HOST`); este es el del autor, no un servicio.
 
 El dominio agrega una capa de personalidad que el nombre solo no tiene — *"el dojo de los que todavía no están definidos del todo"*. Es honesto sobre el estado del developer que lo usa: en proceso, no terminado, todavía aprendiendo.
 
@@ -42,6 +42,15 @@ The product speaks one vocabulary. Each term below is load-bearing — it does p
 | **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`, scroll completions). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
 | **Engawa** | The transitional veranda. Lives at `/engawa` as the anonymous code playground (no account required to try a snippet), but the *concept* is broader — see §Engawa as a philosophy below. | *"opened the engawa to test a Ruby idea"* | *"opened the playground"* (in our product surface) |
 | **Kumite** | The planned 1v1 sparring feature — paired evaluation, shared kata, side-by-side reasoning compared by the sensei. **Not built yet** — the route exists as an honest placeholder. Not a relabel of the deleted leaderboard. | *"when kumite ships I want to spar against another reviewer"* | *"check the kumite leaderboard"* |
+
+The self-hosting vocabulary, which is plain on purpose because it describes deployment, not practice:
+
+| Term | What it means | On-brand | Off-brand |
+|---|---|---|---|
+| **Instance** | One running deployment, serving one group. "Dojo" is the software; an instance is a copy of it someone runs. | *"run your own instance"*, *"this instance"* | *"the platform"*, *"the hub"* (the word appears only in [ADR 024](adr/024-self-hosted-hub-pivot.md)) |
+| **Operator** | The person who deploys an instance and sets `CREATOR_GITHUB_ID`. They own its invitations, its data and its LLM bill; the dojo project owns none of them. In code the same person is the `creator` (`CREATOR_GITHUB_ID`, `requireCreator`); renaming it would break existing deployments, so it stays. | *"ask the operator for an invitation"* | *"ask the dojo team"*, *"the admin"* (`/admin` is a route, not a role) |
+| **Invitation** | The link an operator issues from `/admin/invitations`; there is no other way to sign up. The landing's form is a *request access*: a note to the operator, not a sign-up. | *"request an invitation"* | *"join the waitlist"* |
+| **Reference instance** | The author's own deployment at `dojo.notdefined.dev`, kept as a live example. It is not a service and grants nothing beyond what its operator chooses. | *"the reference instance"* | *"the hosted version"* |
 
 One more that is *not* dojo-flavored on purpose:
 
@@ -305,7 +314,7 @@ Simple. No necesita más. Estable a través de la migración de temas — el wor
 
 **Para el favicon:** sólo el cursor parpadeante `▌` sobre fondo oscuro (indigo en Slate, vermillion en Sumi-e). Reconocible en 16×16.
 
-**Para share cards y OG images:** `dojo.notdefined.dev` en monospace completo. El punto entre `dojo` y `notdefined` actúa como separador visual natural.
+**Para share cards y OG images:** el host de la instancia en monospace completo (`dojo.notdefined.dev` en la instancia de referencia). El punto entre `dojo` y `notdefined` actúa como separador visual natural.
 
 **Evitar:**
 - Iconografía de artes marciales literal (katanas, cinturones físicos, dojos de madera)
