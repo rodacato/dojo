@@ -11,7 +11,7 @@ Everything you need to understand the system before writing a line of code — t
 Four services, two public, two private:
 
 ```
-dojo                         # this repo — the practice platform (reference instance: dojo.notdefined.dev)
+dojo                         # this repo — the practice app you run yourself (the author's reference instance: dojo.notdefined.dev, not a service)
 drawhaus.notdefined.dev      # separate repo — Excalidraw with MCP + API
 shellm (github.com/rodacato/SheLLM)  # separate repo — LLM proxy (optional)
 dojocho (private, future)    # curation tool for building kata

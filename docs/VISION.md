@@ -1,6 +1,6 @@
 # Vision
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-05
+> **Status:** Canonical · **Last reviewed:** 2026-10-02 (audience aligned with ADR 024)
 
 ## The Problem
 
@@ -30,9 +30,9 @@ It's not about preparing for interviews. It's about staying technically alive in
 
 Developers who feel the pull of vibe coding and are worried about what it's doing to their ability to think independently. Developers who want to stay sharp without abandoning the tools that make them fast. Developers who can laugh at their own gaps while actively closing them.
 
-Initially: the creator (pure dogfooding).
-Then: invited developers who feel the same pull.
-Eventually: any developer who wants to maintain technical agency.
+Whoever runs it. Dojo is self-hosted ([ADR 024](adr/024-self-hosted-hub-pivot.md)): you run an instance for yourself, your friends or your team, and you decide who gets in. The project does not host anyone and does not decide who the users are.
+
+It began as the creator's own practice space. That is still the model: one person who needs it, running it, before anyone else is asked to.
 
 ## What Success Looks Like
 
@@ -41,6 +41,8 @@ Not a large user base. Not viral growth. Success is a small group of developers 
 The best outcome: someone uses the dojo for 6 months and realizes they stopped reaching for the AI prompt as the first instinct. They reach for their own reasoning first, then use AI to validate or extend it. That's the shift.
 
 ## What Dojo Is Not
+
+It is not a hosted service or a multi-tenant platform: an instance serves one group, and whoever deploys it owns its invitations, its data and its LLM bill. It is not a certification either, a gym and not an exam.
 
 It is not a replacement for AI tools. It is not anti-AI. It is the thing you do so that when you use AI, you're directing it rather than following it.
 

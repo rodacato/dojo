@@ -2,6 +2,8 @@
 
 > **Status:** Canonical · **Last reviewed:** 2026-10-02
 
+> **Direction:** [ADR 024](adr/024-self-hosted-hub-pivot.md) replaced the hosted plan. Phases 1 to 3 below were written for it (invited users, a leaderboard, user-proposed exercises) and the leaderboard no longer exists (ADR 020). Read them as history unless the sprint plan says otherwise; what is current is in [`docs/sprints/current.md`](sprints/current.md).
+
 This document is the project map: where it came from, where it is, and where it is going. No dates — this is a personal project. Each milestone is defined by what becomes possible, not by when.
 
 It holds direction and history, not work state. What is planned, in progress and done lives in GitHub issues and milestones — see [Tracking Work](WORKFLOW.md#tracking-work).
@@ -171,7 +173,7 @@ Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61]
 | 002 | [Server-side sessions](adr/002-server-side-sessions.md) | DB-backed sessions over stateless JWTs | ✅ Accepted |
 | 003 | [InMemoryEventBus](adr/003-inmemory-event-bus.md) | In-process event bus; upgrade to Redis when cross-process needed | ✅ Accepted |
 | 004 | [CodeMirror 6](adr/004-codemirror-6.md) | CodeMirror 6 over Monaco (too heavy) or plain textarea (too primitive) | ✅ Accepted |
-| 005 | [Creator auth env var](adr/005-creator-auth-env-var.md) | `CREATOR_GITHUB_ID` env var in Phase 0; DB column in Phase 1 | ✅ Accepted |
+| 005 | [Creator auth env var](adr/005-creator-auth-env-var.md) | `CREATOR_GITHUB_ID` env var in Phase 0; DB column in Phase 1 (the env var stayed: it is the operator model, see ADR 024) | ✅ Accepted |
 | 006 | [Mood/duration not persisted](adr/006-mood-duration-not-persisted.md) | Transient query params only — no mood history tracking | ✅ Accepted |
 | 007 | [Bearer token over cookies](adr/007-bearer-token-over-cookies.md) | Bearer header replaces cross-domain cookies; server-side sessions unchanged | ✅ Accepted |
 | 008 | [Pending attempts memory bridge](adr/008-pending-attempts-memory-bridge.md) | In-memory bridge for pending attempts during WS evaluation | ✅ Accepted |
