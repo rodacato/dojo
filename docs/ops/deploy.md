@@ -27,6 +27,7 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `HOST_IP` | secret | yes | Host address. A secret, not a variable: Kamal and `ssh-keyscan` print it, the logs of a public repo are public, and only secrets are masked |
 | `APP_HOST` | var | yes | Web hostname without scheme: web's proxy host, the API's `WEB_URL`, the Open Graph URLs baked into the web build |
 | `API_HOST` | var | yes | API hostname without scheme: the API's proxy host, the web build's `VITE_API_URL`, the CSP `connect-src`, the Piston execute smoke |
+| `SCROLL_FRAME_ORIGINS` | var | no | Space-separated exact origins (`https://scrolls.example.com`, no wildcards) the web CSP `frame-src` allows for embedded scrolls. Empty allows none. Changing it needs a web redeploy |
 | `DATABASE_URL` | secret | yes | Points at the `db` accessory |
 | `POSTGRES_PASSWORD` | secret | yes | Password of the `db` accessory |
 | `SESSION_SECRET` | secret | yes | 32+ characters |

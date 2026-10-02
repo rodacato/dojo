@@ -62,6 +62,8 @@ Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors c
 
 ### Scrolls
 
+The CSP only lets the app frame origins you list. Set `SCROLL_FRAME_ORIGINS` to a space-separated list of exact origins (no wildcards), for example `SCROLL_FRAME_ORIGINS="https://scrolls.example.com"`; empty allows none. It is read by the web container at start, so changing it needs a redeploy.
+
 Scrolls are being rebuilt. The native scroll system was removed; the new model is independent web apps, hosted anywhere, embedded in Dojo by iframe, with Dojo offering progress, session and code execution. It is not available yet — follow [epic #116](https://github.com/rodacato/dojo/issues/116).
 
 ---
