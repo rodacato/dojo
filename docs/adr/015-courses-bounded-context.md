@@ -1,6 +1,6 @@
 # ADR 015: Courses as a separate bounded context (Learning)
 
-**Status:** Accepted
+**Status:** Superseded by [ADR 025](025-external-embedded-scrolls.md)
 **Date:** 2026-03-27
 **Context:** Sprint 013 pre-work for Courses MVP (Sprint 014)
 
