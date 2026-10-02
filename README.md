@@ -39,6 +39,7 @@ The sensei defaults to `mock`, so no LLM key is needed to try it. The full guide
 | Next | Where |
 |---|---|
 | Deploy to a server with Kamal | [docs/ops/deploy.md](docs/ops/deploy.md) |
+| Upgrade, roll back, back up, rotate secrets | [docs/ops/runbook.md](docs/ops/runbook.md) |
 | Monitoring, metrics, recovery | [docs/ops/observability.md](docs/ops/observability.md) |
 | Securing your instance | [SECURITY.md](SECURITY.md) |
 

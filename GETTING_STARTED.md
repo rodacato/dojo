@@ -117,5 +117,5 @@ Then set in `.env`:
 
 ## More
 
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/WORKFLOW.md](docs/WORKFLOW.md) ·
+[docs/ops/runbook.md](docs/ops/runbook.md) (upgrade, backup, secrets) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/WORKFLOW.md](docs/WORKFLOW.md) ·
 [CONTRIBUTING.md](CONTRIBUTING.md) · [SECURITY.md](SECURITY.md) (self-hosting notes)
