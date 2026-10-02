@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { insecureProductionSettings } from './config-checks'
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
@@ -28,7 +29,8 @@ const envSchema = z.object({
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
   DRAWHAUS_URL: z.url().optional(),
   RESEND_API_KEY: z.string().default(''),
-  RESEND_FROM_EMAIL: z.string().default('dojo <noreply@notdefined.dev>'),
+  // No default: mail goes out only from an address the operator owns.
+  RESEND_FROM_EMAIL: z.string().default(''),
   CRON_SECRET: z.string().default(''),
   CREATOR_GITHUB_ID: z.string().default(''),
   API_PORT: z.coerce.number().default(3001),
@@ -98,6 +100,13 @@ const result = envSchema.safeParse(process.env)
 if (!result.success) {
   console.error('❌ Invalid or missing environment variables:')
   console.error(z.flattenError(result.error).fieldErrors)
+  process.exit(1)
+}
+
+const insecure = insecureProductionSettings(result.data)
+if (insecure.length > 0) {
+  console.error('❌ Refusing to start in production:')
+  for (const problem of insecure) console.error(`  - ${problem}`)
   process.exit(1)
 }
 

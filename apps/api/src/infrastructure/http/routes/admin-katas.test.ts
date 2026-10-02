@@ -203,6 +203,7 @@ beforeEach(() => {
   selectQueue.length = 0
   authState.mode = 'creator'
   mockConfig.RESEND_API_KEY = ''
+  mockConfig.RESEND_FROM_EMAIL = 'dojo <noreply@example.dev>'
 })
 
 // ---------------------------------------------------------------------------
@@ -708,6 +709,16 @@ describe('POST /admin/invitations', () => {
     const res = await jsonReq('/admin/invitations', 'POST', { email: 'x@y.com' })
     const body = (await res.json()) as { emailSent: boolean }
     expect(body.emailSent).toBe(false)
+    expect(resendSend).not.toHaveBeenCalled()
+  })
+
+  it('does not send email when Resend has a key but no sender address', async () => {
+    seedInvitationInsert()
+    mockConfig.RESEND_API_KEY = 're_test'
+    mockConfig.RESEND_FROM_EMAIL = ''
+    const res = await jsonReq('/admin/invitations', 'POST', { email: 'x@y.com' })
+    expect(res.status).toBe(201)
+    expect(((await res.json()) as { emailSent: boolean }).emailSent).toBe(false)
     expect(resendSend).not.toHaveBeenCalled()
   })
 

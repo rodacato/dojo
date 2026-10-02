@@ -70,8 +70,8 @@ practiceRoutes.post('/access-requests', async (c) => {
 
   const { githubHandle, reason } = parsed.data
 
-  if (!config.RESEND_API_KEY) {
-    console.warn('access-requests: RESEND_API_KEY not configured — dropping request')
+  if (!config.RESEND_API_KEY || !config.RESEND_FROM_EMAIL) {
+    console.warn('access-requests: RESEND_API_KEY or RESEND_FROM_EMAIL not configured — dropping request')
     return c.json({ error: 'Access request channel not available' }, 503)
   }
 
@@ -473,7 +473,7 @@ practiceRoutes.post('/cron/reminders', async (c) => {
       ),
     )
 
-  if (!config.RESEND_API_KEY || eligibleUsers.length === 0) {
+  if (!config.RESEND_API_KEY || !config.RESEND_FROM_EMAIL || eligibleUsers.length === 0) {
     return c.json({ sent: 0 })
   }
 
