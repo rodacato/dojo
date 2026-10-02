@@ -238,6 +238,7 @@ beforeEach(() => {
   selectResult.rows = []
   mockConfig.FF_LLM_PREP_STREAMING_ENABLED = false
   mockConfig.RESEND_API_KEY = ''
+  mockConfig.RESEND_FROM_EMAIL = 'dojo <noreply@example.dev>'
   mockConfig.CRON_SECRET = 'cron-secret'
   mockConfig.CREATOR_GITHUB_ID = 'creator-gh'
   pendingAttempts.clear()
@@ -306,6 +307,16 @@ describe('POST /access-requests', () => {
     expect(res.status).not.toBe(400)
     expect(await res.json()).toEqual({ error: 'Access request channel not available' })
     expect(resendSend).not.toHaveBeenCalled()
+  })
+
+  it('returns 503 and sends nothing when no sender address is configured', async () => {
+    mockConfig.RESEND_API_KEY = 'rk-live'
+    mockConfig.RESEND_FROM_EMAIL = ''
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const res = await post('/access-requests', { githubHandle: '@neo' })
+    expect(res.status).toBe(503)
+    expect(resendSend).not.toHaveBeenCalled()
+    warnSpy.mockRestore()
   })
 
   it('sends the email and escapes html in handle/reason when configured', async () => {
@@ -913,6 +924,16 @@ describe('POST /cron/reminders', () => {
 
   it('returns sent:0 when eligible users exist but RESEND_API_KEY is unset', async () => {
     mockConfig.RESEND_API_KEY = ''
+    selectResult.rows = [{ id: 'u1', username: 'a', email: 'a@x.com' }]
+    const res = await post('/cron/reminders', {}, { Authorization: 'Bearer cron-secret' })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ sent: 0 })
+    expect(resendSend).not.toHaveBeenCalled()
+  })
+
+  it('returns sent:0 when eligible users exist but no sender address is configured', async () => {
+    mockConfig.RESEND_API_KEY = 'rk-live'
+    mockConfig.RESEND_FROM_EMAIL = ''
     selectResult.rows = [{ id: 'u1', username: 'a', email: 'a@x.com' }]
     const res = await post('/cron/reminders', {}, { Authorization: 'Bearer cron-secret' })
     expect(res.status).toBe(200)

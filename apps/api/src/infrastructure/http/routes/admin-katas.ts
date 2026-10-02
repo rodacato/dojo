@@ -288,7 +288,7 @@ adminKatasRoutes.post('/invitations', async (c) => {
 
   // Send invite email if Resend is configured and email provided
   let emailSent = false
-  if (email && config.RESEND_API_KEY) {
+  if (email && config.RESEND_API_KEY && config.RESEND_FROM_EMAIL) {
     try {
       const { Resend } = await import('resend')
       const resend = new Resend(config.RESEND_API_KEY)
