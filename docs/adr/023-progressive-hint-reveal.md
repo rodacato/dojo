@@ -1,6 +1,6 @@
 # ADR 023: Progressive hint reveal + broken→fix katas
 
-**Status:** Accepted
+**Status:** Accepted (superseded in practice by [ADR 025](025-external-embedded-scrolls.md): the native scroll surface it changes was removed)
 **Date:** 2026-06-17
 **Context:** Sprint 026 — re-evaluation of the scroll/kata format after the creator found the courses "boring, too much text, no felt learning" and questioned whether a text-heavy crash course can compete with high-production video. Extends [ADR 022](022-crash-course-pivot.md) (crash-course pivot) without reopening it.
 

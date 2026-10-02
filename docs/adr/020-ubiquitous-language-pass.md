@@ -1,6 +1,6 @@
 # ADR 020: Ubiquitous language pass — dojo terminology end-to-end
 
-**Status:** Accepted
+**Status:** Accepted (the Scroll renames are superseded by [ADR 025](025-external-embedded-scrolls.md); the kata and belt vocabulary stands)
 **Date:** 2026-06-05
 **Context:** Sprint 023 — see [PRD-030](../prd/030-dojo-terminology-routes.md), [PRD-031](../prd/031-belt-progression-rubric.md), [PRD-032](../prd/032-sprint-023-planning.md), [Spec 028](../specs/028-dojo-language-pass.md)
 

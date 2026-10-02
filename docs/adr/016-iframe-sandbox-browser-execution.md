@@ -1,6 +1,6 @@
 # ADR 016: iframe sandbox for browser-side course execution
 
-**Status:** Accepted
+**Status:** Superseded by [ADR 025](025-external-embedded-scrolls.md)
 **Date:** 2026-03-27
 **Context:** Sprint 015 — second course requires DOM manipulation, which Piston cannot provide
 
