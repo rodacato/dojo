@@ -25,14 +25,14 @@ The primary build identity (Kira Tanaka, Fractional CTO) consults this panel whe
 | S2 | Valentina Cruz | Kata content design, learning progressions | Situacional | Phase 3: contenido, quality bar, contributor flow |
 | S3 | Joel Ferreira | Marketing, launch strategy, developer audience | Situacional | Phase 4: apertura pública, ProductHunt, Show HN |
 | S4 | Lucía Navarro | Product workflow, PRDs, indie builder execution | Situacional | "tengo una idea", PRDs exploratorios, triage de bloques |
-| S5 | Dr. Elif Yıldız | Learning science, curriculum architecture, deliberate practice | Situacional | Course curriculum design, learning progressions across sub-courses |
-| S6 | Kenji Watanabe | Go language pedagogy, idioms, stdlib-first teaching | Situacional | `docs/courses/curricula/go.md` design, Go course review |
-| S7 | Nadia Petrov | Python educator, pragmatic idioms, async pedagogy | Situacional | `docs/courses/curricula/python.md` design, Python course review |
-| S8 | Björn Lindqvist | Rust educator, ownership pedagogy, compiler-as-teacher | Situacional | `docs/courses/curricula/rust.md` design, Rust course review |
-| S9 | Leo Barros | TypeScript educator, type-level pedagogy, advanced types | Situacional | `docs/courses/curricula/typescript.md` design, TS course review (infra TS stays with Tomás) |
-| S10 | Rhea Kapoor | Ruby steward, blocks/metaprogramming pedagogy, Ruby-not-Rails | Situacional | `docs/courses/curricula/ruby.md` design, Ruby course review |
-| S11 | Maya Lindqvist | Interactive learning experience design, game-feel for education | Situacional | Step type design, interactivity-vs-pedagogy tradeoffs, mockup review for scroll player |
-| S12 | Felix Park | Interactive motion engineering, Rive/GSAP/state machines, perf budgets | Situacional | Animation tech selection per step type, perf review before scroll ships |
+| S5 | Dr. Elif Yıldız | Learning science, curriculum architecture, deliberate practice | Situacional | Learning-science review of external scrolls and their progressions |
+| S6 | Kenji Watanabe | Go language pedagogy, idioms, stdlib-first teaching | Situacional | Go scroll content design or review |
+| S7 | Nadia Petrov | Python educator, pragmatic idioms, async pedagogy | Situacional | Python scroll content design or review |
+| S8 | Björn Lindqvist | Rust educator, ownership pedagogy, compiler-as-teacher | Situacional | Rust scroll content design or review |
+| S9 | Leo Barros | TypeScript educator, type-level pedagogy, advanced types | Situacional | TS scroll content design or review (infra TS stays with Tomás) |
+| S10 | Rhea Kapoor | Ruby steward, blocks/metaprogramming pedagogy, Ruby-not-Rails | Situacional | Ruby scroll content design or review |
+| S11 | Maya Lindqvist | Interactive learning experience design, game-feel for education | Situacional | Interactivity-vs-pedagogy tradeoffs, mockup review for scroll authors |
+| S12 | Felix Park | Interactive motion engineering, Rive/GSAP/state machines, perf budgets | Situacional | Animation tech selection, perf review of motion |
 
 ---
 
@@ -81,7 +81,7 @@ The primary build identity (Kira Tanaka, Fractional CTO) consults this panel whe
 | Testing strategy, LLM output quality assurance | Hiroshi (situational) |
 | Exercise content quality, learning taxonomy | Valentina (situational) |
 | Launch, positioning, public announcement | Joel (situational) |
-| Course curriculum design, learning progressions across sub-courses | Elif (situational) |
+| Learning-science review of external scrolls and their progressions | Elif (situational) |
 | Go course content, Go pedagogy, Go idiom enforcement | Kenji (situational) |
 | Python course content, Python pedagogy, async teaching | Nadia (situational) |
 | Rust course content, ownership pedagogy, compiler-as-teacher design | Björn (situational) |
@@ -487,7 +487,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - Piston constraints on Go courses: stdlib only, no `go get`, deterministic tests, `httptest` for loopback instead of real network
 
 **When to consult Kenji:**
-- When `docs/courses/curricula/go.md` is being revised or extended
+- When Go scroll content is being revised or extended
 - When a Go exercise risks teaching the wrong idiom (e.g., using `sync.Mutex` where a channel is clearer, or vice versa)
 - When the Go concurrency sub-course is being scoped
 - When a Go step's starter code doesn't feel idiomatic and the cause isn't obvious
@@ -513,7 +513,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - Piston Python constraints: stdlib-only exercises, no pandas/numpy by default, async exercises must use `asyncio.sleep` and in-memory queues
 
 **When to consult Nadia:**
-- When `docs/courses/curricula/python.md` is being revised or extended
+- When Python scroll content is being revised or extended
 - When a Python exercise's difficulty spikes unexpectedly and the reason isn't obvious
 - When the async Python sub-course is being scoped
 - When type hints are being introduced at a new point in the curriculum
@@ -539,7 +539,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - Piston Rust constraints: std only, no external crates, single-file or minimal `cargo test` scaffold, compile-latency budget per step
 
 **When to consult Björn:**
-- When `docs/courses/curricula/rust.md` is being revised or extended
+- When Rust scroll content is being revised or extended
 - When a Rust step needs to balance compiler guidance against learner frustration
 - When the async Rust (std-only) sub-course is being scoped
 - When Piston's Rust toolchain version, compile timeout, or `unsafe` sandbox policy changes
@@ -567,7 +567,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 **Relationship with Tomás:** Leo owns TS-as-a-language pedagogy — advanced types, type-level programming, TS course content. Tomás owns TS-in-infra — monorepo TS, shared package discipline, build config, Node runtime adapters. They overlap on the TS for Node/API course; Leo designs the learning arc, Tomás reviews for realistic backend patterns.
 
 **When to consult Leo:**
-- When `docs/courses/curricula/typescript.md` is being revised or extended
+- When TypeScript scroll content is being revised or extended
 - When an advanced-types exercise risks teaching cleverness over understanding
 - When the TS learning curve needs softening (JS refugees) or sharpening (engineers who already think in types)
 - When sandbox routing is ambiguous (Piston vs. iframe)
@@ -593,7 +593,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - Piston Ruby constraints: stdlib only, Minitest as default test harness, no Rails, no `async` gem, no Sidekiq
 
 **When to consult Rhea:**
-- When `docs/courses/curricula/ruby.md` is being revised or extended
+- When Ruby scroll content is being revised or extended
 - When a Ruby exercise risks teaching a Rails idiom instead of a Ruby idiom
 - When the metaprogramming sub-course is being scoped (she draws the line at "small DSL" vs. "parlor trick")
 - When the Fibers / Ractors concurrency sub-course is being scoped
@@ -632,7 +632,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - When a mockup or design proposal comes in and you need to know whether it earns its complexity
 - When the temptation to add "encouragement moments" arises (her veto is reliable)
 - When a step type's authoring cost is rising and you need to know if it's pedagogically worth it
-- When measuring whether the dynamic scroll redesign is actually working post-launch
+- When measuring whether an interactive redesign is actually working post-launch
 
 **Relationship with Elif (S5):** Elif owns the curriculum architecture (what gets taught in what order, learning science underpinnings). Maya owns the *interaction layer* on top of that — how each step is shaped so the interaction itself teaches. They overlap on retrieval practice mechanics — Elif designs the schedule, Maya designs how the surface feels.
 
@@ -656,12 +656,12 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 - Picks per case: *Rive when the animation is a designed artifact with states; GSAP when the timeline is procedural and code-driven; CSS when state is binary; motion-one when bundle size dominates.*
 
 *Perf and runtime:*
-- Real perf budgets in mind: how much animation runtime can the scroll player carry before Time-to-Interactive on the catalog page regresses
+- Real perf budgets in mind: how much animation runtime a route can carry before Time-to-Interactive regresses
 - Understands the trade-off between bundle weight and animation expressiveness
 - Knows the failure modes: animations broken in mobile Safari, animations that don't respect `prefers-reduced-motion`, animations that hold off accessibility tree updates
-- Lazy-loads animation runtimes per route — the landing page doesn't pay for the scroll player's runtime
+- Lazy-loads animation runtimes per route — the landing page doesn't pay for another route's runtime
 
-*Architecture for interactive scroll player:*
+*Architecture for interactive UIs:*
 - How to embed Rive state machines inside React (StateMachineInput pattern, ref ownership, controlled state vs Rive-internal state)
 - When the animation needs to be driven by data (predict reveals, trace step-by-step) vs designer-controlled (decorative)
 - How to test motion (Playwright + reduced-motion mode for deterministic snapshots)
@@ -673,17 +673,17 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 **When to consult Felix:**
 - When the choice between Rive, GSAP, motion-one, framer-motion, or CSS-only needs a second opinion
 - When a step type's animation is about to ship and needs a perf review
-- When the scroll player needs to add a runtime library and you need a bundle-size budget
+- When a route needs to add a runtime library and you need a bundle-size budget
 - When `prefers-reduced-motion` and accessibility tree behaviour need a sign-off
 - When an animation works in Chrome but fails in mobile Safari — he's debugged enough of these to know the gotchas
 
-**Activation cadence note (Sprint 026+):** With GSAP-default reaffirmed on `/scrolls/*` and Rive parked indefinitely (see [`docs/courses/INTERACTIVITY-PATTERNS.md`](../courses/INTERACTIVITY-PATTERNS.md) §Animation tech), Felix is consulted **episodically**, not in the regular per-sprint rotation:
-- When a new motion-heavy step type or scroll surface is about to ship (idiom comparisons, future `trace` step, etc.)
-- When the `/scrolls/*` bundle budget changes or a new GSAP plugin is proposed
+**Activation cadence note (Sprint 026+):** With GSAP as the only motion library and Rive parked indefinitely, Felix is consulted **episodically**, not in the regular per-sprint rotation:
+- When a new motion-heavy surface is about to ship
+- When a route's bundle budget changes or a new GSAP plugin is proposed
 - When a `prefers-reduced-motion` or accessibility-tree regression surfaces
 - When Rive is reconsidered (would only happen if a separate designer with a Rive editor practice enters the team)
 
-Default expectation per language scroll work: zero Felix consultations needed; the CSS state machines + the shared GSAP runtime cover the format. Skip his lens unless a concrete motion question arises.
+Default expectation: zero Felix consultations needed; CSS state machines + the shared GSAP runtime cover the product. Skip his lens unless a concrete motion question arises.
 
 **Relationship with Tomás (C3):** Tomás owns the application-level frontend architecture (routing, state management, WebSocket lifecycle). Felix owns the animation runtime layer inside that — the state machines, the timelines, the perf budget for motion. They collaborate on lazy-loading boundaries (Tomás owns the route split; Felix declares which animation libs each route may pull in).
 
