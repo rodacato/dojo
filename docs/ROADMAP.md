@@ -1,11 +1,10 @@
 # Roadmap
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-05
+> **Status:** Canonical · **Last reviewed:** 2026-10-02
 
 This document is the project map: where it came from, where it is, and where it is going. No dates — this is a personal project. Each milestone is defined by what becomes possible, not by when.
 
-Active work: [`docs/sprints/current.md`](sprints/current.md)
-Ideas and next block: [`docs/sprints/backlog.md`](sprints/backlog.md)
+It holds direction and history, not work state. What is planned, in progress and done lives in GitHub issues and milestones — see [Tracking Work](WORKFLOW.md#tracking-work).
 
 ---
 
@@ -47,6 +46,8 @@ Does not start until Phase 0 is in real daily use.
 
 ## History — Sprints
 
+Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61](https://github.com/rodacato/dojo/issues/61)); sprint 034 is the last. This table is history and is not extended.
+
 | Sprint | Outcome | Status |
 |---|---|---|
 | [sprint-001 — Technical foundation](sprints/archive/sprint-001-fundacion-tecnica.md) | Backend DDD + hexagonal, auth, DB, CI | ✅ Closed |
@@ -82,7 +83,7 @@ Does not start until Phase 0 is in real daily use.
 | [sprint-031 — Go crash scroll + the carried smoke](sprints/archive/sprint-031-go-scroll.md) | Go (the fifth scroll, Piston Go 1.16.2) authored + the carried full-set real-Piston smoke, which caught a dead kata in the published Ruby scroll on its first run. `PistonAdapter` `isGo` file-template branch + hand-rolled JSON (encoding/json crashes the 1.16.2 sandbox). Staged `published`+`isPublic`, live on next deploy+reseed. | ✅ Closed |
 | [sprint-032 — Ship the set, then close the reshape loop](sprints/archive/sprint-032-ship-and-reshape-loop.md) | Five-language set deployed + reseeded to prod (Go live, Ruby `parameters_of` fix carried); solo-authored Go prose got its fresh-eyes read as the deploy gate (2 real gaps fixed); reshape's deferred player/share layer landed; per-workspace Sonar split + coverage measurement groundwork. | ✅ Closed |
 | [sprint-033 — Maintenance: security & foundation](sprints/archive/sprint-033-maintenance-security-foundation.md) | Security/deps debt (`pnpm audit` crit+high → 0), honest coverage measured + gated across api/web/shared (api gate enforced at 80/72; web reached ~87% but its gate stayed unwired in CI — carried), knip dead-code baseline + unambiguous wins, Sonar/CodeQL triage into fix-now/S034/won't-fix. Over-delivered web coverage; the planned "web backbone" S034 premise was retired. | ✅ Closed |
-| [sprint-034 — Wire the web gate + architecture debt](sprints/current.md) | The cheap residual S033 surfaced (enforce the web/shared coverage gates in CI — they exist but never run) plus the deferred architecture debt (P-1..P-6, F-4..F-6, in-memory rate limiters, `TelemetrySinkPort`), scoped from S033's baselines and gated tests-before-refactor. | 🚧 In flight |
+| [sprint-034 — Wire the web gate + architecture debt](sprints/archive/sprint-034-wire-web-gate-architecture-debt.md) | The cheap residual S033 surfaced (enforce the web/shared coverage gates in CI — they exist but never run) plus the deferred architecture debt (P-1..P-6, F-4..F-6, in-memory rate limiters, `TelemetrySinkPort`), scoped from S033's baselines and gated tests-before-refactor. | 🚧 Open — tracked by milestone S034 |
 
 ---
 
@@ -187,6 +188,19 @@ Does not start until Phase 0 is in real daily use.
 | 019 | [Piston liveness and reprovision](adr/019-piston-liveness-and-reprovision.md) | GHA liveness probe + idempotent reprovision script as the operational floor for an anonymous-traffic Piston surface | ✅ Accepted |
 | 020 | [Ubiquitous language pass](adr/020-ubiquitous-language-pass.md) | Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object; schema.ts exports dojo-native names while DB tables/columns stay legacy via pgTable arg; /leaderboard deleted (not renamed to /kumite); /kumite reserved as future feature placeholder | ✅ Accepted |
 | 021 | [Sumi-e dual-theme architecture](adr/021-sumi-e-dual-theme-architecture.md) | Two complete palettes (Slate Indigo shipped + Sumi/Washi target) share the same `--color-*` token names; `[data-theme="sumi"\|"washi"]` selectors override `@theme` defaults; user picks via toggle with OS auto-detect default + `localStorage` persistence; no feature flag (single-user constraint, `'slate'` choice is the kill switch); editor-style libraries (CodeMirror, Mermaid) read tokens via `useThemeTokens` MutationObserver hook | ✅ Accepted |
+
+---
+
+## Not Doing
+
+Evaluated and discarded, recorded so the debate does not happen again.
+
+- **Dojocho** (a kata curation tool at scale) — complexity not justified at the current phase.
+- **Team dojos** (shared practice spaces for engineering teams) — contradicts individual practice.
+- **Native mobile** — the web app works in a mobile browser.
+- **AI-generated katas on demand** — quality is too variable to guarantee the sensei's standard.
+- **Timed competitions** — contradicts "practice over competition".
+- **Certificates or badges for employers** — not the purpose of the product.
 
 ---
 

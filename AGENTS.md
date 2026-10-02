@@ -34,7 +34,7 @@ When the user asks for debate, alternatives, tradeoffs, or recommendations — o
 | S1 | Hiroshi Nakamura | QA, testing strategy, LLM output validation | Situational | Evaluation consistency, CI coverage |
 | S2 | Valentina Cruz | Kata content design, learning progressions | Situational | Phase 3: content, quality bar, contributor flow |
 | S3 | Joel Ferreira | Marketing, launch strategy, developer audience | Situational | Phase 4: public opening, ProductHunt, Show HN |
-| S4 | Lucía Navarro | Product workflow, PRDs, indie builder execution | Situational | "tengo una idea", exploratory PRDs, block triage |
+| S4 | Lucía Navarro | Product workflow, PRDs, indie builder execution | Situational | "tengo una idea", exploratory PRDs, idea triage |
 | S5 | Dr. Elif Yıldız | Learning science, curriculum architecture, deliberate practice | Situational | Scroll curriculum design, cross-sub-scroll learning progressions |
 | S6 | Kenji Watanabe | Go language pedagogy & scroll content | Situational | `docs/scrolls/go.md` design or review |
 | S7 | Nadia Petrov | Python language pedagogy & scroll content | Situational | `docs/scrolls/python.md` design or review |
@@ -53,9 +53,8 @@ Expert panel output must end with: **recommended option, key risks, fallback/rol
 | Source | Purpose |
 |---|---|
 | [docs/README.md](docs/README.md) | Documentation map — entry point, lifecycle organization |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Milestones, phases, sprint and spec history |
-| [docs/sprints/current.md](docs/sprints/current.md) | Active block — committed items and expected outcome |
-| [docs/sprints/backlog.md](docs/sprints/backlog.md) | Ideas by triage state |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Direction, phases, and the spec / PRD / ADR history |
+| [GitHub issues and milestones](https://github.com/rodacato/dojo/issues) | Work state — what is planned, in progress and done. See [Tracking Work](docs/WORKFLOW.md#tracking-work) |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
 | [docs/BRANDING.md](docs/BRANDING.md) | Colors, typography, tokens, voice |
@@ -70,7 +69,7 @@ Keep scope aligned to the current phase. Avoid overengineering — build for one
 ## Working Rules
 
 - Default to shipping thin vertical slices end-to-end
-- Prefer GitHub Issues over ad-hoc work for anything non-trivial
+- Work state lives in GitHub issues and milestones, never in markdown. There are no sprint docs and no backlog file; anything non-trivial gets an issue first
 - Keep code changes small, reviewable, and reversible
 - Every change must include basic validation steps
 - Auth and security checks required on every API route and WebSocket connection
@@ -104,7 +103,7 @@ When making changes that affect behavior, update docs in the same commit. Full r
 |---|---|
 | New/changed API endpoint | `README.md` |
 | New/changed env var | `README.md` + `.env.example` |
-| New feature shipped | `CHANGELOG.md` |
+| New feature shipped | Nothing in `CHANGELOG.md` — it is generated at release from conventional commits ([RELEASING.md](RELEASING.md)) |
 | Completed roadmap item | `docs/ROADMAP.md` |
 | Architectural decision | `docs/adr/NNN-title.md` |
 | New kata type | `README.md` kata types table |
@@ -117,12 +116,10 @@ When the user says these phrases, act accordingly without asking for re-explanat
 
 | Phrase (Spanish) | Behavior |
 |---|---|
-| "tengo una idea" | Add to `docs/sprints/backlog.md` section **Untriaged**. Ask: do we explore it now with a PRD, or leave it in the backlog? |
-| "avancemos en X" / "sigamos con X" | Verify X is in `docs/sprints/current.md`. If not, ask whether to add it to the current block or start a new one. Then implement. |
+| "tengo una idea" | Capture it as a draft card on the project board (`gh project item-create`) with enough context to be understood cold — never in a markdown file. Ask: do we explore it now with a PRD, or leave it as a draft? |
+| "avancemos en X" / "sigamos con X" | Verify X has an open issue. If not, ask whether to create one (promote the draft if there is one). Then implement. |
 | "quiero explorar Y" | Activate Lucía Navarro (S4). Create `docs/prd/NNN-title.md` using the template at `docs/prd/000-template.md`. Fill in the relevant perspectives. |
-| "empecemos un bloque" | Read `docs/sprints/backlog.md` section "Triaged — next block". Propose items. Create a new `docs/sprints/current.md`. Archive the previous one as `docs/sprints/archive/sprint-NNN-name.md`. |
-| "cerremos el bloque" / "cierra el bloque" | Complete the retro in `docs/sprints/current.md`. Copy to `docs/sprints/archive/sprint-NNN-name.md`. Clear `current.md` for the next block. |
-| "¿dónde estamos?" / "estado del proyecto" | Read `docs/sprints/current.md` + `docs/ROADMAP.md`. Give a summary: active block, completed vs. pending items, what comes next. |
+| "¿dónde estamos?" / "estado del proyecto" | Read the open issues of the active milestone + `docs/ROADMAP.md`. Give a summary: what is in progress, what is done, what comes next. |
 | "escribe un PRD para X" | Activate Lucía Navarro (S4). Create `docs/prd/NNN-title.md` with all template sections filled. Explore multiple perspectives. |
 
 ---
