@@ -19,8 +19,8 @@ Best for contributing. Works in VS Code or GitHub Codespaces.
 
 1. Clone, open the folder in VS Code, and run **Dev Containers: Reopen in Container**.
 2. `.devcontainer/post-create.sh` runs automatically: installs deps, waits for Postgres,
-   creates `.env`, runs migrations, seeds the scroll catalog (as opt-in drafts —
-   publish from `/admin/scrolls`), and provisions Piston.
+   creates `.env`, runs migrations, seeds the katas, seeds the scroll catalog (as opt-in
+   drafts — publish from `/admin/scrolls`), and provisions Piston.
 3. Fill in the GitHub OAuth values in `.env` (see [Sign-in setup](#sign-in-setup)).
 4. Start the dev servers:
    ```bash
@@ -41,13 +41,24 @@ Best for self-hosting or a quick look. Builds production images and runs the who
 git clone https://github.com/rodacato/dojo
 cd dojo
 cp .env.example .env
-# edit .env → set the GitHub OAuth values (see "Sign-in setup")
+# edit .env → set the GitHub OAuth values and WEB_URL=http://localhost (see "Sign-in setup")
 docker compose up --build
 ```
 
 Web → `http://localhost` (port 80) · API → `http://localhost:3001`. Migrations run on boot.
-The scroll catalog is **not** seeded on this path (the production image has no seed
-tooling) — create content via `/admin`, or use Path 1 to seed a shared database.
+
+Nothing is seeded on boot, so the instance starts with no katas. Load them once the stack is up
+(the command is idempotent, rerun it to pick up new katas):
+
+```bash
+docker compose exec dojo-api node dist/infrastructure/persistence/seed.js
+docker compose exec dojo-api node dist/infrastructure/persistence/seed-scrolls.js   # optional: scroll catalog, as unpublished drafts
+```
+
+Code execution does not work on this path: this compose file runs Piston without the sandbox
+flags or installed runtimes that [config/deploy.api.yml](config/deploy.api.yml) gives it, so
+code katas return mocked results. Use Path 1 or a Kamal deploy ([docs/ops/deploy.md](docs/ops/deploy.md))
+if you need it.
 
 ## Path 3 — Bare metal (advanced)
 
@@ -59,6 +70,7 @@ bin/setup                                  # copies .env, installs dependencies
 #             plus the GitHub OAuth values (see "Sign-in setup")
 createdb dojo_dev                          # or create it with your own PG tooling
 pnpm --filter=@dojo/api db:migrate         # create the schema so the seed has tables
+pnpm --filter=@dojo/api db:seed            # the katas; without them there is nothing to practice
 pnpm --filter=@dojo/api db:seed:scrolls    # optional: seed the scroll catalog (opt-in drafts; publish via /admin/scrolls)
 pnpm dev
 ```
@@ -82,6 +94,7 @@ Then set in `.env`:
 |---|---|
 | `GITHUB_CLIENT_ID` | the app's Client ID |
 | `GITHUB_CLIENT_SECRET` | a generated client secret |
+| `WEB_URL` | where the browser reaches the web app: `http://localhost:5173` (Paths 1 & 3, the `.env.example` value) or `http://localhost` (Path 2). The API redirects there after sign-in and allows it in CORS, so a wrong value lands you on a dead port |
 | `CREATOR_GITHUB_ID` | your GitHub **numeric** id — find it at `https://api.github.com/users/<your-username>`. It makes you the instance's operator: you sign in without an invitation, own `/admin`, and invite everyone else. Left empty, nobody can sign up |
 
 ## First-run check
@@ -98,6 +111,8 @@ Then set in `.env`:
 | `database "dojo_dev" does not exist` | `POSTGRES_DB` must match the database in `DATABASE_URL`. |
 | API can't reach the DB on `pnpm dev` | `DATABASE_URL` uses `db:5432` (Docker-only DNS). On bare metal, point it at `localhost`. |
 | Sign-in fails / redirect error | The OAuth app's callback URL must be exactly `http://localhost:3001/auth/github/callback`. |
+| Signed in, but the browser ends up on a dead `:5173` (Path 2) | `WEB_URL` in `.env` must be `http://localhost`; restart the API after changing it. |
+| No katas to pick from | The katas are not loaded by migrations. Run the seed for your path above. |
 | Code kata return mocked results | `FF_CODE_EXECUTION_ENABLED=false` (the default). Path 1 enables it automatically; otherwise set it to `true` with Piston running. |
 
 ## More
