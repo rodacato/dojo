@@ -63,19 +63,16 @@ The domain is split into five contexts with explicit boundaries. Events crossing
 │ ShareCard   │        │                     │
 └─────────────┘        └─────────────────────┘
 
-┌─────────────────────────────┐   ┌─────────────────────┐
-│ Learning (Supporting, thin) │   │ Identity (Generic)  │
-│ Scroll · Lesson · Step      │   │ User · GitHub auth  │
-│ Scroll progress             │   │                     │
-│                             │   └─────────────────────┘
-│ publishes: ScrollCompleted  │
-└─────────────────────────────┘
+┌─────────────────────┐
+│ Identity (Generic)  │
+│ User · GitHub auth  │
+└─────────────────────┘
 ```
 
 - **Practice** is the core domain — where value is created. Everything else supports it.
 - **Content** provides the raw material (katas, variations) that Practice consumes.
 - **Recognition** reacts to Practice events to update milestones, streaks, and generate share cards.
-- **Learning** is the Scrolls / crash-course domain — a deliberately thin content + progress context. It holds scrolls (a slug, lessons, and ordered steps) and tracks per-owner progress (`completedSteps`) for both authenticated users and anonymous sessions. It is not a rich transactional domain: there is no aggregate orchestration beyond progress tracking. It publishes `ScrollCompleted` (user accounts only — anonymous completions are not emitted) and exposes three ports: `ScrollRepositoryPort`, `ScrollProgressPort`, and `NudgeRepositoryPort`.
+- **Scrolls** are not a bounded context in Dojo. The native Learning context was removed (ADR 025); scrolls are being rebuilt as external apps embedded by iframe, with Dojo as a minimal host (epic [#116](https://github.com/rodacato/dojo/issues/116)).
 - **Identity** is generic infrastructure — user management and authentication.
 
 ---
@@ -213,7 +210,6 @@ Events published by aggregates. The only coupling between bounded contexts.
 | `SessionFailed` | Session | Recognition (streak reset check, belt recalculation) |
 | `KataPublished` | Kata | Content catalog query cache invalidation |
 | `MilestoneEarned` | Recognition | (future: notification context) |
-| `ScrollCompleted` | Scroll (Learning) | Recognition (milestones / share — emitted only for authenticated users) |
 
 ---
 
@@ -232,7 +228,7 @@ External Services
 ### Ports (interfaces defined by the domain)
 
 ```typescript
-// Sensei + scroll LLM integration — primary port for all model calls.
+// Sensei LLM integration — primary port for all model calls.
 // Every method takes a single params object (no positional args).
 interface LLMPort {
   // Streaming kata evaluation. `rubric` switches review-kata behavior (PRD-027).
@@ -260,15 +256,6 @@ interface LLMPort {
     ownerContext: string
     kataDescription: string
   }): AsyncIterable<string>
-
-  // Scroll-player nudge — one short hint toward the gap, never the answer.
-  nudge(params: {
-    stepInstruction: string
-    testCode: string | null
-    userCode: string
-    stdout?: string
-    stderr?: string
-  }): Promise<string>
 
   // Free-form streaming Q&A; resolves usage metadata alongside the stream.
   askSensei(params: {

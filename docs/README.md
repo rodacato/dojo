@@ -14,7 +14,6 @@ This is the entry point for everything in `docs/`. Each document has a lifecycle
 | **A contributor** | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) → [`WORKFLOW.md`](WORKFLOW.md) → [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | **An AI agent** | [`../AGENTS.md`](../AGENTS.md) → [`IDENTITY.md`](IDENTITY.md) → [`EXPERTS.md`](EXPERTS.md) |
 | **Picking up active work** | The repository's GitHub issues and open milestones — see [`WORKFLOW.md`](WORKFLOW.md#tracking-work) |
-| **Authoring a scroll** | [`scrolls/README.md`](scrolls/README.md) → [`scrolls/testcode-pattern.md`](scrolls/testcode-pattern.md) |
 | **Looking for *why* a past decision was made** | [`adr/`](adr/) → [`sprints/archive/`](sprints/archive/) → [`research/`](research/) |
 
 ---
@@ -37,9 +36,6 @@ Edit when reality changes. Always reflects current behavior.
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [`BRANDING.md`](BRANDING.md) | Voice, vocabulary, IA, UX principles, microcopy |
 | [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
-| [`scrolls/README.md`](scrolls/README.md) | Scroll content model and authoring conventions |
-| [`scrolls/testcode-pattern.md`](scrolls/testcode-pattern.md) | Active reference for authoring iframe testCode |
-| [`scrolls/{language}.md`](scrolls/) | Per-language scroll design (go, python, ruby, rust, typescript) |
 
 ### Live — active work
 
