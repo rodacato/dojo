@@ -66,41 +66,44 @@ Security researchers who report valid vulnerabilities in good faith will be cred
 
 ### Secrets
 
-- `SESSION_SECRET`, `GITHUB_CLIENT_SECRET`, `LLM_API_KEY` must be randomly generated (minimum 32 bytes) and never committed to the repository
+- `SESSION_SECRET` must be randomly generated (`openssl rand -hex 32`). The API refuses to start with `NODE_ENV=production` while it is still the value shipped in `.env.example`
+- Keep `SESSION_SECRET`, `GITHUB_CLIENT_SECRET`, `LLM_API_KEY` and the database password out of tracked files. Docker Compose reads them from `.env` (gitignored); a Kamal deploy reads them from the GitHub Environment ([docs/ops/deploy.md](docs/ops/deploy.md)). Neither is a vault: restrict who can read `.env` on the host
 - Rotate secrets immediately if they are exposed
-- Use Kamal's encrypted secrets management — do not pass secrets as plain environment variables in `docker-compose.yml`
 - Never log secrets, session tokens, or the contents of `ownerContext`
 
 ### HTTP Security Headers
 
-Configure the following headers on your proxy or Cloudflare:
+The web image already sets them, in [apps/web/nginx.conf.template](apps/web/nginx.conf.template): `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`, and a `Content-Security-Policy` that allows only the app itself, the API host, Cloudflare Turnstile and Sentry ingest. Read that file for the exact policy before adding a second one in front, since two CSPs intersect.
 
-```
-Content-Security-Policy: default-src 'self'; script-src 'self'; connect-src 'self' wss:
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
-```
-
-For self-hosted deployments with Cloudflare Tunnel, enable HSTS via Cloudflare's SSL/TLS settings.
+The API serves JSON only and sets none of these; they matter for the web origin.
 
 ### Rate Limiting
 
 Rate limiting is not optional — every API request potentially triggers an LLM call that costs money. An unprotected endpoint is a financial attack surface, not just a DoS concern.
 
-Recommended limits:
-- `POST /sessions` (start a kata): 5 per user per hour
-- `POST /sessions/:id/attempts` (submit to sensei): 10 per session
-- `GET /exercises` (kata selection): 20 per user per hour
-- GitHub OAuth callback: 10 per IP per 5 minutes
+What exists today ([apps/api/src/infrastructure/http/middleware/rateLimiter.ts](apps/api/src/infrastructure/http/middleware/rateLimiter.ts)), all per client IP:
+- every route: 200 per 15 minutes
+- `/auth/*`: 10 per 15 minutes
+- code execution: 10 per minute
+- scroll nudges (an LLM call each): 4 per minute
+
+A session accepts at most 2 attempts (`MAX_ATTEMPTS` in the session aggregate), which bounds the sensei calls a single kata can cost. Playground ask-sensei has a per-user daily quota (`PLAYGROUND_ASK_SENSEI_DAILY_QUOTA`).
+
+Two limits to know about:
+- **The client IP is read from `cf-connecting-ip`, then `x-forwarded-for`, from whoever sent the request.** Behind Cloudflare Tunnel or a proxy that overwrites those headers that is correct. Exposed directly (for example Docker Compose on a public port), a client can set the header and get a fresh bucket every request, so run it behind a proxy you control.
+- **Counters live in the memory of one API process.** A restart resets them, and a second API instance would count separately.
+
+There are no per-user limits on starting katas. If your instance is open to people you do not know, that is the gap to close, because each kata start can trigger an LLM call.
 
 ### Session Security
 
-- Session tokens must be `HttpOnly`, `Secure`, and `SameSite=Strict`
-- Session expiration: 24 hours of inactivity, 7 days absolute maximum
-- On logout, invalidate the server-side session — do not rely solely on client-side cookie deletion
-- The cross-service session token passed to Drawhaus must be scoped and short-lived (1 hour maximum)
+How it works today:
+- Signing in creates a row in `user_sessions`; its id is the bearer token. The API redirects the browser to `/auth/callback?token=<id>` and the web app keeps the token in `localStorage` ([auth-token.ts](apps/web/src/lib/auth-token.ts)), sending it as `Authorization: Bearer`. It is not a cookie, so `HttpOnly` and `SameSite` do not apply to it: any script running on the web origin can read it, which is why the CSP above matters.
+- A session lasts 30 days from sign-in. There is no inactivity timeout and no renewal.
+- Logout deletes the session row, so a token stops working server-side, not only in the browser.
+- Only the short-lived OAuth state and invitation cookies are cookies: `HttpOnly`, `SameSite=Lax` (Strict would be dropped on the GitHub redirect), and `Secure` when `NODE_ENV=production`.
+
+To shorten the exposure window, lower the 30-day expiry in [auth.ts](apps/api/src/infrastructure/http/routes/auth.ts) and use the revocation above. The cross-service token passed to Drawhaus, if you use it, should stay scoped and short-lived (1 hour at most).
 
 ### Input Validation
 
