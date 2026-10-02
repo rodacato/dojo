@@ -18,7 +18,7 @@ interface BrushstrokeUnderlineProps {
 // prefers-reduced-motion by rendering fully drawn from frame 1.
 //
 // GSAP scope contract — only mount this in routes already on the
-// GSAP allowlist (kata flow, scrolls, results, share, landing). Do not
+// GSAP allowlist (kata flow, results, share, landing). Do not
 // import into dashboard or admin chunks.
 export function BrushstrokeUnderline({ seed, className = '' }: Readonly<BrushstrokeUnderlineProps>) {
   const stroke = pickUnderline(seed)

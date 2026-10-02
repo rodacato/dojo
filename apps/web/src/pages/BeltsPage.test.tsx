@@ -90,9 +90,9 @@ describe('BeltsPage', () => {
     const clusters = screen.getByText('Topic clusters').closest('div')!
     expect(within(clusters).getByText('7')).toBeInTheDocument()
 
-    // 2 of the 13 catalogued milestones earned.
+    // 2 of the 10 catalogued milestones earned.
     expect(screen.getByText('2')).toBeInTheDocument()
-    expect(screen.getByText('of 13 earned')).toBeInTheDocument()
+    expect(screen.getByText('of 10 earned')).toBeInTheDocument()
   })
 
   it('reads the slug from the belt and passes the seed to the underline', async () => {
@@ -132,7 +132,7 @@ describe('BeltsPage', () => {
 
     renderPage()
 
-    expect(await screen.findByText('of 13 earned')).toBeInTheDocument()
+    expect(await screen.findByText('of 10 earned')).toBeInTheDocument()
     expect(screen.getByText('0')).toBeInTheDocument()
     // No card should claim an earned date.
     expect(screen.queryByText(/^Earned /)).not.toBeInTheDocument()

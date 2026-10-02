@@ -29,10 +29,6 @@ const ChangelogPage = lazyWithRetry(() => import('./pages/ChangelogPage').then(m
 const OpenSourcePage = lazyWithRetry(() => import('./pages/OpenSourcePage').then(m => ({ default: m.OpenSourcePage })))
 const PublicProfilePage = lazyWithRetry(() => import('./pages/PublicProfilePage').then(m => ({ default: m.PublicProfilePage })))
 const SharePage = lazyWithRetry(() => import('./pages/SharePage').then(m => ({ default: m.SharePage })))
-const ScrollSharePage = lazyWithRetry(() => import('./pages/ScrollSharePage').then(m => ({ default: m.ScrollSharePage })))
-const ScrollsPage = lazyWithRetry(() => import('./pages/ScrollsPage').then(m => ({ default: m.ScrollsPage })))
-const ScrollLandingPage = lazyWithRetry(() => import('./pages/ScrollLandingPage').then(m => ({ default: m.ScrollLandingPage })))
-const ScrollPlayerPage = lazyWithRetry(() => import('./pages/ScrollPlayerPage').then(m => ({ default: m.ScrollPlayerPage })))
 const BeltsPage = lazyWithRetry(() => import('./pages/BeltsPage').then(m => ({ default: m.BeltsPage })))
 const KumitePlaceholderPage = lazyWithRetry(() => import('./pages/KumitePlaceholderPage').then(m => ({ default: m.KumitePlaceholderPage })))
 const AdminLayout = lazyWithRetry(() => import('./pages/admin/AdminLayout').then(m => ({ default: m.AdminLayout })))
@@ -40,7 +36,6 @@ const AdminKatasPage = lazyWithRetry(() => import('./pages/admin/AdminKatasPage'
 const AdminNewKataPage = lazyWithRetry(() => import('./pages/admin/AdminNewKataPage').then(m => ({ default: m.AdminNewKataPage })))
 const AdminEditKataPage = lazyWithRetry(() => import('./pages/admin/AdminEditKataPage').then(m => ({ default: m.AdminEditKataPage })))
 const AdminInvitationsPage = lazyWithRetry(() => import('./pages/admin/AdminInvitationsPage').then(m => ({ default: m.AdminInvitationsPage })))
-const AdminScrollsPage = lazyWithRetry(() => import('./pages/admin/AdminScrollsPage').then(m => ({ default: m.AdminScrollsPage })))
 const AdminErrorsPage = lazyWithRetry(() => import('./pages/admin/AdminErrorsPage').then(m => ({ default: m.AdminErrorsPage })))
 const AdminHealthPage = lazyWithRetry(() => import('./pages/admin/AdminHealthPage').then(m => ({ default: m.AdminHealthPage })))
 const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })))
@@ -72,10 +67,6 @@ export function App() {
           <Route path="/open-source" element={<LazyRoute><OpenSourcePage /></LazyRoute>} />
           <Route path="/u/:username" element={<LazyRoute><PublicProfilePage /></LazyRoute>} />
           <Route path="/share/:id" element={<LazyRoute><SharePage /></LazyRoute>} />
-          <Route path="/share/scroll/:slug/:userId" element={<LazyRoute><ScrollSharePage /></LazyRoute>} />
-          <Route path="/scrolls" element={<LazyRoute><ScrollsPage /></LazyRoute>} />
-          <Route path="/scrolls/:slug" element={<LazyRoute><ScrollLandingPage /></LazyRoute>} />
-          <Route path="/scrolls/:slug/:stepId" element={<LazyRoute><ScrollPlayerPage /></LazyRoute>} />
           <Route element={<OptionalSidebarLayout />}>
             <Route path="/engawa" element={<LazyRoute><EngawaPage /></LazyRoute>} />
             <Route path="/engawa/:language" element={<LazyRoute><EngawaPage /></LazyRoute>} />
@@ -115,7 +106,6 @@ export function App() {
               <Route path="katas/new" element={<LazyRoute><AdminNewKataPage /></LazyRoute>} />
               <Route path="katas/:id/edit" element={<LazyRoute><AdminEditKataPage /></LazyRoute>} />
               <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
-              <Route path="scrolls" element={<LazyRoute><AdminScrollsPage /></LazyRoute>} />
               <Route path="errors" element={<LazyRoute><AdminErrorsPage /></LazyRoute>} />
               <Route path="health" element={<LazyRoute><AdminHealthPage /></LazyRoute>} />
             </Route>

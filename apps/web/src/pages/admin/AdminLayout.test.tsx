@@ -26,7 +26,7 @@ function renderLayout(initial = '/admin/katas') {
       <Routes>
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="katas" element={<div>katas outlet</div>} />
-          <Route path="scrolls" element={<div>scrolls outlet</div>} />
+          <Route path="invitations" element={<div>invitations outlet</div>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -39,27 +39,26 @@ beforeEach(() => {
 })
 
 describe('AdminLayout', () => {
-  it('renders all five admin nav links with the right destinations', () => {
+  it('renders all four admin nav links with the right destinations', () => {
     renderLayout()
 
     expect(screen.getByRole('link', { name: 'Katas' })).toHaveAttribute('href', '/admin/katas')
-    expect(screen.getByRole('link', { name: 'Scrolls' })).toHaveAttribute('href', '/admin/scrolls')
     expect(screen.getByRole('link', { name: 'Invitations' })).toHaveAttribute('href', '/admin/invitations')
     expect(screen.getByRole('link', { name: 'Errors' })).toHaveAttribute('href', '/admin/errors')
     expect(screen.getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/admin/health')
   })
 
   it('marks the active route via NavLink aria-current', () => {
-    renderLayout('/admin/scrolls')
+    renderLayout('/admin/invitations')
 
-    expect(screen.getByRole('link', { name: 'Scrolls' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: 'Invitations' })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByRole('link', { name: 'Katas' })).not.toHaveAttribute('aria-current')
   })
 
   it('renders the matched child route through the Outlet', () => {
-    renderLayout('/admin/scrolls')
+    renderLayout('/admin/invitations')
 
-    expect(screen.getByText('scrolls outlet')).toBeInTheDocument()
+    expect(screen.getByText('invitations outlet')).toBeInTheDocument()
     expect(screen.queryByText('katas outlet')).not.toBeInTheDocument()
   })
 

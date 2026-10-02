@@ -91,19 +91,6 @@ describe('admin api client', () => {
     expect(init?.method).toBe('POST')
   })
 
-  it('updateScroll PATCHes only the provided patch fields', async () => {
-    const fetchSpy = vi
-      .spyOn(globalThis, 'fetch')
-      .mockImplementation(async () => jsonResponse({ id: 'sc1', isPublic: true, status: 'published' }))
-
-    await admin.updateScroll('sc1', { isPublic: true })
-
-    const [url, init] = call(fetchSpy, 0)
-    expect(url).toBe(u('/admin/scrolls/sc1'))
-    expect(init?.method).toBe('PATCH')
-    expect(JSON.parse(init?.body as string)).toEqual({ isPublic: true })
-  })
-
   it('createInvitation POSTs the email (or undefined) and returns the invite', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => 
       jsonResponse({ id: 'i1', token: 't', url: 'u', expiresAt: 'e', emailSent: true }),
@@ -117,16 +104,12 @@ describe('admin api client', () => {
     expect(JSON.parse(call(fetchSpy, 1)[1]?.body as string)).toEqual({})
   })
 
-  it('seedScrolls / wipeScrollContent / reprovisionPiston hit their POST endpoints', async () => {
+  it('reprovisionPiston hits its POST endpoint', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => jsonResponse({ ok: true }))
 
-    await admin.seedScrolls()
-    await admin.wipeScrollContent('sc1')
     await admin.reprovisionPiston()
 
     expect(fetchSpy.mock.calls.map((c) => [c[0], c[1]?.method])).toEqual([
-      [u('/admin/scrolls/seed'), 'POST'],
-      [u('/admin/scrolls/sc1/wipe'), 'POST'],
       [u('/admin/piston/reprovision'), 'POST'],
     ])
   })
