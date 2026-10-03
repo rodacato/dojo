@@ -1,4 +1,5 @@
 import type { ProgressOwner, ProgressRecord } from './progress'
+import type { ExecutionResult } from '../practice/ports'
 import type { ScrollEntry } from './scroll'
 
 export interface ScrollProgressPort {
@@ -7,6 +8,14 @@ export interface ScrollProgressPort {
   save(owner: ProgressOwner, scrollId: string, record: ProgressRecord): Promise<void>
   listAnonymous(anonymousId: string): Promise<{ scrollId: string; record: ProgressRecord }[]>
   deleteAnonymous(anonymousId: string): Promise<void>
+}
+
+export interface ScrollCodeRunnerPort {
+  run(params: {
+    language: string
+    files: readonly { name: string; content: string }[]
+    stdin?: string
+  }): Promise<ExecutionResult>
 }
 
 export interface ScrollRepositoryPort {

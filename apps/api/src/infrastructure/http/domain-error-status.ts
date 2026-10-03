@@ -13,6 +13,8 @@ export function domainErrorToStatus(code?: string): ContentfulStatusCode {
     case 'SCROLL_PROGRESS_DISABLED':
     case 'SCROLL_UNIT_NOT_FOUND':
       return 422
+    case 'SCROLL_RUN_NOT_DECLARED':
+      return 403
     case 'SESSION_ALREADY_COMPLETED':
     case 'SCROLL_SLUG_TAKEN':
       return 409
@@ -20,6 +22,7 @@ export function domainErrorToStatus(code?: string): ContentfulStatusCode {
       return 408
     case 'NO_ELIGIBLE_KATAS':
     case 'SCROLL_ORIGIN_NOT_ALLOWED':
+    case 'SCROLL_LANGUAGE_NOT_ALLOWED':
       return 422
     default:
       return 500

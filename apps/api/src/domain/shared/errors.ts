@@ -56,6 +56,18 @@ export class ScrollLoginRequiredError extends DomainError {
   }
 }
 
+export class ScrollRunNotDeclaredError extends DomainError {
+  constructor(slug: string) {
+    super(`Scroll "${slug}" does not declare the run capability`, 'SCROLL_RUN_NOT_DECLARED')
+  }
+}
+
+export class ScrollLanguageNotAllowedError extends DomainError {
+  constructor(language: string) {
+    super(`This scroll does not use the language "${language}"`, 'SCROLL_LANGUAGE_NOT_ALLOWED')
+  }
+}
+
 export class ScrollSlugTakenError extends DomainError {
   constructor(slug: string) {
     super(`A scroll with slug "${slug}" already exists`, 'SCROLL_SLUG_TAKEN')
