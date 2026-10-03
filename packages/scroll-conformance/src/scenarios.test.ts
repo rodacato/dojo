@@ -205,4 +205,15 @@ describe('the driver lifecycle', () => {
     ).rejects.toThrow('cannot create the scroll')
     expect([driver.started, driver.stopped]).toEqual([1, 1])
   })
+
+  it('is stopped when it fails to start, so nothing it opened keeps the process alive', async () => {
+    const driver = new FakeDriver(simulate(), SCROLL_URL)
+    driver.start = async () => {
+      throw new Error('browser did not launch')
+    }
+    await expect(runConformance({ scrollUrl: SCROLL_URL, manifest, driver, timeoutMs: 10, settleMs: 1 })).rejects.toThrow(
+      'browser did not launch',
+    )
+    expect(driver.stopped).toBe(1)
+  })
 })

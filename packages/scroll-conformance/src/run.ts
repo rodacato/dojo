@@ -18,8 +18,8 @@ export interface RunOptions {
 /** Runs every scenario against the scroll and folds the traces into one report. The driver is started and stopped here. */
 export async function runConformance(options: RunOptions): Promise<ConformanceReport> {
   const { driver, manifest, scrollUrl } = options
-  await driver.start()
   try {
+    await driver.start()
     const runs = await runScenarios({
       driver,
       manifest,
