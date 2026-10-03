@@ -1,5 +1,10 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { MAX_RESIZE_HEIGHT, type ScrollManifest } from '@dojo/shared'
+import {
+  MAX_RESIZE_HEIGHT,
+  type ScrollExecuteResponse,
+  type ScrollManifest,
+  type ScrollToHostMessage,
+} from '@dojo/shared'
 import {
   createScrollHost,
   type ScrollHost,
@@ -32,7 +37,11 @@ interface ScrollFrameProps {
   initial?: ScrollInitialState
   onProgress?: ScrollHostCallbacks['onProgress']
   onComplete?: ScrollHostCallbacks['onComplete']
+  allowRun?: boolean
+  onRun?: (message: ScrollRunMessage) => Promise<ScrollExecuteResponse>
 }
+
+type ScrollRunMessage = Extract<ScrollToHostMessage, { type: 'run' }>
 
 export function ScrollFrame({
   title,
@@ -43,6 +52,8 @@ export function ScrollFrame({
   initial,
   onProgress,
   onComplete,
+  allowRun,
+  onRun,
 }: Readonly<ScrollFrameProps>) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const hostRef = useRef<ScrollHost | null>(null)
@@ -64,6 +75,12 @@ export function ScrollFrame({
   useEffect(() => {
     reports.current = { onProgress, onComplete }
   }, [onProgress, onComplete])
+  const runRef = useRef(onRun)
+  const runAllowed = Boolean(allowRun && onRun)
+
+  useEffect(() => {
+    runRef.current = onRun
+  }, [onRun])
 
   useEffect(() => {
     latest.current = { locale, theme }
@@ -86,11 +103,15 @@ export function ScrollFrame({
       manifest,
       authenticated,
       initial: initialRef.current,
+      allowRun: runAllowed,
       ...latest.current,
       callbacks: {
         onProgress: (message) => reports.current.onProgress?.(message),
         onComplete: (message) => reports.current.onComplete?.(message),
         onReady: () => setStatus('ready'),
+        onRun: (message) => {
+          void runRef.current?.(message).then((outcome) => host.sendResult({ id: message.id, ...outcome }))
+        },
         onTimeout: () => setStatus('error'),
         onResize: (next) => setHeight(Math.min(next, MAX_RESIZE_HEIGHT)),
         onError: ({ code, message }) => setReported({ code, message }),
@@ -101,7 +122,7 @@ export function ScrollFrame({
       host.destroy()
       hostRef.current = null
     }
-  }, [origin, manifest, authenticated, attempt, failed])
+  }, [origin, manifest, authenticated, runAllowed, attempt, failed])
 
   function handleLoad() {
     loadCount.current += 1
