@@ -353,6 +353,22 @@ describe('scrollOriginOf', () => {
       expect(scrollOriginOf(entry)).toBeNull()
     },
   )
+
+  it.each(['http://localhost:4010/index.html', 'http://127.0.0.1:4010/'])(
+    'accepts loopback http %j outside a production build',
+    (entry) => {
+      expect(scrollOriginOf(entry)).toBe(new URL(entry).origin)
+    },
+  )
+
+  it('rejects loopback http in a production build', () => {
+    vi.stubEnv('PROD', true)
+    try {
+      expect(scrollOriginOf('http://localhost:4010/')).toBeNull()
+    } finally {
+      vi.unstubAllEnvs()
+    }
+  })
 })
 
 describe('withHostParam', () => {

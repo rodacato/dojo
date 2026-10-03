@@ -112,10 +112,13 @@ describe('ScrollPage — iframe container', () => {
     const iframe = (await screen.findByTitle('Circuito de patrones')) as HTMLIFrameElement
     const postMessage = vi.spyOn(iframe.contentWindow as Window, 'postMessage').mockImplementation(() => {})
     expect(screen.getByRole('status')).toHaveTextContent(/loading scroll/)
+    expect(screen.getByTestId('scroll-frame')).toBe(iframe)
+    expect(screen.getByTestId('scroll-status')).toHaveTextContent('loading')
 
     fromScroll(iframe, hello)
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    expect(screen.getByTestId('scroll-status')).toHaveTextContent('connected')
     expect(postMessage).toHaveBeenCalledTimes(1)
     const [message, targetOrigin] = postMessage.mock.calls[0] as unknown as [Record<string, unknown>, string]
     expect(targetOrigin).toBe(ORIGIN)
@@ -189,6 +192,7 @@ describe('ScrollPage — no hello (AC5)', () => {
     })
 
     expect(screen.getByRole('alert')).toHaveTextContent('This scroll did not start.')
+    expect(screen.getByTestId('scroll-status')).toHaveTextContent('error')
     expect(screen.queryByTitle('Circuito de patrones')).not.toBeInTheDocument()
     expect(screen.getByRole('alert')).toHaveFocus()
 
