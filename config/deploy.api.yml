@@ -41,6 +41,7 @@ env:
     SENTRY_TRACES_SAMPLE_RATE: "<%= ENV.fetch("SENTRY_TRACES_SAMPLE_RATE", "0") %>"
     SENTRY_RELEASE: "<%= ENV.fetch("SENTRY_RELEASE", "") %>"
     METRICS_ENABLED: "<%= ENV.fetch("METRICS_ENABLED", "false") %>"
+    SCROLL_FRAME_ORIGINS: "<%= ENV.fetch("SCROLL_FRAME_ORIGINS", "") %>"
   secret:
     - DATABASE_URL
     - SESSION_SECRET
