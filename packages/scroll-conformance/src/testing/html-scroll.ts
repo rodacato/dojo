@@ -11,7 +11,7 @@ interface Element {
 }
 
 function inlineScripts(html: string): string[] {
-  return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script\s*>/gi)].map((match) => match[1] ?? '')
+  return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script[^>]*>/gi)].map((match) => match[1] ?? '')
 }
 
 function attributesOf(tag: string): Record<string, string> {

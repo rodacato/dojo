@@ -53,13 +53,13 @@ describe('the broken fixtures, run as written', () => {
 })
 
 describe('the HTML extraction', () => {
-  it('runs scripts written with upper-case tags, attributes and a spaced closing tag', async () => {
+  it('runs scripts written with upper-case tags, attributes and a closing tag that carries extra text', async () => {
     const source = new URL('broken-wildcard-target/', fixtures)
     const dir = mkdtempSync(join(tmpdir(), 'scroll-fixture-'))
     try {
       const html = readFileSync(new URL('index.html', source), 'utf8')
         .replace('<script>', '<SCRIPT TYPE="text/javascript">')
-        .replace('</script>', '</SCRIPT >')
+        .replace('</script>', '</SCRIPT\t\n bar>')
       writeFileSync(join(dir, 'index.html'), html)
       writeFileSync(join(dir, 'scroll.json'), readFileSync(new URL('scroll.json', source)))
 
