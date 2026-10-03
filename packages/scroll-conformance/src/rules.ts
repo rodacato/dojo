@@ -11,7 +11,7 @@ export const DEFAULT_HELLO_TIMEOUT_MS = 10_000
 
 type Parsed = ReturnType<typeof scrollToHostMessageSchema.safeParse>
 
-export interface ScrollEvent {
+interface ScrollEvent {
   index: number
   event: TraceEvent
   envelope: boolean
@@ -30,7 +30,7 @@ export interface Analysis {
   forged: ReadonlySet<string>
 }
 
-export interface Finding {
+interface Finding {
   message: string
   eventIndex: number | null
 }

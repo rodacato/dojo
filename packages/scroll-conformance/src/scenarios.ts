@@ -19,7 +19,7 @@ export type ScenarioRun =
   | { name: string; status: 'ran'; trace: Trace; context: TraceContext; error?: string }
   | { name: string; status: 'skipped'; reason: string }
 
-export const SPOOF_KINDS: readonly SpoofKind[] = ['origin', 'source', 'nonce', 'replay']
+const SPOOF_KINDS: readonly SpoofKind[] = ['origin', 'source', 'nonce', 'replay']
 
 const FORGED_NONCE = '0'.repeat(32)
 const MAX_SPOOF_GAP_MS = 250

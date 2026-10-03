@@ -17,7 +17,7 @@ export interface Behaviour {
   standalone: 'silent' | 'posts' | 'posts-anywhere' | 'throws'
 }
 
-export const CONFORMING: Behaviour = {
+const CONFORMING: Behaviour = {
   hello: true,
   helloOverrides: {},
   wildcard: false,
