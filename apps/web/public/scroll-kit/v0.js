@@ -5,6 +5,7 @@
   var PROTOCOL = 0
   var INIT_TIMEOUT_MS = 3000
   var MAX_QUEUE = 100
+  var RUN_TIMEOUT_MS = 60000
   var STORAGE_PREFIX = 'dojo-scroll:'
 
   var script = window.document && window.document.currentScript
@@ -26,6 +27,8 @@
   var initCallbacks = []
   var localeCallbacks = []
   var themeCallbacks = []
+  var pendingRuns = {}
+  var runCounter = 0
 
   function readHostOrigin() {
     try {
@@ -156,7 +159,42 @@
       localeCallbacks.forEach(function (cb) { cb(data.locale) })
     } else if (data.type === 'setTheme' && data.theme) {
       themeCallbacks.forEach(function (cb) { cb(data.theme) })
+    } else if (data.type === 'result' && pendingRuns[data.id]) {
+      settleRun(data.id, 'resolve', {
+        kind: data.kind,
+        exitCode: data.exitCode,
+        stdout: data.stdout,
+        stderr: data.stderr,
+        durationMs: data.durationMs,
+      })
+    } else if (data.type === 'error' && pendingRuns[data.id]) {
+      var failure = new Error(String(data.message))
+      failure.code = data.code
+      settleRun(data.id, 'reject', failure)
     }
+  }
+
+  function settleRun(id, outcome, value) {
+    var pending = pendingRuns[id]
+    delete pendingRuns[id]
+    window.clearTimeout(pending.timer)
+    pending[outcome](value)
+  }
+
+  function run(request) {
+    if (mode !== 'embedded' || !initPayload || initPayload.capabilities.indexOf('run') === -1) {
+      return Promise.reject(new Error('capability not available'))
+    }
+    return new Promise(function (resolve, reject) {
+      var id = 'run-' + (++runCounter) + '-' + randomNonce()
+      var message = { type: 'run', id: id, language: request.language, files: request.files }
+      if (request.stdin !== undefined) message.stdin = request.stdin
+      var timer = window.setTimeout(function () {
+        settleRun(id, 'reject', new Error('run timed out'))
+      }, RUN_TIMEOUT_MS)
+      pendingRuns[id] = { resolve: resolve, reject: reject, timer: timer }
+      post(message)
+    })
   }
 
   function start() {
@@ -207,7 +245,7 @@
     resize: function (height) {
       apply({ message: { type: 'resize', height: Math.max(0, Math.round(height)) } })
     },
-    run: function () { return Promise.reject(new Error('capability not available')) },
+    run: run,
     llm: function () { return Promise.reject(new Error('capability not available')) },
   }
 
