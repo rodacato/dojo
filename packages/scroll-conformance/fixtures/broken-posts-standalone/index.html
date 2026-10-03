@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Broken scroll: posts when standalone</title>
+  </head>
+  <body>
+    <p>This scroll talks even when there is no host to talk to.</p>
+    <script>
+      var host = new URLSearchParams(location.search).get('host')
+      var nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)), function (b) {
+        return b.toString(16).padStart(2, '0')
+      }).join('')
+      var session = null
+
+      function send(message) {
+        var envelope = Object.assign({ dojo: 'scroll', v: 0 }, session ? { session: session } : {})
+        // Defect: with no host parameter the target falls back to the scroll's own origin.
+        parent.postMessage(Object.assign(envelope, message), host || location.origin)
+      }
+
+      addEventListener('message', function (event) {
+        if (event.origin !== host || event.source !== parent) return
+        var data = event.data
+        if (!data || data.dojo !== 'scroll' || data.type !== 'init' || data.nonce !== nonce || session) return
+        session = data.session
+        send({ type: 'progress', unitId: 'unit-1', state: {} })
+      })
+
+      // Defect: hello goes out whether or not there is a host.
+      send({
+        type: 'hello',
+        scroll: { id: 'broken-posts-standalone', version: '0.0.1' },
+        nonce: nonce,
+        capabilities: ['progress'],
+      })
+    </script>
+  </body>
+</html>

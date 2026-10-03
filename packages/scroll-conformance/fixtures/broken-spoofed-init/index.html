@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Broken scroll: adopts a spoofed init</title>
+  </head>
+  <body>
+    <p>This scroll accepts an init from any window.</p>
+    <script>
+      var host = new URLSearchParams(location.search).get('host')
+      var nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)), function (b) {
+        return b.toString(16).padStart(2, '0')
+      }).join('')
+      var session = null
+
+      function send(message) {
+        var envelope = Object.assign({ dojo: 'scroll', v: 0 }, session ? { session: session } : {})
+        parent.postMessage(Object.assign(envelope, message), host)
+      }
+
+      addEventListener('message', function (event) {
+        // Defect: neither event.origin nor event.source is checked.
+        var data = event.data
+        if (!data || data.dojo !== 'scroll' || data.type !== 'init' || data.nonce !== nonce || session) return
+        session = data.session
+        send({ type: 'progress', unitId: 'unit-1', state: {} })
+      })
+
+      if (host && parent !== window) {
+        send({
+          type: 'hello',
+          scroll: { id: 'broken-spoofed-init', version: '0.0.1' },
+          nonce: nonce,
+          capabilities: ['progress'],
+        })
+      }
+    </script>
+  </body>
+</html>
