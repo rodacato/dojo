@@ -62,9 +62,18 @@ Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors c
 
 ### Scrolls
 
-The CSP only lets the app frame origins you list. Set `SCROLL_FRAME_ORIGINS` to a space-separated list of exact origins (no wildcards), for example `SCROLL_FRAME_ORIGINS="https://scrolls.example.com"`; empty allows none. It is read by the web container at start, so changing it needs a redeploy.
+A scroll is an independent web app, hosted anywhere, embedded in Dojo by iframe. Dojo is the host: it registers scrolls, frames them and talks to them over a versioned `postMessage` protocol ([`docs/scrolls/PROTOCOL.md`](docs/scrolls/PROTOCOL.md), [authoring guide](docs/scrolls/AUTHORING.md)). The protocol is v0 and experimental. Progress is not stored on the server yet, and code execution is not offered to scrolls yet — follow [epic #116](https://github.com/rodacato/dojo/issues/116).
 
-Scrolls are being rebuilt. The native scroll system was removed; the new model is independent web apps, hosted anywhere, embedded in Dojo by iframe, with Dojo offering progress, session and code execution. It is not available yet — follow [epic #116](https://github.com/rodacato/dojo/issues/116).
+The creator registers a scroll at `/admin/scrolls` by pasting its `scroll.json`. The scroll's `entry` must be an absolute `https` URL whose origin you have allowed:
+
+`SCROLL_FRAME_ORIGINS` is a list of exact origins (no wildcards, no paths), separated by spaces or commas, for example `SCROLL_FRAME_ORIGINS="https://scrolls.example.com"`. Empty allows none. Both containers read it: the API refuses to register a scroll outside the list, and the web container writes it into the CSP `frame-src` at start, so changing it needs a redeploy. `http://localhost` is accepted outside production for development.
+
+| Endpoint | Access |
+|---|---|
+| `GET /scrolls` | Published public scrolls; also private ones when signed in |
+| `GET /scrolls/:slug` | One scroll. 404 for a draft or unknown slug, 401 for a private one when anonymous |
+| `GET /admin/scrolls`, `POST /admin/scrolls` | Creator only: list all, register |
+| `PATCH /admin/scrolls/:id`, `DELETE /admin/scrolls/:id` | Creator only: update, delete |
 
 ---
 
