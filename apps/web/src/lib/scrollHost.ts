@@ -11,8 +11,8 @@ import {
 
 export const HELLO_TIMEOUT_MS = 10_000
 
-// `run` and `llm` are reserved by the protocol and never granted.
-const GRANTED_CAPABILITIES: readonly ScrollCapability[] = ['progress']
+// `llm` is reserved by the protocol and never granted; `run` needs the host's say-so (`allowRun`).
+const ALWAYS_GRANTED: readonly ScrollCapability[] = ['progress']
 
 export type ScrollTheme = Record<string, string>
 
@@ -38,6 +38,7 @@ export interface ScrollHostCallbacks {
   onProgress?: (message: Message<'progress'>) => void
   onComplete?: (message: Message<'complete'>) => void
   onResize?: (height: number) => void
+  onRun?: (message: Message<'run'>) => void
   onError?: (message: Message<'error'>) => void
   onTimeout?: () => void
 }
@@ -56,6 +57,7 @@ export interface ScrollHostOptions {
   theme: ScrollTheme
   authenticated: boolean
   initial?: ScrollInitialState
+  allowRun?: boolean
   callbacks?: ScrollHostCallbacks
   helloTimeoutMs?: number
   createSessionId?: () => string
@@ -64,6 +66,8 @@ export interface ScrollHostOptions {
 export interface ScrollHost {
   setLocale(locale: string): void
   setTheme(theme: ScrollTheme): void
+  /** Answer a `run` request; `id` must be the request's. */
+  sendResult(payload: Omit<Extract<HostToScrollMessage, { type: 'result' }>, 'dojo' | 'v' | 'type' | 'session'>): void
   /** Forget the session and wait for a new `hello`, e.g. after the frame reloaded. */
   reset(): void
   destroy(): void
@@ -106,7 +110,8 @@ export function createScrollHost(options: ScrollHostOptions): ScrollHost {
   let closed = false
   let timer: ReturnType<typeof setTimeout> | undefined
 
-  const granted = manifest.capabilities.filter((capability) => GRANTED_CAPABILITIES.includes(capability))
+  const grantable: readonly ScrollCapability[] = options.allowRun ? [...ALWAYS_GRANTED, 'run'] : ALWAYS_GRANTED
+  const granted = manifest.capabilities.filter((capability) => grantable.includes(capability))
 
   function send(message: HostToScrollMessage) {
     const parsed = hostToScrollMessageSchema.safeParse(message)
@@ -142,6 +147,22 @@ export function createScrollHost(options: ScrollHostOptions): ScrollHost {
     callbacks.onReady?.()
   }
 
+  function handleRun(message: Message<'run'>) {
+    if (session && granted.includes('run')) {
+      callbacks.onRun?.(message)
+    } else if (session) {
+      send({
+        dojo: 'scroll',
+        v: SCROLL_PROTOCOL_VERSION,
+        type: 'error',
+        session,
+        id: message.id,
+        code: 'capability-denied',
+        message: 'The run capability was not granted to this scroll.',
+      })
+    }
+  }
+
   function handleSessionMessage(message: Exclude<ScrollToHostMessage, { type: 'hello' }>) {
     if (message.session !== session) return
     switch (message.type) {
@@ -153,6 +174,9 @@ export function createScrollHost(options: ScrollHostOptions): ScrollHost {
         break
       case 'resize':
         callbacks.onResize?.(message.height)
+        break
+      case 'run':
+        handleRun(message)
         break
     }
   }
@@ -184,6 +208,9 @@ export function createScrollHost(options: ScrollHostOptions): ScrollHost {
     setTheme(next) {
       theme = next
       if (session) send({ dojo: 'scroll', v: SCROLL_PROTOCOL_VERSION, type: 'setTheme', session, theme })
+    },
+    sendResult(payload) {
+      if (session) send({ dojo: 'scroll', v: SCROLL_PROTOCOL_VERSION, type: 'result', session, ...payload })
     },
     reset() {
       session = null
