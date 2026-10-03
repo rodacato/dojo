@@ -2,5 +2,8 @@
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "ignoreWorkspaces": ["apps/e2e"],
   "ignoreBinaries": ["playwright"],
-  "ignore": ["scripts/test-llm.ts"]
+  "ignore": ["scripts/test-llm.ts"],
+  "workspaces": {
+    "packages/scroll-conformance": { "entry": ["src/index.ts", "src/bin.ts", "fixtures/*.mjs"] }
+  }
 }

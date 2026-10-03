@@ -65,7 +65,7 @@ export function message(type: string, fields: Record<string, unknown> = {}, sess
 
 export const progress = (unitId = 'unit-1') => message('progress', { unitId, state: { step: 1 } })
 export const complete = (unitId?: string) => message('complete', unitId === undefined ? {} : { unitId })
-export const resize = () => message('resize', { height: 400 })
+const resize = () => message('resize', { height: 400 })
 export const run = (language = 'ruby') =>
   message('run', { id: 'run-1', language, files: [{ name: 'main.rb', content: 'puts 1' }] })
 

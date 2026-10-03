@@ -4,8 +4,8 @@ import type { BrowserDriver, DriveFunction } from './browser.js'
 import { exitCodeFor, formatTextReport } from './report.js'
 import { runConformance } from './run.js'
 
-export const DEFAULT_TIMEOUT_MS = 10_000
-export const DEFAULT_SETTLE_MS = 1_500
+const DEFAULT_TIMEOUT_MS = 10_000
+const DEFAULT_SETTLE_MS = 1_500
 
 export interface CliDeps {
   stdout(text: string): void
