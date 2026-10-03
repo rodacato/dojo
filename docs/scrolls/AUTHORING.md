@@ -16,7 +16,7 @@ A scroll is a web app you host yourself. It must be served over HTTPS from an or
 
 Never post with target origin `*`, never trust a message you did not check for origin, source and nonce or session, and never assume `complete` means anything to the host beyond a hint: it is self-reported.
 
-Credentials never go in a scroll. Code execution and `llm` are reserved and not available yet.
+Credentials never go in a scroll. Code execution (`run`) is available to signed-in users, see below; `llm` is reserved and not available yet.
 
 ## The shim
 
@@ -46,7 +46,31 @@ Credentials never go in a scroll. Code execution and `llm` are reserved and not 
 
 The `data-*` attributes are the values from your `scroll.json`; the shim sends them in `hello`.
 
-`DojoScroll.run()` and `DojoScroll.llm()` exist and reject with `capability not available`.
+`DojoScroll.llm()` exists and rejects with `capability not available`.
+
+## Running code
+
+Declare `"capabilities": ["run"]` in `scroll.json`, list the languages in `programmingLanguages`, and add `run` to `data-capabilities`. The host then runs code for you in its sandbox on the user's session, so you hold no key. It grants `run` only to a signed-in user on an instance with execution enabled; check `init.capabilities` and degrade when it is missing (a read-only example, a "sign in to run this" note).
+
+```js
+DojoScroll.onInit(function (init) {
+  if (init.capabilities.includes('run')) enableRunButton()
+})
+
+DojoScroll.run({
+  language: 'ruby',
+  files: [{ name: 'main.rb', content: source }, { name: 'helper.rb', content: helper }],
+  stdin: 'optional input',
+}).then(function (result) {
+  // result: { kind, exitCode, stdout, stderr, durationMs }
+})
+```
+
+- The first file is the entry point. At most 8 files and 64 KiB of content in total; names are flat (no `/`).
+- `kind` is `ok`, `compile`, `runtime`, `timeout`, `output-limit` or `unavailable`. The host returns the raw `stdout` and `stderr`: to decide whether the learner's code is right, print something your scroll can read and parse it yourself. The result is never trusted by the host.
+- `unavailable` means the sandbox is down, busy, or the user hit the per-minute limit. Offer a retry.
+- The promise rejects when `run` was not granted (`capability not available`), when the host answers `capability-denied`, or after 60 seconds without an answer.
+- Call `run` from `onInit` or later: before the handshake finishes it rejects.
 
 **Pin the file with Subresource Integrity.** The shim runs inside your page; without `integrity` a change at the Dojo host would change your code. Compute the hash of the exact file you tested:
 
