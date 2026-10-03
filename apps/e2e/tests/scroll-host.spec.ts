@@ -1,12 +1,11 @@
 // Needs data-testid="scroll-frame" (iframe) and "scroll-status" (text: loading | connected | error) on /scrolls/:slug.
 import { test, expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 const API_BASE = 'http://localhost:3001'
 const SLUG = 'e2e-fixture'
-const manifest = JSON.parse(
-  readFileSync(new URL('../fixtures/scroll/scroll.json', import.meta.url), 'utf8'),
-)
+const manifest = JSON.parse(readFileSync(join(__dirname, '../fixtures/scroll/scroll.json'), 'utf8'))
 
 declare global {
   interface Window {
