@@ -27,6 +27,7 @@ function setup(
     capabilities?: Array<'progress' | 'run' | 'llm'>
     authenticated?: boolean
     initial?: ScrollInitialState
+    allowRun?: boolean
   } = {},
 ) {
   const frame = { postMessage: vi.fn() }
@@ -42,6 +43,7 @@ function setup(
     onProgress: vi.fn(),
     onComplete: vi.fn(),
     onResize: vi.fn(),
+    onRun: vi.fn(),
     onError: vi.fn(),
     onTimeout: vi.fn(),
   }
@@ -54,6 +56,7 @@ function setup(
     theme: { '--color-page': '#000000' },
     authenticated: options.authenticated ?? false,
     initial: options.initial,
+    allowRun: options.allowRun,
     callbacks,
     createSessionId: () => 'session-1',
   })
@@ -135,6 +138,16 @@ describe('handshake', () => {
     const ctx = setup({ capabilities: ['progress', 'run', 'llm'] })
     ctx.deliver(hello)
     expect(ctx.sent()[0]).toMatchObject({ capabilities: ['progress'] })
+  })
+
+  it('grants run only when the manifest declares it and the host allows it', () => {
+    const allowed = setup({ capabilities: ['progress', 'run', 'llm'], allowRun: true })
+    allowed.deliver(hello)
+    expect(allowed.sent()[0]).toMatchObject({ capabilities: ['progress', 'run'] })
+
+    const undeclared = setup({ capabilities: ['progress'], allowRun: true })
+    undeclared.deliver(hello)
+    expect(undeclared.sent()[0]).toMatchObject({ capabilities: ['progress'] })
   })
 
   it('grants nothing when the manifest asks for nothing', () => {
@@ -295,10 +308,66 @@ describe('ignored messages', () => {
     ctx.deliver({ ...progress, v: 1 })
     ctx.deliver({ ...resize, height: -1 })
     ctx.deliver({ ...resize, height: 100_001 })
-    ctx.deliver({ ...envelope, type: 'run', session: 'session-1' })
+    ctx.deliver({ ...envelope, type: 'run', session: 'session-1', id: 'r1', language: 'ruby', files: [] })
     ctx.deliver({ ...envelope, type: 'llm', session: 'session-1' })
     expect(ctx.callbacks.onProgress).not.toHaveBeenCalled()
     expect(ctx.callbacks.onResize).not.toHaveBeenCalled()
+  })
+})
+
+describe('run capability', () => {
+  const runRequest = {
+    ...envelope,
+    type: 'run',
+    session: 'session-1',
+    id: 'req-7',
+    language: 'ruby',
+    files: [{ name: 'main.rb', content: 'puts 1' }],
+  }
+  const outcome = { kind: 'ok' as const, exitCode: 0, stdout: '1\n', stderr: '', durationMs: 9 }
+
+  it('hands a granted run to the caller and answers with a result carrying the same id', () => {
+    const ctx = setup({ capabilities: ['progress', 'run'], allowRun: true })
+    handshake(ctx)
+    ctx.deliver(runRequest)
+
+    expect(ctx.callbacks.onRun).toHaveBeenCalledWith(expect.objectContaining({ id: 'req-7', language: 'ruby' }))
+    ctx.host.sendResult({ id: 'req-7', ...outcome })
+
+    const [reply, targetOrigin] = ctx.frame.postMessage.mock.calls[0] as [Record<string, unknown>, string]
+    expect(targetOrigin).toBe(SCROLL_ORIGIN)
+    expect(hostToScrollMessageSchema.safeParse(reply).success).toBe(true)
+    expect(reply).toMatchObject({ type: 'result', session: 'session-1', id: 'req-7', kind: 'ok', stdout: '1\n' })
+  })
+
+  it.each([
+    ['the manifest does not declare run', { capabilities: ['progress'] as Array<'progress' | 'run'>, allowRun: true }],
+    ['the host does not allow it (anonymous or execution disabled)', { capabilities: ['progress', 'run'] as Array<'progress' | 'run'>, allowRun: false }],
+  ])('answers capability-denied when %s', (_label, options) => {
+    const ctx = setup(options)
+    handshake(ctx)
+    ctx.deliver(runRequest)
+
+    expect(ctx.callbacks.onRun).not.toHaveBeenCalled()
+    expect(ctx.sent()).toEqual([
+      expect.objectContaining({ type: 'error', session: 'session-1', id: 'req-7', code: 'capability-denied' }),
+    ])
+    expect(hostToScrollMessageSchema.safeParse(ctx.sent()[0]).success).toBe(true)
+  })
+
+  it('ignores a run from another session or before the handshake', () => {
+    const ctx = setup({ capabilities: ['progress', 'run'], allowRun: true })
+    ctx.deliver(runRequest)
+    handshake(ctx)
+    ctx.deliver({ ...runRequest, session: 'other' })
+    expect(ctx.callbacks.onRun).not.toHaveBeenCalled()
+    expect(ctx.sent()).toEqual([])
+  })
+
+  it('does not send a result before the handshake', () => {
+    const ctx = setup({ capabilities: ['progress', 'run'], allowRun: true })
+    ctx.host.sendResult({ id: 'req-7', ...outcome })
+    expect(ctx.sent()).toEqual([])
   })
 })
 
