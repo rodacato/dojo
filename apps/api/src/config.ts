@@ -28,6 +28,9 @@ const envSchema = z.object({
   // value is silently clamped.
   PISTON_RUN_TIMEOUT: z.coerce.number().int().min(1000).default(8000),
   PISTON_COMPILE_TIMEOUT: z.coerce.number().int().min(1000).default(30000),
+  // Embedded scrolls get their own queue and per-user quota so katas and the playground are never starved.
+  SCROLL_EXEC_MAX_CONCURRENT: z.coerce.number().int().min(1).default(2),
+  SCROLL_EXEC_USER_PER_MINUTE: z.coerce.number().int().min(1).default(10),
   DRAWHAUS_URL: z.url().optional(),
   RESEND_API_KEY: z.string().default(''),
   // No default: mail goes out only from an address the operator owns.
