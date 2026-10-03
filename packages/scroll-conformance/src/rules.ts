@@ -66,7 +66,7 @@ function describeScrollEvent(index: number, event: TraceEvent): ScrollEvent {
 }
 
 /** A message without a `dojo` field is not part of the protocol (a library, analytics, HMR) and no rule looks at it. */
-export function isProtocolMessage(data: unknown): boolean {
+function isProtocolMessage(data: unknown): boolean {
   return isRecord(data) && 'dojo' in data
 }
 
