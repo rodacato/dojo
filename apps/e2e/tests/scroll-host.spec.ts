@@ -24,10 +24,13 @@ test.describe('Scroll host', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
+          id: '00000000-0000-4000-8000-000000000001',
           slug: SLUG,
           status: 'published',
           visibility: 'public',
           manifest,
+          createdAt: '2026-10-03T00:00:00.000Z',
+          updatedAt: '2026-10-03T00:00:00.000Z',
         }),
       }),
     )
