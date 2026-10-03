@@ -7,6 +7,7 @@ import {
   withHostParam,
   type MessageEventLike,
   type ScrollHostCallbacks,
+  type ScrollInitialState,
 } from './scrollHost'
 
 const SCROLL_ORIGIN = 'https://scrolls.example.com'
@@ -21,7 +22,13 @@ const hello = {
   capabilities: ['progress'],
 }
 
-function setup(options: { capabilities?: Array<'progress' | 'run' | 'llm'>; authenticated?: boolean } = {}) {
+function setup(
+  options: {
+    capabilities?: Array<'progress' | 'run' | 'llm'>
+    authenticated?: boolean
+    initial?: ScrollInitialState
+  } = {},
+) {
   const frame = { postMessage: vi.fn() }
   const listeners: Array<(event: MessageEventLike) => void> = []
   const listener = {
@@ -46,6 +53,7 @@ function setup(options: { capabilities?: Array<'progress' | 'run' | 'llm'>; auth
     locale: 'es-MX',
     theme: { '--color-page': '#000000' },
     authenticated: options.authenticated ?? false,
+    initial: options.initial,
     callbacks,
     createSessionId: () => 'session-1',
   })
@@ -91,6 +99,19 @@ describe('handshake', () => {
       authenticated: true,
     })
     expect(ctx.callbacks.onReady).toHaveBeenCalledTimes(1)
+  })
+
+  it('carries the initial progress and userRef in init', () => {
+    const initial: ScrollInitialState = {
+      progress: { u1: { completed: true, state: { step: 4 } }, u2: { completed: false } },
+      userRef: 'opaque-ref',
+    }
+    const ctx = setup({ initial })
+    ctx.deliver(hello)
+
+    const [message] = ctx.sent()
+    expect(hostToScrollMessageSchema.safeParse(message).success).toBe(true)
+    expect(message).toMatchObject({ progress: initial.progress, userRef: 'opaque-ref' })
   })
 
   it('issues a random session id by default', () => {

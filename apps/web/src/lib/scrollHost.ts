@@ -5,6 +5,7 @@ import {
   type HostToScrollMessage,
   type ScrollCapability,
   type ScrollManifest,
+  type ScrollProgressDTO,
   type ScrollToHostMessage,
 } from '@dojo/shared'
 
@@ -41,6 +42,11 @@ export interface ScrollHostCallbacks {
   onTimeout?: () => void
 }
 
+export interface ScrollInitialState {
+  progress: ScrollProgressDTO['units']
+  userRef: string | null
+}
+
 export interface ScrollHostOptions {
   frame: ScrollFrame
   listener: ScrollListenerTarget
@@ -49,6 +55,7 @@ export interface ScrollHostOptions {
   locale: string
   theme: ScrollTheme
   authenticated: boolean
+  initial?: ScrollInitialState
   callbacks?: ScrollHostCallbacks
   helloTimeoutMs?: number
   createSessionId?: () => string
@@ -88,6 +95,7 @@ export function createScrollHost(options: ScrollHostOptions): ScrollHost {
     scrollOrigin,
     manifest,
     callbacks = {},
+    initial = { progress: {}, userRef: null },
     helloTimeoutMs = HELLO_TIMEOUT_MS,
     createSessionId = () => crypto.randomUUID(),
   } = options
@@ -126,9 +134,9 @@ export function createScrollHost(options: ScrollHostOptions): ScrollHost {
       session,
       locale,
       theme,
-      progress: {},
+      progress: initial.progress,
       capabilities: granted,
-      userRef: null,
+      userRef: initial.userRef,
       authenticated: options.authenticated,
     })
     callbacks.onReady?.()
