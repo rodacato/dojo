@@ -126,6 +126,23 @@ describe('deliberately broken scrolls', () => {
   })
 })
 
+describe('a scroll that also posts non-protocol messages', () => {
+  it('passes, and the report counts what it ignored', async () => {
+    const report = await audit(simulate({ noise: true }))
+    expect(failing(report)).toEqual([])
+    expect(report.passed).toBe(true)
+    expect(report.ignoredMessages).toBeGreaterThan(0)
+    expect(report.scenarios.find((scenario) => scenario.name === 'handshake')?.ignored).toBe(1)
+    expect(formatTextReport(report)).toMatch(/Ignored \d+ non-protocol message\(s\)/)
+  })
+
+  it('reports nothing ignored for a scroll that speaks only the protocol', async () => {
+    const report = await audit(simulate())
+    expect(report.ignoredMessages).toBe(0)
+    expect(formatTextReport(report)).not.toContain('non-protocol')
+  })
+})
+
 describe('a scroll that never says hello', () => {
   it('fails with a clear message and does not hang the runner', async () => {
     const started = Date.now()

@@ -70,7 +70,7 @@ Every rule has a stable id and points at the section of [PROTOCOL.md](PROTOCOL.m
 
 | Rule | Section | What it checks | Needs |
 |---|---|---|---|
-| `envelope` | §2 | Every message is an envelope with `dojo: "scroll"` and the protocol version. | |
+| `envelope` | §2 | A message that carries a `dojo` field is a valid envelope: `dojo: "scroll"` and the protocol version. | |
 | `message-schema` | §5 | Every message validates against the schema of its type, including the 64 KiB `state` cap and the `resize` range. | |
 | `reserved-type` | §7 | The scroll never sends a message type the protocol reserves (`llm`). | |
 | `hello-sent` | §4 | The scroll sends a valid `hello` within the handshake timeout. | |
@@ -88,6 +88,8 @@ Every rule has a stable id and points at the section of [PROTOCOL.md](PROTOCOL.m
 | `host-origin-targeted` | §3 | Embedded under a page that is not the host it was told about, the scroll sends nothing (no `*` target). | |
 | `standalone-silent` | §9 | Without a host the scroll posts nothing. | |
 | `standalone-no-crash` | §9 | Without a host the scroll keeps working: no uncaught error. | |
+
+A message with no `dojo` field is not a protocol message (an HMR client, analytics or a library posting to `window.parent`): the host ignores it, so every rule ignores it too. It stays in the trace and the report counts it (`ignoredMessages` in JSON, a line in the text report) so you can see it. A message that does carry a `dojo` field and is invalid, with another `dojo` value, another `v`, a bad shape or a reserved type, still fails.
 
 A rule that needs something the run did not produce is reported as `skipped` with the reason, never as passed. The four `init-*` rules can only be judged once the scroll sends something carrying a session, so give `--drive` a click that makes it do so (or have the scroll report progress on its own once `init` arrives).
 

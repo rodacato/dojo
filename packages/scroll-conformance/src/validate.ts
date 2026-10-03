@@ -29,6 +29,11 @@ export function evaluateTrace(trace: Trace, context: TraceContext): RuleEvaluati
   })
 }
 
+/** How many messages from the scroll were not protocol messages and so were left out of every rule. */
+export function countIgnored(trace: Trace, context: TraceContext): number {
+  return analyze(trace, context).ignored.length
+}
+
 /** The rules a trace breaks, and nothing else. A clean trace returns an empty list. */
 export function validateTrace(trace: Trace, context: TraceContext): Violation[] {
   return evaluateTrace(trace, context).flatMap((evaluation) => evaluation.violations)

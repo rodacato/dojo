@@ -1,7 +1,7 @@
 import { RULES, type Rule } from './rules.js'
 import type { ScenarioRun } from './scenarios.js'
 import type { Violation } from './trace.js'
-import { evaluateTrace, type RuleStatus } from './validate.js'
+import { countIgnored, evaluateTrace, type RuleStatus } from './validate.js'
 
 export interface ReportedViolation extends Violation {
   scenario: string
@@ -21,6 +21,8 @@ export interface ScenarioReport {
   name: string
   status: 'ran' | 'skipped'
   events?: number
+  /** Messages from the scroll with no `dojo` field, left out of every rule. */
+  ignored?: number
   reason?: string
   error?: string
 }
@@ -29,6 +31,8 @@ export interface ConformanceReport {
   scroll: { id: string; version: string; url: string }
   passed: boolean
   counts: Record<RuleStatus, number>
+  /** Non-protocol messages the scroll sent, summed over the scenarios. */
+  ignoredMessages: number
   rules: RuleReport[]
   scenarios: ScenarioReport[]
 }
@@ -66,11 +70,12 @@ export function buildReport(
   rules.forEach((rule) => (counts[rule.status] += 1))
   const scenarios = runs.map((run): ScenarioReport =>
     run.status === 'ran'
-      ? { name: run.name, status: 'ran', events: run.trace.length, ...(run.error ? { error: run.error } : {}) }
+      ? { name: run.name, status: 'ran', events: run.trace.length, ignored: countIgnored(run.trace, run.context), ...(run.error ? { error: run.error } : {}) }
       : { name: run.name, status: 'skipped', reason: run.reason },
   )
   const passed = counts.fail === 0 && scenarios.every((scenario) => scenario.error === undefined)
-  return { scroll, passed, counts, rules, scenarios }
+  const ignoredMessages = scenarios.reduce((sum, scenario) => sum + (scenario.ignored ?? 0), 0)
+  return { scroll, passed, counts, ignoredMessages, rules, scenarios }
 }
 
 /** 1 when a rule failed, 2 when the suite could not finish, 0 otherwise. */
@@ -98,6 +103,9 @@ export function formatTextReport(report: ConformanceReport): string {
     errors.forEach((scenario) => lines.push(`  ${scenario.name}: ${scenario.error}`))
   }
   const { pass, fail, skipped } = report.counts
+  if (report.ignoredMessages > 0) {
+    lines.push('', `Ignored ${report.ignoredMessages} non-protocol message(s) (no dojo field) from the scroll.`)
+  }
   lines.push('', `${report.rules.length} rules: ${pass} passed, ${fail} failed, ${skipped} skipped`)
   return lines.join('\n')
 }
