@@ -20,6 +20,7 @@ import { beltsRoutes } from './routes/belts'
 import { playgroundRoutes } from './routes/playground'
 import { ogRoutes } from './routes/og'
 import { scrollsRoutes } from './routes/scrolls'
+import { scrollProgressRoutes } from './routes/scroll-progress'
 import { adminScrollsRoutes } from './routes/admin-scrolls'
 import { domainErrorToStatus } from './domain-error-status'
 import { errorRoutes } from './routes/errors'
@@ -67,6 +68,7 @@ export function createRouter() {
   app.route('/', errorRoutes)
   app.route('/', landingRoutes)
   app.route('/', scrollsRoutes)
+  app.route('/', scrollProgressRoutes)
   app.route('/admin', adminKatasRoutes)
   app.route('/admin/scrolls', adminScrollsRoutes)
   app.route('/admin/errors', adminErrorsRoutes)
