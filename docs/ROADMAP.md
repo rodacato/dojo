@@ -197,6 +197,7 @@ Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61]
 | 026 | [Scroll protocol v0 and manifest](adr/026-scroll-protocol.md) | Versioned postMessage protocol with a nonce handshake, declared and granted capabilities, and the `scroll.json` manifest | ✅ Accepted |
 | 027 | [Security model for embedded scrolls](adr/027-scroll-iframe-security.md) | Sandbox attributes, exact origins, a scroll as an untrusted client | ✅ Accepted |
 | 028 | [Code execution for embedded scrolls](adr/028-scroll-code-execution.md) | Signed-in users only, a separate queue, raw output returned to the scroll | ✅ Accepted |
+| 029 | [Scroll conformance suite](adr/029-scroll-conformance-suite.md) | A private package: a pure trace validator plus a browser runner behind a driver interface, tested against deliberately broken scrolls | ✅ Accepted |
 
 ---
 

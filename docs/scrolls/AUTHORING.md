@@ -82,4 +82,12 @@ Standalone, the shim stores progress in `localStorage` under `dojo-scroll:<id>:<
 
 ## Checking your work
 
-Validate `scroll.json` against the schema with any JSON Schema validator. Open the scroll directly (no `host` parameter): it should work and post nothing. A conformance suite arrives with scroll-kit v1.
+Validate `scroll.json` against the schema with any JSON Schema validator. Open the scroll directly (no `host` parameter): it should work and post nothing.
+
+Then run the [conformance suite](CONFORMANCE.md) against your served scroll. It loads the scroll in a real browser under a reference host, records the messages it sends and lists the rules of the protocol it breaks, each with the section of PROTOCOL.md it comes from:
+
+```bash
+node packages/scroll-conformance/dist/bin.js --url https://my-scroll.example/index.html --drive ./drive.mjs
+```
+
+Add a `--drive` module that clicks through your scroll so the messages that only appear on interaction (`progress`, `complete`, `run`) are checked too; CONFORMANCE.md shows how.
