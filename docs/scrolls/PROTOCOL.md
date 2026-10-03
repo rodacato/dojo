@@ -114,7 +114,7 @@ The JSON Schema cannot express three rules, which the host MUST also enforce: un
 
 ## 12. Conformance
 
-A scroll conforms if its message trace, against a conforming host, satisfies sections 2 to 7 and 9. A trace-based suite is planned (see the epic) and is not part of v0.
+A scroll conforms if its message trace, against a conforming host, satisfies sections 2 to 7, 9 and 13. The [conformance suite](CONFORMANCE.md) checks that by the messages a scroll actually sends; its rules point back at these sections.
 
 ## 13. Code execution (`run` and `result`)
 
