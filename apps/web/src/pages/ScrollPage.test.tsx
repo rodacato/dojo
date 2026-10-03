@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type { ScrollEntryDTO } from '@dojo/shared'
@@ -98,7 +98,7 @@ describe('ScrollPage — iframe container', () => {
     renderPage()
     const heading = await screen.findByRole('heading', { name: 'Circuito de patrones' })
     expect(screen.getByText('Aprende patrones')).toBeInTheDocument()
-    expect(heading).toHaveFocus()
+    await waitFor(() => expect(heading).toHaveFocus())
   })
 
   it('falls back to the first manifest locale', async () => {
