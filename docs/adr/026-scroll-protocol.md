@@ -10,7 +10,7 @@ A versioned `postMessage` protocol, specified in [`docs/scrolls/PROTOCOL.md`](..
 
 - Envelope `{dojo: "scroll", v: 0, type, ...}`. Scroll to host: `hello`, `progress`, `complete`, `resize`, `error`. Host to scroll: `init`, `setLocale`, `setTheme`.
 - Handshake with a scroll-generated nonce that `init` echoes; `init` issues a session id that every later message carries.
-- Capabilities (`progress`, and the reserved `run` and `llm`) are declared in the manifest `scroll.json` and granted by the host in `init`. Reserved message types are not implemented.
+- Capabilities (`progress`, `run` and the reserved `llm`) are declared in the manifest `scroll.json` and granted by the host in `init`. `run` was added later by [ADR 028](028-scroll-code-execution.md); only `llm` is still reserved and not implemented.
 - Opaque `state` is capped at 64 KiB. The host sees locale, theme, the scroll's own progress and an opaque per-scroll `userRef`.
 - A hand-written shim (`/scroll-kit/v0.js`) is a convenience that also works standalone; the spec is the contract.
 - The protocol stays `v: 0`, experimental, until Pattern Circuit and Domain Wall both use it.
