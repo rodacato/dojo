@@ -112,6 +112,47 @@ export class PistonAdapter implements CodeExecutionPort {
       return errorResult(err, runTimeoutMs, Date.now() - start)
     }
   }
+
+  async runFiles(params: {
+    language: string
+    files: readonly { name: string; content: string }[]
+    stdin?: string
+  }): Promise<ExecutionResult> {
+    const runTimeoutMs = config.PISTON_RUN_TIMEOUT
+    const langConfig = LANGUAGE_MAP[params.language.toLowerCase()]
+    const entry = params.files[0]
+    if (!langConfig || !entry) {
+      return { ...failedResult(`Unsupported language: ${params.language}`, runTimeoutMs, 0), failure: 'unavailable' }
+    }
+
+    const start = Date.now()
+    try {
+      const response = await fetch(`${config.PISTON_URL}/api/v2/execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: langConfig.language,
+          version: langConfig.version,
+          files: params.files,
+          stdin: params.stdin ?? '',
+          run_timeout: config.PISTON_RUN_TIMEOUT,
+          compile_timeout: config.PISTON_COMPILE_TIMEOUT,
+          compile_memory_limit: 256_000_000,
+          run_memory_limit: 256_000_000,
+          args: params.language.toLowerCase() === 'sql' ? [entry.name] : [],
+        }),
+        signal: AbortSignal.timeout(config.PISTON_RUN_TIMEOUT + 5000),
+      })
+
+      return await handlePistonResponse(response, runTimeoutMs, start)
+    } catch (err) {
+      return errorResult(err, runTimeoutMs, Date.now() - start)
+    }
+  }
+}
+
+function failedResult(stderr: string, runTimeoutMs: number, executionTimeMs: number): ExecutionResult {
+  return { stdout: '', stderr, exitCode: 1, timedOut: false, outputExceeded: false, runTimeoutMs, executionTimeMs }
 }
 
 // Combine solution + test into one file so all symbols are in scope.
@@ -167,13 +208,8 @@ async function handlePistonResponse(
   if (!response.ok) {
     const body = await response.text().catch(() => '')
     return {
-      stdout: '',
-      stderr: formatPistonHttpError(response.status, response.statusText, body),
-      exitCode: 1,
-      timedOut: false,
-      outputExceeded: false,
-      runTimeoutMs,
-      executionTimeMs: Date.now() - start,
+      ...failedResult(formatPistonHttpError(response.status, response.statusText, body), runTimeoutMs, Date.now() - start),
+      failure: 'unavailable',
     }
   }
 
@@ -190,6 +226,7 @@ async function handlePistonResponse(
       outputExceeded: false,
       runTimeoutMs,
       executionTimeMs: Date.now() - start,
+      failure: 'compile',
     }
   }
 
@@ -205,6 +242,7 @@ function errorResult(err: unknown, runTimeoutMs: number, executionTimeMs: number
     outputExceeded: false,
     runTimeoutMs,
     executionTimeMs,
+    failure: 'unavailable',
   }
 }
 

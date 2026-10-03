@@ -260,6 +260,68 @@ describe('PistonAdapter', () => {
   })
 })
 
+describe('PistonAdapter.runFiles', () => {
+  const adapter = new PistonAdapter()
+  const files = [
+    { name: 'main.rb', content: 'require_relative "lib"' },
+    { name: 'lib.rb', content: 'puts 1' },
+  ]
+
+  beforeEach(() => mockFetch.mockReset())
+
+  it('sends every file in order, with stdin, and maps the output', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ run: { stdout: '1\n', stderr: '', code: 0, signal: null } }),
+    })
+
+    const result = await adapter.runFiles({ language: 'ruby', files, stdin: 'in' })
+
+    const body = JSON.parse(mockFetch.mock.calls[0][1].body)
+    expect(body.files).toEqual(files)
+    expect(body.stdin).toBe('in')
+    expect(result.stdout).toBe('1\n')
+    expect(result.exitCode).toBe(0)
+    expect(result.failure).toBeUndefined()
+  })
+
+  it('flags a compile failure', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        compile: { stdout: '', stderr: 'boom', code: 1 },
+        run: { stdout: '', stderr: '', code: null, signal: null },
+      }),
+    })
+    const result = await adapter.runFiles({ language: 'ruby', files })
+    expect(result.failure).toBe('compile')
+    expect(result.exitCode).toBe(1)
+  })
+
+  it('flags a Piston HTTP error and a network failure as unavailable', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 502, statusText: 'Bad Gateway', text: async () => '' })
+    expect((await adapter.runFiles({ language: 'ruby', files })).failure).toBe('unavailable')
+
+    mockFetch.mockRejectedValueOnce(new Error('ECONNREFUSED'))
+    expect((await adapter.runFiles({ language: 'ruby', files })).failure).toBe('unavailable')
+  })
+
+  it('refuses an unsupported language without calling Piston', async () => {
+    const result = await adapter.runFiles({ language: 'cobol', files })
+    expect(result.failure).toBe('unavailable')
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('passes the entry file to the sqlite runtime as an argument', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ run: { stdout: '', stderr: '', code: 0, signal: null } }),
+    })
+    await adapter.runFiles({ language: 'sql', files: [{ name: 'q.sql', content: 'select 1;' }] })
+    expect(JSON.parse(mockFetch.mock.calls[0][1].body).args).toEqual(['q.sql'])
+  })
+})
+
 describe('buildSqlScript', () => {
   it('substitutes @SOLUTION_FILE marker with a wrapped CREATE VIEW', () => {
     const testCode = `CREATE TABLE t (x INT);

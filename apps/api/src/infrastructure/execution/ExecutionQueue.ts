@@ -2,12 +2,13 @@ import type { CodeExecutionPort, ExecutionResult } from '../../domain/practice/p
 
 type ExecuteParams = { language: string; code: string; testCode: string; timeoutMs?: number }
 type RunParams = { language: string; version: string; code: string }
+type RunFilesParams = Parameters<CodeExecutionPort['runFiles']>[0]
 
 interface QueueItem {
   resolve: (result: ExecutionResult) => void
   reject: (error: Error) => void
-  mode: 'execute' | 'run'
-  params: ExecuteParams | RunParams
+  mode: 'execute' | 'run' | 'runFiles'
+  params: ExecuteParams | RunParams | RunFilesParams
 }
 
 export class ExecutionQueue {
@@ -39,9 +40,13 @@ export class ExecutionQueue {
     return this.schedule('run', params)
   }
 
+  async enqueueRunFiles(params: RunFilesParams): Promise<ExecutionResult> {
+    return this.schedule('runFiles', params)
+  }
+
   private async schedule(
     mode: QueueItem['mode'],
-    params: ExecuteParams | RunParams,
+    params: QueueItem['params'],
   ): Promise<ExecutionResult> {
     if (this.running < this.maxConcurrency) {
       return this.runTask(mode, params)
@@ -63,6 +68,7 @@ export class ExecutionQueue {
             outputExceeded: false,
             runTimeoutMs: this.queueTimeoutMs,
             executionTimeMs: this.queueTimeoutMs,
+            failure: 'unavailable',
           })
         }
       }, this.queueTimeoutMs)
@@ -75,15 +81,12 @@ export class ExecutionQueue {
     })
   }
 
-  private async runTask(
-    mode: QueueItem['mode'],
-    params: ExecuteParams | RunParams,
-  ): Promise<ExecutionResult> {
+  private async runTask(mode: QueueItem['mode'], params: QueueItem['params']): Promise<ExecutionResult> {
     this.running++
     try {
-      return mode === 'execute'
-        ? await this.executor.execute(params as ExecuteParams)
-        : await this.executor.run(params as RunParams)
+      if (mode === 'execute') return await this.executor.execute(params as ExecuteParams)
+      if (mode === 'run') return await this.executor.run(params as RunParams)
+      return await this.executor.runFiles(params as RunFilesParams)
     } finally {
       this.running--
       this.processNext()
