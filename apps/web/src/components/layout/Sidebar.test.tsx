@@ -47,6 +47,7 @@ describe('Sidebar — navigation', () => {
     const expected: Array<[string, string]> = [
       ['dashboard', '/dashboard'],
       ['katas', '/katas'],
+      ['scrolls', '/scrolls'],
       ['engawa', '/engawa'],
       ['kumite', '/kumite'],
       ['belts', '/belts'],

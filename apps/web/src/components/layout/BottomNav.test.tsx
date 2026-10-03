@@ -29,10 +29,11 @@ function renderNav(route = '/dashboard') {
 }
 
 describe('BottomNav', () => {
-  it('renders the three base nav links', () => {
+  it('renders the four base nav links', () => {
     renderNav()
     expect(screen.getByRole('link', { name: /dash/ })).toHaveAttribute('href', '/dashboard')
     expect(screen.getByRole('link', { name: /katas/ })).toHaveAttribute('href', '/katas')
+    expect(screen.getByRole('link', { name: /scrolls/ })).toHaveAttribute('href', '/scrolls')
     expect(screen.getByRole('link', { name: /belts/ })).toHaveAttribute('href', '/belts')
   })
 
@@ -48,6 +49,12 @@ describe('BottomNav', () => {
     renderNav()
     expect(screen.getByRole('link', { name: /engawa/ })).toHaveAttribute('href', '/engawa')
     expect(screen.queryByRole('link', { name: /settings/ })).not.toBeInTheDocument()
+  })
+
+  it('highlights scrolls on a scroll page', () => {
+    renderNav('/scrolls/pattern-circuit')
+    expect(screen.getByRole('link', { name: /scrolls/ }).className).toContain('text-accent')
+    expect(screen.getByRole('link', { name: /katas/ }).className).not.toContain('text-accent')
   })
 
   it('highlights the active route with the accent color', () => {
