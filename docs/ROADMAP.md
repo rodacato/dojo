@@ -194,6 +194,9 @@ Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61]
 | 020 | [Ubiquitous language pass](adr/020-ubiquitous-language-pass.md) | Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object; schema.ts exports dojo-native names while DB tables/columns stay legacy via pgTable arg; /leaderboard deleted (not renamed to /kumite); /kumite reserved as future feature placeholder | ✅ Accepted |
 | 021 | [Sumi-e dual-theme architecture](adr/021-sumi-e-dual-theme-architecture.md) | Two complete palettes (Slate Indigo shipped + Sumi/Washi target) share the same `--color-*` token names; `[data-theme="sumi"\|"washi"]` selectors override `@theme` defaults; user picks via toggle with OS auto-detect default + `localStorage` persistence; no feature flag (single-user constraint, `'slate'` choice is the kill switch); editor-style libraries (CodeMirror, Mermaid) read tokens via `useThemeTokens` MutationObserver hook | ✅ Accepted |
 | 025 | [External embedded scrolls](adr/025-external-embedded-scrolls.md) | Scrolls become external apps embedded by iframe over a versioned postMessage protocol; native scrolls removed and archived; supersedes 015, 016, 022 | ✅ Accepted |
+| 026 | [Scroll protocol v0 and manifest](adr/026-scroll-protocol.md) | Versioned postMessage protocol with a nonce handshake, declared and granted capabilities, and the `scroll.json` manifest | ✅ Accepted |
+| 027 | [Security model for embedded scrolls](adr/027-scroll-iframe-security.md) | Sandbox attributes, exact origins, a scroll as an untrusted client | ✅ Accepted |
+| 028 | [Code execution for embedded scrolls](adr/028-scroll-code-execution.md) | Signed-in users only, a separate queue, raw output returned to the scroll | ✅ Accepted |
 
 ---
 
