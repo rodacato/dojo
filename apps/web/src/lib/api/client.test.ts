@@ -68,6 +68,12 @@ describe('request (client)', () => {
     )
   })
 
+  it('resolves to undefined on a 204 response instead of parsing a body', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(null, { status: 204 }))
+
+    await expect(request('/admin/scrolls/s1', { method: 'DELETE' })).resolves.toBeUndefined()
+  })
+
   it('omits the Authorization header when no token is stored', async () => {
     const fetchSpy = vi
       .spyOn(globalThis, 'fetch')
