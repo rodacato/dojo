@@ -14,7 +14,7 @@ interface ShimApi {
   progress(unitId: string, state?: unknown): void
   complete(unitId?: string): void
   resize(height: number): void
-  run(): Promise<unknown>
+  run(request: unknown): Promise<unknown>
   llm(): Promise<unknown>
 }
 
@@ -39,6 +39,7 @@ function loadShim(options: { search?: string; framed?: boolean } = {}) {
     },
     addEventListener: (_type: string, listener: Listener) => listeners.push(listener),
     setTimeout: (fn: () => void, ms: number) => globalThis.setTimeout(fn, ms),
+    clearTimeout: (handle: ReturnType<typeof setTimeout>) => globalThis.clearTimeout(handle),
   }
   fakeWindow['parent'] = framed ? parent : fakeWindow
   // eslint-disable-next-line sonarjs/code-eval -- runs our own committed shim against a fake window
@@ -174,10 +175,114 @@ describe('scroll-kit: embedded', () => {
     expect(window.localStorage).toHaveLength(0)
   })
 
-  it('rejects the reserved capabilities', async () => {
+  it('rejects llm, which is reserved', async () => {
     const h = loadShim()
-    await expect(h.api.run()).rejects.toThrow('capability not available')
     await expect(h.api.llm()).rejects.toThrow('capability not available')
+  })
+})
+
+describe('scroll-kit: run', () => {
+  const request = { language: 'ruby', files: [{ name: 'main.rb', content: 'puts 1' }], stdin: 'in' }
+  const outcome = { kind: 'ok', exitCode: 0, stdout: '1\n', stderr: '', durationMs: 8 }
+
+  const grantedRun = () => {
+    const h = loadShim()
+    h.deliver(initFor(h.posted()[0]!['nonce'], { capabilities: ['progress', 'run'] }))
+    return h
+  }
+  const sentRun = (h: ReturnType<typeof loadShim>) => h.posted().find((m) => m['type'] === 'run')!
+  const result = (id: unknown, over: Record<string, unknown> = {}) => ({
+    dojo: 'scroll',
+    v: 0,
+    type: 'result',
+    session: 'sess-1',
+    id,
+    ...outcome,
+    ...over,
+  })
+
+  it('posts a valid run and resolves with the result carrying the same id', async () => {
+    const h = grantedRun()
+    const promise = h.api.run(request)
+
+    const message = sentRun(h)
+    expect(scrollToHostMessageSchema.safeParse(message).success).toBe(true)
+    expect(message).toMatchObject({ session: 'sess-1', ...request })
+
+    h.deliver(result(message['id']))
+    await expect(promise).resolves.toEqual(outcome)
+  })
+
+  it('omits stdin when none is given', () => {
+    const h = grantedRun()
+    void h.api.run({ language: 'ruby', files: request.files })
+    expect(sentRun(h)).not.toHaveProperty('stdin')
+  })
+
+  it('keeps concurrent runs apart by id', async () => {
+    const h = grantedRun()
+    const first = h.api.run(request)
+    const second = h.api.run(request)
+    const [a, b] = h.posted().filter((m) => m['type'] === 'run')
+
+    h.deliver(result(b!['id'], { stdout: 'second' }))
+    h.deliver(result(a!['id'], { stdout: 'first' }))
+
+    await expect(first).resolves.toMatchObject({ stdout: 'first' })
+    await expect(second).resolves.toMatchObject({ stdout: 'second' })
+  })
+
+  it('rejects when the host answers with an error for that run', async () => {
+    const h = grantedRun()
+    const promise = h.api.run(request)
+    h.deliver({
+      dojo: 'scroll',
+      v: 0,
+      type: 'error',
+      session: 'sess-1',
+      id: sentRun(h)['id'],
+      code: 'capability-denied',
+      message: 'nope',
+    })
+    await expect(promise).rejects.toMatchObject({ message: 'nope', code: 'capability-denied' })
+  })
+
+  it('rejects without posting when run was not granted, standalone or before init', async () => {
+    const notGranted = loadShim()
+    handshake(notGranted)
+    await expect(notGranted.api.run(request)).rejects.toThrow('capability not available')
+    expect(notGranted.posted().some((m) => m['type'] === 'run')).toBe(false)
+
+    const pending = loadShim()
+    await expect(pending.api.run(request)).rejects.toThrow('capability not available')
+
+    const standalone = loadShim({ framed: false })
+    await expect(standalone.api.run(request)).rejects.toThrow('capability not available')
+  })
+
+  it('ignores a result from another origin, another session or with an unknown id', async () => {
+    const h = grantedRun()
+    const promise = h.api.run(request)
+    const id = sentRun(h)['id']
+    let settled = false
+    promise.then(() => (settled = true), () => (settled = true))
+
+    h.deliver(result(id), { origin: 'https://evil.example' })
+    h.deliver(result(id, { session: 'other' }))
+    h.deliver(result('run-unknown'))
+    await Promise.resolve()
+    expect(settled).toBe(false)
+
+    h.deliver(result(id))
+    await expect(promise).resolves.toEqual(outcome)
+  })
+
+  it('rejects a run that gets no answer in time', async () => {
+    const h = grantedRun()
+    const promise = h.api.run(request)
+    const assertion = expect(promise).rejects.toThrow('run timed out')
+    vi.advanceTimersByTime(60_000)
+    await assertion
   })
 })
 
