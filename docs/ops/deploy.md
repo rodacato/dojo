@@ -28,6 +28,8 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `APP_HOST` | var | yes | Web hostname without scheme: web's proxy host, the API's `WEB_URL`, the Open Graph URLs baked into the web build |
 | `API_HOST` | var | yes | API hostname without scheme: the API's proxy host, the web build's `VITE_API_URL`, the CSP `connect-src`, the Piston execute smoke |
 | `SCROLL_FRAME_ORIGINS` | var | no | Exact origins (`https://scrolls.example.com`, no wildcards), separated by spaces or commas. The web CSP `frame-src` allows exactly these for embedded scrolls, and the API refuses to register a scroll outside them. Empty allows none. Changing it needs a redeploy of both containers |
+| `SCROLL_EXEC_MAX_CONCURRENT` | var | no | Concurrent code executions embedded scrolls may run, in their own queue apart from katas and the playground. Default `2` |
+| `SCROLL_EXEC_USER_PER_MINUTE` | var | no | Scroll code executions per signed-in user per minute. Default `10` |
 | `DATABASE_URL` | secret | yes | Points at the `db` accessory |
 | `POSTGRES_PASSWORD` | secret | yes | Password of the `db` accessory |
 | `SESSION_SECRET` | secret | yes | 32+ characters |
