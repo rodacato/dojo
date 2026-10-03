@@ -3,6 +3,7 @@ import { practice } from './practice'
 import { admin } from './admin'
 import { profile } from './profile'
 import { scrolls } from './scrolls'
+import { scrollProgress } from './scrollProgress'
 import { playground } from './playground'
 import { share } from './share'
 
@@ -30,6 +31,7 @@ export const api = {
   ...admin,
   ...profile,
   ...scrolls,
+  ...scrollProgress,
   ...share,
   playground,
 }
