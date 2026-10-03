@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  MAX_RUN_BYTES,
+  MAX_RUN_FILES,
   MAX_STATE_BYTES,
   RESERVED_MESSAGE_TYPES,
   hostToScrollMessageSchema,
@@ -21,6 +23,26 @@ const hello = {
 const progress = { ...envelope, type: 'progress', session, unitId: 'u1', completed: true, state: { a: [1] } }
 const complete = { ...envelope, type: 'complete', session, unitId: 'u1' }
 const resize = { ...envelope, type: 'resize', session, height: 640 }
+const run = {
+  ...envelope,
+  type: 'run',
+  session,
+  id: 'req-1',
+  language: 'ruby',
+  files: [{ name: 'main.rb', content: 'puts 1' }],
+  stdin: 'input',
+}
+const result = {
+  ...envelope,
+  type: 'result',
+  session,
+  id: 'req-1',
+  kind: 'ok',
+  exitCode: 0,
+  stdout: '1\n',
+  stderr: '',
+  durationMs: 12,
+}
 const error = { ...envelope, type: 'error', session, code: 'bad-state', message: 'oops' }
 
 const init = {
@@ -58,7 +80,7 @@ function without(obj: Record<string, unknown>, key: string) {
 }
 
 describe('scroll -> host messages', () => {
-  it.each([hello, progress, complete, resize, error])('accepts a valid $type', (message) => {
+  it.each([hello, progress, complete, resize, run, error])('accepts a valid $type', (message) => {
     expect(scrollToHostMessageSchema.safeParse(message).success).toBe(true)
   })
 
@@ -71,6 +93,10 @@ describe('scroll -> host messages', () => {
     [complete, 'session'],
     [resize, 'session'],
     [resize, 'height'],
+    [run, 'session'],
+    [run, 'id'],
+    [run, 'language'],
+    [run, 'files'],
     [error, 'code'],
     [error, 'message'],
     [progress, 'dojo'],
@@ -103,6 +129,29 @@ describe('scroll -> host messages', () => {
     expect(scrollToHostMessageSchema.safeParse('hello').success).toBe(false)
   })
 
+  it('accepts a run without stdin', () => {
+    expect(scrollToHostMessageSchema.safeParse(without(run, 'stdin')).success).toBe(true)
+  })
+
+  it('rejects run requests outside the limits', () => {
+    const file = (name: string, content = 'x') => ({ name, content })
+    const parse = (files: unknown) => scrollToHostMessageSchema.safeParse({ ...run, files }).success
+    expect(parse([])).toBe(false)
+    expect(parse(Array.from({ length: MAX_RUN_FILES + 1 }, (_, i) => file(`f${i}.rb`)))).toBe(false)
+    expect(parse(Array.from({ length: MAX_RUN_FILES }, (_, i) => file(`f${i}.rb`)))).toBe(true)
+    expect(parse([file('main.rb', 'x'.repeat(MAX_RUN_BYTES + 1))])).toBe(false)
+    expect(parse([file('main.rb', 'x'.repeat(MAX_RUN_BYTES))])).toBe(true)
+    expect(parse([file('main.rb', '€'.repeat(MAX_RUN_BYTES / 2))])).toBe(false)
+    expect(parse([file('../main.rb')])).toBe(false)
+    expect(parse([file('a/b.rb')])).toBe(false)
+    expect(parse([file('main.rb'), file('main.rb')])).toBe(false)
+  })
+
+  it('rejects a malformed run language and id', () => {
+    expect(scrollToHostMessageSchema.safeParse({ ...run, language: 'Ruby!' }).success).toBe(false)
+    expect(scrollToHostMessageSchema.safeParse({ ...run, id: '' }).success).toBe(false)
+  })
+
   it('caps the size of opaque state', () => {
     const big = { ...progress, state: 'x'.repeat(MAX_STATE_BYTES) }
     expect(scrollToHostMessageSchema.safeParse(big).success).toBe(false)
@@ -112,7 +161,7 @@ describe('scroll -> host messages', () => {
 })
 
 describe('host -> scroll messages', () => {
-  it.each([init, setLocale, setTheme])('accepts a valid $type', (message) => {
+  it.each([init, result, setLocale, setTheme])('accepts a valid $type', (message) => {
     expect(hostToScrollMessageSchema.safeParse(message).success).toBe(true)
   })
 
@@ -129,6 +178,13 @@ describe('host -> scroll messages', () => {
     [init, 'capabilities'],
     [init, 'userRef'],
     [init, 'authenticated'],
+    [result, 'session'],
+    [result, 'id'],
+    [result, 'kind'],
+    [result, 'exitCode'],
+    [result, 'stdout'],
+    [result, 'stderr'],
+    [result, 'durationMs'],
     [setLocale, 'session'],
     [setLocale, 'locale'],
     [setTheme, 'session'],
@@ -141,6 +197,24 @@ describe('host -> scroll messages', () => {
     expect(hostToScrollMessageSchema.safeParse({ ...init, locale: 'EN_us' }).success).toBe(false)
     expect(hostToScrollMessageSchema.safeParse({ ...init, authenticated: 'yes' }).success).toBe(false)
     expect(hostToScrollMessageSchema.safeParse({ ...init, progress: { u1: {} } }).success).toBe(false)
+  })
+})
+
+describe('result message', () => {
+  const parse = (over: Record<string, unknown>) => hostToScrollMessageSchema.safeParse({ ...result, ...over }).success
+
+  it('accepts every kind and a null exit code', () => {
+    for (const kind of ['ok', 'compile', 'runtime', 'timeout', 'output-limit', 'unavailable']) {
+      expect(parse({ kind })).toBe(true)
+    }
+    expect(parse({ kind: 'unavailable', exitCode: null })).toBe(true)
+  })
+
+  it('rejects an unknown kind, a fractional exit code and oversized output', () => {
+    expect(parse({ kind: 'weird' })).toBe(false)
+    expect(parse({ exitCode: 1.5 })).toBe(false)
+    expect(parse({ stdout: 'x'.repeat(65_537) })).toBe(false)
+    expect(parse({ durationMs: -1 })).toBe(false)
   })
 })
 

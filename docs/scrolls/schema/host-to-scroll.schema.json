@@ -117,6 +117,81 @@
         },
         "type": {
           "type": "string",
+          "const": "result"
+        },
+        "session": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "ok",
+            "compile",
+            "runtime",
+            "timeout",
+            "output-limit",
+            "unavailable"
+          ]
+        },
+        "exitCode": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stdout": {
+          "type": "string",
+          "maxLength": 65536
+        },
+        "stderr": {
+          "type": "string",
+          "maxLength": 65536
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "dojo",
+        "v",
+        "type",
+        "session",
+        "id",
+        "kind",
+        "exitCode",
+        "stdout",
+        "stderr",
+        "durationMs"
+      ]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "dojo": {
+          "type": "string",
+          "const": "scroll"
+        },
+        "v": {
+          "type": "number",
+          "const": 0
+        },
+        "type": {
+          "type": "string",
           "const": "setLocale"
         },
         "session": {
