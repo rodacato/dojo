@@ -13,11 +13,15 @@ import { UpdateScroll } from '../application/scrolls/UpdateScroll'
 import { DeleteScroll } from '../application/scrolls/DeleteScroll'
 import { ListScrolls } from '../application/scrolls/ListScrolls'
 import { GetScrollBySlug } from '../application/scrolls/GetScrollBySlug'
+import { GetScrollProgress } from '../application/scrolls/GetScrollProgress'
+import { RecordScrollProgress } from '../application/scrolls/RecordScrollProgress'
+import { MergeAnonymousScrollProgress } from '../application/scrolls/MergeAnonymousScrollProgress'
 import { UpsertUser } from '../application/identity/UpsertUser'
 import { db } from './persistence/drizzle/client'
 import { PostgresKataRepository } from './persistence/PostgresKataRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
 import { PostgresScrollRepository } from './persistence/PostgresScrollRepository'
+import { PostgresScrollProgressRepository } from './persistence/PostgresScrollProgressRepository'
 import { PostgresUserRepository } from './persistence/PostgresUserRepository'
 import { InMemoryEventBus } from './events/InMemoryEventBus'
 import { MockLLMAdapter } from './llm/MockLLMAdapter'
@@ -43,6 +47,8 @@ const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
 const milestoneRepo = new PostgresMilestoneRepository(db)
 const scrollRepo = new PostgresScrollRepository(db)
+const scrollProgressRepo = new PostgresScrollProgressRepository(db)
+const userRefSecret = config.SESSION_SECRET
 const scrollOriginPolicy = {
   allowedOrigins: config.SCROLL_FRAME_ORIGINS,
   isProduction: config.NODE_ENV === 'production',
@@ -127,4 +133,7 @@ export const useCases = {
   deleteScroll: new DeleteScroll({ scrollRepo }),
   listScrolls: new ListScrolls({ scrollRepo }),
   getScrollBySlug: new GetScrollBySlug({ scrollRepo }),
+  getScrollProgress: new GetScrollProgress({ scrollRepo, progressRepo: scrollProgressRepo, userRefSecret }),
+  recordScrollProgress: new RecordScrollProgress({ scrollRepo, progressRepo: scrollProgressRepo, userRefSecret }),
+  mergeAnonymousScrollProgress: new MergeAnonymousScrollProgress({ progressRepo: scrollProgressRepo }),
 }
