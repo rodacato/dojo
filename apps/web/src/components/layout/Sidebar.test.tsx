@@ -98,25 +98,15 @@ describe('Sidebar — account section', () => {
 })
 
 describe('Sidebar — theme + collapse', () => {
-  it('cycles the theme sumi → washi on click', async () => {
-    mockedUseTheme.mockReturnValue({ theme: 'sumi', setTheme })
+  it.each([
+    ['sumi', 'washi'],
+    ['slate', 'sumi'],
+    ['auto', 'sumi'],
+  ] as const)('cycles the theme %s → %s on click', async (current, next) => {
+    mockedUseTheme.mockReturnValue({ theme: current, setTheme })
     renderSidebar()
-    await userEvent.click(screen.getByTitle('theme: sumi (click to cycle)'))
-    expect(setTheme).toHaveBeenCalledWith('washi')
-  })
-
-  it('wraps the cycle slate → sumi', async () => {
-    mockedUseTheme.mockReturnValue({ theme: 'slate', setTheme })
-    renderSidebar()
-    await userEvent.click(screen.getByTitle('theme: slate (click to cycle)'))
-    expect(setTheme).toHaveBeenCalledWith('sumi')
-  })
-
-  it('starts the cycle at sumi from the "auto" choice', async () => {
-    mockedUseTheme.mockReturnValue({ theme: 'auto', setTheme })
-    renderSidebar()
-    await userEvent.click(screen.getByTitle('theme: auto (click to cycle)'))
-    expect(setTheme).toHaveBeenCalledWith('sumi')
+    await userEvent.click(screen.getByTitle(`theme: ${current} (click to cycle)`))
+    expect(setTheme).toHaveBeenCalledWith(next)
   })
 
   it('calls onToggle when the collapse control is clicked', async () => {

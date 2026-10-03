@@ -30,18 +30,12 @@ describe('getStoredTheme', () => {
     },
   )
 
-  it('falls back to "auto" for an unrecognized stored value', () => {
-    window.localStorage.setItem(STORAGE_KEY, 'midnight')
-    expect(getStoredTheme()).toBe('auto')
-  })
-
-  it('falls back to "auto" for an empty-string stored value', () => {
-    window.localStorage.setItem(STORAGE_KEY, '')
-    expect(getStoredTheme()).toBe('auto')
-  })
-
-  it('is case-sensitive — "Sumi" is not a valid value', () => {
-    window.localStorage.setItem(STORAGE_KEY, 'Sumi')
+  it.each([
+    ['an unrecognized stored value', 'midnight'],
+    ['an empty-string stored value', ''],
+    ['a wrong-case value ("Sumi" is not valid)', 'Sumi'],
+  ])('falls back to "auto" for %s', (_label, stored) => {
+    window.localStorage.setItem(STORAGE_KEY, stored)
     expect(getStoredTheme()).toBe('auto')
   })
 })
@@ -137,9 +131,7 @@ describe('initTheme', () => {
       removeEventListener: vi.fn(),
       dispatchEvent: vi.fn(),
     }))
-    vi.spyOn(window, 'matchMedia').mockImplementation(
-      fn as unknown as typeof window.matchMedia,
-    )
+    vi.spyOn(window, 'matchMedia').mockImplementation(fn as unknown as typeof window.matchMedia)
     return fn
   }
 
@@ -161,19 +153,18 @@ describe('initTheme', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe('washi')
   })
 
-  it('honors an explicit stored "washi" even when the OS prefers dark', () => {
-    window.localStorage.setItem(STORAGE_KEY, 'washi')
-    stubMatchMedia(true)
-    initTheme()
-    expect(document.documentElement.getAttribute('data-theme')).toBe('washi')
-  })
-
-  it('honors an explicit stored "sumi" even when the OS prefers light', () => {
-    window.localStorage.setItem(STORAGE_KEY, 'sumi')
-    stubMatchMedia(false)
-    initTheme()
-    expect(document.documentElement.getAttribute('data-theme')).toBe('sumi')
-  })
+  it.each([
+    ['washi', true],
+    ['sumi', false],
+  ] as const)(
+    'honors an explicit stored "%s" even when the OS prefers the opposite',
+    (stored, osDark) => {
+      window.localStorage.setItem(STORAGE_KEY, stored)
+      stubMatchMedia(osDark)
+      initTheme()
+      expect(document.documentElement.getAttribute('data-theme')).toBe(stored)
+    },
+  )
 
   it('removes the data-theme attribute when the stored choice is "slate"', () => {
     window.localStorage.setItem(STORAGE_KEY, 'slate')

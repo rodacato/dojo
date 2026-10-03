@@ -9,7 +9,8 @@ const wellFormed = {
   isFinalEvaluation: false,
 }
 
-const wrapStream = (prose: string, json: object) => `${prose}<evaluation>${JSON.stringify(json)}</evaluation>`
+const wrapStream = (prose: string, json: object) =>
+  `${prose}<evaluation>${JSON.stringify(json)}</evaluation>`
 
 // Push the whole payload as one chunk and finalize — the common single-shot path.
 const parseWhole = (text: string) => {
@@ -53,22 +54,10 @@ describe('EvaluationStreamParser', () => {
   })
 
   describe('verdict variants', () => {
-    it('parses passed', () => {
-      const { result, error } = parseWhole(wrapStream('', { ...wellFormed, verdict: 'passed' }))
+    it.each(['passed', 'passed_with_notes', 'needs_work'])('parses %s', (verdict) => {
+      const { result, error } = parseWhole(wrapStream('', { ...wellFormed, verdict }))
       expect(error).toBeNull()
-      expect(result?.verdict).toBe('passed')
-    })
-
-    it('parses passed_with_notes', () => {
-      const { result, error } = parseWhole(wrapStream('', { ...wellFormed, verdict: 'passed_with_notes' }))
-      expect(error).toBeNull()
-      expect(result?.verdict).toBe('passed_with_notes')
-    })
-
-    it('parses needs_work', () => {
-      const { result, error } = parseWhole(wrapStream('', { ...wellFormed, verdict: 'needs_work' }))
-      expect(error).toBeNull()
-      expect(result?.verdict).toBe('needs_work')
+      expect(result?.verdict).toBe(verdict)
     })
 
     it('rejects an unknown verdict', () => {
@@ -101,7 +90,10 @@ describe('EvaluationStreamParser', () => {
 
     it('drops non-string entries from topicsToReview', () => {
       const { result } = parseWhole(
-        wrapStream('', { ...wellFormed, topicsToReview: ['valid', 42, null, 'also-valid', { x: 1 }] }),
+        wrapStream('', {
+          ...wellFormed,
+          topicsToReview: ['valid', 42, null, 'also-valid', { x: 1 }],
+        }),
       )
       expect(result?.topicsToReview).toEqual(['valid', 'also-valid'])
     })
@@ -136,7 +128,9 @@ describe('EvaluationStreamParser', () => {
     })
 
     it('rejects a non-array topicsToReview', () => {
-      const { result, error } = parseWhole(wrapStream('', { ...wellFormed, topicsToReview: 'indexing' }))
+      const { result, error } = parseWhole(
+        wrapStream('', { ...wellFormed, topicsToReview: 'indexing' }),
+      )
       expect(result).toBeNull()
       expect(error).toContain('topicsToReview must be an array')
     })
@@ -148,7 +142,9 @@ describe('EvaluationStreamParser', () => {
     })
 
     it('rejects a non-boolean isFinalEvaluation', () => {
-      const { result, error } = parseWhole(wrapStream('', { ...wellFormed, isFinalEvaluation: 'yes' }))
+      const { result, error } = parseWhole(
+        wrapStream('', { ...wellFormed, isFinalEvaluation: 'yes' }),
+      )
       expect(result).toBeNull()
       expect(error).toContain('isFinalEvaluation must be a boolean')
     })
