@@ -11,6 +11,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/admin/katas', label: 'Katas', icon: GridIcon },
+  { to: '/admin/scrolls', label: 'Scrolls', icon: BookIcon },
   { to: '/admin/invitations', label: 'Invitations', icon: MailIcon },
   { to: '/admin/errors', label: 'Errors', icon: AlertIcon },
   { to: '/admin/health', label: 'Health', icon: HeartIcon },
@@ -101,6 +102,14 @@ function GridIcon({ className }: Readonly<{ className?: string }>) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+    </svg>
+  )
+}
+
+function BookIcon({ className }: Readonly<{ className?: string }>) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
     </svg>
   )
 }

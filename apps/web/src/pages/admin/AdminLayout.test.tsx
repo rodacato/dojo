@@ -39,10 +39,11 @@ beforeEach(() => {
 })
 
 describe('AdminLayout', () => {
-  it('renders all four admin nav links with the right destinations', () => {
+  it('renders all five admin nav links with the right destinations', () => {
     renderLayout()
 
     expect(screen.getByRole('link', { name: 'Katas' })).toHaveAttribute('href', '/admin/katas')
+    expect(screen.getByRole('link', { name: 'Scrolls' })).toHaveAttribute('href', '/admin/scrolls')
     expect(screen.getByRole('link', { name: 'Invitations' })).toHaveAttribute('href', '/admin/invitations')
     expect(screen.getByRole('link', { name: 'Errors' })).toHaveAttribute('href', '/admin/errors')
     expect(screen.getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/admin/health')
