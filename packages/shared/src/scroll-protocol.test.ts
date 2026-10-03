@@ -161,7 +161,9 @@ describe('scroll -> host messages', () => {
 })
 
 describe('host -> scroll messages', () => {
-  it.each([init, result, setLocale, setTheme])('accepts a valid $type', (message) => {
+  const hostError = { ...envelope, type: 'error', session, id: 'req-1', code: 'capability-denied', message: 'no run' }
+
+it.each([init, result, hostError, setLocale, setTheme])('accepts a valid $type', (message) => {
     expect(hostToScrollMessageSchema.safeParse(message).success).toBe(true)
   })
 
@@ -185,6 +187,9 @@ describe('host -> scroll messages', () => {
     [result, 'stdout'],
     [result, 'stderr'],
     [result, 'durationMs'],
+    [hostError, 'session'],
+    [hostError, 'code'],
+    [hostError, 'message'],
     [setLocale, 'session'],
     [setLocale, 'locale'],
     [setTheme, 'session'],
