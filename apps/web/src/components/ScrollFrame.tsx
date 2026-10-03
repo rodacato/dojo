@@ -1,6 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { MAX_RESIZE_HEIGHT, type ScrollManifest } from '@dojo/shared'
-import { createScrollHost, type ScrollHost, type ScrollTheme } from '../lib/scrollHost'
+import {
+  createScrollHost,
+  type ScrollHost,
+  type ScrollHostCallbacks,
+  type ScrollInitialState,
+  type ScrollTheme,
+} from '../lib/scrollHost'
 import { preferredLocale, resolveLocale } from '../lib/scrollLocale'
 import { useThemeTokens, type ThemeTokens } from '../hooks/useThemeTokens'
 import { Banner } from './ui/Banner'
@@ -23,9 +29,21 @@ interface ScrollFrameProps {
   origin: string
   manifest: ScrollManifest
   authenticated: boolean
+  initial?: ScrollInitialState
+  onProgress?: ScrollHostCallbacks['onProgress']
+  onComplete?: ScrollHostCallbacks['onComplete']
 }
 
-export function ScrollFrame({ title, src, origin, manifest, authenticated }: Readonly<ScrollFrameProps>) {
+export function ScrollFrame({
+  title,
+  src,
+  origin,
+  manifest,
+  authenticated,
+  initial,
+  onProgress,
+  onComplete,
+}: Readonly<ScrollFrameProps>) {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const hostRef = useRef<ScrollHost | null>(null)
   const errorRef = useRef<HTMLDivElement>(null)
@@ -40,6 +58,12 @@ export function ScrollFrame({ title, src, origin, manifest, authenticated }: Rea
   const locale = resolveLocale(manifest.locales, preferredLocale())
   const latest = useRef({ locale, theme })
   const failed = status === 'error'
+  const reports = useRef({ onProgress, onComplete })
+  const initialRef = useRef(initial)
+
+  useEffect(() => {
+    reports.current = { onProgress, onComplete }
+  }, [onProgress, onComplete])
 
   useEffect(() => {
     latest.current = { locale, theme }
@@ -61,8 +85,11 @@ export function ScrollFrame({ title, src, origin, manifest, authenticated }: Rea
       scrollOrigin: origin,
       manifest,
       authenticated,
+      initial: initialRef.current,
       ...latest.current,
       callbacks: {
+        onProgress: (message) => reports.current.onProgress?.(message),
+        onComplete: (message) => reports.current.onComplete?.(message),
         onReady: () => setStatus('ready'),
         onTimeout: () => setStatus('error'),
         onResize: (next) => setHeight(Math.min(next, MAX_RESIZE_HEIGHT)),

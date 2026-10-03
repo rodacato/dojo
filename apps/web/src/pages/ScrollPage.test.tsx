@@ -11,7 +11,15 @@ import { HELLO_TIMEOUT_MS } from '../lib/scrollHost'
 
 vi.mock('../lib/api', async (importOriginal) => {
   const original = await importOriginal<typeof ApiModule>()
-  return { ...original, api: { getScroll: vi.fn() } }
+  return {
+    ...original,
+    api: {
+      getScroll: vi.fn(),
+      getScrollProgress: vi.fn(),
+      recordScrollProgress: vi.fn(),
+      mergeScrollProgress: vi.fn(),
+    },
+  }
 })
 vi.mock('../context/AuthContext', () => ({ useAuth: vi.fn() }))
 
@@ -53,6 +61,13 @@ function entry(overrides: Partial<ScrollEntryDTO['manifest']> = {}): ScrollEntry
   }
 }
 
+const storedProgress = {
+  userRef: 'opaque-ref',
+  completed: false,
+  units: { u1: { completed: true, state: { step: 3 } } },
+  updatedAt: '2026-10-03T00:00:00.000Z',
+}
+
 function renderPage() {
   return render(
     <MemoryRouter initialEntries={['/scrolls/pattern-circuit']}>
@@ -73,6 +88,9 @@ beforeEach(() => {
   vi.spyOn(globalThis.navigator, 'language', 'get').mockReturnValue('es-MX')
   mockedUseAuth.mockReturnValue({ user: null, loading: false, logout: vi.fn() })
   mockedApi.getScroll.mockResolvedValue(entry())
+  mockedApi.getScrollProgress.mockResolvedValue(storedProgress)
+  mockedApi.recordScrollProgress.mockResolvedValue(storedProgress)
+  mockedApi.mergeScrollProgress.mockResolvedValue(undefined)
 })
 
 afterEach(() => {
@@ -263,5 +281,69 @@ describe('ScrollPage — never creates the iframe (AC7)', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /try again/i }))
     expect(await screen.findByTitle('Circuito de patrones')).toBeInTheDocument()
+  })
+})
+
+describe('ScrollPage — progress (phase 4)', () => {
+  it('loads progress before creating the frame and hands it to init', async () => {
+    let release: (value: typeof storedProgress) => void = () => {}
+    mockedApi.getScrollProgress.mockReturnValue(new Promise((resolve) => (release = resolve)))
+    renderPage()
+    await waitFor(() => expect(mockedApi.getScrollProgress).toHaveBeenCalled())
+    expect(document.querySelector('iframe')).toBeNull()
+
+    release(storedProgress)
+    const iframe = (await screen.findByTitle('Circuito de patrones')) as HTMLIFrameElement
+    const postMessage = vi.spyOn(iframe.contentWindow as Window, 'postMessage').mockImplementation(() => {})
+    fromScroll(iframe, hello)
+
+    expect(postMessage.mock.calls[0]?.[0]).toMatchObject({
+      type: 'init',
+      progress: storedProgress.units,
+      userRef: 'opaque-ref',
+    })
+  })
+
+  it('forwards progress and complete from the scroll to the API', async () => {
+    renderPage()
+    const iframe = (await screen.findByTitle('Circuito de patrones')) as HTMLIFrameElement
+    const postMessage = vi.spyOn(iframe.contentWindow as Window, 'postMessage').mockImplementation(() => {})
+    fromScroll(iframe, hello)
+    const session = (postMessage.mock.calls[0]?.[0] as unknown as { session: string }).session
+
+    fromScroll(iframe, { ...envelope, type: 'progress', session, unitId: 'u1', state: { step: 4 } })
+    fromScroll(iframe, { ...envelope, type: 'complete', session })
+
+    await waitFor(() => expect(mockedApi.recordScrollProgress).toHaveBeenCalledTimes(2))
+    expect(mockedApi.recordScrollProgress.mock.calls[0]?.[1]).toMatchObject({
+      type: 'progress',
+      unitId: 'u1',
+      state: { step: 4 },
+    })
+    expect(mockedApi.recordScrollProgress.mock.calls[1]?.[1]).toMatchObject({ type: 'complete' })
+  })
+
+  it('does not create the frame when progress cannot be loaded, and recovers on retry', async () => {
+    mockedApi.getScrollProgress.mockRejectedValueOnce(new ApiError(500, 'boom'))
+    renderPage()
+
+    expect(await screen.findByText(/progress in this scroll could not be loaded/)).toBeInTheDocument()
+    expect(document.querySelector('iframe')).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: /try again/i }))
+    expect(await screen.findByTitle('Circuito de patrones')).toBeInTheDocument()
+  })
+
+  it('leaves progress alone for a scroll that does not declare the capability', async () => {
+    mockedApi.getScroll.mockResolvedValue(entry({ capabilities: [] }))
+    renderPage()
+    const iframe = (await screen.findByTitle('Circuito de patrones')) as HTMLIFrameElement
+    const postMessage = vi.spyOn(iframe.contentWindow as Window, 'postMessage').mockImplementation(() => {})
+    fromScroll(iframe, hello)
+    const session = (postMessage.mock.calls[0]?.[0] as unknown as { session: string }).session
+    fromScroll(iframe, { ...envelope, type: 'complete', session })
+
+    expect(mockedApi.getScrollProgress).not.toHaveBeenCalled()
+    expect(mockedApi.recordScrollProgress).not.toHaveBeenCalled()
   })
 })

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { api, ApiError } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
+import { useScrollProgress } from '../hooks/useScrollProgress'
 import { useAuth } from '../context/AuthContext'
 import { PageLoader } from '../components/PageLoader'
 import { ScrollFrame } from '../components/ScrollFrame'
@@ -26,10 +27,16 @@ export function ScrollPage() {
   const { user, loading: authLoading } = useAuth()
   const { data: scroll, loading, error, reload } = useAsync(() => api.getScroll(slug), [slug, user?.id])
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const tracksProgress = Boolean(scroll?.manifest.capabilities.includes('progress'))
+  const progress = useScrollProgress({
+    slug: scroll?.slug ?? null,
+    enabled: tracksProgress && !authLoading,
+    authenticated: user !== null,
+  })
 
   useEffect(() => {
     headingRef.current?.focus()
-  }, [scroll?.id])
+  }, [scroll?.id, progress.status])
 
   if (authLoading || loading) return <PageLoader />
 
@@ -61,6 +68,18 @@ export function ScrollPage() {
   const origin = scrollOriginOf(manifest.entry)
   if (!origin) return <Unavailable message="This scroll has no valid address to load from." />
 
+  if (progress.status === 'loading') return <PageLoader />
+  if (progress.status === 'error') {
+    return (
+      <ErrorState
+        kind="generic"
+        variant="inline"
+        message="Your progress in this scroll could not be loaded, so it was not opened."
+        primaryAction={{ label: 'Try again', onClick: progress.retry }}
+      />
+    )
+  }
+
   const locale = preferredLocale()
   const title = pickLocalized(manifest.title, manifest.locales, locale)
   const description = pickLocalized(manifest.description, manifest.locales, locale)
@@ -82,6 +101,9 @@ export function ScrollPage() {
         origin={origin}
         manifest={manifest}
         authenticated={user !== null}
+        initial={progress.initial}
+        onProgress={tracksProgress ? progress.onProgress : undefined}
+        onComplete={tracksProgress ? progress.onComplete : undefined}
       />
     </div>
   )
