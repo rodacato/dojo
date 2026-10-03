@@ -22,7 +22,7 @@ export function parseFrameOrigins(
   const origins = new Set<string>()
   const problems: string[] = []
 
-  for (const item of raw.split(',').map((part) => part.trim()).filter(Boolean)) {
+  for (const item of raw.split(/[\s,]+/).filter(Boolean)) {
     const url = tryParseUrl(item)
     if (!url || url.origin === 'null' || url.origin !== item || item.includes('*')) {
       problems.push(`SCROLL_FRAME_ORIGINS: "${item}" must be an exact origin like https://scrolls.example.org (no path, no wildcard)`)
