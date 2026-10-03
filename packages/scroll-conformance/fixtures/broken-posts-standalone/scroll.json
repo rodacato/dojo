@@ -1,0 +1,12 @@
+{
+  "id": "broken-posts-standalone",
+  "version": "0.0.1",
+  "protocol": 0,
+  "entry": "index.html",
+  "locales": ["en"],
+  "title": { "en": "Broken scroll: posts when standalone" },
+  "description": { "en": "A scroll with one deliberate defect, used to test the conformance suite itself." },
+  "programmingLanguages": [],
+  "units": [{ "id": "unit-1" }],
+  "capabilities": ["progress"]
+}
