@@ -26,8 +26,8 @@ Any stack can integrate by following one document, and conformance can later be 
 
 ## Open questions
 - Is `progress` a capability or baseline? It is declared and granted here so a stateless scroll gets no `userRef`.
-- `userRef` for anonymous users: `null` today; a per-browser opaque value may be better.
+- ~~`userRef` for anonymous users~~ Resolved in phase 4: anonymous visitors get a per-browser opaque value, `HMAC-SHA256(SESSION_SECRET, "scroll:<scrollId>:<owner>")` in base64url, where the owner is `user:<id>` or `anon:<browser id>`. It changes when the visitor signs in, so scrolls must not rely on it across login.
 - Message rate limits and a maximum payload for the whole message, not just `state`.
-- Should `complete` without `unitId` mean the whole scroll, and should it imply every unit?
+- ~~Should `complete` without `unitId` mean the whole scroll, and should it imply every unit?~~ Resolved in phase 4: it marks the whole scroll complete and does not imply any unit is.
 - Timeout defaults (10 s for `hello`, 3 s for `init`) are guesses.
 - Manifest `entry` as absolute or relative URL, and how a locally served build fits later.

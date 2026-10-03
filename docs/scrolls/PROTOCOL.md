@@ -56,7 +56,7 @@ A second `init` after the first is ignored.
 |---|---|---|
 | `hello` | `scroll: {id, version}`, `nonce`, `capabilities[]` | Starts the handshake. `capabilities` lists what the scroll wants; it should match the manifest. |
 | `progress` | `session`, `unitId`, `completed?`, `state?` | Reports progress on a unit. `state` is opaque JSON; its serialised size MUST NOT exceed 65,536 bytes. |
-| `complete` | `session`, `unitId?` | The unit (or, without `unitId`, the whole scroll) is finished. |
+| `complete` | `session`, `unitId?` | With `unitId`, that unit is finished. Without it, the whole scroll is finished; this does not imply that every unit is. A `unitId` that is not in the manifest is rejected. |
 | `resize` | `session`, `height` | Desired content height in CSS pixels, integer from 0 to 100,000. The host MAY clamp it. |
 | `error` | `session?`, `code`, `message` | The scroll reports a failure. `code` is lowercase kebab-case; `message` at most 1,000 characters. |
 
@@ -64,7 +64,7 @@ A second `init` after the first is ignored.
 
 | type | fields | meaning |
 |---|---|---|
-| `init` | `nonce`, `session`, `locale`, `theme`, `progress`, `capabilities[]`, `userRef`, `authenticated` | Answers `hello`. `locale` is a BCP 47 tag. `theme` maps token names to values. `progress` maps `unitId` to `{completed, state?}` from earlier visits. `capabilities` is what the host **granted**. `userRef` is an opaque per-scroll reference, or `null` when the user is anonymous or `progress` was not granted; it is stable for one user and one scroll, and differs between scrolls. `authenticated` is a boolean. |
+| `init` | `nonce`, `session`, `locale`, `theme`, `progress`, `capabilities[]`, `userRef`, `authenticated` | Answers `hello`. `locale` is a BCP 47 tag. `theme` maps token names to values. `progress` maps `unitId` to `{completed, state?}` from earlier visits. `capabilities` is what the host **granted**. `userRef` is an opaque per-scroll reference, or `null` when `progress` was not granted; it is stable for one owner and one scroll, and differs between scrolls and owners. An anonymous visitor gets one too, tied to their browser, and `authenticated` tells the scroll which case it is. It changes when an anonymous visitor signs in, so a scroll MUST NOT treat it as stable across login. `authenticated` is a boolean. |
 | `setLocale` | `session`, `locale` | The user changed language. |
 | `setTheme` | `session`, `theme` | The user changed theme. |
 
