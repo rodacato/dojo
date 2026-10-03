@@ -2,7 +2,7 @@
 <% raise "APP_HOST must be set to the instance's public web hostname" if app_host.empty? %>
 <% api_host = ENV["API_HOST"].to_s.strip %>
 <% raise "API_HOST must be set to the instance's public API hostname" if api_host.empty? %>
-<% scroll_origins = ENV["SCROLL_FRAME_ORIGINS"].to_s.strip %>
+<% scroll_origins = ENV["SCROLL_FRAME_ORIGINS"].to_s.split(/[\s,]+/).reject(&:empty?).join(" ") %>
 <% host_ip = ENV["HOST_IP"].to_s.strip %>
 <% raise "HOST_IP must be set to the server's address" if host_ip.empty? %>
 <% owner = ENV["GITHUB_REPOSITORY_OWNER"].to_s.strip.downcase %>
