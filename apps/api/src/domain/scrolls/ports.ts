@@ -1,4 +1,13 @@
+import type { ProgressOwner, ProgressRecord } from './progress'
 import type { ScrollEntry } from './scroll'
+
+export interface ScrollProgressPort {
+  list(owner: ProgressOwner, scrollId: string): Promise<ProgressRecord[]>
+  find(owner: ProgressOwner, scrollId: string, unitId: string | null): Promise<ProgressRecord | null>
+  save(owner: ProgressOwner, scrollId: string, record: ProgressRecord): Promise<void>
+  listAnonymous(anonymousId: string): Promise<{ scrollId: string; record: ProgressRecord }[]>
+  deleteAnonymous(anonymousId: string): Promise<void>
+}
 
 export interface ScrollRepositoryPort {
   listAll(): Promise<ScrollEntry[]>

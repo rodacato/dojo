@@ -8,6 +8,11 @@ export function domainErrorToStatus(code?: string): ContentfulStatusCode {
       return 404
     case 'SCROLL_LOGIN_REQUIRED':
       return 401
+    case 'SCROLL_OWNER_REQUIRED':
+      return 400
+    case 'SCROLL_PROGRESS_DISABLED':
+    case 'SCROLL_UNIT_NOT_FOUND':
+      return 422
     case 'SESSION_ALREADY_COMPLETED':
     case 'SCROLL_SLUG_TAKEN':
       return 409
