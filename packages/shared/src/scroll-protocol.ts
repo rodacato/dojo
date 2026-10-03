@@ -4,7 +4,11 @@ export const SCROLL_PROTOCOL_VERSION = 0
 export const MAX_STATE_BYTES = 65_536
 export const MAX_RESIZE_HEIGHT = 100_000
 
-export const RESERVED_MESSAGE_TYPES = ['run', 'result', 'llm'] as const
+export const MAX_RUN_FILES = 8
+export const MAX_RUN_BYTES = 65_536
+export const MAX_RUN_OUTPUT_CHARS = 65_536
+
+export const RESERVED_MESSAGE_TYPES = ['llm'] as const
 
 const idPattern = /^[a-z0-9][a-z0-9-]{0,62}$/
 const unitIdPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/
@@ -24,6 +28,41 @@ const stateSchema = z.json().refine(
 )
 
 const themeSchema = z.record(z.string().max(64), z.string().max(256))
+
+const requestIdSchema = z.string().min(1).max(128)
+const runFileNameSchema = z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/)
+
+export const runFileSchema = z.object({
+  name: runFileNameSchema,
+  content: z.string(),
+})
+
+export const runFilesSchema = z
+  .array(runFileSchema)
+  .min(1)
+  .max(MAX_RUN_FILES)
+  .superRefine((files, ctx) => {
+    const encoder = new TextEncoder()
+    const bytes = files.reduce((sum, file) => sum + encoder.encode(file.content).length, 0)
+    if (bytes > MAX_RUN_BYTES) {
+      ctx.addIssue({ code: 'custom', message: `files exceed ${MAX_RUN_BYTES} bytes`, params: { reason: 'size' } })
+    }
+    if (new Set(files.map((file) => file.name)).size !== files.length) {
+      ctx.addIssue({ code: 'custom', message: 'file names must be unique' })
+    }
+  })
+
+export const runStdinSchema = z.string().max(MAX_RUN_BYTES)
+export const runLanguageSchema = z.string().regex(idPattern)
+export const runResultKindSchema = z.enum(['ok', 'compile', 'runtime', 'timeout', 'output-limit', 'unavailable'])
+
+export const runOutcomeShape = {
+  kind: runResultKindSchema,
+  exitCode: z.number().int().nullable(),
+  stdout: z.string().max(MAX_RUN_OUTPUT_CHARS),
+  stderr: z.string().max(MAX_RUN_OUTPUT_CHARS),
+  durationMs: z.number().int().min(0),
+}
 
 const envelope = { dojo: z.literal('scroll'), v: z.literal(SCROLL_PROTOCOL_VERSION) }
 
@@ -63,6 +102,16 @@ export const scrollResizeSchema = z.object({
   height: z.number().int().min(0).max(MAX_RESIZE_HEIGHT),
 })
 
+export const scrollRunSchema = z.object({
+  ...envelope,
+  type: z.literal('run'),
+  session: sessionIdSchema,
+  id: requestIdSchema,
+  language: runLanguageSchema,
+  files: runFilesSchema,
+  stdin: runStdinSchema.optional(),
+})
+
 export const scrollErrorSchema = z.object({
   ...envelope,
   type: z.literal('error'),
@@ -84,6 +133,14 @@ export const hostInitSchema = z.object({
   authenticated: z.boolean(),
 })
 
+export const hostResultSchema = z.object({
+  ...envelope,
+  type: z.literal('result'),
+  session: sessionIdSchema,
+  id: requestIdSchema,
+  ...runOutcomeShape,
+})
+
 export const hostSetLocaleSchema = z.object({
   ...envelope,
   type: z.literal('setLocale'),
@@ -103,11 +160,13 @@ export const scrollToHostMessageSchema = z.discriminatedUnion('type', [
   scrollProgressSchema,
   scrollCompleteSchema,
   scrollResizeSchema,
+  scrollRunSchema,
   scrollErrorSchema,
 ])
 
 export const hostToScrollMessageSchema = z.discriminatedUnion('type', [
   hostInitSchema,
+  hostResultSchema,
   hostSetLocaleSchema,
   hostSetThemeSchema,
 ])
@@ -154,3 +213,4 @@ export type ScrollCapability = z.infer<typeof capabilitySchema>
 export type ScrollToHostMessage = z.infer<typeof scrollToHostMessageSchema>
 export type HostToScrollMessage = z.infer<typeof hostToScrollMessageSchema>
 export type ScrollManifest = z.infer<typeof scrollManifestSchema>
+export type RunResultKind = z.infer<typeof runResultKindSchema>
