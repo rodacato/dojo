@@ -94,6 +94,9 @@ export function ScrollFrame({ title, src, origin, manifest, authenticated }: Rea
   if (failed) {
     return (
       <div ref={errorRef} tabIndex={-1} role="alert" className="outline-none">
+        <span data-testid="scroll-status" className="sr-only">
+          error
+        </span>
         <ErrorState
           variant="inline"
           eyebrow="SCROLL · NO RESPONSE"
@@ -107,12 +110,16 @@ export function ScrollFrame({ title, src, origin, manifest, authenticated }: Rea
 
   return (
     <div>
+      <span data-testid="scroll-status" className="sr-only">
+        {status === 'ready' ? 'connected' : 'loading'}
+      </span>
       <div className="relative rounded-md border border-border bg-surface overflow-hidden">
         <iframe
           key={attempt}
           ref={iframeRef}
           src={src}
           title={title}
+          data-testid="scroll-frame"
           sandbox="allow-scripts allow-same-origin"
           allow=""
           onLoad={handleLoad}

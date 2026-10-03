@@ -62,10 +62,14 @@ export interface ScrollHost {
   destroy(): void
 }
 
+const LOOPBACK_HOSTS = new Set(['localhost', '127.0.0.1'])
+
 export function scrollOriginOf(entry: string): string | null {
   try {
     const url = new URL(entry)
-    return url.protocol === 'https:' ? url.origin : null
+    if (url.protocol === 'https:') return url.origin
+    const loopbackInDev = url.protocol === 'http:' && !import.meta.env.PROD && LOOPBACK_HOSTS.has(url.hostname)
+    return loopbackInDev ? url.origin : null
   } catch {
     return null
   }
