@@ -1,5 +1,18 @@
-import { relations } from 'drizzle-orm'
-import { boolean, integer, jsonb, pgTable, real, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { relations, sql } from 'drizzle-orm'
+import {
+  boolean,
+  check,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  real,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -248,3 +261,36 @@ export const scrolls = pgTable('scrolls', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
+
+// One row per owner, scroll and unit. Exactly one of user_id / anonymous_id is set.
+// unit_id '' is the whole scroll: manifest unit ids never match the empty string.
+export const scrollProgress = pgTable(
+  'scroll_progress',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    scrollId: uuid('scroll_id')
+      .notNull()
+      .references(() => scrolls.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+    anonymousId: text('anonymous_id'),
+    unitId: varchar('unit_id', { length: 128 }).notNull(),
+    completed: boolean('completed').notNull().default(false),
+    state: jsonb('state'),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    check(
+      'scroll_progress_owner_chk',
+      sql`(${table.userId} IS NOT NULL AND ${table.anonymousId} IS NULL) OR (${table.userId} IS NULL AND ${table.anonymousId} IS NOT NULL)`,
+    ),
+    uniqueIndex('scroll_progress_user_unit_uniq')
+      .on(table.userId, table.scrollId, table.unitId)
+      .where(sql`${table.userId} IS NOT NULL`),
+    uniqueIndex('scroll_progress_anon_unit_uniq')
+      .on(table.anonymousId, table.scrollId, table.unitId)
+      .where(sql`${table.anonymousId} IS NOT NULL`),
+    index('scroll_progress_anon_idx')
+      .on(table.anonymousId)
+      .where(sql`${table.anonymousId} IS NOT NULL`),
+  ],
+)
