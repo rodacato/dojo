@@ -16,6 +16,7 @@ import { GetScrollBySlug } from '../application/scrolls/GetScrollBySlug'
 import { GetScrollProgress } from '../application/scrolls/GetScrollProgress'
 import { RecordScrollProgress } from '../application/scrolls/RecordScrollProgress'
 import { MergeAnonymousScrollProgress } from '../application/scrolls/MergeAnonymousScrollProgress'
+import { ExecuteScrollCode } from '../application/scrolls/ExecuteScrollCode'
 import { UpsertUser } from '../application/identity/UpsertUser'
 import { db } from './persistence/drizzle/client'
 import { PostgresKataRepository } from './persistence/PostgresKataRepository'
@@ -72,10 +73,12 @@ function createExecutionAdapter(): CodeExecutionPort {
   return new MockExecutionAdapter()
 }
 
-export const executionQueue = new ExecutionQueue(
-  createExecutionAdapter(),
-  config.PISTON_MAX_CONCURRENT,
-)
+const executionAdapter = createExecutionAdapter()
+
+export const executionQueue = new ExecutionQueue(executionAdapter, config.PISTON_MAX_CONCURRENT)
+
+const scrollExecutionQueue = new ExecutionQueue(executionAdapter, config.SCROLL_EXEC_MAX_CONCURRENT)
+const scrollCodeRunner = { run: (params: Parameters<ExecutionQueue['enqueueRunFiles']>[0]) => scrollExecutionQueue.enqueueRunFiles(params) }
 
 export const pistonRuntimeProvisioner = new PistonRuntimeProvisioner(config.PISTON_URL)
 
@@ -136,4 +139,5 @@ export const useCases = {
   getScrollProgress: new GetScrollProgress({ scrollRepo, progressRepo: scrollProgressRepo, userRefSecret }),
   recordScrollProgress: new RecordScrollProgress({ scrollRepo, progressRepo: scrollProgressRepo, userRefSecret }),
   mergeAnonymousScrollProgress: new MergeAnonymousScrollProgress({ progressRepo: scrollProgressRepo }),
+  executeScrollCode: new ExecuteScrollCode({ scrollRepo, runner: scrollCodeRunner }),
 }
