@@ -8,6 +8,8 @@ export const MAX_RUN_FILES = 8
 export const MAX_RUN_BYTES = 65_536
 export const MAX_RUN_OUTPUT_CHARS = 65_536
 
+export const RUN_TOO_LARGE_MESSAGE = `files exceed ${MAX_RUN_BYTES} bytes`
+
 export const RESERVED_MESSAGE_TYPES = ['llm'] as const
 
 const idPattern = /^[a-z0-9][a-z0-9-]{0,62}$/
@@ -45,7 +47,7 @@ export const runFilesSchema = z
     const encoder = new TextEncoder()
     const bytes = files.reduce((sum, file) => sum + encoder.encode(file.content).length, 0)
     if (bytes > MAX_RUN_BYTES) {
-      ctx.addIssue({ code: 'custom', message: `files exceed ${MAX_RUN_BYTES} bytes`, params: { reason: 'size' } })
+      ctx.addIssue({ code: 'custom', message: RUN_TOO_LARGE_MESSAGE })
     }
     if (new Set(files.map((file) => file.name)).size !== files.length) {
       ctx.addIssue({ code: 'custom', message: 'file names must be unique' })
