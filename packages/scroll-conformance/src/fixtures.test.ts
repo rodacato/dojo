@@ -1,7 +1,9 @@
-import { readFileSync, readdirSync } from 'node:fs'
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import type { AddressInfo } from 'node:net'
 import type { Server } from 'node:http'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { scrollManifestSchema } from '@dojo/shared'
 import { exitCodeFor, type ConformanceReport } from './report.js'
@@ -47,6 +49,26 @@ describe('the broken fixtures, run as written', () => {
     const report = await audit(dir, `http://scroll.test/${name}/index.html`)
     expect(failing(report)).toEqual(expected)
     expect(exitCodeFor(report)).toBe(1)
+  })
+})
+
+describe('the HTML extraction', () => {
+  it('runs scripts written with upper-case tags, attributes and a spaced closing tag', async () => {
+    const source = new URL('broken-wildcard-target/', fixtures)
+    const dir = mkdtempSync(join(tmpdir(), 'scroll-fixture-'))
+    try {
+      const html = readFileSync(new URL('index.html', source), 'utf8')
+        .replace('<script>', '<SCRIPT TYPE="text/javascript">')
+        .replace('</script>', '</SCRIPT >')
+      writeFileSync(join(dir, 'index.html'), html)
+      writeFileSync(join(dir, 'scroll.json'), readFileSync(new URL('scroll.json', source)))
+
+      const report = await audit(pathToFileURL(`${dir}/`), 'http://scroll.test/upper-case/index.html')
+
+      expect(failing(report)).toEqual(['host-origin-targeted'])
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
   })
 })
 
