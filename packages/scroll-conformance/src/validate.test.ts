@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { RULES } from './rules.js'
 import type { Trace, TraceContext } from './trace.js'
-import { evaluateTrace, validateTrace } from './validate.js'
+import { countIgnored, evaluateTrace, validateTrace } from './validate.js'
 import {
   OTHER,
   SESSION,
@@ -40,7 +40,7 @@ describe('validateTrace', () => {
 
     const cases: Array<[string, Trace, TraceContext?]> = [
       ['envelope', withEvent(2, fromScroll({ dojo: 'scroll', v: 1, type: 'resize' }))],
-      ['envelope', withEvent(2, fromScroll('not an object'))],
+      ['envelope', withEvent(2, fromScroll({ dojo: 'other', v: 0, type: 'resize' }))],
       ['message-schema', withEvent(2, fromScroll(message('progress', { state: {} })))],
       ['message-schema', withEvent(2, fromScroll(message('progress', { unitId: 'unit-1', state: 'x'.repeat(70_000) })))],
       ['message-schema', withEvent(4, fromScroll(message('resize', { height: -1 })))],
@@ -102,6 +102,20 @@ describe('validateTrace', () => {
     const slow = withEvent(0, fromScroll(hello(), 500))
     expect(ids(slow, { ...embedded, helloTimeoutMs: 100 })).toEqual(['hello-sent'])
     expect(ids(slow, { ...embedded, helloTimeoutMs: 1000 })).toEqual([])
+  })
+
+  it('ignores messages with no dojo field, whatever they are, in every rule', () => {
+    const noise = [fromScroll('plain string'), fromScroll({ type: 'webpackHotUpdate' }), fromScroll(null), fromScroll(42)]
+    expect(ids([...noise, ...cleanTrace()])).toEqual([])
+    expect(ids(noise, { ...embedded, kind: 'standalone' })).toEqual([])
+    expect(ids(noise, { ...embedded, kind: 'foreign-parent' })).toEqual([])
+    expect(countIgnored([...noise, ...cleanTrace()], embedded)).toBe(4)
+  })
+
+  it('still fails a message that carries a dojo field but is invalid', () => {
+    expect(ids(withEvent(2, fromScroll({ dojo: 'other', type: 'x' })))).toEqual(['envelope'])
+    expect(ids(withEvent(2, fromScroll({ dojo: 'scroll', v: 7, type: 'resize' })))).toEqual(['envelope'])
+    expect(ids(withEvent(2, fromScroll({ dojo: undefined })))).toEqual(['envelope'])
   })
 
   it('says how many other messages a scroll sent instead of hello', () => {

@@ -14,6 +14,8 @@ export interface Behaviour {
   sessionAfterInit: 'issued' | 'hardcoded' | 'missing'
   /** What the scroll sends by itself as soon as it has a session. */
   sendOnInit: 'nothing' | 'progress' | 'malformed'
+  /** Also posts a message that is not part of the protocol, as an HMR client or analytics would. */
+  noise: boolean
   standalone: 'silent' | 'posts' | 'posts-anywhere' | 'throws'
 }
 
@@ -27,6 +29,7 @@ const CONFORMING: Behaviour = {
   adoptSecondInit: false,
   sessionAfterInit: 'issued',
   sendOnInit: 'progress',
+  noise: false,
   standalone: 'silent',
 }
 
@@ -47,6 +50,7 @@ class SimulatedProtocolScroll implements SimulatedScroll {
       this.runStandalone()
       return
     }
+    if (this.behaviour.noise) this.post({ type: 'webpackHotUpdate', hash: 'abc' })
     if (this.behaviour.hello) this.post(this.helloMessage())
   }
 

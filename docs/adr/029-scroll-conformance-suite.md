@@ -11,6 +11,7 @@ The scroll protocol (ADR 026) is a contract between independent apps and the hos
 - **The browser is a thin adapter** (`BrowserDriver`); Playwright is one implementation and a peer dependency. Scenarios, the reference host and the report run against a fake driver that simulates scrolls in process, which is how the suite is tested, because Chromium does not start in the devcontainer.
 - **The reference host is independent of the Dojo web app**, built on the shared Zod schemas. The e2e fixture scroll must pass the suite and Dojo's own e2e spec, which is what keeps the two hosts from drifting.
 - **Rules are tested against deliberately broken scrolls**, as static fixtures and as simulations, one per class of failure. A test compares the rule ids in code with those in `docs/scrolls/CONFORMANCE.md`.
+- **Only messages with a `dojo` field are judged.** A message without one is not a scroll message and is ignored by every rule, as the real host ignores it, so an HMR client or analytics script posting to `window.parent` cannot fail a scroll. Ignored messages stay in the trace and are counted in the report. One that carries `dojo` and is invalid still fails.
 - **Skipped is not passed.** A rule that needs an interaction no `--drive` module provided is reported as skipped with the reason.
 
 ## Alternatives Considered
@@ -25,7 +26,6 @@ Authors get a verdict with rule ids and spec sections, and the spec gets tests. 
 ## Open questions
 - **The real browser path has not run.** Chromium does not start in the devcontainer (libglib is missing), so the Playwright adapter and the two reference pages were checked only through unit tests and a stub DOM. The first run on a machine with Chromium is the real verification.
 - **Origin check versus source check.** A forged message can only come from another window, so a scroll that checks only `event.source` passes `init-origin-checked`. The origin check cannot be isolated from the browser side.
-- **Strict envelope.** Any message to the host that is not a scroll envelope fails `envelope`, so a library that posts its own messages to `window.parent` fails the suite. Decide whether to ignore messages without a `dojo` field.
 - **Session and interaction share one scenario.** Issue 130 listed them separately; without a drive module a scenario for the session would repeat the handshake.
 - **Publishing**: the npm name and whether Playwright stays a peer dependency.
 - **Revising `scroll-kit`** waits for phases 5 and 8; the suite may suggest what v1 changes.

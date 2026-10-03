@@ -24,6 +24,8 @@ interface ScrollEvent {
 export interface Analysis {
   context: TraceContext
   scroll: readonly ScrollEvent[]
+  /** Indexes of scroll-to-host events that are not protocol messages. */
+  ignored: readonly number[]
   hellos: readonly ScrollEvent[]
   /** The first `init` the host really issued, not a forged one. */
   init: { index: number; session: string; capabilities: readonly string[] } | undefined
@@ -63,13 +65,20 @@ function describeScrollEvent(index: number, event: TraceEvent): ScrollEvent {
   return { index, event, envelope, type, session, reserved, parsed }
 }
 
+/** A message without a `dojo` field is not part of the protocol (a library, analytics, HMR) and no rule looks at it. */
+export function isProtocolMessage(data: unknown): boolean {
+  return isRecord(data) && 'dojo' in data
+}
+
 export function analyze(trace: readonly TraceEvent[], context: TraceContext): Analysis {
   const forged = new Set(context.forgedSessions ?? [])
   const scroll: ScrollEvent[] = []
+  const ignored: number[] = []
   let init: Analysis['init']
   trace.forEach((event, index) => {
     if (event.direction === 'scroll-to-host') {
-      scroll.push(describeScrollEvent(index, event))
+      if (isProtocolMessage(event.data)) scroll.push(describeScrollEvent(index, event))
+      else ignored.push(index)
       return
     }
     const parsed = hostInitSchema.safeParse(event.data)
@@ -78,7 +87,7 @@ export function analyze(trace: readonly TraceEvent[], context: TraceContext): An
     }
   })
   const hellos = scroll.filter((item) => item.parsed?.success && item.type === 'hello')
-  return { context, scroll, hellos, init, forged }
+  return { context, scroll, ignored, hellos, init, forged }
 }
 
 function messages<T extends ScrollToHostMessage['type']>(analysis: Analysis, type: T) {
@@ -162,7 +171,7 @@ export const RULES: readonly Rule[] = [
   {
     id: 'envelope',
     section: '§2',
-    summary: 'Every message is an envelope with `dojo: "scroll"` and the protocol version.',
+    summary: 'A message that carries a `dojo` field is a valid envelope: `dojo: "scroll"` and the protocol version. Messages with no `dojo` field are ignored.',
     kinds: ['embedded'],
     check: (analysis) =>
       analysis.scroll
