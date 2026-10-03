@@ -143,6 +143,15 @@ export const hostResultSchema = z.object({
   ...runOutcomeShape,
 })
 
+export const hostErrorSchema = z.object({
+  ...envelope,
+  type: z.literal('error'),
+  session: sessionIdSchema,
+  id: requestIdSchema.optional(),
+  code: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+  message: z.string().max(1000),
+})
+
 export const hostSetLocaleSchema = z.object({
   ...envelope,
   type: z.literal('setLocale'),
@@ -169,6 +178,7 @@ export const scrollToHostMessageSchema = z.discriminatedUnion('type', [
 export const hostToScrollMessageSchema = z.discriminatedUnion('type', [
   hostInitSchema,
   hostResultSchema,
+  hostErrorSchema,
   hostSetLocaleSchema,
   hostSetThemeSchema,
 ])
