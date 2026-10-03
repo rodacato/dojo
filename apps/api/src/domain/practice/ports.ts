@@ -104,6 +104,8 @@ export interface ExecutionResult {
    */
   readonly runTimeoutMs: number
   readonly executionTimeMs: number
+  /** `compile`: the compile stage failed. `unavailable`: the sandbox could not run the code at all. */
+  readonly failure?: 'compile' | 'unavailable'
 }
 
 export interface CodeExecutionPort {
@@ -122,5 +124,12 @@ export interface CodeExecutionPort {
     language: string
     version: string
     code: string
+  }): Promise<ExecutionResult>
+
+  // Several files, the first is the entry point. Used by embedded scrolls.
+  runFiles(params: {
+    language: string
+    files: readonly { name: string; content: string }[]
+    stdin?: string
   }): Promise<ExecutionResult>
 }

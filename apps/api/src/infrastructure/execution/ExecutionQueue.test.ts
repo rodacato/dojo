@@ -11,6 +11,7 @@ function mockExecutor(delayMs = 0): CodeExecutionPort {
       return ok
     }),
     run: vi.fn(async () => ok),
+    runFiles: vi.fn(async () => ok),
   }
 }
 
@@ -35,6 +36,7 @@ describe('ExecutionQueue', () => {
         return ok
       },
       run: async () => ok,
+      runFiles: async () => ok,
     }
 
     const queue = new ExecutionQueue(executor, 2)
@@ -56,6 +58,7 @@ describe('ExecutionQueue', () => {
         return { ...ok, stdout: String(idx) }
       },
       run: async () => ok,
+      runFiles: async () => ok,
     }
 
     const queue = new ExecutionQueue(executor, 1)
@@ -75,6 +78,7 @@ describe('ExecutionQueue', () => {
         return ok
       },
       run: async () => ok,
+      runFiles: async () => ok,
     }
 
     const queue = new ExecutionQueue(slowExecutor, 1, 50)
@@ -95,6 +99,7 @@ describe('ExecutionQueue', () => {
         return ok
       },
       run: async () => ok,
+      runFiles: async () => ok,
     }
 
     const queue = new ExecutionQueue(executor, 1)
@@ -105,5 +110,52 @@ describe('ExecutionQueue', () => {
     await new Promise((r) => setTimeout(r, 5))
     expect(queue.activeCount).toBe(1)
     expect(queue.depth).toBe(1)
+  })
+
+  it('runs several files through the executor and reports a queue timeout as unavailable', async () => {
+    const executor = mockExecutor()
+    const queue = new ExecutionQueue(executor, 1, 20)
+    const files = [{ name: 'main.rb', content: 'puts 1' }]
+
+    expect(await queue.enqueueRunFiles({ language: 'ruby', files })).toEqual(ok)
+    expect(executor.runFiles).toHaveBeenCalledWith({ language: 'ruby', files })
+
+    const slow: CodeExecutionPort = { ...executor, runFiles: () => new Promise(() => {}) }
+    const busy = new ExecutionQueue(slow, 1, 20)
+    void busy.enqueueRunFiles({ language: 'ruby', files })
+    const waiting = await busy.enqueueRunFiles({ language: 'ruby', files })
+    expect(waiting.failure).toBe('unavailable')
+  })
+
+  it('keeps a saturated queue from starving a second queue on the same executor', async () => {
+    const release: (() => void)[] = []
+    const executor: CodeExecutionPort = {
+      execute: async () => ok,
+      run: async () => ok,
+      runFiles: () => new Promise((resolve) => release.push(() => resolve(ok))),
+    }
+    const scrollQueue = new ExecutionQueue(executor, 2, 5000)
+    const kataQueue = new ExecutionQueue(executor, 3, 5000)
+    const files = [{ name: 'main.rb', content: '1' }]
+
+    const pending = Array.from({ length: 5 }, () => scrollQueue.enqueueRunFiles({ language: 'ruby', files }))
+    await new Promise((r) => setTimeout(r, 5))
+    expect(scrollQueue.activeCount).toBe(2)
+    expect(scrollQueue.depth).toBe(3)
+
+    const kata = await kataQueue.enqueue({ language: 'ruby', code: '1', testCode: '1' })
+    const playground = await kataQueue.enqueueRun({ language: 'ruby', version: '*', code: '1' })
+    expect(kata).toEqual(ok)
+    expect(playground).toEqual(ok)
+    expect(kataQueue.depth).toBe(0)
+
+    let released = 0
+    while (released < 5) {
+      const batch = release.splice(0)
+      released += batch.length
+      batch.forEach((fn) => fn())
+      await new Promise((r) => setTimeout(r, 1))
+    }
+    await Promise.all(pending)
   })
 })

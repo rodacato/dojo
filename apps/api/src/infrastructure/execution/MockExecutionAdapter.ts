@@ -42,4 +42,21 @@ export class MockExecutionAdapter implements CodeExecutionPort {
       executionTimeMs: 50,
     }
   }
+
+  async runFiles(params: {
+    language: string
+    files: readonly { name: string; content: string }[]
+    stdin?: string
+  }): Promise<ExecutionResult> {
+    await new Promise((r) => setTimeout(r, 50))
+    return {
+      stdout: `[mock ${params.language}] ${params.files.length} file(s) received\n`,
+      stderr: '',
+      exitCode: 0,
+      timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs: 3000,
+      executionTimeMs: 50,
+    }
+  }
 }
