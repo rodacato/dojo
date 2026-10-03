@@ -8,6 +8,12 @@ describe('parseFrameOrigins', () => {
     expect(parseFrameOrigins('  ,  ', true)).toEqual({ origins: [], problems: [] })
   })
 
+  it('accepts whitespace as well as commas between origins', () => {
+    const { origins, problems } = parseFrameOrigins('https://a.example.org\n https://b.example.org', true)
+    expect(problems).toEqual([])
+    expect(origins).toEqual(['https://a.example.org', 'https://b.example.org'])
+  })
+
   it('trims, splits and de-duplicates', () => {
     const { origins, problems } = parseFrameOrigins(
       ' https://a.example.org , https://b.example.org:8443,https://a.example.org',
