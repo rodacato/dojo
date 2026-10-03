@@ -62,7 +62,7 @@ Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors c
 
 ### Scrolls
 
-A scroll is an independent web app, hosted anywhere, embedded in Dojo by iframe. Dojo is the host: it registers scrolls, frames them and talks to them over a versioned `postMessage` protocol ([`docs/scrolls/PROTOCOL.md`](docs/scrolls/PROTOCOL.md), [authoring guide](docs/scrolls/AUTHORING.md)). The protocol is v0 and experimental. Progress is stored on the server, per user or per anonymous browser; code execution is not offered to scrolls yet — follow [epic #116](https://github.com/rodacato/dojo/issues/116).
+A scroll is an independent web app, hosted anywhere, embedded in Dojo by iframe. Dojo is the host: it registers scrolls, frames them and talks to them over a versioned `postMessage` protocol ([`docs/scrolls/PROTOCOL.md`](docs/scrolls/PROTOCOL.md), [authoring guide](docs/scrolls/AUTHORING.md)). The protocol is v0 and experimental. Progress is stored on the server, per user or per anonymous browser, and code execution is offered only to signed-in users when `FF_CODE_EXECUTION_ENABLED` is on (`SCROLL_EXEC_MAX_CONCURRENT` and `SCROLL_EXEC_USER_PER_MINUTE` tune its queue and quota) — follow [epic #116](https://github.com/rodacato/dojo/issues/116).
 
 The creator registers a scroll at `/admin/scrolls` by pasting its `scroll.json`. The scroll's `entry` must be an absolute `https` URL whose origin you have allowed:
 
@@ -75,6 +75,8 @@ The creator registers a scroll at `/admin/scrolls` by pasting its `scroll.json`.
 | `GET /scrolls/:slug/progress` | Your progress and opaque `userRef` for a scroll. Signed in, or anonymous with an `X-Anonymous-Id` header (public scrolls only) |
 | `POST /scrolls/:slug/progress` | Record what the scroll's `progress` or `complete` message carries. Same access as above; `state` is capped at 64 KiB and the unit must be in the manifest |
 | `POST /scrolls/progress/merge` | Signed in: move the progress of the browser in `X-Anonymous-Id` into your account |
+| `POST /scrolls/:slug/execute` | Signed in. Runs `{language, files, stdin?}` for a scroll that declares `run`; 404 if code execution is off, 403 if undeclared, 413/422 over the limits, 429 past `SCROLL_EXEC_USER_PER_MINUTE` |
+| `GET /scrolls/execution/status` | Public. `{enabled}`: whether this instance executes code for scrolls |
 | `GET /admin/scrolls`, `POST /admin/scrolls` | Creator only: list all, register |
 | `PATCH /admin/scrolls/:id`, `DELETE /admin/scrolls/:id` | Creator only: update, delete |
 

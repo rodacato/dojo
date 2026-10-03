@@ -77,7 +77,7 @@ A scroll declares the capabilities it needs in its manifest and lists them in `h
 | capability | status in v0 |
 |---|---|
 | `progress` | defined: enables `progress` and `complete` persistence and a non-null `userRef` |
-| `run` | **reserved**, not implemented. Message types `run` and `result` are reserved. The host MUST NOT grant it. |
+| `run` | defined: enables the `run` and `result` messages, see section 13. Granted only to a signed-in user, on a host with code execution enabled, for a scroll whose manifest declares it |
 | `llm` | **reserved**, not implemented. Message type `llm` is reserved. The host MUST NOT grant it. |
 
 A receiver ignores reserved message types.
@@ -115,3 +115,34 @@ The JSON Schema cannot express three rules, which the host MUST also enforce: un
 ## 12. Conformance
 
 A scroll conforms if its message trace, against a conforming host, satisfies sections 2 to 7 and 9. A trace-based suite is planned (see the epic) and is not part of v0.
+
+## 13. Code execution (`run` and `result`)
+
+The host runs code for a scroll in its sandbox, on the signed-in user's session. The scroll never holds a credential. Decision: [ADR 028](../adr/028-scroll-code-execution.md).
+
+**Granting.** The host grants `run` only if all three hold: the manifest declares it, the host has code execution enabled, and the user is signed in. Anonymous visitors never get it. `init.capabilities` reports the outcome, and a scroll MUST degrade when `run` is absent.
+
+**`run`** (scroll to host):
+
+| field | meaning |
+|---|---|
+| `session`, `id` | the session, and a request id the scroll chooses (1 to 128 characters) |
+| `language` | lowercase identifier; it MUST be in the manifest's `programmingLanguages` |
+| `files` | 1 to 8 `{name, content}`; `name` is flat (letters, digits, `.`, `_`, `-`, no `/`) and unique; the first file is the entry point; total content at most 65,536 bytes |
+| `stdin` | optional string, at most 65,536 characters |
+
+**`result`** (host to scroll), always with the same `id` as the request:
+
+| field | meaning |
+|---|---|
+| `session`, `id` | as above |
+| `kind` | `ok`, `compile`, `runtime`, `timeout`, `output-limit` or `unavailable` |
+| `exitCode` | integer, or `null` for `unavailable` |
+| `stdout`, `stderr` | raw output, each cut to 65,536 characters |
+| `durationMs` | wall-clock time in milliseconds |
+
+The host does not interpret the output: how to read it is the scroll's business. `unavailable` means the sandbox could not run the code (it is down, busy, or the host's rate limit was hit); the scroll can retry later. The result is self-reported by a sandbox the scroll controls the input of, so it never feeds belts or any other host decision.
+
+**Errors.** A `run` sent without the capability is answered with a host to scroll `error` message `{session, id, code: "capability-denied", message}`, carrying the request's `id`. The same `error` shape (`id` optional) is how the host may report other problems to a scroll.
+
+**Limits.** The host runs a few executions at once for all scrolls together and limits each user per minute (deployment variables `SCROLL_EXEC_MAX_CONCURRENT` and `SCROLL_EXEC_USER_PER_MINUTE`, defaults 2 and 10). A scroll SHOULD stop waiting for a `result` after a minute. The JSON Schema cannot express the byte cap or the unique file names; the host enforces both.
