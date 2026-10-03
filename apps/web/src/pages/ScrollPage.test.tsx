@@ -18,6 +18,8 @@ vi.mock('../lib/api', async (importOriginal) => {
       getScrollProgress: vi.fn(),
       recordScrollProgress: vi.fn(),
       mergeScrollProgress: vi.fn(),
+      getScrollExecutionStatus: vi.fn(),
+      executeScrollCode: vi.fn(),
     },
   }
 })
@@ -91,6 +93,7 @@ beforeEach(() => {
   mockedApi.getScrollProgress.mockResolvedValue(storedProgress)
   mockedApi.recordScrollProgress.mockResolvedValue(storedProgress)
   mockedApi.mergeScrollProgress.mockResolvedValue(undefined)
+  mockedApi.getScrollExecutionStatus.mockResolvedValue({ enabled: false })
 })
 
 afterEach(() => {
@@ -193,6 +196,65 @@ describe('ScrollPage — iframe container', () => {
     expect(screen.getByRole('status')).toBeInTheDocument()
     fromScroll(iframe, hello)
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+})
+
+describe('ScrollPage — code execution', () => {
+  const user = { id: 'u1', username: 'sensei', avatarUrl: 'x', createdAt: '2026-01-01T00:00:00.000Z' }
+  const helloWithRun = { ...hello, capabilities: ['progress', 'run'] }
+  const files = [{ name: 'main.rb', content: 'puts 1' }]
+  const outcome = { kind: 'ok' as const, exitCode: 0, stdout: '1\n', stderr: '', durationMs: 7 }
+
+  async function connect(options: { signedIn: boolean; enabled: boolean; declaresRun?: boolean }) {
+    mockedUseAuth.mockReturnValue({ user: options.signedIn ? user : null, loading: false, logout: vi.fn() })
+    mockedApi.getScrollExecutionStatus.mockResolvedValue({ enabled: options.enabled })
+    mockedApi.getScroll.mockResolvedValue(
+      entry({ capabilities: options.declaresRun === false ? ['progress'] : ['progress', 'run'] }),
+    )
+    renderPage()
+    const iframe = (await screen.findByTitle('Circuito de patrones')) as HTMLIFrameElement
+    const postMessage = vi.spyOn(iframe.contentWindow as Window, 'postMessage').mockImplementation(() => {})
+    fromScroll(iframe, helloWithRun)
+    const init = postMessage.mock.calls[0]?.[0] as unknown as { session: string; capabilities: string[] }
+    const run = (id = 'req-1') =>
+      fromScroll(iframe, { ...envelope, type: 'run', session: init.session, id, language: 'ruby', files })
+    return { init, run, postMessage }
+  }
+
+  it('forwards a run to the API with the user session and answers with the same id', async () => {
+    mockedApi.executeScrollCode.mockResolvedValue(outcome)
+    const { init, run, postMessage } = await connect({ signedIn: true, enabled: true })
+    expect(init.capabilities).toEqual(['progress', 'run'])
+
+    run('req-9')
+
+    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2))
+    expect(mockedApi.executeScrollCode).toHaveBeenCalledWith('pattern-circuit', { language: 'ruby', files })
+    const [reply, targetOrigin] = postMessage.mock.calls[1] as unknown as [Record<string, unknown>, string]
+    expect(targetOrigin).toBe(ORIGIN)
+    expect(reply).toMatchObject({ type: 'result', id: 'req-9', session: init.session, kind: 'ok', stdout: '1\n' })
+  })
+
+  it.each([
+    ['an anonymous visitor', { signedIn: false, enabled: true }],
+    ['an instance with execution disabled', { signedIn: true, enabled: false }],
+    ['a manifest that does not declare run', { signedIn: true, enabled: true, declaresRun: false }],
+  ])('never grants run to %s, and a run gets capability-denied', async (_label, options) => {
+    const { init, run, postMessage } = await connect(options)
+    expect(init.capabilities).toEqual(['progress'])
+
+    run('req-2')
+
+    expect(mockedApi.executeScrollCode).not.toHaveBeenCalled()
+    expect(postMessage.mock.calls[1]?.[0]).toMatchObject({ type: 'error', id: 'req-2', code: 'capability-denied' })
+  })
+
+  it('answers unavailable when the API call fails', async () => {
+    mockedApi.executeScrollCode.mockRejectedValue(new ApiError(503, 'down'))
+    const { run, postMessage } = await connect({ signedIn: true, enabled: true })
+    run('req-3')
+    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2))
+    expect(postMessage.mock.calls[1]?.[0]).toMatchObject({ type: 'result', id: 'req-3', kind: 'unavailable' })
   })
 })
 

@@ -4,6 +4,7 @@ import { api, ApiError } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useScrollProgress } from '../hooks/useScrollProgress'
 import { useAuth } from '../context/AuthContext'
+import { useScrollExecution } from '../hooks/useScrollExecution'
 import { PageLoader } from '../components/PageLoader'
 import { ScrollFrame } from '../components/ScrollFrame'
 import { ErrorState } from '../components/ui/ErrorState'
@@ -33,12 +34,13 @@ export function ScrollPage() {
     enabled: tracksProgress && !authLoading,
     authenticated: user !== null,
   })
+  const execution = useScrollExecution(slug, user !== null)
 
   useEffect(() => {
     headingRef.current?.focus()
   }, [scroll?.id, progress.status])
 
-  if (authLoading || loading) return <PageLoader />
+  if (authLoading || loading || !execution.ready) return <PageLoader />
 
   if (error instanceof ApiError && error.status === 401) {
     return (
@@ -104,6 +106,8 @@ export function ScrollPage() {
         initial={progress.initial}
         onProgress={tracksProgress ? progress.onProgress : undefined}
         onComplete={tracksProgress ? progress.onComplete : undefined}
+        allowRun={execution.allowRun}
+        onRun={execution.run}
       />
     </div>
   )
