@@ -2,6 +2,7 @@ import { auth } from './auth'
 import { practice } from './practice'
 import { admin } from './admin'
 import { profile } from './profile'
+import { scrolls } from './scrolls'
 import { playground } from './playground'
 import { share } from './share'
 
@@ -28,6 +29,7 @@ export const api = {
   ...practice,
   ...admin,
   ...profile,
+  ...scrolls,
   ...share,
   playground,
 }
