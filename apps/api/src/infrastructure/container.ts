@@ -8,10 +8,16 @@ import { StartSession } from '../application/practice/StartSession'
 import { SubmitAttempt } from '../application/practice/SubmitAttempt'
 import { GetKataById } from '../application/content/GetKataById'
 import { CreateKata } from '../application/content/CreateKata'
+import { RegisterScroll } from '../application/scrolls/RegisterScroll'
+import { UpdateScroll } from '../application/scrolls/UpdateScroll'
+import { DeleteScroll } from '../application/scrolls/DeleteScroll'
+import { ListScrolls } from '../application/scrolls/ListScrolls'
+import { GetScrollBySlug } from '../application/scrolls/GetScrollBySlug'
 import { UpsertUser } from '../application/identity/UpsertUser'
 import { db } from './persistence/drizzle/client'
 import { PostgresKataRepository } from './persistence/PostgresKataRepository'
 import { PostgresSessionRepository } from './persistence/PostgresSessionRepository'
+import { PostgresScrollRepository } from './persistence/PostgresScrollRepository'
 import { PostgresUserRepository } from './persistence/PostgresUserRepository'
 import { InMemoryEventBus } from './events/InMemoryEventBus'
 import { MockLLMAdapter } from './llm/MockLLMAdapter'
@@ -36,6 +42,11 @@ const kataRepo = new PostgresKataRepository(db)
 const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
 const milestoneRepo = new PostgresMilestoneRepository(db)
+const scrollRepo = new PostgresScrollRepository(db)
+const scrollOriginPolicy = {
+  allowedOrigins: config.SCROLL_FRAME_ORIGINS,
+  isProduction: config.NODE_ENV === 'production',
+}
 
 function createLLMAdapter(): LLMPort {
   switch (config.LLM_ADAPTER_FORMAT) {
@@ -111,4 +122,9 @@ export const useCases = {
   upsertUser: new UpsertUser({ userRepo }),
   calculateBelt: new CalculateBelt({ sessionRepo }),
   listUserMilestones: new ListUserMilestones({ milestoneRepo }),
+  registerScroll: new RegisterScroll({ scrollRepo, originPolicy: scrollOriginPolicy }),
+  updateScroll: new UpdateScroll({ scrollRepo, originPolicy: scrollOriginPolicy }),
+  deleteScroll: new DeleteScroll({ scrollRepo }),
+  listScrolls: new ListScrolls({ scrollRepo }),
+  getScrollBySlug: new GetScrollBySlug({ scrollRepo }),
 }
