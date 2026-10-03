@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { HOST_PAGE, REFERENCE_PAGES, SPOOFER_PAGE } from './reference-pages.js'
 import { startPageServer } from './static-server.js'
 
-const scriptOf = (html: string) => html.match(/<script>([\s\S]*?)<\/script>/)?.[1] ?? ''
+const scriptOf = (html: string) => html.match(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/i)?.[1] ?? ''
 
 type Listener = (event: { source: unknown; data?: unknown; origin?: string }) => void
 

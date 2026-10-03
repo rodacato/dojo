@@ -11,7 +11,7 @@ interface Element {
 }
 
 function inlineScripts(html: string): string[] {
-  return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map((match) => match[1] ?? '')
+  return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script\s*>/gi)].map((match) => match[1] ?? '')
 }
 
 function attributesOf(tag: string): Record<string, string> {
@@ -105,7 +105,7 @@ class HtmlScroll implements SimulatedScroll {
   }
 
   private runWrittenShim(markup: string, context: vm.Context, document: { currentScript: unknown }): void {
-    const tag = markup.match(/<script\b([^>]*)>/)?.[1] ?? ''
+    const tag = markup.match(/<script\b([^>]*)>/i)?.[1] ?? ''
     const attributes = attributesOf(tag)
     document.currentScript = { getAttribute: (name: string) => attributes[name] ?? null }
     // eslint-disable-next-line sonarjs/code-eval -- runs the repo's own shim
