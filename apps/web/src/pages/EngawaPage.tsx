@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import { api, ApiError } from '../lib/api'
 import { CodeEditor } from '../components/ui/CodeEditor'
+import { Modal } from '../components/ui/Modal'
 import { LogoWordmark } from '../components/Logo'
 import { TurnstileWidget, type TurnstileHandle } from '../components/ui/TurnstileWidget'
 import { useAuth } from '../context/AuthContext'
@@ -191,7 +192,7 @@ export function EngawaPage() {
     }
   }
 
-  function handleCtaClick(location: 'topbar' | 'banner' | 'footer'): void {
+  function handleCtaClick(location: 'topbar' | 'banner'): void {
     trackEvent('playground_cta_click', {
       location,
       authed: Boolean(user),
@@ -243,13 +244,6 @@ export function EngawaPage() {
         <header className="flex items-center justify-between gap-4 px-4 py-2 border-b border-border/30 shrink-0">
           <Link to="/" className="shrink-0">
             <LogoWordmark />
-          </Link>
-          <Link
-            to={ctaHref}
-            onClick={() => handleCtaClick('banner')}
-            className="text-muted text-xs font-mono hover:text-secondary transition-colors hidden md:inline truncate"
-          >
-            like running code? <span className="text-accent">practice with a kata →</span>
           </Link>
           <Link
             to={ctaHref}
@@ -380,19 +374,14 @@ export function EngawaPage() {
           stream, hard daily quota enforced server-side, disclaimer
           baked into the panel so the learner never confuses this with
           graded practice. */}
-      {user && ask.open && (
-        <div
-          role="presentation"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-          onClick={(e) => e.target === e.currentTarget && ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
-          onKeyDown={(e) => e.key === 'Escape' && ask.status !== 'streaming' && setAsk(INITIAL_ASK)}
+      {user && (
+        <Modal
+          open={ask.open}
+          onClose={() => setAsk(INITIAL_ASK)}
+          flow={ask.status === 'streaming'}
+          label="Ask the sensei"
         >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Ask the sensei"
-            className="bg-page border border-border/40 rounded-sm w-full max-w-xl p-4 flex flex-col gap-3"
-          >
+          <div className="p-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs text-secondary">ask the sensei</span>
               <button
@@ -430,7 +419,7 @@ export function EngawaPage() {
             {(ask.answer || ask.status === 'error') && (
               <div className="border-t border-border/30 pt-3 max-h-[40vh] overflow-y-auto">
                 {ask.status === 'error' ? (
-                  <p className="font-mono text-xs text-red-400 whitespace-pre-wrap">
+                  <p className="font-mono text-xs text-danger whitespace-pre-wrap">
                     {ask.errorMessage}
                   </p>
                 ) : (
@@ -447,20 +436,13 @@ export function EngawaPage() {
               free exploration tool, not graded practice. kata is where the sensei actually evaluates.
             </p>
           </div>
-        </div>
+        </Modal>
       )}
 
       {/* Anonymous footer only; authed users already get the sidebar. */}
       {!user && (
         <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-muted/50 text-xs font-mono">
           <span>sandbox · not graded</span>
-          <Link
-            to={ctaHref}
-            onClick={() => handleCtaClick('footer')}
-            className="hover:text-secondary transition-colors"
-          >
-            sensei evaluates in the kata →
-          </Link>
         </footer>
       )}
     </div>

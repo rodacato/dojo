@@ -90,9 +90,9 @@ describe('Sidebar — account section', () => {
     expect(screen.getByRole('link', { name: 'settings' })).toHaveAttribute('href', '/settings')
   })
 
-  it('invokes logout when the log out button is clicked', async () => {
+  it('invokes logout when the sign out button is clicked', async () => {
     renderSidebar()
-    await userEvent.click(screen.getByRole('button', { name: /log out/i }))
+    await userEvent.click(screen.getByRole('button', { name: /sign out/i }))
     expect(logout).toHaveBeenCalledTimes(1)
   })
 })
@@ -117,8 +117,8 @@ describe('Sidebar — theme + collapse', () => {
 
   it('hides the collapsed-only labels when collapsed', () => {
     renderSidebar({ collapsed: true })
-    // The "log out" text label is hidden when collapsed (button still exists).
-    expect(screen.queryByText('log out')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument()
+    // The "sign out" text label is hidden when collapsed (button still exists).
+    expect(screen.queryByText('sign out')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument()
   })
 })
