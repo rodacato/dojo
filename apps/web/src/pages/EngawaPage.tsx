@@ -490,7 +490,12 @@ function RunStatusChip({ run }: Readonly<{ run: RunState }>) {
 
 function OutputPane({ run }: Readonly<{ run: RunState }>) {
   return (
-    <div className="h-full overflow-y-auto bg-surface/40 px-4 py-3 font-mono text-xs">
+    <div
+      role="region"
+      aria-label="Output"
+      aria-live="polite"
+      className="h-full overflow-y-auto bg-surface/40 px-4 py-3 font-mono text-xs"
+    >
       <OutputPanel run={run} />
     </div>
   )

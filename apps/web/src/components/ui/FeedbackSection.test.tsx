@@ -148,6 +148,7 @@ describe('FeedbackSection', () => {
     expect(screen.queryByText('feedback received — thank you.')).not.toBeInTheDocument()
     expect(screen.getByText('quick feedback')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'send' })).toBeEnabled()
+    expect(screen.getByRole('alert')).toHaveTextContent("Couldn't send your feedback")
   })
 
   it('collapses back to the trigger without submitting when skip is clicked', async () => {

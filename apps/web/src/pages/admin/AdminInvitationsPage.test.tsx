@@ -63,6 +63,16 @@ describe('AdminInvitationsPage', () => {
     expect(screen.getAllByText('expired')).toHaveLength(2)
   })
 
+  it('shows no expiry for a redeemed invitation', async () => {
+    renderPage()
+    await screen.findByText('redeemed')
+
+    const usedRow = screen.getByText('USED…0002').closest('tr') as HTMLElement
+    const cells = within(usedRow).getAllByRole('cell')
+
+    expect(cells[3]).toHaveTextContent('—')
+  })
+
   it('only renders a Copy URL action for pending invitations', async () => {
     renderPage()
     await screen.findByText('redeemed')

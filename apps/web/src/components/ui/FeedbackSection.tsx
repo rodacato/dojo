@@ -33,10 +33,11 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
   const [timing, setTiming] = useState<string | null>(null)
   const [evaluation, setEvaluation] = useState<string | null>(null)
   const [note, setNote] = useState('')
+  const [failed, setFailed] = useState(false)
 
   if (submitted) {
     return (
-      <p className="text-muted/50 text-xs font-mono text-center mt-6">
+      <p className="text-secondary text-xs font-mono text-center mt-6">
         feedback received — thank you.
       </p>
     )
@@ -44,6 +45,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
 
   async function handleSubmit() {
     setSubmitting(true)
+    setFailed(false)
     try {
       await api.submitFeedback(sessionId, {
         clarity,
@@ -53,6 +55,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
       })
       setSubmitted(true)
     } catch {
+      setFailed(true)
       setSubmitting(false)
     }
   }
@@ -61,7 +64,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
     return (
       <button
         onClick={() => setOpen(true)}
-        className="text-muted/40 text-xs font-mono hover:text-muted transition-colors mt-6 block mx-auto"
+        className="text-secondary text-xs font-mono hover:text-primary transition-colors mt-6 block mx-auto"
       >
         how was this kata? (optional)
       </button>
@@ -103,7 +106,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
       </div>
 
       <div>
-        <p className="text-secondary text-xs mb-2">Anything to add? <span className="text-muted/50">(optional)</span></p>
+        <p className="text-secondary text-xs mb-2">Anything to add? <span className="text-secondary">(optional)</span></p>
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value.slice(0, 280))}
@@ -111,8 +114,14 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
           rows={2}
           className="w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted/40 focus:outline-none focus:border-accent transition-colors resize-none"
         />
-        <p className="text-muted/30 text-xs font-mono text-right mt-1">{note.length}/280</p>
+        <p className="text-secondary text-xs font-mono text-right mt-1">{note.length}/280</p>
       </div>
+
+      {failed && (
+        <p role="alert" className="text-danger-text text-xs font-mono">
+          Couldn't send your feedback. Try again.
+        </p>
+      )}
 
       <div className="flex gap-2">
         <button
