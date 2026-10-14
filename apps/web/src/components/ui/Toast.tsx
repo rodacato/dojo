@@ -49,7 +49,7 @@ const TONE_TEXT: Record<ToastKind, string> = {
   success: 'text-success',
   info: 'text-accent',
   warning: 'text-warning',
-  error: 'text-danger',
+  error: 'text-danger-text',
 }
 
 let nextId = 0

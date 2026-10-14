@@ -137,7 +137,7 @@ export function AdminScrollsPage() {
           <div
             id="scroll-errors"
             role="alert"
-            className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger"
+            className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger-text"
           >
             <ul className="space-y-1">
               {errors.map((message) => (
@@ -155,7 +155,7 @@ export function AdminScrollsPage() {
       </form>
 
       {loadError !== null && (
-        <div role="alert" className="mb-6 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger">
+        <div role="alert" className="mb-6 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger-text">
           Failed to load scrolls.{' '}
           <button type="button" onClick={reload} className="underline">
             Try again

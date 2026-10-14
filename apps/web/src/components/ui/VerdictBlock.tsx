@@ -11,7 +11,7 @@ const VERDICT_LABELS: Record<Verdict, string> = {
 const VERDICT_COLORS: Record<Verdict, string> = {
   passed: 'text-success',
   passed_with_notes: 'text-warning',
-  needs_work: 'text-danger',
+  needs_work: 'text-danger-text',
 }
 
 interface VerdictBlockProps {

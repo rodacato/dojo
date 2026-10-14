@@ -45,13 +45,13 @@ describe('ErrorState', () => {
 
       const eyebrow = screen.getByText('RATE LIMITED · 429')
       expect(eyebrow).toHaveClass('text-warning')
-      expect(eyebrow).not.toHaveClass('text-danger')
+      expect(eyebrow).not.toHaveClass('text-danger-text')
     })
 
     it('uses the danger tone for not-found', () => {
       renderErrorState(<ErrorState kind="not-found" message="msg" />)
 
-      expect(screen.getByText('ERR · 404 · NOT FOUND')).toHaveClass('text-danger')
+      expect(screen.getByText('ERR · 404 · NOT FOUND')).toHaveClass('text-danger-text')
     })
   })
 

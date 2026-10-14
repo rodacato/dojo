@@ -105,6 +105,8 @@ Tokens are referenced by name everywhere in code. Never raw hex. Both themes use
 | `--color-on-accent` | `#FFFFFF` | `#FAF7F0` washi · `#F2EDE3` sumi (ink-white) | Foreground on a filled `bg-accent` (button label, user bubble, active segment, hanko caps) — keeps AA contrast where `--color-primary` inverts to near-black under washi |
 | `--color-success` | `#10B981` (Emerald) | `#5C7A4E` washi · `#7D9B6A` sumi (matcha) | Passed verdict, completion, streak active |
 | `--color-danger` | `#EF4444` (Red 500) | `#9C2D24` (deeper than accent) | Failed sessions, errors, expired timer |
+| `--color-accent-text` | `#818CF8` | `#B73A2F` washi · `#C35E53` sumi | Small accent text (links). `--color-accent` is 3.3:1 on sumi surfaces, so it only fills buttons, marks and focus rings |
+| `--color-danger-text` | `#F87171` | `#9C2D24` washi · `#B6675D` sumi | Error and failure text. `--color-danger` is 2.5:1 on sumi surfaces and stays for borders and fills |
 | `--color-warning` | `#F59E0B` (Amber 500) | `#BC8E37` washi · `#D4A547` sumi (gold ink) | Timer near limit, warnings, "passed with notes" |
 
 > **Vermillion vs danger:** the hanko accent and the danger color are close cousins on purpose. The accent is the brand's positive interactive color — the seal. Danger is a deeper variant for actual failure states. They are visually distinct in practice; the brand bleeds into "failure looks like an unfortunate seal", which is on-brand.

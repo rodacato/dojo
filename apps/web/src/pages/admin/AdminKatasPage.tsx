@@ -328,7 +328,7 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     published: 'bg-success/10 text-success border border-success/30',
     draft: 'bg-muted/15 text-secondary border border-border',
-    archived: 'bg-danger/10 text-danger border border-danger/30',
+    archived: 'bg-danger/10 text-danger-text border border-danger/30',
   }
   return (
     <span
@@ -345,7 +345,7 @@ function avgScoreClass(score: number | null) {
   if (score === null) return 'text-muted'
   if (score >= 0.7) return 'text-success/80'
   if (score >= 0.4) return 'text-warning/80'
-  return 'text-danger/80'
+  return 'text-danger-text'
 }
 
 interface FilterOption<T extends string> {

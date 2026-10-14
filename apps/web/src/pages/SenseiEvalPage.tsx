@@ -306,7 +306,7 @@ function StatusChip({ kind }: Readonly<{ kind: StatusChipKind }>) {
     streaming: { label: 'STREAMING', color: 'text-accent border-accent/40 bg-accent/10', cursor: true },
     'follow-up': { label: 'FOLLOW-UP', color: 'text-accent border-accent/40 bg-accent/10', cursor: false },
     complete: { label: 'COMPLETE', color: 'text-success border-success/40 bg-success/10', cursor: false },
-    error: { label: 'ERROR', color: 'text-danger border-danger/40 bg-danger/10', cursor: false },
+    error: { label: 'ERROR', color: 'text-danger-text border-danger/40 bg-danger/10', cursor: false },
   }
   const s = styles[kind]
   return (

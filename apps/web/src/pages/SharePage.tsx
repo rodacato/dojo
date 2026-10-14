@@ -18,7 +18,7 @@ const VERDICT_LABELS: Record<string, string> = {
 const VERDICT_COLORS: Record<string, string> = {
   passed: 'text-success',
   passed_with_notes: 'text-warning',
-  needs_work: 'text-danger',
+  needs_work: 'text-danger-text',
 }
 
 export function SharePage() {

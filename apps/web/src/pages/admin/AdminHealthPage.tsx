@@ -74,7 +74,7 @@ export function AdminHealthPage() {
 
       {loadError && (
         <div className="rounded-md border border-border border-l-4 border-l-danger bg-surface px-4 py-3 mb-6">
-          <div className="font-mono text-xs uppercase tracking-wider text-danger mb-1">
+          <div className="font-mono text-xs uppercase tracking-wider text-danger-text mb-1">
             Load failed
           </div>
           <div className="text-sm text-secondary">{loadError}</div>
@@ -137,7 +137,7 @@ export function AdminHealthPage() {
                 ))}
                 {data.piston.detail.missing.map((rt) => (
                   <li key={`m-${rtLabel(rt)}`} className="flex items-center gap-2">
-                    <span className="text-danger">✗</span>
+                    <span className="text-danger-text">✗</span>
                     <span className="text-muted">{rtLabel(rt)}</span>
                   </li>
                 ))}

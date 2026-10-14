@@ -374,7 +374,7 @@ function ShareActions({
 
 function getVerdictColor(verdict: string) {
   if (verdict === 'passed') return 'text-success'
-  if (verdict === 'needs_work') return 'text-danger'
+  if (verdict === 'needs_work') return 'text-danger-text'
   return 'text-warning'
 }
 
