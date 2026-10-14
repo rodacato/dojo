@@ -15511,7 +15511,7 @@
           "descendants": {
             "cBXQv": {
               "content": "ARCHIVE KATA?",
-              "fill": "$color-danger"
+              "fill": "$color-danger-text"
             },
             "tUphV": {
               "content": "Archive The Caching Decision?"
@@ -21084,6 +21084,19 @@
         },
         {
           "type": "text",
+          "id": "ofVSy",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.3.0 · new screen AdminEditKata / Unsaved changes: leaving a dirty kata form asks to confirm (D48); the archive modal eyebrow uses danger-text",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "MsBfR",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -21133,6 +21146,55 @@
           "fontFamily": "$font-mono",
           "fontSize": 11,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "u3ZV1g",
+      "x": 6940,
+      "y": 1160,
+      "name": "AdminEditKata / Unsaved changes",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color-page",
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "id": "ebhqd",
+          "type": "ref",
+          "ref": "JpFcj",
+          "descendants": {
+            "cBXQv": {
+              "content": "UNSAVED CHANGES",
+              "fill": "$color-warning"
+            },
+            "tUphV": {
+              "content": "Leave without saving?"
+            },
+            "E3wl3": {
+              "content": "Your edits to this kata will be lost."
+            },
+            "seHix/eH0ay": {
+              "content": "KEEP EDITING"
+            },
+            "CpfqB": {
+              "id": "Oe8Lw",
+              "type": "ref",
+              "ref": "JayiS",
+              "name": "Confirm",
+              "descendants": {
+                "w48lU1": {
+                  "content": "DISCARD CHANGES"
+                }
+              }
+            }
+          }
         }
       ]
     }
