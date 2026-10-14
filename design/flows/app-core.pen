@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.1.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.1.1 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -4002,7 +4002,7 @@
                               "id": "clO32",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4468,7 +4468,7 @@
                               "id": "PcV2f",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4934,7 +4934,7 @@
                               "id": "BZf1t",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5400,7 +5400,7 @@
                               "id": "Gxzfk",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5866,7 +5866,7 @@
                               "id": "wq6Xt",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6332,7 +6332,7 @@
                               "id": "UnypB",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6798,7 +6798,7 @@
                               "id": "OH3uY",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8201,6 +8201,7 @@
                   "width": 560,
                   "layout": "vertical",
                   "gap": 12,
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
@@ -8241,8 +8242,11 @@
                       "id": "QqpXB",
                       "name": "Title",
                       "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Title",
                       "lineHeight": 1.25,
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 32,
                       "fontWeight": "600"
@@ -8255,6 +8259,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Message",
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -14514,19 +14519,6 @@
                 },
                 {
                   "type": "text",
-                  "id": "xiVMT",
-                  "name": "Note",
-                  "fill": "$color-muted",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Not built yet. The route exists so the language is honest: kumite is a feature, not a label for the leaderboard. When the matchmaking and the paired evaluation are ready, this page will host them.",
-                  "lineHeight": 1.6,
-                  "fontFamily": "$font-sans",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
                   "id": "p91qXT",
                   "name": "Footer",
                   "fill": "$color-muted",
@@ -14660,7 +14652,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Dashboard — Populated\n- Dashboard — First visit + onboarding overlay\n- Dashboard — Mobile (bottom nav)",
+          "content": "- Dashboard — Populated\n- Dashboard — First visit + onboarding overlay\n- Dashboard — Mobile (bottom nav)\n- Dashboard — Load error (inline ErrorState with retry)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14741,7 +14733,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Hero 'In progress' and 'Done today' — same card, copy in TodayCard.tsx\n- Loading — PageLoader, no skeleton\n- Error — not handled in code (D15)\n- Collapsed sidebar (48px) — localStorage toggle",
+          "content": "- Hero 'In progress' and 'Done today' — same card, copy in TodayCard.tsx\n- Loading — PageLoader, no skeleton\n- Collapsed sidebar (48px) — localStorage toggle",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14768,7 +14760,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D15, D19, D29, D31",
+          "content": "D15 (resolved in code by PR #154 for the dashboard; Settings prefs failure still open), D19, D29, D31",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15360,6 +15352,19 @@
         },
         {
           "type": "text",
+          "id": "xNfqa",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.1.1 · synced with PRs #154/#155: sidebar 'sign out', Kumite placeholder trimmed, Dashboard / Load error added, error states centered (kit fix)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "ts9Es",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -15370,6 +15375,79 @@
           "fontFamily": "$font-mono",
           "fontSize": 11,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YnUhl",
+      "x": 4390,
+      "y": 0,
+      "name": "Dashboard / Load error",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color-page",
+      "children": [
+        {
+          "id": "ZFkoN",
+          "type": "ref",
+          "ref": "KLmbg",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "YqUt8",
+          "name": "Main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            40,
+            24
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ImiIC",
+              "name": "Container",
+              "width": 1152,
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 32,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "X9oynb",
+                  "type": "ref",
+                  "ref": "RYbhf",
+                  "name": "ErrorState inline",
+                  "descendants": {
+                    "qzR32": {
+                      "content": "ERROR"
+                    },
+                    "QqpXB": {
+                      "content": "Something went wrong."
+                    },
+                    "Al90N": {
+                      "content": "We couldn't load your dashboard."
+                    },
+                    "Hzyoa/a5Zxx": {
+                      "content": "TRY AGAIN"
+                    },
+                    "V6rXP": {
+                      "enabled": false
+                    }
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -16302,7 +16380,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.1.1"
     },
     "grid-x0": {
       "type": "number",

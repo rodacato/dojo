@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.1.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.1.1 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -4002,7 +4002,7 @@
                               "id": "clO32",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4468,7 +4468,7 @@
                               "id": "PcV2f",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4934,7 +4934,7 @@
                               "id": "BZf1t",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5400,7 +5400,7 @@
                               "id": "Gxzfk",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5866,7 +5866,7 @@
                               "id": "wq6Xt",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6332,7 +6332,7 @@
                               "id": "UnypB",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6798,7 +6798,7 @@
                               "id": "OH3uY",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8201,6 +8201,7 @@
                   "width": 560,
                   "layout": "vertical",
                   "gap": 12,
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
@@ -8241,8 +8242,11 @@
                       "id": "QqpXB",
                       "name": "Title",
                       "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Title",
                       "lineHeight": 1.25,
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 32,
                       "fontWeight": "600"
@@ -8255,6 +8259,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Message",
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -8651,7 +8656,7 @@
                   "ref": "lqgHU",
                   "descendants": {
                     "Pax83": {
-                      "content": "LOG IN"
+                      "content": "SIGN IN"
                     }
                   }
                 }
@@ -10137,11 +10142,14 @@
           "type": "text",
           "id": "bkENe",
           "layoutPosition": "absolute",
-          "x": 520,
+          "x": 0,
           "y": 850,
           "name": "Bottom line",
           "fill": "$color-muted",
-          "content": "GITHUB OAUTH — STATE: VERIFYING NONCE",
+          "textGrowth": "fixed-width",
+          "width": 1440,
+          "content": "GITHUB OAUTH",
+          "textAlign": "center",
           "fontFamily": "$font-mono",
           "fontSize": 11,
           "fontWeight": "normal",
@@ -10221,7 +10229,7 @@
               "id": "hnqdZ",
               "name": "Status",
               "fill": "$color-danger",
-              "content": "Auth_Failed: handshake timeout.",
+              "content": "Auth_Failed: no credential received.",
               "fontFamily": "$font-mono",
               "fontSize": 13,
               "fontWeight": "normal"
@@ -10242,11 +10250,14 @@
           "type": "text",
           "id": "tgp7Y",
           "layoutPosition": "absolute",
-          "x": 520,
+          "x": 0,
           "y": 850,
           "name": "Bottom line",
           "fill": "$color-muted",
+          "textGrowth": "fixed-width",
+          "width": 1440,
           "content": "CONNECTION TERMINATED",
+          "textAlign": "center",
           "fontFamily": "$font-mono",
           "fontSize": 11,
           "fontWeight": "normal",
@@ -10275,6 +10286,9 @@
           "ref": "y4mdT9",
           "width": "fill_container",
           "descendants": {
+            "fOEM4": {
+              "enabled": false
+            },
             "fOEM4/Oa0VU": {
               "content": "ENTER THE DOJO"
             }
@@ -10431,7 +10445,7 @@
                   "id": "rQDjY",
                   "name": "Text",
                   "fill": "$color-muted",
-                  "content": "IF THE ERROR PERSISTS — SHARE THE REQUEST ID VIA",
+                  "content": "IF THE ERROR PERSISTS — REPORT IT VIA",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
@@ -10480,6 +10494,9 @@
           "ref": "y4mdT9",
           "width": "fill_container",
           "descendants": {
+            "fOEM4": {
+              "enabled": false
+            },
             "fOEM4/Oa0VU": {
               "content": "ENTER THE DOJO"
             }
@@ -10718,10 +10735,10 @@
           "ref": "RYbhf",
           "descendants": {
             "qzR32": {
-              "content": "ERROR"
+              "content": "ERR · 404 · NOT FOUND"
             },
             "QqpXB": {
-              "content": "Something went wrong."
+              "content": "That isn't here."
             },
             "Al90N": {
               "content": "This kata result doesn't exist or isn't public yet."
@@ -13258,7 +13275,7 @@
                   "type": "frame",
                   "id": "mzNvq",
                   "layoutPosition": "absolute",
-                  "x": 1100,
+                  "x": 994,
                   "y": 20,
                   "name": "Streak pill",
                   "cornerRadius": 100,
@@ -13313,817 +13330,834 @@
                   "id": "qR6Y0",
                   "name": "Heatmap 90 days",
                   "width": "fill_container",
+                  "layout": "vertical",
                   "gap": 4,
                   "children": [
                     {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "jXUrc",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "qF9Fu",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "YbdMI",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "lzeE1",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "NAulF",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Myrgj",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "i7nbba",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "etGVF",
-                      "name": "Day",
-                      "fill": "$tint-accent-90",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "AmgCT",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "sCKr5",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Z34J2",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "myxA2",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "nzfru",
-                      "name": "Day",
-                      "fill": "$color-accent",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "s4VRAq",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "UqDFI",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "I6CWd",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "PB4Eo",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "QlQ4X",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "DJUSb",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "xomiT",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "j0AfDw",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Y71Rsa",
-                      "name": "Day",
-                      "fill": "$tint-accent-90",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "D7s1E0",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "ujgYk",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Al0ft",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "CzRRI",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "U1Amv",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Io7r2",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "LjV0B",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "gbKWR",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "JtkT3",
-                      "name": "Day",
-                      "fill": "$color-accent",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "jqJa6",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "mk8VL",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "x9K1X",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "y0rdoo",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "PObri",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "z5a3J",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "veFQN",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "lglip",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "w4k6ae",
-                      "name": "Day",
-                      "fill": "$tint-accent-90",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "xirI4",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "fcNXv",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "D91Eys",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "ItSR4",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "X7gfV",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "e2rkyq",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Pa0YN",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "q5xlAg",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "eItm3",
-                      "name": "Day",
-                      "fill": "$tint-accent-90",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "rC8hN",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "t451tP",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "fh0zu",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "iN1LU",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "e18qM6",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "w4TRyR",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "p9iO0",
-                      "name": "Day",
-                      "fill": "$color-accent",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "LnI56",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "w3Wtg",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "LuvDm",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "HAKJ1",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "u79G2",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "jU8pU",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "xrJ82",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "LYZHa",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "ZW9jc",
-                      "name": "Day",
-                      "fill": "$tint-accent-90",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "GJElM",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "v2t64k",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "VajNx",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "DukHt",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "D2Qe3a",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "g0WbwF",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "P4f7b5",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "VhLFk",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "f2PZQ",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "KLupK",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "K5wFEp",
-                      "name": "Day",
-                      "fill": "$color-accent",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "lxmdn",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Y9QCPG",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "RF3Cc",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "dNbf8",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "RprwN",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "J1isZ",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "vMaYm",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "o0Jvns",
-                      "name": "Day",
-                      "fill": "$tint-accent-90",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "y1bvn",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "a0APN",
-                      "name": "Day",
-                      "fill": "$tint-accent-40",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "pwlMm",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "ivRla",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "jgO5z",
-                      "name": "Day",
-                      "fill": "$color-elevated",
-                      "width": 12,
-                      "height": 12
-                    },
-                    {
-                      "type": "rectangle",
-                      "cornerRadius": "$radius-sm",
-                      "id": "Demcs",
-                      "name": "Day",
-                      "fill": "$tint-accent-20",
-                      "width": 12,
-                      "height": 12
+                      "type": "frame",
+                      "id": "dqE1B",
+                      "name": "Heatmap row 1",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "jXUrc",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "qF9Fu",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "YbdMI",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "lzeE1",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "NAulF",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Myrgj",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "i7nbba",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "etGVF",
+                          "name": "Day",
+                          "fill": "$tint-accent-90",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "AmgCT",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "sCKr5",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Z34J2",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "myxA2",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "nzfru",
+                          "name": "Day",
+                          "fill": "$color-accent",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "s4VRAq",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "UqDFI",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "I6CWd",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "PB4Eo",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "QlQ4X",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "DJUSb",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "xomiT",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "j0AfDw",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Y71Rsa",
+                          "name": "Day",
+                          "fill": "$tint-accent-90",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "D7s1E0",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "ujgYk",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Al0ft",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "CzRRI",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "U1Amv",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Io7r2",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "LjV0B",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "gbKWR",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "JtkT3",
+                          "name": "Day",
+                          "fill": "$color-accent",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "jqJa6",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "mk8VL",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "x9K1X",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "y0rdoo",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "PObri",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "z5a3J",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "veFQN",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "lglip",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "w4k6ae",
+                          "name": "Day",
+                          "fill": "$tint-accent-90",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "xirI4",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "fcNXv",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "D91Eys",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "ItSR4",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "X7gfV",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "e2rkyq",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Pa0YN",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "q5xlAg",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "eItm3",
+                          "name": "Day",
+                          "fill": "$tint-accent-90",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "rC8hN",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "t451tP",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "fh0zu",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "iN1LU",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "e18qM6",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "w4TRyR",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "p9iO0",
+                          "name": "Day",
+                          "fill": "$color-accent",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "LnI56",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "w3Wtg",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "LuvDm",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "HAKJ1",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "u79G2",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "jU8pU",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "xrJ82",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "LYZHa",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "ZW9jc",
+                          "name": "Day",
+                          "fill": "$tint-accent-90",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "GJElM",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cGPAz",
+                      "name": "Heatmap row 2",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "v2t64k",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "VajNx",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "DukHt",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "D2Qe3a",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "g0WbwF",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "P4f7b5",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "VhLFk",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "f2PZQ",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "KLupK",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "K5wFEp",
+                          "name": "Day",
+                          "fill": "$color-accent",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "lxmdn",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Y9QCPG",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "RF3Cc",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "dNbf8",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "RprwN",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "J1isZ",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "vMaYm",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "o0Jvns",
+                          "name": "Day",
+                          "fill": "$tint-accent-90",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "y1bvn",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "a0APN",
+                          "name": "Day",
+                          "fill": "$tint-accent-40",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "pwlMm",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "ivRla",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "jgO5z",
+                          "name": "Day",
+                          "fill": "$color-elevated",
+                          "width": 12,
+                          "height": 12
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": "$radius-sm",
+                          "id": "Demcs",
+                          "name": "Day",
+                          "fill": "$tint-accent-20",
+                          "width": 12,
+                          "height": 12
+                        }
+                      ]
                     }
                   ]
                 },
@@ -14139,7 +14173,7 @@
                       "id": "JeeOm",
                       "name": "Caption",
                       "fill": "$color-muted",
-                      "content": "Each square is one day. Darker = more kata.",
+                      "content": "Each square is one day. Brighter = more kata.",
                       "fontFamily": "$font-sans",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -14410,6 +14444,9 @@
           "ref": "y4mdT9",
           "width": "fill_container",
           "descendants": {
+            "fOEM4": {
+              "enabled": false
+            },
             "fOEM4/Oa0VU": {
               "content": "ENTER THE DOJO"
             }
@@ -14733,7 +14770,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Only login control is the nav 'Log in' (href API_URL/auth/github); hero CTA scrolls to #access (LandingPage.tsx)\n- ?error=session_expired | invite_required | invite_invalid get their own banner text, any other value gets the generic GitHub text\n- AuthCallback failed redirects to /?error=auth after 1500ms",
+          "content": "- Only sign-in control is the nav 'Sign in' (href API_URL/auth/github); hero CTA scrolls to #access (LandingPage.tsx)\n- ?error=session_expired | invite_required | invite_invalid get their own banner text, any other value gets the generic GitHub sign-in text\n- AuthCallback failed stays on the page (no auto redirect) with 'Try again' to /?error=auth",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14995,7 +15032,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- ErrorPage/NotFound use PublicPageLayout; Profile and Share error screens do not (PublicProfilePage.tsx, SharePage.tsx)\n- Profile 404 has one action 'Go home'; Share 404 has one action 'Enter the dojo'",
+          "content": "- ErrorPage, NotFound and the Share card use PublicPageLayout with hideCta (the body already carries the one filled CTA); Profile and Share error screens use ErrorState without a layout (PublicProfilePage.tsx, SharePage.tsx)\n- Profile 404 has one action 'Go home'; Share 404 uses kind not-found and one action 'Enter the dojo'",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15665,6 +15702,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "uspSq",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.1.1 · synced with PRs #154/#155: sign in wording, hideCta on 404/5xx/share, auth callback no redirect, share 404 kind, heatmap wraps in two rows, error states centered (kit fix)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -16610,7 +16660,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.1.1"
     },
     "grid-x0": {
       "type": "number",

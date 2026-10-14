@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.1.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.1.1 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -4002,7 +4002,7 @@
                               "id": "clO32",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4468,7 +4468,7 @@
                               "id": "PcV2f",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4934,7 +4934,7 @@
                               "id": "BZf1t",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5400,7 +5400,7 @@
                               "id": "Gxzfk",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5866,7 +5866,7 @@
                               "id": "wq6Xt",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6332,7 +6332,7 @@
                               "id": "UnypB",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6798,7 +6798,7 @@
                               "id": "OH3uY",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8201,6 +8201,7 @@
                   "width": 560,
                   "layout": "vertical",
                   "gap": 12,
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
@@ -8241,8 +8242,11 @@
                       "id": "QqpXB",
                       "name": "Title",
                       "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Title",
                       "lineHeight": 1.25,
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 32,
                       "fontWeight": "600"
@@ -8255,6 +8259,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Message",
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -9064,7 +9069,7 @@
                               "type": "text",
                               "id": "FMhqV",
                               "fill": "$color-success",
-                              "content": "112 published",
+                              "content": "12 published",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
                               "fontWeight": "normal"
@@ -9360,7 +9365,7 @@
                           "type": "frame",
                           "id": "KH5Jw",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "type": "text",
@@ -9495,7 +9500,7 @@
                           "type": "frame",
                           "id": "B6bF4Q",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "id": "mu3XU",
@@ -9559,6 +9564,12 @@
                           "id": "ztPJY",
                           "name": "Cell",
                           "width": 96,
+                          "padding": [
+                            0,
+                            16,
+                            0,
+                            0
+                          ],
                           "justifyContent": "end",
                           "children": [
                             {
@@ -9630,7 +9641,7 @@
                           "type": "frame",
                           "id": "w1zkOQ",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "id": "xoxpM",
@@ -9694,6 +9705,12 @@
                           "id": "sBxkQ",
                           "name": "Cell",
                           "width": 96,
+                          "padding": [
+                            0,
+                            16,
+                            0,
+                            0
+                          ],
                           "justifyContent": "end",
                           "children": [
                             {
@@ -9765,7 +9782,7 @@
                           "type": "frame",
                           "id": "l2qPj",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "id": "o0SIk",
@@ -9829,6 +9846,12 @@
                           "id": "Q95bu",
                           "name": "Cell",
                           "width": 96,
+                          "padding": [
+                            0,
+                            16,
+                            0,
+                            0
+                          ],
                           "justifyContent": "end",
                           "children": [
                             {
@@ -9900,7 +9923,7 @@
                           "type": "frame",
                           "id": "owuNe",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "id": "iV7rA",
@@ -9964,6 +9987,12 @@
                           "id": "c9zFz2",
                           "name": "Cell",
                           "width": 96,
+                          "padding": [
+                            0,
+                            16,
+                            0,
+                            0
+                          ],
                           "justifyContent": "end",
                           "children": [
                             {
@@ -10035,7 +10064,7 @@
                           "type": "frame",
                           "id": "RFiDG",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "id": "aAeuA",
@@ -10099,6 +10128,12 @@
                           "id": "K0zyE",
                           "name": "Cell",
                           "width": 96,
+                          "padding": [
+                            0,
+                            16,
+                            0,
+                            0
+                          ],
                           "justifyContent": "end",
                           "children": [
                             {
@@ -10170,7 +10205,7 @@
                           "type": "frame",
                           "id": "dqIcC",
                           "name": "Cell",
-                          "width": 64,
+                          "width": 96,
                           "children": [
                             {
                               "id": "JWEOU",
@@ -10234,6 +10269,12 @@
                           "id": "TDO6A",
                           "name": "Cell",
                           "width": 96,
+                          "padding": [
+                            0,
+                            16,
+                            0,
+                            0
+                          ],
                           "justifyContent": "end",
                           "children": [
                             {
@@ -10299,7 +10340,7 @@
                       "id": "Y3uO6y",
                       "name": "Count",
                       "fill": "$color-muted",
-                      "content": "Showing 1–6 of 12",
+                      "content": "Showing 1–6 of 19",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -10307,7 +10348,15 @@
                     {
                       "id": "eC60j",
                       "type": "ref",
-                      "ref": "npkdp"
+                      "ref": "npkdp",
+                      "descendants": {
+                        "ETPWX": {
+                          "content": "4"
+                        },
+                        "OK6qg": {
+                          "enabled": false
+                        }
+                      }
                     }
                   ]
                 }
@@ -10804,7 +10853,7 @@
                               "type": "text",
                               "id": "AjWNM",
                               "fill": "$color-success",
-                              "content": "112 published",
+                              "content": "12 published",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
                               "fontWeight": "normal"
@@ -12331,11 +12380,12 @@
                           }
                         },
                         {
-                          "id": "pEiDZ",
+                          "id": "NhVii",
                           "type": "ref",
-                          "ref": "tNtFP",
+                          "ref": "PchKh",
+                          "name": "Button/Ghost/SM",
                           "descendants": {
-                            "Oa0VU": {
+                            "lNC2l": {
                               "content": "SAVE AS DRAFT"
                             }
                           }
@@ -13614,11 +13664,12 @@
                           }
                         },
                         {
-                          "id": "s5ifpg",
+                          "id": "VEUsf",
                           "type": "ref",
-                          "ref": "tNtFP",
+                          "ref": "PchKh",
+                          "name": "Button/Ghost/SM",
                           "descendants": {
-                            "Oa0VU": {
+                            "lNC2l": {
                               "content": "SAVE AS DRAFT"
                             }
                           }
@@ -15413,11 +15464,12 @@
                           }
                         },
                         {
-                          "id": "xqnNg",
+                          "id": "eCHQ9",
                           "type": "ref",
-                          "ref": "tNtFP",
+                          "ref": "PchKh",
+                          "name": "Button/Ghost/SM",
                           "descendants": {
-                            "Oa0VU": {
+                            "lNC2l": {
                               "content": "SAVE CHANGES"
                             }
                           }
@@ -15461,7 +15513,7 @@
               "content": "Archive The Caching Decision?"
             },
             "E3wl3": {
-              "content": "Archived katas are hidden from the catalog but the data is preserved. You can always re-publish from this page later."
+              "content": "Archived katas are hidden from the catalog but the data is preserved."
             },
             "seHix/eH0ay": {
               "content": "CANCEL"
@@ -17361,7 +17413,7 @@
                                   "id": "moNtN",
                                   "name": "Label",
                                   "fill": "$color-muted",
-                                  "content": "PENDING",
+                                  "content": "UNUSED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
                                   "fontWeight": "normal",
@@ -20176,7 +20228,7 @@
                       "id": "j0ieYu",
                       "name": "Primary",
                       "fill": "$color-secondary",
-                      "content": "adapter: sample (key configured)",
+                      "content": "adapter: anthropic (key configured)",
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
                       "fontWeight": "normal"
@@ -20409,7 +20461,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Loading — PageLoader\n- Error — the page has none",
+          "content": "- Loading — PageLoader\n- Load error — inline ErrorState with retry",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -20617,7 +20669,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- New: validation banner appears on submit until fields are valid (client-side, e.g. 'Title is required.'); submit errors show in a second banner\n- Archive asks for confirmation through ConfirmModal\n- Edit shows a ⌘+S hint in the sticky bar but no handler is bound",
+          "content": "- New: validation banner appears on submit until fields are valid (client-side, e.g. 'Title is required.'); submit errors show in a second banner\n- Archive asks for confirmation through ConfirmModal; an archived kata cannot be restored from this page\n- Cmd/Ctrl+S saves on New and Edit; the header save is a ghost button, the sticky bar holds the one primary",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -20698,7 +20750,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D41 · ⌘+S hint without handler · breadcrumb says EXERCISES while the page says Katas",
+          "content": "D41 · breadcrumb says EXERCISES while the page says Katas · type REVIEW exists in the catalog filter but the form cannot create or edit it",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -20933,7 +20985,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Loading and error states for each page\n- Empty lists",
+          "content": "- Loading and error states for each page (Invitations shows an ErrorState with retry when the list fails)\n- Empty lists",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -21025,6 +21077,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "abltz",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.1.1 · synced with PRs #154/#155: Cmd/Ctrl+S on Edit, ghost header saves, archive copy without re-publish, sample data aligned to the code (unused, anthropic adapter, 12 published / 19 total), type column widened, error states centered (kit fix)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -21970,7 +22035,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.1.1"
     },
     "grid-x0": {
       "type": "number",
