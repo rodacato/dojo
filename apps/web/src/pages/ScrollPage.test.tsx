@@ -205,6 +205,10 @@ describe('ScrollPage — code execution', () => {
   const files = [{ name: 'main.rb', content: 'puts 1' }]
   const outcome = { kind: 'ok' as const, exitCode: 0, stdout: '1\n', stderr: '', durationMs: 7 }
 
+  function repliesTo(postMessage: { mock: { calls: unknown[][] } }, id: string) {
+    return postMessage.mock.calls.map(([m]) => m as { id?: string }).filter((m) => m.id === id)
+  }
+
   async function connect(options: { signedIn: boolean; enabled: boolean; declaresRun?: boolean }) {
     mockedUseAuth.mockReturnValue({ user: options.signedIn ? user : null, loading: false, logout: vi.fn() })
     mockedApi.getScrollExecutionStatus.mockResolvedValue({ enabled: options.enabled })
@@ -228,11 +232,11 @@ describe('ScrollPage — code execution', () => {
 
     run('req-9')
 
-    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(repliesTo(postMessage, 'req-9')).toHaveLength(1))
     expect(mockedApi.executeScrollCode).toHaveBeenCalledWith('pattern-circuit', { language: 'ruby', files })
-    const [reply, targetOrigin] = postMessage.mock.calls[1] as unknown as [Record<string, unknown>, string]
-    expect(targetOrigin).toBe(ORIGIN)
-    expect(reply).toMatchObject({ type: 'result', id: 'req-9', session: init.session, kind: 'ok', stdout: '1\n' })
+    const call = postMessage.mock.calls.find(([m]) => (m as { id?: string }).id === 'req-9') as unknown as [Record<string, unknown>, string]
+    expect(call[1]).toBe(ORIGIN)
+    expect(call[0]).toMatchObject({ type: 'result', id: 'req-9', session: init.session, kind: 'ok', stdout: '1\n' })
   })
 
   it.each([
@@ -246,15 +250,15 @@ describe('ScrollPage — code execution', () => {
     run('req-2')
 
     expect(mockedApi.executeScrollCode).not.toHaveBeenCalled()
-    expect(postMessage.mock.calls[1]?.[0]).toMatchObject({ type: 'error', id: 'req-2', code: 'capability-denied' })
+    expect(repliesTo(postMessage, 'req-2')).toMatchObject([{ type: 'error', code: 'capability-denied' }])
   })
 
   it('answers unavailable when the API call fails', async () => {
     mockedApi.executeScrollCode.mockRejectedValue(new ApiError(503, 'down'))
     const { run, postMessage } = await connect({ signedIn: true, enabled: true })
     run('req-3')
-    await waitFor(() => expect(postMessage).toHaveBeenCalledTimes(2))
-    expect(postMessage.mock.calls[1]?.[0]).toMatchObject({ type: 'result', id: 'req-3', kind: 'unavailable' })
+    await waitFor(() => expect(repliesTo(postMessage, 'req-3')).toHaveLength(1))
+    expect(repliesTo(postMessage, 'req-3')[0]).toMatchObject({ type: 'result', kind: 'unavailable' })
   })
 })
 
