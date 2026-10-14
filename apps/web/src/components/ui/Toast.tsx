@@ -40,14 +40,14 @@ const DEFAULT_DURATIONS: Record<ToastKind, number | null> = {
 
 const TONE_BORDER: Record<ToastKind, string> = {
   success: 'border-l-success',
-  info: 'border-l-accent',
+  info: 'border-l-secondary',
   warning: 'border-l-warning',
   error: 'border-l-danger',
 }
 
 const TONE_TEXT: Record<ToastKind, string> = {
   success: 'text-success',
-  info: 'text-accent',
+  info: 'text-secondary',
   warning: 'text-warning',
   error: 'text-danger-text',
 }

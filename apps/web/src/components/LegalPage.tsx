@@ -68,7 +68,7 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
                   <a
                     href={`#${section.id}`}
                     className={`block font-mono text-sm uppercase tracking-wider transition-colors ${
-                      isActive ? 'text-accent' : 'text-secondary hover:text-accent'
+                      isActive ? 'text-primary font-semibold' : 'text-secondary hover:text-primary'
                     }`}
                   >
                     <span className="text-secondary mr-2">§{num}</span>
@@ -103,7 +103,7 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
           </div>
           <p className="text-secondary text-sm leading-relaxed">
             We don't have a legal team. Open an issue at{' '}
-            <Link to="/open-source" className="text-accent hover:underline">
+            <Link to="/open-source" className="text-accent-text hover:underline">
               /open-source
             </Link>{' '}
             if something is unclear.
@@ -137,7 +137,7 @@ export function LegalCallout({ children }: Readonly<{ children: ReactNode }>) {
 
 export function LegalCode({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <code className="font-mono text-sm text-accent bg-surface border border-border rounded-sm px-1.5 py-0.5">
+    <code className="font-mono text-sm text-primary bg-surface border border-border rounded-sm px-1.5 py-0.5">
       {children}
     </code>
   )

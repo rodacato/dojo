@@ -53,13 +53,13 @@ describe('BottomNav', () => {
 
   it('highlights scrolls on a scroll page', () => {
     renderNav('/scrolls/pattern-circuit')
-    expect(screen.getByRole('link', { name: /scrolls/ }).className).toContain('text-accent')
-    expect(screen.getByRole('link', { name: /katas/ }).className).not.toContain('text-accent')
+    expect(screen.getByRole('link', { name: /scrolls/ }).className).toContain('text-primary')
+    expect(screen.getByRole('link', { name: /katas/ }).className).not.toContain('text-primary')
   })
 
   it('highlights the active route with the accent color', () => {
     renderNav('/katas')
-    expect(screen.getByRole('link', { name: /katas/ }).className).toContain('text-accent')
-    expect(screen.getByRole('link', { name: /belts/ }).className).not.toContain('text-accent')
+    expect(screen.getByRole('link', { name: /katas/ }).className).toContain('text-primary')
+    expect(screen.getByRole('link', { name: /belts/ }).className).not.toContain('text-primary')
   })
 })

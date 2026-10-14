@@ -37,7 +37,7 @@ export function PublicPageLayout({ children, hideCta = false }: Readonly<PublicP
                 className={`font-mono text-xs transition-colors ${
                   location.pathname === to
                     ? 'text-primary'
-                    : 'text-secondary hover:text-secondary'
+                    : 'text-secondary hover:text-primary'
                 }`}
               >
                 {label}

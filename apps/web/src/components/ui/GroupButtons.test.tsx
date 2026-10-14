@@ -54,12 +54,12 @@ describe('GroupButtons', () => {
     render(<GroupButtons options={rangeOptions} value="week" onChange={vi.fn()} />)
 
     const active = screen.getByRole('button', { name: 'Week' })
-    expect(active).toHaveClass('bg-accent', 'text-on-accent')
+    expect(active).toHaveClass('bg-elevated', 'text-primary', 'border-primary')
     expect(active).not.toHaveClass('text-secondary')
 
     const inactive = screen.getByRole('button', { name: 'Day' })
     expect(inactive).toHaveClass('text-secondary')
-    expect(inactive).not.toHaveClass('bg-accent')
+    expect(inactive).not.toHaveClass('bg-elevated')
   })
 
   it('renders every option inactive when value is null', () => {
@@ -68,7 +68,7 @@ describe('GroupButtons', () => {
     for (const { label } of rangeOptions) {
       const button = screen.getByRole('button', { name: label })
       expect(button).toHaveClass('text-secondary')
-      expect(button).not.toHaveClass('bg-accent')
+      expect(button).not.toHaveClass('bg-elevated')
     }
   })
 
@@ -92,12 +92,12 @@ describe('GroupButtons', () => {
     const { rerender } = render(
       <GroupButtons options={rangeOptions} value="day" onChange={vi.fn()} />,
     )
-    expect(screen.getByRole('button', { name: 'Day' })).toHaveClass('bg-accent')
-    expect(screen.getByRole('button', { name: 'Month' })).not.toHaveClass('bg-accent')
+    expect(screen.getByRole('button', { name: 'Day' })).toHaveClass('bg-elevated')
+    expect(screen.getByRole('button', { name: 'Month' })).not.toHaveClass('bg-elevated')
 
     rerender(<GroupButtons options={rangeOptions} value="month" onChange={vi.fn()} />)
 
-    expect(screen.getByRole('button', { name: 'Day' })).not.toHaveClass('bg-accent')
-    expect(screen.getByRole('button', { name: 'Month' })).toHaveClass('bg-accent')
+    expect(screen.getByRole('button', { name: 'Day' })).not.toHaveClass('bg-elevated')
+    expect(screen.getByRole('button', { name: 'Month' })).toHaveClass('bg-elevated')
   })
 })

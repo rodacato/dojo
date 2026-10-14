@@ -133,7 +133,7 @@ function Entry({ entry, divider }: Readonly<{ entry: ChangelogEntry; divider: bo
           href={entry.commitUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block mt-3 font-mono text-xs tracking-[0.08em] uppercase text-accent hover:text-accent/80 transition-colors"
+          className="inline-block mt-3 font-mono text-xs tracking-[0.08em] uppercase text-accent-text hover:underline transition-colors"
         >
           → view commit {entry.commitHash.slice(0, 7)}
         </a>

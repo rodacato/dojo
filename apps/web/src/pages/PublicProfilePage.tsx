@@ -85,7 +85,7 @@ export function PublicProfilePage() {
             style={{ backgroundColor: BELT_COLOR[profile.belt.rank] }}
           />
           {profile.streak > 0 && (
-            <span className="absolute top-4 right-4 font-mono text-xs tracking-[0.08em] uppercase text-accent border border-accent/40 bg-accent/10 px-2 py-1 rounded-sm">
+            <span className="absolute top-4 right-4 font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm">
               {profile.streak} day streak
             </span>
           )}

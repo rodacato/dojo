@@ -227,7 +227,7 @@ export function AdminEditKataPage() {
           <button
             type="button"
             onClick={() => navigate('/admin/katas')}
-            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors mb-2"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
           >
             ← Back to katas
           </button>
@@ -245,7 +245,7 @@ export function AdminEditKataPage() {
             Cancel
           </Button>
           <Button variant="ghost" size="sm" onClick={handleSave} loading={saving}>
-            {dirty && <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />}
+            {dirty && <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-warning shrink-0" />}
             Save changes
           </Button>
         </div>
@@ -295,7 +295,7 @@ export function AdminEditKataPage() {
               <button
                 type="button"
                 onClick={addVariation}
-                className="font-mono text-xs uppercase tracking-wider text-accent hover:text-accent/80 transition-colors"
+                className="font-mono text-xs uppercase tracking-wider text-accent-text hover:underline transition-colors"
               >
                 + Add variation
               </button>
@@ -536,7 +536,7 @@ function SignalCard({
 
 const TONE_BAR: Record<ReturnType<typeof tone>, string> = {
   emerald: 'bg-success',
-  indigo: 'bg-accent',
+  indigo: 'bg-secondary',
   amber: 'bg-warning',
   red: 'bg-danger',
   muted: 'bg-border',

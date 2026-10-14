@@ -482,7 +482,7 @@ function FontToggle({
         onClick={() => onChange('mono')}
         aria-pressed={value === 'mono'}
         className={`px-2 py-0.5 transition-colors ${
-          value === 'mono' ? 'bg-elevated text-primary' : 'text-secondary hover:text-secondary'
+          value === 'mono' ? 'bg-elevated text-primary' : 'text-secondary hover:text-primary'
         }`}
       >
         Mono
@@ -492,7 +492,7 @@ function FontToggle({
         onClick={() => onChange('sans')}
         aria-pressed={value === 'sans'}
         className={`px-2 py-0.5 border-l border-border transition-colors ${
-          value === 'sans' ? 'bg-elevated text-primary' : 'text-secondary hover:text-secondary'
+          value === 'sans' ? 'bg-elevated text-primary' : 'text-secondary hover:text-primary'
         }`}
       >
         Sans
