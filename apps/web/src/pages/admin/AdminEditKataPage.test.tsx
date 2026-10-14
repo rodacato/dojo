@@ -318,4 +318,56 @@ describe('AdminEditKataPage', () => {
       expect(screen.queryByText(/Learner feedback/)).not.toBeInTheDocument()
     })
   })
+
+  describe('unsaved changes guard', () => {
+    it('leaves straight away while the form is untouched', async () => {
+      const u = userEvent.setup()
+      renderPage()
+      await screen.findByDisplayValue('Rate limiter')
+
+      await u.click(screen.getByRole('button', { name: '← Back to katas' }))
+
+      expect(screen.getByText('katas list')).toBeInTheDocument()
+    })
+
+    it('asks before leaving a dirty form, and keeps the edits when told to keep editing', async () => {
+      const u = userEvent.setup()
+      renderPage()
+      const title = await screen.findByDisplayValue('Rate limiter')
+      await u.type(title, ' v2')
+
+      await u.click(screen.getByRole('button', { name: '← Back to katas' }))
+      expect(await screen.findByText('Leave without saving?')).toBeInTheDocument()
+      expect(screen.queryByText('katas list')).not.toBeInTheDocument()
+
+      await u.click(screen.getByRole('button', { name: 'Keep editing' }))
+      expect(screen.queryByText('Leave without saving?')).not.toBeInTheDocument()
+      expect(screen.getByDisplayValue('Rate limiter v2')).toBeInTheDocument()
+    })
+
+    it('discards the edits and leaves when confirmed', async () => {
+      const u = userEvent.setup()
+      renderPage()
+      await u.type(await screen.findByDisplayValue('Rate limiter'), ' v2')
+
+      await u.click(screen.getAllByRole('button', { name: 'Cancel' })[0]!)
+      await u.click(await screen.findByRole('button', { name: 'Discard changes' }))
+
+      expect(screen.getByText('katas list')).toBeInTheDocument()
+      expect(mockedUpdate).not.toHaveBeenCalled()
+    })
+
+    it('registers the browser leave warning only while the form is dirty', async () => {
+      const add = vi.spyOn(globalThis, 'addEventListener')
+      const u = userEvent.setup()
+      renderPage()
+      const title = await screen.findByDisplayValue('Rate limiter')
+      expect(add.mock.calls.some(([t]) => t === 'beforeunload')).toBe(false)
+
+      await u.type(title, '!')
+
+      expect(add.mock.calls.some(([t]) => t === 'beforeunload')).toBe(true)
+      add.mockRestore()
+    })
+  })
 })
