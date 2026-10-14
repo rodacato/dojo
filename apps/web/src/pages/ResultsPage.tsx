@@ -365,7 +365,10 @@ function ShareActions({
       <Button variant="ghost" size="md" onClick={handleTwitter} className="w-full">
         Share to Twitter
       </Button>
-      <p className="text-muted text-xs font-mono tracking-[0.08em] truncate mt-1">
+      <p
+        className="text-muted text-xs font-mono tracking-[0.08em] truncate mt-1"
+        title={shareUrl}
+      >
         {shareUrl.replace(/^https?:\/\//, '')}
       </p>
     </div>
