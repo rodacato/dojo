@@ -1,22 +1,25 @@
+import logo from '../brand/logo.json'
+
 interface LogoMarkProps {
   size?: number
   className?: string
 }
 
-/** Abstract torii gate mark — 4 strokes, no fill */
 export function LogoMark({ size = 24, className = '' }: Readonly<LogoMarkProps>) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 40 40"
+      viewBox={logo.viewBox}
+      aria-hidden="true"
+      focusable="false"
       fill="none"
       className={className}
     >
       <path
-        d="M5 10 H35 M8 18 H32 M12 10 V35 M28 10 V35"
+        d={logo.path}
         stroke="currentColor"
-        strokeWidth={2.5}
+        strokeWidth={logo.strokeWidth}
         strokeLinecap="round"
       />
     </svg>
@@ -29,7 +32,6 @@ interface LogoWordmarkProps {
   markSize?: number
 }
 
-/** Full lockup: optional torii mark + dojo_ wordmark with blinking cursor */
 export function LogoWordmark({ className = '', showMark = true, markSize = 20 }: Readonly<LogoWordmarkProps>) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>

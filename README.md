@@ -12,11 +12,11 @@
 
 A self-hosted, open-source practice space for developers. Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
 
-It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, once scrolls return as external apps, a place to learn as much as a place to be tested.
+It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, through scrolls (external learning apps the operator registers), a place to learn as much as a place to be tested.
 
 **There is no hosted service to sign up for — you run your own**, for yourself, your friends, or your team.
 
-> **Status:** dojo started as a private, invite-only practice space and is being reshaped into a self-hosted open-source project. The kata loop works today; scrolls are being rebuilt as external apps (see below), and the self-host story still has rough edges. Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev) · Project site: [rodacato.github.io/dojo](https://rodacato.github.io/dojo/)
+> **Status:** dojo started as a private, invite-only practice space and is being reshaped into a self-hosted open-source project. The kata loop works today; scrolls run as external apps embedded in Dojo (see below), and the self-host story still has rough edges. Reference instance: [dojo.notdefined.dev](https://dojo.notdefined.dev) · Project site: [rodacato.github.io/dojo](https://rodacato.github.io/dojo/)
 
 ---
 
@@ -130,7 +130,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 
 | Feature | Description |
 |---|---|
-| **Scrolls** | Being rebuilt as external apps embedded in Dojo — not available yet ([#116](https://github.com/rodacato/dojo/issues/116)) |
+| **Scrolls** | External learning apps embedded in Dojo by iframe. The host (registration, frame allow-list, progress, optional code execution) works. What is available depends on the scrolls your operator registers ([#116](https://github.com/rodacato/dojo/issues/116)) |
 | **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
 | **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
 | **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
@@ -190,6 +190,7 @@ pnpm build                            # Build all workspaces
 pnpm lint                             # Lint all workspaces
 pnpm typecheck                        # Type-check all workspaces
 pnpm test --filter=api                # Run API unit + integration tests
+pnpm brand:check                      # Fail if generated brand assets are stale
 ```
 
 Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it says what fits the dojo and what does not.
@@ -210,7 +211,7 @@ Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it 
 | [docs/ROADMAP.md](docs/ROADMAP.md) | What's shipped, what's next, what's out of scope |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [docs/adr/](docs/adr/) | Architecture decision records |
-| [docs/BRANDING.md](docs/BRANDING.md) | Colors, typography, voice, UI components |
+| [docs/BRANDING.md](docs/BRANDING.md) | Voice, vocabulary, Open Gate logo sources and `pnpm brand:assets` / `brand:check` |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build cycle, testing strategy, definition of done |
 | [AGENTS.md](AGENTS.md) | AI agent behavior and working rules |
 
