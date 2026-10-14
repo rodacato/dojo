@@ -101,7 +101,6 @@ export function PublicProfilePage() {
                 <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight truncate">
                   {profile.username}
                 </h1>
-                <p className="text-secondary text-base">@{profile.username}</p>
                 <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-1">
                   Member since {memberSince} · {profile.belt.rank} belt
                 </p>
