@@ -13,6 +13,14 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.3.0 — accent discipline and readable text
+
+**Tokens:** `color-accent-text` and `color-danger-text` (derived, so text on a surface clears AA; sumi 4.53 and 4.56), plus `tint-type-review-20`, `tint-type-review-40` and `tint-primary-30`. The approved brand values do not change (D42, D46).
+
+**Components:** accent is only the filled action, links, focus and the mark. Selected states (sidebar and bottom nav, group buttons, chips, toggle, pagination) go neutral with a primary border or bar; the review badge uses its own type token; info banners and toasts, the user chat bubble and the AccentCard rail are neutral. Readable text that was `muted` is now `secondary`; `muted` stays on placeholders. Foundations lists the new tokens and their measured ratios.
+
+**Vendored by:** all five flows (kit-version-source `0.3.0`). Flow screens were swept the same way: streak and chip numbers, eyebrows and selected controls neutral, links on `accent-text`, error text on `danger-text`.
+
 ## 0.2.0 — Open Gate logo
 
 - `LogoMark` draws the Open Gate mark from `apps/web/src/brand/logo.json` (viewBox 100, round stroke), replacing the torii. The wordmark keeps the mark in `primary` and the `dojo_` cursor in `accent`.
