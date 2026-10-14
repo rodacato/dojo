@@ -419,7 +419,7 @@ export function EngawaPage() {
             {(ask.answer || ask.status === 'error') && (
               <div className="border-t border-border/30 pt-3 max-h-[40vh] overflow-y-auto">
                 {ask.status === 'error' ? (
-                  <p className="font-mono text-xs text-danger whitespace-pre-wrap">
+                  <p className="font-mono text-xs text-danger-text whitespace-pre-wrap">
                     {ask.errorMessage}
                   </p>
                 ) : (
@@ -482,7 +482,7 @@ function RunStatusChip({ run }: Readonly<{ run: RunState }>) {
     )
   }
   return (
-    <span className="font-mono text-xs tracking-[0.08em] uppercase text-danger border border-danger/40 bg-danger/10 px-2 py-0.5 rounded-sm tabular-nums">
+    <span className="font-mono text-xs tracking-[0.08em] uppercase text-danger-text border border-danger/40 bg-danger/10 px-2 py-0.5 rounded-sm tabular-nums">
       {run.exitCode == null ? 'Error · did not run' : `Error · exit ${run.exitCode}`}
     </span>
   )
@@ -504,7 +504,7 @@ function OutputPanel({ run }: Readonly<{ run: RunState }>) {
     return <p className="text-accent animate-pulse">executing...</p>
   }
   if (run.status === 'error' && run.errorMessage) {
-    return <p className="text-danger whitespace-pre-wrap">{run.errorMessage}</p>
+    return <p className="text-danger-text whitespace-pre-wrap">{run.errorMessage}</p>
   }
   return (
     <div className="space-y-1">
@@ -512,7 +512,7 @@ function OutputPanel({ run }: Readonly<{ run: RunState }>) {
         <pre className="text-secondary whitespace-pre-wrap wrap-break-word">{run.stdout}</pre>
       )}
       {run.stderr && (
-        <pre className="text-danger whitespace-pre-wrap wrap-break-word">{run.stderr}</pre>
+        <pre className="text-danger-text whitespace-pre-wrap wrap-break-word">{run.stderr}</pre>
       )}
       {!run.stdout && !run.stderr && <p className="text-muted/50">(no output)</p>}
     </div>

@@ -102,7 +102,7 @@ function AuthErrorBanner({ errorParam }: Readonly<{ errorParam: string }>) {
     'GitHub sign-in failed. Try again or check your GitHub status.'
   return (
     <div className="bg-danger/10 border-b border-danger/30 px-4 md:px-8 py-3 text-center">
-      <p className="text-danger text-sm font-mono">{message}</p>
+      <p className="text-danger-text text-sm font-mono">{message}</p>
     </div>
   )
 }
@@ -689,7 +689,7 @@ function RequestAccessForm() {
         {submitting ? 'Sending' : 'Submit_request'}
       </Button>
       {error && (
-        <p role="alert" className="text-danger text-xs font-mono leading-relaxed">
+        <p role="alert" className="text-danger-text text-xs font-mono leading-relaxed">
           {error}
         </p>
       )}

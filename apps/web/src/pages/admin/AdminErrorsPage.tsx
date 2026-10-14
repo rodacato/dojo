@@ -231,7 +231,7 @@ export function AdminErrorsPage() {
               )}
               {error && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-danger font-mono">
+                  <td colSpan={7} className="px-4 py-10 text-center text-danger-text font-mono">
                     {error}
                   </td>
                 </tr>
@@ -388,7 +388,7 @@ function SourcePill({ source }: Readonly<{ source: string }>) {
 
 function statusColor(status: number | null): string {
   if (status == null) return 'text-muted'
-  if (status >= 500) return 'text-danger'
+  if (status >= 500) return 'text-danger-text'
   if (status >= 400) return 'text-warning'
   return 'text-secondary'
 }

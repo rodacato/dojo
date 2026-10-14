@@ -103,7 +103,7 @@ describe('Timer', () => {
     const node = ui.getByText('09:00')
     expect(node).toHaveClass('text-primary')
     expect(node).not.toHaveClass('text-warning')
-    expect(node).not.toHaveClass('text-danger')
+    expect(node).not.toHaveClass('text-danger-text')
   })
 
   it('switches to the warning tone between 10% and 20% remaining', () => {
@@ -112,7 +112,7 @@ describe('Timer', () => {
 
     const node = ui.getByText('01:30')
     expect(node).toHaveClass('text-warning')
-    expect(node).not.toHaveClass('text-danger')
+    expect(node).not.toHaveClass('text-danger-text')
     expect(node).not.toHaveClass('text-primary')
   })
 
@@ -121,7 +121,7 @@ describe('Timer', () => {
     const ui = renderTimer(<Timer durationMinutes={10} startedAt={startedSecondsAgo(570)} />)
 
     const node = ui.getByText('00:30')
-    expect(node).toHaveClass('text-danger')
+    expect(node).toHaveClass('text-danger-text')
     expect(node).not.toHaveClass('text-warning')
     expect(node).not.toHaveClass('text-primary')
   })
@@ -131,7 +131,7 @@ describe('Timer', () => {
 
     const node = ui.getByText('00:00')
     expect(node).toHaveClass('text-muted')
-    expect(node).not.toHaveClass('text-danger')
+    expect(node).not.toHaveClass('text-danger-text')
   })
 
   it('shows the blinking cursor in the danger window', () => {

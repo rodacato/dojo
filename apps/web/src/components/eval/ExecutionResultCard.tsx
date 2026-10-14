@@ -15,7 +15,7 @@ export function ExecutionResultCard({ result }: Readonly<Props>) {
   const passed = result.exitCode === 0
   const timedOut = result.timedOut
 
-  const statusColor = passed ? 'text-success' : 'text-danger'
+  const statusColor = passed ? 'text-success' : 'text-danger-text'
   const statusLabel = describeStatus(timedOut, passed)
   const statusIcon = passed ? '●' : '✕'
 
@@ -49,8 +49,8 @@ export function ExecutionResultCard({ result }: Readonly<Props>) {
           )}
           {result.stderr && (
             <div>
-              <p className="text-danger text-xs font-mono uppercase mb-1">stderr</p>
-              <pre className="text-xs text-danger/80 bg-page rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
+              <p className="text-danger-text text-xs font-mono uppercase mb-1">stderr</p>
+              <pre className="text-xs text-danger-text bg-page rounded-sm p-2 overflow-x-auto max-h-40 overflow-y-auto font-mono">
                 {result.stderr}
               </pre>
             </div>

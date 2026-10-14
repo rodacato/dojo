@@ -79,7 +79,7 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
       />
     )
   } else if (error) {
-    previewContent = <p className="text-danger text-xs font-mono">{error}</p>
+    previewContent = <p className="text-danger-text text-xs font-mono">{error}</p>
   } else if (!value.trim()) {
     previewContent = (
       <p className="text-muted text-xs font-mono text-center">
@@ -108,7 +108,7 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
             Preview
           </span>
           {error && (
-            <span className="ml-3 font-mono text-xs text-danger uppercase tracking-[0.08em]">
+            <span className="ml-3 font-mono text-xs text-danger-text uppercase tracking-[0.08em]">
               · {error}
             </span>
           )}

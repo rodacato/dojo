@@ -12,13 +12,13 @@ const TYPE_STYLES: Record<KataType, string> = {
 const DIFFICULTY_STYLES: Record<Difficulty, string> = {
   easy: 'text-success border border-success',
   medium: 'text-warning border border-warning',
-  hard: 'text-danger border border-danger',
+  hard: 'text-danger-text border border-danger',
 }
 
 const VERDICT_STYLES: Record<Verdict, string> = {
   passed: 'bg-success/10 text-success border border-success/30',
   passed_with_notes: 'bg-warning/10 text-warning border border-warning/30',
-  needs_work: 'bg-danger/10 text-danger border border-danger/30',
+  needs_work: 'bg-danger/10 text-danger-text border border-danger/30',
 }
 
 const VERDICT_LABELS: Record<Verdict, string> = {

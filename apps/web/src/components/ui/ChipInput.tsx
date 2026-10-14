@@ -37,7 +37,7 @@ export function ChipInput({ value, onChange, placeholder }: Readonly<ChipInputPr
           {v}
           <button
             onClick={() => onChange(value.filter((x) => x !== v))}
-            className="text-muted hover:text-danger"
+            className="text-muted hover:text-danger-text"
           >
             ×
           </button>

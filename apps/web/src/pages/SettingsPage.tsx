@@ -403,7 +403,7 @@ function SaveIndicator({ state }: Readonly<{ state: SaveState }>) {
         </span>
       )}
       {state === 'saved' && <span className="text-success">Saved</span>}
-      {state === 'error' && <span className="text-danger">Error</span>}
+      {state === 'error' && <span className="text-danger-text">Error</span>}
     </div>
   )
 }

@@ -55,7 +55,7 @@ export function FormField({
         <div
           id={noteId}
           className={`text-xs mt-1.5 font-mono ${
-            error ? 'text-danger' : 'text-muted'
+            error ? 'text-danger-text' : 'text-muted'
           }`}
         >
           {error ?? hint}
@@ -224,7 +224,7 @@ export function VariationCardItem({
           <button
             type="button"
             onClick={onRemove}
-            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-danger transition-colors"
+            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-danger-text transition-colors"
           >
             Remove
           </button>
@@ -256,7 +256,7 @@ export function VariationCardItem({
 export function ValidationBanner({ message }: Readonly<{ message: string }>) {
   return (
     <div role="alert" className="rounded-md border border-danger/40 border-l-4 border-l-danger bg-surface p-4 mb-6">
-      <div className="font-mono text-xs uppercase tracking-wider text-danger mb-1">
+      <div className="font-mono text-xs uppercase tracking-wider text-danger-text mb-1">
         Validation
       </div>
       <div className="text-sm text-secondary">{message}</div>

@@ -147,7 +147,7 @@ export function AdminInvitationsPage() {
         </div>
 
         {error && (
-          <div role="alert" className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger">
+          <div role="alert" className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger-text">
             {error}
           </div>
         )}
@@ -243,7 +243,7 @@ export function AdminInvitationsPage() {
                       </td>
                       <td
                         className={`px-4 h-12 align-middle text-right font-mono ${
-                          expired ? 'text-danger/80' : 'text-secondary'
+                          expired ? 'text-danger-text' : 'text-secondary'
                         }`}
                       >
                         {expired ? 'expired' : relativeFromNow(now, expiresMs, 'future')}
@@ -304,7 +304,7 @@ function InviteStatusBadge({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     pending: 'bg-muted/15 text-secondary border-border',
     used: 'bg-success/10 text-success border-success/30',
-    expired: 'bg-danger/10 text-danger border-danger/30',
+    expired: 'bg-danger/10 text-danger-text border-danger/30',
   }
   const labels: Record<string, string> = {
     pending: 'unused',
