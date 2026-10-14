@@ -66,7 +66,7 @@ The motifs are explicit: **brushstroke**, **enso** (the zen circle, used as load
 
 **Self-host friendly.** No third-party fonts beyond the two declared. No CDN-locked assets. The whole brand renders from a single CSS file + a small SVG sprite.
 
-**One acento, two themes.** The vermillion of the hanko reads in both washi and sumi. Single accent simplifies decisions: if it's interactive, it's vermillion. If it's not, it isn't.
+**One acento, two themes.** The vermillion of the hanko reads in both washi and sumi. Accent is reserved for the filled primary action, links (`--color-accent-text`), focus rings and the mark. Selection, stat numbers and eyebrows stay neutral and carry a non-colour cue such as a border or bar.
 
 **Three rules of thumb:**
 
@@ -101,8 +101,8 @@ Tokens are referenced by name everywhere in code. Never raw hex. Both themes use
 
 | Token | Slate Indigo (shipped) | Sumi-e (both variants) | Usage |
 |---|---|---|---|
-| `--color-accent` | `#6366F1` (Indigo 500) | `#B73A2F` (hanko vermillion) | CTAs, focus rings, links, active state |
-| `--color-on-accent` | `#FFFFFF` | `#FAF7F0` washi · `#F2EDE3` sumi (ink-white) | Foreground on a filled `bg-accent` (button label, user bubble, active segment, hanko caps) — keeps AA contrast where `--color-primary` inverts to near-black under washi |
+| `--color-accent` | `#6366F1` (Indigo 500) | `#B73A2F` (hanko vermillion) | Filled primary actions, focus rings, the mark |
+| `--color-on-accent` | `#FFFFFF` | `#FAF7F0` washi · `#F2EDE3` sumi (ink-white) | Foreground on a filled `bg-accent` (primary button label, hanko caps) — keeps AA contrast where `--color-primary` inverts to near-black under washi |
 | `--color-success` | `#10B981` (Emerald) | `#5C7A4E` washi · `#7D9B6A` sumi (matcha) | Passed verdict, completion, streak active |
 | `--color-danger` | `#EF4444` (Red 500) | `#9C2D24` (deeper than accent) | Failed sessions, errors, expired timer |
 | `--color-accent-text` | `#818CF8` | `#B73A2F` washi · `#C35E53` sumi | Small accent text (links). `--color-accent` is 3.3:1 on sumi surfaces, so it only fills buttons, marks and focus rings |
@@ -110,6 +110,8 @@ Tokens are referenced by name everywhere in code. Never raw hex. Both themes use
 | `--color-warning` | `#F59E0B` (Amber 500) | `#BC8E37` washi · `#D4A547` sumi (gold ink) | Timer near limit, warnings, "passed with notes" |
 
 > **Vermillion vs danger:** the hanko accent and the danger color are close cousins on purpose. The accent is the brand's positive interactive color — the seal. Danger is a deeper variant for actual failure states. They are visually distinct in practice; the brand bleeds into "failure looks like an unfortunate seal", which is on-brand.
+
+**Where accent stays on purpose besides the primary action, links and focus:** the logo mark and its `_` cursor, the hanko seal, loaders (`EnsoLoader`, the auth progress bar, the streaming cursor), data fills (the activity heatmap and bars, the `VerdictBlock` ink stroke), the native slider on Settings, the terminal mock on the landing, and the `REVIEW` kata badge, which reuses accent in sumi and washi (`--color-type-review`). Anything else in accent is a bug.
 
 ### Type badge tokens (kata types)
 
