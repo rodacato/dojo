@@ -22,7 +22,7 @@ export function Toggle({ checked, onChange, label, ariaLabel, disabled, id }: Re
       aria-label={ariaLabel ?? label}
       onClick={() => !disabled && onChange(!checked)}
       disabled={disabled}
-      className={`relative inline-flex h-4 w-8 items-center rounded-sm border transition-colors shrink-0 ${
+      className={`relative inline-flex h-4 w-8 items-center rounded-sm border transition-colors shrink-0 before:absolute before:-inset-x-1.5 before:-inset-y-3.5 before:content-[''] ${
         checked ? 'bg-elevated border-primary' : 'bg-page border-border'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
