@@ -291,7 +291,7 @@ export function KataActivePage() {
               <KataBody body={session.body} />
             </div>
             <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
-              <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center opacity-70">
+              <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center">
                 Enter the dojo. Leave the AI outside.
               </p>
             </div>

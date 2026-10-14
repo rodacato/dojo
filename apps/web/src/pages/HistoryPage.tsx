@@ -107,7 +107,7 @@ export function HistoryPage() {
         </div>
       )}
 
-      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12">
         Every session is a receipt.
       </p>
     </div>

@@ -82,7 +82,7 @@ export function ResultsPage() {
           </Button>
         </div>
 
-        <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+        <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8">
           Consistency compounds.
         </p>
       </div>
@@ -201,7 +201,7 @@ export function ResultsPage() {
         <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
       )}
 
-      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8">
         Consistency compounds.
       </p>
     </div>
