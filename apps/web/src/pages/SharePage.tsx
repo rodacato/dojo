@@ -158,7 +158,7 @@ export function SharePage() {
             </p>
           </article>
 
-          <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase text-center mt-10 opacity-60">
+          <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase text-center mt-10">
             kata_id: {sessionId?.slice(0, 6) ?? ''}
           </p>
         </div>

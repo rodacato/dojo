@@ -333,7 +333,7 @@ export function SettingsPage() {
         </div>
       </Section>
 
-      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12">
         Changes auto-save.
       </p>
 

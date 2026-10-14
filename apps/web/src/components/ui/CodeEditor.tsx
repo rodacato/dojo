@@ -38,7 +38,7 @@ function buildHighlightStyle(t: ThemeTokens): HighlightStyle {
     { tag: [tags.keyword, tags.controlKeyword, tags.modifier, tags.operatorKeyword], color: t.accent },
     { tag: [tags.string, tags.special(tags.string), tags.regexp], color: t.success },
     { tag: [tags.number, tags.bool, tags.null, tags.atom], color: t.warning },
-    { tag: [tags.comment, tags.lineComment, tags.blockComment, tags.docComment], color: t.muted, fontStyle: 'italic' },
+    { tag: [tags.comment, tags.lineComment, tags.blockComment, tags.docComment], color: t.secondary, fontStyle: 'italic' },
     { tag: [tags.function(tags.variableName), tags.function(tags.propertyName)], color: t.primary },
     { tag: [tags.typeName, tags.className, tags.namespace], color: t.secondary },
     { tag: [tags.propertyName, tags.attributeName], color: t.secondary },

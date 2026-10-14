@@ -11,7 +11,7 @@ export function KumitePlaceholderPage() {
         Kumite is sparring. One kata, two developers, the same prompt, side-by-side reasoning. The
         sensei reads both attempts and marks where each one earned its conclusion.
       </p>
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary opacity-70 mt-8">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mt-8">
         Until then — practice solo.
       </p>
     </div>
