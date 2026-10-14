@@ -364,7 +364,7 @@ function StatusPill({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     published: 'bg-success/10 text-success border-success/30',
     draft: 'bg-muted/15 text-secondary border-border',
-    archived: 'bg-danger/10 text-danger border-danger/30',
+    archived: 'bg-danger/10 text-danger-text border-danger/30',
   }
   return (
     <span
@@ -546,7 +546,7 @@ const TONE_VALUE: Record<ReturnType<typeof tone>, string> = {
   emerald: 'text-success',
   indigo: 'text-primary',
   amber: 'text-warning',
-  red: 'text-danger',
+  red: 'text-danger-text',
   muted: 'text-muted',
 }
 

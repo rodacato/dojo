@@ -79,7 +79,7 @@ describe('ConfirmModal', () => {
 
     it.each([
       ['amber', 'text-warning'],
-      ['red', 'text-danger'],
+      ['red', 'text-danger-text'],
       ['indigo', 'text-accent'],
       ['muted', 'text-muted'],
     ] as const)('applies the %s tone class to the eyebrow', (tone, expectedClass) => {
@@ -130,7 +130,7 @@ describe('ConfirmModal', () => {
       )
 
       const primary = screen.getByRole('button', { name: 'Delete' })
-      expect(primary).toHaveClass('text-danger')
+      expect(primary).toHaveClass('text-danger-text')
       expect(primary).not.toHaveClass('bg-danger')
     })
 

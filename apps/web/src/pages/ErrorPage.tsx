@@ -32,7 +32,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
         </span>
 
         <div className="relative z-10 text-center max-w-xl w-full">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-danger mb-6 px-2 py-1 rounded-sm bg-surface/80 border border-danger/40">
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-danger-text mb-6 px-2 py-1 rounded-sm bg-surface/80 border border-danger/40">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-danger" aria-hidden />
             ERR · 5xx
           </div>

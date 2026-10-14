@@ -20,7 +20,7 @@ interface BannerProps {
 const TONE_TEXT: Record<BannerTone, string> = {
   info: 'text-accent',
   warning: 'text-warning',
-  danger: 'text-danger',
+  danger: 'text-danger-text',
 }
 
 const TONE_BORDER_LEFT: Record<BannerTone, string> = {

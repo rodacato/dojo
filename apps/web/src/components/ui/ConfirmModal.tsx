@@ -48,7 +48,7 @@ type ConfirmModalProps = StandardConfirmProps | TypedConfirmProps
 const TONE_TEXT: Record<ConfirmTone, string> = {
   muted: 'text-muted',
   amber: 'text-warning',
-  red: 'text-danger',
+  red: 'text-danger-text',
   indigo: 'text-accent',
 }
 

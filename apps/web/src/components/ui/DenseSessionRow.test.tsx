@@ -72,7 +72,7 @@ describe('DenseSessionRow', () => {
     it.each([
       ['passed', 'PASSED', 'text-success'],
       ['passed_with_notes', 'PASSED W/N', 'text-warning'],
-      ['needs_work', 'NEEDS WORK', 'text-danger'],
+      ['needs_work', 'NEEDS WORK', 'text-danger-text'],
     ] as const)('shows the %s verdict label with its tone', (verdict, label, toneClass) => {
       renderRow({ verdict })
 

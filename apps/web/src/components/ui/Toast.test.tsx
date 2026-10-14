@@ -83,7 +83,7 @@ describe('ToastContainer — kind variants', () => {
     emit(() => toast.error('BOOM'))
 
     expect(screen.getByRole('status')).toHaveClass('border-l-danger')
-    expect(screen.getByText('BOOM')).toHaveClass('text-danger')
+    expect(screen.getByText('BOOM')).toHaveClass('text-danger-text')
   })
 
   it('defaults to the info tone when toast() is called without a kind', () => {
