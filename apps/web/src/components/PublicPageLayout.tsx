@@ -37,7 +37,7 @@ export function PublicPageLayout({ children, hideCta = false }: Readonly<PublicP
                 className={`font-mono text-xs transition-colors ${
                   location.pathname === to
                     ? 'text-primary'
-                    : 'text-muted hover:text-secondary'
+                    : 'text-secondary hover:text-secondary'
                 }`}
               >
                 {label}
@@ -57,8 +57,8 @@ export function PublicPageLayout({ children, hideCta = false }: Readonly<PublicP
       <footer className="border-t border-border/40 px-4 md:px-8 py-8">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <LogoMark size={14} className="text-muted" />
-            <span className="text-muted text-xs font-mono tracking-[0.04em]">
+            <LogoMark size={14} className="text-secondary" />
+            <span className="text-secondary text-xs font-mono tracking-[0.04em]">
               {globalThis.location.host}
             </span>
           </div>
@@ -67,7 +67,7 @@ export function PublicPageLayout({ children, hideCta = false }: Readonly<PublicP
               <Link
                 key={to}
                 to={to}
-                className="text-muted text-xs font-mono tracking-[0.04em] hover:text-secondary transition-colors"
+                className="text-secondary text-xs font-mono tracking-[0.04em] hover:text-secondary transition-colors"
               >
                 {label}
               </Link>

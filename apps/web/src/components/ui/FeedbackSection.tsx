@@ -126,7 +126,7 @@ export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<Feedba
       <div className="flex gap-2">
         <button
           onClick={() => setOpen(false)}
-          className="flex-1 py-2 text-muted text-xs font-mono hover:text-secondary transition-colors"
+          className="flex-1 py-2 text-secondary text-xs font-mono hover:text-secondary transition-colors"
         >
           skip
         </button>

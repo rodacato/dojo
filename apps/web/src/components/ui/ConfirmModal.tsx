@@ -46,7 +46,7 @@ interface TypedConfirmProps extends ConfirmModalBaseProps {
 type ConfirmModalProps = StandardConfirmProps | TypedConfirmProps
 
 const TONE_TEXT: Record<ConfirmTone, string> = {
-  muted: 'text-muted',
+  muted: 'text-secondary',
   amber: 'text-warning',
   red: 'text-danger-text',
   indigo: 'text-accent',
@@ -108,7 +108,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
           <div className="mt-5">
             <label
               htmlFor="confirm-typed"
-              className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5"
+              className="block font-mono text-xs uppercase tracking-wider text-secondary mb-1.5"
             >
               {typed.label}
             </label>
@@ -124,7 +124,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
               className="admin-input font-mono"
             />
             {typed.hint && (
-              <div className="font-mono text-xs text-muted mt-2">{typed.hint}</div>
+              <div className="font-mono text-xs text-secondary mt-2">{typed.hint}</div>
             )}
           </div>
         )}

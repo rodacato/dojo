@@ -132,13 +132,13 @@ export function SenseiEvalPage() {
     )
   } else if (result?.isFinalEvaluation) {
     bottomBandContent = (
-      <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
+      <p className="text-secondary text-xs font-mono uppercase tracking-[0.08em] text-center">
         The sensei has spoken.
       </p>
     )
   } else if (state.status === 'error') {
     bottomBandContent = (
-      <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
+      <p className="text-secondary text-xs font-mono uppercase tracking-[0.08em] text-center">
         Evaluation stopped.
       </p>
     )
@@ -234,7 +234,7 @@ export function SenseiEvalPage() {
               }
             >
               {state.status === 'complete' && (
-                <p className="text-muted text-xs font-mono animate-pulse">
+                <p className="text-secondary text-xs font-mono animate-pulse">
                   Evaluation complete — opening full analysis...
                 </p>
               )}
@@ -247,7 +247,7 @@ export function SenseiEvalPage() {
               <p className="text-secondary font-mono text-sm">
                 The sensei couldn't evaluate your response.
               </p>
-              <p className="text-muted text-xs">{state.message}</p>
+              <p className="text-secondary text-xs">{state.message}</p>
               <div className="flex gap-3 mt-2">
                 <Button variant="primary" size="md" onClick={() => connect()}>
                   Try again
@@ -301,7 +301,7 @@ function deriveStatus({
 
 function StatusChip({ kind }: Readonly<{ kind: StatusChipKind }>) {
   const styles: Record<StatusChipKind, { label: string; color: string; cursor: boolean }> = {
-    connecting: { label: 'CONNECTING', color: 'text-muted border-border bg-elevated', cursor: true },
+    connecting: { label: 'CONNECTING', color: 'text-secondary border-border bg-elevated', cursor: true },
     executing: { label: 'EXECUTING', color: 'text-warning border-warning/40 bg-warning/10', cursor: true },
     streaming: { label: 'STREAMING', color: 'text-accent border-accent/40 bg-accent/10', cursor: true },
     'follow-up': { label: 'FOLLOW-UP', color: 'text-accent border-accent/40 bg-accent/10', cursor: false },

@@ -46,7 +46,7 @@ describe('AchievementBadge', () => {
       )
 
       expect(container.firstChild).toHaveClass('opacity-40')
-      expect(screen.getByText('Locked')).toHaveClass('text-muted')
+      expect(screen.getByText('Locked')).toHaveClass('text-secondary')
     })
 
     it('hides the earnedAt date when not earned, even if a date is supplied', () => {

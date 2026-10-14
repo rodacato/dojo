@@ -86,7 +86,7 @@ export function ChangelogPage() {
   return (
     <PublicPageLayout>
       <div className="max-w-180 mx-auto px-4 md:px-6 py-12 md:py-20">
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-3">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">
           Changelog
         </p>
         <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
@@ -95,7 +95,7 @@ export function ChangelogPage() {
         <p className="text-secondary text-base mt-2">
           Sprint by sprint. No marketing. Just done.
         </p>
-        <p className="text-muted text-sm mt-2 mb-12">
+        <p className="text-secondary text-sm mt-2 mb-12">
           This is the dojo project&apos;s own history. Which release an instance runs is up to its operator.
         </p>
 
@@ -105,7 +105,7 @@ export function ChangelogPage() {
           ))}
         </div>
 
-        <p className="font-mono text-xs text-muted mt-12 inline-flex items-center">
+        <p className="font-mono text-xs text-secondary mt-12 inline-flex items-center">
           More history coming.
           <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
         </p>
@@ -144,5 +144,5 @@ function Entry({ entry, divider }: Readonly<{ entry: ChangelogEntry; divider: bo
 
 function phaseColorClass(phase: string): string {
   if (phase.includes('Phase 1') || phase.includes('Phase 2') || phase === 'Self-hosted') return 'text-accent'
-  return 'text-muted'
+  return 'text-secondary'
 }

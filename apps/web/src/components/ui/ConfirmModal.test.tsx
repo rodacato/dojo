@@ -74,14 +74,14 @@ describe('ConfirmModal', () => {
   describe('tone', () => {
     it('defaults the eyebrow to the muted tone class', () => {
       render(<ConfirmModal {...baseProps()} />)
-      expect(screen.getByText('Sign out?')).toHaveClass('text-muted')
+      expect(screen.getByText('Sign out?')).toHaveClass('text-secondary')
     })
 
     it.each([
       ['amber', 'text-warning'],
       ['red', 'text-danger-text'],
       ['indigo', 'text-accent'],
-      ['muted', 'text-muted'],
+      ['muted', 'text-secondary'],
     ] as const)('applies the %s tone class to the eyebrow', (tone, expectedClass) => {
       render(<ConfirmModal {...baseProps()} tone={tone} />)
       expect(screen.getByText('Sign out?')).toHaveClass(expectedClass)

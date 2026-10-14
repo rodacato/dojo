@@ -41,13 +41,13 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
     <PublicPageLayout>
       <article className="max-w-[720px] mx-auto px-4 md:px-6 pt-16 pb-24">
         <header className="mb-8">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-3">
             Legal
           </div>
           <h1 className="text-primary text-3xl sm:text-2xl font-semibold leading-tight">
             {title}
           </h1>
-          <p className="font-mono text-sm text-muted mt-2">
+          <p className="font-mono text-sm text-secondary mt-2">
             Last updated {lastUpdated}
           </p>
         </header>
@@ -56,7 +56,7 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
           aria-label="On this page"
           className="rounded-md border border-border bg-surface px-4 py-4 mb-12"
         >
-          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-3">
             On this page
           </div>
           <ol className="space-y-1.5">
@@ -68,7 +68,7 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
                   <a
                     href={`#${section.id}`}
                     className={`block font-mono text-sm uppercase tracking-wider transition-colors ${
-                      isActive ? 'text-accent' : 'text-muted hover:text-accent'
+                      isActive ? 'text-accent' : 'text-secondary hover:text-accent'
                     }`}
                   >
                     <span className="text-secondary mr-2">§{num}</span>
@@ -86,7 +86,7 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
             return (
               <section key={section.id} id={section.id} className="scroll-mt-20">
                 <h2 className="text-primary text-lg font-semibold leading-snug mb-4 flex items-baseline gap-3">
-                  <span className="font-mono text-muted">§{num}</span>
+                  <span className="font-mono text-secondary">§{num}</span>
                   <span>{section.label}</span>
                 </h2>
                 <div className="legal-prose text-secondary text-base leading-relaxed space-y-4">
@@ -98,7 +98,7 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
         </div>
 
         <aside className="mt-16 rounded-md border border-border bg-surface p-4">
-          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-2">
+          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-2">
             Questions?
           </div>
           <p className="text-secondary text-sm leading-relaxed">

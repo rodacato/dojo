@@ -66,7 +66,7 @@ export function LandingPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-page text-muted font-mono text-sm">
+      <div className="flex items-center justify-center h-screen bg-page text-secondary font-mono text-sm">
         <span className="text-accent animate-cursor" aria-hidden>_</span>
       </div>
     )
@@ -376,7 +376,7 @@ function TerminalDemo() {
           <div className="w-2.5 h-2.5 rounded-full bg-danger/60" />
           <div className="w-2.5 h-2.5 rounded-full bg-warning/60" />
           <div className="w-2.5 h-2.5 rounded-full bg-success/60" />
-          <span className="ml-2 text-muted text-xs font-mono">session_</span>
+          <span className="ml-2 text-secondary text-xs font-mono">session_</span>
         </div>
         <div className="relative">
           {TERMINAL_SESSIONS.map((s, i) => (
@@ -391,18 +391,18 @@ function TerminalDemo() {
               style={{ opacity: i === 0 ? 1 : 0 }}
             >
               <p className="text-secondary">
-                <span className="text-muted">$</span> {s.command}{' '}
+                <span className="text-secondary">$</span> {s.command}{' '}
                 {s.args && <span className="text-accent">{s.args}</span>}
               </p>
               {s.lines.map((line, i) => (
                 <p
                   key={i}
-                  className={line.tone === 'muted' ? 'text-muted' : 'text-secondary'}
+                  className={line.tone === 'muted' ? 'text-secondary' : 'text-primary'}
                 >
                   {line.content}
                 </p>
               ))}
-              <p className="text-muted pt-2">
+              <p className="text-secondary pt-2">
                 <span className="text-secondary">{'>'}</span> {s.prompt}
                 <span className="text-accent animate-cursor ml-0.5">_</span>
               </p>
@@ -444,12 +444,12 @@ function WhyItExists() {
       <div className="max-w-5xl mx-auto px-4 md:px-8 py-20">
         <div className="flex items-end justify-between mb-12 gap-4">
           <h2 className="font-mono text-xl md:text-2xl text-primary">Why it exists</h2>
-          <p className="text-muted text-xs font-mono uppercase tracking-wider">[ SYS_RATIONALE ]</p>
+          <p className="text-secondary text-xs font-mono uppercase tracking-wider">[ SYS_RATIONALE ]</p>
         </div>
         <div className="grid md:grid-cols-3 gap-10">
           {reasons.map(({ n, tag, title, body }) => (
             <div key={n}>
-              <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
+              <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">
                 {n} / {tag}
               </p>
               <h3 className="font-mono text-lg text-primary mb-3">{title}</h3>
@@ -491,7 +491,7 @@ function ExecutionFlow() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {steps.map(({ n, title, body }) => (
           <div key={n} className="bg-surface border border-border/60 rounded-md p-5">
-            <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
+            <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">
               STEP_{n}
             </p>
             <h3 className="font-mono text-sm text-primary mb-2 font-bold">{title}</h3>
@@ -513,7 +513,7 @@ function OpenSourceStrip() {
   return (
     <section data-anim="reveal" className="bg-surface/40 border-y border-border/20 py-16">
       <div className="max-w-3xl mx-auto px-4 md:px-8 text-center">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">
+          <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">
             Open source — run your own dojo
           </p>
           <p className="text-secondary text-sm leading-relaxed max-w-lg mx-auto mb-6">
@@ -527,21 +527,21 @@ function OpenSourceStrip() {
               type="button"
               onClick={copyClone}
               aria-label={copied ? 'Copied' : 'Copy clone command'}
-              className="shrink-0 w-11 h-11 flex items-center justify-center border border-border/60 rounded-sm text-muted hover:text-primary hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent"
+              className="shrink-0 w-11 h-11 flex items-center justify-center border border-border/60 rounded-sm text-secondary hover:text-primary hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent"
             >
               {copied ? <CheckIcon className="w-4 h-4 text-success" /> : <ClipboardIcon className="w-4 h-4" />}
             </button>
           </div>
           <GitHubStatsRow />
           <div className="flex items-center justify-center gap-6 mt-6">
-            <Link to="/open-source" className="text-muted text-xs font-mono hover:text-secondary transition-colors">
+            <Link to="/open-source" className="text-secondary text-xs font-mono hover:text-secondary transition-colors">
               architecture →
             </Link>
             <a
               href="https://github.com/rodacato/dojo"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted text-xs font-mono hover:text-secondary transition-colors flex items-center gap-1.5"
+              className="text-secondary text-xs font-mono hover:text-secondary transition-colors flex items-center gap-1.5"
             >
               <GitHubIcon className="w-3.5 h-3.5" />
               github
@@ -570,13 +570,13 @@ function GitHubStatsRow() {
   return (
     <div className="flex items-center justify-center gap-8 text-xs font-mono mt-6">
       <span className="text-secondary">
-        <span className="text-muted">stars</span> {stats.stars}
+        <span className="text-secondary">stars</span> {stats.stars}
       </span>
       <span className="text-secondary">
-        <span className="text-muted">forks</span> {stats.forks}
+        <span className="text-secondary">forks</span> {stats.forks}
       </span>
       <span className="text-secondary">
-        <span className="text-muted">lang</span> {stats.language}
+        <span className="text-secondary">lang</span> {stats.language}
       </span>
     </div>
   )
@@ -642,7 +642,7 @@ function RequestAccessForm() {
   return (
     <form onSubmit={handleSubmit} className="bg-surface border border-border/60 rounded-md p-6 space-y-5">
       <div>
-        <p className="text-muted text-xs font-mono uppercase tracking-wider">
+        <p className="text-secondary text-xs font-mono uppercase tracking-wider">
           Request an invitation
         </p>
         <p className="text-secondary text-xs font-mono mt-1">
@@ -650,7 +650,7 @@ function RequestAccessForm() {
         </p>
       </div>
       <div>
-        <label htmlFor="github-handle" className="block text-xs text-muted mb-2 font-mono uppercase tracking-wider">
+        <label htmlFor="github-handle" className="block text-xs text-secondary mb-2 font-mono uppercase tracking-wider">
           GITHUB_HANDLE
         </label>
         <input
@@ -663,10 +663,10 @@ function RequestAccessForm() {
         />
       </div>
       <div>
-        <label htmlFor="intent-statement" className="block text-xs text-muted mb-2 font-mono uppercase tracking-wider">
+        <label htmlFor="intent-statement" className="block text-xs text-secondary mb-2 font-mono uppercase tracking-wider">
           INTENT_STATEMENT
           {' '}
-          <span className="ml-1 normal-case text-muted/60">(optional, max 500)</span>
+          <span className="ml-1 normal-case text-secondary">(optional, max 500)</span>
         </label>
         <textarea
           id="intent-statement"
@@ -703,20 +703,20 @@ function Footer() {
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
-            <LogoMark size={16} className="text-muted" />
-            <span className="text-muted text-xs font-mono">{globalThis.location.host}</span>
+            <LogoMark size={16} className="text-secondary" />
+            <span className="text-secondary text-xs font-mono">{globalThis.location.host}</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/open-source" className="text-muted text-xs hover:text-secondary transition-colors">
+            <Link to="/open-source" className="text-secondary text-xs hover:text-secondary transition-colors">
               Open Source
             </Link>
-            <Link to="/changelog" className="text-muted text-xs hover:text-secondary transition-colors">
+            <Link to="/changelog" className="text-secondary text-xs hover:text-secondary transition-colors">
               Changelog
             </Link>
-            <Link to="/terms" className="text-muted text-xs hover:text-secondary transition-colors">
+            <Link to="/terms" className="text-secondary text-xs hover:text-secondary transition-colors">
               Terms
             </Link>
-            <Link to="/privacy" className="text-muted text-xs hover:text-secondary transition-colors">
+            <Link to="/privacy" className="text-secondary text-xs hover:text-secondary transition-colors">
               Privacy
             </Link>
           </div>
@@ -724,13 +724,13 @@ function Footer() {
             href="https://github.com/rodacato/dojo"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-muted text-xs hover:text-secondary transition-colors"
+            className="flex items-center gap-2 text-secondary text-xs hover:text-secondary transition-colors"
           >
             <GitHubIcon className="w-3.5 h-3.5" />
             <span className="font-mono">github</span>
           </a>
         </div>
-        <p className="text-center text-muted/40 text-xs italic">Not for everyone. Exactly as intended.</p>
+        <p className="text-center text-secondary text-xs italic">Not for everyone. Exactly as intended.</p>
       </div>
     </footer>
   )

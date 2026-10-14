@@ -47,7 +47,7 @@ const KIND_DEFAULTS: Record<ErrorKind, { eyebrow: string; title: string; tone: T
 const TONE_TEXT: Record<Tone, string> = {
   red: 'text-danger-text',
   amber: 'text-warning',
-  muted: 'text-muted',
+  muted: 'text-secondary',
 }
 
 const TONE_DOT: Record<Tone, string> = {
@@ -101,7 +101,7 @@ export function ErrorState({
         )}
 
         {microcopy && (
-          <p className="mt-4 font-mono text-xs text-muted">{microcopy}</p>
+          <p className="mt-4 font-mono text-xs text-secondary">{microcopy}</p>
         )}
       </div>
     </div>
@@ -134,14 +134,14 @@ function RequestIdCard({ id }: Readonly<{ id: string }>) {
   return (
     <div className="mt-6 mx-auto max-w-md rounded-md border border-border bg-surface px-4 py-3 text-left">
       <div className="flex items-center justify-between gap-3 mb-1">
-        <span className="font-mono text-xs uppercase tracking-wider text-muted">
+        <span className="font-mono text-xs uppercase tracking-wider text-secondary">
           Request ID
         </span>
         <button
           type="button"
           onClick={copy}
           aria-label="Copy request ID"
-          className="font-mono text-xs uppercase tracking-wider text-muted hover:text-primary transition-colors"
+          className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
         >
           {copied ? 'Copied' : 'Copy'}
         </button>

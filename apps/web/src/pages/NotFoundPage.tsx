@@ -21,7 +21,7 @@ export function NotFoundPage() {
         </span>
 
         <div className="relative z-10 text-center max-w-xl">
-          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted mb-6 px-2 py-1 rounded-sm bg-surface/80 border border-border">
+          <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-secondary mb-6 px-2 py-1 rounded-sm bg-surface/80 border border-border">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-danger" aria-hidden />
             ERR · 404
           </div>
@@ -42,7 +42,7 @@ export function NotFoundPage() {
           </div>
 
           <div
-            className="mt-6 inline-flex items-center gap-2 font-mono text-xs text-muted bg-page/60 border border-border rounded-sm px-3 py-1.5 max-w-full"
+            className="mt-6 inline-flex items-center gap-2 font-mono text-xs text-secondary bg-page/60 border border-border rounded-sm px-3 py-1.5 max-w-full"
             title={path}
           >
             <LinkIcon className="w-3.5 h-3.5 shrink-0" />
@@ -52,7 +52,7 @@ export function NotFoundPage() {
       </section>
 
       <div className="border-t border-border/40 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-secondary">
           If this is a mistake —{' '}
           <Link to="/open-source" className="text-accent hover:underline">
             report this URL →

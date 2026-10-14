@@ -19,7 +19,7 @@ export function InviteRedeemPage() {
         </div>
 
         {/* Eyebrow + headline + body */}
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-3">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">
           Invitation
         </p>
         <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight mb-6">
@@ -41,16 +41,16 @@ export function InviteRedeemPage() {
         </a>
 
         {/* Microcopy */}
-        <p className="text-muted text-xs text-center mt-4">
+        <p className="text-secondary text-xs text-center mt-4">
           Sign in with GitHub. We don&apos;t email you. We don&apos;t track you.
         </p>
 
         {/* Divider + fine print */}
         <div className="border-t border-border mt-6 pt-3 flex flex-col gap-2 text-xs">
-          <p className="text-muted font-mono">
+          <p className="text-secondary font-mono">
             Token: <span className="text-secondary">{truncated}</span> (expires in 7 days)
           </p>
-          <p className="text-muted">
+          <p className="text-secondary">
             By continuing you accept the{' '}
             <Link to="/terms" className="text-accent underline hover:text-accent/80">
               Terms
@@ -65,7 +65,7 @@ export function InviteRedeemPage() {
       </div>
 
       {/* Outside card */}
-      <p className="text-muted text-xs mt-8 text-center px-4">
+      <p className="text-secondary text-xs mt-8 text-center px-4">
         Not invited?{' '}
         <Link to="/" className="text-accent underline hover:text-accent/80">
           Read what dojo is.

@@ -74,7 +74,7 @@ export function VerdictBlock({
       )}
       {topics && topics.length > 0 && (
         <div className="mt-5">
-          <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] mb-2">
+          <p className="text-secondary text-xs font-mono uppercase tracking-[0.08em] mb-2">
             Topics to review
           </p>
           <div className="flex flex-wrap gap-1.5">

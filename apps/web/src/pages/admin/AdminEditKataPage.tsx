@@ -227,7 +227,7 @@ export function AdminEditKataPage() {
           <button
             type="button"
             onClick={() => navigate('/admin/katas')}
-            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors mb-2"
           >
             ← Back to katas
           </button>
@@ -257,11 +257,11 @@ export function AdminEditKataPage() {
       <div className="space-y-8">
         <div className="rounded-md border border-border bg-surface px-6 py-4 flex items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted">Status</span>
+            <span className="font-mono text-xs uppercase tracking-wider text-secondary">Status</span>
             <StatusPill status={form.status} />
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted">
+            <span className="font-mono text-xs uppercase tracking-wider text-secondary">
               Make public
             </span>
             <Toggle
@@ -284,10 +284,10 @@ export function AdminEditKataPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="font-mono text-xs uppercase tracking-wider text-muted">
+              <div className="font-mono text-xs uppercase tracking-wider text-secondary">
                 Variations · {form.variations.length}
               </div>
-              <div className="font-mono text-xs text-muted mt-1">
+              <div className="font-mono text-xs text-secondary mt-1">
                 Each variation is a sensei persona. The user gets one per session.
               </div>
             </div>
@@ -421,10 +421,10 @@ function FeedbackPanel({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <div className="font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           Learner feedback · {feedback.total} sessions
         </div>
-        <div className="font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           Last 30 days
         </div>
       </div>
@@ -473,7 +473,7 @@ function FeedbackPanel({
 
       {feedback.notes.length > 0 && (
         <div>
-          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-3">
+          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-3">
             Recent notes
           </div>
           <div className="space-y-3">
@@ -482,7 +482,7 @@ function FeedbackPanel({
                 key={i}
                 className="rounded-md border border-border bg-page p-4"
               >
-                <div className="font-mono text-xs uppercase tracking-wider text-muted mb-2">
+                <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-2">
                   Anonymous · {new Date(n.submittedAt).toISOString().slice(0, 10)} ·{' '}
                   {variationLabels[n.variationId] ?? 'VAR ?'}
                 </div>
@@ -491,7 +491,7 @@ function FeedbackPanel({
             ))}
           </div>
           {feedback.notes.length > 4 && (
-            <div className="mt-4 font-mono text-xs uppercase tracking-wider text-muted">
+            <div className="mt-4 font-mono text-xs uppercase tracking-wider text-secondary">
               {feedback.notes.length - 4} more notes
             </div>
           )}
@@ -514,12 +514,12 @@ function SignalCard({
   const valueColor = TONE_VALUE[t]
   return (
     <div className="rounded-md border border-border bg-surface p-4 flex flex-col gap-3 h-30">
-      <div className="font-mono text-xs uppercase tracking-wider text-muted">{label}</div>
+      <div className="font-mono text-xs uppercase tracking-wider text-secondary">{label}</div>
       <div className="flex items-baseline gap-1">
         <span className={`font-mono font-bold text-2xl leading-none ${valueColor}`}>
           {score ? score.value.toFixed(1) : '—'}
         </span>
-        <span className="text-sm text-muted">/ 5</span>
+        <span className="text-sm text-secondary">/ 5</span>
       </div>
       <div className="h-1 rounded-sm bg-page overflow-hidden">
         <div
@@ -527,7 +527,7 @@ function SignalCard({
           style={{ width: `${fill}%` }}
         />
       </div>
-      <div className="font-mono text-xs text-muted">
+      <div className="font-mono text-xs text-secondary">
         {score ? `${score.votes} votes · last 30d` : 'no votes yet'}
       </div>
     </div>
@@ -547,13 +547,13 @@ const TONE_VALUE: Record<ReturnType<typeof tone>, string> = {
   indigo: 'text-primary',
   amber: 'text-warning',
   red: 'text-danger-text',
-  muted: 'text-muted',
+  muted: 'text-secondary',
 }
 
 function ThSm({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
     <th
-      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
+      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-secondary ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >

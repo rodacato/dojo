@@ -46,7 +46,7 @@ const Code: Components['code'] = ({ children, className }) => {
 const Pre: Components['pre'] = ({ children }) => <>{children}</>
 
 const Blockquote: Components['blockquote'] = ({ children }) => (
-  <blockquote className="border-l-2 border-accent pl-4 my-4 text-muted text-sm italic">
+  <blockquote className="border-l-2 border-accent pl-4 my-4 text-secondary text-sm italic">
     {children}
   </blockquote>
 )

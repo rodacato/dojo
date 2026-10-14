@@ -82,7 +82,7 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
     previewContent = <p className="text-danger-text text-xs font-mono">{error}</p>
   } else if (!value.trim()) {
     previewContent = (
-      <p className="text-muted text-xs font-mono text-center">
+      <p className="text-secondary text-xs font-mono text-center">
         Write Mermaid above to see a live preview.
       </p>
     )
@@ -104,7 +104,7 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
       {/* Preview pane */}
       <div className="flex-1 min-h-0 flex flex-col">
         <div className="h-7 shrink-0 border-b border-border bg-surface flex items-center px-4">
-          <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+          <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
             Preview
           </span>
           {error && (

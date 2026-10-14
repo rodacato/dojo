@@ -177,7 +177,7 @@ export function ScrollFrame({
         {status === 'loading' && (
           <div
             role="status"
-            className="absolute inset-0 flex items-center justify-center bg-surface font-mono text-muted"
+            className="absolute inset-0 flex items-center justify-center bg-surface font-mono text-secondary"
           >
             <span className="animate-pulse">
               loading scroll<span className="text-accent">_</span>

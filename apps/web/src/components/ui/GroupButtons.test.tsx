@@ -55,10 +55,10 @@ describe('GroupButtons', () => {
 
     const active = screen.getByRole('button', { name: 'Week' })
     expect(active).toHaveClass('bg-accent', 'text-on-accent')
-    expect(active).not.toHaveClass('text-muted')
+    expect(active).not.toHaveClass('text-secondary')
 
     const inactive = screen.getByRole('button', { name: 'Day' })
-    expect(inactive).toHaveClass('text-muted')
+    expect(inactive).toHaveClass('text-secondary')
     expect(inactive).not.toHaveClass('bg-accent')
   })
 
@@ -67,7 +67,7 @@ describe('GroupButtons', () => {
 
     for (const { label } of rangeOptions) {
       const button = screen.getByRole('button', { name: label })
-      expect(button).toHaveClass('text-muted')
+      expect(button).toHaveClass('text-secondary')
       expect(button).not.toHaveClass('bg-accent')
     }
   })

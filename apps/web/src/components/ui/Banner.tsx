@@ -66,7 +66,7 @@ export function Banner({
             type="button"
             onClick={onDismiss}
             aria-label="Dismiss"
-            className="text-muted hover:text-primary transition-colors text-lg leading-none"
+            className="text-secondary hover:text-primary transition-colors text-lg leading-none"
           >
             ×
           </button>

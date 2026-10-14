@@ -44,7 +44,7 @@ export function LoginPage() {
         </a>
 
         {/* Footer note */}
-        <p className="text-muted text-xs text-center">No account needed. Login with GitHub.</p>
+        <p className="text-secondary text-xs text-center">No account needed. Login with GitHub.</p>
       </div>
     </div>
   )
