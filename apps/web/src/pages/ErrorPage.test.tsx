@@ -86,6 +86,37 @@ describe('ErrorPage', () => {
     expect(reload).toHaveBeenCalledTimes(1)
   })
 
+  it('goes back instead of reloading when it is shown on the /error route', async () => {
+    const reload = vi.fn()
+    const back = vi.spyOn(window.history, 'back').mockImplementation(() => {})
+    vi.spyOn(window.history, 'length', 'get').mockReturnValue(3)
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { ...window.location, pathname: '/error', reload, href: '' },
+    })
+    const user = userEvent.setup()
+
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: '← Go back' }))
+    expect(back).toHaveBeenCalledTimes(1)
+    expect(reload).not.toHaveBeenCalled()
+  })
+
+  it('falls back to the dashboard on /error when there is no history to go back to', async () => {
+    vi.spyOn(window.history, 'length', 'get').mockReturnValue(1)
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { ...window.location, pathname: '/error', reload: vi.fn(), href: '' },
+    })
+    const user = userEvent.setup()
+
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: '← Go back' }))
+    expect(window.location.href).toBe('/dashboard')
+  })
+
   it('navigates to the dashboard via a hard location change', async () => {
     Object.defineProperty(window, 'location', {
       configurable: true,
