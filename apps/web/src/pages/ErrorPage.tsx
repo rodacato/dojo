@@ -20,7 +20,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
   }
 
   return (
-    <PublicPageLayout>
+    <PublicPageLayout hideCta>
       <section className="relative min-h-[calc(100vh-128px)] flex items-center justify-center px-4 py-16 overflow-hidden">
         <span
           aria-hidden

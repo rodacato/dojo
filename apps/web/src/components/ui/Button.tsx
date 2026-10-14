@@ -4,7 +4,7 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
  * Brand button primitive — caps + tracked + mono per design system.
  *
  * Variants:
- *   primary     — filled indigo, the only "shouts" variant; reserve for the page's main CTA.
+ *   primary     — filled accent, the only "shouts" variant; reserve for the page's main CTA.
  *   ghost       — transparent bg + border, the workhorse for secondary actions.
  *   subtle      — text-only, for navigation-style links inside dense surfaces.
  *   destructive — text-only red, hover paints a faint red wash; never filled red
