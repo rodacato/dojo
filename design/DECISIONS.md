@@ -6,7 +6,7 @@
 
 **Status:** 46 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
 neighbours or fixed in-flow while drawing, so the series has gaps) · 3 resolved in code (D6, D15
-for the dashboard and admin lists, D21) · 1 decided and pending code (D42) · the rest open until Adrian decides · 🐞 real app bugs
+for the dashboard and admin lists, D21) · 2 decided and pending code (D42, D46) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
 **How entries work.** A `D<n>` is a *finding*: logged when the design and the code disagree
@@ -89,7 +89,7 @@ not listed: they are taste, not findings.
 | **D43** | Admin: the catalog filter offers REVIEW (seeded review katas exist) but the form cannot create or edit that type | Keep the filter. Decide whether the form should author review katas (they need a rubric) |
 | **D44** | `/error` Retry reloads `/error` itself | Go back or to the dashboard instead of reloading the error route |
 | **D45** | Public profile shows the same value as the title and as `@handle` | Show only one, or a display name if one exists |
-| **D46** | Muted text `#5C544A` on `#0A0908` carries real content (nav, dates, hints) and was never measured | The brand guide already says to use `secondary`, not `muted`, for text people must read: treat it as drift from the guide, and measure the pair before moving each use |
+| **D46** | Contrast in sumi, measured 2026-10-14 (WCAG, on `#0A0908` / `#13110F`): `muted` 2.67 / 2.53, `danger` as text 2.67 / 2.52, `accent` as text 3.47 / 3.28, `muted/40` 1.34. Washi: `muted` 3.45, `warning` as text 2.64, `success` 4.28. `secondary` (7.16), `primary` and `on-accent` on accent (4.92) pass | ✅ **Decided: hybrid by token** (2026-10-14). `muted`: fix by usage, as the brand guide says; text people must read uses `secondary`, `muted` stays decorative or placeholder, and stacked opacities below 70% on text go away. `danger` and `accent` as text: two derived tokens, `danger-text` (sumi about `#B6675D`, 4.56 on surface) and `accent-text` (sumi about `#C35E53`, 4.53). The approved values do not change. Washi `warning` and `success` as text need their own derived values. Lands with D42 and the Open Gate integration; the kit bumps when the tokens exist. **Rejected: change the values only** — tested the smallest code change; lost because it moves approved brand values and also lightens borders and fills that pass today; would come back if the derived tokens prove too many to maintain |
 
 **Wording and links settled in PR #155:** sign in / sign out, one way in on anonymous Engawa,
 Kumite placeholder trimmed, whiteboard kata copy, Ask the sensei on the shared modal.
