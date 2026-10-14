@@ -22,17 +22,17 @@ describe('AccentCard', () => {
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument()
   })
 
-  it('applies the accent-rail + surface styling that defines the card', () => {
+  it('applies the secondary-rail + surface styling that defines the card', () => {
     render(<AccentCard>body</AccentCard>)
     const card = screen.getByText('body')
-    expect(card).toHaveClass('border-l-[3px]', 'border-accent', 'bg-surface')
+    expect(card).toHaveClass('border-l-[3px]', 'border-secondary', 'bg-surface')
   })
 
   it('merges a caller className alongside the built-in styling', () => {
     render(<AccentCard className="mt-4">body</AccentCard>)
     const card = screen.getByText('body')
     expect(card).toHaveClass('mt-4')
-    expect(card).toHaveClass('border-accent', 'bg-surface')
+    expect(card).toHaveClass('border-secondary', 'bg-surface')
   })
 
   it('renders multiple children together inside the single card surface', () => {

@@ -129,7 +129,7 @@ export function LegalListItem({ children }: Readonly<{ children: ReactNode }>) {
 
 export function LegalCallout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className="rounded-md border border-border border-l-2 border-l-accent bg-page px-4 py-3 text-primary">
+    <div className="rounded-md border border-border border-l-2 border-l-secondary bg-page px-4 py-3 text-primary">
       {children}
     </div>
   )

@@ -5,7 +5,7 @@ interface AccentCardProps {
 
 export function AccentCard({ children, className = '' }: Readonly<AccentCardProps>) {
   return (
-    <div className={`border-l-[3px] border-accent bg-surface rounded-r-md p-5 ${className}`}>
+    <div className={`border-l-[3px] border-secondary bg-surface rounded-r-md p-5 ${className}`}>
       {children}
     </div>
   )
