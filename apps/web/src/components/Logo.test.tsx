@@ -3,13 +3,14 @@ import { render, screen } from '@testing-library/react'
 import { LogoMark, LogoWordmark } from './Logo'
 
 describe('LogoMark', () => {
-  it('renders an svg with the torii stroke path', () => {
+  it('renders a decorative Open Gate mark', () => {
     const { container } = render(<LogoMark />)
     const svg = container.querySelector('svg')
     expect(svg).toBeInTheDocument()
     const path = container.querySelector('path')
     expect(path).toHaveAttribute('stroke', 'currentColor')
-    expect(path?.getAttribute('d')).toContain('M5 10 H35')
+    expect(svg).toHaveAttribute('aria-hidden', 'true')
+    expect(path?.getAttribute('d')).toContain('M15 25')
   })
 
   it('applies the size prop to width and height', () => {

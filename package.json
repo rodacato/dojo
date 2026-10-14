@@ -13,6 +13,8 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "test:scripts": "vitest run --root scripts",
+    "brand:assets": "node scripts/brand-assets.mjs",
+    "brand:check": "node scripts/brand-assets.mjs --check",
     "version": "node scripts/release-changelog.mjs",
     "clean": "turbo clean",
     "format": "prettier --write ."

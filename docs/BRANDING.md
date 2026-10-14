@@ -37,7 +37,7 @@ The product speaks one vocabulary. Each term below is load-bearing — it does p
 |---|---|---|---|
 | **Kata** | A single practice unit — one prompt, one sit, one sensei verdict. Atomic. | *"completed five katas this week"* | *"completed five exercises"* |
 | **Sensei** | The LLM evaluator. Honest, structured, never softens. Voice register matters: noted, observed, recognized — not master/zen/wisdom. | *"the sensei noted the gap in your reasoning"* | *"the master grants you wisdom"* |
-| **Scroll** | A learning path built as an external app and embedded in Dojo by iframe. Dojo hosts it (progress, session, code execution) and does not prescribe its content or format. Being rebuilt — see [#116](https://github.com/rodacato/dojo/issues/116). | *"finish the Pattern Circuit scroll"* | *"finish the Pattern Circuit course"* |
+| **Scroll** | A learning path built as an external app and embedded in Dojo by iframe. Dojo hosts it (progress, session, code execution) and does not prescribe its content or format. The host works; availability depends on what the operator registers — see [#116](https://github.com/rodacato/dojo/issues/116). | *"finish the Pattern Circuit scroll"* | *"finish the Pattern Circuit course"* |
 | **Belt** | A single rank per user — white / yellow / green / brown / black — computed from session history. Earned, kept (no decay in v1). The sensei does not influence advancement. | *"I'm working toward brown belt"* | *"I unlocked the brown belt trophy"* |
 | **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
 | **Engawa** | The transitional veranda. Lives at `/engawa` as the anonymous code playground (no account required to try a snippet), but the *concept* is broader — see §Engawa as a philosophy below. | *"opened the engawa to test a Ruby idea"* | *"opened the playground"* (in our product surface) |
@@ -288,17 +288,12 @@ Los milestones no tienen puntos ni XP. Son colecciones — están o no están. E
 
 ## Logo
 
-**Concepto principal — wordmark:** la palabra `dojo` en JetBrains Mono lowercase, con un cursor parpadeante `_` al final. Sin íconos. La tipografía monospace ya comunica "terminal", "técnico", "en proceso". El cursor dice "todavía escribiendo, todavía aprendiendo".
+**Open Gate** is the approved mark: a restrained evolution of the earlier torii, with a curved lintel, a crossbar and two open posts. It sits next to the `dojo_` wordmark (JetBrains Mono, lowercase, blinking cursor `_`). The cursor says "still writing, still learning" and does not change with the theme.
 
-```
-dojo_
-```
-
-Simple. No necesita más. Estable a través de la migración de temas — el wordmark no cambia cuando cambia la piel.
-
-**Concepto sumi-e — enso wordmark (post-migración):** el wordmark vive dentro de un enso (círculo zen incompleto, dibujado con DrawSVG en la primera carga). El enso no rodea cosméticamente — es el motivo principal del sistema visual y el wordmark se convierte en su contenido. El círculo incompleto conecta con `notdefined.dev` — nada está del todo cerrado aquí. Detalles en [`DESIGN.md`](DESIGN.md) §Brand motifs.
-
-**Para el favicon:** sólo el cursor parpadeante `▌` sobre fondo oscuro (indigo en Slate, vermillion en Sumi-e). Reconocible en 16×16.
+- **Canonical geometry:** `apps/web/src/brand/logo.json` (consumed by `LogoMark`). The outlined wordmark and the social composition are `brand/wordmark.svg` and `brand/social-template.svg`. Colors always come from the app's theme tokens in `apps/web/src/styles/main.css`.
+- **Generated, never hand-edited:** `site/brand/*` (lockups, icons, social cards, theme CSS), `site/favicon.svg` and `apps/web/public/favicon.svg`. Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
+- **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session.
+- **Uploading the repository preview:** GitHub has no API for it. In the repository's Settings → General → Social preview, upload `site/brand/social-sumi.png` (1280×640 is recommended; the card is 1200×630).
 
 **Para share cards y OG images:** el host de la instancia en monospace completo (`dojo.notdefined.dev` en la instancia de referencia). El punto entre `dojo` y `notdefined` actúa como separador visual natural.
 

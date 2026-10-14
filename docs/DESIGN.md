@@ -259,7 +259,7 @@ The Sumi-e direction is a sprint of its own. Not a piecemeal sed-and-pray.
 ### What does NOT migrate
 
 - **The kata flow's focus mode.** Sidebar-hidden, full-bleed kata-active screen stays exactly as today. The visual stakes of "you are doing the work now" trump theme-system consistency.
-- **The wordmark `dojo_`.** The cursor `_` is the brand and its blink is unchanged. The dojo doesn't get a new logo for changing its skin.
+- **The wordmark `dojo_`.** The cursor `_` is the brand and its blink is unchanged. The mark is Open Gate (see [BRANDING.md](BRANDING.md#logo)), identical in both themes; only its color role changes.
 - **Admin surfaces.** They render in slate-indigo permanently. There is one creator; the admin doesn't need theme-switching infrastructure. Keep it simple.
 
 ---
