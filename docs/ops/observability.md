@@ -82,4 +82,6 @@ PISTON_URL=http://<host_ip>:2000 ./scripts/piston-reprovision.sh
 
 The script is idempotent — present runtimes are skipped, missing ones are installed via Piston's `POST /api/v2/packages`. The source-of-truth list of runtimes lives in the script.
 
+To see the drift first, open `/admin/health`: Piston shows DEGRADED when it is reachable but some runtimes are missing, and DOWN when it is unreachable or has none installed. The Reprovision button on that page installs the missing ones.
+
 **Liveness.** A GitHub Actions workflow (`.github/workflows/piston-liveness.yml`) probes `/health/piston` every 30 minutes. Two consecutive failures 30s apart fail the workflow run — an email goes out via GitHub's default notifications. See ADR 019. Requires the `PISTON_HEALTH_URL` repo variable (set to the app's `/health/piston`, not Piston directly — the app endpoint also catches API↔Piston network breaks). The URL is public, so it lives under Variables, not Secrets.
