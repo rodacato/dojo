@@ -5,7 +5,7 @@
 > outcome instead of deleting; the reasoning is the useful part.
 
 **Status:** 49 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
-neighbours or fixed in-flow while drawing, so the series has gaps) · 12 resolved (D2, D6, D15, D21,
+neighbours or fixed in-flow while drawing, so the series has gaps) · 13 resolved (D1, D2, D6, D15, D21,
 D42, D43, D44, D45, D46, D47, D48, D49) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
@@ -20,7 +20,7 @@ Adrian unless noted.
 
 | # | Finding | Code does | Recommendation |
 |---|---|---|---|
-| **D1** | Default theme | `auto` → sumi (dark OS) / washi (light OS); slate only by explicit choice. `docs/DESIGN.md` still says slate is the default | Fix the doc. All screens are drawn in sumi |
+| **D1** | Default theme | `auto` → sumi (dark OS) / washi (light OS); slate only by explicit choice (`apps/web/src/lib/theme.ts`) | ✅ Resolved: `docs/DESIGN.md` now says slate is an explicit choice and `auto` is the default. All screens are drawn in sumi |
 | **D2** | New "Open Gate" brand not integrated (issue #148) | ✅ Resolved: PR #151 integrated the Open Gate mark (`apps/web/src/brand/logo.json`) and the wordmark keeps `dojo_`. Kit 0.2.0 mirrors it; the palette did not change | Done |
 | **D3** | Tailwind opacity modifiers (`bg-danger/10`) | Computed at build time | Modeled as alpha tokens `tint-<color>-<n>` in the kit |
 | **D4** | Type scale anomaly | `text-3xl` (30px) is smaller than `text-2xl` (32px) | Fix in `main.css` |
@@ -72,9 +72,9 @@ Adrian unless noted.
 
 ### Admin-only (no number yet, grouped under D41's pass)
 
-- AdminKatas and AdminEditKata have no error state.
-- AdminEditKata shows a ⌘+S hint but binds no handler.
-- The type filter offers REVIEW; the authoring form does not.
+- ✅ AdminKatas and AdminEditKata have no error state. Resolved: both render an `ErrorState` when the load fails.
+- ✅ AdminEditKata shows a ⌘+S hint but binds no handler. Resolved: Edit and New kata bind ⌘/Ctrl+S to save.
+- ✅ The type filter offers REVIEW; the authoring form does not. Settled as D43.
 - Breadcrumb says EXERCISES while the page says Katas.
 
 ## Found by the independent UI review (2026-10-14)
