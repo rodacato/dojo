@@ -24,9 +24,9 @@ interface VerdictBlockProps {
 }
 
 // Hero verdict block — full-width card with a drawn ink stroke on the
-// left edge. `md` (32px verdict) lands at the bottom of the eval
-// conversation; `lg` (56px verdict) is the page-hero variant used on
-// Results.
+// left edge. `md` (24px verdict) lands at the bottom of the eval
+// conversation; `lg` (36px, 48px from the md breakpoint) is the page-hero
+// variant used on Results.
 //
 // The left stroke is an SVG path drawn vermillion (--color-accent),
 // animated stroke-dashoffset → 0 in 600ms on mount. Pure CSS so this

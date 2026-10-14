@@ -132,7 +132,7 @@ export function AdminNewKataPage() {
           <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
             Cancel
           </Button>
-          <Button size="sm" onClick={handleSave} loading={saving}>
+          <Button variant="ghost" size="sm" onClick={handleSave} loading={saving}>
             Save as draft
           </Button>
         </div>

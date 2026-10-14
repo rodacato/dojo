@@ -99,6 +99,17 @@ export function AdminEditKataPage() {
     })
   }, [id, reloadTick])
 
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        if (!saving) void handleSave()
+      }
+    }
+    globalThis.addEventListener('keydown', onKey)
+    return () => globalThis.removeEventListener('keydown', onKey)
+  })
+
   const dirty = useMemo(() => {
     if (!form || !initialRef.current) return false
     return JSON.stringify(form) !== JSON.stringify(initialRef.current)
@@ -233,7 +244,7 @@ export function AdminEditKataPage() {
           <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
             Cancel
           </Button>
-          <Button size="sm" onClick={handleSave} loading={saving}>
+          <Button variant="ghost" size="sm" onClick={handleSave} loading={saving}>
             {dirty && <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />}
             Save changes
           </Button>
@@ -342,8 +353,7 @@ export function AdminEditKataPage() {
         onConfirm={performArchive}
       >
         <p>
-          Archived katas are hidden from the catalog but the data is preserved. You can
-          always re-publish from this page later.
+          Archived katas are hidden from the catalog but the data is preserved.
         </p>
       </ConfirmModal>
     </div>

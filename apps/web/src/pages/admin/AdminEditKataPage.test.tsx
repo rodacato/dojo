@@ -95,6 +95,27 @@ describe('AdminEditKataPage', () => {
     expect(pill).toBeInTheDocument()
   })
 
+  it('saves with the keyboard shortcut the sticky bar advertises', async () => {
+    const u = userEvent.setup()
+    renderPage()
+
+    await screen.findByRole('heading', { name: 'Rate limiter' })
+    await u.keyboard('{Control>}s{/Control}')
+
+    await waitFor(() => expect(mockedUpdate).toHaveBeenCalledTimes(1))
+  })
+
+  it('shows an error with a retry when the kata fails to load', async () => {
+    mockedGet.mockRejectedValueOnce(new Error('boom'))
+    const u = userEvent.setup()
+    renderPage()
+
+    expect(await screen.findByText("We couldn't load this kata.")).toBeInTheDocument()
+    await u.click(screen.getByRole('button', { name: /try again/i }))
+
+    expect(await screen.findByRole('heading', { name: 'Rate limiter' })).toBeInTheDocument()
+  })
+
   it('sends the full edited payload to updateKata and navigates back', async () => {
     const u = userEvent.setup()
     renderPage()

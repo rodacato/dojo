@@ -79,7 +79,7 @@ export function SharePage() {
       <meta name="twitter:description" content={data.pullQuote ?? `Kata result by @${data.username}`} />
       <meta name="twitter:image" content={ogImageUrl} />
 
-      <PublicPageLayout>
+      <PublicPageLayout hideCta>
         <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
           <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted text-center mb-6">
             Shared kata

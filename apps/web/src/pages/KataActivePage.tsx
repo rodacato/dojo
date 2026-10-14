@@ -4,6 +4,7 @@ import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'reac
 import { api, ApiError, type SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
+import { EnsoLoader } from '../components/ui/EnsoLoader'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { KataBody } from '../components/ui/KataBody'
@@ -202,12 +203,17 @@ export function KataActivePage() {
   if (preparing || !session) {
     return (
       <div className="h-screen bg-page flex flex-col items-center justify-center gap-4 px-4">
-        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+        <EnsoLoader size={32} label="Preparing your kata" />
         <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
         {prepareSlow && (
           <p className="font-mono text-muted text-xs text-center max-w-sm">
-            This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can retry.
+            This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can go back and retry.
           </p>
+        )}
+        {prepareSlow && (
+          <Button variant="ghost" size="md" onClick={() => navigate('/katas')}>
+            Back to katas
+          </Button>
         )}
       </div>
     )
