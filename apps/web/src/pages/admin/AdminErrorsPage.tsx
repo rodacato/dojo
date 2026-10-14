@@ -103,7 +103,11 @@ export function AdminErrorsPage() {
     ]
     if (row.stack) lines.push('', 'stack:', row.stack)
     if (row.context) lines.push('', 'context:', JSON.stringify(row.context, null, 2))
-    await navigator.clipboard.writeText(lines.join('\n'))
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'))
+    } catch {
+      return
+    }
     setCopied(row.id)
     setTimeout(() => setCopied(null), 2000)
   }
@@ -212,7 +216,7 @@ export function AdminErrorsPage() {
             </colgroup>
             <thead>
               <tr className="border-b border-border">
-                <Th>Time</Th>
+                <Th>Time (UTC)</Th>
                 <Th>Source</Th>
                 <Th>Status</Th>
                 <Th>Method</Th>
@@ -242,8 +246,16 @@ export function AdminErrorsPage() {
                 return (
                   <FragmentRow key={row.id}>
                     <tr
+                      tabIndex={0}
+                      aria-expanded={isOpen}
                       onClick={() => setExpanded(isOpen ? null : row.id)}
-                      className="border-b border-border last:border-b-0 hover:bg-elevated transition-colors cursor-pointer"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setExpanded(isOpen ? null : row.id)
+                        }
+                      }}
+                      className="border-b border-border last:border-b-0 hover:bg-elevated focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent transition-colors cursor-pointer"
                     >
                       <td className="px-4 h-12 align-middle">
                         <div className="font-mono tabular-nums text-primary">
@@ -262,10 +274,10 @@ export function AdminErrorsPage() {
                       <td className={`px-4 h-12 align-middle font-mono ${methodColor(row.method)}`}>
                         {row.method ?? '—'}
                       </td>
-                      <td className="px-4 h-12 align-middle font-mono text-primary truncate max-w-56">
+                      <td className="px-4 h-12 align-middle font-mono text-primary truncate max-w-56" title={row.route ?? undefined}>
                         {row.route ?? '—'}
                       </td>
-                      <td className="px-4 h-12 align-middle text-secondary truncate">
+                      <td className="px-4 h-12 align-middle text-secondary truncate" title={row.message}>
                         {row.message}
                       </td>
                       <td className="px-4 h-12 align-middle text-center text-muted">
@@ -417,7 +429,7 @@ function FilterSelect<T extends string>({
 }>) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
-    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
+    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
       <span className="text-muted mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
       <ChevronDownIcon className="w-3 h-3 text-muted" />
