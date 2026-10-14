@@ -49,3 +49,6 @@ CLAUDE.local.md
 # Playwright
 test-results/
 playwright-report/
+
+# Design: local-only device captures (may hold real user data); exports/ stays tracked
+design/references/
