@@ -174,17 +174,20 @@ describe('SettingsPage', () => {
   })
 
   describe('preferences error', () => {
-    it('keeps the loader and does not crash when getPreferences rejects', async () => {
-      mockedGetPreferences.mockRejectedValue(new Error('prefs 500'))
+    it('shows an error with a retry instead of loading forever when getPreferences rejects', async () => {
+      mockedGetPreferences.mockRejectedValueOnce(new Error('prefs 500'))
+      mockedGetPreferences.mockResolvedValue(basePrefs())
+      const u = userEvent.setup()
 
       renderSettings()
 
-      // prefs stays null → component remains in its loader branch.
-      await waitFor(() => {
-        expect(mockedGetPreferences).toHaveBeenCalled()
-      })
-      expect(screen.getByText('loading')).toBeInTheDocument()
-      expect(screen.queryByRole('heading', { name: 'Settings' })).not.toBeInTheDocument()
+      expect(await screen.findByText("We couldn't load your settings.")).toBeInTheDocument()
+      expect(screen.queryByText('loading')).not.toBeInTheDocument()
+
+      await u.click(screen.getByRole('button', { name: 'Try again' }))
+
+      expect(await screen.findByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+      expect(mockedGetPreferences).toHaveBeenCalledTimes(2)
     })
   })
 

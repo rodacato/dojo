@@ -115,6 +115,21 @@ describe('HistoryPage', () => {
     expect(screen.getByText('katas browser')).toBeInTheDocument()
   })
 
+  it('shows an error with a retry instead of the empty state when the request rejects', async () => {
+    mockedGetHistory.mockRejectedValueOnce(new Error('history 500'))
+    mockedGetHistory.mockResolvedValue(makeResponse())
+
+    renderHistory()
+
+    expect(await screen.findByText("We couldn't load your history.")).toBeInTheDocument()
+    expect(screen.queryByText('No sessions yet. The dojo is patient.')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Try again' }))
+
+    expect(await screen.findByText('Reverse a Linked List')).toBeInTheDocument()
+    expect(mockedGetHistory).toHaveBeenCalledTimes(2)
+  })
+
   it('navigates to the session result when a row is clicked', async () => {
     mockedGetHistory.mockResolvedValue(makeResponse())
 
