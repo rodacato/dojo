@@ -55,7 +55,7 @@ export function DenseSessionRow({
     )
   } else if (expired) {
     verdictBadge = (
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border px-2 py-0.5 rounded-sm">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border px-2 py-0.5 rounded-sm">
         Expired
       </span>
     )
@@ -79,10 +79,10 @@ export function DenseSessionRow({
       <div className="w-35 shrink-0 flex justify-end">
         {verdictBadge}
       </div>
-      <span className="w-15 shrink-0 text-right font-mono text-sm text-muted tabular-nums hidden md:block">
+      <span className="w-15 shrink-0 text-right font-mono text-sm text-secondary tabular-nums hidden md:block">
         {time}
       </span>
-      <span className="w-22 shrink-0 text-right text-muted text-sm hidden lg:block">
+      <span className="w-22 shrink-0 text-right text-secondary text-sm hidden lg:block">
         {rel}
       </span>
     </button>

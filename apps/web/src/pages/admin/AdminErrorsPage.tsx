@@ -152,12 +152,12 @@ export function AdminErrorsPage() {
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Error log</h1>
-          <div className="mt-1 text-sm text-muted">
+          <div className="mt-1 text-sm text-secondary">
             Errors logged across api and web. Retention: 30 days.
           </div>
         </div>
         <div className="flex items-center gap-3 mt-2">
-          <span className="font-mono text-xs uppercase tracking-wider text-muted flex items-center gap-2">
+          <span className="font-mono text-xs uppercase tracking-wider text-secondary flex items-center gap-2">
             <span
               className={`inline-block w-1.5 h-1.5 rounded-full ${
                 refreshing ? 'bg-accent animate-pulse' : 'bg-success/70'
@@ -194,7 +194,7 @@ export function AdminErrorsPage() {
           onChange={resetPageOn((v) => setStatus(v))}
           options={STATUS_OPTIONS}
         />
-        <span className="font-mono text-xs uppercase tracking-wider text-muted ml-auto">
+        <span className="font-mono text-xs uppercase tracking-wider text-secondary ml-auto">
           {total} total
         </span>
       </div>
@@ -228,7 +228,7 @@ export function AdminErrorsPage() {
             <tbody>
               {loading && rows.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-10 text-center text-muted font-mono">
+                  <td colSpan={7} className="px-4 py-10 text-center text-secondary font-mono">
                     Loading_
                   </td>
                 </tr>
@@ -261,7 +261,7 @@ export function AdminErrorsPage() {
                         <div className="font-mono tabular-nums text-primary">
                           {ts.toISOString().slice(11, 19)}
                         </div>
-                        <div className="font-mono text-xs text-muted mt-0.5">
+                        <div className="font-mono text-xs text-secondary mt-0.5">
                           {ts.toISOString().slice(5, 10)}
                         </div>
                       </td>
@@ -280,7 +280,7 @@ export function AdminErrorsPage() {
                       <td className="px-4 h-12 align-middle text-secondary truncate" title={row.message}>
                         {row.message}
                       </td>
-                      <td className="px-4 h-12 align-middle text-center text-muted">
+                      <td className="px-4 h-12 align-middle text-center text-secondary">
                         <span className={`inline-block transition-transform ${isOpen ? 'rotate-180' : ''}`}>
                           ↓
                         </span>
@@ -303,7 +303,7 @@ export function AdminErrorsPage() {
       )}
 
       {!loading && total > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
           <span>
             Showing {startIdx}–{endIdx} of {total}
           </span>
@@ -342,7 +342,7 @@ function ExpandedDetail({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between gap-4">
-        <div className="font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           {row.requestId ? <>request_id: <span className="text-secondary normal-case tracking-normal">{row.requestId}</span></> : 'no request_id'}
           {row.userId && (
             <>
@@ -354,14 +354,14 @@ function ExpandedDetail({
         <button
           type="button"
           onClick={onCopy}
-          className="font-mono text-xs uppercase tracking-wider text-muted hover:text-primary transition-colors"
+          className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
         >
           {copied ? 'Copied' : 'Copy trace'}
         </button>
       </div>
       {row.stack && (
         <div>
-          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-1.5">stack</div>
+          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-1.5">stack</div>
           <pre className="bg-page border border-border rounded-sm p-3 overflow-x-auto font-mono text-xs text-secondary whitespace-pre-wrap">
             {row.stack}
           </pre>
@@ -369,14 +369,14 @@ function ExpandedDetail({
       )}
       {row.context && (
         <div>
-          <div className="font-mono text-xs uppercase tracking-wider text-muted mb-1.5">context</div>
+          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-1.5">context</div>
           <pre className="bg-page border border-border rounded-sm p-3 overflow-x-auto font-mono text-xs text-secondary whitespace-pre-wrap">
             {JSON.stringify(row.context, null, 2)}
           </pre>
         </div>
       )}
       {!row.stack && !row.context && (
-        <div className="font-mono text-xs text-muted">No additional context.</div>
+        <div className="font-mono text-xs text-secondary">No additional context.</div>
       )}
     </div>
   )
@@ -384,7 +384,7 @@ function ExpandedDetail({
 
 function Th({ children }: Readonly<{ children?: React.ReactNode }>) {
   return (
-    <th className="h-10 px-4 text-left font-mono text-xs uppercase tracking-wider text-muted">
+    <th className="h-10 px-4 text-left font-mono text-xs uppercase tracking-wider text-secondary">
       {children}
     </th>
   )
@@ -399,7 +399,7 @@ function SourcePill({ source }: Readonly<{ source: string }>) {
 }
 
 function statusColor(status: number | null): string {
-  if (status == null) return 'text-muted'
+  if (status == null) return 'text-secondary'
   if (status >= 500) return 'text-danger-text'
   if (status >= 400) return 'text-warning'
   return 'text-secondary'
@@ -407,7 +407,7 @@ function statusColor(status: number | null): string {
 
 function methodColor(method: string | null): string {
   if (method === 'WS') return 'text-accent'
-  if (method == null) return 'text-muted'
+  if (method == null) return 'text-secondary'
   return 'text-secondary'
 }
 
@@ -430,9 +430,9 @@ function FilterSelect<T extends string>({
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
     <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
-      <span className="text-muted mr-1">{label}:</span>
+      <span className="text-secondary mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
-      <ChevronDownIcon className="w-3 h-3 text-muted" />
+      <ChevronDownIcon className="w-3 h-3 text-secondary" />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}

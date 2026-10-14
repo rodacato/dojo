@@ -88,14 +88,14 @@ export function AdminKatasPage() {
 
   return (
     <div>
-      <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
+      <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-4">
         ADMIN / EXERCISES
       </div>
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Katas</h1>
-          <div className="mt-1 text-sm text-muted">
+          <div className="mt-1 text-sm text-secondary">
             <span className="text-success">{counts.published} published</span>
             <span className="mx-2">·</span>
             <span>{counts.draft} draft</span>
@@ -108,7 +108,7 @@ export function AdminKatasPage() {
 
       <div className="flex flex-wrap items-center gap-3 mb-6 p-3 rounded-md border border-border bg-surface">
         <div className="relative flex-1 min-w-60">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary pointer-events-none" />
           <input
             type="text"
             value={search}
@@ -228,7 +228,7 @@ export function AdminKatasPage() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-muted font-mono text-sm">
+                  <td colSpan={6} className="px-4 py-10 text-center text-secondary font-mono text-sm">
                     Loading_
                   </td>
                 </tr>
@@ -282,7 +282,7 @@ export function AdminKatasPage() {
       )}
 
       {!loading && sorted.length > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
           <span>
             Showing {startIdx}–{endIdx} of {sorted.length}
           </span>
@@ -317,7 +317,7 @@ function activeFilters(state: {
 function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
     <th
-      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
+      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-secondary ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >
@@ -344,7 +344,7 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
 }
 
 function avgScoreClass(score: number | null) {
-  if (score === null) return 'text-muted'
+  if (score === null) return 'text-secondary'
   if (score >= 0.7) return 'text-success/80'
   if (score >= 0.4) return 'text-warning/80'
   return 'text-danger-text'
@@ -369,9 +369,9 @@ function FilterSelect<T extends string>({
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
     <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
-      <span className="text-muted mr-1">{label}:</span>
+      <span className="text-secondary mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
-      <ChevronDownIcon className="w-3 h-3 text-muted" />
+      <ChevronDownIcon className="w-3 h-3 text-secondary" />
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}

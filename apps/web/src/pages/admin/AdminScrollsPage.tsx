@@ -12,7 +12,7 @@ import { Toggle } from '../../components/ui/Toggle'
 import { toast } from '../../components/ui/Toast'
 import { AdminBreadcrumb } from './_form-parts'
 
-const FIELD_LABEL = 'block font-mono text-xs uppercase tracking-wider text-muted mb-1.5'
+const FIELD_LABEL = 'block font-mono text-xs uppercase tracking-wider text-secondary mb-1.5'
 
 function validateRegistration(slug: string, manifestText: string): { errors: string[]; input?: ReturnType<typeof registerScrollSchema.parse> } {
   let manifest: unknown
@@ -92,7 +92,7 @@ export function AdminScrollsPage() {
 
       <div className="mb-8">
         <h1 className="text-xl font-semibold text-primary leading-tight">Scrolls</h1>
-        <div className="mt-1 text-sm text-muted">
+        <div className="mt-1 text-sm text-secondary">
           Register external scrolls by their manifest. The entry origin must be allowed by the instance.
           {scrolls && (
             <>
@@ -106,7 +106,7 @@ export function AdminScrollsPage() {
       </div>
 
       <form onSubmit={handleRegister} noValidate className="rounded-md border border-border bg-surface p-6 mb-6">
-        <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">Register scroll</div>
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-4">Register scroll</div>
         <div className="mb-4">
           <label htmlFor="scroll-slug" className={FIELD_LABEL}>Slug</label>
           <input
@@ -164,7 +164,7 @@ export function AdminScrollsPage() {
       )}
 
       {scrolls === null && loadError === null && (
-        <div role="status" className="px-4 py-10 text-center text-muted font-mono">
+        <div role="status" className="px-4 py-10 text-center text-secondary font-mono">
           Loading_
         </div>
       )}
@@ -197,7 +197,7 @@ export function AdminScrollsPage() {
                       <Link to={`/scrolls/${scroll.slug}`} className="text-primary hover:text-accent transition-colors">
                         {pickLocalized(scroll.manifest.title, scroll.manifest.locales, locale)}
                       </Link>
-                      <div className="font-mono text-xs text-muted">{scroll.slug} · v{scroll.manifest.version}</div>
+                      <div className="font-mono text-xs text-secondary">{scroll.slug} · v{scroll.manifest.version}</div>
                     </td>
                     <td className="px-4 h-14 align-middle font-mono text-xs text-secondary break-all">
                       {scrollOriginOf(scroll.manifest.entry) ?? '—'}
@@ -257,7 +257,7 @@ export function AdminScrollsPage() {
 
 function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
-    <th className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${align === 'right' ? 'text-right' : 'text-left'}`}>
+    <th className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-secondary ${align === 'right' ? 'text-right' : 'text-left'}`}>
       {children}
     </th>
   )

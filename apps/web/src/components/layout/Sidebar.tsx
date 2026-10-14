@@ -55,7 +55,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
               `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
                 isActive
                   ? 'text-accent border-l-2 border-accent bg-accent/5'
-                  : 'text-muted hover:text-secondary border-l-2 border-transparent'
+                  : 'text-secondary hover:text-secondary border-l-2 border-transparent'
               } ${collapsed ? 'justify-center px-2' : ''}`
             }
           >
@@ -64,7 +64,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
               <span className="flex items-center gap-2">
                 {item.label}
                 {item.soon && (
-                  <span className="font-mono text-[9px] tracking-[0.08em] uppercase text-muted/70 border border-border/40 rounded-sm px-1 py-0.5">
+                  <span className="font-mono text-[9px] tracking-[0.08em] uppercase text-secondary border border-border/40 rounded-sm px-1 py-0.5">
                     soon
                   </span>
                 )}
@@ -83,7 +83,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
             `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
               isActive
                 ? 'text-accent border-l-2 border-accent bg-accent/5'
-                : 'text-muted hover:text-secondary border-l-2 border-transparent'
+                : 'text-secondary hover:text-secondary border-l-2 border-transparent'
             } ${collapsed ? 'justify-center px-2' : ''}`
           }
         >
@@ -93,7 +93,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
         <button
           onClick={() => { void logout() }}
           title="sign out"
-          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-muted hover:text-secondary transition-colors border-l-2 border-transparent ${
+          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-secondary hover:text-secondary transition-colors border-l-2 border-transparent ${
             collapsed ? 'justify-center px-2' : ''
           }`}
         >
@@ -103,7 +103,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
         <button
           onClick={() => setTheme(nextInCycle(theme))}
           title={`theme: ${theme} (click to cycle)`}
-          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-muted hover:text-secondary transition-colors border-l-2 border-transparent ${
+          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-secondary hover:text-secondary transition-colors border-l-2 border-transparent ${
             collapsed ? 'justify-center px-2' : ''
           }`}
         >
@@ -115,7 +115,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
       {/* Collapse toggle */}
       <button
         onClick={onToggle}
-        className="px-4 py-3 text-muted/40 text-xs font-mono hover:text-muted transition-colors border-t border-border/20"
+        className="px-4 py-3 text-secondary text-xs font-mono hover:text-primary transition-colors border-t border-border/20"
       >
         {collapsed ? '→' : '← collapse'}
       </button>

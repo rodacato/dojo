@@ -61,7 +61,7 @@ export function UserBubble({ children }: Readonly<UserBubbleProps>) {
   return (
     <div className="flex justify-end">
       <div className="flex flex-col items-end max-w-[70%] gap-1">
-        <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted pr-1">You</span>
+        <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary pr-1">You</span>
         <div className="bg-accent text-on-accent px-4 py-3 rounded-md text-base leading-relaxed whitespace-pre-wrap">
           {children}
         </div>

@@ -63,7 +63,7 @@ export function AdminHealthPage() {
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Health</h1>
-          <div className="mt-1 text-sm text-muted">
+          <div className="mt-1 text-sm text-secondary">
             Subsystem liveness — API, database, Piston runtimes, LLM adapter.
           </div>
         </div>
@@ -120,7 +120,7 @@ export function AdminHealthPage() {
                   ↻ Reprovision
                 </Button>
                 {reprovisionNotice && (
-                  <span className="font-mono text-xs uppercase tracking-wider text-muted">
+                  <span className="font-mono text-xs uppercase tracking-wider text-secondary">
                     {reprovisionNotice}
                   </span>
                 )}
@@ -138,7 +138,7 @@ export function AdminHealthPage() {
                 {data.piston.detail.missing.map((rt) => (
                   <li key={`m-${rtLabel(rt)}`} className="flex items-center gap-2">
                     <span className="text-danger-text">✗</span>
-                    <span className="text-muted">{rtLabel(rt)}</span>
+                    <span className="text-secondary">{rtLabel(rt)}</span>
                   </li>
                 ))}
               </ul>
@@ -161,7 +161,7 @@ export function AdminHealthPage() {
         </div>
       )}
 
-      <div className="mt-6 font-mono text-xs uppercase tracking-wider text-muted">
+      <div className="mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
         Health page is on-demand only — not a substitute for a real external check on /health.
       </div>
     </div>
@@ -199,14 +199,14 @@ function Card({
               aria-hidden="true"
             />
             <h2 className="text-base font-medium text-primary">{title}</h2>
-            <span className="font-mono text-xs uppercase tracking-wider text-muted">
+            <span className="font-mono text-xs uppercase tracking-wider text-secondary">
               {label}
               {latencyMs === null ? '' : ` · ${latencyMs}ms`}
             </span>
           </div>
           <div className="text-sm text-secondary">{primary}</div>
           {secondary && (
-            <div className="text-sm text-muted mt-1">{secondary}</div>
+            <div className="text-sm text-secondary mt-1">{secondary}</div>
           )}
           {children}
         </div>

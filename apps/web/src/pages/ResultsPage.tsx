@@ -63,14 +63,14 @@ export function ResultsPage() {
         <h1 className="text-primary text-3xl font-semibold leading-tight tracking-tight mb-2">
           {session.kata.title}
         </h1>
-        <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-8">
+        <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mb-8">
           {session.status === 'failed' ? 'Incomplete' : 'Pending'} · started{' '}
           {new Date(session.startedAt).toLocaleDateString()}
         </p>
 
         <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
           <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
-          <p className="text-muted text-xs">Start a new one to keep practicing.</p>
+          <p className="text-secondary text-xs">Start a new one to keep practicing.</p>
         </div>
 
         <div className="flex gap-3">
@@ -82,7 +82,7 @@ export function ResultsPage() {
           </Button>
         </div>
 
-        <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+        <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
           Consistency compounds.
         </p>
       </div>
@@ -92,7 +92,7 @@ export function ResultsPage() {
   return (
     <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
       {/* Breadcrumb */}
-      <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mb-6">
+      <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mb-6">
         Dashboard / Recent kata / This result
       </p>
 
@@ -107,14 +107,14 @@ export function ResultsPage() {
           <div className="flex items-center gap-2 flex-wrap">
             <TypeBadge type={session.kata.type} />
             <DifficultyBadge difficulty={session.kata.difficulty} />
-            <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted px-2 py-1 border border-border rounded-sm">
+            <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary px-2 py-1 border border-border rounded-sm">
               {session.kata.duration} min
             </span>
           </div>
         </div>
         {completionTime && (
           <div className="shrink-0 text-right">
-            <span className="block font-mono text-xs tracking-[0.08em] uppercase text-muted">
+            <span className="block font-mono text-xs tracking-[0.08em] uppercase text-secondary">
               Completed in
             </span>
             <span className="block font-mono text-base text-primary tabular-nums">
@@ -147,7 +147,7 @@ export function ResultsPage() {
         <div className="grid lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8 mb-8">
           {/* LEFT — share rail */}
           <div className="lg:sticky lg:top-8 self-start flex flex-col gap-3">
-            <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+            <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
               Share this
             </p>
             <ShareCardPreview
@@ -201,7 +201,7 @@ export function ResultsPage() {
         <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
       )}
 
-      <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
+      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8 opacity-60">
         Consistency compounds.
       </p>
     </div>
@@ -224,7 +224,7 @@ function CollapsibleRow({ title, children }: Readonly<{ title: string; children:
     <details className="group bg-surface border border-border rounded-md">
       <summary className="px-4 py-3 cursor-pointer select-none flex items-center justify-between">
         <span className="text-primary text-sm">{title}</span>
-        <span className="text-muted text-sm transition-transform group-open:rotate-90" aria-hidden>
+        <span className="text-secondary text-sm transition-transform group-open:rotate-90" aria-hidden>
           ›
         </span>
       </summary>
@@ -314,7 +314,7 @@ function NoEvaluationCard({ sessionId }: Readonly<{ sessionId: string }>) {
   return (
     <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
       <p className="text-secondary text-sm mb-1">The sensei couldn't finish evaluating this kata.</p>
-      <p className="text-muted text-xs mb-4">This usually means the LLM timed out or hit a rate limit.</p>
+      <p className="text-secondary text-xs mb-4">This usually means the LLM timed out or hit a rate limit.</p>
       <Button variant="primary" size="md" onClick={handleRetry} disabled={retrying} loading={retrying}>
         Request re-evaluation
       </Button>
@@ -366,7 +366,7 @@ function ShareActions({
         Share to Twitter
       </Button>
       <p
-        className="text-muted text-xs font-mono tracking-[0.08em] truncate mt-1"
+        className="text-secondary text-xs font-mono tracking-[0.08em] truncate mt-1"
         title={shareUrl}
       >
         {shareUrl.replace(/^https?:\/\//, '')}
@@ -421,7 +421,7 @@ function ShareCardPreview({
       )}
       <div className="mt-auto flex items-end justify-between gap-2">
         {ownerRole && (
-          <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase truncate">
+          <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase truncate">
             sensei — {ownerRole.toLowerCase()}
           </p>
         )}

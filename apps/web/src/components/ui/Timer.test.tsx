@@ -130,7 +130,7 @@ describe('Timer', () => {
     const ui = renderTimer(<Timer durationMinutes={10} startedAt={startedSecondsAgo(700)} />)
 
     const node = ui.getByText('00:00')
-    expect(node).toHaveClass('text-muted')
+    expect(node).toHaveClass('text-secondary')
     expect(node).not.toHaveClass('text-danger-text')
   })
 

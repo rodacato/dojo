@@ -36,7 +36,7 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
           type="button"
           onClick={onDismiss}
           aria-label="Dismiss welcome"
-          className="absolute top-3 right-3 w-8 h-8 inline-flex items-center justify-center text-muted hover:text-primary transition-colors text-lg leading-none"
+          className="absolute top-3 right-3 w-8 h-8 inline-flex items-center justify-center text-secondary hover:text-primary transition-colors text-lg leading-none"
         >
           ×
         </button>
@@ -66,7 +66,7 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
               key={stage.n}
               className="border border-border bg-page rounded-sm px-2.5 py-2 flex flex-col gap-0.5"
             >
-              <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+              <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
                 {stage.n}
               </span>
               <span className="text-primary text-xs leading-tight">{stage.label}</span>
@@ -83,7 +83,7 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
           </Button>
         </div>
 
-        <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase mt-4 text-center">
+        <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-4 text-center">
           This message appears once. It won&apos;t be back tomorrow.
         </p>
       </div>

@@ -54,7 +54,7 @@ export function ScrollsPage() {
                   {pickLocalized(manifest.description, manifest.locales, locale)}
                 </p>
                 {manifest.programmingLanguages.length > 0 && (
-                  <p className="mt-4 font-mono text-xs uppercase tracking-wider text-muted">
+                  <p className="mt-4 font-mono text-xs uppercase tracking-wider text-secondary">
                     {manifest.programmingLanguages.join(' · ')}
                   </p>
                 )}

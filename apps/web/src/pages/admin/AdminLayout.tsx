@@ -30,7 +30,7 @@ export function AdminLayout() {
               dojo<span className="text-accent animate-cursor">_</span>
             </span>
           </Link>
-          <div className="mt-2 font-mono text-xs uppercase tracking-wider text-muted">
+          <div className="mt-2 font-mono text-xs uppercase tracking-wider text-secondary">
             ADMIN
           </div>
         </div>
@@ -53,12 +53,12 @@ export function AdminLayout() {
             </NavLink>
           ))}
 
-          <div className="flex items-center justify-between gap-2 px-3 h-8 text-sm text-muted/70 border-l-2 border-transparent cursor-not-allowed">
+          <div className="flex items-center justify-between gap-2 px-3 h-8 text-sm text-muted border-l-2 border-transparent cursor-not-allowed">
             <span className="flex items-center gap-2">
               <PageIcon className="w-4 h-4 shrink-0" />
               <span>Pages</span>
             </span>
-            <span className="font-mono text-xs uppercase tracking-wider text-muted">
+            <span className="font-mono text-xs uppercase tracking-wider text-secondary">
               PHASE 2
             </span>
           </div>
@@ -74,7 +74,7 @@ export function AdminLayout() {
               />
               <div className="min-w-0">
                 <div className="text-sm text-primary truncate">{user.username}</div>
-                <div className="font-mono text-xs uppercase tracking-wider text-muted">
+                <div className="font-mono text-xs uppercase tracking-wider text-secondary">
                   creator
                 </div>
               </div>
@@ -82,7 +82,7 @@ export function AdminLayout() {
           )}
           <Link
             to="/dashboard"
-            className="block font-mono text-xs uppercase tracking-wider text-muted hover:text-secondary transition-colors"
+            className="block font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors"
           >
             ← Back to dojo
           </Link>

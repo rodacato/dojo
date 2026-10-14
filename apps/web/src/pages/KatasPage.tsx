@@ -166,7 +166,7 @@ export function KatasPage() {
     <div className="min-h-screen bg-page px-4 py-12 md:py-16">
       <div className="w-full max-w-3xl mx-auto flex flex-col gap-8">
         <header className="text-center">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">{dateString}</p>
+          <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">{dateString}</p>
           <h1 className="font-mono text-3xl md:text-4xl text-primary inline-flex items-baseline">
             Ready for your kata
             <span className="text-accent animate-cursor ml-1">|</span>
@@ -246,7 +246,7 @@ export function KatasPage() {
           </p>
         )}
 
-        <p className="text-muted/70 text-xs font-mono text-center max-w-md mx-auto">
+        <p className="text-secondary text-xs font-mono text-center max-w-md mx-auto">
           Your kata are generated from your selections. No skip. No reroll.
         </p>
 
@@ -254,14 +254,14 @@ export function KatasPage() {
           <section ref={picksRef} className="border-t border-border/30 pt-10 scroll-mt-8">
             <header className="mb-6">
               <div className="flex items-center justify-between gap-4 mb-3">
-                <p className="text-muted text-xs font-mono uppercase tracking-wider">
+                <p className="text-secondary text-xs font-mono uppercase tracking-wider">
                   {summarizeFilters(mood, duration)}
                 </p>
                 <button
                   type="button"
                   onClick={handleResetPicks}
                   aria-label="Reset picks"
-                  className="text-muted hover:text-primary transition-colors p-1 -m-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent rounded-sm"
+                  className="text-secondary hover:text-primary transition-colors p-1 -m-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent rounded-sm"
                 >
                   ×
                 </button>
@@ -338,7 +338,7 @@ function SelectablePill({
       <span className="block uppercase tracking-wider text-xs">
         {label}
       </span>
-      {sub && <span className="block text-xs text-muted normal-case mt-0.5">{sub}</span>}
+      {sub && <span className="block text-xs text-secondary normal-case mt-0.5">{sub}</span>}
     </button>
   )
 }
@@ -347,7 +347,7 @@ function ActivityStrip({ dashboard }: Readonly<{ dashboard: DashboardData | null
   if (!dashboard) {
     return (
       <section className="bg-surface border border-border/40 rounded-md p-5 min-h-22">
-        <p className="text-muted text-xs font-mono uppercase tracking-wider animate-pulse">Loading streak...</p>
+        <p className="text-secondary text-xs font-mono uppercase tracking-wider animate-pulse">Loading streak...</p>
       </section>
     )
   }
@@ -356,7 +356,7 @@ function ActivityStrip({ dashboard }: Readonly<{ dashboard: DashboardData | null
   return (
     <section className="bg-surface border border-border/40 rounded-md p-5">
       <div className="flex items-baseline justify-between mb-4">
-        <p className="text-muted text-xs font-mono uppercase tracking-wider">30-day activity</p>
+        <p className="text-secondary text-xs font-mono uppercase tracking-wider">30-day activity</p>
         <p className="text-primary text-sm font-mono">
           <span className="text-accent">{dashboard.streak}</span> day streak
         </p>
@@ -437,9 +437,9 @@ function KataCard({
 
       <div className="flex flex-col items-end justify-between gap-3 px-5 md:px-6 py-5 md:py-6 border-l border-border/40 min-w-26 md:min-w-30">
         <div className="text-right">
-          <p className="text-muted text-xs font-mono uppercase tracking-wider mb-1">Est. time</p>
+          <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-1">Est. time</p>
           <p className="text-primary text-xl md:text-2xl font-mono">
-            {ex.duration} <span className="text-muted text-sm">min</span>
+            {ex.duration} <span className="text-secondary text-sm">min</span>
           </p>
         </div>
         <span
@@ -456,7 +456,7 @@ function KataCard({
 function EmptyResults({ onChange }: Readonly<{ onChange: () => void }>) {
   return (
     <div className="bg-surface border border-border/40 rounded-md p-10 text-center">
-      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-3">No matches</p>
+      <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">No matches</p>
       <h2 className="font-mono text-xl text-primary mb-2">No kata matched these filters.</h2>
       <p className="text-secondary text-sm mb-6 max-w-md mx-auto">
         Loosen mood, time, or interests — or change preferences below and try again.
@@ -514,7 +514,7 @@ function CustomizePanel({
         className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated"
       >
         <h2 className="font-mono text-sm text-primary">Customize</h2>
-        <span className={`text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden>
+        <span className={`text-secondary transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden>
           ⌃
         </span>
       </button>
@@ -580,7 +580,7 @@ function CustomizePanel({
                   })}
                 </div>
                 {interests.length === 0 && (
-                  <p className="text-muted text-xs font-mono mt-2">None selected = all categories.</p>
+                  <p className="text-secondary text-xs font-mono mt-2">None selected = all categories.</p>
                 )}
               </div>
 
@@ -611,7 +611,7 @@ function CustomizePanel({
               </div>
             </>
           ) : (
-            <p className="text-muted text-xs font-mono uppercase tracking-wider animate-pulse">Loading preferences...</p>
+            <p className="text-secondary text-xs font-mono uppercase tracking-wider animate-pulse">Loading preferences...</p>
           )}
         </div>
       )}
@@ -621,7 +621,7 @@ function CustomizePanel({
 
 function Eyebrow({ children, inline }: Readonly<{ children: React.ReactNode; inline?: boolean }>) {
   return (
-    <p className={`text-muted text-xs font-mono uppercase tracking-wider ${inline ? '' : 'mb-3'}`}>
+    <p className={`text-secondary text-xs font-mono uppercase tracking-wider ${inline ? '' : 'mb-3'}`}>
       {children}
     </p>
   )

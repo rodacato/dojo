@@ -81,7 +81,7 @@ export function SharePage() {
 
       <PublicPageLayout hideCta>
         <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
-          <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted text-center mb-6">
+          <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center mb-6">
             Shared kata
           </p>
 
@@ -97,7 +97,7 @@ export function SharePage() {
             <h2 className="text-primary text-2xl font-semibold leading-tight tracking-tight mt-4 md:mt-6">
               {data.kataTitle}
             </h2>
-            <div className="mt-2 flex items-center gap-3 font-mono text-xs tracking-[0.08em] uppercase text-muted">
+            <div className="mt-2 flex items-center gap-3 font-mono text-xs tracking-[0.08em] uppercase text-secondary">
               <span>{data.kataType}</span>
               <span aria-hidden>·</span>
               <span>{data.difficulty}</span>
@@ -113,7 +113,7 @@ export function SharePage() {
             {data.pullQuote && (
               <blockquote className="relative mt-8 md:mt-10 max-w-lg">
                 <span
-                  className="absolute -top-4 -left-2 font-mono text-5xl text-muted leading-none select-none"
+                  className="absolute -top-4 -left-2 font-mono text-5xl text-secondary leading-none select-none"
                   aria-hidden
                 >
                   &ldquo;
@@ -122,7 +122,7 @@ export function SharePage() {
                   {data.pullQuote}
                 </p>
                 <span
-                  className="absolute -bottom-6 -right-2 font-mono text-5xl text-muted leading-none select-none"
+                  className="absolute -bottom-6 -right-2 font-mono text-5xl text-secondary leading-none select-none"
                   aria-hidden
                 >
                   &rdquo;
@@ -153,12 +153,12 @@ export function SharePage() {
             >
               Find yours. Enter the dojo →
             </Link>
-            <p className="text-muted text-xs font-mono tracking-[0.04em] mt-3">
+            <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-3">
               Daily practice. Self-hosted. {globalThis.location.host}
             </p>
           </article>
 
-          <p className="text-muted text-xs font-mono tracking-[0.08em] uppercase text-center mt-10 opacity-60">
+          <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase text-center mt-10 opacity-60">
             kata_id: {sessionId?.slice(0, 6) ?? ''}
           </p>
         </div>

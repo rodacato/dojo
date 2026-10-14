@@ -206,7 +206,7 @@ export function KataActivePage() {
         <EnsoLoader size={32} label="Preparing your kata" />
         <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
         {prepareSlow && (
-          <p className="font-mono text-muted text-xs text-center max-w-sm">
+          <p className="font-mono text-secondary text-xs text-center max-w-sm">
             This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can go back and retry.
           </p>
         )}
@@ -291,7 +291,7 @@ export function KataActivePage() {
               <KataBody body={session.body} />
             </div>
             <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
-              <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted text-center opacity-70">
+              <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center opacity-70">
                 Enter the dojo. Leave the AI outside.
               </p>
             </div>
@@ -346,11 +346,11 @@ function ResponsePanel({
           <>
             <span className="font-mono text-xs text-primary">{filename}</span>
             <span className="h-3 w-px bg-border" />
-            <span className="font-mono text-xs text-muted">{editorLabel}</span>
+            <span className="font-mono text-xs text-secondary">{editorLabel}</span>
           </>
         ) : (
           <>
-            <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+            <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
               {isReview ? 'Code Review' : 'Your Response'}
             </span>
             <FontToggle value={font} onChange={onFontChange} className="ml-auto" />
@@ -398,7 +398,7 @@ function ResponseEditor({
   }
   if (kata.type === 'whiteboard') {
     return (
-      <Suspense fallback={<div className="p-4 text-muted font-mono text-sm">Loading editor...</div>}>
+      <Suspense fallback={<div className="p-4 text-secondary font-mono text-sm">Loading editor...</div>}>
         <MermaidEditor value={value} onChange={onChange} />
       </Suspense>
     )
@@ -453,10 +453,10 @@ function ChatEditor({
         }`}
       />
       <div className="h-9 shrink-0 border-t border-border bg-surface/60 flex items-center justify-between px-4">
-        <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+        <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
           ⌘+Enter to submit
         </span>
-        <span className="font-mono text-xs text-muted">{wordCount} words</span>
+        <span className="font-mono text-xs text-secondary">{wordCount} words</span>
       </div>
     </div>
   )
@@ -482,7 +482,7 @@ function FontToggle({
         onClick={() => onChange('mono')}
         aria-pressed={value === 'mono'}
         className={`px-2 py-0.5 transition-colors ${
-          value === 'mono' ? 'bg-elevated text-primary' : 'text-muted hover:text-secondary'
+          value === 'mono' ? 'bg-elevated text-primary' : 'text-secondary hover:text-secondary'
         }`}
       >
         Mono
@@ -492,7 +492,7 @@ function FontToggle({
         onClick={() => onChange('sans')}
         aria-pressed={value === 'sans'}
         className={`px-2 py-0.5 border-l border-border transition-colors ${
-          value === 'sans' ? 'bg-elevated text-primary' : 'text-muted hover:text-secondary'
+          value === 'sans' ? 'bg-elevated text-primary' : 'text-secondary hover:text-secondary'
         }`}
       >
         Sans

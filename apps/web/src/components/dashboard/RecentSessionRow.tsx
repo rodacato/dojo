@@ -40,7 +40,7 @@ export function RecentSessionRow({ session, onClick, isLast }: Readonly<RecentSe
           {verdict.label}
         </span>
       )}
-      <span className="shrink-0 text-muted text-xs font-mono w-14 text-right">
+      <span className="shrink-0 text-secondary text-xs font-mono w-14 text-right">
         {relativeDate}
       </span>
     </button>

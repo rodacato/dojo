@@ -58,7 +58,7 @@ export function AuthCallbackPage() {
         )}
       </div>
 
-      <p className="absolute inset-x-0 bottom-8 text-center font-mono text-xs tracking-[0.08em] uppercase text-muted">
+      <p className="absolute inset-x-0 bottom-8 text-center font-mono text-xs tracking-[0.08em] uppercase text-secondary">
         {failed ? 'Connection terminated' : 'GitHub OAuth'}
       </p>
     </div>

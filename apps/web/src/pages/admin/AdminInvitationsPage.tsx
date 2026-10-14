@@ -112,7 +112,7 @@ export function AdminInvitationsPage() {
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Invitations</h1>
-          <div className="mt-1 text-sm text-muted">
+          <div className="mt-1 text-sm text-secondary">
             Generate invite codes. Track usage. Tokens are single-use and expire after 7 days.
           </div>
         </div>
@@ -122,16 +122,16 @@ export function AdminInvitationsPage() {
         onSubmit={handleCreate}
         className="rounded-md border border-border bg-surface p-6 mb-6"
       >
-        <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-4">
           Create invitation
         </div>
         <div className="flex gap-3 items-end">
           <div className="flex-1">
             <label
               htmlFor="invite-email"
-              className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5"
+              className="block font-mono text-xs uppercase tracking-wider text-secondary mb-1.5"
             >
-              Recipient email <span className="text-muted/60">(optional)</span>
+              Recipient email <span className="text-secondary">(optional)</span>
             </label>
             <input
               id="invite-email"
@@ -146,7 +146,7 @@ export function AdminInvitationsPage() {
             Generate
           </Button>
         </div>
-        <div className="font-mono text-xs text-muted mt-3">
+        <div className="font-mono text-xs text-secondary mt-3">
           Leaving the email blank generates a token without auto-sending.
         </div>
 
@@ -173,10 +173,10 @@ export function AdminInvitationsPage() {
                 {copiedTokenId === lastCreated.token ? 'Copied' : 'Copy URL'}
               </Button>
             </div>
-            <div className="font-mono text-xs text-muted mt-2 break-all">
+            <div className="font-mono text-xs text-secondary mt-2 break-all">
               {lastCreated.url}
             </div>
-            <div className="font-mono text-xs text-muted mt-2">
+            <div className="font-mono text-xs text-secondary mt-2">
               {lastCreated.emailSent ? 'Email sent. ' : ''}Expires{' '}
               {relativeFromNow(now, new Date(lastCreated.expiresAt).getTime(), 'future')}. Single-use.
             </div>
@@ -221,7 +221,7 @@ export function AdminInvitationsPage() {
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-muted font-mono">
+                  <td colSpan={5} className="px-4 py-10 text-center text-secondary font-mono">
                     Loading_
                   </td>
                 </tr>
@@ -257,7 +257,7 @@ export function AdminInvitationsPage() {
                           <button
                             type="button"
                             onClick={() => copyUrl(inv.id, url)}
-                            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-primary transition-colors"
+                            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
                           >
                             {copiedTokenId === inv.id ? 'Copied' : 'Copy URL'}
                           </button>
@@ -275,7 +275,7 @@ export function AdminInvitationsPage() {
       ))}
 
       {!loading && invitations.length > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
           <span>
             Showing {startIdx}–{endIdx} of {invitations.length}
           </span>
@@ -295,7 +295,7 @@ export function AdminInvitationsPage() {
 function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; align?: 'left' | 'right' }>) {
   return (
     <th
-      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-muted ${
+      className={`h-10 px-4 font-mono text-xs uppercase tracking-wider text-secondary ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     >
