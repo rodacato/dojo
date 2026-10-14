@@ -178,15 +178,15 @@ function Card({
   children,
 }: Readonly<{
   title: string
-  status: 'ok' | 'down' | 'unconfigured'
+  status: 'ok' | 'degraded' | 'down' | 'unconfigured'
   latencyMs: number | null
   primary: string
   secondary?: string | null
   action?: React.ReactNode
   children?: React.ReactNode
 }>) {
-  const dotByStatus = { ok: 'bg-success', unconfigured: 'bg-muted', down: 'bg-danger' }
-  const labelByStatus = { ok: 'OK', unconfigured: 'UNCONFIGURED', down: 'DOWN' }
+  const dotByStatus = { ok: 'bg-success', degraded: 'bg-warning', unconfigured: 'bg-muted', down: 'bg-danger' }
+  const labelByStatus = { ok: 'OK', degraded: 'DEGRADED', unconfigured: 'UNCONFIGURED', down: 'DOWN' }
   const dot = dotByStatus[status]
   const label = labelByStatus[status]
   return (

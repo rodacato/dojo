@@ -11,7 +11,7 @@ export const adminHealthRoutes = new Hono<AppEnv>()
 adminHealthRoutes.use('*', requireAuth, requireCreator)
 
 interface CheckEnvelope<T> {
-  status: 'ok' | 'down' | 'unconfigured'
+  status: 'ok' | 'degraded' | 'down' | 'unconfigured'
   latencyMs: number | null
   detail: T
 }
@@ -48,6 +48,11 @@ async function checkDb(): Promise<CheckEnvelope<{ error?: string }>> {
   }
 }
 
+function pistonStatusFor(runtimes: { missing: unknown[]; actual: unknown[] }): CheckEnvelope<unknown>['status'] {
+  if (runtimes.missing.length === 0) return 'ok'
+  return runtimes.actual.length > 0 ? 'degraded' : 'down'
+}
+
 async function checkPiston(): Promise<
   CheckEnvelope<{
     expected: Array<{ language: string; version: string }>
@@ -74,7 +79,7 @@ async function checkPiston(): Promise<
     }
   }
   return {
-    status: status.missing.length === 0 ? 'ok' : 'down',
+    status: pistonStatusFor(status),
     latencyMs,
     detail: {
       expected: status.expected,
