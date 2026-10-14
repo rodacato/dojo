@@ -45,7 +45,7 @@ export function ScrollsPage() {
             <li key={id}>
               <Link
                 to={`/scrolls/${slug}`}
-                className="block h-full rounded-md border border-border border-l-[3px] border-l-accent bg-surface p-5 transition-colors hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="block h-full rounded-md border border-border border-l-[3px] border-l-secondary bg-surface p-5 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
                 <h2 className="text-primary text-lg font-semibold leading-snug">
                   {pickLocalized(manifest.title, manifest.locales, locale)}
