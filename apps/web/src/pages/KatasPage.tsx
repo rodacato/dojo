@@ -241,7 +241,7 @@ export function KatasPage() {
         </div>
 
         {picksError && (
-          <p role="alert" className="text-danger text-xs font-mono text-center">
+          <p role="alert" className="text-danger-text text-xs font-mono text-center">
             Couldn't load your kata. Try again.
           </p>
         )}

@@ -31,7 +31,7 @@ export function AuthCallbackPage() {
 
         {failed ? (
           <div className="flex flex-col items-center gap-4">
-            <p role="alert" className="font-mono text-sm text-danger">
+            <p role="alert" className="font-mono text-sm text-danger-text">
               Auth_Failed: no credential received.
             </p>
             <Button

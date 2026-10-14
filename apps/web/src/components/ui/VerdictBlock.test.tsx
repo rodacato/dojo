@@ -11,7 +11,7 @@ describe('VerdictBlock', () => {
       expect(heading).toBeInTheDocument()
       expect(heading).toHaveClass('text-success')
       expect(heading).not.toHaveClass('text-warning')
-      expect(heading).not.toHaveClass('text-danger')
+      expect(heading).not.toHaveClass('text-danger-text')
     })
 
     it('renders PASSED WITH NOTES in the warning tone', () => {
@@ -26,7 +26,7 @@ describe('VerdictBlock', () => {
       render(<VerdictBlock verdict="needs_work" />)
       const heading = screen.getByRole('heading', { name: 'NEEDS WORK' })
       expect(heading).toBeInTheDocument()
-      expect(heading).toHaveClass('text-danger')
+      expect(heading).toHaveClass('text-danger-text')
       expect(heading).not.toHaveClass('text-success')
     })
   })

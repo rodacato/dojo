@@ -122,7 +122,7 @@ describe('SharePage', () => {
     renderAt('/s/abc123def456')
 
     const heading = await screen.findByRole('heading', { name: 'NEEDS WORK', level: 1 })
-    expect(heading).toHaveClass('text-danger')
+    expect(heading).toHaveClass('text-danger-text')
   })
 
   it('omits the optional completion time and quote when absent', async () => {

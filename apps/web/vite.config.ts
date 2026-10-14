@@ -32,6 +32,7 @@ export default defineConfig({
   envDir: '../..',
   test: {
     environment: 'jsdom',
+    css: { include: [/main\.css\?raw$/] },
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['./src/test/setup.ts'],
     coverage: {

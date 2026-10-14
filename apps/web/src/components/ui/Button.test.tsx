@@ -52,7 +52,7 @@ describe('Button', () => {
     it('renders the destructive variant with danger text, never filled red', () => {
       render(<Button variant="destructive">Delete</Button>)
       const btn = screen.getByRole('button')
-      expect(btn).toHaveClass('text-danger', 'bg-transparent')
+      expect(btn).toHaveClass('text-danger-text', 'bg-transparent')
       expect(btn).not.toHaveClass('bg-danger')
     })
   })
@@ -196,7 +196,7 @@ describe('buttonClasses', () => {
 
   it('reflects the requested variant and size', () => {
     const cls = buttonClasses({ variant: 'destructive', size: 'lg' })
-    expect(cls).toContain('text-danger')
+    expect(cls).toContain('text-danger-text')
     expect(cls).toContain('h-11')
     expect(cls).not.toContain('bg-accent')
   })

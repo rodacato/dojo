@@ -209,7 +209,7 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
     label: 'Sessions timed out',
     value: (
       <span
-        className={`font-mono text-base ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger' : 'text-success'}`}
+        className={`font-mono text-base ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success'}`}
       >
         {practicePatterns.sessionsTimedOut}
       </span>
