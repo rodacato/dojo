@@ -12,6 +12,14 @@ interface ErrorPageProps {
 export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
   const [copied, setCopied] = useState(false)
 
+  const onErrorRoute = globalThis.location.pathname === '/error'
+
+  function retry() {
+    if (!onErrorRoute) return globalThis.location.reload()
+    if (globalThis.history.length > 1) return globalThis.history.back()
+    globalThis.location.href = '/dashboard'
+  }
+
   async function copyRequestId() {
     if (!requestId) return
     await navigator.clipboard.writeText(requestId)
@@ -83,7 +91,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
           )}
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button onClick={() => globalThis.location.reload()}>↻ Retry</Button>
+            <Button onClick={retry}>{onErrorRoute ? '← Go back' : '↻ Retry'}</Button>
             <Button variant="ghost" onClick={() => { globalThis.location.href = '/dashboard' }}>
               Go to dashboard
             </Button>
