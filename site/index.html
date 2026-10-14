@@ -102,8 +102,8 @@
             <h2>You do the thinking.<br />The sensei does the review.</h2>
           </div>
           <p>
-            AI belongs after the attempt, never during it. A kata is one problem, one timer and one
-            verdict.
+            AI belongs after the attempt, never during it. A kata is one problem and one timer. The
+            sensei may ask one follow-up question before it gives the verdict.
           </p>
         </div>
         <div class="split">
@@ -175,8 +175,8 @@
             <h3>Earned by showing up.</h3>
             <p>
               White to black, computed from completed katas, topic variety, active days and time at
-              your rank. The sensei’s verdict never changes your belt, and a belt is not a
-              certificate.
+              your rank. The verdict never adds points, but a kata that ends in Needs work does
+              not count as completed. A belt is not a certificate.
               <a href="https://github.com/rodacato/dojo/blob/master/docs/prd/031-belt-progression-rubric.md"
                 >Read the rules.</a
               >
@@ -233,7 +233,7 @@
             <pre><code>git clone https://github.com/rodacato/dojo
 cd dojo
 cp .env.example .env
-# set the GitHub OAuth values in .env
+# set the GitHub OAuth values and WEB_URL=http://localhost in .env
 docker compose up --build
 docker compose exec dojo-api \
   node dist/infrastructure/persistence/seed.js</code></pre>
