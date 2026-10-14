@@ -6,7 +6,7 @@
 
 **Status:** 46 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
 neighbours or fixed in-flow while drawing, so the series has gaps) · 3 resolved in code (D6, D15
-for the dashboard and admin lists, D21) · the rest open until Adrian decides · 🐞 real app bugs
+for the dashboard and admin lists, D21) · 1 decided and pending code (D42) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
 **How entries work.** A `D<n>` is a *finding*: logged when the design and the code disagree
@@ -85,11 +85,11 @@ not listed: they are taste, not findings.
 
 | # | Finding | Recommendation |
 |---|---|---|
-| **D42** | Accent and danger are almost the same red in sumi (`#B73A2F` vs `#9C2D24`): CTA, selection, streak, error and hanko read alike | One accent job per screen. Decide with ui-direction; it is a token change for every consumer |
+| **D42** | Accent and danger are almost the same red in sumi (`#B73A2F` vs `#9C2D24`): CTA, selection, streak, error and hanko read alike | ✅ **Decided: A · Strict** (2026-10-14). The palette stays: the approved Open Gate brand keeps both tokens. Accent only on the filled primary action, links, focus and the mark. Selection, stat numbers and eyebrows go neutral, and every selected state carries a non-colour cue. Lands with the Open Gate integration (D2). **Rejected B · With selection** — tested keeping the accent on selected states for navigation identity; lost because selection and error stay almost the same red, the confusion the review found; would come back if drawing both shows the neutral active tab is hard to see, or if the red in navigation is judged part of the identity |
 | **D43** | Admin: the catalog filter offers REVIEW (seeded review katas exist) but the form cannot create or edit that type | Keep the filter. Decide whether the form should author review katas (they need a rubric) |
 | **D44** | `/error` Retry reloads `/error` itself | Go back or to the dashboard instead of reloading the error route |
 | **D45** | Public profile shows the same value as the title and as `@handle` | Show only one, or a display name if one exists |
-| **D46** | Muted text `#5C544A` on `#0A0908` carries real content (nav, dates, hints) and was never measured | Measure the pair with a contrast tool before deciding |
+| **D46** | Muted text `#5C544A` on `#0A0908` carries real content (nav, dates, hints) and was never measured | The brand guide already says to use `secondary`, not `muted`, for text people must read: treat it as drift from the guide, and measure the pair before moving each use |
 
 **Wording and links settled in PR #155:** sign in / sign out, one way in on anonymous Engawa,
 Kumite placeholder trimmed, whiteboard kata copy, Ask the sensei on the shared modal.
