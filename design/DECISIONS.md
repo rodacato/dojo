@@ -5,8 +5,8 @@
 > outcome instead of deleting; the reasoning is the useful part.
 
 **Status:** 47 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
-neighbours or fixed in-flow while drawing, so the series has gaps) · 6 resolved (D2, D6, D15
-for the dashboard and admin lists, D21, D42, D46) · the rest open until Adrian decides · 🐞 real app bugs
+neighbours or fixed in-flow while drawing, so the series has gaps) · 7 resolved (D2, D6, D15, D21,
+D42, D44, D46) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
 **How entries work.** A `D<n>` is a *finding*: logged when the design and the code disagree
@@ -58,7 +58,7 @@ Adrian unless noted.
 | **D11** | Nothing links to `/error` | dead route |
 | **D12** | InviteRedeem has no invalid/expired UI; "expires in 7 days" is static | 🐞 |
 | **D13** | Hero CTA scrolls to `#access`; the only login control is the nav "Log in" | UX |
-| **D15** | Dashboard/History have no error UI; Settings stays on the loader if prefs fail | 🐞 Dashboard, admin lists and kata picks fixed in PR #154. History and Settings still open |
+| **D15** | Dashboard/History have no error UI; Settings stays on the loader if prefs fail | ✅ Resolved: Dashboard, admin lists and kata picks in PR #154; History and Settings show an error with a retry |
 | **D16** | Belts empty state is dead code; no next-belt progress | UX |
 | **D17** | History total counts failed and expired sessions | 🐞 |
 | **D18** | Sidebar logout has no confirm, Settings logout does | inconsistency |
@@ -87,7 +87,7 @@ not listed: they are taste, not findings.
 |---|---|---|
 | **D42** | Accent and danger are almost the same red in sumi (`#B73A2F` vs `#9C2D24`): CTA, selection, streak, error and hanko read alike | ✅ **Decided: A · Strict** (2026-10-14), mirrored in kit 0.3.0 (rails of scroll cards, the legal callout and AccentCard also went neutral). The palette stays: the approved Open Gate brand keeps both tokens. Accent only on the filled primary action, links, focus and the mark. Selection, stat numbers and eyebrows go neutral, and every selected state carries a non-colour cue. Lands with the Open Gate integration (D2). **Rejected B · With selection** — tested keeping the accent on selected states for navigation identity; lost because selection and error stay almost the same red, the confusion the review found; would come back if drawing both shows the neutral active tab is hard to see, or if the red in navigation is judged part of the identity |
 | **D43** | Admin: the catalog filter offers REVIEW (seeded review katas exist) but the form cannot create or edit that type | Keep the filter. Decide whether the form should author review katas (they need a rubric) |
-| **D44** | `/error` Retry reloads `/error` itself | Go back or to the dashboard instead of reloading the error route |
+| **D44** | `/error` Retry reloads `/error` itself | ✅ Resolved: on `/error` the primary button goes back (or to the dashboard when there is no history); inside the error boundary it still reloads |
 | **D45** | Public profile shows the same value as the title and as `@handle` | Show only one, or a display name if one exists |
 | **D46** | Contrast in sumi, measured 2026-10-14 (WCAG, on `#0A0908` / `#13110F`): `muted` 2.67 / 2.53, `danger` as text 2.67 / 2.52, `accent` as text 3.47 / 3.28, `muted/40` 1.34. Washi: `muted` 3.45, `warning` as text 2.64, `success` 4.28. `secondary` (7.16), `primary` and `on-accent` on accent (4.92) pass | ✅ **Decided: hybrid by token** (2026-10-14), mirrored in kit 0.3.0. `muted`: fix by usage, as the brand guide says; text people must read uses `secondary`, `muted` stays decorative or placeholder, and stacked opacities below 70% on text go away. `danger` and `accent` as text: two derived tokens, `danger-text` (sumi about `#B6675D`, 4.56 on surface) and `accent-text` (sumi about `#C35E53`, 4.53). The approved values do not change. Washi `warning` and `success` as text need their own derived values. Lands with D42 and the Open Gate integration; the kit bumps when the tokens exist. **Rejected: change the values only** — tested the smallest code change; lost because it moves approved brand values and also lightens borders and fills that pass today; would come back if the derived tokens prove too many to maintain |
 | **D47** | On-accent text on the slate accent measures 4.47:1 (`#FFFFFF` on `#6366F1`), 0.03 under AA for body text; sumi and washi pass (4.92 and above). The contrast test excludes slate from that assertion | Slate is the explicit-choice theme, so the miss is small and the fix moves a brand value. Decide whether to nudge the slate accent or accept the miss for large labels |
