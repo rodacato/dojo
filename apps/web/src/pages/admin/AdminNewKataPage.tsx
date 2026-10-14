@@ -11,6 +11,7 @@ import {
   ValidationBanner,
   VariationCardItem,
 } from './_form-parts'
+import { UnsavedChangesModal, useUnsavedGuard } from './_unsaved'
 
 interface VariationDraft {
   ownerRole: string
@@ -39,6 +40,7 @@ export function AdminNewKataPage() {
   const [saving, setSaving] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState(false)
+  const guard = useUnsavedGuard(JSON.stringify(form) !== JSON.stringify(INITIAL))
 
   const titleInvalid = form.title.trim().length === 0
   const variationsInvalid = form.variations.every((v) => !v.ownerRole.trim())
@@ -121,7 +123,7 @@ export function AdminNewKataPage() {
         <div>
           <button
             type="button"
-            onClick={() => navigate('/admin/katas')}
+            onClick={() => guard.leave('/admin/katas')}
             className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
           >
             ← Back to katas
@@ -129,7 +131,7 @@ export function AdminNewKataPage() {
           <h1 className="text-xl font-semibold text-primary leading-tight">New kata</h1>
         </div>
         <div className="flex items-center gap-3 mt-7">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
+          <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
             Cancel
           </Button>
           <Button variant="ghost" size="sm" onClick={handleSave} loading={saving}>
@@ -204,13 +206,15 @@ export function AdminNewKataPage() {
       </div>
 
       <StickyFormBar hint="⌘+S to save">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
+        <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
           Cancel
         </Button>
         <Button size="sm" onClick={handleSave} loading={saving}>
           Save as draft
         </Button>
       </StickyFormBar>
+
+      <UnsavedChangesModal {...guard.modalProps} />
     </div>
   )
 }

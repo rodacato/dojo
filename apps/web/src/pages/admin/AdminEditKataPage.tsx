@@ -18,6 +18,7 @@ import {
   ValidationBanner,
   VariationCardItem,
 } from './_form-parts'
+import { UnsavedChangesModal, useUnsavedGuard } from './_unsaved'
 
 interface VariationDraft {
   ownerRole: string
@@ -114,6 +115,7 @@ export function AdminEditKataPage() {
     if (!form || !initialRef.current) return false
     return JSON.stringify(form) !== JSON.stringify(initialRef.current)
   }, [form])
+  const guard = useUnsavedGuard(dirty)
 
   if (!form && loadError) {
     return (
@@ -226,7 +228,7 @@ export function AdminEditKataPage() {
         <div>
           <button
             type="button"
-            onClick={() => navigate('/admin/katas')}
+            onClick={() => guard.leave('/admin/katas')}
             className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
           >
             ← Back to katas
@@ -241,7 +243,7 @@ export function AdminEditKataPage() {
               Archive
             </Button>
           )}
-          <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
+          <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
             Cancel
           </Button>
           <Button variant="ghost" size="sm" onClick={handleSave} loading={saving}>
@@ -333,7 +335,7 @@ export function AdminEditKataPage() {
       </div>
 
       <StickyFormBar hint={dirty ? 'Unsaved changes · ⌘+S to save' : '⌘+S to save'}>
-        <Button variant="ghost" size="sm" onClick={() => navigate('/admin/katas')}>
+        <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
           Cancel
         </Button>
         <Button size="sm" onClick={handleSave} loading={saving}>
@@ -356,6 +358,7 @@ export function AdminEditKataPage() {
           Archived katas are hidden from the catalog but the data is preserved.
         </p>
       </ConfirmModal>
+      <UnsavedChangesModal {...guard.modalProps} />
     </div>
   )
 }

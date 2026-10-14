@@ -222,4 +222,23 @@ describe('AdminNewKataPage', () => {
     await waitFor(() => expect(mockedCreate).toHaveBeenCalledTimes(1))
     expect(mockedCreate.mock.calls[0]![0].title).toBe('Keyboard save')
   })
+
+  it('cancels straight away while the form is empty', async () => {
+    const u = userEvent.setup()
+    renderPage()
+
+    await u.click(screen.getAllByRole('button', { name: 'Cancel' })[0]!)
+    expect(screen.getByText('katas list')).toBeInTheDocument()
+  })
+
+  it('asks to confirm when cancelling after typing a title', async () => {
+    const u = userEvent.setup()
+    renderPage()
+    await u.type(screen.getByLabelText('Title *'), 'Draft idea')
+
+    await u.click(screen.getAllByRole('button', { name: 'Cancel' })[0]!)
+
+    expect(await screen.findByText('Leave without saving?')).toBeInTheDocument()
+    expect(screen.queryByText('katas list')).not.toBeInTheDocument()
+  })
 })
