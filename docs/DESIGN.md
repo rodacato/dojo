@@ -27,9 +27,9 @@ This file consolidates them, declares the migration honestly, and keeps the toke
 
 Dojo carries two complete palettes. Both run on the same token names — only the values differ.
 
-### Theme A — **Slate Indigo** (shipped today)
+### Theme A — **Slate Indigo** (explicit choice, not the default)
 
-What renders in production. "Terminal meets product" — Linear / Raycast / Warp as references. Cold blue-grays with an indigo accent. Implemented in `apps/web/src/styles/main.css`.
+Renders only when picked in the theme toggle; the default `auto` resolves to Sumi (dark OS) or Washi (light OS) in `apps/web/src/lib/theme.ts`. "Terminal meets product" — Linear / Raycast / Warp as references. Cold blue-grays with an indigo accent. Implemented as the `@theme` defaults in `apps/web/src/styles/main.css`.
 
 This theme stays the source of truth for `--color-*` values **until the Sumi-e migration sprint lands**. No piecemeal swap.
 
