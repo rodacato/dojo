@@ -49,7 +49,7 @@ const TONE_TEXT: Record<ConfirmTone, string> = {
   muted: 'text-secondary',
   amber: 'text-warning',
   red: 'text-danger-text',
-  indigo: 'text-accent',
+  indigo: 'text-primary',
 }
 
 /**

@@ -33,12 +33,12 @@ describe('Banner', () => {
   })
 
   describe('tone', () => {
-    it('defaults to info: accent eyebrow text + left accent border', () => {
+    it('defaults to info: secondary eyebrow text + left secondary border', () => {
       render(<Banner eyebrow="Info">body</Banner>)
 
-      expect(screen.getByText('Info')).toHaveClass('text-accent')
+      expect(screen.getByText('Info')).toHaveClass('text-secondary')
       const region = screen.getByRole('status')
-      expect(region).toHaveClass('border-l-4', 'border-l-accent')
+      expect(region).toHaveClass('border-l-4', 'border-l-secondary')
       expect(region).not.toHaveClass('text-warning', 'text-danger-text')
     })
 
@@ -82,7 +82,7 @@ describe('Banner', () => {
       )
 
       const region = screen.getByRole('status')
-      expect(region).toHaveClass('border-b-4', 'border-b-accent')
+      expect(region).toHaveClass('border-b-4', 'border-b-secondary')
       expect(region).not.toHaveClass('border-l-4', 'rounded-md')
     })
 

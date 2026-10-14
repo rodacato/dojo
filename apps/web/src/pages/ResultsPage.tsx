@@ -273,7 +273,7 @@ function InsightCards({ analysis }: Readonly<{ analysis?: string }>) {
 function getToneClass(tone: 'success' | 'warning' | 'accent') {
   if (tone === 'success') return 'text-success'
   if (tone === 'warning') return 'text-warning'
-  return 'text-accent'
+  return 'text-primary'
 }
 
 function InsightCard({
@@ -425,7 +425,7 @@ function ShareCardPreview({
             sensei — {ownerRole.toLowerCase()}
           </p>
         )}
-        <p className="text-accent text-xs font-mono tracking-[0.08em] uppercase shrink-0">
+        <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase shrink-0">
           Find yours →
         </p>
       </div>

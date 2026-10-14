@@ -67,14 +67,15 @@ describe('Sidebar — navigation', () => {
     expect(katas).not.toHaveTextContent(/soon/i)
   })
 
-  it('highlights the active route with the accent classes', () => {
+  it('highlights the active route with the primary classes and a left border cue', () => {
     renderSidebar({ route: '/katas' })
 
     const active = screen.getByRole('link', { name: /^katas$/ })
-    expect(active.className).toContain('text-accent')
+    expect(active.className).toContain('text-primary')
+    expect(active.className).toContain('border-primary')
 
     const inactive = screen.getByRole('link', { name: /^belts$/ })
-    expect(inactive.className).not.toContain('text-accent')
+    expect(inactive.className).not.toContain('border-primary')
   })
 })
 

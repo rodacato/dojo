@@ -122,7 +122,7 @@ export function AdminNewKataPage() {
           <button
             type="button"
             onClick={() => navigate('/admin/katas')}
-            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors mb-2"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
           >
             ← Back to katas
           </button>
@@ -171,7 +171,7 @@ export function AdminNewKataPage() {
               <button
                 type="button"
                 onClick={addVariation}
-                className="font-mono text-xs uppercase tracking-wider text-accent hover:text-accent/80 transition-colors"
+                className="font-mono text-xs uppercase tracking-wider text-accent-text hover:underline transition-colors"
               >
                 + Add variation
               </button>

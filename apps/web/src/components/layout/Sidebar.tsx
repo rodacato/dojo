@@ -54,8 +54,8 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
                 isActive
-                  ? 'text-accent border-l-2 border-accent bg-accent/5'
-                  : 'text-secondary hover:text-secondary border-l-2 border-transparent'
+                  ? 'text-primary border-l-2 border-primary bg-elevated'
+                  : 'text-secondary hover:text-primary border-l-2 border-transparent'
               } ${collapsed ? 'justify-center px-2' : ''}`
             }
           >
@@ -82,8 +82,8 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
           className={({ isActive }) =>
             `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
               isActive
-                ? 'text-accent border-l-2 border-accent bg-accent/5'
-                : 'text-secondary hover:text-secondary border-l-2 border-transparent'
+                ? 'text-primary border-l-2 border-primary bg-elevated'
+                : 'text-secondary hover:text-primary border-l-2 border-transparent'
             } ${collapsed ? 'justify-center px-2' : ''}`
           }
         >
@@ -93,7 +93,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
         <button
           onClick={() => { void logout() }}
           title="sign out"
-          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-secondary hover:text-secondary transition-colors border-l-2 border-transparent ${
+          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-secondary hover:text-primary transition-colors border-l-2 border-transparent ${
             collapsed ? 'justify-center px-2' : ''
           }`}
         >
@@ -103,7 +103,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
         <button
           onClick={() => setTheme(nextInCycle(theme))}
           title={`theme: ${theme} (click to cycle)`}
-          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-secondary hover:text-secondary transition-colors border-l-2 border-transparent ${
+          className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-secondary hover:text-primary transition-colors border-l-2 border-transparent ${
             collapsed ? 'justify-center px-2' : ''
           }`}
         >

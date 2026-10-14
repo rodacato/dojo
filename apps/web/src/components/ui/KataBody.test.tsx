@@ -43,13 +43,13 @@ describe('KataBody', () => {
 
     const inline = screen.getByText('helper()')
     expect(inline.tagName).toBe('CODE')
-    expect(inline).toHaveClass('text-accent')
+    expect(inline).toHaveClass('px-1.5')
     expect(inline).not.toHaveClass('block')
 
     const block = screen.getByText('const x = 1')
     expect(block.tagName).toBe('CODE')
     expect(block).toHaveClass('block', 'whitespace-pre')
-    expect(block).not.toHaveClass('text-accent')
+    expect(block).not.toHaveClass('px-1.5')
   })
 
   it('unwraps the <pre> wrapper so the code block is not double-nested', () => {
@@ -59,12 +59,12 @@ describe('KataBody', () => {
     expect(screen.getByText('plain block').tagName).toBe('CODE')
   })
 
-  it('renders blockquotes with the accent rule styling', () => {
+  it('renders blockquotes with the neutral rule styling', () => {
     render(<KataBody body="> remember the base case" />)
 
     const quote = screen.getByText('remember the base case').closest('blockquote')
     expect(quote).not.toBeNull()
-    expect(quote).toHaveClass('border-accent', 'italic')
+    expect(quote).toHaveClass('border-border', 'italic')
   })
 
   it('renders bold emphasis as <strong>', () => {

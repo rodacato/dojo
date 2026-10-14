@@ -104,11 +104,11 @@ describe('Toggle', () => {
     expect(onChange).toHaveBeenCalledWith(true)
   })
 
-  it('applies the accent variant classes when checked', () => {
+  it('applies the checked variant classes when checked', () => {
     render(<Toggle checked ariaLabel="On" onChange={vi.fn()} />)
 
     const toggle = screen.getByRole('switch')
-    expect(toggle).toHaveClass('bg-accent', 'border-accent')
+    expect(toggle).toHaveClass('bg-elevated', 'border-primary')
     expect(toggle).not.toHaveClass('bg-page', 'border-border')
   })
 
@@ -117,7 +117,7 @@ describe('Toggle', () => {
 
     const toggle = screen.getByRole('switch')
     expect(toggle).toHaveClass('bg-page', 'border-border')
-    expect(toggle).not.toHaveClass('bg-accent', 'border-accent')
+    expect(toggle).not.toHaveClass('bg-elevated', 'border-primary')
   })
 
   it('shifts the indicator dot to the on position when checked', () => {

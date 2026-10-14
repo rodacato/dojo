@@ -18,19 +18,19 @@ interface BannerProps {
 }
 
 const TONE_TEXT: Record<BannerTone, string> = {
-  info: 'text-accent',
+  info: 'text-secondary',
   warning: 'text-warning',
   danger: 'text-danger-text',
 }
 
 const TONE_BORDER_LEFT: Record<BannerTone, string> = {
-  info: 'border-l-accent',
+  info: 'border-l-secondary',
   warning: 'border-l-warning',
   danger: 'border-l-danger',
 }
 
 const TONE_BORDER_BOTTOM: Record<BannerTone, string> = {
-  info: 'border-b-accent',
+  info: 'border-b-secondary',
   warning: 'border-b-warning',
   danger: 'border-b-danger',
 }

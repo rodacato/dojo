@@ -152,7 +152,7 @@ export function SettingsPage() {
           </div>
           <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-4 truncate">
             Your profile is public at{' '}
-            <Link to={`/u/${user.username}`} className="text-accent underline">
+            <Link to={`/u/${user.username}`} className="text-accent-text underline">
               {globalThis.location.host}/u/{user.username}
             </Link>
           </p>
@@ -216,8 +216,8 @@ export function SettingsPage() {
                     aria-pressed={active}
                     className={`font-mono text-xs px-3 py-1.5 rounded-sm border transition-colors ${
                       active
-                        ? 'border-accent text-accent'
-                        : 'border-border text-secondary hover:border-accent/50'
+                        ? 'border-primary text-primary'
+                        : 'border-border text-secondary hover:border-primary'
                     }`}
                   >
                     {active && <span className="mr-1">✓</span>}
@@ -258,8 +258,8 @@ export function SettingsPage() {
                   aria-pressed={prefs.goalWeeklyTarget === n}
                   className={`w-10 h-10 inline-flex items-center justify-center font-mono text-sm rounded-sm border transition-colors ${
                     prefs.goalWeeklyTarget === n
-                      ? 'border-accent text-accent'
-                      : 'border-border text-secondary hover:border-accent/50'
+                      ? 'border-primary text-primary'
+                      : 'border-border text-secondary hover:border-primary'
                   }`}
                 >
                   {n}
@@ -385,7 +385,7 @@ function PillButton({
       onClick={onClick}
       aria-pressed={active}
       className={`font-mono text-xs tracking-[0.08em] uppercase px-3 py-1.5 rounded-sm border transition-colors ${
-        active ? 'border-accent text-accent' : 'border-border text-secondary hover:border-accent/50'
+        active ? 'border-primary text-primary' : 'border-border text-secondary hover:border-primary'
       }`}
     >
       {children}

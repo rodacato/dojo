@@ -31,12 +31,11 @@ describe('TypeBadge', () => {
     expect(screen.getByText(type.toUpperCase())).toHaveClass(bgClass, 'text-primary')
   })
 
-  it('gives the review variant its distinct accent + border styling', () => {
+  it('gives the review variant its distinct type-colour + border styling', () => {
     render(<TypeBadge type="review" />)
     const badge = screen.getByText('REVIEW')
-    // review is the only type that draws a border and uses the accent token.
-    expect(badge).toHaveClass('bg-accent/20', 'text-accent', 'border', 'border-accent/30')
-    expect(badge).not.toHaveClass('text-primary')
+    // review is the only type that draws a border and uses its own type token.
+    expect(badge).toHaveClass('bg-type-review/20', 'text-primary', 'border', 'border-type-review/40')
   })
 
   it('uses the shared small badge geometry classes', () => {

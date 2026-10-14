@@ -26,7 +26,7 @@ export function ChipSelect({ options, selected, onChange, placeholder }: Readonl
             <button
               key={s}
               onClick={() => toggle(s)}
-              className="font-mono text-xs px-2 py-0.5 bg-accent/10 text-accent border border-accent/30 rounded-sm hover:bg-danger/10 hover:text-danger-text hover:border-danger/30 transition-colors"
+              className="font-mono text-xs px-2 py-0.5 bg-elevated text-primary border border-border rounded-sm hover:bg-danger/10 hover:text-danger-text hover:border-danger/30 transition-colors"
             >
               {s} ×
             </button>

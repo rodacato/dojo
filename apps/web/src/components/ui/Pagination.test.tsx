@@ -37,15 +37,15 @@ describe('Pagination', () => {
     expect(screen.queryByText('…')).not.toBeInTheDocument()
   })
 
-  it('marks the current page with aria-current and the accent border class', () => {
+  it('marks the current page with aria-current and the primary border class', () => {
     render(<Pagination page={3} totalPages={5} onChange={vi.fn()} />)
     const current = getPageButton('3')
     expect(current).toHaveAttribute('aria-current', 'page')
-    expect(current).toHaveClass('border-accent')
+    expect(current).toHaveClass('border-primary')
 
     const other = getPageButton('2')
     expect(other).not.toHaveAttribute('aria-current')
-    expect(other).not.toHaveClass('border-accent')
+    expect(other).not.toHaveClass('border-primary')
   })
 
   it('calls onChange with the target page when a page number is clicked', async () => {

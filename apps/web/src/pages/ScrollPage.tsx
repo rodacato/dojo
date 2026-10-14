@@ -88,7 +88,7 @@ export function ScrollPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12">
-      <Link to="/scrolls" className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors">
+      <Link to="/scrolls" className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors">
         ← Scrolls
       </Link>
       <header className="mt-4 mb-6">

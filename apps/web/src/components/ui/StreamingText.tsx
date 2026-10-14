@@ -13,7 +13,7 @@ export function StreamingText({ text, done, className }: Readonly<StreamingTextP
         part.type === 'code' ? (
           <pre
             key={i}
-            className="bg-page border border-border/40 rounded-sm p-3 my-2 overflow-x-auto text-xs font-mono text-accent/90"
+            className="bg-page border border-border/40 rounded-sm p-3 my-2 overflow-x-auto text-xs font-mono text-secondary"
           >
             <code>{part.content}</code>
           </pre>

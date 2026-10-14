@@ -29,7 +29,7 @@ export function BottomNav() {
             to={item.to}
             className={({ isActive }) =>
               `flex flex-col items-center gap-0.5 px-4 py-2.5 min-h-11 min-w-11 text-xs font-mono transition-colors ${
-                isActive ? 'text-accent' : 'text-secondary'
+                isActive ? 'text-primary font-semibold' : 'text-secondary'
               }`
             }
           >

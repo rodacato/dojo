@@ -35,7 +35,7 @@ export function Pagination({ page, totalPages, onChange, ariaLabel = 'Pagination
               onClick={() => onChange(p)}
               aria-current={p === page ? 'page' : undefined}
               className={`${cell} tabular-nums inline-flex items-center justify-center rounded-sm transition-colors ${
-                p === page ? 'border border-accent text-primary' : 'text-secondary hover:text-primary'
+                p === page ? 'border border-primary text-primary' : 'text-secondary hover:text-primary'
               }`}
             >
               {p}
