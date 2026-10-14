@@ -161,6 +161,8 @@ describe('EngawaPage', () => {
 
     expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/')
     expect(screen.getByRole('contentinfo')).toHaveTextContent('sandbox · not graded')
+    // One way in: no second and third link to the same landing page.
+    expect(screen.getAllByRole('link', { name: /sign in|practice with a kata|sensei evaluates/i })).toHaveLength(1)
     // Ask-the-sensei is an authed-only affordance.
     expect(
       screen.queryByRole('button', { name: 'Ask the sensei' }),

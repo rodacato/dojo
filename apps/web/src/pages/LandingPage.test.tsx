@@ -127,7 +127,7 @@ describe('LandingPage — auth error banner', () => {
     renderAt('/?error=boom')
 
     expect(
-      screen.getByText(/GitHub login failed\./),
+      screen.getByText(/GitHub sign-in failed\./),
     ).toBeInTheDocument()
   })
 
@@ -136,7 +136,7 @@ describe('LandingPage — auth error banner', () => {
     renderAt('/')
 
     expect(screen.queryByText(/Your session expired/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/GitHub login failed/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/GitHub sign-in failed/)).not.toBeInTheDocument()
   })
 })
 

@@ -99,7 +99,7 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
 function AuthErrorBanner({ errorParam }: Readonly<{ errorParam: string }>) {
   const message =
     AUTH_ERROR_MESSAGES[errorParam] ??
-    'GitHub login failed. Try again or check your GitHub status.'
+    'GitHub sign-in failed. Try again or check your GitHub status.'
   return (
     <div className="bg-danger/10 border-b border-danger/30 px-4 md:px-8 py-3 text-center">
       <p className="text-danger text-sm font-mono">{message}</p>
@@ -137,7 +137,7 @@ function StickyNav() {
         </div>
         <div className="flex items-center gap-3">
           <a href={`${API_URL}/auth/github`} className={buttonClasses({ variant: 'subtle', size: 'sm' })}>
-            Log in
+            Sign in
           </a>
         </div>
       </div>

@@ -92,13 +92,13 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
         </NavLink>
         <button
           onClick={() => { void logout() }}
-          title="log out"
+          title="sign out"
           className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-mono text-muted hover:text-secondary transition-colors border-l-2 border-transparent ${
             collapsed ? 'justify-center px-2' : ''
           }`}
         >
           <LogoutIcon className="w-4.5 h-4.5 shrink-0" />
-          {!collapsed && <span>log out</span>}
+          {!collapsed && <span>sign out</span>}
         </button>
         <button
           onClick={() => setTheme(nextInCycle(theme))}

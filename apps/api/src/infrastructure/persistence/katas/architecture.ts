@@ -8,7 +8,7 @@ export const architectureKatas: SeedKata[] = [
 
 The CTO wants you to propose an architecture that decouples the two services. You have 45 minutes. Show your design.
 
-Use the diagram area to show the proposed architecture. Write your reasoning in the text area below the diagram.`,
+Use the diagram to show the proposed architecture, and put your reasoning in it: label each part and say why it is there.`,
     duration: 45,
     difficulty: 'hard',
     type: 'whiteboard',

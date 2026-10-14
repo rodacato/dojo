@@ -24,7 +24,7 @@ describe('KumitePlaceholderPage', () => {
     renderPage()
 
     expect(screen.getByText('Coming soon')).toBeInTheDocument()
-    expect(screen.getByText(/Not built yet/)).toBeInTheDocument()
+    expect(screen.queryByText(/route exists so the language is honest/)).not.toBeInTheDocument()
     expect(screen.getByText(/Until then — practice solo\./)).toBeInTheDocument()
   })
 

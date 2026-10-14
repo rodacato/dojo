@@ -11,12 +11,7 @@ export function KumitePlaceholderPage() {
         Kumite is sparring. One kata, two developers, the same prompt, side-by-side reasoning. The
         sensei reads both attempts and marks where each one earned its conclusion.
       </p>
-      <p className="text-muted leading-relaxed mb-8">
-        Not built yet. The route exists so the language is honest: kumite is a feature, not a label
-        for the leaderboard. When the matchmaking and the paired evaluation are ready, this page
-        will host them.
-      </p>
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted opacity-70">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted opacity-70 mt-8">
         Until then — practice solo.
       </p>
     </div>
