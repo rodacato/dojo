@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
 import { PageLoader } from '../components/PageLoader'
+import { ErrorState } from '../components/ui/ErrorState'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { Toggle } from '../components/ui/Toggle'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
@@ -54,11 +55,17 @@ export function SettingsPage() {
   const [prefs, setPrefs] = useState<Preferences | null>(null)
   const [belt, setBelt] = useState<BeltDTO | null>(null)
   const [save, setSave] = useState<SaveState>('idle')
+  const [prefsFailed, setPrefsFailed] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const { theme, setTheme } = useTheme()
 
+  function loadPrefs() {
+    setPrefsFailed(false)
+    api.getPreferences().then(setPrefs).catch(() => setPrefsFailed(true))
+  }
+
   useEffect(() => {
-    api.getPreferences().then(setPrefs).catch(() => setSave('error'))
+    loadPrefs()
     api.getBelts().then((res) => setBelt(res.belt)).catch(() => {
       // Non-blocking — settings is still usable without the belt avatar ring
     })
@@ -99,6 +106,15 @@ export function SettingsPage() {
     update({ interests: next })
   }
 
+  if (prefsFailed && !prefs) {
+    return (
+      <ErrorState
+        variant="inline"
+        message="We couldn't load your settings."
+        primaryAction={{ label: 'Try again', onClick: loadPrefs }}
+      />
+    )
+  }
   if (!user || !prefs) return <PageLoader />
 
   const memberSince = new Date(user.createdAt).toLocaleDateString('en-US', {

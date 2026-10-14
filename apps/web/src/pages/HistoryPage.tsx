@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button'
 import { Pagination } from '../components/ui/Pagination'
 import { SkeletonList } from '../components/ui/SkeletonLoader'
 import { EmptyState } from '../components/ui/EmptyState'
+import { ErrorState } from '../components/ui/ErrorState'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
@@ -23,7 +24,7 @@ interface HistorySession {
 export function HistoryPage() {
   const navigate = useNavigate()
   const [page, setPage] = useState(1)
-  const { data, loading } = useAsync(() => api.getHistory(page), [page])
+  const { data, loading, error, reload } = useAsync(() => api.getHistory(page), [page])
 
   const sessions: HistorySession[] = data?.sessions ?? []
   const totalPages = data?.totalPages ?? 1
@@ -32,6 +33,14 @@ export function HistoryPage() {
   let sessionList: ReactNode
   if (loading && sessions.length === 0) {
     sessionList = <SkeletonList rows={8} />
+  } else if (error && sessions.length === 0) {
+    sessionList = (
+      <ErrorState
+        variant="inline"
+        message="We couldn't load your history."
+        primaryAction={{ label: 'Try again', onClick: reload }}
+      />
+    )
   } else if (sessions.length === 0) {
     sessionList = (
       <EmptyState
