@@ -110,7 +110,7 @@ Full analysis + topics to review
 |---|---|
 | `code` | Refactor, debug, review, or complete code in a split-panel editor |
 | `chat` | Technical roleplay — respond to a scenario as you would in real life |
-| `whiteboard` _(planned)_ | System design and architecture via [Drawhaus](https://drawhaus.notdefined.dev) — designed, not yet built (exists as a kata type; no execution path yet) |
+| `whiteboard` | System design and architecture, answered as a Mermaid diagram in the editor |
 
 **60+ katas** across 10 categories: backend, frontend, architecture, security, DevOps, SQL, design patterns, algorithms, testing, and process. Each kata has 2 sensei variations with distinct evaluation perspectives.
 
@@ -136,7 +136,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 | **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
 | **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
 | **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations |
-| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The sensei never influences advancement (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
+| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The verdict adds no points, but a kata that ends in Needs work does not count as completed (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
 | **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, consistency streaks. Surfaced alongside the belt on `/belts` |
 | **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
 | **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel |
