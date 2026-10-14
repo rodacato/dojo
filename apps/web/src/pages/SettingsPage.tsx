@@ -131,8 +131,8 @@ export function SettingsPage() {
               )}
               <div className="min-w-0">
                 <p className="text-primary text-lg font-semibold truncate">{user.username}</p>
-                <p className="text-muted text-sm">@{user.username}</p>
-                <p className="text-muted text-xs font-mono tracking-[0.04em] mt-1">
+                <p className="text-secondary text-sm">@{user.username}</p>
+                <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-1">
                   Member since {memberSince}
                   {belt && ` · ${belt.rank} belt`}
                 </p>
@@ -150,7 +150,7 @@ export function SettingsPage() {
               </Button>
             </div>
           </div>
-          <p className="text-muted text-xs font-mono tracking-[0.04em] mt-4 truncate">
+          <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-4 truncate">
             Your profile is public at{' '}
             <Link to={`/u/${user.username}`} className="text-accent underline">
               {globalThis.location.host}/u/{user.username}
@@ -240,7 +240,7 @@ export function SettingsPage() {
                 className="w-full accent-accent"
                 aria-label="Randomness"
               />
-              <div className="flex justify-between font-mono text-xs tracking-[0.08em] uppercase text-muted">
+              <div className="flex justify-between font-mono text-xs tracking-[0.08em] uppercase text-secondary">
                 {RANDOMNESS_STOPS.map((s) => (
                   <span key={s.label}>{s.label}</span>
                 ))}
@@ -281,7 +281,7 @@ export function SettingsPage() {
             <>
               <div className="grid md:grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="reminder-email" className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
+                  <label htmlFor="reminder-email" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
                     Email
                   </label>
                   <input
@@ -294,7 +294,7 @@ export function SettingsPage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="reminder-hour" className="block text-muted text-xs font-mono tracking-[0.04em] mb-1">
+                  <label htmlFor="reminder-hour" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
                     Hour (0–23 local)
                   </label>
                   <input
@@ -308,7 +308,7 @@ export function SettingsPage() {
                   />
                 </div>
               </div>
-              <p className="text-muted text-xs font-mono tracking-[0.04em]">
+              <p className="text-secondary text-xs font-mono tracking-[0.04em]">
                 Sent at the time you pick. Not before. Never weekends if your goal is &lt; 5
                 days/week.
               </p>
@@ -317,7 +317,7 @@ export function SettingsPage() {
         </div>
       </Section>
 
-      <p className="text-center text-muted text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
+      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12 opacity-70">
         Changes auto-save.
       </p>
 
@@ -342,7 +342,7 @@ function Section({ title, children }: Readonly<{ title: string; children: React.
   return (
     <section className="mb-10">
       <div className="flex items-center gap-3 mb-4">
-        <h2 className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{title}</h2>
+        <h2 className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">{title}</h2>
         <span className="flex-1 h-px bg-border" />
       </div>
       {children}
@@ -363,7 +363,7 @@ function Field({
     <div className="flex flex-col gap-2">
       <div>
         <p className="text-primary text-sm font-medium">{label}</p>
-        {hint && <p className="text-muted text-xs mt-0.5">{hint}</p>}
+        {hint && <p className="text-secondary text-xs mt-0.5">{hint}</p>}
       </div>
       {children}
     </div>

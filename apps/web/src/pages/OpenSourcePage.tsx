@@ -60,7 +60,7 @@ export function OpenSourcePage() {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 flex flex-col gap-16">
         {/* Hero */}
         <section>
-          <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-4">
+          <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-4">
             Transparency
           </p>
           <h1 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight max-w-2xl">
@@ -103,7 +103,7 @@ export function OpenSourcePage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="font-mono text-lg font-bold text-primary">{card.name}</p>
-                  <span aria-hidden className="text-muted text-lg leading-none">↗</span>
+                  <span aria-hidden className="text-secondary text-lg leading-none">↗</span>
                 </div>
                 <p className="text-secondary text-sm leading-relaxed">{card.body}</p>
                 <span className="font-mono text-xs tracking-[0.08em] uppercase text-accent mt-auto">
@@ -134,7 +134,7 @@ export function OpenSourcePage() {
             </div>
             <div className="bg-page border border-border rounded-md overflow-hidden">
               <div className="h-9 px-4 border-b border-border bg-surface flex items-center">
-                <span className="font-mono text-xs tracking-[0.04em] text-muted">
+                <span className="font-mono text-xs tracking-[0.04em] text-secondary">
                   sensei_system_prompt.json
                 </span>
               </div>
@@ -185,7 +185,7 @@ export function OpenSourcePage() {
 function SectionHeader({ eyebrow, title }: Readonly<{ eyebrow: string; title: string }>) {
   return (
     <div className="mb-6">
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-2">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-2">
         {eyebrow}
       </p>
       <h2 className="text-primary text-2xl md:text-3xl font-semibold leading-tight tracking-tight">
@@ -199,7 +199,7 @@ function RepoStat({ label, value }: Readonly<{ label: string; value: string }>) 
   return (
     <div className="px-4 md:px-6 py-3 md:py-4 flex-1 first:md:pl-6 flex items-baseline gap-2">
       <span className="font-mono text-lg md:text-xl text-primary">{value}</span>
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
         {label}
       </span>
     </div>

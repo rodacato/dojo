@@ -122,7 +122,7 @@ export function AdminNewKataPage() {
           <button
             type="button"
             onClick={() => navigate('/admin/katas')}
-            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-secondary transition-colors mb-2"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors mb-2"
           >
             ← Back to katas
           </button>
@@ -145,7 +145,7 @@ export function AdminNewKataPage() {
         <SectionCard
           eyebrow="Basics"
           rightSlot={
-            <span className="font-mono text-xs uppercase tracking-wider text-muted bg-elevated border border-border px-2 py-0.5 rounded-sm">
+            <span className="font-mono text-xs uppercase tracking-wider text-secondary bg-elevated border border-border px-2 py-0.5 rounded-sm">
               Draft
             </span>
           }
@@ -160,10 +160,10 @@ export function AdminNewKataPage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <div className="font-mono text-xs uppercase tracking-wider text-muted">
+              <div className="font-mono text-xs uppercase tracking-wider text-secondary">
                 Variations
               </div>
-              <div className="font-mono text-xs text-muted mt-1">
+              <div className="font-mono text-xs text-secondary mt-1">
                 Each variation is a sensei persona evaluating the same kata. The user gets one per session.
               </div>
             </div>
@@ -193,10 +193,10 @@ export function AdminNewKataPage() {
 
         <SectionCard eyebrow="Status">
           <div className="flex items-center gap-4">
-            <span className="font-mono text-xs uppercase tracking-wider text-muted bg-elevated border border-border px-2 py-0.5 rounded-sm">
+            <span className="font-mono text-xs uppercase tracking-wider text-secondary bg-elevated border border-border px-2 py-0.5 rounded-sm">
               Draft
             </span>
-            <span className="text-sm text-muted">
+            <span className="text-sm text-secondary">
               New katas start as draft. Publish from Edit after preview.
             </span>
           </div>

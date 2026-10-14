@@ -229,8 +229,8 @@ export function EngawaPage() {
       {/* Header. Authed users get chrome from the sidebar, so the logo
           + Dashboard chip collapse into a single inline CTA line. */}
       {user ? (
-        <header className="flex items-center justify-between gap-4 px-4 py-1.5 border-b border-border/30 shrink-0 text-xs font-mono text-muted">
-          <span className="text-muted/70">playground</span>
+        <header className="flex items-center justify-between gap-4 px-4 py-1.5 border-b border-border/30 shrink-0 text-xs font-mono text-secondary">
+          <span className="text-secondary">playground</span>
           <Link
             to={ctaHref}
             onClick={() => handleCtaClick('banner')}
@@ -238,7 +238,7 @@ export function EngawaPage() {
           >
             like running code? <span className="text-accent">practice with a kata →</span>
           </Link>
-          <span className="shrink-0 text-muted/40">sandbox · not graded</span>
+          <span className="shrink-0 text-secondary">sandbox · not graded</span>
         </header>
       ) : (
         <header className="flex items-center justify-between gap-4 px-4 py-2 border-b border-border/30 shrink-0">
@@ -289,7 +289,7 @@ export function EngawaPage() {
           <button
             type="button"
             onClick={() => setShowAdvanced((s) => !s)}
-            className="font-mono text-xs tracking-[0.04em] text-muted hover:text-secondary transition-colors"
+            className="font-mono text-xs tracking-[0.04em] text-secondary hover:text-secondary transition-colors"
           >
             {showAdvanced ? '— hide older' : '+ older'}
           </button>
@@ -388,7 +388,7 @@ export function EngawaPage() {
                 type="button"
                 onClick={() => setAsk(INITIAL_ASK)}
                 disabled={ask.status === 'streaming'}
-                className="text-muted hover:text-secondary text-xs font-mono disabled:opacity-40"
+                className="text-secondary hover:text-primary text-xs font-mono disabled:opacity-40"
                 aria-label="close"
               >
                 ✕
@@ -404,7 +404,7 @@ export function EngawaPage() {
               className="w-full bg-surface/40 border border-border/40 rounded-sm p-2 font-mono text-xs text-primary focus:outline-none focus:border-accent resize-none"
             />
             <div className="flex items-center justify-between gap-3">
-              <span className="text-muted/60 text-xs font-mono">
+              <span className="text-secondary text-xs font-mono">
                 {ask.question.length}/2000
               </span>
               <button
@@ -432,7 +432,7 @@ export function EngawaPage() {
                 )}
               </div>
             )}
-            <p className="text-muted/60 text-xs font-mono leading-snug border-t border-border/30 pt-2">
+            <p className="text-secondary text-xs font-mono leading-snug border-t border-border/30 pt-2">
               free exploration tool, not graded practice. kata is where the sensei actually evaluates.
             </p>
           </div>
@@ -441,7 +441,7 @@ export function EngawaPage() {
 
       {/* Anonymous footer only; authed users already get the sidebar. */}
       {!user && (
-        <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-muted/50 text-xs font-mono">
+        <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-secondary text-xs font-mono">
           <span>sandbox · not graded</span>
         </footer>
       )}
@@ -452,7 +452,7 @@ export function EngawaPage() {
 function DropdownLabel({ label, children }: Readonly<{ label: string; children: React.ReactNode }>) {
   return (
     <label className="inline-flex items-center gap-2">
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{label}</span>
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">{label}</span>
       {children}
     </label>
   )
@@ -461,7 +461,7 @@ function DropdownLabel({ label, children }: Readonly<{ label: string; children: 
 function RunStatusChip({ run }: Readonly<{ run: RunState }>) {
   if (run.status === 'idle') {
     return (
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-muted border border-border bg-elevated px-2 py-0.5 rounded-sm">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-0.5 rounded-sm">
         Ready
       </span>
     )
@@ -503,7 +503,7 @@ function OutputPane({ run }: Readonly<{ run: RunState }>) {
 
 function OutputPanel({ run }: Readonly<{ run: RunState }>) {
   if (run.status === 'idle') {
-    return <p className="text-muted/50">output will appear here.</p>
+    return <p className="text-secondary">output will appear here.</p>
   }
   if (run.status === 'running') {
     return <p className="text-accent animate-pulse">executing...</p>
@@ -519,7 +519,7 @@ function OutputPanel({ run }: Readonly<{ run: RunState }>) {
       {run.stderr && (
         <pre className="text-danger-text whitespace-pre-wrap wrap-break-word">{run.stderr}</pre>
       )}
-      {!run.stdout && !run.stderr && <p className="text-muted/50">(no output)</p>}
+      {!run.stdout && !run.stderr && <p className="text-secondary">(no output)</p>}
     </div>
   )
 }

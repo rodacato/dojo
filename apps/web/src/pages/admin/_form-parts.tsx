@@ -12,7 +12,7 @@ const VARIATION_ACCENTS = [
 
 export function AdminBreadcrumb({ trail }: Readonly<{ trail: string[] }>) {
   return (
-    <div className="font-mono text-xs uppercase tracking-wider text-muted mb-4">
+    <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-4">
       {trail.join(' / ')}
     </div>
   )
@@ -46,7 +46,7 @@ export function FormField({
       <label
         id={`${id}-label`}
         htmlFor={isNativeControl ? id : undefined}
-        className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5"
+        className="block font-mono text-xs uppercase tracking-wider text-secondary mb-1.5"
       >
         {label}
       </label>
@@ -55,7 +55,7 @@ export function FormField({
         <div
           id={noteId}
           className={`text-xs mt-1.5 font-mono ${
-            error ? 'text-danger-text' : 'text-muted'
+            error ? 'text-danger-text' : 'text-secondary'
           }`}
         >
           {error ?? hint}
@@ -77,7 +77,7 @@ export function SectionCard({
   return (
     <section className="rounded-md border border-border bg-surface p-6">
       <div className="flex items-center justify-between mb-5">
-        <div className="font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           {eyebrow}
         </div>
         {rightSlot}
@@ -217,14 +217,14 @@ export function VariationCardItem({
   return (
     <div className={`rounded-md border border-border bg-surface border-l-2 ${accent} p-6`}>
       <div className="flex items-center justify-between mb-4">
-        <div className="font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           Variation {index + 1}
         </div>
         {onRemove && (
           <button
             type="button"
             onClick={onRemove}
-            className="font-mono text-xs uppercase tracking-wider text-muted hover:text-danger-text transition-colors"
+            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-danger-text transition-colors"
           >
             Remove
           </button>
@@ -274,7 +274,7 @@ export function StickyFormBar({
   return (
     <div className="sticky bottom-0 -mx-8 mt-8 px-8 py-4 border-t border-border bg-page/95 backdrop-blur z-10">
       <div className="flex items-center justify-between gap-4">
-        <div className="font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           {hint}
         </div>
         <div className="flex items-center gap-3">{children}</div>

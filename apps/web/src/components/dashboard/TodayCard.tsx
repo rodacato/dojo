@@ -82,7 +82,7 @@ function HeroLayout({
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
       <div className="flex-1 min-w-0">
-        <p className="text-muted text-xs font-mono uppercase tracking-wider mb-2">{eyebrow}</p>
+        <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-2">{eyebrow}</p>
         <h2 className="font-mono text-2xl md:text-3xl text-primary leading-tight mb-3">
           {headline}
         </h2>

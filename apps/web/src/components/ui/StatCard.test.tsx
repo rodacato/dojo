@@ -24,7 +24,7 @@ describe('StatCard', () => {
     const label = screen.getByText('Streak')
     expect(value).not.toBe(label)
     expect(value).toHaveClass('font-mono', 'text-2xl')
-    expect(label).toHaveClass('text-muted', 'text-xs')
+    expect(label).toHaveClass('text-secondary', 'text-xs')
   })
 
   it('defaults the value color to text-primary when no color is given', () => {

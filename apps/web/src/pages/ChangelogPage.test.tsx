@@ -83,7 +83,7 @@ describe('ChangelogPage', () => {
       .closest('article') as HTMLElement
 
     expect(within(phase1).getByText('Phase 1')).toHaveClass('text-accent')
-    expect(within(phase0).getByText('Phase 0')).toHaveClass('text-muted')
+    expect(within(phase0).getByText('Phase 0')).toHaveClass('text-secondary')
     expect(within(phase0).getByText('Phase 0')).not.toHaveClass('text-accent')
   })
 

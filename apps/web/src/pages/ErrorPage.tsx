@@ -40,7 +40,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
           <h1 className="text-primary font-semibold leading-tight text-3xl sm:text-4xl">
             Something broke.
           </h1>
-          <p className="mt-3 font-mono text-muted text-lg sm:text-xl">
+          <p className="mt-3 font-mono text-secondary text-lg sm:text-xl">
             The dojo is still here.<span className="text-accent animate-cursor">_</span>
           </p>
           <p className="mt-6 text-secondary text-base leading-relaxed">
@@ -56,14 +56,14 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
           {requestId && (
             <div className="mt-6 mx-auto max-w-md rounded-md border border-border bg-surface/80 p-4 text-left">
               <div className="flex items-center justify-between gap-3 mb-1">
-                <span className="font-mono text-xs uppercase tracking-wider text-muted">
+                <span className="font-mono text-xs uppercase tracking-wider text-secondary">
                   Request ID
                 </span>
                 <button
                   type="button"
                   onClick={copyRequestId}
                   aria-label="Copy request ID"
-                  className="inline-flex items-center justify-center w-7 h-7 rounded-sm text-muted hover:text-primary hover:bg-elevated transition-colors"
+                  className="inline-flex items-center justify-center w-7 h-7 rounded-sm text-secondary hover:text-primary hover:bg-elevated transition-colors"
                 >
                   <ClipboardIcon className="w-4 h-4" />
                 </button>
@@ -92,7 +92,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
       </section>
 
       <div className="border-t border-border/40 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-muted">
+        <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-secondary">
           If the error persists — report it via{' '}
           <Link to="/open-source" className="text-accent hover:underline">
             /open-source

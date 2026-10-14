@@ -36,7 +36,7 @@ export function PublicProfilePage() {
   if (loading) {
     return (
       <PublicPageLayout>
-        <div className="flex items-center justify-center min-h-[60vh] text-muted font-mono text-sm">
+        <div className="flex items-center justify-center min-h-[60vh] text-secondary font-mono text-sm">
           Loading profile<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
         </div>
       </PublicPageLayout>
@@ -102,7 +102,7 @@ export function PublicProfilePage() {
                   {profile.username}
                 </h1>
                 <p className="text-secondary text-base">@{profile.username}</p>
-                <p className="text-muted text-xs font-mono tracking-[0.04em] mt-1">
+                <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-1">
                   Member since {memberSince} · {profile.belt.rank} belt
                 </p>
               </div>
@@ -120,7 +120,7 @@ export function PublicProfilePage() {
         <section className="bg-surface border border-border rounded-md p-6 md:p-8">
           <SectionEyebrow title="Activity" />
           <Heatmap data={profile.heatmapData} days={90} />
-          <div className="flex items-center justify-between mt-3 font-mono text-xs text-muted">
+          <div className="flex items-center justify-between mt-3 font-mono text-xs text-secondary">
             <span>Each square is one day. Brighter = more kata.</span>
             <HeatmapLegend />
           </div>
@@ -176,7 +176,7 @@ function StatCell({ label, value, colorClass }: Readonly<{ label: string; value:
       <p className={`font-mono text-2xl md:text-2xl tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
         {value}
       </p>
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mt-2">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mt-2">
         {label}
       </p>
     </div>
@@ -186,7 +186,7 @@ function StatCell({ label, value, colorClass }: Readonly<{ label: string; value:
 function SectionEyebrow({ title }: Readonly<{ title: string }>) {
   return (
     <div className="flex items-center gap-3 mb-4">
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted">{title}</p>
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">{title}</p>
       <span className="flex-1 h-px bg-border" />
     </div>
   )
@@ -199,7 +199,7 @@ function BadgeMiniCard({ name, earnedAt }: Readonly<{ name: string; earnedAt: st
       <p className="font-mono text-sm font-bold tracking-[0.04em] uppercase text-primary">
         {name}
       </p>
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-muted mt-1">
+      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mt-1">
         Earned {earnedLabel}
       </p>
     </div>

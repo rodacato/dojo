@@ -59,8 +59,8 @@ describe('PublicPageLayout', () => {
     const openSource = within(nav).getByRole('link', { name: 'Open source' })
 
     expect(changelog).toHaveClass('text-primary')
-    expect(changelog).not.toHaveClass('text-muted')
-    expect(openSource).toHaveClass('text-muted')
+    expect(changelog).not.toHaveClass('text-secondary')
+    expect(openSource).toHaveClass('text-secondary')
     expect(openSource).not.toHaveClass('text-primary')
   })
 

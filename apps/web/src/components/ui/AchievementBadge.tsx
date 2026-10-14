@@ -18,11 +18,11 @@ export function AchievementBadge({ name, description, earned, earnedAt, prestige
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className={`font-mono text-lg mb-1 ${earned ? 'text-primary' : 'text-muted'}`}>{name}</p>
-            <p className={`text-sm leading-relaxed ${earned ? 'text-secondary' : 'text-muted/60'}`}>{description}</p>
+            <p className={`font-mono text-lg mb-1 ${earned ? 'text-primary' : 'text-secondary'}`}>{name}</p>
+            <p className={`text-sm leading-relaxed text-secondary`}>{description}</p>
           </div>
           {earned && earnedAt && (
-            <p className="text-muted text-xs font-mono shrink-0 ml-4">
+            <p className="text-secondary text-xs font-mono shrink-0 ml-4">
               {new Date(earnedAt).toLocaleDateString()}
             </p>
           )}
@@ -39,10 +39,10 @@ export function AchievementBadge({ name, description, earned, earnedAt, prestige
           : 'bg-surface/50 border-border/20 opacity-40'
       }`}
     >
-      <p className={`font-mono text-sm mb-1 ${earned ? 'text-primary' : 'text-muted'}`}>{name}</p>
-      <p className={`text-xs leading-relaxed ${earned ? 'text-secondary' : 'text-muted/60'}`}>{description}</p>
+      <p className={`font-mono text-sm mb-1 ${earned ? 'text-primary' : 'text-secondary'}`}>{name}</p>
+      <p className={`text-xs leading-relaxed text-secondary`}>{description}</p>
       {earned && earnedAt && (
-        <p className="text-muted text-xs font-mono mt-2">{new Date(earnedAt).toLocaleDateString()}</p>
+        <p className="text-secondary text-xs font-mono mt-2">{new Date(earnedAt).toLocaleDateString()}</p>
       )}
     </div>
   )

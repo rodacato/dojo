@@ -13,7 +13,7 @@ export function Input({ label, hint, className = '', ...props }: Readonly<InputP
         className={`w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-mono placeholder:text-muted focus:outline-none focus:border-accent transition-colors ${className}`}
         {...props}
       />
-      {hint && <p className="text-muted text-xs mt-1">{hint}</p>}
+      {hint && <p className="text-secondary text-xs mt-1">{hint}</p>}
     </div>
   )
 }
@@ -33,7 +33,7 @@ export function Textarea({ label, hint, className = '', ...props }: Readonly<Tex
         className={`w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted focus:outline-none focus:border-accent transition-colors resize-none ${className}`}
         {...props}
       />
-      {hint && <p className="text-muted text-xs mt-1">{hint}</p>}
+      {hint && <p className="text-secondary text-xs mt-1">{hint}</p>}
     </div>
   )
 }

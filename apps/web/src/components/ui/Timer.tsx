@@ -16,7 +16,7 @@ const SIZE_CLASSES: Record<TimerSize, string> = {
 }
 
 function timerColorClass(expired: boolean, isDanger: boolean, isWarning: boolean): string {
-  if (expired) return 'text-muted'
+  if (expired) return 'text-secondary'
   if (isDanger) return 'text-danger-text'
   if (isWarning) return 'text-warning'
   return 'text-primary'

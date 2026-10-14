@@ -113,7 +113,7 @@ function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
       </dl>
       <Link
         to="/belts"
-        className="text-muted text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors shrink-0 self-start md:self-auto"
+        className="text-secondary text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors shrink-0 self-start md:self-auto"
       >
         View →
       </Link>
@@ -124,7 +124,7 @@ function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
 function BeltFactor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
-      <dt className="font-mono text-xs tracking-[0.08em] uppercase text-muted mb-1">{label}</dt>
+      <dt className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-1">{label}</dt>
       <dd className="font-mono text-xl text-primary tabular-nums leading-none">{value}</dd>
     </div>
   )
@@ -147,9 +147,9 @@ function StreakCard({
       className={`${spanWhenAlone ? 'md:col-span-12' : 'md:col-span-7'} bg-surface border border-border/40 rounded-md p-6`}
     >
       <div className="flex items-center justify-between mb-4">
-        <p className="text-muted text-xs font-mono uppercase tracking-wider">Current streak</p>
+        <p className="text-secondary text-xs font-mono uppercase tracking-wider">Current streak</p>
         {weeklyGoal.target !== null && weeklyGoal.target > 0 && (
-          <p className="text-muted text-xs font-mono">
+          <p className="text-secondary text-xs font-mono">
             {weeklyGoal.completed}/{weeklyGoal.target} this week
           </p>
         )}
@@ -165,7 +165,7 @@ function StreakCard({
               className={`h-2 w-full rounded-sm ${active ? 'bg-success' : 'bg-page border border-border/40'}`}
               aria-hidden
             />
-            <span className="text-muted text-xs font-mono uppercase">
+            <span className="text-secondary text-xs font-mono uppercase">
               {WEEKDAY_LABELS[i]}
               <span className="sr-only">{active ? ': kata done' : ': no kata'}</span>
             </span>
@@ -218,7 +218,7 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
 
   return (
     <section className="md:col-span-5 bg-surface border border-border/40 rounded-md p-6">
-      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-5">Practice patterns</p>
+      <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-5">Practice patterns</p>
       <div className="flex flex-col">
         {rows.map(({ label, value }, i) => (
           <div
@@ -248,10 +248,10 @@ function RecentActivity({
   return (
     <section>
       <div className="flex items-baseline justify-between mb-3 px-1">
-        <h3 className="text-muted text-xs font-mono uppercase tracking-wider">Recent kata</h3>
+        <h3 className="text-secondary text-xs font-mono uppercase tracking-wider">Recent kata</h3>
         <button
           onClick={onAll}
-          className="text-muted text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors"
+          className="text-secondary text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors"
         >
           Full history →
         </button>
@@ -274,7 +274,7 @@ function WeakAreasCard({ weakAreas }: Readonly<{ weakAreas: DashboardData['weakA
   if (weakAreas.length === 0) return null
   return (
     <section className="bg-surface border border-border/40 rounded-md p-6">
-      <p className="text-muted text-xs font-mono uppercase tracking-wider mb-4">Weak areas</p>
+      <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-4">Weak areas</p>
       <div className="flex flex-wrap gap-2">
         {weakAreas.map((a) => (
           <span

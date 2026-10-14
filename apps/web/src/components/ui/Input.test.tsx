@@ -28,7 +28,7 @@ describe('Input', () => {
     render(<Input hint="We never share it" />)
     const hint = screen.getByText('We never share it')
     expect(hint.tagName).toBe('P')
-    expect(hint).toHaveClass('text-muted', 'text-xs')
+    expect(hint).toHaveClass('text-secondary', 'text-xs')
   })
 
   it('omits the hint paragraph when no hint prop is given', () => {

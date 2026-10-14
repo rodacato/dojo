@@ -32,7 +32,7 @@ export function EmptyState({
 
   return (
     <div className={`${wrapperClass} ${className}`}>
-      <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted mb-4">
+      <div className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-secondary mb-4">
         <span aria-hidden className="inline-block w-1.5 h-1.5 rounded-full bg-danger/80" />
         {eyebrow}
       </div>
@@ -44,7 +44,7 @@ export function EmptyState({
         </div>
       )}
       {microcopy && (
-        <p className="mt-4 font-mono text-xs text-muted max-w-xl mx-auto">{microcopy}</p>
+        <p className="mt-4 font-mono text-xs text-secondary max-w-xl mx-auto">{microcopy}</p>
       )}
     </div>
   )
