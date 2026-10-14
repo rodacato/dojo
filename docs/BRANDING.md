@@ -292,7 +292,7 @@ Los milestones no tienen puntos ni XP. Son colecciones — están o no están. E
 
 - **Canonical geometry:** `apps/web/src/brand/logo.json` (consumed by `LogoMark`). The outlined wordmark and the social composition are `brand/wordmark.svg` and `brand/social-template.svg`. Colors always come from the app's theme tokens in `apps/web/src/styles/main.css`.
 - **Generated, never hand-edited:** `site/brand/*` (lockups, icons, social cards, theme CSS), `site/favicon.svg` and `apps/web/public/favicon.svg`. Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
-- **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session.
+- **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session. The full map of canonical sources and generated outputs is [`brand/README.md`](../brand/README.md).
 - **Uploading the repository preview:** GitHub has no API for it. In the repository's Settings → General → Social preview, upload `site/brand/social-sumi.png` (1280×640 is recommended; the card is 1200×630).
 
 **Para share cards y OG images:** el host de la instancia en monospace completo (`dojo.notdefined.dev` en la instancia de referencia). El punto entre `dojo` y `notdefined` actúa como separador visual natural.
