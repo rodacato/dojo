@@ -48,7 +48,7 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
           </span>
         </div>
 
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-accent mb-3">
+        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">
           Invited by the dojo
         </p>
         <h2 id="onboarding-headline" className="text-primary text-2xl font-semibold leading-tight tracking-tight mb-3">

@@ -37,7 +37,7 @@ describe('ToastContainer', () => {
     emit(() => toast.info('PINGED'))
 
     expect(screen.getByText('PINGED')).toBeInTheDocument()
-    // Body wrapper carries text-secondary; eyebrow carries text-accent.
+    // Body wrapper carries text-secondary; eyebrow carries text-secondary.
     expect(document.querySelector('.text-secondary.leading-relaxed')).toBeNull()
   })
 
@@ -62,12 +62,12 @@ describe('ToastContainer — kind variants', () => {
     expect(screen.getByText('OK')).toHaveClass('text-success')
   })
 
-  it('info applies accent tone classes', () => {
+  it('info applies secondary tone classes', () => {
     render(<ToastContainer />)
     emit(() => toast.info('FYI'))
 
-    expect(screen.getByRole('status')).toHaveClass('border-l-accent')
-    expect(screen.getByText('FYI')).toHaveClass('text-accent')
+    expect(screen.getByRole('status')).toHaveClass('border-l-secondary')
+    expect(screen.getByText('FYI')).toHaveClass('text-secondary')
   })
 
   it('warning applies warning tone classes', () => {
@@ -90,8 +90,8 @@ describe('ToastContainer — kind variants', () => {
     render(<ToastContainer />)
     emit(() => toast({ eyebrow: 'PLAIN' }))
 
-    expect(screen.getByRole('status')).toHaveClass('border-l-accent')
-    expect(screen.getByText('PLAIN')).toHaveClass('text-accent')
+    expect(screen.getByRole('status')).toHaveClass('border-l-secondary')
+    expect(screen.getByText('PLAIN')).toHaveClass('text-secondary')
   })
 })
 
@@ -238,7 +238,7 @@ describe('badgeUnlockToast', () => {
     expect(status).toHaveTextContent('POLYGLOT')
     expect(status).toHaveTextContent('Solved katas in 5 languages')
     // Badge unlock uses the info tone.
-    expect(status).toHaveClass('border-l-accent')
+    expect(status).toHaveClass('border-l-secondary')
   })
 
   it('renders a "View all badges" action that calls onView', async () => {

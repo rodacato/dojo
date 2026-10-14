@@ -28,7 +28,7 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'chi
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'bg-accent text-on-accent border border-accent hover:bg-accent/90',
-  ghost: 'bg-transparent text-primary border border-border hover:border-accent',
+  ghost: 'bg-transparent text-primary border border-border hover:border-primary',
   subtle: 'bg-transparent text-secondary border border-transparent hover:text-primary',
   destructive: 'bg-transparent text-danger-text border border-transparent hover:bg-danger/10',
 }

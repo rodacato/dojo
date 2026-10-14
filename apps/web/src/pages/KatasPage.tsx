@@ -331,7 +331,7 @@ function SelectablePill({
       aria-pressed={selected}
       className={`group rounded-sm border font-mono transition-colors text-center ${heightClass} ${
         selected
-          ? 'border-accent bg-accent/10 text-accent'
+          ? 'border-primary bg-elevated text-primary'
           : 'border-border bg-page text-secondary hover:border-secondary'
       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent`}
     >
@@ -358,7 +358,7 @@ function ActivityStrip({ dashboard }: Readonly<{ dashboard: DashboardData | null
       <div className="flex items-baseline justify-between mb-4">
         <p className="text-secondary text-xs font-mono uppercase tracking-wider">30-day activity</p>
         <p className="text-primary text-sm font-mono">
-          <span className="text-accent">{dashboard.streak}</span> day streak
+          <span className="text-primary">{dashboard.streak}</span> day streak
         </p>
       </div>
       <div className="flex items-end gap-1 h-8">
@@ -569,12 +569,12 @@ function CustomizePanel({
                         aria-pressed={selected}
                         className={`inline-flex items-center gap-1.5 rounded-sm border px-3 py-1.5 font-mono text-xs transition-colors ${
                           selected
-                            ? 'border-accent bg-accent/10 text-accent'
+                            ? 'border-primary bg-elevated text-primary'
                             : 'border-border bg-page text-secondary hover:border-secondary'
                         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent`}
                       >
                         <span className="capitalize">{interest}</span>
-                        {selected && <span className="text-accent/70" aria-hidden>×</span>}
+                        {selected && <span className="text-secondary" aria-hidden>×</span>}
                       </button>
                     )
                   })}
@@ -600,7 +600,7 @@ function CustomizePanel({
                       aria-pressed={goalWeeklyTarget === n}
                       className={`aspect-square rounded-sm border font-mono text-xs transition-colors ${
                         goalWeeklyTarget === n
-                          ? 'border-accent bg-accent/10 text-accent'
+                          ? 'border-primary bg-elevated text-primary'
                           : 'border-border bg-page text-secondary hover:border-secondary'
                       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent`}
                     >

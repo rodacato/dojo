@@ -34,34 +34,18 @@ describe('StatCard', () => {
   })
 
   it('applies a caller-provided color to the value instead of the default', () => {
-    render(<StatCard value="1" label="Tinted" color="text-accent" />)
-
-    const value = screen.getByText('1')
-    expect(value).toHaveClass('text-accent')
-    expect(value).not.toHaveClass('text-primary')
-  })
-
-  it('uses the neutral border by default (no accent)', () => {
-    const { container } = render(<StatCard value="1" label="Plain" />)
-
-    const card = container.firstElementChild
-    expect(card).toHaveClass('border-border')
-    expect(card).not.toHaveClass('border-accent/20')
-  })
-
-  it('swaps to the accent border when accent is set', () => {
-    const { container } = render(<StatCard value="1" label="Highlighted" accent />)
-
-    const card = container.firstElementChild
-    expect(card).toHaveClass('border-accent/20')
-    expect(card).not.toHaveClass('border-border')
-  })
-
-  it('color and accent are orthogonal: accent does not change the value color', () => {
-    render(<StatCard value="1" label="Both" accent color="text-warning" />)
+    render(<StatCard value="1" label="Tinted" color="text-warning" />)
 
     const value = screen.getByText('1')
     expect(value).toHaveClass('text-warning')
     expect(value).not.toHaveClass('text-primary')
   })
+
+  it('uses the neutral border by default', () => {
+    const { container } = render(<StatCard value="1" label="Plain" />)
+
+    const card = container.firstElementChild
+    expect(card).toHaveClass('border-border')
+  })
+
 })

@@ -194,7 +194,7 @@ export function AdminScrollsPage() {
                 {scrolls.map((scroll) => (
                   <tr key={scroll.id} className="border-b border-border last:border-b-0 hover:bg-elevated transition-colors">
                     <td className="px-4 h-14 align-middle">
-                      <Link to={`/scrolls/${scroll.slug}`} className="text-primary hover:text-accent transition-colors">
+                      <Link to={`/scrolls/${scroll.slug}`} className="text-primary hover:underline transition-colors">
                         {pickLocalized(scroll.manifest.title, scroll.manifest.locales, locale)}
                       </Link>
                       <div className="font-mono text-xs text-secondary">{scroll.slug} · v{scroll.manifest.version}</div>

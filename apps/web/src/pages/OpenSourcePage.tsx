@@ -106,7 +106,7 @@ export function OpenSourcePage() {
                   <span aria-hidden className="text-secondary text-lg leading-none">↗</span>
                 </div>
                 <p className="text-secondary text-sm leading-relaxed">{card.body}</p>
-                <span className="font-mono text-xs tracking-[0.08em] uppercase text-accent mt-auto">
+                <span className="font-mono text-xs tracking-[0.08em] uppercase text-accent-text mt-auto">
                   Open in github →
                 </span>
               </a>
@@ -126,9 +126,9 @@ export function OpenSourcePage() {
               </p>
               <p>
                 Every kata carries an{' '}
-                <code className="text-accent font-mono text-sm">owner_role</code> (who the
+                <code className="text-primary font-mono text-sm">owner_role</code> (who the
                 sensei pretends to be) and an{' '}
-                <code className="text-accent font-mono text-sm">owner_context</code> (what
+                <code className="text-primary font-mono text-sm">owner_context</code> (what
                 they know). The verdict is one of three values. There is no score.
               </p>
             </div>
@@ -165,12 +165,12 @@ export function OpenSourcePage() {
             </p>
             <p>
               Decisions are written down as ADRs in{' '}
-              <code className="text-accent font-mono text-sm">docs/adr/</code>.{' '}
+              <code className="text-primary font-mono text-sm">docs/adr/</code>.{' '}
               <a
                 href={`${REPO_URL}/tree/master/docs/adr`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent underline"
+                className="text-accent-text underline"
               >
                 Browse the decision records →
               </a>

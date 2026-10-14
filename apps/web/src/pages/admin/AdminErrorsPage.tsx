@@ -406,7 +406,7 @@ function statusColor(status: number | null): string {
 }
 
 function methodColor(method: string | null): string {
-  if (method === 'WS') return 'text-accent'
+  if (method === 'WS') return 'text-primary'
   if (method == null) return 'text-secondary'
   return 'text-secondary'
 }

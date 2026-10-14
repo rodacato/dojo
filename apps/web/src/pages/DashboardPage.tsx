@@ -155,7 +155,7 @@ function StreakCard({
         )}
       </div>
       <div className="flex items-baseline gap-2 mb-6">
-        <span className="font-mono text-5xl text-accent leading-none tracking-tight">{streak}</span>
+        <span className="font-mono text-5xl text-primary leading-none tracking-tight">{streak}</span>
         <span className="font-mono text-secondary text-sm">days</span>
       </div>
       <div className="flex gap-1.5">
@@ -199,7 +199,7 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
     rows.push({
       label: 'Most avoided',
       value: (
-        <span className="font-mono text-accent text-xs uppercase tracking-wider bg-accent/10 px-2 py-0.5 rounded-sm">
+        <span className="font-mono text-primary text-xs uppercase tracking-wider bg-elevated px-2 py-0.5 rounded-sm">
           {practicePatterns.mostAvoidedType}
         </span>
       ),

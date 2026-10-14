@@ -236,7 +236,7 @@ export function EngawaPage() {
             onClick={() => handleCtaClick('banner')}
             className="hover:text-secondary transition-colors truncate"
           >
-            like running code? <span className="text-accent">practice with a kata →</span>
+            like running code? <span className="text-accent-text">practice with a kata →</span>
           </Link>
           <span className="shrink-0 text-secondary">sandbox · not graded</span>
         </header>
@@ -248,7 +248,7 @@ export function EngawaPage() {
           <Link
             to={ctaHref}
             onClick={() => handleCtaClick('topbar')}
-            className="text-xs font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-accent/50 shrink-0"
+            className="text-xs font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-primary shrink-0"
           >
             Sign in
           </Link>
@@ -289,7 +289,7 @@ export function EngawaPage() {
           <button
             type="button"
             onClick={() => setShowAdvanced((s) => !s)}
-            className="font-mono text-xs tracking-[0.04em] text-secondary hover:text-secondary transition-colors"
+            className="font-mono text-xs tracking-[0.04em] text-secondary hover:text-primary transition-colors"
           >
             {showAdvanced ? '— hide older' : '+ older'}
           </button>
@@ -301,7 +301,7 @@ export function EngawaPage() {
             <button
               type="button"
               onClick={() => setAsk((a) => ({ ...a, open: true }))}
-              className="font-mono text-xs tracking-[0.04em] uppercase border border-border text-secondary hover:border-accent hover:text-primary transition-colors px-3 h-7 inline-flex items-center rounded-sm"
+              className="font-mono text-xs tracking-[0.04em] uppercase border border-border text-secondary hover:border-primary hover:text-primary transition-colors px-3 h-7 inline-flex items-center rounded-sm"
             >
               Ask the sensei
             </button>
@@ -335,7 +335,7 @@ export function EngawaPage() {
               placeholder="write some code and hit run"
             />
           </Panel>
-          <PanelResizeHandle className="w-px bg-border hover:bg-accent/50 cursor-col-resize transition-colors" />
+          <PanelResizeHandle className="w-px bg-border hover:bg-secondary cursor-col-resize transition-colors" />
           <Panel defaultSize={38} minSize={20}>
             <OutputPane run={run} />
           </Panel>

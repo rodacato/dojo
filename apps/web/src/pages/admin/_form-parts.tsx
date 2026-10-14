@@ -5,7 +5,7 @@ import { ChipSelect } from '../../components/ui/ChipSelect'
 import { ChipInput } from '../../components/ui/ChipInput'
 
 const VARIATION_ACCENTS = [
-  'border-l-accent',
+  'border-l-secondary',
   'border-l-type-chat',
   'border-l-type-whiteboard',
 ]

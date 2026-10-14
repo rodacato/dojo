@@ -54,7 +54,7 @@ export function NotFoundPage() {
       <div className="border-t border-border/40 px-4 md:px-8">
         <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-secondary">
           If this is a mistake —{' '}
-          <Link to="/open-source" className="text-accent hover:underline">
+          <Link to="/open-source" className="text-accent-text hover:underline">
             report this URL →
           </Link>
         </div>

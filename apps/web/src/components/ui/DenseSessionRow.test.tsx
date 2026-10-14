@@ -160,14 +160,14 @@ describe('DenseSessionRow', () => {
   })
 
   describe('highlightUser', () => {
-    it('applies the accent tint when highlighted', () => {
+    it('applies the elevated tint when highlighted', () => {
       renderRow({ highlightUser: true })
-      expect(screen.getByRole('button')).toHaveClass('bg-accent/5')
+      expect(screen.getByRole('button')).toHaveClass('bg-elevated')
     })
 
-    it('omits the accent tint by default', () => {
+    it('omits the elevated tint by default', () => {
       renderRow({ highlightUser: false })
-      expect(screen.getByRole('button')).not.toHaveClass('bg-accent/5')
+      expect(screen.getByRole('button')).not.toHaveClass('bg-elevated')
     })
   })
 })

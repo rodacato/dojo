@@ -157,8 +157,8 @@ export function AdminInvitationsPage() {
         )}
 
         {lastCreated && (
-          <div className="mt-5 rounded-md border border-border border-l-4 border-l-accent bg-page p-4">
-            <div className="font-mono text-xs uppercase tracking-wider text-accent mb-2">
+          <div className="mt-5 rounded-md border border-border border-l-4 border-l-border bg-page p-4">
+            <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-2">
               Last created · {lastCreatedAge}
             </div>
             <div className="flex items-center justify-between gap-3">

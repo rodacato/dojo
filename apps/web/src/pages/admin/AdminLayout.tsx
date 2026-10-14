@@ -43,7 +43,7 @@ export function AdminLayout() {
               className={({ isActive }) =>
                 `flex items-center gap-2 px-3 h-8 text-sm transition-colors border-l-2 ${
                   isActive
-                    ? 'bg-elevated text-primary border-accent'
+                    ? 'bg-elevated text-primary border-primary'
                     : 'text-secondary border-transparent hover:text-primary'
                 }`
               }
@@ -82,7 +82,7 @@ export function AdminLayout() {
           )}
           <Link
             to="/dashboard"
-            className="block font-mono text-xs uppercase tracking-wider text-secondary hover:text-secondary transition-colors"
+            className="block font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
           >
             ← Back to dojo
           </Link>

@@ -66,7 +66,7 @@ export function DenseSessionRow({
       type="button"
       onClick={onClick}
       className={`w-full h-12 flex items-center gap-3 px-4 border-b border-border hover:bg-surface transition-colors text-left ${
-        highlightUser ? 'bg-accent/5' : ''
+        highlightUser ? 'bg-elevated' : ''
       }`}
     >
       <div className="w-15 shrink-0">

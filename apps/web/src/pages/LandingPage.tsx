@@ -616,8 +616,8 @@ function RequestAccessForm() {
 
   if (submitted) {
     return (
-      <div className="bg-surface border border-accent/30 rounded-md p-6">
-        <p className="font-mono text-accent text-xs uppercase tracking-wider mb-2">[ Received ]</p>
+      <div className="bg-surface border border-border rounded-md p-6">
+        <p className="font-mono text-secondary text-xs uppercase tracking-wider mb-2">[ Received ]</p>
         <p className="text-secondary text-sm leading-relaxed">
           No newsletter. No notifications. The operator of this instance will reach out directly.
         </p>

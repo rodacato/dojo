@@ -260,7 +260,7 @@ function PrestigeMilestoneCard({ milestone }: Readonly<{ milestone: MilestoneVie
 
   return (
     <div
-      className={`bg-surface border border-border border-l-2 border-l-accent rounded-md p-6 md:p-8 ${
+      className={`bg-surface border border-border border-l-2 border-l-secondary rounded-md p-6 md:p-8 ${
         milestone.earned ? '' : 'opacity-50'
       }`}
     >

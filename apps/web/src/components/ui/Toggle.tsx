@@ -23,7 +23,7 @@ export function Toggle({ checked, onChange, label, ariaLabel, disabled, id }: Re
       onClick={() => !disabled && onChange(!checked)}
       disabled={disabled}
       className={`relative inline-flex h-4 w-8 items-center rounded-sm border transition-colors shrink-0 ${
-        checked ? 'bg-accent border-accent' : 'bg-page border-border'
+        checked ? 'bg-elevated border-primary' : 'bg-page border-border'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       <span

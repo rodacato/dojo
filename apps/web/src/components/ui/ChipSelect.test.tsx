@@ -23,7 +23,7 @@ describe('ChipSelect', () => {
     const ruby = screen.getByRole('button', { name: 'ruby ×' })
     expect(rust).toBeInTheDocument()
     expect(ruby).toBeInTheDocument()
-    expect(rust).toHaveClass('bg-accent/10')
+    expect(rust).toHaveClass('bg-elevated')
   })
 
   it('removes a value from the selection when its chip is clicked', async () => {

@@ -52,11 +52,11 @@ export function InviteRedeemPage() {
           </p>
           <p className="text-secondary">
             By continuing you accept the{' '}
-            <Link to="/terms" className="text-accent underline hover:text-accent/80">
+            <Link to="/terms" className="text-accent-text underline hover:text-accent-text">
               Terms
             </Link>{' '}
             and{' '}
-            <Link to="/privacy" className="text-accent underline hover:text-accent/80">
+            <Link to="/privacy" className="text-accent-text underline hover:text-accent-text">
               Privacy policy
             </Link>
             .
@@ -67,7 +67,7 @@ export function InviteRedeemPage() {
       {/* Outside card */}
       <p className="text-secondary text-xs mt-8 text-center px-4">
         Not invited?{' '}
-        <Link to="/" className="text-accent underline hover:text-accent/80">
+        <Link to="/" className="text-accent-text underline hover:text-accent-text">
           Read what dojo is.
         </Link>
       </p>
