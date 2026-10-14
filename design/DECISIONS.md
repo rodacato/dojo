@@ -1,12 +1,12 @@
-# Design decisions — open questions & findings (D1–D47)
+# Design decisions — open questions & findings (D1–D48)
 
 > **This is the registry the `.pen` files point at.** Briefs in `flows/*.pen` and warning
 > notes in `ui-kit.lib.pen` cite these by number. Keep entries after resolution — record the
 > outcome instead of deleting; the reasoning is the useful part.
 
-**Status:** 47 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
-neighbours or fixed in-flow while drawing, so the series has gaps) · 10 resolved (D2, D6, D15, D21,
-D42, D43, D44, D45, D46, D47) · the rest open until Adrian decides · 🐞 real app bugs
+**Status:** 48 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
+neighbours or fixed in-flow while drawing, so the series has gaps) · 11 resolved (D2, D6, D15, D21,
+D42, D43, D44, D45, D46, D47, D48) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
 **How entries work.** A `D<n>` is a *finding*: logged when the design and the code disagree
@@ -91,6 +91,7 @@ not listed: they are taste, not findings.
 | **D45** | Public profile shows the same value as the title and as `@handle` | ✅ Resolved: the title is the username and the separate `@handle` line is gone. A display name waits until one exists |
 | **D46** | Contrast in sumi, measured 2026-10-14 (WCAG, on `#0A0908` / `#13110F`): `muted` 2.67 / 2.53, `danger` as text 2.67 / 2.52, `accent` as text 3.47 / 3.28, `muted/40` 1.34. Washi: `muted` 3.45, `warning` as text 2.64, `success` 4.28. `secondary` (7.16), `primary` and `on-accent` on accent (4.92) pass | ✅ **Decided: hybrid by token** (2026-10-14), mirrored in kit 0.3.0. `muted`: fix by usage, as the brand guide says; text people must read uses `secondary`, `muted` stays decorative or placeholder, and stacked opacities below 70% on text go away. `danger` and `accent` as text: two derived tokens, `danger-text` (sumi about `#B6675D`, 4.56 on surface) and `accent-text` (sumi about `#C35E53`, 4.53). The approved values do not change. Washi `warning` and `success` as text need their own derived values. Lands with D42 and the Open Gate integration; the kit bumps when the tokens exist. **Rejected: change the values only** — tested the smallest code change; lost because it moves approved brand values and also lightens borders and fills that pass today; would come back if the derived tokens prove too many to maintain |
 | **D47** | On-accent text on the slate accent measures 4.47:1 (`#FFFFFF` on `#6366F1`), 0.03 under AA for body text; sumi and washi pass (4.92 and above). The contrast test excludes slate from that assertion | ✅ Accepted: slate is the explicit-choice theme, the labels are 14px or larger, and the fix would move a brand value. The contrast test says so where it skips slate |
+| **D48** | Leaving the kata form with edits (Back, Cancel, closing the tab) loses them silently. The app uses `BrowserRouter`, so `useBlocker` is not available | ✅ Resolved: the browser warns on close or reload while the form is dirty, and the three exit buttons ask "Leave without saving?" first. Sidebar links and the browser Back button are not guarded. **Rejected: migrate to a data router for `useBlocker`** — would also catch those two; lost on cost, since it rewrites the routing and every test that mounts a `MemoryRouter`; would come back if edits get lost through the sidebar in practice. **Rejected: autosave a draft to `localStorage`** — more code and edge cases than the loss justifies |
 
 **Wording and links settled in PR #155:** sign in / sign out, one way in on anonymous Engawa,
 Kumite placeholder trimmed, whiteboard kata copy, Ask the sensei on the shared modal.
