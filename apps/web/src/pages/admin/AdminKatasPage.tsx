@@ -5,6 +5,7 @@ import { api, type AdminKataDTO } from '../../lib/api'
 import { TypeBadge, DifficultyBadge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorState } from '../../components/ui/ErrorState'
 import { Pagination } from '../../components/ui/Pagination'
 
 type StatusFilter = 'all' | 'published' | 'draft' | 'archived'
@@ -18,6 +19,8 @@ export function AdminKatasPage() {
   const navigate = useNavigate()
   const [katas, setKatas] = useState<AdminKataDTO[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [reloadTick, setReloadTick] = useState(0)
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('all')
@@ -26,11 +29,14 @@ export function AdminKatasPage() {
   const [page, setPage] = useState(1)
 
   useEffect(() => {
+    setLoading(true)
+    setLoadError(false)
     api
       .getAdminKatas()
       .then(setKatas)
+      .catch(() => setLoadError(true))
       .finally(() => setLoading(false))
-  }, [])
+  }, [reloadTick])
 
   const counts = useMemo(() => {
     const c = { published: 0, draft: 0, archived: 0 }
@@ -183,14 +189,21 @@ export function AdminKatasPage() {
           }
         />
       )}
-      {!loading && katas.length === 0 && (
+      {!loading && loadError && (
+        <ErrorState
+          variant="inline"
+          message="We couldn't load the katas."
+          primaryAction={{ label: 'Try again', onClick: () => setReloadTick((t) => t + 1) }}
+        />
+      )}
+      {!loading && !loadError && katas.length === 0 && (
         <EmptyState
           eyebrow="Empty · Katas"
           headline="No katas in the catalog yet."
           microcopy="Use the New kata button above to create the first one."
         />
       )}
-      {!(!loading && (katas.length === 0 || pageRows.length === 0)) && (
+      {!(!loading && (loadError || katas.length === 0 || pageRows.length === 0)) && (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

@@ -32,7 +32,7 @@ export type EvalStreamState =
 
 interface WsMessage {
   type: 'ready' | 'executing' | 'execution_result' | 'token' | 'evaluation' | 'complete' | 'error'
-  chunk?: string
+  content?: string
   result?: EvaluationResult | ExecutionResult
   code?: string
   message?: string
@@ -78,7 +78,7 @@ export function useEvaluationStream(sessionId: string) {
         case 'token':
           setState((prev) => ({
             status: 'streaming',
-            tokens: (prev.status === 'streaming' ? prev.tokens : '') + (msg.chunk ?? ''),
+            tokens: (prev.status === 'streaming' ? prev.tokens : '') + (msg.content ?? ''),
             executionResult: latestExecResult.current,
           }))
           break

@@ -122,8 +122,8 @@ describe('useEvaluationStream', () => {
     act(() => result.current.connect())
     const ws = FakeWebSocket.last()
 
-    act(() => ws.emit({ type: 'token', chunk: 'Looks ' }))
-    act(() => ws.emit({ type: 'token', chunk: 'good' }))
+    act(() => ws.emit({ type: 'token', content: 'Looks ' }))
+    act(() => ws.emit({ type: 'token', content: 'good' }))
 
     expect(result.current.state).toMatchObject({
       status: 'streaming',
@@ -142,7 +142,7 @@ describe('useEvaluationStream', () => {
       executionResult: execResult,
     })
 
-    act(() => ws.emit({ type: 'token', chunk: 'hi' }))
+    act(() => ws.emit({ type: 'token', content: 'hi' }))
     expect(result.current.state).toMatchObject({
       status: 'streaming',
       tokens: 'hi',
@@ -155,7 +155,7 @@ describe('useEvaluationStream', () => {
     act(() => result.current.connect())
     const ws = FakeWebSocket.last()
 
-    act(() => ws.emit({ type: 'token', chunk: 'verdict: ' }))
+    act(() => ws.emit({ type: 'token', content: 'verdict: ' }))
     act(() => ws.emit({ type: 'evaluation', result: passingResult }))
     act(() => ws.emit({ type: 'complete' }))
 

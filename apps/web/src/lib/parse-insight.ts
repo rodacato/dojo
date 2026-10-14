@@ -27,3 +27,7 @@ export function parseInsight(text: string): Insight {
     approachNote,
   }
 }
+
+export function stripInsightTags(text: string): string {
+  return text.replace(/<(strengths|improvements|approach_note)>[\s\S]*?<\/\1>/g, '').replace(/\n{3,}/g, '\n\n').trim()
+}

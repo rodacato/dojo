@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../lib/api'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
+import { ErrorState } from '../../components/ui/ErrorState'
 import { Pagination } from '../../components/ui/Pagination'
 import { AdminBreadcrumb } from './_form-parts'
 
@@ -27,6 +28,7 @@ const PAGE_SIZE = 8
 export function AdminInvitationsPage() {
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [email, setEmail] = useState('')
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -45,6 +47,7 @@ export function AdminInvitationsPage() {
   }, [])
 
   function loadInvitations() {
+    setLoadError(false)
     api
       .getInvitations()
       .then((data) => {
@@ -53,6 +56,7 @@ export function AdminInvitationsPage() {
       })
       .catch((err) => {
         setError(err instanceof Error ? err.message : 'Failed to load invitations')
+        setLoadError(true)
         setLoading(false)
       })
   }
@@ -143,7 +147,7 @@ export function AdminInvitationsPage() {
         </div>
 
         {error && (
-          <div className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger">
+          <div role="alert" className="mt-4 rounded-sm border border-danger/40 bg-danger/10 px-4 py-2 font-mono text-sm text-danger">
             {error}
           </div>
         )}
@@ -176,7 +180,15 @@ export function AdminInvitationsPage() {
         )}
       </form>
 
-      {!loading && invitations.length === 0 ? (
+      {!loading && loadError && (
+        <ErrorState
+          variant="inline"
+          message="We couldn't load the invitations."
+          primaryAction={{ label: 'Try again', onClick: loadInvitations }}
+        />
+      )}
+
+      {!loadError && (!loading && invitations.length === 0 ? (
         <EmptyState
           eyebrow="Empty · Invitations"
           headline="No invitations created yet."
@@ -256,7 +268,7 @@ export function AdminInvitationsPage() {
           </table>
         </div>
       </div>
-      )}
+      ))}
 
       {!loading && invitations.length > 0 && (
         <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-muted">

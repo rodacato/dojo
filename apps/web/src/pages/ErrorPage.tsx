@@ -93,7 +93,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
 
       <div className="border-t border-border/40 px-4 md:px-8">
         <div className="max-w-3xl mx-auto py-5 text-center font-mono text-xs uppercase tracking-wider text-muted">
-          If the error persists — share the request ID via{' '}
+          If the error persists — report it via{' '}
           <Link to="/open-source" className="text-accent hover:underline">
             /open-source
           </Link>

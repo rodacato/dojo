@@ -44,6 +44,7 @@ export function SharePage() {
   if (error === 'notfound') {
     return (
       <ErrorState
+        kind="not-found"
         message="This kata result doesn't exist or isn't public yet."
         primaryAction={{ label: 'Enter the dojo', to: '/' }}
       />

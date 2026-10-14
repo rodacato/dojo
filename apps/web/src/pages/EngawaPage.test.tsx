@@ -232,9 +232,21 @@ describe('EngawaPage', () => {
         )
       ).length,
     ).toBeGreaterThan(0)
-    expect(screen.getByText(/Error · exit 1/)).toBeInTheDocument()
+    expect(screen.getByText('Error · did not run')).toBeInTheDocument()
+    expect(screen.queryByText(/exit 1/)).not.toBeInTheDocument()
     // Distinct from the success path — no OK chip leaked.
     expect(screen.queryByText(/OK · exit/)).not.toBeInTheDocument()
+  })
+
+  it('shows the real exit code when the program ran and failed', async () => {
+    const u = userEvent.setup()
+    mockedRun.mockResolvedValue(runResult({ stderr: 'boom', exitCode: 2 }))
+
+    renderAt('/engawa')
+
+    await u.click(screen.getByRole('button', { name: /Run/ }))
+
+    expect(await screen.findByText(/Error · exit 2/)).toBeInTheDocument()
   })
 
   it('changing the language swaps starter code, resets the run, and navigates', async () => {

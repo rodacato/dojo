@@ -245,7 +245,7 @@ export function KataActivePage() {
         </div>
         <div className="flex justify-end">
           <Button
-            variant={timedOut ? 'destructive' : 'primary'}
+            variant="primary"
             size="sm"
             onClick={handleSubmit}
             loading={submitting}
@@ -442,7 +442,7 @@ function ChatEditor({
         onKeyDown={handleKeyDown}
         placeholder={placeholder ?? 'Think out loud. The sensei reads everything.'}
         spellCheck={false}
-        className={`flex-1 bg-page text-primary resize-none focus:outline-none px-6 py-5 placeholder:text-muted leading-relaxed ${
+        className={`flex-1 bg-page text-primary resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-accent px-6 py-5 placeholder:text-muted leading-relaxed ${
           font === 'mono' ? 'font-mono text-sm' : 'font-sans text-base'
         }`}
       />

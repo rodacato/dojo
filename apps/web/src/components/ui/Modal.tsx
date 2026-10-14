@@ -5,11 +5,21 @@ interface ModalProps {
   onClose?: () => void
   /** If true, clicking outside or pressing Escape won't close the modal */
   flow?: boolean
+  /** Accessible name for the dialog. */
+  label?: string
   children: React.ReactNode
 }
 
-export function Modal({ open, onClose, flow = false, children }: Readonly<ModalProps>) {
+export function Modal({ open, onClose, flow = false, label, children }: Readonly<ModalProps>) {
   const overlayRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const previous = document.activeElement as HTMLElement | null
+    panelRef.current?.focus()
+    return () => previous?.focus?.()
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -35,7 +45,14 @@ export function Modal({ open, onClose, flow = false, children }: Readonly<ModalP
         if (!flow && onClose && e.target === overlayRef.current) onClose()
       }}
     >
-      <div className="bg-surface border border-border rounded-md max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={label}
+        tabIndex={-1}
+        className="bg-surface border border-border rounded-md max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto focus:outline-none"
+      >
         {children}
       </div>
     </div>

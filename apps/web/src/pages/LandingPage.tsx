@@ -553,7 +553,7 @@ function OpenSourceStrip() {
 }
 
 function GitHubStatsRow() {
-  const [stats, setStats] = useState<GitHubStats>({ stars: 0, forks: 0, language: 'TypeScript' })
+  const [stats, setStats] = useState<GitHubStats | null>(null)
   useEffect(() => {
     let cancelled = false
     api
@@ -561,14 +561,12 @@ function GitHubStatsRow() {
       .then((data) => {
         if (!cancelled) setStats(data)
       })
-      .catch(() => {
-        // Endpoint already returns a safe fallback on its own failure path —
-        // if even that round-trip fails, keep the initial zeroed state.
-      })
+      .catch(() => {})
     return () => {
       cancelled = true
     }
   }, [])
+  if (!stats) return null
   return (
     <div className="flex items-center justify-center gap-8 text-xs font-mono mt-6">
       <span className="text-secondary">

@@ -90,7 +90,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
   const primaryDisabled = busy || !matched
 
   return (
-    <Modal open onClose={() => !busy && onCancel()} flow={busy}>
+    <Modal open onClose={() => !busy && onCancel()} flow={busy} label={title}>
       <div className="p-8">
         <div
           className={`font-mono text-xs uppercase tracking-wider mb-2 ${TONE_TEXT[tone]}`}

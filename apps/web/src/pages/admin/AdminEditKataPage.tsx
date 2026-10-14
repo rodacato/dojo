@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button'
 import { ConfirmModal } from '../../components/ui/ConfirmModal'
 import { Toggle } from '../../components/ui/Toggle'
 import { PageLoader } from '../../components/PageLoader'
+import { ErrorState } from '../../components/ui/ErrorState'
 import {
   AdminBreadcrumb,
   type BasicsValue,
@@ -58,9 +59,12 @@ export function AdminEditKataPage() {
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState(false)
+  const [loadError, setLoadError] = useState(false)
+  const [reloadTick, setReloadTick] = useState(0)
 
   useEffect(() => {
     if (!id) return
+    setLoadError(false)
     api.getAdminKata(id).then((ex) => {
       const next: FormState = {
         title: ex.title,
@@ -85,7 +89,7 @@ export function AdminEditKataPage() {
         labels[v.id] = `VAR ${i + 1}`
       })
       setVariationLabels(labels)
-    })
+    }).catch(() => setLoadError(true))
     api.getKataFeedback(id).then(setFeedback).catch((err: unknown) => {
       errorReporter.report({
         message: err instanceof Error ? err.message : 'Failed to fetch kata feedback',
@@ -93,13 +97,23 @@ export function AdminEditKataPage() {
         route: '/admin/katas/:id',
       })
     })
-  }, [id])
+  }, [id, reloadTick])
 
   const dirty = useMemo(() => {
     if (!form || !initialRef.current) return false
     return JSON.stringify(form) !== JSON.stringify(initialRef.current)
   }, [form])
 
+  if (!form && loadError) {
+    return (
+      <ErrorState
+        variant="inline"
+        message="We couldn't load this kata."
+        primaryAction={{ label: 'Try again', onClick: () => setReloadTick((t) => t + 1) }}
+        secondaryAction={{ label: 'Back to katas', onClick: () => navigate('/admin/katas') }}
+      />
+    )
+  }
   if (!form) return <PageLoader />
 
   const titleInvalid = form.title.trim().length === 0
