@@ -69,6 +69,10 @@ export async function buildAssets(root = repo) {
   }
   assets.set('site/favicon.svg', assets.get('site/brand/icon-washi.svg'))
   assets.set('apps/web/public/favicon.svg', assets.get('site/brand/icon-washi.svg'))
+  assets.set(
+    'apps/web/public/apple-touch-icon.svg',
+    assets.get('site/brand/icon-sumi.svg').replace('rx="8"', 'rx="20"'),
+  )
   return assets
 }
 
