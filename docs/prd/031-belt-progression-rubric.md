@@ -32,6 +32,8 @@ This means:
 - Pass *rate* over a window may be — but as a quality floor, not a accelerator (see Option B).
 - The factors that count must be ones the user can't manipulate by attacking the evaluator.
 
+> **As built (2026-10-14):** the verdict adds no points, but it still gates what counts. Only sessions with status `completed` enter the history, and a `needs_work` verdict ends a session as `failed`, so that kata is not counted. `passed` and `passed_with_notes` both count.
+
 ---
 
 ## Perspectives
