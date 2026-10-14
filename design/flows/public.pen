@@ -13093,16 +13093,6 @@
                         },
                         {
                           "type": "text",
-                          "id": "y6uzf",
-                          "name": "Handle",
-                          "fill": "$color-secondary",
-                          "content": "@username",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
                           "id": "nIq82",
                           "name": "Meta",
                           "fill": "$color-secondary",
@@ -15707,6 +15697,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "euUAY",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.3.0 · profile header shows the username once; the separate @handle line is gone (D45)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",

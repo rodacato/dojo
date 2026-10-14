@@ -94,7 +94,7 @@ describe('PublicProfilePage', () => {
     renderProfile()
 
     expect(await screen.findByRole('heading', { name: 'kenobi' })).toBeInTheDocument()
-    expect(screen.getByText('@kenobi')).toBeInTheDocument()
+    expect(screen.queryByText('@kenobi')).not.toBeInTheDocument()
     expect(screen.getByText(/Member since January 2026 · green belt/)).toBeInTheDocument()
 
     // Stats grid: distinct values per cell.
@@ -127,7 +127,7 @@ describe('PublicProfilePage', () => {
     expect(screen.queryByText('First Kata')).not.toBeInTheDocument()
     expect(screen.queryByText('Reverse a linked list')).not.toBeInTheDocument()
     // Header still renders so this is a populated-but-quiet profile, not an error.
-    expect(screen.getByText('@kenobi')).toBeInTheDocument()
+    expect(screen.getByText(/Member since/)).toBeInTheDocument()
   })
 
   it('navigates to the share page when a recent kata row is clicked', async () => {
