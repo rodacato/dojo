@@ -137,6 +137,14 @@ describe('AdminKatasPage', () => {
     expect(await screen.findByText('edit kata form')).toBeInTheDocument()
   })
 
+  it('exposes the title as a link to the edit page for keyboard users', async () => {
+    renderPage()
+
+    const link = await screen.findByRole('link', { name: 'Rate limiter' })
+
+    expect(link).toHaveAttribute('href', '/admin/katas/k1/edit')
+  })
+
   it('navigates to the new-kata route from the header button', async () => {
     const user = userEvent.setup()
     renderPage()

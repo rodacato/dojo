@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { KataType, Difficulty } from '@dojo/shared'
 import { api, type AdminKataDTO } from '../../lib/api'
 import { TypeBadge, DifficultyBadge } from '../../components/ui/Badge'
@@ -249,13 +249,15 @@ export function AdminKatasPage() {
                         <DifficultyBadge difficulty={ex.difficulty as Difficulty} />
                       </td>
                       <td className="px-4 h-14 align-middle">
-                        <span
-                          className={`text-base font-medium text-primary ${
+                        <Link
+                          to={`/admin/katas/${ex.id}/edit`}
+                          onClick={(e) => e.stopPropagation()}
+                          className={`text-base font-medium text-primary rounded-sm focus-visible:outline-2 focus-visible:outline-accent ${
                             archived ? 'line-through opacity-60' : ''
                           }`}
                         >
                           {ex.title}
-                        </span>
+                        </Link>
                       </td>
                       <td className="px-4 h-14 align-middle text-right font-mono tabular-nums text-base text-primary">
                         {ex.sessionCount.toLocaleString()}
@@ -366,7 +368,7 @@ function FilterSelect<T extends string>({
 }>) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
-    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent transition-colors cursor-pointer">
+    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
       <span className="text-muted mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
       <ChevronDownIcon className="w-3 h-3 text-muted" />

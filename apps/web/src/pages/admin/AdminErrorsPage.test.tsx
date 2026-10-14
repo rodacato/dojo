@@ -121,6 +121,34 @@ describe('AdminErrorsPage', () => {
     expect(screen.getByText(/req-1/)).toBeInTheDocument()
   })
 
+  it('expands and collapses a row from the keyboard and reports the state', async () => {
+    const user = userEvent.setup()
+    renderPage()
+    const row = (await screen.findByText('DB write failed')).closest('tr') as HTMLElement
+    expect(row).toHaveAttribute('aria-expanded', 'false')
+
+    row.focus()
+    await user.keyboard('{Enter}')
+    expect(await screen.findByText(/at db.ts:1/)).toBeInTheDocument()
+    expect(row).toHaveAttribute('aria-expanded', 'true')
+
+    await user.keyboard(' ')
+    expect(screen.queryByText(/at db.ts:1/)).not.toBeInTheDocument()
+  })
+
+  it('does not throw or claim a copy when the clipboard is denied', async () => {
+    const user = userEvent.setup()
+    const writeText = vi.fn().mockRejectedValue(new Error('denied'))
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
+    renderPage()
+    await user.click(await screen.findByText('DB write failed'))
+
+    await user.click(await screen.findByText('Copy trace'))
+
+    expect(writeText).toHaveBeenCalledTimes(1)
+    expect(screen.queryByText('Copied')).not.toBeInTheDocument()
+  })
+
   it('copies a formatted trace to the clipboard', async () => {
     const user = userEvent.setup()
     const writeText = vi.fn().mockResolvedValue(undefined)

@@ -85,7 +85,11 @@ export function AdminInvitationsPage() {
   }
 
   async function copyUrl(id: string, url: string) {
-    await navigator.clipboard.writeText(url)
+    try {
+      await navigator.clipboard.writeText(url)
+    } catch {
+      return
+    }
     setCopiedTokenId(id)
     setTimeout(() => setCopiedTokenId(null), 2000)
   }
@@ -246,7 +250,7 @@ export function AdminInvitationsPage() {
                           expired ? 'text-danger-text' : 'text-secondary'
                         }`}
                       >
-                        {expired ? 'expired' : relativeFromNow(now, expiresMs, 'future')}
+                        {expiryLabel(inv.status, expired, now, expiresMs)}
                       </td>
                       <td className="px-4 h-12 align-middle text-right">
                         {inv.status === 'pending' ? (
@@ -325,6 +329,12 @@ function InviteStatusBadge({ status }: Readonly<{ status: string }>) {
 function midEllipsis(token: string) {
   if (token.length <= 10) return token
   return `${token.slice(0, 4)}…${token.slice(-4)}`
+}
+
+function expiryLabel(status: string, expired: boolean, now: number, expiresMs: number): string {
+  if (status === 'used') return '—'
+  if (expired) return 'expired'
+  return relativeFromNow(now, expiresMs, 'future')
 }
 
 function relativeFromNow(now: number, target: number, direction: 'past' | 'future'): string {
