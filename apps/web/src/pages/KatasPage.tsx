@@ -427,7 +427,7 @@ function KataCard({
           <div className="flex flex-wrap gap-x-2 gap-y-1 font-mono text-xs">
             {ex.tags.slice(0, 4).map((tag) => (
               <span key={tag} className="text-secondary">
-                <span className="text-accent">#</span>
+                <span className="text-muted">#</span>
                 {tag}
               </span>
             ))}
@@ -443,7 +443,7 @@ function KataCard({
           </p>
         </div>
         <span
-          className={`text-xl ${starting ? 'text-accent animate-cursor' : 'text-accent group-hover:translate-x-0.5 transition-transform'}`}
+          className={`text-xl ${starting ? 'text-accent animate-cursor' : 'text-secondary group-hover:translate-x-0.5 group-hover:text-primary transition'}`}
           aria-hidden
         >
           {starting ? '_' : '→'}
