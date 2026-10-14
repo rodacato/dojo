@@ -13,6 +13,12 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.1.1 — code sync after the UI review
+
+- `ErrorState/Content` centers its content, as the code does (`text-center`).
+- Sidebar items read "sign out", matching PR #155.
+- Vendored by all five flows (kit-version-source `0.1.1`).
+
 ## 0.1.0 — initial
 
 **Tokens:** semantic roles for the three themes (slate, sumi, washi) plus fonts (Inter,

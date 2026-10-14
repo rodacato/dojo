@@ -7828,7 +7828,7 @@
                               "id": "clO32",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8294,7 +8294,7 @@
                               "id": "PcV2f",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8760,7 +8760,7 @@
                               "id": "BZf1t",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -9226,7 +9226,7 @@
                               "id": "Gxzfk",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -9692,7 +9692,7 @@
                               "id": "wq6Xt",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -10158,7 +10158,7 @@
                               "id": "UnypB",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -10624,7 +10624,7 @@
                               "id": "OH3uY",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -12027,6 +12027,7 @@
                   "width": 560,
                   "layout": "vertical",
                   "gap": 12,
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
@@ -12067,8 +12068,11 @@
                       "id": "QqpXB",
                       "name": "Title",
                       "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Title",
                       "lineHeight": 1.25,
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 32,
                       "fontWeight": "600"
@@ -12081,6 +12085,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Message",
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -12818,7 +12823,7 @@
     },
     "kit-version": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.1.1"
     },
     "tint-accent-5": {
       "type": "color",

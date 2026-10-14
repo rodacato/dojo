@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.1.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.1.1 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -4002,7 +4002,7 @@
                               "id": "clO32",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4468,7 +4468,7 @@
                               "id": "PcV2f",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4934,7 +4934,7 @@
                               "id": "BZf1t",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5400,7 +5400,7 @@
                               "id": "Gxzfk",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5866,7 +5866,7 @@
                               "id": "wq6Xt",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6332,7 +6332,7 @@
                               "id": "UnypB",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6798,7 +6798,7 @@
                               "id": "OH3uY",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8201,6 +8201,7 @@
                   "width": 560,
                   "layout": "vertical",
                   "gap": 12,
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
@@ -8241,8 +8242,11 @@
                       "id": "QqpXB",
                       "name": "Title",
                       "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Title",
                       "lineHeight": 1.25,
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 32,
                       "fontWeight": "600"
@@ -8255,6 +8259,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Message",
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -14651,7 +14656,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Use the diagram area to show the proposed architecture. Write your reasoning in the text area below the diagram.",
+                      "content": "Use the diagram to show the proposed architecture, and put your reasoning in it: label each part and say why it is there.",
                       "lineHeight": 1.6,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -15088,12 +15093,12 @@
               "justifyContent": "end",
               "children": [
                 {
-                  "id": "Z0dxVl",
+                  "id": "gzV9H",
                   "type": "ref",
-                  "ref": "B8XwE",
-                  "name": "Button/Destructive/SM",
+                  "ref": "tNtFP",
+                  "name": "Button/Primary/SM",
                   "descendants": {
-                    "I0P3k": {
+                    "Oa0VU": {
                       "content": "SUBMIT NOW"
                     }
                   }
@@ -17771,22 +17776,11 @@
               "alignItems": "center",
               "children": [
                 {
-                  "type": "ellipse",
-                  "id": "tVsBW",
-                  "name": "EnsoLoader",
-                  "innerRadius": 0.9,
-                  "startAngle": 20,
-                  "sweepAngle": 300,
-                  "fill": "$color-accent",
-                  "width": 28,
-                  "height": 28
-                },
-                {
                   "type": "text",
                   "id": "CQkAN",
                   "name": "Label",
                   "fill": "$color-muted",
-                  "content": "THE SENSEI IS EVALUATING.",
+                  "content": "EVALUATION STOPPED.",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
@@ -17998,45 +17992,6 @@
                       "fontSize": 56,
                       "fontWeight": "700",
                       "letterSpacing": -1.4
-                    },
-                    {
-                      "type": "text",
-                      "id": "gUeYx",
-                      "name": "Analysis paragraph",
-                      "fill": "$color-primary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "<strengths>\n- Traced the 1-indexed page boundary before touching the code\n- Kept the function signature intact\n</strengths>",
-                      "lineHeight": 1.6,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 15,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "dgNNA",
-                      "name": "Analysis paragraph",
-                      "fill": "$color-primary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "<improvements>\n- Did not say what page 0 should return\n</improvements>",
-                      "lineHeight": 1.6,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 15,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "V2rjh",
-                      "name": "Analysis paragraph",
-                      "fill": "$color-primary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "<approach_note>Guard the page argument at the top and throw on page < 1.</approach_note>",
-                      "lineHeight": 1.6,
-                      "fontFamily": "$font-sans",
-                      "fontSize": 15,
-                      "fontWeight": "normal"
                     },
                     {
                       "type": "text",
@@ -19926,7 +19881,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Preparing shows a rotating message every 3s; after ~16s an extra 'taking longer' line appears with no retry button (KataActivePage.tsx)\n- After timeout the button becomes destructive 'Submit now'\n- Mobile stacks the panels vertically; the response editor takes the lower half",
+          "content": "- Preparing shows a rotating message every 3s; after ~16s an extra 'taking longer' line appears with a 'Back to katas' button (KataActivePage.tsx)\n- After timeout the same primary 'Submit now' button stays (it is no longer destructive)\n- Mobile stacks the panels vertically; the response editor takes the lower half",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -20188,7 +20143,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- WS /ws/sessions/:id; on 'ready' it reads the attempt id from sessionStorage and submits once (useEvaluationStream.ts)\n- A final evaluation redirects to /result 1500ms after complete\n- Follow-up turns have no client cap; a failed follow-up submit is unhandled\n- WS close 4001 clears the token and redirects to /?error=session_expired",
+          "content": "- WS /ws/sessions/:id; on 'ready' it reads the attempt id from sessionStorage and submits once; 'Try again' after an error reconnects to the same attempt (useEvaluationStream.ts)\n- A final evaluation redirects to /result 1500ms after complete\n- Follow-up turns have no client cap; a failed follow-up submit releases the Send button\n- WS close 4001 clears the token and redirects to /?error=session_expired\n- On error the bottom band reads 'Evaluation stopped.'",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -20450,7 +20405,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Verdict variants differ only by label and colour; there is no per-verdict layout\n- Expired = no final attempt and status is not active\n- The share rail and insight cards render only when a verdict exists\n- VerdictBlock gets no role here, and the analysis string is printed raw including its tags (D21)",
+          "content": "- Verdict variants differ only by label and colour; there is no per-verdict layout\n- Expired = no final attempt and status is not active\n- The share rail and insight cards render only when a verdict exists\n- The hero prose shows only the text outside the structured tags; the tagged blocks render as the insight cards\n- VerdictBlock gets no role here (D21)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -20596,6 +20551,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "f17FT",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.1.1 · synced with PRs #154/#155: Time expired keeps a primary submit, Eval error shows 'Evaluation stopped.', Results hero without raw tags, whiteboard kata copy, error states centered (kit fix)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -21541,7 +21509,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.1.1"
     },
     "grid-x0": {
       "type": "number",

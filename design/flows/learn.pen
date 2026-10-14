@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.1.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.1.1 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -4002,7 +4002,7 @@
                               "id": "clO32",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4468,7 +4468,7 @@
                               "id": "PcV2f",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -4934,7 +4934,7 @@
                               "id": "BZf1t",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5400,7 +5400,7 @@
                               "id": "Gxzfk",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -5866,7 +5866,7 @@
                               "id": "wq6Xt",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6332,7 +6332,7 @@
                               "id": "UnypB",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -6798,7 +6798,7 @@
                               "id": "OH3uY",
                               "name": "Label",
                               "fill": "$color-muted",
-                              "content": "log out",
+                              "content": "sign out",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
                               "fontWeight": "normal"
@@ -8201,6 +8201,7 @@
                   "width": 560,
                   "layout": "vertical",
                   "gap": 12,
+                  "alignItems": "center",
                   "children": [
                     {
                       "type": "frame",
@@ -8241,8 +8242,11 @@
                       "id": "QqpXB",
                       "name": "Title",
                       "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
                       "content": "Title",
                       "lineHeight": 1.25,
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 32,
                       "fontWeight": "600"
@@ -8255,6 +8259,7 @@
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
                       "content": "Message",
+                      "textAlign": "center",
                       "fontFamily": "$font-sans",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -9570,47 +9575,6 @@
               "gap": 24,
               "children": [
                 {
-                  "type": "text",
-                  "id": "kqDuG",
-                  "name": "Back link",
-                  "fill": "$color-muted",
-                  "content": "← SCROLLS",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.88
-                },
-                {
-                  "type": "frame",
-                  "id": "o2fnt",
-                  "name": "Header",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "DEmeN",
-                      "name": "H1",
-                      "fill": "$color-primary",
-                      "content": "Sample scroll one",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 32,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "K8VFv",
-                      "name": "Description",
-                      "fill": "$color-secondary",
-                      "content": "A small interactive lesson on a single concept.",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 15,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
                   "id": "l8XoH",
                   "type": "ref",
                   "ref": "RYbhf",
@@ -9677,32 +9641,6 @@
                   "id": "sZg2X",
                   "type": "ref",
                   "ref": "AbS82"
-                },
-                {
-                  "type": "frame",
-                  "id": "nxB8E",
-                  "name": "CTA",
-                  "gap": 6,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "h3pePb",
-                      "fill": "$color-muted",
-                      "content": "like running code?",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "pXvKD",
-                      "fill": "$color-accent",
-                      "content": "practice with a kata →",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
                 },
                 {
                   "type": "frame",
@@ -10251,15 +10189,6 @@
                   "id": "WB9em",
                   "fill": "$color-muted",
                   "content": "sandbox · not graded",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "pLvey",
-                  "fill": "$color-accent",
-                  "content": "sensei evaluates in the kata →",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal"
@@ -11123,13 +11052,15 @@
                       "type": "frame",
                       "id": "ZkX80",
                       "name": "RunStatusChip",
+                      "fill": "$tint-danger-10",
+                      "stroke": "$tint-danger-40",
                       "children": [
                         {
                           "type": "text",
                           "id": "v47MBU",
                           "name": "Label",
-                          "fill": "$color-muted",
-                          "content": "Ready",
+                          "fill": "$color-danger",
+                          "content": "ERROR · DID NOT RUN",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal",
@@ -12974,7 +12905,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Other languages — starter code swap\n- Run states Running_ and Error · exit {n} — chip text only\n- Mobile layout — editor stacked over the output\n- Bot-check widget slot — only when a site key is configured",
+          "content": "- Other languages — starter code swap\n- Run state Running_ and 'Error · exit {n}' (the program ran and failed) — chip text only; 'Error · did not run' is drawn\n- Ask the sensei answer, quota and error states — same shared Modal, text swap\n- Mobile layout — editor stacked over the output\n- Bot-check widget slot — only when a site key is configured",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -13066,6 +12997,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "C9pIfX",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.1.1 · synced with PRs #154/#155: Scroll 'Not available' shows only the unavailable state, Engawa anonymous keeps one way in, run error chip 'did not run', Ask the sensei uses the shared Modal, sidebar 'sign out', error states centered (kit fix)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -14011,7 +13955,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.0"
+      "value": "0.1.1"
     },
     "grid-x0": {
       "type": "number",
