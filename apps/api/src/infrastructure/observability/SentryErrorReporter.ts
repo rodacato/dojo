@@ -20,7 +20,15 @@ export class SentryErrorReporter implements ErrorReporterPort {
       tracesSampleRate: config.tracesSampleRate ?? 0,
       release: config.release,
       // Scrub request bodies / URL query strings that could carry PII.
-      sendDefaultPii: false,
+      dataCollection: {
+        userInfo: false,
+        cookies: false,
+        httpHeaders: false,
+        httpBodies: [],
+        urlQueryParams: false,
+        databaseQueryData: false,
+        stackFrameVariables: false,
+      },
       beforeSend(event) {
         if (event.request) {
           delete event.request.data

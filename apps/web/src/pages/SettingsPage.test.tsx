@@ -125,7 +125,7 @@ describe('SettingsPage', () => {
       expect(senior).toHaveAttribute('aria-pressed', 'true')
       expect(screen.getByRole('button', { name: 'Junior' })).toHaveAttribute('aria-pressed', 'false')
       // Interest button shows the ✓ marker only when active.
-      expect(screen.getByRole('button', { name: '✓ security' })).toHaveAttribute('aria-pressed', 'true')
+      expect(screen.getByRole('button', { name: /^✓\s*security$/ })).toHaveAttribute('aria-pressed', 'true')
       expect(screen.getByRole('button', { name: 'backend' })).toHaveAttribute('aria-pressed', 'false')
     })
 
@@ -213,7 +213,7 @@ describe('SettingsPage', () => {
 
       renderSettings()
 
-      await u.click(await screen.findByRole('button', { name: '✓ backend' }))
+      await u.click(await screen.findByRole('button', { name: /^✓\s*backend$/ }))
 
       expect(mockedUpdatePreferences).toHaveBeenCalledWith(
         expect.objectContaining({ interests: ['security'] }),
