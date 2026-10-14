@@ -111,7 +111,7 @@ Tokens are referenced by name everywhere in code. Never raw hex. Both themes use
 
 > **Vermillion vs danger:** the hanko accent and the danger color are close cousins on purpose. The accent is the brand's positive interactive color — the seal. Danger is a deeper variant for actual failure states. They are visually distinct in practice; the brand bleeds into "failure looks like an unfortunate seal", which is on-brand.
 
-**Where accent stays on purpose besides the primary action, links and focus:** the logo mark and its `_` cursor, the hanko seal, loaders (`EnsoLoader`, the auth progress bar, the streaming cursor), data fills (the activity heatmap and bars, the `VerdictBlock` ink stroke), the native slider on Settings, the terminal mock on the landing, and the `REVIEW` kata badge, which reuses accent in sumi and washi (`--color-type-review`). Anything else in accent is a bug.
+**Where accent stays on purpose besides the primary action, links and focus:** the logo mark and its `_` cursor, the hanko seal, loaders (`EnsoLoader`, the auth progress bar, the streaming cursor), data fills (the activity heatmap and bars, the `VerdictBlock` ink stroke), keyword colour in the code editor, the native slider on Settings, the terminal mock on the landing, and the `REVIEW` kata badge, which reuses accent in sumi and washi (`--color-type-review`). Anything else in accent is a bug.
 
 ### Type badge tokens (kata types)
 
