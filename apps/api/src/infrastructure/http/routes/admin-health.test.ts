@@ -197,7 +197,19 @@ describe('GET /admin/health', () => {
       expect(body.piston.detail.error).toBeUndefined()
     })
 
-    it("status 'down' when reachable but a runtime is missing", async () => {
+    it("status 'degraded' when reachable and some runtimes are installed but one is missing", async () => {
+      const other = { language: 'go', version: '1.22' }
+      pistonStatus.mockResolvedValue(
+        reachableStatus({ expected: [RUNTIME, other], actual: [other], missing: [RUNTIME] }),
+      )
+      const res = await makeApp().request('/admin/health')
+      const body = (await res.json()) as HealthBody
+
+      expect(body.piston.status).toBe('degraded')
+      expect(body.piston.detail.missing).toEqual([RUNTIME])
+    })
+
+    it("status 'down' when reachable but no runtime is installed", async () => {
       pistonStatus.mockResolvedValue(
         reachableStatus({ actual: [], missing: [RUNTIME] }),
       )

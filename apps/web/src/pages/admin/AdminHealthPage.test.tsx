@@ -89,7 +89,7 @@ describe('AdminHealthPage', () => {
     mockedApi.getAdminHealth.mockResolvedValue(
       makeHealth({
         piston: {
-          status: 'down',
+          status: 'degraded',
           latencyMs: 9,
           detail: {
             expected: [{ language: 'python', version: '3.12' }, { language: 'go', version: '1.22' }],
@@ -104,6 +104,7 @@ describe('AdminHealthPage', () => {
     const card = await screen.findByRole('heading', { name: 'Piston' }).then((h) => h.closest('.rounded-md') as HTMLElement)
 
     expect(within(card).getByText('1 of 2 runtimes installed')).toBeInTheDocument()
+    expect(within(card).getByText('DEGRADED · 9ms')).toBeInTheDocument()
     expect(within(card).getByText('Missing: go 1.22')).toBeInTheDocument()
   })
 

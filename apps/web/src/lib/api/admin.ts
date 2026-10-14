@@ -95,7 +95,7 @@ export const admin = {
       api: { status: 'ok' | 'down'; latencyMs: number | null; detail: { env: string } }
       db: { status: 'ok' | 'down'; latencyMs: number | null; detail: { error?: string } }
       piston: {
-        status: 'ok' | 'down'
+        status: 'ok' | 'degraded' | 'down'
         latencyMs: number | null
         detail: {
           expected: Array<{ language: string; version: string }>
