@@ -11,6 +11,8 @@ export function GroupButtons<T extends string>({ options, value, onChange, size 
       {options.map((opt) => (
         <button
           key={opt.value}
+          type="button"
+          aria-pressed={value === opt.value}
           onClick={() => onChange(opt.value)}
           className={`font-mono rounded-sm transition-colors ${
             size === 'sm' ? 'px-3 py-1 text-xs' : 'px-4 py-1.5 text-sm'

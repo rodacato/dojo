@@ -151,22 +151,20 @@ describe('LandingPage — GitHub repo stats', () => {
     renderAt()
 
     expect(mockedGetRepoStats).toHaveBeenCalledTimes(1)
-    // Initial zeroed state, then the resolved values replace it.
+    
     expect(await screen.findByText('128')).toBeInTheDocument()
     expect(screen.getByText('9')).toBeInTheDocument()
     expect(screen.getByText('Rust')).toBeInTheDocument()
   })
 
-  it('keeps the zeroed fallback when getRepoStats rejects', async () => {
+  it('shows no stats row when getRepoStats rejects, instead of publishing zeros', async () => {
     asAnon()
     mockedGetRepoStats.mockRejectedValue(new Error('network'))
     renderAt()
 
-    // Default state: stars 0, forks 0, lang TypeScript. Give the rejected
-    // promise a tick to flush, then assert the fallback survived.
     await waitFor(() => expect(mockedGetRepoStats).toHaveBeenCalled())
-    expect(screen.getByText('TypeScript')).toBeInTheDocument()
-    expect(screen.queryByText('Rust')).not.toBeInTheDocument()
+    expect(screen.queryByText('stars')).not.toBeInTheDocument()
+    expect(screen.queryByText('TypeScript')).not.toBeInTheDocument()
   })
 })
 

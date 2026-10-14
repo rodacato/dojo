@@ -16,16 +16,11 @@ export function AuthCallbackPage() {
       navigate('/dashboard', { replace: true })
       return
     }
-    // No token = handshake didn't carry a credential. Show the error
-    // state on this page (1.5s) before bouncing to landing — otherwise
-    // the user lands back on `/` with no explanation of what happened.
     setFailed(true)
-    const handle = setTimeout(() => navigate('/?error=auth', { replace: true }), 1500)
-    return () => clearTimeout(handle)
   }, [params, navigate])
 
   return (
-    <div className="min-h-screen bg-page flex flex-col items-center justify-center px-6 py-12">
+    <div className="relative min-h-screen bg-page flex flex-col items-center justify-center px-6 py-12">
       <div className="w-full max-w-120 flex flex-col items-center text-center gap-10">
         <div className="flex flex-col items-center gap-4">
           <LogoMark size={32} className="text-accent" />
@@ -36,8 +31,8 @@ export function AuthCallbackPage() {
 
         {failed ? (
           <div className="flex flex-col items-center gap-4">
-            <p className="font-mono text-sm text-danger">
-              Auth_Failed: handshake timeout.
+            <p role="alert" className="font-mono text-sm text-danger">
+              Auth_Failed: no credential received.
             </p>
             <Button
               variant="ghost"
@@ -63,8 +58,8 @@ export function AuthCallbackPage() {
         )}
       </div>
 
-      <p className="absolute bottom-8 font-mono text-xs tracking-[0.08em] uppercase text-muted">
-        {failed ? 'Connection terminated' : 'GitHub OAuth — state: verifying nonce'}
+      <p className="absolute inset-x-0 bottom-8 text-center font-mono text-xs tracking-[0.08em] uppercase text-muted">
+        {failed ? 'Connection terminated' : 'GitHub OAuth'}
       </p>
     </div>
   )

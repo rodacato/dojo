@@ -179,4 +179,15 @@ describe('Modal', () => {
     expect(onClose).not.toHaveBeenCalled()
     expect(document.body.style.overflow).toBe('')
   })
+
+  it('exposes a labelled modal dialog and moves focus into it', () => {
+    render(
+      <Modal open label="Sign out">
+        <p>Body</p>
+      </Modal>
+    )
+    const dialog = screen.getByRole('dialog', { name: 'Sign out' })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveFocus()
+  })
 })

@@ -68,12 +68,17 @@ describe('DashboardPage', () => {
       expect(screen.queryByRole('heading', { name: /green belt/i })).not.toBeInTheDocument()
     })
 
-    // NOTE: There is intentionally no "request rejects" test. DashboardPage
-    // calls `api.getDashboard().then(setDashboard)` with no `.catch`, so a
-    // rejection has no UI branch — it would only escape as an unhandled
-    // rejection. The pending-promise test above already covers the distinct
-    // loading state; asserting the absence of a non-existent error surface
-    // would add no value and only fight the runner.
+    it('shows an error with a retry instead of loading forever when the request rejects', async () => {
+      mockedGetDashboard.mockRejectedValueOnce(new Error('boom'))
+      mockedGetDashboard.mockResolvedValueOnce(baseDashboard())
+      const user = userEvent.setup()
+      renderDashboard()
+
+      expect(await screen.findByText("We couldn't load your dashboard.")).toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: /try again/i }))
+
+      expect(await screen.findByRole('heading', { name: 'green belt' })).toBeInTheDocument()
+    })
   })
 
   describe('loaded content', () => {

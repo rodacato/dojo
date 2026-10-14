@@ -4,6 +4,7 @@ import type { BeltDTO } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { PageLoader } from '../components/PageLoader'
+import { ErrorState } from '../components/ui/ErrorState'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
@@ -20,11 +21,20 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
 
 export function DashboardPage() {
   const navigate = useNavigate()
-  const { data: dashboard } = useAsync(() => api.getDashboard(), [])
+  const { data: dashboard, error, reload } = useAsync(() => api.getDashboard(), [])
 
   const isFirstVisit = !!dashboard && dashboard.streak === 0 && dashboard.recentSessions.length === 0
   const onboarding = useFirstVisit(isFirstVisit)
 
+  if (error && !dashboard) {
+    return (
+      <ErrorState
+        variant="inline"
+        message="We couldn't load your dashboard."
+        primaryAction={{ label: 'Try again', onClick: reload }}
+      />
+    )
+  }
   if (!dashboard) return <PageLoader />
 
   return (
@@ -155,7 +165,10 @@ function StreakCard({
               className={`h-2 w-full rounded-sm ${active ? 'bg-success' : 'bg-page border border-border/40'}`}
               aria-hidden
             />
-            <span className="text-muted text-xs font-mono uppercase">{WEEKDAY_LABELS[i]}</span>
+            <span className="text-muted text-xs font-mono uppercase">
+              {WEEKDAY_LABELS[i]}
+              <span className="sr-only">{active ? ': kata done' : ': no kata'}</span>
+            </span>
           </div>
         ))}
       </div>

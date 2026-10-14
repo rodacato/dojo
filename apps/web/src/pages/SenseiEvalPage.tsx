@@ -37,7 +37,8 @@ export function SenseiEvalPage() {
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
   const [history, setHistory] = useState<Exchange[]>([])
-  const { state, connect, submit } = useEvaluationStream(sessionId!)
+  const { state, connect, submit, reconnect } = useEvaluationStream(sessionId!)
+  const submittedAttemptRef = useRef<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const evalMessage = useRotatingMessage(EVAL_MESSAGES)
 
@@ -48,12 +49,17 @@ export function SenseiEvalPage() {
 
   useEffect(() => {
     if (state.status !== 'ready') return
+    if (submittedAttemptRef.current) {
+      reconnect(submittedAttemptRef.current)
+      return
+    }
     const attemptId = sessionStorage.getItem(`dojo-attempt-${sessionId}`)
     if (attemptId) {
+      submittedAttemptRef.current = attemptId
       submit(attemptId)
       sessionStorage.removeItem(`dojo-attempt-${sessionId}`)
     }
-  }, [state.status, sessionId, submit])
+  }, [state.status, sessionId, submit, reconnect])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -92,10 +98,14 @@ export function SenseiEvalPage() {
     if (result) {
       setHistory((prev) => [...prev, { tokens, result, userAnswer: answer }])
     }
-    const { attemptId } = await api.submitAttempt(sessionId, answer)
-    setFollowUpText('')
-    setFollowUpSubmitting(false)
-    submit(attemptId)
+    try {
+      const { attemptId } = await api.submitAttempt(sessionId, answer)
+      setFollowUpText('')
+      submittedAttemptRef.current = attemptId
+      submit(attemptId)
+    } finally {
+      setFollowUpSubmitting(false)
+    }
   }
 
   let bottomBandContent: ReactNode
@@ -124,6 +134,12 @@ export function SenseiEvalPage() {
     bottomBandContent = (
       <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
         The sensei has spoken.
+      </p>
+    )
+  } else if (state.status === 'error') {
+    bottomBandContent = (
+      <p className="text-muted text-xs font-mono uppercase tracking-[0.08em] text-center">
+        Evaluation stopped.
       </p>
     )
   } else {

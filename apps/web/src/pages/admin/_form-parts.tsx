@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { cloneElement, isValidElement, useId, type ReactElement, type ReactNode } from 'react'
 import type { Difficulty, KataType } from '@dojo/shared'
 import { TOPICS } from '@dojo/shared'
 import { ChipSelect } from '../../components/ui/ChipSelect'
@@ -29,14 +29,31 @@ export function FormField({
   error?: string
   children: ReactNode
 }>) {
+  const id = useId()
+  const noteId = `${id}-note`
+  const hasNote = !!(hint || error)
+  const isNativeControl = isValidElement(children) && typeof children.type === 'string'
+  const control = isNativeControl
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        id,
+        'aria-invalid': error ? true : undefined,
+        'aria-describedby': hasNote ? noteId : undefined,
+      })
+    : children
+
   return (
     <div>
-      <label className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5">
+      <label
+        id={`${id}-label`}
+        htmlFor={isNativeControl ? id : undefined}
+        className="block font-mono text-xs uppercase tracking-wider text-muted mb-1.5"
+      >
         {label}
       </label>
-      {children}
-      {(hint || error) && (
+      {isNativeControl ? control : <div role="group" aria-labelledby={`${id}-label`}>{control}</div>}
+      {hasNote && (
         <div
+          id={noteId}
           className={`text-xs mt-1.5 font-mono ${
             error ? 'text-danger' : 'text-muted'
           }`}
@@ -238,7 +255,7 @@ export function VariationCardItem({
 
 export function ValidationBanner({ message }: Readonly<{ message: string }>) {
   return (
-    <div className="rounded-md border border-danger/40 border-l-4 border-l-danger bg-surface p-4 mb-6">
+    <div role="alert" className="rounded-md border border-danger/40 border-l-4 border-l-danger bg-surface p-4 mb-6">
       <div className="font-mono text-xs uppercase tracking-wider text-danger mb-1">
         Validation
       </div>

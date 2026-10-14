@@ -121,7 +121,7 @@ export function PublicProfilePage() {
           <SectionEyebrow title="Activity" />
           <Heatmap data={profile.heatmapData} days={90} />
           <div className="flex items-center justify-between mt-3 font-mono text-xs text-muted">
-            <span>Each square is one day. Darker = more kata.</span>
+            <span>Each square is one day. Brighter = more kata.</span>
             <HeatmapLegend />
           </div>
         </section>

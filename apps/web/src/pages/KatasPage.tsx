@@ -60,6 +60,7 @@ export function KatasPage() {
   const [surpriseLoading, setSurpriseLoading] = useState(false)
   const [picks, setPicks] = useState<KataDTO[] | null>(null)
   const [picksLoading, setPicksLoading] = useState(false)
+  const [picksError, setPicksError] = useState(false)
   const [starting, setStarting] = useState<string | null>(null)
   const picksRef = useRef<HTMLDivElement | null>(null)
   const navigate = useNavigate()
@@ -71,7 +72,7 @@ export function KatasPage() {
       setRandomness(prefs.randomness ?? 0.3)
       setGoalWeeklyTarget(prefs.goalWeeklyTarget ?? 3)
       setPrefsLoaded(true)
-    })
+    }).catch(() => setPrefsLoaded(true))
   }, [])
 
   const dateString = DATE_FORMATTER.format(new Date())
@@ -110,12 +111,15 @@ export function KatasPage() {
   async function handleShowKata() {
     if (!mood || !duration) return
     setPicksLoading(true)
+    setPicksError(false)
     try {
       const result = await api.getKatas({ mood, maxDuration: duration })
       setPicks(result)
       requestAnimationFrame(() => {
         picksRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       })
+    } catch {
+      setPicksError(true)
     } finally {
       setPicksLoading(false)
     }
@@ -235,6 +239,12 @@ export function KatasPage() {
             {picksLoading ? 'Loading' : 'Show kata →'}
           </Button>
         </div>
+
+        {picksError && (
+          <p role="alert" className="text-danger text-xs font-mono text-center">
+            Couldn't load your kata. Try again.
+          </p>
+        )}
 
         <p className="text-muted/70 text-xs font-mono text-center max-w-md mx-auto">
           Your kata are generated from your selections. No skip. No reroll.
@@ -535,6 +545,7 @@ function CustomizePanel({
                   </div>
                   <input
                     type="range"
+                    aria-label="Randomness"
                     min={0}
                     max={1}
                     step={0.05}

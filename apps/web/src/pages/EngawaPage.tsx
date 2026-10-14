@@ -501,7 +501,7 @@ function RunStatusChip({ run }: Readonly<{ run: RunState }>) {
   }
   return (
     <span className="font-mono text-xs tracking-[0.08em] uppercase text-danger border border-danger/40 bg-danger/10 px-2 py-0.5 rounded-sm tabular-nums">
-      Error · exit {run.exitCode ?? 1}
+      {run.exitCode == null ? 'Error · did not run' : `Error · exit ${run.exitCode}`}
     </span>
   )
 }

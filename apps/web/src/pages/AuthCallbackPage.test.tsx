@@ -32,14 +32,14 @@ describe('AuthCallbackPage', () => {
 
     expect(getToken()).toBe('ghp_secret_abc')
     expect(screen.getByText('dashboard screen')).toBeInTheDocument()
-    expect(screen.queryByText('Auth_Failed: handshake timeout.')).not.toBeInTheDocument()
+    expect(screen.queryByText('Auth_Failed: no credential received.')).not.toBeInTheDocument()
   })
 
   it('shows the failure state (not the loading state) when no token is present', () => {
     vi.useFakeTimers()
     renderAt('/auth/callback')
 
-    expect(screen.getByText('Auth_Failed: handshake timeout.')).toBeInTheDocument()
+    expect(screen.getByText('Auth_Failed: no credential received.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
     expect(screen.getByText('Connection terminated')).toBeInTheDocument()
 
@@ -49,20 +49,16 @@ describe('AuthCallbackPage', () => {
     expect(getToken()).toBeNull()
   })
 
-  it('does not redirect immediately on a missing token, then bounces to landing after the timeout', () => {
+  it('stays on the failure state with no automatic redirect, so the message can be read', () => {
     vi.useFakeTimers()
     renderAt('/auth/callback')
 
-    // Still on the callback page right after the failed render.
-    expect(screen.getByText('Auth_Failed: handshake timeout.')).toBeInTheDocument()
-    expect(screen.queryByText('landing screen')).not.toBeInTheDocument()
-
     act(() => {
-      vi.advanceTimersByTime(1500)
+      vi.advanceTimersByTime(10_000)
     })
 
-    expect(screen.getByText('landing screen')).toBeInTheDocument()
-    expect(screen.queryByText('Auth_Failed: handshake timeout.')).not.toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent('Auth_Failed: no credential received.')
+    expect(screen.queryByText('landing screen')).not.toBeInTheDocument()
   })
 
   it('navigates to landing right away when the user clicks Try again', async () => {
@@ -72,6 +68,6 @@ describe('AuthCallbackPage', () => {
     await user.click(screen.getByRole('button', { name: 'Try again' }))
 
     expect(screen.getByText('landing screen')).toBeInTheDocument()
-    expect(screen.queryByText('Auth_Failed: handshake timeout.')).not.toBeInTheDocument()
+    expect(screen.queryByText('Auth_Failed: no credential received.')).not.toBeInTheDocument()
   })
 })

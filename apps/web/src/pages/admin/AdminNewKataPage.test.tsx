@@ -44,6 +44,19 @@ describe('AdminNewKataPage', () => {
     expect(screen.queryByRole('button', { name: 'Remove' })).not.toBeInTheDocument()
   })
 
+  it('binds each native field to its label and announces validation as an alert', async () => {
+    const u = userEvent.setup()
+    renderPage()
+
+    expect(screen.getByLabelText('Title *')).toBeInTheDocument()
+    expect(screen.getByLabelText('Duration (min)')).toBeInTheDocument()
+
+    await clickSave(u)
+
+    expect(screen.getByRole('alert')).toHaveTextContent('Title is required.')
+    expect(screen.getByLabelText('Title *')).toHaveAttribute('aria-invalid', 'true')
+  })
+
   it('blocks submit and shows the validation banner when title + owner role are empty', async () => {
     const u = userEvent.setup()
     renderPage()

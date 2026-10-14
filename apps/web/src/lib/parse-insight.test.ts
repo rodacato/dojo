@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseInsight } from './parse-insight'
+import { parseInsight, stripInsightTags } from './parse-insight'
 
 describe('parseInsight', () => {
   describe('strengths / improvements bullet extraction', () => {
@@ -164,5 +164,16 @@ describe('parseInsight', () => {
         approachNote: null,
       })
     })
+  })
+})
+
+describe('stripInsightTags', () => {
+  it('removes the structured blocks and keeps the prose around them', () => {
+    const text = 'Solid reasoning.\n\n<strengths>\n- Clear\n</strengths>\n<approach_note>Nice.</approach_note>\n\nTry again.'
+    expect(stripInsightTags(text)).toBe('Solid reasoning.\n\nTry again.')
+  })
+
+  it('returns an empty string when the analysis is only tagged blocks', () => {
+    expect(stripInsightTags('<improvements>\n- One\n</improvements>')).toBe('')
   })
 })

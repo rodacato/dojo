@@ -11,7 +11,7 @@ import { BrushstrokeUnderline } from '../components/ui/BrushstrokeUnderline'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { ErrorState } from '../components/ui/ErrorState'
-import { parseInsight } from '../lib/parse-insight'
+import { parseInsight, stripInsightTags } from '../lib/parse-insight'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -209,7 +209,7 @@ export function ResultsPage() {
 }
 
 function AnalysisProse({ analysis }: Readonly<{ analysis: string }>) {
-  const paragraphs = analysis.split(/\n\n+/).filter((p) => p.trim().length > 0)
+  const paragraphs = stripInsightTags(analysis).split(/\n\n+/).filter((p) => p.trim().length > 0)
   return (
     <>
       {paragraphs.map((p, i) => (

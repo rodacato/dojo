@@ -97,7 +97,7 @@ export function MermaidEditor({ value, onChange }: Readonly<MermaidEditorProps>)
           onChange={(e) => onChange(e.target.value)}
           placeholder={PLACEHOLDER}
           spellCheck={false}
-          className="w-full h-full bg-page text-primary text-sm font-mono leading-relaxed resize-none focus:outline-none px-4 py-3 placeholder:text-muted"
+          className="w-full h-full bg-page text-primary text-sm font-mono leading-relaxed resize-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-accent px-4 py-3 placeholder:text-muted"
         />
       </div>
 
