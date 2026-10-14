@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": ".",
-    "noEmit": true
+    "noEmit": true,
+    "types": ["node"]
   },
   "include": ["tests", "smoke", "playwright.config.ts", "playwright.smoke.config.ts"]
 }

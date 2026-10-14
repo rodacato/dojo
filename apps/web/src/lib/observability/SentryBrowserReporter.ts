@@ -16,7 +16,15 @@ export class SentryBrowserReporter implements ErrorReporter {
       // Keep the network footprint small: no auto-breadcrumbs for console
       // logs or full page navigation history. Phase 1 Alpha doesn't need it.
       integrations: [],
-      sendDefaultPii: false,
+      dataCollection: {
+        userInfo: false,
+        cookies: false,
+        httpHeaders: false,
+        httpBodies: [],
+        urlQueryParams: false,
+        databaseQueryData: false,
+        stackFrameVariables: false,
+      },
     })
   }
 
