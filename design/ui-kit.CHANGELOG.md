@@ -13,6 +13,11 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.2.0 — Open Gate logo
+
+- `LogoMark` draws the Open Gate mark from `apps/web/src/brand/logo.json` (viewBox 100, round stroke), replacing the torii. The wordmark keeps the mark in `primary` and the `dojo_` cursor in `accent`.
+- Vendored by all five flows (kit-version-source `0.2.0`).
+
 ## 0.1.1 — code sync after the UI review
 
 - `ErrorState/Content` centers its content, as the code does (`text-center`).
@@ -42,4 +47,3 @@ pieces (Sidebar, BottomNav, PublicNav, PublicFooter), ErrorState, ConfirmModal, 
 | Timer/SM danger state | red time | local override | D33 |
 | AdminSidebar | `AdminLayout.tsx` | local frame in `admin.pen` | D41 |
 | Hanko multi-line, GroupButtons >3 options | Settings, Katas | local frames | D30, D31 |
-| Open Gate logo | `docs/brand-kit` | torii + `dojo_` | D2, waits for issue #148 |

@@ -5,7 +5,7 @@
 > outcome instead of deleting; the reasoning is the useful part.
 
 **Status:** 46 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
-neighbours or fixed in-flow while drawing, so the series has gaps) · 3 resolved in code (D6, D15
+neighbours or fixed in-flow while drawing, so the series has gaps) · 4 resolved in code (D2, D6, D15
 for the dashboard and admin lists, D21) · 2 decided and pending code (D42, D46) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
@@ -21,7 +21,7 @@ Adrian unless noted.
 | # | Finding | Code does | Recommendation |
 |---|---|---|---|
 | **D1** | Default theme | `auto` → sumi (dark OS) / washi (light OS); slate only by explicit choice. `docs/DESIGN.md` still says slate is the default | Fix the doc. All screens are drawn in sumi |
-| **D2** | New "Open Gate" brand (`docs/brand-kit`) not integrated (issue #148) | Torii logo and `dojo_` wordmark | Kit mirrors the code. Re-vendor when the brand lands in the app |
+| **D2** | New "Open Gate" brand not integrated (issue #148) | ✅ Resolved: PR #151 integrated the Open Gate mark (`apps/web/src/brand/logo.json`) and the wordmark keeps `dojo_`. Kit 0.2.0 mirrors it; the palette did not change | Done |
 | **D3** | Tailwind opacity modifiers (`bg-danger/10`) | Computed at build time | Modeled as alpha tokens `tint-<color>-<n>` in the kit |
 | **D4** | Type scale anomaly | `text-3xl` (30px) is smaller than `text-2xl` (32px) | Fix in `main.css` |
 | **D7** | Hardcoded colors outside the theme | AchievementBadge glow is fixed Slate indigo; Modal overlay is `bg-black/60` | Tokenize both |

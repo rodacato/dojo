@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.1.1 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.2.0 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -3514,18 +3514,19 @@
                     {
                       "type": "path",
                       "id": "vyjXt",
-                      "name": "Torii",
-                      "geometry": "M5 10h30m-27 8h24m-20-8v25m16-25v25",
+                      "name": "Open Gate",
+                      "geometry": "M15 25q35 7 70 0m-60 20h50m-45-15v52m40-52v52",
                       "viewBox": [
                         0,
                         0,
-                        40,
-                        40
+                        100,
+                        100
                       ],
                       "width": "fill_container",
                       "height": "fill_container",
                       "stroke": "$color-primary",
-                      "strokeWidth": 2.5,
+                      "strokeWidth": 3.2,
+                      "strokeLinejoin": "round",
                       "strokeLinecap": "round"
                     }
                   ]
@@ -20554,6 +20555,19 @@
         },
         {
           "type": "text",
+          "id": "uJWw5",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-14 · kit 0.2.0 · logo is the Open Gate mark integrated in PR #151 (replaces the torii); D2 resolved",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "f17FT",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -21509,7 +21523,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.1.1"
+      "value": "0.2.0"
     },
     "grid-x0": {
       "type": "number",

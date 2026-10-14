@@ -28,11 +28,11 @@ as context for AI agents (`AGENTS.md` points them here).
 
 | File | Screens | Kit | Domain entry point |
 |---|---|---|---|
-| `public.pen` | 13 | 0.1.1 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
-| `app-core.pen` | 10 | 0.1.1 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
-| `kata.pen` | 18 | 0.1.1 | Katas list, active kata (code, chat, whiteboard), evaluation, results |
-| `learn.pen` | 11 | 0.1.1 | Scrolls catalog and player, Engawa playground |
-| `admin.pen` | 10 | 0.1.1 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
+| `public.pen` | 13 | 0.2.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
+| `app-core.pen` | 10 | 0.2.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
+| `kata.pen` | 18 | 0.2.0 | Katas list, active kata (code, chat, whiteboard), evaluation, results |
+| `learn.pen` | 11 | 0.2.0 | Scrolls catalog and player, Engawa playground |
+| `admin.pen` | 10 | 0.2.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
 
 **This table is present tense — it never carries history.** "Migrated on <date>, six
 components consolidated" belongs in that flow's `Log` frame, not here.
@@ -55,8 +55,8 @@ dated line per change, newest first.
 A fact written in two of them belongs in one; the others cite it.
 
 **Kit scope.** The kit mirrors `apps/web/src/components/ui` plus the layout pieces; routes are
-in `apps/web/src/App.tsx`. The new "Open Gate" brand in `docs/brand-kit` is not in the app yet,
-so the kit mirrors the current torii logo (D2). Local-only captures go in `references/`.
+in `apps/web/src/App.tsx`. The logo is the Open Gate mark from `apps/web/src/brand/logo.json` (PR #151, D2).
+Local-only captures go in `references/`.
 
 ## Source of truth
 
