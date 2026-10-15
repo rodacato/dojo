@@ -227,6 +227,24 @@ describe('GET /share/:sessionId.png', () => {
     expect(res.status).toBe(500)
     expect(await res.json()).toEqual({ error: 'Internal server error' })
   })
+
+  it('does not cache a failed font download as the font', async () => {
+    vi.resetModules()
+    const { shareRoutes: freshRoutes } = await import('./share')
+    const app = new Hono<AppEnv>()
+    app.onError((_err, c) => c.json({ error: 'Internal server error' }, 500))
+    app.route('/', freshRoutes)
+
+    fetchSpy.mockResolvedValueOnce(new Response('<html>bad gateway</html>', { status: 502 }))
+    selectQueue.push([sessionRow()])
+    const failed = await app.request(`/share/${SESSION_ID}.png`)
+    expect(failed.status).toBe(500)
+
+    selectQueue.push([sessionRow()])
+    const recovered = await app.request(`/share/${SESSION_ID}.png`)
+    expect(recovered.status).toBe(200)
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
 })
 
 // ===========================================================================

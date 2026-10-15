@@ -57,6 +57,7 @@ async function getFont(): Promise<ArrayBuffer> {
   const res = await fetch(
     'https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-400-normal.woff',
   )
+  if (!res.ok) throw new Error(`Share card font fetch failed with status ${res.status}`)
   fontData = await res.arrayBuffer()
   return fontData
 }
