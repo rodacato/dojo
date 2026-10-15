@@ -74,7 +74,7 @@ test.describe('Results page — post-kata insight (Sprint 012)', () => {
     await page.goto('/')
     await page.evaluate(() => localStorage.setItem('dojo_token', 'fake-token'))
 
-    await page.goto(`/kata/${SESSION_ID}/result`)
+    await page.goto(`/katas/${SESSION_ID}/result`)
 
     // h1 is the kata title; the verdict is its own heading inside VerdictBlock.
     await expect(
