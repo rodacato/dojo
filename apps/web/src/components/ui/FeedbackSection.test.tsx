@@ -128,7 +128,8 @@ describe('FeedbackSection', () => {
     await openForm(user)
 
     const textbox = screen.getByRole('textbox') as HTMLTextAreaElement
-    await user.type(textbox, 'a'.repeat(300))
+    await user.click(textbox)
+    await user.paste('a'.repeat(300))
 
     expect(textbox.value).toHaveLength(280)
     expect(screen.getByText('280/280')).toBeInTheDocument()
