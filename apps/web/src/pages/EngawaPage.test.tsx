@@ -336,13 +336,13 @@ describe('EngawaPage', () => {
     const dialog = await screen.findByRole('dialog', { name: 'Ask the sensei' })
 
     // A click inside the panel must not dismiss it.
-    await u.click(dialog)
+    const panel = dialog.firstElementChild
+    if (!panel) throw new Error('expected a panel inside the dialog')
+    await u.click(panel)
     expect(screen.getByRole('dialog', { name: 'Ask the sensei' })).toBeInTheDocument()
 
-    // A click on the backdrop (the panel's container) dismisses it.
-    const backdrop = dialog.parentElement
-    if (!backdrop) throw new Error('expected a backdrop wrapping the dialog')
-    await u.click(backdrop)
+    // A click on the dialog element itself (the dimmed backdrop) dismisses it.
+    await u.click(dialog)
     expect(screen.queryByRole('dialog', { name: 'Ask the sensei' })).not.toBeInTheDocument()
   })
 })

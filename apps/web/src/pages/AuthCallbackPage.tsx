@@ -44,13 +44,12 @@ export function AuthCallbackPage() {
           </div>
         ) : (
           <div className="flex flex-col items-center gap-10 w-full">
-            <p className="font-mono text-base text-secondary inline-flex items-center">
+            <p role="status" className="font-mono text-base text-secondary inline-flex items-center">
               Completing sign-in.<span className="animate-cursor ml-0.5" aria-hidden>_</span>
             </p>
             <div
               className="relative h-0.5 w-60 bg-elevated overflow-hidden"
-              role="progressbar"
-              aria-label="Completing sign-in"
+              aria-hidden
             >
               <span className="absolute top-0 h-full w-1/3 bg-accent animate-auth-progress" />
             </div>

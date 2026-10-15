@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Modal } from './Modal'
 
@@ -189,5 +189,17 @@ describe('Modal', () => {
     const dialog = screen.getByRole('dialog', { name: 'Sign out' })
     expect(dialog).toHaveAttribute('aria-modal', 'true')
     expect(dialog).toHaveFocus()
+  })
+
+  it('keeps the dialog open when the browser fires a native cancel, leaving closing to the parent', () => {
+    render(
+      <Modal open label="Cancelable">
+        <p>Body</p>
+      </Modal>
+    )
+    const dialog = screen.getByRole('dialog', { name: 'Cancelable' })
+    const notPrevented = fireEvent(dialog, new Event('cancel', { bubbles: false, cancelable: true }))
+    expect(notPrevented).toBe(false)
+    expect(dialog).toHaveAttribute('open')
   })
 })

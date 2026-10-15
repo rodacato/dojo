@@ -18,6 +18,11 @@ Object.defineProperty(window, 'matchMedia', {
   }),
 })
 
+// jsdom does not implement HTMLDialogElement.showModal; mark the dialog open so it is visible to queries.
+HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
+  this.setAttribute('open', '')
+}
+
 // Unmount React trees between tests so the jsdom document stays isolated.
 afterEach(() => {
   cleanup()
