@@ -6,6 +6,7 @@ import type { Rubric } from '@dojo/shared'
 export interface ConversationTurn {
   userResponse: string
   llmResponse: string
+  followUpQuestion?: string | null
 }
 
 export interface LLMPort {
