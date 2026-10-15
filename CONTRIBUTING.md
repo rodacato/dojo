@@ -129,6 +129,10 @@ You cannot assert the sensei says exactly X. You can assert the structural contr
 | Domain (aggregates, value objects) | Unit — pure functions, no dependencies |
 | Application (use cases) | Unit — mock all ports |
 | Infrastructure (routes, repos) | Integration — real DB, mock LLM |
+| Browser behavior (`apps/e2e/tests`) | E2E — only what a unit test cannot see; mock the API at `page.route` |
+
+Tag a spec `{ tag: '@smoke' }` only when a broken PR must fail on it: the subset runs on every pull
+request and should stay at a few minutes. Everything else runs in the nightly full suite.
 
 ---
 

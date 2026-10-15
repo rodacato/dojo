@@ -1,4 +1,4 @@
-name: Smoke Tests
+name: Deployed Smoke Tests
 
 # Manual run only — smoke tests hit a real deployed environment and use
 # a pre-issued bearer token. They are intentionally not wired to PR/push
@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   smoke:
-    name: Smoke (${{ inputs.environment }})
+    name: Deployed smoke (${{ inputs.environment }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -47,7 +47,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
 
       - name: Run smoke suite
-        run: pnpm --filter=@dojo/e2e test:smoke
+        run: pnpm --filter=@dojo/e2e test:deployed
         env:
           CI: 'true'
           SMOKE_BASE_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_BASE_URL || secrets.SMOKE_STAGING_BASE_URL }}

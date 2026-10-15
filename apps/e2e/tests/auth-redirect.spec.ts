@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Auth redirect', () => {
-  test('unauthenticated user on /dashboard is redirected to landing', async ({ page }) => {
+  test('unauthenticated user on /dashboard is redirected to landing', { tag: '@smoke' }, async ({ page }) => {
     // No token in localStorage means AuthProvider will set user=null,
     // and RequireAuth will redirect to /
     await page.goto('/dashboard')
