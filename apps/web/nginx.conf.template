@@ -9,6 +9,24 @@ server {
     try_files $uri $uri/ /index.html;
   }
 
+  # Static brand icons: stable file names, so cache for a week rather than forever.
+  # Security headers are repeated because add_header in a location drops inherited ones.
+  location ~* ^/(favicon\.ico|favicon\.svg|apple-touch-icon\.png|icon-[\w-]+\.png|og-image\.png)$ {
+    expires 7d;
+    add_header Cache-Control "public, max-age=604800";
+    add_header X-Content-Type-Options nosniff;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    try_files $uri =404;
+  }
+
+  location = /manifest.webmanifest {
+    default_type application/manifest+json;
+    add_header Cache-Control "public, max-age=86400";
+    add_header X-Content-Type-Options nosniff;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    try_files $uri =404;
+  }
+
   # Health check endpoint (for Kamal proxy)
   location /health {
     return 200 'ok';

@@ -112,6 +112,17 @@ describe('applyTheme', () => {
     expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
   })
 
+  it('collapses the media-scoped theme-color tags into one matching the theme', () => {
+    document.head.innerHTML =
+      '<meta name="theme-color" content="#0A0908" media="(prefers-color-scheme: dark)"><meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)">'
+    applyTheme('washi')
+    const metas = document.querySelectorAll('meta[name="theme-color"]')
+    expect(metas).toHaveLength(1)
+    expect(metas[0]?.getAttribute('content')).toBe('#F5F1E8')
+    expect(metas[0]?.hasAttribute('media')).toBe(false)
+    document.head.innerHTML = ''
+  })
+
   it('overwrites a prior theme attribute when switching palettes', () => {
     applyTheme('sumi')
     applyTheme('washi')
