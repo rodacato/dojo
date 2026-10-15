@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.3.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.4.0 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -996,7 +996,7 @@
                       "type": "text",
                       "id": "A7bU0s",
                       "name": "Label",
-                      "fill": "$color-success",
+                      "fill": "$color-success-text",
                       "content": "EASY",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
@@ -1021,7 +1021,7 @@
                       "type": "text",
                       "id": "y03pRo",
                       "name": "Label",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "MEDIUM",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
@@ -1072,7 +1072,7 @@
                       "type": "text",
                       "id": "e6XwCk",
                       "name": "Label",
-                      "fill": "$color-success",
+                      "fill": "$color-success-text",
                       "content": "PASSED",
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
@@ -1098,7 +1098,7 @@
                       "type": "text",
                       "id": "uk6Hq",
                       "name": "Label",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "PASSED WITH NOTES",
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
@@ -1267,7 +1267,7 @@
                           "type": "text",
                           "id": "onoI3",
                           "name": "Eyebrow",
-                          "fill": "$color-warning",
+                          "fill": "$color-warning-text",
                           "content": "EYEBROW",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -1432,7 +1432,7 @@
                               "type": "text",
                               "id": "pzQSh",
                               "name": "Eyebrow",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "EYEBROW",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -1598,7 +1598,7 @@
                               "type": "text",
                               "id": "LB08c",
                               "name": "Eyebrow",
-                              "fill": "$color-warning",
+                              "fill": "$color-warning-text",
                               "content": "EYEBROW",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -2146,7 +2146,7 @@
                           "type": "rectangle",
                           "id": "bfSvl",
                           "name": "Ink stroke",
-                          "fill": "$color-accent",
+                          "fill": "$color-success",
                           "width": 3,
                           "height": "fill_container"
                         }
@@ -2170,7 +2170,7 @@
                           "type": "text",
                           "id": "Xp1qN",
                           "name": "Verdict",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "PASSED",
                           "fontFamily": "$font-mono",
                           "fontSize": 32,
@@ -2225,7 +2225,7 @@
                           "type": "rectangle",
                           "id": "T8B4d",
                           "name": "Ink stroke",
-                          "fill": "$color-accent",
+                          "fill": "$color-warning",
                           "width": 3,
                           "height": "fill_container"
                         }
@@ -2249,7 +2249,7 @@
                           "type": "text",
                           "id": "EwYZw",
                           "name": "Verdict",
-                          "fill": "$color-warning",
+                          "fill": "$color-warning-text",
                           "content": "PASSED WITH NOTES",
                           "fontFamily": "$font-mono",
                           "fontSize": 32,
@@ -2304,7 +2304,7 @@
                           "type": "rectangle",
                           "id": "i43rQf",
                           "name": "Ink stroke",
-                          "fill": "$color-accent",
+                          "fill": "$color-danger",
                           "width": 3,
                           "height": "fill_container"
                         }
@@ -2413,7 +2413,7 @@
                       "type": "text",
                       "id": "ZbLsK",
                       "name": "Time",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "24:59",
                       "lineHeight": 1,
                       "fontFamily": "$font-mono",
@@ -2850,7 +2850,7 @@
                       "type": "text",
                       "id": "m8V6pg",
                       "name": "Label",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "topic",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
@@ -3026,7 +3026,7 @@
                               "type": "text",
                               "id": "t7bxJ",
                               "name": "Label",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "PASSED",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -3121,7 +3121,7 @@
                           "type": "text",
                           "id": "C4Un8",
                           "name": "Label",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "PASSED",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -8401,7 +8401,7 @@
                           "type": "text",
                           "id": "wsZX2",
                           "name": "Glyph",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "●",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -8411,7 +8411,7 @@
                           "type": "text",
                           "id": "bfmCg",
                           "name": "Label",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "TESTS PASSED",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -9072,7 +9072,7 @@
                             {
                               "type": "text",
                               "id": "FMhqV",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "12 published",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -9580,7 +9580,7 @@
                               "type": "text",
                               "id": "rEdlQ",
                               "name": "Avg",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "82%",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
@@ -9611,7 +9611,7 @@
                                   "type": "text",
                                   "id": "AACJb",
                                   "name": "Label",
-                                  "fill": "$color-success",
+                                  "fill": "$color-success-text",
                                   "content": "PUBLISHED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -9721,7 +9721,7 @@
                               "type": "text",
                               "id": "a1G61",
                               "name": "Avg",
-                              "fill": "$color-warning",
+                              "fill": "$color-warning-text",
                               "content": "61%",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
@@ -9752,7 +9752,7 @@
                                   "type": "text",
                                   "id": "NLpa9",
                                   "name": "Label",
-                                  "fill": "$color-success",
+                                  "fill": "$color-success-text",
                                   "content": "PUBLISHED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -9862,7 +9862,7 @@
                               "type": "text",
                               "id": "PFTyj",
                               "name": "Avg",
-                              "fill": "$color-warning",
+                              "fill": "$color-warning-text",
                               "content": "48%",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
@@ -9893,7 +9893,7 @@
                                   "type": "text",
                                   "id": "MxkQS",
                                   "name": "Label",
-                                  "fill": "$color-success",
+                                  "fill": "$color-success-text",
                                   "content": "PUBLISHED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -10003,7 +10003,7 @@
                               "type": "text",
                               "id": "MvHCp",
                               "name": "Avg",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "90%",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
@@ -10034,7 +10034,7 @@
                                   "type": "text",
                                   "id": "LSjH7",
                                   "name": "Label",
-                                  "fill": "$color-success",
+                                  "fill": "$color-success-text",
                                   "content": "PUBLISHED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -10856,7 +10856,7 @@
                             {
                               "type": "text",
                               "id": "AjWNM",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "12 published",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -14269,7 +14269,7 @@
                             {
                               "type": "text",
                               "id": "YE8lg",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "PUBLISHED",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -16336,7 +16336,7 @@
                                   "type": "text",
                                   "id": "ij9ic",
                                   "name": "Label",
-                                  "fill": "$color-success",
+                                  "fill": "$color-success-text",
                                   "content": "PUBLISHED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -17553,7 +17553,7 @@
                                   "type": "text",
                                   "id": "KzNqV",
                                   "name": "Label",
-                                  "fill": "$color-success",
+                                  "fill": "$color-success-text",
                                   "content": "REDEEMED",
                                   "fontFamily": "$font-mono",
                                   "fontSize": 11,
@@ -19099,7 +19099,7 @@
                               "type": "text",
                               "id": "qxvbj",
                               "name": "Status",
-                              "fill": "$color-warning",
+                              "fill": "$color-warning-text",
                               "content": "429",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
@@ -19269,7 +19269,7 @@
                               "type": "text",
                               "id": "ve4nT",
                               "name": "Status",
-                              "fill": "$color-warning",
+                              "fill": "$color-warning-text",
                               "content": "404",
                               "fontFamily": "$font-mono",
                               "fontSize": 13,
@@ -20096,7 +20096,7 @@
                           "type": "text",
                           "id": "fb07Q",
                           "name": "Runtime",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "✓ typescript 5.0.3",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -20106,7 +20106,7 @@
                           "type": "text",
                           "id": "sGStP",
                           "name": "Runtime",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "✓ python 3.12.0",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -20116,7 +20116,7 @@
                           "type": "text",
                           "id": "Okzfo",
                           "name": "Runtime",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "✓ go 1.16.2",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -20136,7 +20136,7 @@
                           "type": "text",
                           "id": "gZqrS",
                           "name": "Runtime",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "✓ rust 1.68.2",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -20146,7 +20146,7 @@
                           "type": "text",
                           "id": "gqU2C",
                           "name": "Runtime",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "✓ sql 3.36.0",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -21084,6 +21084,19 @@
         },
         {
           "type": "text",
+          "id": "zsPMo",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-15 · kit 0.4.0 · text on success and warning uses success-text and warning-text (washi was 4.3:1 and 2.6:1); REVIEW has its own hue; the verdict ink stroke takes the verdict colour (D50)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "iE001",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -21185,7 +21198,7 @@
           "descendants": {
             "cBXQv": {
               "content": "UNSAVED CHANGES",
-              "fill": "$color-warning"
+              "fill": "$color-warning-text"
             },
             "tUphV": {
               "content": "Leave without saving?"
@@ -21569,19 +21582,19 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F1",
+          "value": "#0EA5E9",
           "theme": {
             "theme": "slate"
           }
         },
         {
-          "value": "#B73A2F",
+          "value": "#3F6AA8",
           "theme": {
             "theme": "sumi"
           }
         },
         {
-          "value": "#B73A2F",
+          "value": "#3F6AA8",
           "theme": {
             "theme": "washi"
           }
@@ -22140,7 +22153,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.3.0"
+      "value": "0.4.0"
     },
     "grid-x0": {
       "type": "number",
@@ -22256,11 +22269,49 @@
     },
     "tint-type-review-20": {
       "type": "color",
-      "value": "#6366F133"
+      "value": [
+        {
+          "value": "#0EA5E933",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#3F6AA833",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#3F6AA833",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
     },
     "tint-type-review-40": {
       "type": "color",
-      "value": "#6366F166"
+      "value": [
+        {
+          "value": "#0EA5E966",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#3F6AA866",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#3F6AA866",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
     },
     "tint-primary-30": {
       "type": "color",
@@ -22279,6 +22330,52 @@
         },
         {
           "value": "#1F1B164D",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-success-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#7D9B6A",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#4A6640",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-warning-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#D4A547",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#7A5A12",
           "theme": {
             "theme": "washi"
           }

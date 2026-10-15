@@ -28,7 +28,7 @@
           "id": "pKGla",
           "name": "Subtitle",
           "fill": "#555555",
-          "content": "kit 0.3.0 · every value comes from main.css @theme",
+          "content": "kit 0.4.0 · every value comes from main.css @theme",
           "fontFamily": "Inter",
           "fontSize": 14,
           "fontWeight": "normal"
@@ -754,7 +754,7 @@
                           "id": "rDQYR",
                           "name": "Hex",
                           "fill": "$color-secondary",
-                          "content": "#6366F1",
+                          "content": "#0EA5E9",
                           "fontFamily": "JetBrains Mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -841,6 +841,92 @@
                           "name": "Hex",
                           "fill": "$color-secondary",
                           "content": "#F87171",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kNzvq",
+                      "name": "Swatch success-text",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "CNhQS",
+                          "name": "Chip",
+                          "fill": "$color-success-text",
+                          "width": 36,
+                          "height": 24,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "m5hguz",
+                          "name": "Token",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "color-success-text",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KntPc",
+                          "name": "Hex",
+                          "fill": "$color-secondary",
+                          "content": "#10B981",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YOzdK",
+                      "name": "Swatch warning-text",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "Ty2YB",
+                          "name": "Chip",
+                          "fill": "$color-warning-text",
+                          "width": 36,
+                          "height": 24,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "w4DIs",
+                          "name": "Token",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "color-warning-text",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "aO42d",
+                          "name": "Hex",
+                          "fill": "$color-secondary",
+                          "content": "#F59E0B",
                           "fontFamily": "JetBrains Mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -1460,6 +1546,92 @@
                         {
                           "type": "text",
                           "id": "B7WYt2",
+                          "name": "Use",
+                          "fill": "$color-success",
+                          "content": "body (AA)",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IB5uL",
+                      "name": "Pair success-text/surface",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "RIVsq",
+                          "name": "Pair",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "success-text on surface",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ETWen",
+                          "name": "Ratio",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 56,
+                          "content": "5.77:1",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wBCsf",
+                          "name": "Use",
+                          "fill": "$color-success",
+                          "content": "body (AA)",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hNEGu",
+                      "name": "Pair warning-text/surface",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "QX9TV",
+                          "name": "Pair",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "warning-text on surface",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "kcoHB",
+                          "name": "Ratio",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 56,
+                          "content": "6.81:1",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "y8yHS5",
                           "name": "Use",
                           "fill": "$color-success",
                           "content": "body (AA)",
@@ -2187,7 +2359,7 @@
                           "id": "jNVpw",
                           "name": "Hex",
                           "fill": "$color-secondary",
-                          "content": "#B73A2F",
+                          "content": "#3F6AA8",
                           "fontFamily": "JetBrains Mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2274,6 +2446,92 @@
                           "name": "Hex",
                           "fill": "$color-secondary",
                           "content": "#B6675D",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "f36FG",
+                      "name": "Swatch success-text",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "eGkv0",
+                          "name": "Chip",
+                          "fill": "$color-success-text",
+                          "width": 36,
+                          "height": 24,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "B1JWEU",
+                          "name": "Token",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "color-success-text",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "E4GeQN",
+                          "name": "Hex",
+                          "fill": "$color-secondary",
+                          "content": "#7D9B6A",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kSo0M",
+                      "name": "Swatch warning-text",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "Kt6ze",
+                          "name": "Chip",
+                          "fill": "$color-warning-text",
+                          "width": 36,
+                          "height": 24,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "k2ZtJ3",
+                          "name": "Token",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "color-warning-text",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "bWJNq",
+                          "name": "Hex",
+                          "fill": "$color-secondary",
+                          "content": "#D4A547",
                           "fontFamily": "JetBrains Mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -2893,6 +3151,92 @@
                         {
                           "type": "text",
                           "id": "K8B2H",
+                          "name": "Use",
+                          "fill": "$color-success",
+                          "content": "body (AA)",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NFOla",
+                      "name": "Pair success-text/surface",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "z24bQH",
+                          "name": "Pair",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "success-text on surface",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "TGkPi",
+                          "name": "Ratio",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 56,
+                          "content": "6.07:1",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jzYzs",
+                          "name": "Use",
+                          "fill": "$color-success",
+                          "content": "body (AA)",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Dz61a",
+                      "name": "Pair warning-text/surface",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dj7BY",
+                          "name": "Pair",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "warning-text on surface",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GwgHq",
+                          "name": "Ratio",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 56,
+                          "content": "8.32:1",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YK9Fg",
                           "name": "Use",
                           "fill": "$color-success",
                           "content": "body (AA)",
@@ -3620,7 +3964,7 @@
                           "id": "UWWij",
                           "name": "Hex",
                           "fill": "$color-secondary",
-                          "content": "#B73A2F",
+                          "content": "#3F6AA8",
                           "fontFamily": "JetBrains Mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -3707,6 +4051,92 @@
                           "name": "Hex",
                           "fill": "$color-secondary",
                           "content": "#9C2D24",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gWB4V",
+                      "name": "Swatch success-text",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "bfRqf",
+                          "name": "Chip",
+                          "fill": "$color-success-text",
+                          "width": 36,
+                          "height": 24,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "rroLU",
+                          "name": "Token",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "color-success-text",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "C8DpAk",
+                          "name": "Hex",
+                          "fill": "$color-secondary",
+                          "content": "#4A6640",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kvdyL",
+                      "name": "Swatch warning-text",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 4,
+                          "id": "NExjM",
+                          "name": "Chip",
+                          "fill": "$color-warning-text",
+                          "width": 36,
+                          "height": 24,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1
+                        },
+                        {
+                          "type": "text",
+                          "id": "chDld",
+                          "name": "Token",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "color-warning-text",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jNLVj",
+                          "name": "Hex",
+                          "fill": "$color-secondary",
+                          "content": "#7A5A12",
                           "fontFamily": "JetBrains Mono",
                           "fontSize": 12,
                           "fontWeight": "normal"
@@ -4326,6 +4756,92 @@
                         {
                           "type": "text",
                           "id": "oeB35",
+                          "name": "Use",
+                          "fill": "$color-success",
+                          "content": "body (AA)",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xrumh",
+                      "name": "Pair success-text/surface",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "q7OGPu",
+                          "name": "Pair",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "success-text on surface",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "x7XKUS",
+                          "name": "Ratio",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 56,
+                          "content": "5.22:1",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "zdhhb",
+                          "name": "Use",
+                          "fill": "$color-success",
+                          "content": "body (AA)",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KYNPR",
+                      "name": "Pair warning-text/surface",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "N70CN",
+                          "name": "Pair",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 170,
+                          "content": "warning-text on surface",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "N6irtt",
+                          "name": "Ratio",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 56,
+                          "content": "5.16:1",
+                          "fontFamily": "JetBrains Mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "QtWFe",
                           "name": "Use",
                           "fill": "$color-success",
                           "content": "body (AA)",
@@ -5338,7 +5854,7 @@
                       "type": "text",
                       "id": "A7bU0s",
                       "name": "Label",
-                      "fill": "$color-success",
+                      "fill": "$color-success-text",
                       "content": "EASY",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
@@ -5363,7 +5879,7 @@
                       "type": "text",
                       "id": "y03pRo",
                       "name": "Label",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "MEDIUM",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
@@ -5414,7 +5930,7 @@
                       "type": "text",
                       "id": "e6XwCk",
                       "name": "Label",
-                      "fill": "$color-success",
+                      "fill": "$color-success-text",
                       "content": "PASSED",
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
@@ -5440,7 +5956,7 @@
                       "type": "text",
                       "id": "uk6Hq",
                       "name": "Label",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "PASSED WITH NOTES",
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
@@ -5609,7 +6125,7 @@
                           "type": "text",
                           "id": "onoI3",
                           "name": "Eyebrow",
-                          "fill": "$color-warning",
+                          "fill": "$color-warning-text",
                           "content": "EYEBROW",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -5774,7 +6290,7 @@
                               "type": "text",
                               "id": "pzQSh",
                               "name": "Eyebrow",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "EYEBROW",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -5940,7 +6456,7 @@
                               "type": "text",
                               "id": "LB08c",
                               "name": "Eyebrow",
-                              "fill": "$color-warning",
+                              "fill": "$color-warning-text",
                               "content": "EYEBROW",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -6488,7 +7004,7 @@
                           "type": "rectangle",
                           "id": "bfSvl",
                           "name": "Ink stroke",
-                          "fill": "$color-accent",
+                          "fill": "$color-success",
                           "width": 3,
                           "height": "fill_container"
                         }
@@ -6512,7 +7028,7 @@
                           "type": "text",
                           "id": "Xp1qN",
                           "name": "Verdict",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "PASSED",
                           "fontFamily": "$font-mono",
                           "fontSize": 32,
@@ -6567,7 +7083,7 @@
                           "type": "rectangle",
                           "id": "T8B4d",
                           "name": "Ink stroke",
-                          "fill": "$color-accent",
+                          "fill": "$color-warning",
                           "width": 3,
                           "height": "fill_container"
                         }
@@ -6591,7 +7107,7 @@
                           "type": "text",
                           "id": "EwYZw",
                           "name": "Verdict",
-                          "fill": "$color-warning",
+                          "fill": "$color-warning-text",
                           "content": "PASSED WITH NOTES",
                           "fontFamily": "$font-mono",
                           "fontSize": 32,
@@ -6646,7 +7162,7 @@
                           "type": "rectangle",
                           "id": "i43rQf",
                           "name": "Ink stroke",
-                          "fill": "$color-accent",
+                          "fill": "$color-danger",
                           "width": 3,
                           "height": "fill_container"
                         }
@@ -6755,7 +7271,7 @@
                       "type": "text",
                       "id": "ZbLsK",
                       "name": "Time",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "24:59",
                       "lineHeight": 1,
                       "fontFamily": "$font-mono",
@@ -7192,7 +7708,7 @@
                       "type": "text",
                       "id": "m8V6pg",
                       "name": "Label",
-                      "fill": "$color-warning",
+                      "fill": "$color-warning-text",
                       "content": "topic",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
@@ -7368,7 +7884,7 @@
                               "type": "text",
                               "id": "t7bxJ",
                               "name": "Label",
-                              "fill": "$color-success",
+                              "fill": "$color-success-text",
                               "content": "PASSED",
                               "fontFamily": "$font-mono",
                               "fontSize": 11,
@@ -7463,7 +7979,7 @@
                           "type": "text",
                           "id": "C4Un8",
                           "name": "Label",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "PASSED",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -12743,7 +13259,7 @@
                           "type": "text",
                           "id": "wsZX2",
                           "name": "Glyph",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "●",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -12753,7 +13269,7 @@
                           "type": "text",
                           "id": "bfmCg",
                           "name": "Label",
-                          "fill": "$color-success",
+                          "fill": "$color-success-text",
                           "content": "TESTS PASSED",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
@@ -13286,19 +13802,19 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F1",
+          "value": "#0EA5E9",
           "theme": {
             "theme": "slate"
           }
         },
         {
-          "value": "#B73A2F",
+          "value": "#3F6AA8",
           "theme": {
             "theme": "sumi"
           }
         },
         {
-          "value": "#B73A2F",
+          "value": "#3F6AA8",
           "theme": {
             "theme": "washi"
           }
@@ -13343,7 +13859,7 @@
     },
     "kit-version": {
       "type": "string",
-      "value": "0.3.0"
+      "value": "0.4.0"
     },
     "tint-accent-5": {
       "type": "color",
@@ -13949,11 +14465,49 @@
     },
     "tint-type-review-20": {
       "type": "color",
-      "value": "#6366F133"
+      "value": [
+        {
+          "value": "#0EA5E933",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#3F6AA833",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#3F6AA833",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
     },
     "tint-type-review-40": {
       "type": "color",
-      "value": "#6366F166"
+      "value": [
+        {
+          "value": "#0EA5E966",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#3F6AA866",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#3F6AA866",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
     },
     "tint-primary-30": {
       "type": "color",
@@ -13972,6 +14526,52 @@
         },
         {
           "value": "#1F1B164D",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-success-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#7D9B6A",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#4A6640",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-warning-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "theme": "slate"
+          }
+        },
+        {
+          "value": "#D4A547",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#7A5A12",
           "theme": {
             "theme": "washi"
           }

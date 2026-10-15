@@ -1,12 +1,12 @@
-# Design decisions — open questions & findings (D1–D49)
+# Design decisions — open questions & findings (D1–D50)
 
 > **This is the registry the `.pen` files point at.** Briefs in `flows/*.pen` and warning
 > notes in `ui-kit.lib.pen` cite these by number. Keep entries after resolution — record the
 > outcome instead of deleting; the reasoning is the useful part.
 
-**Status:** 49 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
-neighbours or fixed in-flow while drawing, so the series has gaps) · 13 resolved (D1, D2, D6, D15, D21,
-D42, D43, D44, D45, D46, D47, D48, D49) · the rest open until Adrian decides · 🐞 real app bugs
+**Status:** 50 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
+neighbours or fixed in-flow while drawing, so the series has gaps) · 14 resolved (D1, D2, D6, D15, D21,
+D42, D43, D44, D45, D46, D47, D48, D49, D50) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
 **How entries work.** A `D<n>` is a *finding*: logged when the design and the code disagree
@@ -93,6 +93,7 @@ not listed: they are taste, not findings.
 | **D47** | On-accent text on the slate accent measures 4.47:1 (`#FFFFFF` on `#6366F1`), 0.03 under AA for body text; sumi and washi pass (4.92 and above). The contrast test excludes slate from that assertion | ✅ Accepted: slate is the explicit-choice theme, the labels are 14px or larger, and the fix would move a brand value. The contrast test says so where it skips slate |
 | **D48** | Leaving the kata form with edits (Back, Cancel, closing the tab) loses them silently. The app uses `BrowserRouter`, so `useBlocker` is not available | ✅ Resolved: the browser warns on close or reload while the form is dirty, and the three exit buttons ask "Leave without saving?" first. Sidebar links and the browser Back button are not guarded. **Rejected: migrate to a data router for `useBlocker`** — would also catch those two; lost on cost, since it rewrites the routing and every test that mounts a `MemoryRouter`; would come back if edits get lost through the sidebar in practice. **Rejected: autosave a draft to `localStorage`** — more code and edge cases than the loss justifies |
 | **D49** | Health reported `down` for Piston whenever any runtime was missing, so "2 of 7 missing" looked the same as "nothing works" | ✅ Resolved: a reachable Piston with at least one runtime installed and one missing is `degraded` (amber dot and label, Reprovision still offered); unreachable, or reachable with nothing installed, stays `down`. **Rejected: only improve the card text** — kept the red state, so the severity stayed wrong; would come back if a fourth status is judged noise for one subsystem |
+| **D50** | Four leftovers of D42 and D46. Washi `success` and `warning` measure 4.28:1 and 2.64:1 as text on the page (3.92 and 2.41 on surface). `REVIEW` reused the accent in sumi and washi. The `VerdictBlock` stroke stayed vermillion next to a PASSED. Results showed two filled primary buttons | ✅ Resolved, kit 0.4.0: text uses `success-text` and `warning-text` (washi `#4A6640` and `#7A5A12`, 5.22 and 5.16 on surface; slate and sumi keep the base values), fills and borders keep the base tokens. `REVIEW` has its own hue (`#3F6AA8` in sumi and washi, `#0EA5E9` in slate). The stroke takes the verdict colour. Copy share link is ghost, so Keep practicing is the only filled button. **Rejected: darken `success` and `warning` themselves** — it also changes dots and fills that pass today. **Rejected: neutral REVIEW badge** — it drops the type signal the other kata types keep. The brushstroke under a page title stays accent: it is the mark |
 
 **Wording and links settled in PR #155:** sign in / sign out, one way in on anonymous Engawa,
 Kumite placeholder trimmed, whiteboard kata copy, Ask the sensei on the shared modal.
