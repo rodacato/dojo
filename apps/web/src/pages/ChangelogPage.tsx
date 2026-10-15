@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-10-15',
+    phase: 'Brand',
+    title: 'A new mark: the open gate',
+    description:
+      'The torii is gone. Dojo now has the Open Gate mark, drawn in vermillion next to the dojo_ wordmark in the nav, the sidebar and the sign-in screens. Sumi (dark) and Washi (light) are the brand themes; Slate Indigo is still there if you prefer it, under Settings.',
+  },
+  {
     date: '2026-10-02',
     phase: 'Self-hosted',
     title: 'Dojo is self-hosted open source',
@@ -55,7 +62,7 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-03-22',
     phase: 'Phase 0',
-    title: 'Branding, logo, and visual identity',
+    title: 'Branding, logo, and visual identity (since replaced by Open Gate)',
     description:
       'The torii gate mark, dojo_ wordmark with blinking cursor, favicon, OG image. Landing page redesign with terminal demo. The product stopped looking like a prototype and started looking like a product.',
   },
