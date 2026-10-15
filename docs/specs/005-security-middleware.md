@@ -1,5 +1,7 @@
 # Spec 005 — Security Middleware
 
+> **Status note (2026-10):** Implemented in sprint-001. Differences from the plan below: the package is `hono-rate-limiter ^0.5` (not `@hono/rate-limiter`), there is no `validation.ts` helper (routes call the Zod schemas' `safeParse` inline), and `rateLimiter.ts` also exports `errorReportLimiter`; further limiters live in `middleware/` (playground, scroll execution, scroll progress).
+
 **Expert:** Marta Kowalczyk
 **Depends on:** Phase 2 (router must exist), Phase 3 (DB client needed for session lookup)
 **Can run in parallel with:** Phase 4 (Docker)

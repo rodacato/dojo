@@ -1,5 +1,7 @@
 # Foundation Setup — Overview
 
+> **Status note (2026-10):** Implemented in sprint-001. The "Folder Structure" tree below is the original plan, not the current layout: `exercise` became `kata` (spec 028), `routes/sessions.ts`, `routes/exercises.ts`, `websocket/evaluation.ts` and `validation.ts` do not exist as drawn (routes live in `routes/practice.ts`, `ws.ts`, `ws-handlers.ts` and siblings; see ADR 013), and the recognition context holds `belt.ts` and `milestone.ts`. The current layout is in [ARCHITECTURE.md](../ARCHITECTURE.md).
+
 Everything needed to go from the current scaffold to a working, tested, deployable base. No feature code — only the foundation the kata loop will be built on.
 
 **Goal:** After all 8 phases, a single developer can clone the repo, run `docker compose up`, and have a running API with correct architecture, tests passing, and CI green.
@@ -10,14 +12,14 @@ Everything needed to go from the current scaffold to a working, tested, deployab
 
 | # | Spec | Expert(s) | Status |
 |---|---|---|---|
-| 1 | [Tooling](./001-tooling.md) — ESLint, Vitest, env validation | Tomás, Hiroshi, Marta | pending |
-| 2 | [DDD Scaffold](./002-ddd-scaffold.md) — Domain, Application, Infrastructure layers | Darius, Tomás | pending |
-| 3 | [Database](./003-database.md) — Drizzle ORM, schema, migrations, repositories | Tomás | pending |
-| 4 | [Production Docker](./004-docker-production.md) — Dockerfiles, docker-compose.yml | Tomás | pending |
-| 5 | [Security Middleware](./005-security-middleware.md) — Rate limiting, Zod validation | Marta | pending |
-| 6 | [GitHub OAuth](./006-github-oauth.md) — OAuth routes, session cookies, auth middleware | Marta, Tomás | pending |
-| 7 | [CI](./007-ci.md) — GitHub Actions pipeline | Hiroshi | pending |
-| 8 | [Shared Package](./008-shared-package.md) — DTO boundary, package audit | Darius, Priya | pending |
+| 1 | [Tooling](./001-tooling.md) — ESLint, Vitest, env validation | Tomás, Hiroshi, Marta | done |
+| 2 | [DDD Scaffold](./002-ddd-scaffold.md) — Domain, Application, Infrastructure layers | Darius, Tomás | done |
+| 3 | [Database](./003-database.md) — Drizzle ORM, schema, migrations, repositories | Tomás | done |
+| 4 | [Production Docker](./004-docker-production.md) — Dockerfiles, docker-compose.yml | Tomás | done |
+| 5 | [Security Middleware](./005-security-middleware.md) — Rate limiting, Zod validation | Marta | done |
+| 6 | [GitHub OAuth](./006-github-oauth.md) — OAuth routes, session cookies, auth middleware | Marta, Tomás | done |
+| 7 | [CI](./007-ci.md) — GitHub Actions pipeline | Hiroshi | done |
+| 8 | [Shared Package](./008-shared-package.md) — DTO boundary, package audit | Darius, Priya | done |
 
 ---
 
@@ -59,15 +61,15 @@ These are not open for debate per-spec. If a decision needs to change, open an A
 
 | Concern | Decision | Reason |
 |---|---|---|
-| Test runner | Vitest `^2` | Native ESM, same config as Vite, no transform setup |
+| Test runner | Vitest `^5` | Native ESM, same config as Vite, no transform setup |
 | Coverage | `@vitest/coverage-istanbul` | Per-file branch coverage for domain layer enforcement |
-| Linting | ESLint 9 flat config | Current standard, `import/no-cycle` enforces layer boundaries |
-| ORM | Drizzle ORM `^0.38` | TypeScript-first, SQL migrations, no runtime overhead |
+| Linting | ESLint flat config (`eslint.config.mjs`, ESLint 10) | Current standard, `import/no-cycle` enforces layer boundaries |
+| ORM | Drizzle ORM `^0.45` | TypeScript-first, SQL migrations, no runtime overhead |
 | DB driver | `postgres` npm package | ESM-native, better than `pg` for this stack |
-| OAuth client | `arctic ^2` | Hono-native, handles state + PKCE, no Passport dependency |
-| Rate limiting | `@hono/rate-limiter ^0.4` | Official Hono middleware, pluggable store |
+| OAuth client | `arctic ^3` | Hono-native, handles state + PKCE, no Passport dependency |
+| Rate limiting | `hono-rate-limiter ^0.5` | Hono middleware, pluggable store |
 | Event bus | `InMemoryEventBus` (custom) | In-process, synchronous, zero dependencies for Phase 0 |
-| Sessions | DB-stored tokens (`user_sessions` table) | JWTs can't be revoked |
+| Sessions | DB-stored tokens (`user_sessions` table), sent as a Bearer token (spec 019, ADR 007) | JWTs can't be revoked |
 | Container | Manual wiring in `container.ts` | No DI framework, composition root pattern |
 
 ---

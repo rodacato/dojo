@@ -1,5 +1,7 @@
 # Spec 010 — WebSocket Evaluation Flow
 
+> **Status note (2026-10):** Implemented in sprint-002. Differences: the upgrade is authenticated with a `?token=` query parameter checked by `findActiveSession` (spec 019), not a cookie; the handlers live in `routes/ws.ts` and `routes/ws-handlers.ts` (there is no `ws-adapter.ts`).
+
 **Experts:** Tomás Ríos (realtime), Marta Kowalczyk (auth on upgrade), Yemi Okafor (LLM streaming), Hiroshi Nakamura (testing)
 **Depends on:** Spec 009 (HTTP routes — `pendingAttempts` Map, `GetSession`), Spec 011 (Anthropic adapter — for real LLM; MockLLMAdapter works for development)
 **Blocks:** Spec 013 (frontend — streaming UI)

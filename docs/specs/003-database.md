@@ -1,5 +1,7 @@
 # Spec 003 — Database
 
+> **Status note (2026-10):** Implemented in sprint-001; the schema below is the original five-table plan. `apps/api/src/infrastructure/persistence/drizzle/schema.ts` now defines 16 tables and migrations run 0000 to 0028. The kata table is still named `exercises` in the database (Drizzle export `katas`, repository `PostgresKataRepository`; spec 028). The devcontainer step is `post-create.sh`, not `post-install.sh`, and the Drizzle packages are `drizzle-orm ^0.45` / `drizzle-kit ^0.31`.
+
 **Expert:** Tomás Ríos
 **Depends on:** Phase 2 (DDD scaffold — port interfaces must exist)
 **Blocks:** Phase 5 (security, needs UserRepository), Phase 6 (OAuth, needs user_sessions table)

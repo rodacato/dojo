@@ -1,5 +1,7 @@
 # Spec 004 — Production Docker
 
+> **Status note (2026-10):** Implemented in sprint-001. Since then: the web image copies `apps/web/nginx.conf.template` (rendered at start; `require-api-host.sh` guards the API host), not `apps/web/nginx.conf`, and production deploys through Kamal (`config/deploy.api.yml`, `config/deploy.web.yml`; see [docs/ops/deploy.md](../ops/deploy.md)).
+
 **Expert:** Tomás Ríos
 **Depends on:** Phase 3 (database — schema and migrations must exist)
 **Can run in parallel with:** Phase 5 (security middleware)

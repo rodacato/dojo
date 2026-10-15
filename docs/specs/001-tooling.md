@@ -1,5 +1,7 @@
 # Spec 001 — Tooling
 
+> **Status note (2026-10):** Implemented in sprint-001; the snippets below are the original plan. Today: ESLint 10 flat config is `eslint.config.mjs` (not `.js`), Vitest is `^5` with `vitest.config.ts` at the root and in `apps/api` (no `vitest.workspace.ts`), the API coverage gate is in `apps/api/vitest.config.ts` (lines/statements 80, functions 70, branches 72, wider exclusions), `react-refresh` was dropped from the lint setup, and the env schema in `apps/api/src/config.ts` has grown well beyond the variables listed here (`GITHUB_CALLBACK_URL`, `LLM_ADAPTER_FORMAT`, Piston, `FF_*`, and more; `LLM_BASE_URL` is now optional).
+
 **Experts:** Tomás Ríos (ESLint), Hiroshi Nakamura (Vitest), Marta Kowalczyk (env validation)
 **Depends on:** nothing — implement first
 **Blocks:** all other phases

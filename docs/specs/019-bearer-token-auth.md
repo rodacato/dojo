@@ -1,6 +1,8 @@
 # Spec 019: Bearer Token Auth — Replace Cross-Domain Cookies
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented: `apps/web/src/lib/auth-token.ts` stores `dojo_token`, `requireAuth` reads the Bearer header and WebSocket auth uses `?token=`. See ADR 007.
+
+> **Status:** implemented
 > **Depends on:** Spec 006 (GitHub OAuth), Spec 009 (HTTP routes), Spec 010 (WebSocket)
 > **Implements:** PRD-015 (Bearer token auth)
 

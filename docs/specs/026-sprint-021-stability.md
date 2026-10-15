@@ -1,6 +1,8 @@
 # Spec 026: Sprint 021 — Stability for the friends cohort
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint 021. Two references below are dead: the Piston liveness ADR is [`docs/adr/019-piston-liveness-and-reprovision.md`](../adr/019-piston-liveness-and-reprovision.md), and the `docs/audits/` folder was removed, so the audit deliverables named here do not exist. The `complete-course-step` smoke flow was removed with the courses.
+
+> **Status:** implemented
 > **Depends on:** PRD 028, S020 archive (ADR 017, ADR 018)
 > **Sprint:** 021
 > **Cohort size for validation:** creator + 1 invited friend (single invite dispatched at end-of-sprint)
@@ -98,7 +100,7 @@ Append results to `docs/audits/2026-04-sensei-calibration.md`. Pass criteria:
 - PASS rate at hard: 20%-50%
 - No single verdict text feels gratuitously harsh or dismissively soft (subjective but flaggable)
 
-If any bucket falls outside the range, the prompt template in [apps/api/src/prompts/sensei.ts](apps/api/src/prompts/sensei.ts) gets a follow-up patch as part of Part 4. Prompt changes are scoped: adjust ranges of phrasing, not the underlying rubric structure.
+If any bucket falls outside the range, the prompt template in [apps/api/src/prompts/sensei.ts](../../apps/api/src/prompts/sensei.ts) gets a follow-up patch as part of Part 4. Prompt changes are scoped: adjust ranges of phrasing, not the underlying rubric structure.
 
 ---
 

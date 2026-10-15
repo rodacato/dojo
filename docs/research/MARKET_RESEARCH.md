@@ -421,7 +421,7 @@ Given Dojo's mid-senior audience and "growth, not grind" philosophy:
 
 ### What Dojo should do
 - **Kata catalog**: curated, quality-controlled, organized by language × topic × difficulty
-- **Courses**: distinct identity per course (color, icon, tagline) — already planned in CODE_SCHOOL_PLAN
+- **Courses**: distinct identity per course (color, icon, tagline) — planned in the Code School plan (since deleted)
 - **No community content initially**: quality > volume. Open community creation later at scale
 - **Progression**: courses teach → kata test → badges reward
 

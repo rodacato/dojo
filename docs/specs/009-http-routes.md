@@ -1,5 +1,7 @@
 # Spec 009 — HTTP Routes: Practice & Dashboard
 
+> **Status note (2026-10):** Implemented in sprint-002, then renamed and split. After spec 028 the endpoint is `GET /katas` (not `/exercises`) and `ExerciseFilters` is `KataFilters`. There is no `GetDashboard` use case or `routes/admin.ts`: the dashboard is served by `routes/dashboard.ts`, admin by `routes/admin-katas.ts` and siblings, and routes are split per ADR 013. Mood is a query parameter only (ADR 006).
+
 **Experts:** Tomás Ríos (implementation), Marta Kowalczyk (auth review), Darius Osei (domain)
 **Depends on:** Spec 003 (database), Spec 006 (auth + `requireAuth`), Spec 012 (seed data)
 **Blocks:** Spec 010 (WebSocket — needs `POST /sessions/:id/attempts`), Spec 013 (frontend)
