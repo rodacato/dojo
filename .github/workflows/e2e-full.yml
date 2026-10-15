@@ -1,0 +1,61 @@
+name: E2E Full
+
+# The whole local e2e suite. PRs only run the @smoke subset (ci.yml, job "E2E Smoke").
+# A red nightly sends GitHub's native failed-workflow notification and opens no issue:
+# the repo is public and a failing test can describe a weakness.
+#
+# Before a release, run it on the release branch:
+#   gh workflow run e2e-full.yml --ref release/vX.Y.Z
+# (RELEASING.md, step 3).
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # 08:00 UTC, early morning in Mexico
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-full-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-full:
+    name: E2E Full
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9.15.4 # must match packageManager in root package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter=@dojo/e2e exec playwright install --with-deps chromium
+
+      - name: Run the full E2E suite
+        run: pnpm --filter=@dojo/e2e test
+        env:
+          CI: 'true'
+
+      - name: Upload traces
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-traces-full
+          path: apps/e2e/test-results/
+          retention-days: 7

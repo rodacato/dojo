@@ -52,7 +52,19 @@ The generator is mechanical and the entry is the release notes — this is the m
   entry by hand and fix the habit.
 - Edit the entry on the branch if it needs it. Hand-edits are expected, not a failure.
 
-### 4. Merge
+### 4. Run the full E2E suite on the release branch
+
+Pull requests only run the `@smoke` subset. Before merging, run the whole suite against the release
+branch and wait for green:
+
+```bash
+gh workflow run e2e-full.yml --ref release/vX.Y.Z
+gh run watch
+```
+
+A red run blocks the release: fix it on `master` and cut the branch again, or fix it on the branch.
+
+### 5. Merge
 
 `publish` runs on the push to `master`, filtered to `package.json`, and decides for itself whether
 there is anything to cut: a version in the manifest with no matching tag. When there is, it takes

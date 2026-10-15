@@ -72,3 +72,45 @@ jobs:
 
       - name: Test shared (enforced coverage gate)
         run: pnpm --filter=@dojo/shared test:coverage
+
+  e2e-smoke:
+    name: E2E Smoke
+    # Not a required check yet: promote it in the master ruleset once it has proven stable.
+    # The full suite runs nightly and before a release (e2e-full.yml).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9.15.4 # must match packageManager in root package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter=@dojo/e2e exec playwright install --with-deps chromium
+
+      - name: Run E2E smoke
+        # playwright.config.ts starts the web dev server itself and mocks the API.
+        run: pnpm --filter=@dojo/e2e test:smoke
+        env:
+          CI: 'true'
+
+      - name: Upload traces
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-traces-smoke
+          path: apps/e2e/test-results/
+          retention-days: 7

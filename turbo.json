@@ -27,8 +27,13 @@
       "inputs": ["tests/**/*.ts", "playwright.config.ts"]
     },
     "@dojo/e2e#test:smoke": {
+      "dependsOn": ["^build"],
       "cache": false,
-      "inputs": ["smoke/**/*.ts", "playwright.smoke.config.ts"]
+      "inputs": ["tests/**/*.ts", "playwright.config.ts"]
+    },
+    "@dojo/e2e#test:deployed": {
+      "cache": false,
+      "inputs": ["deployed/**/*.ts", "playwright.deployed.config.ts"]
     },
     "clean": {
       "cache": false

@@ -33,7 +33,7 @@ const MOCK_DASHBOARD = {
 }
 
 test.describe('Dashboard', () => {
-  test('shows streak and today kata section for authenticated user', async ({ page }) => {
+  test('shows streak and today kata section for authenticated user', { tag: '@smoke' }, async ({ page }) => {
     // Scope mocks to the API host so they don't intercept the app's own
     // /dashboard frontend route (which shares the same path).
     await page.route(`${API_BASE}/auth/me`, (route) =>

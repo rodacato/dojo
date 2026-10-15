@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test'
 
-// Smoke config — separate from the PR-time e2e suite. Runs against a
+// Deployed-environment config — separate from the local e2e suite. Runs against a
 // real deployed environment (prod or staging), never spins up a local
 // dev server, and expects a pre-issued bearer token in
 // `SMOKE_AUTH_TOKEN`. See docs/specs/027-sprint-022-playground.md §3.
@@ -16,8 +16,8 @@ if (!baseURL || !apiURL) {
 }
 
 export default defineConfig({
-  testDir: './smoke',
-  testMatch: /.*\.smoke\.spec\.ts$/,
+  testDir: './deployed',
+  testMatch: /.*\.deployed\.spec\.ts$/,
   fullyParallel: false,
   forbidOnly: !!process.env['CI'],
   retries: process.env['CI'] ? 1 : 0,

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Landing page', () => {
-  test('shows hero headline, primary CTA, and footer', async ({ page }) => {
+  test('shows hero headline, primary CTA, and footer', { tag: '@smoke' }, async ({ page }) => {
     await page.goto('/')
 
     // Hero headline (GSAP timeline draws the typewriter — wait for it to appear)

@@ -190,8 +190,15 @@ pnpm build                            # Build all workspaces
 pnpm lint                             # Lint all workspaces
 pnpm typecheck                        # Type-check all workspaces
 pnpm test --filter=api                # Run API unit + integration tests
+pnpm --filter=@dojo/e2e test:smoke    # E2E smoke subset (@smoke), what every PR runs
+pnpm --filter=@dojo/e2e test          # Full E2E suite
 pnpm brand:check                      # Fail if generated brand assets are stale
 ```
+
+**What runs where.** Every pull request and push to `master` runs lint, typecheck and unit tests plus the
+`@smoke` E2E subset (`ci.yml`). The full E2E suite runs nightly and on demand (`e2e-full.yml`), and
+before each release ([RELEASING.md](RELEASING.md)). Checks against a deployed environment are manual
+(`smoke.yml`, `pnpm --filter=@dojo/e2e test:deployed`).
 
 Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it says what fits the dojo and what does not.
 
