@@ -1,5 +1,7 @@
 # ADR 022: Scrolls pivot — crash courses, not fundamentals
 
+> **Note:** the `docs/courses/` and scroll-seed files linked below were removed with the native scrolls (ADR 025). They are recoverable at the git tag `archive/scrolls-final`.
+
 **Status:** Superseded by [ADR 025](025-external-embedded-scrolls.md)
 **Date:** 2026-06-06
 **Context:** Sprint 025 — post-POC re-evaluation of the courses surface after the Ruby Fundamentals Lesson 1 prototype landed in the dev environment (see `docs/courses/curricula/ruby/ruby.md`).

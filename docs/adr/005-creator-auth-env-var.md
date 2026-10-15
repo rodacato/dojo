@@ -1,6 +1,6 @@
 # ADR-005: Creator identification via environment variable (Phase 0)
 
-**Status:** Accepted (Phase 0 only)
+**Status:** Accepted (the env var stayed as the operator model, see [ADR 024](024-self-hosted-hub-pivot.md); the Phase 1 DB column was never built)
 **Date:** 2026-03-21
 **Deciders:** Tomás Ríos (infrastructure), Marta Kowalczyk (security)
 

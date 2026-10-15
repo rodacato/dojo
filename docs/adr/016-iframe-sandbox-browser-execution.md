@@ -1,5 +1,7 @@
 # ADR 016: iframe sandbox for browser-side course execution
 
+> **Note:** the `docs/courses/` and scroll-seed files linked below were removed with the native scrolls (ADR 025). They are recoverable at the git tag `archive/scrolls-final`.
+
 **Status:** Superseded by [ADR 025](025-external-embedded-scrolls.md)
 **Date:** 2026-03-27
 **Context:** Sprint 015 — second course requires DOM manipulation, which Piston cannot provide
@@ -69,5 +71,5 @@ Minimal. The backend is not involved in execution for `javascript-dom` steps. On
 
 ## Ref
 
-Panel discussion: [`docs/research/SPRINT-014-alt-iframe-sandbox.md`](../research/SPRINT-014-alt-iframe-sandbox.md)
+Panel discussion: `docs/research/SPRINT-014-alt-iframe-sandbox.md` (deleted with native scrolls; see git history)
 Sprint plan: archived as `docs/sprints/archive/sprint-015-iframe-dom-course.md`
