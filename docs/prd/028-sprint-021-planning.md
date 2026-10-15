@@ -1,6 +1,6 @@
 # PRD-028: Sprint 021 — Stability for the friends cohort
 
-> **Status:** advancing to spec
+> **Status:** shipped — Sprint 021
 > **Date:** 2026-04-21
 > **Author:** Lucía Navarro (S4) — panel input: Priya Menon (C1), Soren Bachmann (C6), Amara Diallo (C7), Tomás Ríos (C3), Marta Kowalczyk (C5), Yemi Okafor (C4), Hiroshi Nakamura (S1), Joel Ferreira (S3) withdrawn post-scope-clarification, Valentina Cruz (S2, situational)
 

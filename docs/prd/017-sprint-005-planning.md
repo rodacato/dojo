@@ -1,6 +1,6 @@
 # PRD-017: Sprint 005 Planning — Hardening + Phase 1 Prep
 
-> **Status:** confirmed
+> **Status:** shipped — Sprint 005
 > **Date:** 2026-03-22
 > **Author:** Claude (full panel consulted)
 

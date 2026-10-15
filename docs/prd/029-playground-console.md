@@ -1,6 +1,6 @@
 # PRD-029: Language playground console
 
-> **Status:** exploring
+> **Status:** shipped — Sprint 022 (playground routes, Turnstile and quota middleware, `/playground` UI)
 > **Date:** 2026-04-22
 > **Author:** Lucía Navarro (S4) — reviewed: Amara Diallo (C7) growth/funnel, Marta Kowalczyk (C5) abuse surface, Soren Bachmann (C6) UX, Priya Menon (C1) scope discipline, Tomás Ríos (C3) Piston reuse. Deferred reviewers for later phases: Yemi Okafor (C4) for "ask the sensei" inside the playground; Dr. Elif Yıldız (S5) for the course exit-ramp use case.
 

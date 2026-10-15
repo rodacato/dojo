@@ -1,6 +1,6 @@
 # PRD-030: Dojo ubiquitous language pass — routes, brand, visual, code
 
-> **Status:** advancing to spec
+> **Status:** shipped — Sprint 023 (ADR 020)
 > **Date:** 2026-06-05
 > **Decision locked:** 2026-06-05 — Option A (big bang, single sprint), code rename included, no backward compat
 > **Author:** Claude (Kira + Lucía structure; Soren, Amara, Priya, Tomás, Darius advising)

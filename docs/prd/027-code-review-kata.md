@@ -1,6 +1,6 @@
 # PRD-027: "Code Review" kata format
 
-> **Status:** advancing to spec
+> **Status:** shipped — `review` kata type exists (`packages/shared`, `persistence/katas/review.ts`)
 > **Date:** 2026-04-20
 > **Author:** Priya Menon (C1) — reviewed: Hiroshi Nakamura (S1) evaluation rubric, Darius Osei (C2) bounded-context fit, Soren Bachmann (C6) UI, Kira Tanaka (CTO) scope/cost
 

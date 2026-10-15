@@ -1,6 +1,6 @@
 # PRD-007: Sprint-002 Readiness — Consolidated Decisions
 
-> **Status:** confirmed
+> **Status:** shipped — decisions consumed by sprint-002
 > **Date:** 2026-03-21
 > **Author:** Claude — consolidated from PRDs 001–005 + full panel review (PRD-005)
 

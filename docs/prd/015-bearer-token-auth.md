@@ -1,6 +1,6 @@
 # PRD-015: Bearer Token Auth — Replace Cross-Domain Cookies
 
-> **Status:** advancing to spec
+> **Status:** shipped — Spec 019, ADR 007
 > **Date:** 2026-03-22
 > **Author:** Claude (Marta Kowalczyk guiding — auth & security)
 

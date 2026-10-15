@@ -1,6 +1,6 @@
 # PRD-012: Sensei System Prompt Drafts
 
-> **Status:** draft
+> **Status:** superseded — the live prompt is `apps/api/src/prompts/sensei.ts`; kept as the record of the A/B/C test matrix
 > **Date:** 2026-03-21
 > **Author:** Claude (Yemi Okafor guiding — LLM evaluation design)
 

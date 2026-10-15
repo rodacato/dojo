@@ -1,6 +1,6 @@
 # PRD-016: Sprint 004 Planning — Polish, Branding & Dogfooding
 
-> **Status:** confirmed
+> **Status:** shipped — Sprint 004
 > **Date:** 2026-03-22
 > **Author:** Claude (Lucía Navarro guiding — sprint planning, Soren Bachmann + Priya Menon consulted)
 

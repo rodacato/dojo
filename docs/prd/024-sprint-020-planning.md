@@ -1,6 +1,6 @@
 # PRD-024: Sprint 020 — Phase 1 expansion
 
-> **Status:** advancing to spec
+> **Status:** shipped — Sprint 020 (UX fixes, Code Review kata, error reporting). The course-side items (course share card, Ask the sensei in the course player, Python course) were removed with native scrolls (ADR 025)
 > **Date:** 2026-04-20
 > **Author:** Lucía Navarro (S4) — panel input: Soren Bachmann (C6), Amara Diallo (C7), Priya Menon (C1), Yemi Okafor (C4), Nadia Petrov (S7), Hiroshi Nakamura (S1), Tomás Ríos (C3), Marta Kowalczyk (C5)
 
