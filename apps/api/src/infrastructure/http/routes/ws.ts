@@ -63,13 +63,25 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
             return
           }
 
-          if (msg.type === 'reconnect') {
-            handleReconnect(ws, msg.attemptId)
+          // JSON.parse also yields null, numbers and strings; an unguarded
+          // property read would reject the async handler with nobody awaiting it.
+          if (typeof msg !== 'object' || msg === null) {
+            send(ws, { type: 'error', code: 'INVALID_MESSAGE' })
             return
           }
 
-          if (msg.type === 'submit') {
-            await handleSubmit(ws, msg.attemptId, session.id, user.id)
+          try {
+            if (msg.type === 'reconnect') {
+              handleReconnect(ws, msg.attemptId)
+              return
+            }
+
+            if (msg.type === 'submit') {
+              await handleSubmit(ws, msg.attemptId, session.id, user.id)
+            }
+          } catch (err) {
+            console.error('WebSocket handler failed for user', user.id, 'session', session.id, err)
+            send(ws, { type: 'error', code: 'INTERNAL_ERROR' })
           }
         },
 
