@@ -224,6 +224,29 @@ describe('createWsRoutes — onMessage', () => {
     expect(handleReconnect).not.toHaveBeenCalled()
   })
 
+  it.each(['null', '42', '"submit"'])('answers INVALID_MESSAGE to the non-object JSON frame %s', async (frame) => {
+    const events = await ownedEvents()
+    const ws = makeSocket()
+    await expect(events.onMessage?.({ data: frame }, ws)).resolves.toBeUndefined()
+
+    expect(send).toHaveBeenCalledWith(ws, { type: 'error', code: 'INVALID_MESSAGE' })
+    expect(handleSubmit).not.toHaveBeenCalled()
+  })
+
+  it('reports INTERNAL_ERROR instead of rejecting when a handler throws', async () => {
+    const events = await ownedEvents()
+    const ws = makeSocket()
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    handleSubmit.mockRejectedValueOnce(new Error('db down'))
+
+    await expect(
+      events.onMessage?.({ data: JSON.stringify({ type: 'submit', attemptId: 'att-1' }) }, ws),
+    ).resolves.toBeUndefined()
+
+    expect(send).toHaveBeenCalledWith(ws, { type: 'error', code: 'INTERNAL_ERROR' })
+    errSpy.mockRestore()
+  })
+
   it('routes a reconnect message to handleReconnect with the attemptId', async () => {
     const events = await ownedEvents()
     const ws = makeSocket()
