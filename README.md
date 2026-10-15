@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="site/brand/logo-sumi.svg">
+    <img src="site/brand/logo-washi.svg" alt="dojo_" height="56">
+  </picture>
+</p>
+
 # dojo
 
 > The dojo for developers who still have something to prove. To themselves.

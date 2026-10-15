@@ -30,7 +30,7 @@ For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs
 | `docs/EXPERTS.md` | `docs/EXPERTS.md` | Canonical | Virtual advisory panel — 11 specialist personas (quick reference at top) |
 | `docs/ROADMAP.md` | `docs/ROADMAP.md` | Canonical | Direction, phases, and the spec / PRD / ADR history |
 | `docs/BRANDING.md` | `docs/BRANDING.md` | Canonical | Voice, vocabulary, IA, UX principles, microcopy |
-| `docs/DESIGN.md` | `docs/DESIGN.md` | Canonical | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
+| `docs/DESIGN.md` | `docs/DESIGN.md` | Canonical | Design system — tokens, themes (Sumi + Washi themes, hanko vermillion accent, Slate Indigo as an explicit option), motifs, components, motion |
 | `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | Canonical | DDD model, bounded contexts, ports, events, decisions |
 | `docs/adr/` | `docs/adr/` | History (immutable) | Architecture Decision Records — never deleted |
 | `docs/specs/` | `docs/specs/` | History | Sprint-tied implementation specs. Deleted when the feature they describe is removed; ADRs never are |
