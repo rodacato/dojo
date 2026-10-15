@@ -18,11 +18,11 @@ If you have found a bug or have an idea that is not captured in an issue yet, op
 
 ### Prerequisites
 
-- Node.js >= 20
+- Node.js >= 24
 - pnpm >= 9
 - Docker + Docker Compose
 - A GitHub OAuth App ([create one here](https://github.com/settings/applications/new))
-- An LLM API key (Anthropic, OpenAI, or any compatible endpoint)
+- Optionally, an LLM API key (Anthropic, OpenAI, or any compatible endpoint) — the sensei defaults to `mock`
 
 ### Setup
 
@@ -30,7 +30,7 @@ If you have found a bug or have an idea that is not captured in an issue yet, op
 git clone https://github.com/rodacato/dojo
 cd dojo
 cp .env.example .env
-# fill in your values — see README.md for descriptions
+# fill in the GitHub OAuth values — see GETTING_STARTED.md
 pnpm install
 pnpm dev
 ```
@@ -104,7 +104,7 @@ The project follows a layered architecture — Domain → Application → Infras
 - **TypeScript throughout** — no `any` without a comment explaining why
 - **Zod schemas** for all API route input validation
 - **Hono routes are thin adapters** — parse request, call use case, return response; no business logic in routes
-- **Domain logic in aggregates** — business rules live in `Session`, `Exercise`, and their value objects
+- **Domain logic in aggregates** — business rules live in `Session`, `Kata`, and their value objects
 - **No new dependencies without a clear reason** — check if something in `packages/shared` already covers it
 
 For architectural changes, open an Issue first and follow the ADR format described in `docs/WORKFLOW.md`. New ports or adapters are architectural decisions.
@@ -164,7 +164,7 @@ To propose a new kata:
 
 2. The review asks one question: **does this leave the developer better than it found them, even if they fail?** If the answer is yes, it moves forward. If not, feedback will be specific.
 
-3. After review, accepted exercises are published by the maintainer. Contributors are credited in the exercise metadata (Phase 3+).
+3. After review, accepted exercises are published by the maintainer.
 
 **Review timeline:** expect feedback within 1–2 weeks. This is a personal project maintained alongside other work.
 

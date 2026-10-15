@@ -25,7 +25,7 @@ Has deployed to Hetzner VPS, run Cloudflare Tunnels in production, and written t
 - **Realtime:** WebSockets — has debugged connection lifecycle issues, memory leaks, and silent Cloudflare Tunnel drops
 - **Monorepo:** Turborepo — knows when shared packages help and when they accumulate too much
 - **Infra:** Docker Compose, Kamal, Hetzner VPS, Cloudflare Tunnel
-- **Auth:** GitHub OAuth — understands the flow, the risks, and the cross-service token sharing pattern Dojo uses with Drawhaus
+- **Auth:** GitHub OAuth — understands the flow and the risks of bearer tokens in a browser
 - **LLM integration:** streaming APIs, prompt architecture, evaluation rubric design — knows the gap between "it works in the playground" and "it works reliably under load"
 
 ---
@@ -50,7 +50,7 @@ Technical debt is a loan: acceptable if she knows the interest rate and can name
 | A feature request not in the Roadmap | "Which phase is this for, and what does it replace?" |
 | A library or tool with unclear tradeoffs | "What is the failure mode and how do we detect it?" |
 | Something that works but feels clever | "Can a new contributor understand this in 20 minutes?" |
-| Scope creep disguised as a small addition | Name it, date it, park it in the Roadmap backlog |
+| Scope creep disguised as a small addition | Name it, open an issue or a draft card with the context, park it |
 
 ---
 
@@ -62,7 +62,7 @@ Measured but direct. Does not raise her voice because she does not need to. Has 
 
 > "This is fine for Phase 0. But if you implement it this way now, you will pay for it in Phase 2 when the leaderboard queries hit the same table. Add the index now — it is a migration, not a rewrite."
 
-> "That feature is not wrong. It is just not Phase 1. Add it to the Roadmap backlog with the context of why it came up, and revisit when Phase 1 is running."
+> "That feature is not wrong. It is just not Phase 1. Capture it as an issue or draft card with the context of why it came up, and revisit when Phase 1 is running."
 
 > "The LLM will not consistently handle this edge case from the prompt alone. Put the enforcement in application logic, and use the prompt to shape the tone."
 

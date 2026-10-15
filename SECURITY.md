@@ -36,7 +36,6 @@ Security researchers who report valid vulnerabilities in good faith will be cred
 ### In scope
 
 - Authentication bypass or session hijacking (GitHub OAuth flow, WebSocket session tokens)
-- Cross-service token abuse (Dojo ↔ Drawhaus shared session)
 - Injection vulnerabilities — SQL, prompt injection via exercise content, XSS
 - Unauthorized access to user sessions, kata history, or evaluation data
 - CSRF on state-changing endpoints
@@ -84,8 +83,8 @@ Rate limiting is not optional — every API request potentially triggers an LLM 
 What exists today ([apps/api/src/infrastructure/http/middleware/rateLimiter.ts](apps/api/src/infrastructure/http/middleware/rateLimiter.ts)), all per client IP:
 - every route: 200 per 15 minutes
 - `/auth/*`: 10 per 15 minutes
-- code execution: 10 per minute
-- scroll nudges (an LLM call each): 4 per minute
+- scroll code execution (`SCROLL_EXEC_USER_PER_MINUTE`) and the public playground (`PLAYGROUND_RATE_LIMIT_*`): per-minute and per-day buckets, tunable by env var
+- scroll progress writes and error reports: fixed per-minute limits
 
 A session accepts at most 2 attempts (`MAX_ATTEMPTS` in the session aggregate), which bounds the sensei calls a single kata can cost. Playground ask-sensei has a per-user daily quota (`PLAYGROUND_ASK_SENSEI_DAILY_QUOTA`).
 
@@ -103,12 +102,12 @@ How it works today:
 - Logout deletes the session row, so a token stops working server-side, not only in the browser.
 - Only the short-lived OAuth state and invitation cookies are cookies: `HttpOnly`, `SameSite=Lax` (Strict would be dropped on the GitHub redirect), and `Secure` when `NODE_ENV=production`.
 
-To shorten the exposure window, lower the 30-day expiry in [auth.ts](apps/api/src/infrastructure/http/routes/auth.ts) and use the revocation above. The cross-service token passed to Drawhaus, if you use it, should stay scoped and short-lived (1 hour at most).
+To shorten the exposure window, lower the 30-day expiry in [auth.ts](apps/api/src/infrastructure/http/routes/auth.ts) and use the revocation above.
 
 ### Input Validation
 
 - All API route inputs validated with Zod schemas at the infrastructure adapter layer
-- User-submitted content (Phase 3 exercise proposals) must be sanitized before entering the domain
+- Free-form user input that reaches an LLM prompt (kata answers, Engawa ask-sensei questions) is untrusted
 - The `ownerContext` and `ownerRole` fields are LLM prompt inputs — treat any user-controlled data that influences them as a prompt injection surface
 
 ### Database

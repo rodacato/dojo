@@ -1,35 +1,33 @@
 # Dojo — Branding, UX & Voice
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-06
+> **Status:** Canonical · **Last reviewed:** 2026-10-15
 >
 > This file owns the brand: name, vocabulary, voice, information architecture, UX principles, microcopy.
-> For the design system itself — tokens, themes, motifs, components, motion specs — see [`DESIGN.md`](DESIGN.md).
-> The two used to overlap; the colors/tokens sections lived here and drifted. Now BRANDING owns the *why* and the *words*, DESIGN owns the *values* and the *renders*.
+> For the design system — tokens, themes, motifs, components, motion — see [`DESIGN.md`](DESIGN.md).
+> BRANDING owns the *why* and the *words*, DESIGN owns the *values* and the *renders*.
 
 ---
 
-## El Nombre
+## The name
 
-**Dojo** — Del japonés, el lugar donde se practica un arte hasta dominarlo.
+**Dojo** — from Japanese, the place where an art is practiced until mastered.
 
-No es competencia. No es certificación. Es disciplina personal — el lugar donde vas a practicar aunque nadie te esté mirando, aunque vayas a fallar, aunque sea incómodo.
+It is not competition and not certification. It is personal discipline: the place you go to practice even if nobody is watching, even if you are going to fail, even if it is uncomfortable.
 
-- Funciona en inglés y en español sin traducción
-- No tiene connotación de competencia sino de práctica sostenida
-- Carga cultural correcta: artes marciales, repetición, maestría progresiva
-- Corto, memorable, pronunciable en cualquier idioma
+- Works in English and Spanish without translation
+- Carries sustained practice, not competition
+- Right cultural load: martial arts, repetition, progressive mastery
+- Short, memorable, pronounceable in any language
 
-**Dominio de la instancia de referencia:** `dojo.notdefined.dev`. Cada instancia usa su propio host (`APP_HOST`); este es el del autor, no un servicio.
+**Reference instance domain:** `dojo.notdefined.dev`. Each instance uses its own host (`APP_HOST`); this one is the author's, not a service.
 
-El dominio agrega una capa de personalidad que el nombre solo no tiene — *"el dojo de los que todavía no están definidos del todo"*. Es honesto sobre el estado del developer que lo usa: en proceso, no terminado, todavía aprendiendo.
+The domain adds a layer of personality the name alone lacks — *"the dojo for developers who are not fully defined yet"*. It is honest about the state of the developer using it: in progress, unfinished, still learning.
 
 **Tagline:** *"The dojo for developers who still have something to prove. To themselves."*
 
-Alternativas consideradas: `Dojo`, `CodeDojo`, `kata.notdefined.dev`, `debug.notdefined.dev` — Dojo gana por simplicidad, historia cultural y fit con el dominio.
-
 ---
 
-## Glosario
+## Glossary
 
 The product speaks one vocabulary. Each term below is load-bearing — it does product work, not branding decoration. If a future term doesn't earn its place by being distinguishable from a generic SaaS word, don't add it. (See [ADR 020](adr/020-ubiquitous-language-pass.md) for the full rename.)
 
@@ -40,7 +38,7 @@ The product speaks one vocabulary. Each term below is load-bearing — it does p
 | **Scroll** | A learning path built as an external app and embedded in Dojo by iframe. Dojo hosts it (progress, session, code execution) and does not prescribe its content or format. The host works; availability depends on what the operator registers — see [#116](https://github.com/rodacato/dojo/issues/116). | *"finish the Pattern Circuit scroll"* | *"finish the Pattern Circuit course"* |
 | **Belt** | A single rank per user — white / yellow / green / brown / black — computed from session history. Earned, kept (no decay in v1). The sensei does not influence advancement. | *"I'm working toward brown belt"* | *"I unlocked the brown belt trophy"* |
 | **Milestone** | A single-moment recognition (`FIRST_KATA`, `POLYGLOT`, `CONSISTENT`). Independent from belt — earned at a moment in time. | *"earned the Polyglot milestone after my third whiteboard kata"* | *"got a Polyglot badge"* |
-| **Engawa** | The transitional veranda. Lives at `/engawa` as the anonymous code playground (no account required to try a snippet), but the *concept* is broader — see §Engawa as a philosophy below. | *"opened the engawa to test a Ruby idea"* | *"opened the playground"* (in our product surface) |
+| **Engawa** | The transitional veranda. Lives at `/engawa` as the anonymous code playground (no account required to try a snippet), but the *concept* is broader — see [Engawa as a philosophy](#engawa-as-a-philosophy). | *"opened the engawa to test a Ruby idea"* | *"opened the playground"* (in our product surface) |
 | **Kumite** | The planned 1v1 sparring feature — paired evaluation, shared kata, side-by-side reasoning compared by the sensei. **Not built yet** — the route exists as an honest placeholder. Not a relabel of the deleted leaderboard. | *"when kumite ships I want to spar against another reviewer"* | *"check the kumite leaderboard"* |
 
 The self-hosting vocabulary, which is plain on purpose because it describes deployment, not practice:
@@ -56,233 +54,192 @@ One more that is *not* dojo-flavored on purpose:
 
 - **Dashboard** — generic post-login orientation surface. The one place we don't translate; the user shouldn't have to learn vocabulary before seeing where they are.
 
-> **Historical note:** an earlier draft kept `/start` + "practice" as a separate nav item. Day-to-day use showed it was a stutter — one extra click between intent and the picks. `/katas` now hosts the full ritual (streak + mood + duration + customize) plus the three picks inline. One surface, one click to commit.
-
 ### Engawa as a philosophy
 
 The engawa is the transitional veranda of a Japanese house — neither inside nor outside, a place where things sit while the household decides what to do with them. In Dojo it does double duty:
 
 - **As a surface:** `/engawa` is the anonymous code playground. No account, no tracking, no consequence — just a place to drop a snippet and run it.
-- **As a stance:** it's the explicit home for unfinished work. GSAP experiments that may never ship. Half-formed ideas the creator wants on the site without committing to polish them.
+- **As a stance:** it's the explicit home for unfinished work. Experiments that may never ship. Half-formed ideas the creator wants on the site without committing to polish them.
 
-This matters. A product that demands every surface be shipped-quality stagnates — the bar for "good enough to put up" becomes so high that nothing new appears. One with a legitimate home for *"still drying"* stays alive. The engawa is that home. If something is interesting but rough, it lives in `/engawa` until it either earns promotion to a real surface or quietly disappears.
-
----
-
-## Personalidad de Marca
-
-**Tono:** Brutalmente honesto pero con humor. No es un producto que te abraza — te dice la verdad con una sonrisa dark. Piensa en un tech lead que te respeta lo suficiente como para no mentirte.
-
-**Voz:**
-- Directa. Sin fluff.
-- Geek humor. Referencias técnicas, memes de developer culture.
-- Vulnerabilidad celebrada. El fail es parte del proceso, no la vergüenza.
-- Sin motivational poster energy. Nada de "¡tú puedes!". Más de "fallaste en SQL otra vez, aquí está por qué."
-
-**Anti-patrones de voz:**
-- ❌ "¡Felicitaciones! ¡Lo lograste!"
-- ❌ "No te preocupes, todos cometemos errores"
-- ✅ "Funcionó. El LLM dice que un junior lo hubiera escrito más limpio."
-- ✅ "15 minutos en un problema de 10. El tiempo de ejecución fue O(n²) cuando había O(n log n) disponible. Buena intención, ejecución descuidada."
+A product that demands every surface be shipped-quality stagnates — the bar for "good enough to put up" becomes so high that nothing new appears. One with a legitimate home for *"still drying"* stays alive. If something is interesting but rough, it lives in `/engawa` until it either earns promotion to a real surface or quietly disappears.
 
 ---
 
-## Arquitectura de información
+## Brand personality
 
-Cinco surfaces, plana y expandible. Está optimizada para velocidad de iteración del creator, no para retención de visitantes anónimos — añadir una sexta surface no rompe el patrón, sólo agrega un row en el sidebar.
+**Tone:** brutally honest, with humor. This is not a product that hugs you — it tells you the truth with a dark smile. Think of a tech lead who respects you enough not to lie to you.
 
-| Surface | Estado | Propósito |
+**Voice:**
+- Direct. No fluff.
+- Geek humor. Technical references, developer-culture memes.
+- Vulnerability celebrated. Failing is part of the process, not the shame.
+- No motivational-poster energy. No "you can do it!". More "you failed SQL again, here is why."
+
+**Voice anti-patterns:**
+- ❌ "Congratulations! You did it!"
+- ❌ "Don't worry, everyone makes mistakes"
+- ✅ "It worked. The LLM says a junior would have written it cleaner."
+- ✅ "15 minutes on a 10-minute problem. Runtime was O(n²) when O(n log n) was available. Good intent, sloppy execution."
+
+---
+
+## Information architecture
+
+Flat and expandable. It is optimized for the creator's iteration speed, not for retaining anonymous visitors — adding another surface adds a row in the sidebar and breaks nothing.
+
+| Surface | State | Purpose |
 |---|---|---|
-| **Katas** (`/katas`) | shipped | Práctica de código atómica — Piston ejecuta, sensei evalúa. El corazón del producto. |
-| **Scrolls** | en reconstrucción | Apps externas embebidas por iframe (epic [#116](https://github.com/rodacato/dojo/issues/116)). Los scrolls nativos se retiraron; no hay ruta `/scrolls` por ahora. |
-| **Belts** (`/belts`) | shipped | Progreso transversal — rank + milestones derivados de session history. |
-| **Kumite** (`/kumite`) | placeholder honesto | 1v1 sparring planeado. La ruta existe vacía a propósito; cuando se construya, será PvP donde dos developers atacan el mismo kata y el sensei compara sus razonamientos lado a lado. |
-| **Engawa** (`/engawa`) | shipped (playground) + filosofía | Anonymous code playground + el espacio explícito para lo no terminado. Ver §Engawa as a philosophy. |
+| **Katas** (`/katas`) | shipped | Atomic practice — Piston executes code, the sensei evaluates. The heart of the product. |
+| **Scrolls** (`/scrolls`) | shipped (host) | External apps embedded by iframe (epic [#116](https://github.com/rodacato/dojo/issues/116)). What shows up depends on the scrolls the operator registers. |
+| **Belts** (`/belts`) | shipped | Cross-cutting progress — rank and milestones derived from session history. |
+| **Kumite** (`/kumite`) | honest placeholder | Planned 1v1 sparring. The route exists empty on purpose. |
+| **Engawa** (`/engawa`) | shipped (playground) + philosophy | Anonymous code playground and the explicit space for unfinished work. See [Engawa as a philosophy](#engawa-as-a-philosophy). |
 
-**Plana, no jerárquica.** Cada surface es un destino top-level del sidebar. No hay sub-tabs anidados hasta que la data del propio surface lo exija. **Expandible.** El patrón sobrevive a una sexta surface; lo que no sobrevive es la tentación de mover dos surfaces "bajo" otra para parecer organizado — eso es jerarquía cosmética que termina convirtiendo el sidebar en un árbol de file explorer.
+**Flat, not hierarchical.** Each surface is a top-level sidebar destination. No nested tabs until a surface's own data demands them. Moving two surfaces "under" another to look organized is cosmetic hierarchy that turns the sidebar into a file-explorer tree.
 
-**El Dashboard no es una surface, es la orientación.** Es la pantalla que ves al firmar y de donde sales hacia las cinco. No tiene vocabulario propio (ver Glosario).
-
----
-
-## Tema y dirección visual
-
-Tokens, hex values y component specs viven en [`DESIGN.md`](DESIGN.md). Esta sección documenta la **dirección** — el por qué visual y hacia dónde se mueve.
-
-### Hoy: Slate Indigo
-
-Dark mode "terminal meets product" — Linear / Raycast / Warp como referencia. Frío, técnico, restraint. Indigo como acento único, slate como base. Es lo que renderea en producción ahora y se mantendrá hasta que la migración sumi-e cierre.
-
-### Mañana: Sumi-e
-
-Tinta japonesa, dos temas bajo el mismo sistema de tokens:
-
-- **Washi** (papel cálido) — para reading: sensei en modo análisis largo. El light variant cumple un trabajo real, no es modo claro por completionismo.
-- **Sumi** (tinta profunda) — para sesiones largas: dark variant del kata flow, results, share cards.
-
-Un solo acento — **hanko vermillion** (el rojo del sello del nombre japonés). Reemplaza al indigo cuando la migración cierra. Si es interactivo, es vermillion. Si no, no.
-
-**Por qué este pivote:** los catálogos necesitan calma para estudiar; el cyberpunk neón pelearía con el contenido. Sumi-e es distintivo (no es el slop morado-degradado de IA de 2026), ownable (consistente con el vocabulario japonés del dojo), y borrowed-on-purpose — 1,500 años de tradición gráfica son lo opuesto a inventar originalidad falsa.
-
-### Motivos visuales
-
-Cuatro elementos cargan la identidad sumi-e. Cada uno con contrato explícito en [`DESIGN.md`](DESIGN.md) §Brand motifs.
-
-- **Enso** — círculo zen incompleto. Loader, section mark, wash detrás del avatar.
-- **Hanko** — sello cuadrado rojo. Milestone earned badge, verdict stamp en share cards, anillo del black belt.
-- **Brushstroke** — trazo único de pincel. Underline bajo H1, focus indicator en kata-active, hover reveal en cards.
-- **Belt colors** — anillo del avatar y banda en el profile header. Realización visual del rank.
-
-### Tipografía
-
-No cambia entre temas. **JetBrains Mono** para logo, números, verdicts, labels all-caps. **Inter** para body y UI. La identidad terminal es estable — el theme cambia la piel, no la voz tipográfica.
-
-### Estilo visual (cross-theme)
-
-- Bordes sutiles, `border-radius` pequeño (4-6px). Nunca `rounded-full` en containers.
-- Sombras mínimas. Depth a través de surface color stacking, no de drop shadows.
-- El cursor `_` parpadeando 1Hz como elemento de identidad — único en estados de carga, espera y en el wordmark.
-
-La migración va detrás de feature flag (`FF_SUMI_THEME_ENABLED`). Sin piecemeal swap. Operativa completa en [`DESIGN.md`](DESIGN.md) §Migration path.
+**The dashboard is not a surface, it is orientation.** It is the screen you see on sign-in and from which you go to the others. It has no vocabulary of its own.
 
 ---
 
-## Motion como firma
+## Theme and visual direction
 
-### Slate Indigo (hoy)
+Tokens, values and component specs live in [`DESIGN.md`](DESIGN.md) and `apps/web/src/styles/main.css`. This section is the *why*.
 
-Transiciones CSS funcionales 150-200ms. El cursor `_` parpadeando 1Hz como única "animación de identidad". Sin bouncing, sin sparkles, sin celebración. GSAP vive sólo en la landing (orquesta el reveal del hero + el carrusel del terminal demo) — el resto del producto es CSS.
+Sumi-e ink, two themes under one token system, picked by the OS by default:
 
-### Sumi-e (mañana)
+- **Washi** (warm paper) — for reading: long sensei analysis. The light variant does real work, it is not light mode for completeness.
+- **Sumi** (deep ink) — for long sessions: the kata flow, results, share cards.
 
-GSAP + DrawSVG + ScrollTrigger como motion language del sitio. La tinta es el pretexto ideal: el enso se dibuja al cargar, la brushstroke se traza bajo el H1 cuando entra al viewport, el hanko se planta (no rebota) cuando el verdict aterriza, las transiciones entre pantallas fluyen como tinta secándose. GSAP deja de ser experimento suelto y se vuelve la **firma de movimiento del producto**.
+A single accent: **hanko vermillion** (the red of a Japanese name seal). If it is interactive, it is vermillion. If not, it is not. **Slate Indigo**, the original dark theme, remains as an explicit choice in the theme toggle.
 
-Carga lazy en rutas que lo usan: kata flow, results, share. Dashboard y admin no pagan el bundle. Contratos completos en [`DESIGN.md`](DESIGN.md) §Motion.
+**Why:** catalogs need calm to study; neon cyberpunk would fight the content. Sumi-e is distinctive (not the purple-gradient AI slop of 2026), ownable (consistent with the dojo's Japanese vocabulary) and borrowed on purpose — 1,500 years of graphic tradition is the opposite of inventing fake originality.
 
-### Prohibido en ambos temas
+### Motifs
 
-Confetti, bursts de celebración, parallax, scroll-jacking, slide-ins desde abajo, modal entries con bounce, FLIP rearrangements visibles. **El fail no es dramático, el pass tampoco** — es el principio que rige toda animación del producto.
+Four elements carry the identity. Each has a contract in [`DESIGN.md`](DESIGN.md).
+
+- **Enso** — the incomplete zen circle. Loader, section mark.
+- **Hanko** — the square red seal. Milestone badge, verdict stamp.
+- **Brushstroke** — a single brush stroke. Underline under H1.
+- **Belt colors** — avatar ring and profile header band. The visual form of rank.
+
+### Typography
+
+Does not change between themes. **JetBrains Mono** for logo, numbers, verdicts, all-caps labels. **Inter** for body and UI. The terminal identity is stable — the theme changes the skin, not the typographic voice.
+
+### Visual style (cross-theme)
+
+- Subtle borders, small `border-radius` (4-6px). Never `rounded-full` on containers.
+- Minimal shadows. Depth through surface-color stacking, not drop shadows.
+- The `_` cursor blinking at 1Hz as an identity element — only in loading states, waiting states and the wordmark.
 
 ---
 
-## UX — Flujos Principales
+## Motion as signature
 
-### Flujo de Entrada (Landing → Ejercicio)
+Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "identity animation". No bouncing, no sparkles, no celebration. GSAP is reserved for timeline-shaped motion (the landing, the enso loader, the brushstroke underline); dashboard and `/admin/*` are CSS-only. The scope rule and its reasons are in [`DESIGN.md`](DESIGN.md#motion).
+
+**Forbidden in every theme:** confetti, celebration bursts, parallax, scroll-jacking, slide-ins from below, modal entries with bounce, visible FLIP rearrangements. **Failing is not dramatic, passing isn't either** — the principle that governs every animation in the product.
+
+---
+
+## UX — main flow
 
 ```
-[Login con GitHub]
+[Sign in with GitHub]
        ↓
-[Dashboard: estado del día]
-  - Badge si completaste hoy
-  - Streak actual
-  - Prompt si no has hecho tu challenge
+[Dashboard: today's state]
+  - Badge if you completed today
+  - Current streak
+  - Prompt if you have not done your challenge
        ↓
-[Mood + Tiempo] — group buttons simples, un submit
-  Mood: 🔥 En racha / 😐 Regular / 🧠 A medias
-  Tiempo: 10min / 20min / 30min / 45min+
+[Mood + Time] — simple group buttons, one submit
        ↓
-[3 opciones] — cards con título, tipo, dificultad, lenguaje
-  No skip. No reroll. Estos son tus ejercicios.
+[3 options] — cards with title, type, difficulty, language
+  No skip. No reroll. These are your katas.
        ↓
-[Ejercicio activo] — split view
-  Izquierda: Contexto del problema
-  Derecha: Tu herramienta (editor / chat / Mermaid)
-  Top: Timer, sin pause
+[Active kata] — split view
+  Left: problem context
+  Right: your tool (editor / chat / Mermaid)
+  Top: timer, no pause
        ↓
-[Evaluación del LLM] — chat con el experto
-  Puede hacer follow-up (máx 2 veces)
-  Da veredicto cuando tiene suficiente
+[LLM evaluation] — chat with the expert
+  May ask follow-ups (see MAX_ATTEMPTS in the Session aggregate)
+  Gives a verdict when it has enough
        ↓
-[Resultado + Análisis]
-  Veredicto: Passed / Passed with notes / Needs work
-  Análisis brutal completo
-  Share card opcional
+[Result + analysis]
+  Verdict: Passed / Passed with notes / Needs work
+  Full brutal analysis
+  Optional share card
        ↓
-[Dashboard actualizado]
+[Updated dashboard]
 ```
 
-### Principios de UX
+### UX principles
 
-**Fricción intencional:** No hay escape fácil. El timer corre, las 3 opciones son las que son. Esto es por diseño — el punto es que te enfrentes al ejercicio, no que lo optimices.
+**Intentional friction:** no easy escape. The timer runs, the three options are what they are. By design — the point is to face the kata, not to optimize it.
 
-**Sin distracciones durante el ejercicio:** El split view es todo lo que hay. Sin navegación, sin notificaciones, sin links externos.
+**No distractions during the kata:** the split view is all there is. No navigation, no notifications, no external links.
 
-**El fallo no es dramático:** Si el tiempo se acaba o el LLM determina que no hubo resolución satisfactoria, la sesión termina con dignidad. El análisis siempre aparece — fallaste y aquí está exactamente por qué y qué estudiar.
+**Failing is not dramatic:** if time runs out or the LLM decides there was no satisfactory resolution, the session ends with dignity. The analysis always appears — you failed and here is exactly why and what to study.
 
-**El dashboard es el premio, no la meta:** Ver tu progreso es la recompensa de completar. No es el punto de entrada — no es algo que te obsesiones revisando.
-
----
-
-## Componentes — voz y comportamiento
-
-La forma (radius, padding, color, motion) vive en [`DESIGN.md`](DESIGN.md) §Component vocabulary. Aquí van únicamente las decisiones de *voz* y *comportamiento* que los componentes encarnan.
-
-- **Exercise card (selección):** los 3 picks son los 3 picks. El card no insinúa que podrías cambiarlos. El hover sólo confirma el target — no anima un "preview" del kata.
-- **Timer:** number-first, sin label "minutes". No tiene pause ni extend. El cambio de color (normal → amber → red) es la única narración del tiempo que queda. Nada más se mueve.
-- **Editor de código:** sin autocomplete durante el ejercicio. Código de honor técnico, no enforcement. La sensación es de un editor "limpio", no de uno "limitado".
-- **Sensei chat:** el indicador "el experto está evaluando..." usa el cursor parpadeante, no un spinner ni dots. El expert habla cuando tiene algo que decir; no hay typing indicator continuo.
-- **Share card:** voz irreverente, honesta, geek. La share card que muestra `NEEDS_WORK` se comparte con el mismo orgullo que la `PASSED` — eso es vulnerabilidad celebrada, no consuelo.
+**The dashboard is the reward, not the goal:** seeing your progress is the reward for completing. It is not the entry point, not something to obsess over.
 
 ---
 
-## Microcopy — Voz en la UI
+## Components — voice and behavior
 
-Estos son ejemplos de cómo suena el producto en momentos clave:
+Shape (radius, padding, color, motion) lives in [`DESIGN.md`](DESIGN.md). Here are only the voice and behavior decisions the components embody.
 
-| Momento | Texto |
-|---------|-------|
-| Sin challenge completado | "No practice today. The dojo was empty." |
-| Selección de ejercicio | "These are your kata. No skip. No reroll." |
+- **Kata card (selection):** the 3 picks are the 3 picks. The card doesn't hint that you could change them. Hover only confirms the target — it doesn't animate a "preview" of the kata.
+- **Timer:** number-first, no "minutes" label. No pause, no extend. The color change (normal → amber → red) is the only narration of remaining time. Nothing else moves.
+- **Code editor:** no autocomplete during the kata. Honor code, not enforcement. It should feel "clean", not "limited".
+- **Sensei chat:** the "the expert is evaluating…" indicator uses the blinking cursor, not a spinner or dots. The expert speaks when it has something to say; there is no continuous typing indicator.
+- **Share card:** irreverent, honest, geek voice. A `NEEDS_WORK` share card is shared with the same pride as a `PASSED` one — that is celebrated vulnerability, not consolation.
+
+---
+
+## Microcopy — voice in the UI
+
+How the product sounds at key moments:
+
+| Moment | Text |
+|---|---|
+| No kata completed | "No practice today. The dojo was empty." |
+| Kata selection | "These are your kata. No skip. No reroll." |
 | Timer approaching end | "Time's almost up. What do you have?" |
-| Tiempo agotado | "Time. The sensei evaluates with what you submitted." |
-| Análisis listo | "Verdict is in. It's honest." |
+| Time out | "Time. The sensei evaluates with what you submitted." |
+| Analysis ready | "Verdict is in. It's honest." |
 | Share card prompt | "Own it. The good and the ugly." |
-| Streak perdida | "Streak broken. The dojo opens again tomorrow." |
-| Primer ejercicio | "First kata. The hardest one is always the first." |
+| Streak lost | "Streak broken. The dojo opens again tomorrow." |
+| First kata | "First kata. The hardest one is always the first." |
 | Passed | "That's a pass. The analysis tells you the rest." |
 | Failed | "Not there yet. Read the analysis. Come back." |
-| Login | "Enter the dojo." |
-| Logout | "See you tomorrow." |
+| Sign in | "Enter the dojo." |
+| Sign out | "See you tomorrow." |
 
 ---
 
 ## Belts & Milestones
 
-Dos conceptos ortogonales, ambos en `/belts`. El rubric vive en [PRD-031](prd/031-belt-progression-rubric.md); aquí se documenta la voz.
+Two orthogonal concepts, both on `/belts`. The rubric is [PRD-031](prd/031-belt-progression-rubric.md) and the thresholds are `BELT_THRESHOLDS` in `apps/api/src/domain/recognition/belt.ts`; this section is the voice.
 
-### Belts — el rank
+### Belts — the rank
 
-Una sola progresión por usuario, derivada de session history en cada lectura. Cinco grados:
+A single progression per user, derived from session history on every read: white (default), yellow, green, brown, black. Each step needs a number of completed katas, distinct topic clusters, active days in the last 30, and days at the previous rank.
 
-- **white** — default al firmar
-- **yellow** — 10 katas, 2 topic clusters distintos, 5 active days en 30
-- **green** — 40 katas, 4 clusters, 10 active days, 21 días en yellow
-- **brown** — 120 katas, 6 clusters, 15 active days, 60 días en green
-- **black** — 300 katas, 8 clusters, 18 active days, 120 días en brown
+The sensei does not influence promotion. This is deliberate: if verdicts counted, there would be an incentive to pressure the evaluator to be softer. Promotion is a function of sustained practice and diversity, not batting average.
 
-El sensei no influye en la promoción. Esto es deliberado: si los verdicts contaran, habría incentivo a presionar al evaluador para que sea más suave. La promoción es función de práctica sostenida y diversidad, no de batting average.
+**On-brand voice:** *"earned brown belt — Code Review track"*, *"working toward green belt"*.
+**Off-brand voice:** *"unlocked the brown belt trophy"*, *"belt achievement complete"*.
 
-**Voz on-brand:** *"earned brown belt — Code Review track"*, *"working toward green belt"*.
-**Voz off-brand:** *"unlocked the brown belt trophy"*, *"belt achievement complete"*.
+No progress bar to the next rank (the dojo doesn't babysit). The user sees the four current factors and works out what is missing without the system pushing.
 
-Sin progress bar al siguiente rank (el dojo no babysittea). El usuario ve los cuatro factores actuales — completed katas, topic clusters distintos, active days en 30, días en rank actual — y deduce qué le falta sin que el sistema lo empuje.
+### Milestones — single moments
 
-### Milestones — momentos puntuales
+One-shot events earned at a specific instant. Not rank; the memory of "this happened". Slugs and thresholds are in `apps/api/src/infrastructure/events/MilestoneEventHandler.ts`: `FIRST_KATA`, `5_STREAK`, `CONSISTENT`, `POLYGLOT`, `ARCHITECT`, `RUBBER_DUCK`, `BRUTAL_TRUTH`, `SENSEI_APPROVED`, `SQL_SURVIVOR`, `UNDEFINED_NO_MORE`.
 
-Eventos one-shot que se ganan en un instante específico. No son rank; son la memoria de "esto pasó". Las llamábamos badges hasta que el rename de Sprint 023 desentangló los dos conceptos.
-
-- **`FIRST_KATA`** — completaste tu primer kata
-- **`5_STREAK`** — 5 días consecutivos con al menos un kata
-- **`POLYGLOT`** — completaste katas en los 3 types (CODE, CHAT, WHITEBOARD)
-- **`ARCHITECT`** — 10 katas de whiteboard
-- **`BRUTAL_TRUTH`** — 3 verdicts NEEDS_WORK acumulados (showed up anyway)
-- **`CONSISTENT`** — 30 días de streak
-- **`SQL_SURVIVOR`** — 3 katas con tag SQL
-- **`SENSEI_APPROVED`** — 5 verdicts PASSED limpios
-- **`UNDEFINED_NO_MORE`** — 50 katas en total (prestige milestone — conecta con `notdefined.dev`)
-- **`RUBBER_DUCK`** — 3 katas CHAT
-
-Los milestones no tienen puntos ni XP. Son colecciones — están o no están. El nombre `UNDEFINED_NO_MORE` conecta directamente con `notdefined.dev` y es el milestone de progreso más significativo.
+Milestones have no points or XP. They are collections — you have them or you don't. `UNDEFINED_NO_MORE` connects to `notdefined.dev` and is the most significant progress milestone.
 
 ---
 
@@ -295,19 +252,19 @@ Los milestones no tienen puntos ni XP. Son colecciones — están o no están. E
 - **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session. The full map of canonical sources and generated outputs is [`brand/README.md`](../brand/README.md).
 - **Uploading the repository preview:** GitHub has no API for it. In the repository's Settings → General → Social preview, upload `site/brand/social-sumi.png` (1280×640 is recommended; the card is 1200×630).
 
-**Para share cards y OG images:** el host de la instancia en monospace completo (`dojo.notdefined.dev` en la instancia de referencia). El punto entre `dojo` y `notdefined` actúa como separador visual natural.
+**Share cards and OG images:** the instance host in full monospace (`dojo.notdefined.dev` on the reference instance). The dot between `dojo` and `notdefined` acts as a natural visual separator.
 
-**Evitar:**
-- Iconografía de artes marciales literal (katanas, cinturones físicos, dojos de madera)
-- Íconos de código genérico (corchetes, `</>`)
-- Íconos de robot/AI/cerebro/lightbulb
-- Cualquier cosa que parezca una startup de 2019
+**Avoid:**
+- Literal martial-arts iconography (katanas, physical belts, wooden dojos)
+- Generic code icons (brackets, `</>`)
+- Robot/AI/brain/lightbulb icons
+- Anything that looks like a 2019 startup
 
 ---
 
 ## Related documents
 
-- [`DESIGN.md`](DESIGN.md) — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion specs. Source of truth para todo lo visual/operativo.
+- [`DESIGN.md`](DESIGN.md) — tokens, themes, motifs, components, motion.
 - [`VISION.md`](VISION.md) — product strategy.
 - [`prd/031-belt-progression-rubric.md`](prd/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
-- [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md) — Sprint 023's rename que introdujo `scroll / kata / belt / milestone` como vocabulario visible.
+- [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md) — the rename that introduced `scroll / kata / belt / milestone` as the visible vocabulary.

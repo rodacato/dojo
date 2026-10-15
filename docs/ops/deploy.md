@@ -110,7 +110,7 @@ stopping `kamal deploy` halfway can leave Kamal's deploy lock held.
 
 ## Useful commands
 
-With the environment of the next section, from any machine that can reach the host over SSH:
+From any machine that can reach the host over SSH, with the Environment names above exported:
 
 ```bash
 kamal config -c config/deploy.api.yml         # resolved config
