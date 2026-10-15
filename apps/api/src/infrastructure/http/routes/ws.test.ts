@@ -50,7 +50,7 @@ import { createWsRoutes } from './ws'
 type WSEvents = {
   onOpen?: (evt: unknown, ws: WSInstance) => void
   onMessage?: (evt: { data: unknown }, ws: WSInstance) => void | Promise<void>
-  onClose?: () => void
+  onClose?: (evt: unknown, ws: WSInstance) => void
   onError?: (evt: unknown, ws: WSInstance) => void
 }
 
@@ -292,7 +292,21 @@ describe('createWsRoutes — onClose / onError', () => {
     const events = await ownedEventsConnected(ws)
     expect(activeConnections.has(VALID_USER.id)).toBe(true)
 
-    events.onClose?.()
+    events.onClose?.(null, ws)
+    expect(activeConnections.has(VALID_USER.id)).toBe(false)
+  })
+
+  it('an evicted socket closing does not unregister the connection that replaced it', async () => {
+    const stale = makeSocket()
+    const staleEvents = await ownedEventsConnected(stale)
+    const fresh = makeSocket()
+    const freshEvents = await ownedEventsConnected(fresh)
+    expect(activeConnections.get(VALID_USER.id)).toBe(fresh)
+
+    staleEvents.onClose?.(null, stale)
+
+    expect(activeConnections.get(VALID_USER.id)).toBe(fresh)
+    freshEvents.onClose?.(null, fresh)
     expect(activeConnections.has(VALID_USER.id)).toBe(false)
   })
 
