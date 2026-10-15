@@ -1,5 +1,7 @@
 # Spec 008 — Shared Package Boundary
 
+> **Status note (2026-10):** Implemented in sprint-001. `packages/shared/src` has since grown the scroll protocol, registry, progress and execution DTOs plus a JSON schema (`scroll-*.ts`) and `topics.ts`; the boundary rule below still holds.
+
 **Experts:** Darius Osei (boundary definition), Priya Menon (scope discipline)
 **Depends on:** Phase 2 (domain layer must exist — confirms what is domain-only vs. shared)
 **Can run in parallel with:** Phase 4, 5, 6, 7

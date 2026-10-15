@@ -1,6 +1,8 @@
 # Spec 028: Sprint 023 — Dojo language pass implementation
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint 023. Its Learning-context maps (courses, native scroll player, `COURSE_` badges, `learn.ts`, `/learn` routes) describe code removed afterwards (ADR 025, migration `0026_drop_native_scrolls.sql`); scrolls are now a registry of external apps (`application/scrolls/*`, `scrolls` table). The kata, session, belt and milestone renames still hold.
+
+> **Status:** implemented
 > **Depends on:** [PRD-030](../prd/030-dojo-terminology-routes.md), [PRD-031](../prd/031-belt-progression-rubric.md), [PRD-032](../prd/032-sprint-023-planning.md)
 > **Sprint:** 023
 > **Inventoried files:** ~188 (~110 code, ~78 docs)

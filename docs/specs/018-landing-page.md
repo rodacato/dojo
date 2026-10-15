@@ -1,5 +1,7 @@
 # Spec 018: Landing Page — Static Phase 0
 
+> **Status note (2026-10):** Implemented as the Phase 0 page, since superseded in detail. The access form is no longer static: `RequestAccessForm` posts to `POST /access-requests` (which emails the operator through Resend when configured), and the landing copy has been rewritten since PRD-014. `LandingPage.tsx` is the source of truth.
+
 > **Status:** done
 > **Depends on:** Spec 013 (frontend core screens)
 > **Implements:** PRD-014 (landing page copy)

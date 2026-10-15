@@ -1,5 +1,7 @@
 # Spec 017: UX Improvements — Error States, Empty States, Session Handling
 
+> **Status note (2026-10):** Implemented. Routes in the snippets predate spec 028: `/kata/:id` is now `/katas/:id`.
+
 > **Status:** done
 > **Depends on:** Spec 013 (frontend core screens), Spec 005 (rate limiting)
 > **Implements:** HIGH severity items from PRD-013 (UX/UI gap analysis)

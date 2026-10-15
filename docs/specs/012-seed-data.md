@@ -1,6 +1,8 @@
 # Spec 012: Seed Data
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint-002. The seed no longer holds 8 inline exercises: katas live in `apps/api/src/infrastructure/persistence/katas/*.ts` (one file per category) and are loaded by `seed.ts`; `packages/shared/src/topics.ts` exists as specified.
+
+> **Status:** implemented
 > **Depends on:** nothing (first step)
 > **Blocks:** all testing (HTTP routes, WebSocket, frontend)
 

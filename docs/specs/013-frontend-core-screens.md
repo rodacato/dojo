@@ -1,6 +1,8 @@
 # Spec 013: Frontend — Core Screens
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint-002, then reshaped. `DayStartPage` and `KataSelectionPage` no longer exist: after spec 028 the routes are `/dashboard`, `/katas` (`KatasPage`), `/katas/:id`, `/katas/:id/eval` and `/katas/:id/result`, `/login` redirects to `/`, and many screens were added. The API client is `apps/web/src/lib/api.ts` plus `lib/api/*`. See `apps/web/src/App.tsx` for the live route table.
+
+> **Status:** implemented
 > **Depends on:** Spec 009 (HTTP routes), Spec 010 (WebSocket), Spec 011 (adapter), Spec 012 (seed data)
 > **Implements:** All 8 core user-facing screens + Tailwind 4 + style guide primitives
 

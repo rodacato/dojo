@@ -1,5 +1,7 @@
 # Spec 002 — DDD Scaffold
 
+> **Status note (2026-10):** Implemented in sprint-001; the code below is the original scaffold. `Exercise` became `Kata` (spec 028): `domain/content/kata.ts`, `GetKataOptions`. The recognition context now holds `belt.ts` and `milestone.ts` (not the empty `ports.ts`/`events.ts` planned here), and the application layer gained `GenerateSessionBody`, `GetSession`, `CalculateBelt`, `ListUserMilestones` and the scrolls use cases. For the current layout see [ARCHITECTURE.md](../ARCHITECTURE.md).
+
 **Experts:** Darius Osei (domain model), Tomás Ríos (infrastructure wiring)
 **Depends on:** Phase 1 (tooling)
 **Blocks:** Phase 3 (database), Phase 5 (security), Phase 6 (OAuth)

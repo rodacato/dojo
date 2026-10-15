@@ -1,6 +1,8 @@
 # Spec 011: Anthropic Streaming Adapter
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint-002. Configuration is now `LLM_ADAPTER_FORMAT` (`mock | anthropic | openai`) with `LLM_API_KEY`, `LLM_BASE_URL`, `LLM_MODEL` and `LLM_STREAM`, not `LLM_ADAPTER` / `ANTHROPIC_API_KEY`. The adapter set gained `OpenAIStreamAdapter`, `llm-endpoint.ts` and `sensei-evaluation.ts`. The limitation in section 14 is resolved: `LLMPort.evaluate` params carry `kataTitle`.
+
+> **Status:** implemented
 > **Depends on:** Spec 009 (HTTP routes), Spec 010 (WebSocket evaluation)
 > **Blocks:** Spec 010 implementation (adapter must exist before WS wires LLM)
 

@@ -1,6 +1,8 @@
 # Spec 014: Admin UI
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint-002, then renamed. `AdminExercisesPage` / `AdminNewExercisePage` are `AdminKatasPage` / `AdminNewKataPage` (plus `AdminEditKataPage`), under `/admin/katas`; the admin area also has invitations, scrolls, errors and health pages.
+
+> **Status:** implemented
 > **Depends on:** Spec 009 (HTTP routes — `requireCreator`, admin endpoints)
 > **Priority:** Off critical path — implement after core loop works end-to-end
 

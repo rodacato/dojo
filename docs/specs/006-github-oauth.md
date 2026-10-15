@@ -1,5 +1,7 @@
 # Spec 006 — GitHub OAuth
 
+> **Status note (2026-10):** Implemented in sprint-001, then changed. Sessions are no longer cookies: the callback redirects to `${WEB_URL}/auth/callback?token=<session id>` and the client sends `Authorization: Bearer` (spec 019, ADR 007). `arctic` is `^3`. The auth routes also include the invitation gate (`GET /auth/invite/:token`), `GET /auth/me` and `DELETE /auth/session` (logout, listed as out of scope below).
+
 **Experts:** Marta Kowalczyk (security), Tomás Ríos (implementation)
 **Depends on:** Phase 2 (`UpsertUser` use case), Phase 3 (database + `PostgresUserRepository`), Phase 5 (rate limiting — `authLimiter`)
 **Blocks:** nothing — foundation is complete after this phase

@@ -1,6 +1,8 @@
 # Spec 027: Sprint 022 — Open the door: friend cohort + public playground
 
-> **Status:** ready-to-implement
+> **Status note (2026-10):** Implemented in sprint 022. Routes were renamed by spec 028: the playground is `/engawa`, with `POST /engawa/run` and `POST /engawa/ask` in the API. The `complete-course-step` smoke spec was removed with the courses, and the `docs/audits/` folder no longer exists.
+
+> **Status:** implemented
 > **Depends on:** PRD 029 (playground console), Spec 026 Part 5 (Piston liveness design — carried forward), ADR 018 (cgroupns host)
 > **Sprint:** 022
 > **Cohort size for validation:** creator + 1 invited friend (single invite dispatched mid-sprint, after Parts 1-3 close)
