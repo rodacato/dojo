@@ -1,5 +1,7 @@
 # Sprint 031 — Go crash scroll + the carried smoke
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 > **Status:** Closed 2026-06-20 (work 2026-06-19 – 06-20).
 > **Phase:** 1 — Alpha
 > **Predecessor:** [Sprint 030 — scrolls presentation reshape](sprint-030-scrolls-reshape.md) *(re-scoped from Go; Go landed here)*

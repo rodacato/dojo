@@ -1,5 +1,7 @@
 # Sprint 028 — Rust + TypeScript crash scrolls
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 > **Status:** Open 2026-06-11. Active focus: two language scrolls per sprint (cadence decision at S027 close). Rust and TypeScript end-to-end under the polyglot-first lens, with the S027 canon additions (capstone + production-gesture) applied from outline stage. Go queued for S029.
 > **Direction:** [ADR 022 — crash-course pivot](../adr/022-crash-course-pivot.md) · [`docs/courses/AUTHORING.md`](../courses/AUTHORING.md) · [`docs/courses/README.md`](../courses/README.md) §5.3 *The scroll capstone* + §4.4 *production-gesture rule*
 > **Predecessor:** [Sprint 027 — Python crash scroll](archive/sprint-027-python-crash-scroll.md)

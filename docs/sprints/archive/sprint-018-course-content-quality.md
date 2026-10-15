@@ -1,11 +1,13 @@
 # Sprint 018 — Course content quality v1
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 **Started:** 2026-04-16
 **Closed:** 2026-04-16
 **Phase:** Phase 1 Alpha
 
-**PRD:** [docs/prd/022-sprint-018-planning.md](../../prd/022-sprint-018-planning.md)
-**Spec:** [docs/specs/024-sprint-018-course-content-quality.md](../../specs/024-sprint-018-course-content-quality.md)
+**PRD:** PRD 022, removed with native scrolls (ADR 025)
+**Spec:** `docs/specs/024-sprint-018-course-content-quality.md` (deleted with native scrolls, ADR 025; see git history)
 
 ---
 

@@ -24,7 +24,7 @@ Adrian unless noted.
 | **D2** | New "Open Gate" brand not integrated (issue #148) | ✅ Resolved: PR #151 integrated the Open Gate mark (`apps/web/src/brand/logo.json`) and the wordmark keeps `dojo_`. Kit 0.2.0 mirrors it; the palette did not change | Done |
 | **D3** | Tailwind opacity modifiers (`bg-danger/10`) | Computed at build time | Modeled as alpha tokens `tint-<color>-<n>` in the kit |
 | **D4** | Type scale anomaly | `text-3xl` (30px) is smaller than `text-2xl` (32px) | Fix in `main.css` |
-| **D7** | Hardcoded colors outside the theme | AchievementBadge glow is fixed Slate indigo; Modal overlay is `bg-black/60` | Tokenize both |
+| **D7** | Hardcoded colors outside the theme | Modal overlay is `bg-black/60`. (The AchievementBadge glow noted earlier is gone: the component now uses only theme tokens) | Tokenize the overlay |
 | **D34** | Code editor syntax colors | One color per token class, approximated | Kit gap, low impact |
 
 ## Accessibility

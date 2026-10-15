@@ -1,7 +1,7 @@
 # Design — Pencil workflow
 
 Everything about the app's design lives here. Read this before touching a `.pen`. It doubles
-as context for AI agents (`AGENTS.md` points them here).
+as context for AI agents.
 
 **Two rules that matter most:**
 

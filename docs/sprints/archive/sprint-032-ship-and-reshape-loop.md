@@ -1,5 +1,7 @@
 # Sprint 032 — Ship the set, then close the reshape loop
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 > **Status:** Closed 2026-06-20.
 > **Phase:** 1 — Alpha
 > **Predecessor:** [Sprint 031 — Go crash scroll](sprint-031-go-scroll.md)

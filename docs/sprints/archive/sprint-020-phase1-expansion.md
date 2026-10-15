@@ -1,5 +1,7 @@
 # Sprint 020 — Phase 1 expansion
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 **Started:** 2026-04-20
 **Closed:** 2026-04-21
 **Phase:** Phase 1 Alpha
@@ -7,7 +9,7 @@
 
 **PRDs:**
 - [docs/prd/024-sprint-020-planning.md](../../prd/024-sprint-020-planning.md) — sprint planning
-- [docs/prd/025-python-course.md](../../prd/025-python-course.md) — Python course "Python for the Practiced"
+- PRD 025 (Python course "Python for the Practiced"), removed with native scrolls (ADR 025)
 - [docs/prd/026-ask-the-sensei.md](../../prd/026-ask-the-sensei.md) — "Ask the sensei" in course player
 - [docs/prd/027-code-review-kata.md](../../prd/027-code-review-kata.md) — "Code Review" kata format
 

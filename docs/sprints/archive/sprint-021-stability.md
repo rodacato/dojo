@@ -1,5 +1,7 @@
 # Sprint 021 — Stability for the friends cohort
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 **Started:** 2026-04-21
 **Closed:** 2026-04-22
 **Phase:** Phase 1 Alpha

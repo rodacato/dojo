@@ -1,5 +1,7 @@
 # Sprint 033 — Maintenance: security & foundation
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 > **Status:** Closed 2026-06-27 (work 2026-06-20 – 06-26).
 > **Phase:** 1 — Alpha
 > **Predecessor:** [Sprint 032 — Ship the set, then close the reshape loop](sprint-032-ship-and-reshape-loop.md)

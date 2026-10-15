@@ -1,5 +1,7 @@
 # Sprint 029 — Scroll format revision + publish all four
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 > **Status:** Closed 2026-06-19 (work 2026-06-17 – 06-19).
 > **Predecessor:** [Sprint 028 — Rust + TypeScript crash scrolls](sprint-028-rust-typescript-crash-scrolls.md)
 > **Successor:** [Sprint 030 — Go crash scroll + the full-set smoke gate](../current.md)
