@@ -1,4 +1,4 @@
-name: Reboot accessory
+name: Ops · Reboot Accessory
 
 # Manual-only. Used when a Kamal accessory needs its container recreated
 # to pick up changed env vars or options in config/deploy.api.yml — most
@@ -24,7 +24,7 @@ permissions:
   contents: read
 
 env:
-  KAMAL_VERSION: "2.12.0" # same as KAMAL_VERSION in deploy.yml
+  KAMAL_VERSION: "2.12.0" # same as KAMAL_VERSION in cd-deploy.yml
   RUBY_VERSION: "4.0"
 
 jobs:

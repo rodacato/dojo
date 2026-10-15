@@ -1,4 +1,4 @@
-name: Piston Liveness
+name: Ops · Piston Liveness
 
 # Synthetic check of the Piston accessory via /health/piston every 30 min.
 # Alerts on 2 consecutive failures (not single — Piston flakes occasionally,

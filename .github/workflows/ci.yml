@@ -1,4 +1,4 @@
-name: CI
+name: CI · Test
 
 on:
   pull_request:
@@ -76,7 +76,7 @@ jobs:
   e2e-smoke:
     name: E2E Smoke
     # Not a required check yet: promote it in the master ruleset once it has proven stable.
-    # The full suite runs nightly and before a release (e2e-full.yml).
+    # The full suite runs nightly and before a release (ci-e2e-nightly.yml).
     runs-on: ubuntu-latest
     timeout-minutes: 10
 

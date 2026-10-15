@@ -1,11 +1,11 @@
-name: E2E Full
+name: CI · E2E Nightly
 
 # The whole local e2e suite. PRs only run the @smoke subset (ci.yml, job "E2E Smoke").
 # A red nightly sends GitHub's native failed-workflow notification and opens no issue:
 # the repo is public and a failing test can describe a weakness.
 #
 # Before a release, run it on the release branch:
-#   gh workflow run e2e-full.yml --ref release/vX.Y.Z
+#   gh workflow run ci-e2e-nightly.yml --ref release/vX.Y.Z
 # (RELEASING.md, step 3).
 
 on:

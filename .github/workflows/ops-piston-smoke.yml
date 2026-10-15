@@ -1,8 +1,8 @@
-name: Piston Execute Smoke
+name: Ops · Piston Smoke
 
 # Synthetic end-to-end check of Piston: a real /api/v2/execute per language,
 # going through PistonAdapter.execute() — the same path code execution takes. Catches
-# what piston-liveness.yml misses: timeouts/caps misconfigured, runtime
+# what ops-piston-liveness.yml misses: timeouts/caps misconfigured, runtime
 # missing for a specific language, or the API↔Piston payload contract drifting.
 # That gap is what hid the compile-timeout regression for hours: /health/piston
 # kept returning 200 while every Ruby/Rust/TS execution was 400ing.
@@ -25,7 +25,7 @@ jobs:
     # production-scoped secrets (CRON_SECRET) only resolve when the job
     # declares the environment — otherwise secrets.CRON_SECRET reads empty
     # and the API responds 401 instantly, turning the smoke into a
-    # constant red ping. (Same reason deploy.yml and accessory-reboot.yml
+    # constant red ping. (Same reason cd-deploy.yml and ops-reboot-accessory.yml
     # declare `environment: production`.)
     environment: production
     timeout-minutes: 3
