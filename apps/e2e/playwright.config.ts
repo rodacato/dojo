@@ -20,6 +20,7 @@ export default defineConfig({
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
       cwd: '../..',
+      env: { VITE_API_URL: 'http://localhost:3001' },
     },
     {
       command: 'node apps/e2e/fixtures/scroll/serve.mjs',

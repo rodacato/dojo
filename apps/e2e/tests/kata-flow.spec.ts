@@ -43,7 +43,7 @@ const MOCK_PREFERENCES = {
 }
 
 test.describe('Kata flow (Katas page)', () => {
-  test('select mood and duration, then "Show my kata" becomes enabled', async ({ page }) => {
+  test('select mood and duration, then "Show kata" becomes enabled', async ({ page }) => {
     await page.route(`${API_BASE}/auth/me`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
     )
@@ -62,21 +62,21 @@ test.describe('Kata flow (Katas page)', () => {
     await page.goto('/katas')
 
     // Mood buttons should be visible
-    await expect(page.getByRole('button', { name: /on a roll/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /just okay/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /half here/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /in flow/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /^ok/i })).toBeVisible()
+    await expect(page.getByRole('button', { name: /foggy/i })).toBeVisible()
 
-    // "Show my kata" button should be disabled initially
-    const submitButton = page.getByRole('button', { name: /show my kata/i })
+    // "Show kata" button should be disabled initially
+    const submitButton = page.getByRole('button', { name: /show kata/i })
     await expect(submitButton).toBeDisabled()
 
     // Click a mood
-    await page.getByRole('button', { name: /on a roll/i }).click()
+    await page.getByRole('button', { name: /in flow/i }).click()
 
     // Click a duration
-    await page.getByRole('button', { name: '20 min' }).click()
+    await page.getByRole('button', { name: /^20m/ }).click()
 
-    // "Show my kata" button should now be enabled
+    // "Show kata" button should now be enabled
     await expect(submitButton).toBeEnabled()
 
     // Sprint 016: "Surprise me →" alternative CTA is also present

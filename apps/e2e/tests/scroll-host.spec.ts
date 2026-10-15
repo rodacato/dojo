@@ -34,6 +34,15 @@ test.describe('Scroll host', () => {
       }),
     )
 
+    // The fixture declares the `progress` capability, so the page reads and writes anonymous progress.
+    await page.route(`${API_BASE}/scrolls/${SLUG}/progress`, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ userRef: 'e2e-visitor', completed: false, units: {}, updatedAt: null }),
+      }),
+    )
+
     await page.addInitScript(() => {
       window.__scrollMessages = []
       window.addEventListener('message', (event) => {
