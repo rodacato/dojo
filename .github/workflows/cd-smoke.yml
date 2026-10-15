@@ -1,4 +1,4 @@
-name: Deployed Smoke Tests
+name: CD · Smoke
 
 # Manual run only — smoke tests hit a real deployed environment and use
 # a pre-issued bearer token. They are intentionally not wired to PR/push

@@ -5,7 +5,7 @@ fast-forward. GitHub Actions is the only place that holds production secrets, an
 the only thing that builds and publishes the production images (`:<sha>` and `:latest` on GHCR).
 
 Two Kamal configs deploy in order: `config/deploy.api.yml` (the API plus the `db` and `piston`
-accessories), then `config/deploy.web.yml`. Both run from [`.github/workflows/deploy.yml`](../../.github/workflows/deploy.yml).
+accessories), then `config/deploy.web.yml`. Both run from [`.github/workflows/cd-deploy.yml`](../../.github/workflows/cd-deploy.yml).
 
 ## Provision a host
 

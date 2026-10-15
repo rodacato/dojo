@@ -58,7 +58,7 @@ Pull requests only run the `@smoke` subset. Before merging, run the whole suite 
 branch and wait for green:
 
 ```bash
-gh workflow run e2e-full.yml --ref release/vX.Y.Z
+gh workflow run ci-e2e-nightly.yml --ref release/vX.Y.Z
 gh run watch
 ```
 

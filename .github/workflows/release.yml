@@ -1,4 +1,4 @@
-name: Release
+name: Release · Cut
 
 # Cutting a release is a decision, not seven steps. `prepare` pushes a branch carrying the version
 # bump and the generated CHANGELOG entry; `publish` tags and publishes once that branch lands on
