@@ -108,10 +108,12 @@ Tokens are referenced by name everywhere in code. Never raw hex. Both themes use
 | `--color-accent-text` | `#818CF8` | `#B73A2F` washi · `#C35E53` sumi | Small accent text (links). `--color-accent` is 3.3:1 on sumi surfaces, so it only fills buttons, marks and focus rings |
 | `--color-danger-text` | `#F87171` | `#9C2D24` washi · `#B6675D` sumi | Error and failure text. `--color-danger` is 2.5:1 on sumi surfaces and stays for borders and fills |
 | `--color-warning` | `#F59E0B` (Amber 500) | `#BC8E37` washi · `#D4A547` sumi (gold ink) | Timer near limit, warnings, "passed with notes" |
+| `--color-success-text` | `#10B981` | `#4A6640` washi · `#7D9B6A` sumi | Success text. `--color-success` is 4.3:1 on washi, so it stays for borders, fills and dots |
+| `--color-warning-text` | `#F59E0B` | `#7A5A12` washi · `#D4A547` sumi | Warning text. `--color-warning` is 2.6:1 on washi, so it stays for borders, fills and dots |
 
 > **Vermillion vs danger:** the hanko accent and the danger color are close cousins on purpose. The accent is the brand's positive interactive color — the seal. Danger is a deeper variant for actual failure states. They are visually distinct in practice; the brand bleeds into "failure looks like an unfortunate seal", which is on-brand.
 
-**Where accent stays on purpose besides the primary action, links and focus:** the logo mark and its `_` cursor, the hanko seal, loaders (`EnsoLoader`, the auth progress bar, the streaming cursor), data fills (the activity heatmap and bars, the `VerdictBlock` ink stroke), keyword colour in the code editor, the native slider on Settings, the terminal mock on the landing, and the `REVIEW` kata badge, which reuses accent in sumi and washi (`--color-type-review`). Anything else in accent is a bug.
+**Where accent stays on purpose besides the primary action, links and focus:** the logo mark and its `_` cursor, the hanko seal, loaders (`EnsoLoader`, the auth progress bar, the streaming cursor), data fills (the activity heatmap and bars), keyword colour in the code editor, the native slider on Settings, and the terminal mock on the landing. The `VerdictBlock` ink stroke takes the verdict colour (success, warning, danger), not accent. Anything else in accent is a bug.
 
 ### Type badge tokens (kata types)
 
@@ -122,7 +124,7 @@ The kata type carries a stable color across themes — the user learns the visua
 | `CODE` | `#64748B` | `#6B5E51` (warm gray) | Refactor, debug, complete, review |
 | `CHAT` | `#7C3AED` | `#5A4275` (muted purple, less neon) | Technical roleplay, discussion |
 | `WHITEBOARD` | `#0D9488` | `#3F6B68` (teal-ink) | System design, architecture (Mermaid) |
-| `REVIEW` | `#6366F1` (uses accent) | `#B73A2F` (uses accent) | Code review katas |
+| `REVIEW` | `#0EA5E9` | `#3F6AA8` (indigo ink) | Code review katas |
 
 ### Belt rank colors (progression)
 

@@ -39,7 +39,7 @@ describe('Banner', () => {
       expect(screen.getByText('Info')).toHaveClass('text-secondary')
       const region = screen.getByRole('status')
       expect(region).toHaveClass('border-l-4', 'border-l-secondary')
-      expect(region).not.toHaveClass('text-warning', 'text-danger-text')
+      expect(region).not.toHaveClass('text-warning-text', 'text-danger-text')
     })
 
     it('applies warning tone classes', () => {
@@ -49,7 +49,7 @@ describe('Banner', () => {
         </Banner>,
       )
 
-      expect(screen.getByText('Warn')).toHaveClass('text-warning')
+      expect(screen.getByText('Warn')).toHaveClass('text-warning-text')
       expect(screen.getByRole('status')).toHaveClass('border-l-warning')
     })
 

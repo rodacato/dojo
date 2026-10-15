@@ -96,7 +96,7 @@ export function AdminKatasPage() {
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Katas</h1>
           <div className="mt-1 text-sm text-secondary">
-            <span className="text-success">{counts.published} published</span>
+            <span className="text-success-text">{counts.published} published</span>
             <span className="mx-2">·</span>
             <span>{counts.draft} draft</span>
             <span className="mx-2">·</span>
@@ -328,7 +328,7 @@ function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; 
 
 function StatusBadge({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
-    published: 'bg-success/10 text-success border border-success/30',
+    published: 'bg-success/10 text-success-text border border-success/30',
     draft: 'bg-muted/15 text-secondary border border-border',
     archived: 'bg-danger/10 text-danger-text border border-danger/30',
   }
@@ -345,8 +345,8 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
 
 function avgScoreClass(score: number | null) {
   if (score === null) return 'text-secondary'
-  if (score >= 0.7) return 'text-success/80'
-  if (score >= 0.4) return 'text-warning/80'
+  if (score >= 0.7) return 'text-success-text/80'
+  if (score >= 0.4) return 'text-warning-text/80'
   return 'text-danger-text'
 }
 

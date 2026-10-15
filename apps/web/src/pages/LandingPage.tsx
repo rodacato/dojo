@@ -275,12 +275,12 @@ const TERMINAL_SESSIONS: TerminalSession[] = [
     command: 'dojo kata start',
     args: '--time 30 --mood focused',
     lines: [
-      { tone: 'muted', content: <>fetching kata catalog... <span className="text-success">[OK]</span></> },
-      { tone: 'muted', content: <>filtering by your weak areas... <span className="text-success">[OK]</span></> },
+      { tone: 'muted', content: <>fetching kata catalog... <span className="text-success-text">[OK]</span></> },
+      { tone: 'muted', content: <>filtering by your weak areas... <span className="text-success-text">[OK]</span></> },
       { tone: 'muted', content: <>3 candidates loaded:</> },
-      { tone: 'secondary', content: <><span className="text-warning">*</span> CODE        Refactor a 200-line useEffect      28 min</> },
-      { tone: 'secondary', content: <><span className="text-warning">*</span> CHAT        The angry CTO                      25 min</> },
-      { tone: 'secondary', content: <><span className="text-warning">*</span> WHITEBOARD  Multi-tenant rate limiting         30 min</> },
+      { tone: 'secondary', content: <><span className="text-warning-text">*</span> CODE        Refactor a 200-line useEffect      28 min</> },
+      { tone: 'secondary', content: <><span className="text-warning-text">*</span> CHAT        The angry CTO                      25 min</> },
+      { tone: 'secondary', content: <><span className="text-warning-text">*</span> WHITEBOARD  Multi-tenant rate limiting         30 min</> },
     ],
     prompt: 'choose one. no skip. no reroll.',
   },
@@ -289,7 +289,7 @@ const TERMINAL_SESSIONS: TerminalSession[] = [
     command: 'dojo sensei eval',
     args: '--kata 0421 --strict',
     lines: [
-      { tone: 'muted', content: <>analyzing submission... <span className="text-success">[OK]</span></> },
+      { tone: 'muted', content: <>analyzing submission... <span className="text-success-text">[OK]</span></> },
       { tone: 'muted', content: <>cross-checking against 12 reference impls...</> },
       { tone: 'secondary', content: <><span className="text-accent">verdict</span> = PASSED_WITH_NOTES</> },
       { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "O(n^2) where O(n log n) was on the table"</> },
@@ -529,7 +529,7 @@ function OpenSourceStrip() {
               aria-label={copied ? 'Copied' : 'Copy clone command'}
               className="shrink-0 w-11 h-11 flex items-center justify-center border border-border/60 rounded-sm text-secondary hover:text-primary hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent"
             >
-              {copied ? <CheckIcon className="w-4 h-4 text-success" /> : <ClipboardIcon className="w-4 h-4" />}
+              {copied ? <CheckIcon className="w-4 h-4 text-success-text" /> : <ClipboardIcon className="w-4 h-4" />}
             </button>
           </div>
           <GitHubStatsRow />

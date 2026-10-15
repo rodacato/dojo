@@ -44,7 +44,7 @@ describe('ErrorState', () => {
       renderErrorState(<ErrorState kind="rate-limit" message="msg" />)
 
       const eyebrow = screen.getByText('RATE LIMITED · 429')
-      expect(eyebrow).toHaveClass('text-warning')
+      expect(eyebrow).toHaveClass('text-warning-text')
       expect(eyebrow).not.toHaveClass('text-danger-text')
     })
 

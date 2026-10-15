@@ -216,7 +216,7 @@ function BulletList({
   items: readonly string[]
 }>) {
   const glyph = tone === 'success' ? '+' : '−'
-  const color = tone === 'success' ? 'text-success' : 'text-danger-text'
+  const color = tone === 'success' ? 'text-success-text' : 'text-danger-text'
   return (
     <div className="bg-surface border border-border rounded-md p-6">
       <h3 className="text-primary text-base font-semibold mb-4">{title}</h3>

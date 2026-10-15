@@ -3,8 +3,8 @@ import type { DashboardData } from '../../lib/api'
 import type { KataType, Difficulty } from '@dojo/shared'
 
 const VERDICT_PILL: Record<string, { label: string; classes: string }> = {
-  passed: { label: 'Passed', classes: 'text-success bg-success/10 border border-success/30' },
-  passed_with_notes: { label: 'Passed w/n', classes: 'text-warning bg-warning/10 border border-warning/30' },
+  passed: { label: 'Passed', classes: 'text-success-text bg-success/10 border border-success/30' },
+  passed_with_notes: { label: 'Passed w/n', classes: 'text-warning-text bg-warning/10 border border-warning/30' },
   needs_work: { label: 'Needs work', classes: 'text-danger-text bg-danger/10 border border-danger/30' },
 }
 

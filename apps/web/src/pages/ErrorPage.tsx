@@ -81,7 +81,7 @@ export function ErrorPage({ message, requestId }: Readonly<ErrorPageProps>) {
               </div>
               <div
                 aria-live="polite"
-                className={`font-mono text-xs uppercase tracking-wider text-success mt-2 transition-opacity ${
+                className={`font-mono text-xs uppercase tracking-wider text-success-text mt-2 transition-opacity ${
                   copied ? 'opacity-100' : 'opacity-0'
                 }`}
               >

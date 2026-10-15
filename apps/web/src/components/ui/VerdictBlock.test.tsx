@@ -9,8 +9,8 @@ describe('VerdictBlock', () => {
       render(<VerdictBlock verdict="passed" />)
       const heading = screen.getByRole('heading', { name: 'PASSED' })
       expect(heading).toBeInTheDocument()
-      expect(heading).toHaveClass('text-success')
-      expect(heading).not.toHaveClass('text-warning')
+      expect(heading).toHaveClass('text-success-text')
+      expect(heading).not.toHaveClass('text-warning-text')
       expect(heading).not.toHaveClass('text-danger-text')
     })
 
@@ -18,8 +18,8 @@ describe('VerdictBlock', () => {
       render(<VerdictBlock verdict="passed_with_notes" />)
       const heading = screen.getByRole('heading', { name: 'PASSED WITH NOTES' })
       expect(heading).toBeInTheDocument()
-      expect(heading).toHaveClass('text-warning')
-      expect(heading).not.toHaveClass('text-success')
+      expect(heading).toHaveClass('text-warning-text')
+      expect(heading).not.toHaveClass('text-success-text')
     })
 
     it('renders NEEDS WORK in the danger tone', () => {
@@ -27,7 +27,7 @@ describe('VerdictBlock', () => {
       const heading = screen.getByRole('heading', { name: 'NEEDS WORK' })
       expect(heading).toBeInTheDocument()
       expect(heading).toHaveClass('text-danger-text')
-      expect(heading).not.toHaveClass('text-success')
+      expect(heading).not.toHaveClass('text-success-text')
     })
   })
 

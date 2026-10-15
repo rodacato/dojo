@@ -234,7 +234,7 @@ export function KataActivePage() {
             dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
           <span className="h-4 w-px bg-border hidden sm:block" />
-          <span className="font-mono text-xs tracking-wider text-success border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
+          <span className="font-mono text-xs tracking-wider text-success-text border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
             READY
           </span>
           <span className="font-mono text-xs text-secondary truncate hidden md:inline">
@@ -281,7 +281,7 @@ export function KataActivePage() {
                   {kata.type === 'whiteboard' && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-warning text-xs font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
+                      className="text-warning-text text-xs font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
                     >
                       #{tag}
                     </span>

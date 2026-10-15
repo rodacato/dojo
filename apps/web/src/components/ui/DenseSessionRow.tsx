@@ -21,8 +21,8 @@ const VERDICT_LABEL: Record<Verdict, string> = {
 }
 
 const VERDICT_TONE: Record<Verdict, string> = {
-  passed: 'text-success border-success/40 bg-success/10',
-  passed_with_notes: 'text-warning border-warning/40 bg-warning/10',
+  passed: 'text-success-text border-success/40 bg-success/10',
+  passed_with_notes: 'text-warning-text border-warning/40 bg-warning/10',
   needs_work: 'text-danger-text border-danger/40 bg-danger/10',
 }
 

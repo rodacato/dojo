@@ -46,9 +46,9 @@ const TONE_BORDER: Record<ToastKind, string> = {
 }
 
 const TONE_TEXT: Record<ToastKind, string> = {
-  success: 'text-success',
+  success: 'text-success-text',
   info: 'text-secondary',
-  warning: 'text-warning',
+  warning: 'text-warning-text',
   error: 'text-danger-text',
 }
 

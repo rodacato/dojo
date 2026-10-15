@@ -78,7 +78,7 @@ describe('ConfirmModal', () => {
     })
 
     it.each([
-      ['amber', 'text-warning'],
+      ['amber', 'text-warning-text'],
       ['red', 'text-danger-text'],
       ['indigo', 'text-primary'],
       ['muted', 'text-secondary'],

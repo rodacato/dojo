@@ -8,14 +8,14 @@ const TYPE_STYLES: Record<KataType, string> = {
 }
 
 const DIFFICULTY_STYLES: Record<Difficulty, string> = {
-  easy: 'text-success border border-success',
-  medium: 'text-warning border border-warning',
+  easy: 'text-success-text border border-success',
+  medium: 'text-warning-text border border-warning',
   hard: 'text-danger-text border border-danger',
 }
 
 const VERDICT_STYLES: Record<Verdict, string> = {
-  passed: 'bg-success/10 text-success border border-success/30',
-  passed_with_notes: 'bg-warning/10 text-warning border border-warning/30',
+  passed: 'bg-success/10 text-success-text border border-success/30',
+  passed_with_notes: 'bg-warning/10 text-warning-text border border-warning/30',
   needs_work: 'bg-danger/10 text-danger-text border border-danger/30',
 }
 
