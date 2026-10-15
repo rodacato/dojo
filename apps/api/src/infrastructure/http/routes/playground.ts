@@ -226,6 +226,9 @@ playgroundRoutes.post('/engawa/ask', requireAuth, async (c) => {
   if (parsed.data.language !== undefined) askParams.language = parsed.data.language
 
   const { stream, usage: usagePromise } = llm.askSensei(askParams)
+  // Adapters reject `usage` when the stream fails, and only the success path
+  // below awaits it; unhandled, that rejection terminates the process.
+  usagePromise.catch(() => {})
 
   return streamSSE(c, async (sse) => {
     try {
