@@ -25,7 +25,7 @@ export function AuthCallbackPage() {
         <div className="flex flex-col items-center gap-4">
           <LogoMark size={32} className="text-accent" />
           <span className="font-mono font-bold text-primary text-3xl inline-flex items-center select-none">
-            dojo<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
+            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
         </div>
 
@@ -45,7 +45,7 @@ export function AuthCallbackPage() {
         ) : (
           <div className="flex flex-col items-center gap-10 w-full">
             <p className="font-mono text-base text-secondary inline-flex items-center">
-              Completing sign-in.<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
+              Completing sign-in.<span className="animate-cursor ml-0.5" aria-hidden>_</span>
             </p>
             <div
               className="relative h-0.5 w-60 bg-elevated overflow-hidden"

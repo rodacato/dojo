@@ -9,7 +9,7 @@ interface SenseiBubbleProps {
 }
 
 // Sensei (assistant) message: avatar + persona eyebrow + left-aligned bubble.
-// `streaming` appends a 1Hz indigo cursor so the user knows tokens are still
+// `streaming` appends a 1Hz accent cursor so the user knows tokens are still
 // arriving — same brand cursor used in the wordmark and timer.
 export function SenseiBubble({ initials, role, streaming = false, children }: Readonly<SenseiBubbleProps>) {
   return (
@@ -55,7 +55,7 @@ interface UserBubbleProps {
   children: ReactNode
 }
 
-// User (you) message: right-aligned indigo bubble. Caps the width at 70%
+// User (you) message: right-aligned accent bubble. Caps the width at 70%
 // so long replies stay readable instead of stretching across the column.
 export function UserBubble({ children }: Readonly<UserBubbleProps>) {
   return (

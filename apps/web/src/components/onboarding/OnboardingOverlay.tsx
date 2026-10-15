@@ -44,7 +44,7 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
         <div className="flex items-center gap-2 mb-6">
           <LogoMark size={20} className="text-accent" />
           <span className="font-mono font-bold text-primary text-base inline-flex items-center select-none">
-            dojo<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
+            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
         </div>
 

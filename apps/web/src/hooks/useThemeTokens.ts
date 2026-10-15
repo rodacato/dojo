@@ -23,24 +23,24 @@ export interface ThemeTokens {
   isDark: boolean
 }
 
-// Fallback used for SSR or before the first paint. Matches Slate Indigo
-// — same as the @theme defaults in main.css.
+// Fallback used for SSR or before the first paint. Matches the Sumi theme
+// in main.css.
 const SSR_FALLBACK: ThemeTokens = {
-  page: '#0F172A',
-  surface: '#1E293B',
-  elevated: '#253347',
-  border: '#334155',
-  accent: '#6366F1',
-  success: '#10B981',
-  danger: '#EF4444',
-  warning: '#F59E0B',
-  primary: '#F8FAFC',
-  secondary: '#94A3B8',
-  muted: '#475569',
-  typeCode: '#64748B',
-  typeChat: '#7C3AED',
-  typeWhiteboard: '#0D9488',
-  typeReview: '#0EA5E9',
+  page: '#0A0908',
+  surface: '#13110F',
+  elevated: '#1B1815',
+  border: '#2A2520',
+  accent: '#B73A2F',
+  success: '#7D9B6A',
+  danger: '#9C2D24',
+  warning: '#D4A547',
+  primary: '#F2EDE3',
+  secondary: '#A39A8C',
+  muted: '#5C544A',
+  typeCode: '#6B5E51',
+  typeChat: '#5A4275',
+  typeWhiteboard: '#3F6B68',
+  typeReview: '#3F6AA8',
   isDark: true,
 }
 
