@@ -17,7 +17,7 @@ on:
     paths: [package.json]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: release
@@ -29,16 +29,18 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v7
-        with:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with: # zizmor: ignore[artipacked] this job pushes, so it keeps the token
           fetch-depth: 0 # the changelog is generated from the commits since the last tag
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           version: 9.15.4 # must match packageManager in root package.json
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
 
@@ -55,8 +57,9 @@ jobs:
       # than this needs — and a token-authored pull request runs no CI, so opening it by hand is
       # what gives the release branch its checks.
       - name: Push the release branch
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
         run: |
-          VERSION="${{ steps.bump.outputs.version }}"
           BRANCH="release/v$VERSION"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -66,8 +69,9 @@ jobs:
           git push origin "$BRANCH:$BRANCH"
 
       - name: Say what to do next
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
         run: |
-          VERSION="${{ steps.bump.outputs.version }}"
           {
             echo "## Release v$VERSION is ready for review"
             echo
@@ -88,12 +92,14 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v7
-        with:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with: # zizmor: ignore[artipacked] this job pushes, so it keeps the token
           fetch-depth: 0
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
 
@@ -113,8 +119,8 @@ jobs:
         if: steps.check.outputs.publish == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.check.outputs.version }}
         run: |
-          VERSION="${{ steps.check.outputs.version }}"
           # Stops at any `## ` heading, not only the next `## [version]`: the oldest version
           # section is followed by the historical sprint log, which would land in the notes.
           awk -v h="## [$VERSION]" 'index($0, h) == 1 { f = 1; next } f && /^## / { exit } f' \

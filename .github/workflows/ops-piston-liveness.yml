@@ -56,6 +56,9 @@ jobs:
 
       - name: Fail if two consecutive probes failed
         if: steps.probe1.outputs.status != '200' && steps.probe2.outputs.status != '200'
+        env:
+          FIRST_STATUS: ${{ steps.probe1.outputs.status }}
+          SECOND_STATUS: ${{ steps.probe2.outputs.status }}
         run: |
-          echo "::error title=Piston down::2 consecutive /health/piston probes failed (${{ steps.probe1.outputs.status }}, ${{ steps.probe2.outputs.status }}). Recovery: ./scripts/piston-reprovision.sh"
+          echo "::error title=Piston down::2 consecutive /health/piston probes failed ($FIRST_STATUS, $SECOND_STATUS). Recovery: ./scripts/piston-reprovision.sh"
           exit 1
