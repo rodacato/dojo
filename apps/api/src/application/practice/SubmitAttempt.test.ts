@@ -4,6 +4,10 @@ import { SessionNotFoundError } from '../../domain/shared/errors'
 import { KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import { InMemoryEventBus } from '../../infrastructure/events/InMemoryEventBus'
 import type { EvaluationToken } from '../../domain/practice/values'
+import { Attempt } from '../../domain/practice/attempt'
+import type { ConversationTurn } from '../../domain/practice/ports'
+import { buildMessages } from '../../infrastructure/llm/sensei-evaluation'
+import { AttemptId } from '../../domain/shared/types'
 import { SubmitAttempt } from './SubmitAttempt'
 
 const makeActiveSession = () =>
@@ -161,5 +165,62 @@ describe('SubmitAttempt', () => {
       userResponse: 'half an answer',
       llmResponse: 'partial tokens',
     })
+  })
+
+  it('threads the previous sensei follow-up question into the LLM history', async () => {
+    const session = new Session({
+      id: SessionId('session-1'),
+      userId: UserId('user-1'),
+      kataId: KataId('ex-1'),
+      variationId: VariationId('var-1'),
+      body: 'Review this code...',
+      status: 'active',
+      attempts: [
+        new Attempt({
+          id: AttemptId('att-1'),
+          sessionId: SessionId('session-1'),
+          userResponse: 'first answer',
+          evaluationResult: {
+            verdict: 'needs_work',
+            analysis: 'The loop is correct but the complexity claim is unsupported.',
+            topicsToReview: [],
+            followUpQuestion: 'Why is this O(log n)?',
+            isFinalEvaluation: false,
+          },
+          isFinalEvaluation: false,
+          submittedAt: new Date(),
+        }),
+      ],
+      startedAt: new Date(),
+      completedAt: null,
+    })
+    const llm = {
+      evaluate: vi.fn().mockReturnValue(fakeEvaluationStream([])),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const useCase = new SubmitAttempt({ sessionRepo: makeStubSessionRepo(session), llm, eventBus: new InMemoryEventBus() })
+
+    for await (const _ of useCase.execute({
+      sessionId: SessionId('session-1'),
+      userResponse: 'second answer',
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Context',
+      kataTitle: 'Test kata',
+    })) {
+      // consume
+    }
+
+    const { history } = llm.evaluate.mock.calls[0]![0] as { history: ConversationTurn[] }
+    const messages = buildMessages({
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Context',
+      kataTitle: 'Test kata',
+      sessionBody: 'Review this code...',
+      userResponse: 'second answer',
+      history,
+    })
+    expect(messages.at(-1)!.content).toContain('You asked: "Why is this O(log n)?"')
   })
 })

@@ -83,7 +83,7 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
         role: 'user',
         content: buildFollowUpPrompt({
           followUpResponse: params.userResponse,
-          originalFollowUpQuestion: extractFollowUpQuestion(firstTurn.llmResponse),
+          originalFollowUpQuestion: firstTurn.followUpQuestion ?? extractFollowUpQuestion(firstTurn.llmResponse),
         }),
       },
     )

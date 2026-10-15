@@ -33,6 +33,7 @@ export class SubmitAttempt {
       .map((a) => ({
         userResponse: a.userResponse,
         llmResponse: a.evaluationResult?.analysis ?? '',
+        followUpQuestion: a.evaluationResult?.followUpQuestion ?? null,
       }))
 
     let finalToken: EvaluationToken | null = null
