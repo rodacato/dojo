@@ -181,7 +181,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const avgTimeMinutes = Number(avgTimeRows[0]?.avg ?? 0)
 
   const allTypes = ['CODE', 'CHAT', 'WHITEBOARD']
-  const typeCounts = new Map(typeCountRows.map((r) => [r.type, Number(r.count)]))
+  const typeCounts = new Map(typeCountRows.map((r) => [r.type.toUpperCase(), Number(r.count)]))
   const mostAvoided = allTypes
     .map((t) => ({ type: t, count: typeCounts.get(t) ?? 0 }))
     .sort((a, b) => a.count - b.count)[0]
