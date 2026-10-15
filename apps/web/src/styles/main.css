@@ -84,7 +84,7 @@
   50% { opacity: 0; }
 }
 
-/* Skeleton shimmer — 1500ms ease-in-out sweep with an 8% indigo highlight,
+/* Skeleton shimmer — 1500ms ease-in-out sweep with an 8% accent highlight,
    per stitch/batches/10-edge-states-modals.md SCREEN 1. Skeletons appear
    for >200ms loads; spinners are reserved for inline action buttons. */
 @keyframes skeleton-sweep {
@@ -112,7 +112,7 @@ html {
 
 /* ── Sumi-e theme overrides (DESIGN.md §Color tokens) ──────────────────
    Activated by adding data-theme="sumi" or data-theme="washi" on <html>.
-   When neither is set, the @theme defaults (Slate Indigo) render.
+   When neither is set, the @theme defaults (Slate Indigo, the legacy theme) render.
    Values are v1 draft per DESIGN.md — expect designer calibration. */
 
 [data-theme='sumi'] {
@@ -243,7 +243,7 @@ html {
   box-shadow: inset 0 0 0 1px var(--color-accent);
 }
 
-/* Indeterminate auth-progress bar — 1500ms loop, indigo scanner across an
+/* Indeterminate auth-progress bar — 1500ms loop, accent scanner across an
    elevated track. No spinner per spec. */
 @keyframes auth-progress {
   0%   { left: -33%; }

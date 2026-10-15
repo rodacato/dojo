@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Modal } from './Modal'
 import { Button } from './Button'
 
-export type ConfirmTone = 'muted' | 'amber' | 'red' | 'indigo'
+export type ConfirmTone = 'muted' | 'amber' | 'red' | 'accent'
 
 interface ConfirmModalBaseProps {
   open: boolean
@@ -49,7 +49,7 @@ const TONE_TEXT: Record<ConfirmTone, string> = {
   muted: 'text-secondary',
   amber: 'text-warning-text',
   red: 'text-danger-text',
-  indigo: 'text-primary',
+  accent: 'text-primary',
 }
 
 /**

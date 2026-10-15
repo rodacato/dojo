@@ -7,7 +7,7 @@ interface ToggleProps {
   id?: string
 }
 
-// 32×16 pill toggle with a 12×12 indigo dot — 4px corner radius (NOT
+// 32×16 pill toggle with a 12×12 accent dot — 4px corner radius (NOT
 // rounded-full per spec). The optional label is rendered inline so callers
 // can drop a single `<Toggle label="..." />` into a row without juggling a
 // separate `<label>` element. If you need a layout where the label is on

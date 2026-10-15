@@ -80,7 +80,7 @@ describe('ConfirmModal', () => {
     it.each([
       ['amber', 'text-warning-text'],
       ['red', 'text-danger-text'],
-      ['indigo', 'text-primary'],
+      ['accent', 'text-primary'],
       ['muted', 'text-secondary'],
     ] as const)('applies the %s tone class to the eyebrow', (tone, expectedClass) => {
       render(<ConfirmModal {...baseProps()} tone={tone} />)

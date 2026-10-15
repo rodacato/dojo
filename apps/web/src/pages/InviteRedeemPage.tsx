@@ -14,7 +14,7 @@ export function InviteRedeemPage() {
         <div className="flex items-center gap-2 mb-8">
           <LogoMark size={24} className="text-accent" />
           <span className="font-mono font-bold text-primary text-lg inline-flex items-center select-none">
-            dojo<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
+            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
         </div>
 

@@ -21,6 +21,7 @@ export function LogoMark({ size = 24, className = '' }: Readonly<LogoMarkProps>)
         stroke="currentColor"
         strokeWidth={logo.strokeWidth}
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )
@@ -35,9 +36,9 @@ interface LogoWordmarkProps {
 export function LogoWordmark({ className = '', showMark = true, markSize = 20 }: Readonly<LogoWordmarkProps>) {
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
-      {showMark && <LogoMark size={markSize} className="text-primary" />}
+      {showMark && <LogoMark size={markSize} className="text-accent" />}
       <span className="font-mono text-lg text-primary tracking-wider">
-        dojo<span className="text-accent animate-cursor">_</span>
+        dojo<span className="animate-cursor">_</span>
       </span>
     </span>
   )
