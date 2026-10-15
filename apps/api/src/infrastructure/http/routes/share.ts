@@ -13,6 +13,42 @@ import type { AppEnv } from '../app-env'
 
 export const shareRoutes = new Hono<AppEnv>()
 
+// Values copied from the [data-theme='sumi'] block in apps/web/src/styles/main.css
+const SUMI = {
+  page: '#0A0908',
+  surface: '#13110F',
+  border: '#2A2520',
+  primary: '#F2EDE3',
+  secondary: '#A39A8C',
+  muted: '#5C544A',
+  accent: '#B73A2F',
+  success: '#7D9B6A',
+  dangerText: '#B6675D',
+  warning: '#D4A547',
+  typeCode: '#6B5E51',
+  typeChat: '#5A4275',
+  typeWhiteboard: '#3F6B68',
+}
+
+// Open Gate geometry from apps/web/src/brand/logo.json
+const OPEN_GATE_PATH = 'M15 25Q50 32 85 25M25 45H75M30 30V82M70 30V82'
+
+function openGateMark(size: number, color: string) {
+  return {
+    type: 'svg',
+    props: {
+      width: size,
+      height: size,
+      viewBox: '0 0 100 100',
+      fill: 'none',
+      children: {
+        type: 'path',
+        props: { d: OPEN_GATE_PATH, stroke: color, strokeWidth: 8, fill: 'none' },
+      },
+    },
+  }
+}
+
 // Font loaded once at startup
 let fontData: ArrayBuffer | null = null
 
@@ -70,19 +106,19 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
 
   const verdict = (row.verdict ?? 'needs_work').toLowerCase()
   const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
-  let verdictColor = '#EF4444'
-  if (verdict === 'passed') verdictColor = '#10B981'
-  else if (verdict === 'passed_with_notes') verdictColor = '#F59E0B'
+  let verdictColor = SUMI.dangerText
+  if (verdict === 'passed') verdictColor = SUMI.success
+  else if (verdict === 'passed_with_notes') verdictColor = SUMI.warning
 
   const exType = row.kataType.toLowerCase()
-  let typeColor = '#0D9488'
-  if (exType === 'code') typeColor = '#6366F1'
-  else if (exType === 'chat') typeColor = '#7C3AED'
+  let typeColor = SUMI.typeWhiteboard
+  if (exType === 'code') typeColor = SUMI.typeCode
+  else if (exType === 'chat') typeColor = SUMI.typeChat
 
   const diff = row.difficulty.toLowerCase()
-  let diffColor = '#EF4444'
-  if (diff === 'easy') diffColor = '#10B981'
-  else if (diff === 'medium') diffColor = '#F59E0B'
+  let diffColor = SUMI.dangerText
+  if (diff === 'easy') diffColor = SUMI.success
+  else if (diff === 'medium') diffColor = SUMI.warning
 
   const pullQuote = extractPullQuote(row.analysis ?? '')
   const completionTime = row.completedAt
@@ -93,25 +129,25 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
 
   const middleChildren = [
     h('div', { display: 'flex', gap: '12px', alignItems: 'center' },
-      h('span', { fontSize: '14px', color: typeColor, padding: '3px 10px', backgroundColor: 'rgba(99,102,241,0.15)', borderRadius: '3px' }, row.kataType.toUpperCase()),
+      h('span', { fontSize: '14px', color: typeColor, padding: '3px 10px', backgroundColor: SUMI.surface, borderRadius: '3px' }, row.kataType.toUpperCase()),
       h('span', { fontSize: '14px', color: diffColor }, row.difficulty.toUpperCase()),
     ),
-    h('span', { fontSize: '32px', color: '#F8FAFC', lineHeight: '1.3' }, row.kataTitle),
+    h('span', { fontSize: '32px', color: SUMI.primary, lineHeight: '1.3' }, row.kataTitle),
   ]
 
   if (pullQuote) {
     middleChildren.push(
-      h('div', { display: 'flex', borderLeft: '3px solid #334155', paddingLeft: '16px', marginTop: '8px' },
-        h('span', { fontSize: '16px', color: '#94A3B8', fontStyle: 'italic', lineHeight: '1.5' }, `"${pullQuote}"`),
+      h('div', { display: 'flex', borderLeft: `3px solid ${SUMI.border}`, paddingLeft: '16px', marginTop: '8px' },
+        h('span', { fontSize: '16px', color: SUMI.secondary, fontStyle: 'italic', lineHeight: '1.5' }, `"${pullQuote}"`),
       ),
     )
   }
 
   const bottomChildren = [
-    h('span', { fontSize: '16px', color: '#64748B' }, `@${row.username}`),
+    h('span', { fontSize: '16px', color: SUMI.muted }, `@${row.username}`),
   ]
   if (completionTime) {
-    bottomChildren.push(h('span', { fontSize: '16px', color: '#64748B' }, `${completionTime}min`))
+    bottomChildren.push(h('span', { fontSize: '16px', color: SUMI.muted }, `${completionTime}min`))
   }
 
   const element = h('div', {
@@ -120,14 +156,17 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
     justifyContent: 'space-between',
     width: '1200px',
     height: '630px',
-    backgroundColor: '#0F172A',
+    backgroundColor: SUMI.page,
     padding: '60px',
     fontFamily: 'JetBrains Mono',
-    color: '#F8FAFC',
+    color: SUMI.primary,
   },
     // Top
     h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
-      h('span', { fontSize: '28px', color: '#6366F1', letterSpacing: '-0.05em' }, 'dojo_'),
+      h('div', { display: 'flex', alignItems: 'center', gap: '14px' },
+        openGateMark(40, SUMI.accent),
+        h('span', { fontSize: '28px', color: SUMI.primary, letterSpacing: '-0.05em' }, 'dojo_'),
+      ),
       h('span', { fontSize: '18px', color: verdictColor, padding: '6px 16px', border: `2px solid ${verdictColor}`, borderRadius: '4px' }, verdictLabel),
     ),
     // Middle

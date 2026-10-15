@@ -163,15 +163,20 @@ describe('GET /share/:sessionId.png', () => {
     expect(resvgRender).toHaveBeenCalledTimes(1)
 
     // The element tree satori received carries the happy-path presentation:
-    // verdict PASSED/#10B981, type #6366F1, diff #F59E0B, title, @user, 12min.
+    // verdict PASSED/success, type code, diff warning, title, @user, 12min.
     const tree = JSON.stringify(firstSatoriArg())
     expect(tree).toContain('PASSED')
-    expect(tree).toContain('#10B981') // passed verdict color
-    expect(tree).toContain('#6366F1') // code type color
-    expect(tree).toContain('#F59E0B') // medium difficulty color
+    expect(tree).toContain('#7D9B6A') // passed verdict color
+    expect(tree).toContain('#6B5E51') // code type color
+    expect(tree).toContain('#D4A547') // medium difficulty color
     expect(tree).toContain('Binary Search') // kataTitle
     expect(tree).toContain('@rodacato')
     expect(tree).toContain('12min') // completionTime from startedAt→completedAt
+    expect(tree).toContain('#0A0908') // sumi page background
+    expect(tree).toContain('M15 25Q50 32 85 25M25 45H75M30 30V82M70 30V82') // Open Gate mark
+    expect(tree).toContain('#B73A2F') // mark in accent
+    expect(tree).not.toContain('#6366F1') // no Slate Indigo leftovers
+    expect(tree).not.toContain('#0F172A')
   })
 
   it('strips the .png suffix before building the WHERE on sessions.id', async () => {
@@ -201,8 +206,8 @@ describe('GET /share/:sessionId.png', () => {
     // (completedAt null).
     const tree = JSON.stringify(firstSatoriArg())
     expect(tree).toContain('NEEDS WORK')
-    expect(tree).toContain('#EF4444') // needs_work verdict color
-    expect(tree).not.toContain('3px solid #334155') // pull-quote borderLeft
+    expect(tree).toContain('#B6675D') // needs_work verdict color
+    expect(tree).not.toContain('3px solid #2A2520') // pull-quote borderLeft
     expect(tree).not.toContain('min') // no completionTime node
   })
 
