@@ -1,6 +1,6 @@
 # PRD-011: Kata Feedback System — Exercise Quality Signal
 
-> **Status:** exploring
+> **Status:** shipped — feedback routes exist (`apps/api/src/infrastructure/http/routes/feedback.ts`)
 > **Date:** 2026-03-21
 > **Author:** Claude (Lucía + Priya + Darius + Valentina guiding)
 

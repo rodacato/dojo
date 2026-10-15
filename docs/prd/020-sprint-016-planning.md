@@ -1,6 +1,6 @@
 # PRD-020: Sprint 016 — Surprise me + Fix-the-bug + SQL Advanced
 
-> **Status:** advancing to spec
+> **Status:** shipped — Sprint 016 (Surprise me, fix-the-bug and SQL advanced kata). The SQL Deep Cuts course outline was removed with native scrolls (ADR 025)
 > **Date:** 2026-03-27
 > **Author:** Lucía Navarro, con input del panel de expertos + MARKET_RESEARCH.md review
 

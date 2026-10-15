@@ -1,6 +1,6 @@
 # PRD-032: Sprint 023 — Dojo language pass
 
-> **Status:** advancing to spec
+> **Status:** shipped — Sprint 023 closed
 > **Date:** 2026-06-05
 > **Author:** Claude (Kira deciding; Darius + Soren + Tomás + Yemi advising)
 

@@ -1,6 +1,6 @@
 # PRD-006: Seed Kata Drafts
 
-> **Status:** draft
+> **Status:** shipped — the kata were seeded (see `apps/api/src/infrastructure/persistence/katas/`)
 > **Date:** 2026-03-21
 > **Author:** Claude (Valentina S2 + Yemi C4 guiding content quality)
 

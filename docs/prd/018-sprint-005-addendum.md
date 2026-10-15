@@ -1,6 +1,6 @@
 # PRD-018: Sprint 005 Addendum — Loose Ends Before Close
 
-> **Status:** confirmed
+> **Status:** shipped — Sprint 005
 > **Date:** 2026-03-22
 > **Author:** Claude (full panel consulted)
 

@@ -1,6 +1,6 @@
 # PRD-031: Belt progression rubric — what "earning a belt" means
 
-> **Status:** advancing to spec
+> **Status:** shipped — Sprint 023 (`apps/api/src/domain/recognition/belt.ts`)
 > **Date:** 2026-06-05
 > **Decision locked:** 2026-06-05 — Option C, English colors, track marks deferred to v1.1
 > **Author:** Claude (Priya + Valentina + Soren + Yemi advising; Elif on progression)
