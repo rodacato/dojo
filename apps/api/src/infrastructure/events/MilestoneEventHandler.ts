@@ -1,6 +1,7 @@
 import { and, count, eq, gte, sql } from 'drizzle-orm'
 import type { SessionCompleted } from '../../domain/practice/events'
 import type { Verdict } from '../../domain/practice/values'
+import type { KataType } from '@dojo/shared'
 import type { InMemoryEventBus } from './InMemoryEventBus'
 import { attempts, katas, sessions, userMilestones } from '../persistence/drizzle/schema'
 import type { DB } from '../persistence/drizzle/client'
@@ -17,8 +18,8 @@ export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
     await tryAward('5_STREAK', async () => (await getCurrentStreak(db, userId)) >= 5)
     await tryAward('CONSISTENT', async () => (await getCurrentStreak(db, userId)) >= 30)
     await tryAward('POLYGLOT', () => hasCompletedDistinctTypes(db, userId, 3))
-    await tryAward('ARCHITECT', () => completedKataTypeCount(db, userId, 'WHITEBOARD', 3))
-    await tryAward('RUBBER_DUCK', () => completedKataTypeCount(db, userId, 'CHAT', 3))
+    await tryAward('ARCHITECT', () => completedKataTypeCount(db, userId, 'whiteboard', 3))
+    await tryAward('RUBBER_DUCK', () => completedKataTypeCount(db, userId, 'chat', 3))
     await tryAward('BRUTAL_TRUTH', () => finalVerdictCount(db, userId, 'needs_work', 3))
     await tryAward('SENSEI_APPROVED', () => finalVerdictCount(db, userId, 'passed', 5))
     await tryAward('SQL_SURVIVOR', () => completedSqlTopicCount(db, userId, 3))
@@ -52,7 +53,7 @@ async function hasCompletedDistinctTypes(db: DB, userId: string, min: number): P
 async function completedKataTypeCount(
   db: DB,
   userId: string,
-  type: string,
+  type: KataType,
   min: number,
 ): Promise<boolean> {
   const [row] = await db

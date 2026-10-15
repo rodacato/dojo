@@ -250,6 +250,20 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     for (const query of verdictQueries) expect(query.sql).toContain('lower(')
   })
 
+  it('filters ARCHITECT and RUBBER_DUCK by the lowercase kata types that are stored', async () => {
+    db.earnedSlugs = ['FIRST_KATA']
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    await fireSessionCompleted(db)
+
+    const dialect = new PgDialect()
+    const params = db.conditions.flatMap((condition) => dialect.sqlToQuery(condition).params)
+
+    expect(params).toContain('whiteboard')
+    expect(params).toContain('chat')
+    expect(params).not.toContain('WHITEBOARD')
+    expect(params).not.toContain('CHAT')
+  })
+
   it('awards SQL_SURVIVOR at 3 SQL-topic kata', async () => {
     db.earnedSlugs = ['FIRST_KATA']
     db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 3 }], [{ count: 0 }]])
