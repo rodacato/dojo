@@ -271,8 +271,8 @@ function InsightCards({ analysis }: Readonly<{ analysis?: string }>) {
 }
 
 function getToneClass(tone: 'success' | 'warning' | 'accent') {
-  if (tone === 'success') return 'text-success'
-  if (tone === 'warning') return 'text-warning'
+  if (tone === 'success') return 'text-success-text'
+  if (tone === 'warning') return 'text-warning-text'
   return 'text-primary'
 }
 
@@ -376,9 +376,9 @@ function ShareActions({
 }
 
 function getVerdictColor(verdict: string) {
-  if (verdict === 'passed') return 'text-success'
+  if (verdict === 'passed') return 'text-success-text'
   if (verdict === 'needs_work') return 'text-danger-text'
-  return 'text-warning'
+  return 'text-warning-text'
 }
 
 function truncateAnalysis(analysis?: string) {

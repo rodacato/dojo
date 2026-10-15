@@ -16,8 +16,8 @@ const VERDICT_LABELS: Record<string, string> = {
 }
 
 const VERDICT_COLORS: Record<string, string> = {
-  passed: 'text-success',
-  passed_with_notes: 'text-warning',
+  passed: 'text-success-text',
+  passed_with_notes: 'text-warning-text',
   needs_work: 'text-danger-text',
 }
 
@@ -64,7 +64,7 @@ export function SharePage() {
   if (!data) return <PageLoader />
 
   const verdictLabel = VERDICT_LABELS[data.verdict] ?? data.verdict.replaceAll('_', ' ').toUpperCase()
-  const verdictColor = VERDICT_COLORS[data.verdict] ?? 'text-warning'
+  const verdictColor = VERDICT_COLORS[data.verdict] ?? 'text-warning-text'
   const ogImageUrl = `${API_URL}/share/${sessionId}.png`
 
   return (

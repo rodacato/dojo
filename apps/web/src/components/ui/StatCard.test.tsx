@@ -34,10 +34,10 @@ describe('StatCard', () => {
   })
 
   it('applies a caller-provided color to the value instead of the default', () => {
-    render(<StatCard value="1" label="Tinted" color="text-warning" />)
+    render(<StatCard value="1" label="Tinted" color="text-warning-text" />)
 
     const value = screen.getByText('1')
-    expect(value).toHaveClass('text-warning')
+    expect(value).toHaveClass('text-warning-text')
     expect(value).not.toHaveClass('text-primary')
   })
 

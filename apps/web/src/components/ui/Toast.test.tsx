@@ -59,7 +59,7 @@ describe('ToastContainer — kind variants', () => {
     emit(() => toast.success('OK'))
 
     expect(screen.getByRole('status')).toHaveClass('border-l-success')
-    expect(screen.getByText('OK')).toHaveClass('text-success')
+    expect(screen.getByText('OK')).toHaveClass('text-success-text')
   })
 
   it('info applies secondary tone classes', () => {
@@ -75,7 +75,7 @@ describe('ToastContainer — kind variants', () => {
     emit(() => toast.warning('CAREFUL'))
 
     expect(screen.getByRole('status')).toHaveClass('border-l-warning')
-    expect(screen.getByText('CAREFUL')).toHaveClass('text-warning')
+    expect(screen.getByText('CAREFUL')).toHaveClass('text-warning-text')
   })
 
   it('error applies danger tone classes', () => {

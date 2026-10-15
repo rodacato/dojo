@@ -401,7 +401,7 @@ function SourcePill({ source }: Readonly<{ source: string }>) {
 function statusColor(status: number | null): string {
   if (status == null) return 'text-secondary'
   if (status >= 500) return 'text-danger-text'
-  if (status >= 400) return 'text-warning'
+  if (status >= 400) return 'text-warning-text'
   return 'text-secondary'
 }
 

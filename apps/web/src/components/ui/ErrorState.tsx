@@ -46,7 +46,7 @@ const KIND_DEFAULTS: Record<ErrorKind, { eyebrow: string; title: string; tone: T
 
 const TONE_TEXT: Record<Tone, string> = {
   red: 'text-danger-text',
-  amber: 'text-warning',
+  amber: 'text-warning-text',
   muted: 'text-secondary',
 }
 

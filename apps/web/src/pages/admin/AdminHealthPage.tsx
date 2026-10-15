@@ -131,7 +131,7 @@ export function AdminHealthPage() {
               <ul className="grid grid-cols-2 sm:grid-cols-3 gap-y-1 gap-x-4 mt-3 font-mono text-xs text-secondary">
                 {data.piston.detail.actual.map((rt) => (
                   <li key={rtLabel(rt)} className="flex items-center gap-2">
-                    <span className="text-success">✓</span>
+                    <span className="text-success-text">✓</span>
                     <span>{rtLabel(rt)}</span>
                   </li>
                 ))}

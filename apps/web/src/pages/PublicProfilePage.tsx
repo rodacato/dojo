@@ -218,8 +218,8 @@ function HeatmapLegend() {
 }
 
 function passRateColor(passRate: number): string {
-  if (passRate >= 80) return 'text-success/90'
-  if (passRate >= 50) return 'text-warning/90'
+  if (passRate >= 80) return 'text-success-text/90'
+  if (passRate >= 50) return 'text-warning-text/90'
   return 'text-danger-text'
 }
 

@@ -55,8 +55,8 @@ describe('DifficultyBadge', () => {
   })
 
   it.each<[Difficulty, string]>([
-    ['easy', 'text-success'],
-    ['medium', 'text-warning'],
+    ['easy', 'text-success-text'],
+    ['medium', 'text-warning-text'],
     ['hard', 'text-danger-text'],
   ])('colours the %s variant with its semantic token class', (difficulty, colorClass) => {
     render(<DifficultyBadge difficulty={difficulty} />)
@@ -67,8 +67,8 @@ describe('DifficultyBadge', () => {
   it('does not bleed colour tokens between difficulty variants', () => {
     render(<DifficultyBadge difficulty="easy" />)
     const badge = screen.getByText('EASY')
-    expect(badge).toHaveClass('text-success', 'border-success')
-    expect(badge).not.toHaveClass('text-warning')
+    expect(badge).toHaveClass('text-success-text', 'border-success')
+    expect(badge).not.toHaveClass('text-warning-text')
     expect(badge).not.toHaveClass('text-danger-text')
   })
 })
@@ -92,8 +92,8 @@ describe('VerdictBadge', () => {
   })
 
   it.each<[Verdict, string]>([
-    ['passed', 'text-success'],
-    ['passed_with_notes', 'text-warning'],
+    ['passed', 'text-success-text'],
+    ['passed_with_notes', 'text-warning-text'],
     ['needs_work', 'text-danger-text'],
   ])('styles verdict %s with its semantic colour token', (verdict, colorClass) => {
     const labels: Record<Verdict, string> = {

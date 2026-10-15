@@ -9,8 +9,8 @@ const VERDICT_LABELS: Record<Verdict, string> = {
 }
 
 const VERDICT_COLORS: Record<Verdict, string> = {
-  passed: 'text-success',
-  passed_with_notes: 'text-warning',
+  passed: 'text-success-text',
+  passed_with_notes: 'text-warning-text',
   needs_work: 'text-danger-text',
 }
 
@@ -81,7 +81,7 @@ export function VerdictBlock({
             {topics.map((t) => (
               <span
                 key={t}
-                className="text-warning text-xs font-mono px-2 py-1 border border-warning/30 bg-warning/10 rounded-sm"
+                className="text-warning-text text-xs font-mono px-2 py-1 border border-warning/30 bg-warning/10 rounded-sm"
               >
                 {t}
               </span>

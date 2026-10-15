@@ -15,7 +15,7 @@ export function ExecutionResultCard({ result }: Readonly<Props>) {
   const passed = result.exitCode === 0
   const timedOut = result.timedOut
 
-  const statusColor = passed ? 'text-success' : 'text-danger-text'
+  const statusColor = passed ? 'text-success-text' : 'text-danger-text'
   const statusLabel = describeStatus(timedOut, passed)
   const statusIcon = passed ? '●' : '✕'
 

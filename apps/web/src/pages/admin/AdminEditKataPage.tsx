@@ -365,7 +365,7 @@ export function AdminEditKataPage() {
 
 function StatusPill({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
-    published: 'bg-success/10 text-success border-success/30',
+    published: 'bg-success/10 text-success-text border-success/30',
     draft: 'bg-muted/15 text-secondary border-border',
     archived: 'bg-danger/10 text-danger-text border-danger/30',
   }
@@ -546,9 +546,9 @@ const TONE_BAR: Record<ReturnType<typeof tone>, string> = {
 }
 
 const TONE_VALUE: Record<ReturnType<typeof tone>, string> = {
-  emerald: 'text-success',
+  emerald: 'text-success-text',
   indigo: 'text-primary',
-  amber: 'text-warning',
+  amber: 'text-warning-text',
   red: 'text-danger-text',
   muted: 'text-secondary',
 }

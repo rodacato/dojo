@@ -209,7 +209,7 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
     label: 'Sessions timed out',
     value: (
       <span
-        className={`font-mono text-base ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success'}`}
+        className={`font-mono text-base ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success-text'}`}
       >
         {practicePatterns.sessionsTimedOut}
       </span>
@@ -279,10 +279,10 @@ function WeakAreasCard({ weakAreas }: Readonly<{ weakAreas: DashboardData['weakA
         {weakAreas.map((a) => (
           <span
             key={a.topic}
-            className="font-mono text-xs text-warning bg-warning/10 border border-warning/30 rounded-sm px-2.5 py-1 inline-flex items-center gap-1.5"
+            className="font-mono text-xs text-warning-text bg-warning/10 border border-warning/30 rounded-sm px-2.5 py-1 inline-flex items-center gap-1.5"
           >
             <span className="text-primary lowercase">{a.topic}</span>
-            <span className="text-warning/70">({a.frequency})</span>
+            <span className="text-warning-text/70">({a.frequency})</span>
           </span>
         ))}
       </div>

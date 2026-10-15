@@ -19,7 +19,7 @@ interface BannerProps {
 
 const TONE_TEXT: Record<BannerTone, string> = {
   info: 'text-secondary',
-  warning: 'text-warning',
+  warning: 'text-warning-text',
   danger: 'text-danger-text',
 }
 

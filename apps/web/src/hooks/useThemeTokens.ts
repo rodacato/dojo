@@ -40,7 +40,7 @@ const SSR_FALLBACK: ThemeTokens = {
   typeCode: '#64748B',
   typeChat: '#7C3AED',
   typeWhiteboard: '#0D9488',
-  typeReview: '#6366F1',
+  typeReview: '#0EA5E9',
   isDark: true,
 }
 

@@ -418,7 +418,7 @@ function SaveIndicator({ state }: Readonly<{ state: SaveState }>) {
           Saving<span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
         </span>
       )}
-      {state === 'saved' && <span className="text-success">Saved</span>}
+      {state === 'saved' && <span className="text-success-text">Saved</span>}
       {state === 'error' && <span className="text-danger-text">Error</span>}
     </div>
   )

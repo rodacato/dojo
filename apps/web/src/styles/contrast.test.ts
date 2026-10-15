@@ -29,7 +29,7 @@ function contrast(a: string, b: string): number {
 }
 
 const THEMES = ['@theme {', "[data-theme='sumi']", "[data-theme='washi']"]
-const TEXT_TOKENS = ['primary', 'secondary', 'accent-text', 'danger-text']
+const TEXT_TOKENS = ['primary', 'secondary', 'accent-text', 'danger-text', 'success-text', 'warning-text']
 const READABLE_ON = ['page', 'surface']
 
 describe('text colour tokens keep WCAG AA contrast (4.5:1)', () => {

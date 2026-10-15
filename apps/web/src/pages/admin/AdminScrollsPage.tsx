@@ -97,7 +97,7 @@ export function AdminScrollsPage() {
           {scrolls && (
             <>
               {' '}
-              <span className="text-success">{published} published</span>
+              <span className="text-success-text">{published} published</span>
               <span className="mx-2">·</span>
               <span>{scrolls.length - published} draft</span>
             </>
@@ -266,7 +266,7 @@ function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; 
 function StatusBadge({ status }: Readonly<{ status: ScrollEntryDTO['status'] }>) {
   const style =
     status === 'published'
-      ? 'bg-success/10 text-success border-success/30'
+      ? 'bg-success/10 text-success-text border-success/30'
       : 'bg-muted/15 text-secondary border-border'
   return (
     <span className={`font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm border ${style}`}>

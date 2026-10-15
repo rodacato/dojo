@@ -468,14 +468,14 @@ function RunStatusChip({ run }: Readonly<{ run: RunState }>) {
   }
   if (run.status === 'running') {
     return (
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-warning border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-warning-text border border-warning/40 bg-warning/10 px-2 py-0.5 rounded-sm inline-flex items-center">
         Running{' '}<span className="animate-cursor ml-0.5" aria-hidden>_</span>
       </span>
     )
   }
   if (run.status === 'ok') {
     return (
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-success border border-success/40 bg-success/10 px-2 py-0.5 rounded-sm tabular-nums">
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-success-text border border-success/40 bg-success/10 px-2 py-0.5 rounded-sm tabular-nums">
         OK · exit {run.exitCode ?? 0}
         {run.runtimeMs != null && ` · ${run.runtimeMs}ms`}
       </span>

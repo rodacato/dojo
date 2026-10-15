@@ -302,10 +302,10 @@ function deriveStatus({
 function StatusChip({ kind }: Readonly<{ kind: StatusChipKind }>) {
   const styles: Record<StatusChipKind, { label: string; color: string; cursor: boolean }> = {
     connecting: { label: 'CONNECTING', color: 'text-secondary border-border bg-elevated', cursor: true },
-    executing: { label: 'EXECUTING', color: 'text-warning border-warning/40 bg-warning/10', cursor: true },
+    executing: { label: 'EXECUTING', color: 'text-warning-text border-warning/40 bg-warning/10', cursor: true },
     streaming: { label: 'STREAMING', color: 'text-secondary border-border bg-elevated', cursor: true },
     'follow-up': { label: 'FOLLOW-UP', color: 'text-secondary border-border bg-elevated', cursor: false },
-    complete: { label: 'COMPLETE', color: 'text-success border-success/40 bg-success/10', cursor: false },
+    complete: { label: 'COMPLETE', color: 'text-success-text border-success/40 bg-success/10', cursor: false },
     error: { label: 'ERROR', color: 'text-danger-text border-danger/40 bg-danger/10', cursor: false },
   }
   const s = styles[kind]

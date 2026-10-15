@@ -307,7 +307,7 @@ function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; 
 function InviteStatusBadge({ status }: Readonly<{ status: string }>) {
   const styles: Record<string, string> = {
     pending: 'bg-muted/15 text-secondary border-border',
-    used: 'bg-success/10 text-success border-success/30',
+    used: 'bg-success/10 text-success-text border-success/30',
     expired: 'bg-danger/10 text-danger-text border-danger/30',
   }
   const labels: Record<string, string> = {
