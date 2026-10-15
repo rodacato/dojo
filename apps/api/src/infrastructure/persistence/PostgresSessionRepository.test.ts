@@ -114,6 +114,24 @@ describe('PostgresSessionRepository.findById (toSession mapping)', () => {
     expect(session?.attempts[0]?.evaluationResult).toBeNull()
   })
 
+  it('maps an incomplete attempt (partial prose or an error payload) to a null evaluationResult', async () => {
+    const db = makeDb()
+    vi.mocked(db.query.sessions.findFirst).mockResolvedValue(
+      sessionRow({
+        status: 'active',
+        attempts: [
+          attemptRow({ id: 'att-prose', llmResponse: 'Your solution handles the base case but', isFinalEvaluation: false }),
+          attemptRow({ id: 'att-error', llmResponse: JSON.stringify({ error: 'stream reset' }), isFinalEvaluation: false }),
+        ],
+      }),
+    )
+    const repo = new PostgresSessionRepository(db)
+
+    const session = await repo.findById('sess-1' as never)
+
+    expect(session?.attempts.map((a) => a.evaluationResult)).toEqual([null, null])
+  })
+
   it('returns null when no row matches', async () => {
     const db = makeDb()
     vi.mocked(db.query.sessions.findFirst).mockResolvedValue(undefined)
