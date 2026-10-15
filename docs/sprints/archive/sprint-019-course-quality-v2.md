@@ -4,8 +4,8 @@
 **Closed:** 2026-04-17
 **Phase:** Phase 1 Alpha
 
-**PRD:** [docs/prd/023-sprint-019-planning.md](../../prd/023-sprint-019-planning.md)
-**Spec:** [docs/specs/025-sprint-019-course-quality-v2.md](../../specs/025-sprint-019-course-quality-v2.md)
+**PRD:** PRD 023, removed with native scrolls (ADR 025)
+**Spec:** `docs/specs/025-sprint-019-course-quality-v2.md` (deleted with native scrolls, ADR 025; see git history)
 
 ---
 

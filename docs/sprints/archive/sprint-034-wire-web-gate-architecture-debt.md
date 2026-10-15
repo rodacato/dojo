@@ -42,4 +42,4 @@ The original plan (PRD-033 carry, ROADMAP) had S034 = "web testing backbone, 7/1
 
 1. [archive/sprint-033-maintenance-security-foundation.md](archive/sprint-033-maintenance-security-foundation.md) — what shipped, and the two honest findings (coverage over-delivery + the unwired web gate) that reshaped this sprint.
 2. [PRD-033](../prd/033-sprint-033-maintenance-planning.md) — the original maintenance plan + the S034/S035 split this sprint revises.
-3. [`docs/sprints/backlog.md`](backlog.md) — the architecture-debt and telemetry items this sprint draws from.
+3. `docs/sprints/backlog.md` (retired) — the architecture-debt and telemetry items this sprint draws from.

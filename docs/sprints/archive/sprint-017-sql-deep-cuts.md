@@ -4,8 +4,8 @@
 **Closed:** 2026-04-15
 **Phase:** Phase 1 Alpha
 
-**PRD:** [docs/prd/021-sprint-017-planning.md](../../prd/021-sprint-017-planning.md)
-**Spec:** [docs/specs/023-sprint-017-sql-deep-cuts.md](../../specs/023-sprint-017-sql-deep-cuts.md)
+**PRD:** PRD 021, removed with native scrolls (ADR 025)
+**Spec:** `docs/specs/023-sprint-017-sql-deep-cuts.md` (deleted with native scrolls, ADR 025; see git history)
 
 ---
 

@@ -1,5 +1,7 @@
 # Sprint 012 — Alpha-Ready
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 **Started:** 2026-03-26
 **Phase:** Phase 1 Alpha prep → Alpha launch
 

@@ -1,5 +1,7 @@
 # Sprint 027 — Python crash scroll (Rust queued)
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 > **Status:** Open 2026-06-08. Active focus: Python crash scroll end-to-end under the polyglot-first lens, applying the figures pattern from day 1. Rust queued behind Python — visible-but-deferred; we don't look at it until Python ships.
 > **Direction:** [ADR 022 — crash-course pivot](../adr/022-crash-course-pivot.md) · [`docs/courses/AUTHORING.md`](../courses/AUTHORING.md) · [`docs/courses/INTERACTIVITY-PATTERNS.md`](../courses/INTERACTIVITY-PATTERNS.md) §Embeddable visual figures
 > **Predecessor:** [Sprint 026 — Ruby crash scroll end-to-end](archive/sprint-026-ruby-crash-course.md)

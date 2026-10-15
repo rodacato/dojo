@@ -4,8 +4,8 @@
 > finding and the decision; this doc tracks its **execution**. The kit mirrors the CURRENT
 > code until each change lands — then the kit bumps.
 
-Nothing is decided yet: the first design pass only surfaced findings (see
-[DECISIONS.md](DECISIONS.md)). Entries land here once Adrian decides, each with measured usage.
+Decisions D42 and D46 landed in code (the `accent-text`, `danger-text`, `success-text` and `warning-text` tokens exist in `apps/web/src/styles/main.css`); the candidates below are still undecided findings (see
+[DECISIONS.md](DECISIONS.md)). Entries land in the table once Adrian decides, each with measured usage.
 
 | Layer / value | Real consumers (measured) | Verdict |
 |---|---|---|
@@ -14,6 +14,6 @@ Nothing is decided yet: the first design pass only surfaced findings (see
 ## Candidates, in suggested order
 
 1. **Focus-visible on form controls** (D5, D6) — pending a decision.
-2. **Theme the hardcoded colors** (D7) — AchievementBadge glow, Modal overlay.
+2. **Theme the hardcoded colors** (D7) — Modal overlay (`bg-black/60`).
 3. **Type scale** (D4) — one-line fix in `apps/web/src/styles/main.css`.
 4. **Dead code and routes** (D10, D11) — `LoginPage.tsx`, `/error`.

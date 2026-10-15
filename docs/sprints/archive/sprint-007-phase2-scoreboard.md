@@ -1,5 +1,7 @@
 # Sprint 007 — Phase 2: The Scoreboard
 
+> **Historical record.** Checklists, carry-forwards and "next" items below reflect the state when this sprint closed. Open work lives in GitHub issues and milestones; the sprint docs and `backlog.md` were retired (#61, #114).
+
 **Started:** 2026-03-22
 **Completed:** 2026-03-22
 **Phase:** Phase 2
