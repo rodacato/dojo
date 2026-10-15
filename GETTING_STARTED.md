@@ -19,8 +19,7 @@ Best for contributing. Works in VS Code or GitHub Codespaces.
 
 1. Clone, open the folder in VS Code, and run **Dev Containers: Reopen in Container**.
 2. `.devcontainer/post-create.sh` runs automatically: installs deps, waits for Postgres,
-   creates `.env`, runs migrations, seeds the katas, seeds the scroll catalog (as opt-in
-   drafts — publish from `/admin/scrolls`), and provisions Piston.
+   creates `.env`, provisions Piston, runs migrations and seeds the katas.
 3. Fill in the GitHub OAuth values in `.env` (see [Sign-in setup](#sign-in-setup)).
 4. Start the dev servers:
    ```bash
@@ -52,7 +51,6 @@ Nothing is seeded on boot, so the instance starts with no katas. Load them once 
 
 ```bash
 docker compose exec dojo-api node dist/infrastructure/persistence/seed.js
-docker compose exec dojo-api node dist/infrastructure/persistence/seed-scrolls.js   # optional: scroll catalog, as unpublished drafts
 ```
 
 Code execution does not work on this path: this compose file runs Piston without the sandbox
@@ -71,7 +69,6 @@ bin/setup                                  # copies .env, installs dependencies
 createdb dojo_dev                          # or create it with your own PG tooling
 pnpm --filter=@dojo/api db:migrate         # create the schema so the seed has tables
 pnpm --filter=@dojo/api db:seed            # the katas; without them there is nothing to practice
-pnpm --filter=@dojo/api db:seed:scrolls    # optional: seed the scroll catalog (opt-in drafts; publish via /admin/scrolls)
 pnpm dev
 ```
 

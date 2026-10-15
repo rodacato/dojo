@@ -60,7 +60,7 @@ Checked against SheLLM's compatibility guide and the changelog.
 
 | Dojo behavior | SheLLM behavior | Consequence |
 |---|---|---|
-| `max_tokens` on every call (256 to 2048) | Validated, then ignored: no CLI has a cap flag | Length is bounded by the prompt only. Dojo's prompts already say how long to be |
+| `max_tokens` on every call (512 to 2048) | Validated, then ignored: no CLI has a cap flag | Length is bounded by the prompt only. Dojo's prompts already say how long to be |
 | Streaming sensei verdict | SSE with a keepalive comment while the model is silent (v1.16.0) and a killed stream reported as an error, not as a finished answer (v1.16.1) | Both adapters now fail a stream that carries an error event or ends without its terminator, so a truncated session body or answer is never saved as complete |
 | Plain text messages, no `tools` | `tools` or a forcing `tool_choice` is a 400 since v1.18.0 | Not a problem today. Any future dojo feature that uses function calling cannot run on SheLLM |
 | Request timeout 90 s on every call, one retry in the Anthropic SDK | A request waits in a queue when the CLI slots are full (4 concurrent by default since v1.9.0); a full queue is a 429. A client that aborts frees its slot within about a second | A burst of evaluations queues, then times out at 90 s. Keep `MAX_CONCURRENT` above your realistic concurrent kata. The SDK's retry of a queue-full 429 costs no quota, since a rejected request never starts a CLI |
@@ -90,7 +90,7 @@ real `AnthropicStreamAdapter` and a real first-turn evaluation prompt. Single sa
 |---|---|
 | `/health`, `/v1/models` | 200; Claude and Codex models listed with limits |
 | Anthropic stream, OpenAI stream | 200; `message_stop` and `[DONE]` arrive; usage included |
-| `evaluate`, `generateSessionBody`, `nudge`, `askSensei` through the adapter | all complete; verdict parses; `askSensei` usage resolves with real counts |
+| `evaluate`, `generateSessionBody`, `askSensei` through the adapter (the measured run also exercised `nudge`, since removed) | all complete; verdict parses; `askSensei` usage resolves with real counts |
 | `tools` in the request | 400 `invalid_request_error` |
 | Unknown `claude-*` model | 404 `not_found_error` |
 | No key | 401 in the endpoint's own error shape |
@@ -99,8 +99,8 @@ real `AnthropicStreamAdapter` and a real first-turn evaluation prompt. Single sa
 | Evaluation prompt, first token | about 2.8 s on `/v1/messages`; about 1.8 s with `reasoning_effort: low` on `/v1/chat/completions` |
 | Evaluation prompt, total | about 20 s default; about 15 s with `low` |
 | Input cost of a one-word reply | about 6.5k tokens: the CLI's own context counts against the plan on every call |
-| `LLM_MODEL=claude` (CLI default) through the real adapter | all four methods complete; first chunk about 2.3 s, evaluation about 16 s |
-| OpenAI adapter with a base URL ending in `/v1` | all four methods complete |
+| `LLM_MODEL=claude` (CLI default) through the real adapter | all methods complete; first chunk about 2.3 s, evaluation about 16 s |
+| OpenAI adapter with a base URL ending in `/v1` | all methods complete |
 | 5 long streams aborted at 2 s, then a short stream | served in 3.1 s with 0.5 s queued: aborting frees the slot |
 | 18 simultaneous requests | 14 × 200, 4 × 429 `Queue is full` |
 

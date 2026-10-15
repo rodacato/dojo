@@ -33,7 +33,7 @@ For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs
 | `docs/DESIGN.md` | `docs/DESIGN.md` | Canonical | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
 | `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | Canonical | DDD model, bounded contexts, ports, events, decisions |
 | `docs/adr/` | `docs/adr/` | History (immutable) | Architecture Decision Records — never deleted |
-| `docs/specs/` | `docs/specs/` | History (immutable) | Sprint-tied implementation specs |
+| `docs/specs/` | `docs/specs/` | History | Sprint-tied implementation specs. Deleted when the feature they describe is removed; ADRs never are |
 | `docs/sprints/archive/` | `docs/sprints/archive/` | History (immutable) | Closed sprint blocks with retros. Retired as a practice; sprint 034 is the last |
 | `docs/prd/` | `docs/prd/` | Exploratory (disposable) | Pre-spec PRDs. Close each with: `Materialized in spec-NNN` / `Discarded` / `Archived to research/` |
 | `docs/research/` | `docs/research/` | Archived research | Background plans/analyses that informed past decisions, kept for traceability |
@@ -270,7 +270,8 @@ When making changes that affect behavior, update the corresponding docs in the s
 |---|---|
 | New or changed API endpoint | `README.md` |
 | New or changed env var | `README.md` + `.env.example` |
-| New feature shipped | Nothing in `CHANGELOG.md` — it is generated at release from conventional commits ([`RELEASING.md`](../RELEASING.md)). Write the commit message as the changelog line |
+| New or changed deploy secret or variable (GitHub Environment) | `docs/ops/deploy.md` |
+| New feature shipped | `apps/web/src/pages/ChangelogPage.tsx` (public, curated user-facing entry). `CHANGELOG.md` is generated at release from conventional commits ([`RELEASING.md`](../RELEASING.md)) |
 | Completed roadmap item | Mark done in `docs/ROADMAP.md` |
 | Architectural decision | Add ADR in `docs/adr/` + update `docs/ARCHITECTURE.md` if needed |
 | New port or adapter | `docs/ARCHITECTURE.md` ports & adapters table |

@@ -30,27 +30,27 @@ Edit when reality changes. Always reflects current behavior.
 |---|---|
 | [`VISION.md`](VISION.md) | Why Dojo exists, philosophy, who it is for |
 | [`IDENTITY.md`](IDENTITY.md) | Primary build persona — decision style and defaults |
-| [`EXPERTS.md`](EXPERTS.md) | Virtual advisory panel — 11 specialist personas |
+| [`EXPERTS.md`](EXPERTS.md) | Virtual advisory panel — 19 personas (7 core, 12 situational) |
 | [`ROADMAP.md`](ROADMAP.md) | Direction, phases, and the spec / PRD / ADR history |
 | [`WORKFLOW.md`](WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [`BRANDING.md`](BRANDING.md) | Voice, vocabulary, IA, UX principles, microcopy |
 | [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Slate Indigo + Sumi-e), motifs, components, motion |
+| [`scrolls/`](scrolls/) | Scroll protocol, authoring guide and conformance suite for external scroll apps |
 
 ### Live — active work
 
 There is no live work document in `docs/`. What is planned, in progress and done lives in GitHub issues and milestones; ideas that are not ready to be public stay as cards on the maintainer's private project board. See [`WORKFLOW.md`](WORKFLOW.md#tracking-work).
 
-### History — immutable (never delete)
+### History — append-only
 
 Append-only record of what happened and why. Links may point to docs that have since moved — that is acceptable; history is preserved for context, not for navigation.
 
 | Folder | What lives here |
 |---|---|
 | [`adr/`](adr/) | Architecture Decision Records — every architectural choice with its alternatives and consequences |
-| [`specs/`](specs/) | Sprint-tied implementation specs |
+| [`specs/`](specs/) | Sprint-tied implementation specs. Specs of features that were removed may be deleted; git keeps them |
 | [`sprints/archive/`](sprints/archive/) | Closed sprint blocks with retros. Sprint docs were retired in September 2026; sprint 034 is the last |
-| [`audits/`](audits/) | Time-stamped audits (friend feedback, security reviews, etc.) |
 
 ### Exploratory & archived research — disposable
 

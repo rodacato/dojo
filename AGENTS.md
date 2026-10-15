@@ -41,6 +41,8 @@ When the user asks for debate, alternatives, tradeoffs, or recommendations — o
 | S8 | Björn Lindqvist | Rust language pedagogy & scroll content | Situational | Rust scroll content design or review |
 | S9 | Leo Barros | TypeScript language pedagogy & scroll content (infra TS → Tomás) | Situational | TypeScript scroll content design or review |
 | S10 | Rhea Kapoor | Ruby language pedagogy & scroll content | Situational | Ruby scroll content design or review |
+| S11 | Maya Lindqvist | Interactive learning experience design | Situational | Interactivity in learning content, scroll exercises |
+| S12 | Felix Park | Interactive motion engineering | Situational | Motion libraries and animation scope (episodic) |
 
 Expert panel output must end with: **recommended option, key risks, fallback/rollback path.**
 
@@ -103,7 +105,8 @@ When making changes that affect behavior, update docs in the same commit. Full r
 |---|---|
 | New/changed API endpoint | `README.md` |
 | New/changed env var | `README.md` + `.env.example` |
-| New feature shipped | Nothing in `CHANGELOG.md` — it is generated at release from conventional commits ([RELEASING.md](RELEASING.md)) |
+| New/changed deploy secret or variable (GitHub Environment) | `docs/ops/deploy.md` |
+| New feature shipped | `apps/web/src/pages/ChangelogPage.tsx` (public, curated user-facing entry). `CHANGELOG.md` is generated at release from conventional commits — see [RELEASING.md](RELEASING.md) |
 | Completed roadmap item | `docs/ROADMAP.md` |
 | Architectural decision | `docs/adr/NNN-title.md` |
 | New kata type | `README.md` kata types table |
