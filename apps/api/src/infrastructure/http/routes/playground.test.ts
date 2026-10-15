@@ -466,6 +466,22 @@ describe('POST /engawa/ask', () => {
     expect(insertValues).not.toHaveBeenCalled()
   })
 
+  it('does not leave the usage promise unhandled when the stream fails (it would kill the process)', async () => {
+    async function* boom(): AsyncIterable<string> {
+      throw new Error('upstream gone')
+    }
+    askSensei.mockReturnValue({ stream: boom(), usage: Promise.reject(new Error('upstream gone')) })
+    const unhandled = vi.fn()
+    process.on('unhandledRejection', unhandled)
+    try {
+      await (await post('/engawa/ask', VALID_ASK)).text()
+      await new Promise((resolve) => setImmediate(resolve))
+      expect(unhandled).not.toHaveBeenCalled()
+    } finally {
+      process.off('unhandledRejection', unhandled)
+    }
+  })
+
   it('still completes the stream when the cost-log insert rejects', async () => {
     askSensei.mockReturnValue(askReturn(['answer']))
     insertValues.mockReturnValue(Promise.reject(new Error('log insert failed')))
