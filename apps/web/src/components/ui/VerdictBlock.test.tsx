@@ -4,6 +4,19 @@ import { render, screen } from '@testing-library/react'
 import { VerdictBlock } from './VerdictBlock'
 
 describe('VerdictBlock', () => {
+  describe('ink stroke', () => {
+    it.each([
+      ['passed', 'text-success'],
+      ['passed_with_notes', 'text-warning'],
+      ['needs_work', 'text-danger'],
+    ] as const)('%s inks the stroke with %s, never the accent', (verdict, tone) => {
+      const { container } = render(<VerdictBlock verdict={verdict} />)
+      const stroke = container.querySelector('svg')
+      expect(stroke).toHaveClass(tone)
+      expect(stroke).not.toHaveClass('text-accent')
+    })
+  })
+
   describe('verdict label + tone mapping', () => {
     it('renders PASSED in the success tone', () => {
       render(<VerdictBlock verdict="passed" />)

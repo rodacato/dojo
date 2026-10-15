@@ -14,6 +14,12 @@ const VERDICT_COLORS: Record<Verdict, string> = {
   needs_work: 'text-danger-text',
 }
 
+const STROKE_COLORS: Record<Verdict, string> = {
+  passed: 'text-success',
+  passed_with_notes: 'text-warning',
+  needs_work: 'text-danger',
+}
+
 interface VerdictBlockProps {
   verdict: Verdict
   role?: string
@@ -28,7 +34,7 @@ interface VerdictBlockProps {
 // conversation; `lg` (36px, 48px from the md breakpoint) is the page-hero
 // variant used on Results.
 //
-// The left stroke is an SVG path drawn vermillion (--color-accent),
+// The left stroke is an SVG path inked in the verdict colour,
 // animated stroke-dashoffset → 0 in 600ms on mount. Pure CSS so this
 // component stays GSAP-free and safe to mount on any surface. Per
 // DESIGN.md §Component vocabulary §Verdict block.
@@ -48,7 +54,7 @@ export function VerdictBlock({
     >
       <svg
         aria-hidden
-        className="absolute left-1.5 top-3 bottom-3 w-3 text-accent"
+        className={`absolute left-1.5 top-3 bottom-3 w-3 ${STROKE_COLORS[verdict]}`}
         viewBox="0 0 12 200"
         preserveAspectRatio="none"
       >
