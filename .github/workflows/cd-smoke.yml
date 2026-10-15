@@ -19,6 +19,11 @@ on:
 permissions:
   contents: read
 
+# Queue, never cancel: a smoke cut short against a live environment reads as a false red.
+concurrency:
+  group: cd-smoke-${{ inputs.environment }}
+  cancel-in-progress: false
+
 jobs:
   smoke:
     name: Deployed smoke (${{ inputs.environment }})

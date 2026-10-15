@@ -11,6 +11,11 @@ on:
 permissions:
   contents: read
 
+# A run still going when the next tick fires is stale; the newer probe wins.
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   check:
     name: Check /health/piston
