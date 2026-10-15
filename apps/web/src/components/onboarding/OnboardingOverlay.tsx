@@ -25,10 +25,9 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-page/60 flex items-center justify-center px-4 py-8"
-      role="dialog"
-      aria-modal="false"
+    <dialog
+      open
+      className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-page/60 px-4 py-8"
       aria-labelledby="onboarding-headline"
     >
       <div className="relative w-full max-w-120 bg-surface border border-border rounded-md p-6 md:p-8">
@@ -87,6 +86,6 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
           This message appears once. It won&apos;t be back tomorrow.
         </p>
       </div>
-    </div>
+    </dialog>
   )
 }

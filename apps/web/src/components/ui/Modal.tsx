@@ -11,13 +11,13 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose, flow = false, label, children }: Readonly<ModalProps>) {
-  const overlayRef = useRef<HTMLDivElement>(null)
-  const panelRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
     if (!open) return
     const previous = document.activeElement as HTMLElement | null
-    panelRef.current?.focus()
+    dialogRef.current?.showModal()
+    dialogRef.current?.focus()
     return () => previous?.focus?.()
   }, [open])
 
@@ -37,24 +37,20 @@ export function Modal({ open, onClose, flow = false, label, children }: Readonly
   if (!open) return null
 
   return (
-    <div
-      ref={overlayRef}
-      role="presentation"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+    <dialog
+      ref={dialogRef}
+      aria-modal="true"
+      aria-label={label}
+      tabIndex={-1}
+      className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-black/60 p-0 backdrop:bg-transparent focus:outline-none"
+      onCancel={(e) => e.preventDefault()}
       onClick={(e) => {
-        if (!flow && onClose && e.target === overlayRef.current) onClose()
+        if (!flow && onClose && e.target === dialogRef.current) onClose()
       }}
     >
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-label={label}
-        tabIndex={-1}
-        className="bg-surface border border-border rounded-md max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto focus:outline-none"
-      >
+      <div className="bg-surface border border-border rounded-md max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
         {children}
       </div>
-    </div>
+    </dialog>
   )
 }
