@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { PgDialect } from 'drizzle-orm/pg-core'
+import type { SQL } from 'drizzle-orm'
 import type { SessionCompleted } from '../../domain/practice/events'
 import type { UserId } from '../../domain/shared/types'
 import { InMemoryEventBus } from './InMemoryEventBus'
@@ -17,6 +19,7 @@ class FakeDb {
   private selectQueue: unknown[][] = []
   readonly awarded: Array<{ milestoneSlug: string; sessionId?: string | null }> = []
   earnedSlugs: string[] = []
+  readonly conditions: SQL[] = []
 
   // First SELECT in every handler run is getEarnedSlugs; the rest are scripted.
   scriptSelects(results: unknown[][]) {
@@ -36,7 +39,11 @@ class FakeDb {
   private chain(isEarnedQuery: boolean) {
     const builder: Record<string, unknown> = {}
     const passthrough = () => builder
-    for (const m of ['from', 'innerJoin', 'where', 'groupBy']) builder[m] = passthrough
+    for (const m of ['from', 'innerJoin', 'groupBy']) builder[m] = passthrough
+    builder.where = (condition: SQL) => {
+      this.conditions.push(condition)
+      return builder
+    }
     builder.then = (resolve: (rows: unknown[]) => unknown) =>
       Promise.resolve(isEarnedQuery ? this.earnedRows() : this.nextSelect()).then(resolve)
     return builder
@@ -225,6 +232,22 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual(['BRUTAL_TRUTH'])
+  })
+
+  it('compares final verdicts against the lowercase values the sensei parser stores', async () => {
+    db.earnedSlugs = ['FIRST_KATA']
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    await fireSessionCompleted(db)
+
+    const dialect = new PgDialect()
+    const verdictQueries = db.conditions
+      .map((condition) => dialect.sqlToQuery(condition))
+      .filter((query) => query.sql.includes("->>'verdict'"))
+
+    expect(verdictQueries).toHaveLength(2)
+    expect(verdictQueries[0]!.params).toContain('needs_work')
+    expect(verdictQueries[1]!.params).toContain('passed')
+    for (const query of verdictQueries) expect(query.sql).toContain('lower(')
   })
 
   it('awards SQL_SURVIVOR at 3 SQL-topic kata', async () => {
