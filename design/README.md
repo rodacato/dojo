@@ -28,11 +28,11 @@ as context for AI agents (`AGENTS.md` points them here).
 
 | File | Screens | Kit | Domain entry point |
 |---|---|---|---|
-| `public.pen` | 13 | 0.3.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
-| `app-core.pen` | 10 | 0.3.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
-| `kata.pen` | 18 | 0.3.0 | Katas list, active kata (code, chat, whiteboard), evaluation, results |
-| `learn.pen` | 11 | 0.3.0 | Scrolls catalog and player, Engawa playground |
-| `admin.pen` | 11 | 0.3.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
+| `public.pen` | 13 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
+| `app-core.pen` | 10 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
+| `kata.pen` | 18 | 0.4.0 | Katas list, active kata (code, chat, whiteboard), evaluation, results |
+| `learn.pen` | 11 | 0.4.0 | Scrolls catalog and player, Engawa playground |
+| `admin.pen` | 11 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
 
 **This table is present tense — it never carries history.** "Migrated on <date>, six
 components consolidated" belongs in that flow's `Log` frame, not here.

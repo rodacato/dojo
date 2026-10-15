@@ -13,6 +13,14 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.4.0 — readable status text and a REVIEW hue of its own
+
+**Tokens:** `color-success-text` and `color-warning-text` (washi `#4A6640` and `#7A5A12`, 5.22 and 5.16 on surface; slate and sumi equal the base). `color-type-review` is `#0EA5E9` in slate and `#3F6AA8` in sumi and washi, and `tint-type-review-20` and `-40` are now themed (they were a single slate value). Foundations lists the new swatches and ratios.
+
+**Components:** text that was success or warning uses the new tokens (badges, banners, toasts, timer, chips, verdict). The `VerdictBlock` ink stroke takes the verdict colour. The kit demos in Foundations keep the base tokens on purpose.
+
+**Vendored by:** all five flows (kit-version-source `0.4.0`). Kata Results draws Copy share link as ghost (D50).
+
 ## 0.3.0 — accent discipline and readable text
 
 **Tokens:** `color-accent-text` and `color-danger-text` (derived, so text on a surface clears AA; sumi 4.53 and 4.56), plus `tint-type-review-20`, `tint-type-review-40` and `tint-primary-30`. The approved brand values do not change (D42, D46).
