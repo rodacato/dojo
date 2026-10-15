@@ -359,7 +359,7 @@ function ShareActions({
 
   return (
     <div className="flex flex-col gap-2 mt-1">
-      <Button variant="primary" size="md" onClick={handleCopy} className="w-full">
+      <Button variant="ghost" size="md" onClick={handleCopy} className="w-full">
         {copied ? 'Link copied!' : 'Copy share link'}
       </Button>
       <Button variant="ghost" size="md" onClick={handleTwitter} className="w-full">
