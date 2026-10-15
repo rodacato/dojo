@@ -7,6 +7,19 @@ import { AttemptId, KataId, SessionId, UserId, VariationId } from '../../domain/
 import type { DB } from './drizzle/client'
 import { attempts, katas, sessions } from './drizzle/schema'
 
+// saveIncompleteAttempt stores raw streamed prose or an {error} object in the same
+// column, so only a payload carrying a verdict counts as an evaluation.
+function parseEvaluation(raw: string | null): EvaluationResult | null {
+  if (!raw) return null
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    const isEvaluation = typeof parsed === 'object' && parsed !== null && 'verdict' in parsed
+    return isEvaluation ? (parsed as EvaluationResult) : null
+  } catch {
+    return null
+  }
+}
+
 export class PostgresSessionRepository implements SessionRepositoryPort {
   constructor(private readonly db: DB) {}
 
@@ -115,7 +128,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     row: typeof sessions.$inferSelect & { attempts: (typeof attempts.$inferSelect)[] },
   ): Session {
     const domainAttempts = row.attempts.map((a) => {
-      const evaluationResult = a.llmResponse ? (JSON.parse(a.llmResponse) as EvaluationResult) : null
+      const evaluationResult = parseEvaluation(a.llmResponse)
       return new Attempt({
         id: AttemptId(a.id),
         sessionId: SessionId(a.sessionId),
