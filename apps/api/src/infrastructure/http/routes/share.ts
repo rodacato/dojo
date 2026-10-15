@@ -102,7 +102,11 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
     .where(eq(sessions.id, sessionId))
     .limit(1)
 
-  if (!row) return c.json({ error: 'Session not found' }, 404)
+  // Same gate as the JSON endpoint: the card is cached as immutable, so an
+  // unfinished session must never be rendered with the needs_work fallback.
+  if (!row || (row.status !== 'completed' && row.status !== 'failed')) {
+    return c.json({ error: 'Session not found' }, 404)
+  }
 
   const verdict = (row.verdict ?? 'needs_work').toLowerCase()
   const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()

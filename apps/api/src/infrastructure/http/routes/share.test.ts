@@ -194,6 +194,15 @@ describe('GET /share/:sessionId.png', () => {
     expect(satoriMock).not.toHaveBeenCalled()
   })
 
+  it.each(['active', 'preparing'])('returns 404 for a %s session instead of caching a placeholder card', async (status) => {
+    selectQueue.push([sessionRow({ status, verdict: null, analysis: null, completedAt: null })])
+    const res = await makeApp().request(`/share/${SESSION_ID}.png`)
+
+    expect(res.status).toBe(404)
+    expect(res.headers.get('cache-control')).toBeNull()
+    expect(satoriMock).not.toHaveBeenCalled()
+  })
+
   it('still renders a 200 image when the session has no verdict/analysis (needs_work fallback)', async () => {
     selectQueue.push([sessionRow({ verdict: null, analysis: null, completedAt: null })])
     const res = await makeApp().request(`/share/${SESSION_ID}.png`)
