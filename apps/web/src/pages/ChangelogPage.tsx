@@ -15,7 +15,7 @@ const ENTRIES: ChangelogEntry[] = [
     phase: 'Brand',
     title: 'A new mark: the open gate',
     description:
-      'The torii is gone. Dojo now has the Open Gate mark, drawn in vermillion next to the dojo_ wordmark in the nav, the sidebar and the sign-in screens. Sumi (dark) and Washi (light) are the brand themes; Slate Indigo is still there if you prefer it, under Settings.',
+      'The torii is gone. Dojo now has the Open Gate mark, drawn in vermillion next to the dojo_ wordmark in the nav, the sidebar and the sign-in screens. Sumi (dark) and Washi (light) are the brand themes; Slate Indigo is still there if you prefer it, under Settings. The favicon, the home-screen icon and the preview that shows when you share a link now use the same mark, and the share card for a session follows the Sumi palette.',
   },
   {
     date: '2026-10-02',
