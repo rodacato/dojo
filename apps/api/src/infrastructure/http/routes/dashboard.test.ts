@@ -133,6 +133,17 @@ describe('GET /dashboard', () => {
     expect(body).not.toHaveProperty('senseiSuggests')
   })
 
+  it('picks the least-practiced kata type, matching the lowercase types stored on katas', async () => {
+    selectQueue.length = 0
+    // activeRow, heatmap, recent, total, today, topics, avgTime, then the per-type counts.
+    selectQueue.push([], [], [], [], [], [], [], [{ type: 'code', count: 6 }, { type: 'whiteboard', count: 3 }], [], [])
+
+    const res = await makeApp().request('/dashboard')
+    const body = (await res.json()) as { practicePatterns: { mostAvoidedType: string } }
+
+    expect(body.practicePatterns.mostAvoidedType).toBe('CHAT')
+  })
+
   it('reports a user-set weekly goal target', async () => {
     db.query.userPreferences.findFirst.mockResolvedValue({ goalWeeklyTarget: 5 })
 
