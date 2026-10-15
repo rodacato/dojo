@@ -12,6 +12,12 @@ import {
   type ClientMessage,
 } from './ws-handlers'
 
+// An evicted socket closes after its replacement registered; it must not
+// unregister the replacement.
+function releaseConnection(userId: string, ws: WSInstance): void {
+  if (activeConnections.get(userId) === ws) activeConnections.delete(userId)
+}
+
 export type UpgradeWebSocket = typeof nodeUpgradeWebSocket
 
 export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
@@ -85,13 +91,13 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
           }
         },
 
-        onClose() {
-          activeConnections.delete(user.id)
+        onClose(_evt: unknown, ws: WSInstance) {
+          releaseConnection(user.id, ws)
         },
 
         onError(evt: unknown, ws: WSInstance) {
           console.error('WebSocket error for user', user.id, 'session', session.id, evt)
-          activeConnections.delete(user.id)
+          releaseConnection(user.id, ws)
           ws.close(1011, 'Internal error')
         },
       }
