@@ -44,8 +44,8 @@ function icoFromPngs(pngs) {
 export async function buildAssets(root = repo) {
   const css = await readFile(path.join(root, 'apps/web/src/styles/main.css'), 'utf8')
   const logo = JSON.parse(await readFile(path.join(root, 'apps/web/src/brand/logo.json'), 'utf8'))
-  const wordmark = await readFile(path.join(root, 'brand/wordmark.svg'), 'utf8')
-  const social = await readFile(path.join(root, 'brand/social-template.svg'), 'utf8')
+  const wordmark = await readFile(path.join(root, 'design/brand/wordmark.svg'), 'utf8')
+  const social = await readFile(path.join(root, 'design/brand/social-template.svg'), 'utf8')
   const { Resvg } = createRequire(path.join(root, 'apps/api/package.json'))('@resvg/resvg-js')
   const mark = `<path d="${logo.path}" fill="none" stroke="currentColor" stroke-width="${logo.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>`
   const words = wordmark.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
@@ -118,7 +118,12 @@ export async function buildAssets(root = repo) {
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: '/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          {
+            src: '/icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
         ],
       },
       null,

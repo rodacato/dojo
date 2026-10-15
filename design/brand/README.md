@@ -2,9 +2,11 @@
 
 > **Status:** Canonical · **Last reviewed:** 2026-10-15
 >
-> This file owns the brand: name, vocabulary, voice, information architecture, UX principles, microcopy.
-> For the design system — tokens, themes, motifs, components, motion — see [`DESIGN.md`](DESIGN.md).
-> BRANDING owns the *why* and the *words*, DESIGN owns the *values* and the *renders*.
+> This file is the brand guide and owns the brand: name, vocabulary, voice, information architecture, UX principles, microcopy, the logo and the map of brand assets.
+> For the design system — tokens, themes, motifs, components, motion — see [`DESIGN.md`](../../docs/DESIGN.md).
+> The brand guide owns the *why* and the *words*, DESIGN owns the *values* and the *renders*.
+>
+> `design/brand/` holds the brand **sources**; the files the build serves are generated copies (see [Assets](#assets)). A portable kit, when one is needed, is generated into the gitignored `design/brand/dist/`.
 
 ---
 
@@ -31,7 +33,7 @@ The domain adds a layer of personality the name alone lacks — *"the dojo for d
 
 ## Glossary
 
-The product speaks one vocabulary. Each term below is load-bearing — it does product work, not branding decoration. If a future term doesn't earn its place by being distinguishable from a generic SaaS word, don't add it. (See [ADR 020](adr/020-ubiquitous-language-pass.md) for the full rename.)
+The product speaks one vocabulary. Each term below is load-bearing — it does product work, not branding decoration. If a future term doesn't earn its place by being distinguishable from a generic SaaS word, don't add it. (See [ADR 020](../../docs/adr/020-ubiquitous-language-pass.md) for the full rename.)
 
 | Term | What it means in the product | On-brand | Off-brand |
 |---|---|---|---|
@@ -47,7 +49,7 @@ The self-hosting vocabulary, which is plain on purpose because it describes depl
 
 | Term | What it means | On-brand | Off-brand |
 |---|---|---|---|
-| **Instance** | One running deployment, serving one group. "Dojo" is the software; an instance is a copy of it someone runs. | *"run your own instance"*, *"this instance"* | *"the platform"*, *"the hub"* (the word appears only in [ADR 024](adr/024-self-hosted-hub-pivot.md)) |
+| **Instance** | One running deployment, serving one group. "Dojo" is the software; an instance is a copy of it someone runs. | *"run your own instance"*, *"this instance"* | *"the platform"*, *"the hub"* (the word appears only in [ADR 024](../../docs/adr/024-self-hosted-hub-pivot.md)) |
 | **Operator** | The person who deploys an instance and sets `CREATOR_GITHUB_ID`. They own its invitations, its data and its LLM bill; the dojo project owns none of them. In code the same person is the `creator` (`CREATOR_GITHUB_ID`, `requireCreator`); renaming it would break existing deployments, so it stays. | *"ask the operator for an invitation"* | *"ask the dojo team"*, *"the admin"* (`/admin` is a route, not a role) |
 | **Invitation** | The link an operator issues from `/admin/invitations`; there is no other way to sign up. The landing's form is a *request access*: a note to the operator, not a sign-up. | *"request an invitation"* | *"join the waitlist"* |
 | **Reference instance** | The author's own deployment at `dojo.notdefined.dev`, kept as a live example. It is not a service and grants nothing beyond what its operator chooses. | *"the reference instance"* | *"the hosted version"* |
@@ -105,7 +107,7 @@ Flat and expandable. It is optimized for the creator's iteration speed, not for 
 
 ## Theme and visual direction
 
-Tokens, values and component specs live in [`DESIGN.md`](DESIGN.md) and `apps/web/src/styles/main.css`. This section is the *why*.
+Tokens, values and component specs live in [`DESIGN.md`](../../docs/DESIGN.md) and `apps/web/src/styles/main.css`. This section is the *why*.
 
 Sumi-e ink, two themes under one token system, picked by the OS by default:
 
@@ -118,7 +120,7 @@ A single accent: **hanko vermillion** (the red of a Japanese name seal). If it i
 
 ### Motifs
 
-Four elements carry the identity. Each has a contract in [`DESIGN.md`](DESIGN.md).
+Four elements carry the identity. Each has a contract in [`DESIGN.md`](../../docs/DESIGN.md).
 
 - **Enso** — the incomplete zen circle. Loader, section mark.
 - **Hanko** — the square red seal. Milestone badge, verdict stamp.
@@ -139,7 +141,7 @@ Does not change between themes. **JetBrains Mono** for logo, numbers, verdicts, 
 
 ## Motion as signature
 
-Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "identity animation". No bouncing, no sparkles, no celebration. GSAP is reserved for timeline-shaped motion (the landing, the enso loader, the brushstroke underline); dashboard and `/admin/*` are CSS-only. The scope rule and its reasons are in [`DESIGN.md`](DESIGN.md#motion).
+Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "identity animation". No bouncing, no sparkles, no celebration. GSAP is reserved for timeline-shaped motion (the landing, the enso loader, the brushstroke underline); dashboard and `/admin/*` are CSS-only. The scope rule and its reasons are in [`DESIGN.md`](../../docs/DESIGN.md#motion).
 
 **Forbidden in every theme:** confetti, celebration bursts, parallax, scroll-jacking, slide-ins from below, modal entries with bounce, visible FLIP rearrangements. **Failing is not dramatic, passing isn't either** — the principle that governs every animation in the product.
 
@@ -191,7 +193,7 @@ Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "id
 
 ## Components — voice and behavior
 
-Shape (radius, padding, color, motion) lives in [`DESIGN.md`](DESIGN.md). Here are only the voice and behavior decisions the components embody.
+Shape (radius, padding, color, motion) lives in [`DESIGN.md`](../../docs/DESIGN.md). Here are only the voice and behavior decisions the components embody.
 
 - **Kata card (selection):** the 3 picks are the 3 picks. The card doesn't hint that you could change them. Hover only confirms the target — it doesn't animate a "preview" of the kata.
 - **Timer:** number-first, no "minutes" label. No pause, no extend. The color change (normal → amber → red) is the only narration of remaining time. Nothing else moves.
@@ -224,7 +226,7 @@ How the product sounds at key moments:
 
 ## Belts & Milestones
 
-Two orthogonal concepts, both on `/belts`. The rubric is [PRD-031](prd/031-belt-progression-rubric.md) and the thresholds are `BELT_THRESHOLDS` in `apps/api/src/domain/recognition/belt.ts`; this section is the voice.
+Two orthogonal concepts, both on `/belts`. The rubric is [PRD-031](../../docs/prd/031-belt-progression-rubric.md) and the thresholds are `BELT_THRESHOLDS` in `apps/api/src/domain/recognition/belt.ts`; this section is the voice.
 
 ### Belts — the rank
 
@@ -249,10 +251,11 @@ Milestones have no points or XP. They are collections — you have them or you d
 
 **Open Gate** is the approved mark: a restrained evolution of the earlier torii, with a curved lintel, a crossbar and two open posts. It sits next to the `dojo_` wordmark (JetBrains Mono, lowercase, blinking cursor `_`). The cursor says "still writing, still learning" and does not change with the theme.
 
-- **Canonical geometry:** `apps/web/src/brand/logo.json` (consumed by `LogoMark`). The outlined wordmark and the social composition are `brand/wordmark.svg` and `brand/social-template.svg`. Colors always come from the app's theme tokens in `apps/web/src/styles/main.css`.
-- **Generated, never hand-edited:** `site/brand/*` (lockups, icons, social cards, theme CSS), `site/favicon.svg` and the `apps/web/public/` icons and social image (`favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `og-image.png`, `manifest.webmanifest`). Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
-- **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session. The full map of canonical sources and generated outputs is [`brand/README.md`](../brand/README.md).
+- **Canonical geometry:** `apps/web/src/brand/logo.json` (consumed by `LogoMark`). The outlined wordmark and the social composition are [`wordmark.svg`](wordmark.svg) and [`social-template.svg`](social-template.svg) in this folder. Colors always come from the app's theme tokens in `apps/web/src/styles/main.css`.
+- **Generated, never hand-edited:** everything listed under [Assets → What is generated](#what-is-generated). Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
+- **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session.
 - **Uploading the repository preview:** GitHub has no API for it. In the repository's Settings → General → Social preview, upload `site/brand/social-sumi.png` (1280×640 is recommended; the card is 1200×630).
+- **Earlier directions:** the explorations that led to Open Gate are kept in [`proposals/`](proposals/) for reference. They are not approved marks.
 
 **Share cards and OG images:** the instance host in full monospace (`dojo.notdefined.dev` on the reference instance). The dot between `dojo` and `notdefined` acts as a natural visual separator.
 
@@ -264,9 +267,56 @@ Milestones have no points or XP. They are collections — you have them or you d
 
 ---
 
+## Assets
+
+### What is canonical
+
+Edit these, never the generated files.
+
+| File | What it owns |
+| --- | --- |
+| [`apps/web/src/brand/logo.json`](../../apps/web/src/brand/logo.json) | Mark geometry, read by `LogoMark` and the generator |
+| [`wordmark.svg`](wordmark.svg) | Outlined `dojo_` wordmark, so lockups never depend on installed fonts |
+| [`social-template.svg`](social-template.svg) | Outlined 1200 × 630 card composition with `{{role}}` color placeholders |
+| [`apps/web/src/styles/main.css`](../../apps/web/src/styles/main.css) | Washi and Sumi color roles. The generated CSS is a snapshot of it |
+
+### What is generated
+
+[`scripts/brand-assets.mjs`](../../scripts/brand-assets.mjs) writes these runtime copies: `pnpm brand:assets` regenerates them, `pnpm brand:check` fails when any is stale or a link in `site/` is broken.
+
+| Output | Use |
+| --- | --- |
+| `site/brand/mark.svg` | Mark alone, for navigation and composition |
+| `site/brand/logo-{washi,sumi,mono}.svg` | Lockups. Mono inherits `currentColor` |
+| `site/brand/icon-{washi,sumi}.svg` | App icon artwork |
+| `site/brand/social-{washi,sumi}.{svg,png}` | Project link-preview card. Not a personal session image |
+| `site/brand/tokens.css` | Theme variables for the public site |
+| `site/favicon.svg`, `apps/web/public/favicon.svg` | Favicon |
+| `apps/web/public/og-image.png` | App link preview, the Sumi social card (1200 × 630) |
+| `apps/web/public/apple-touch-icon.png`, `site/apple-touch-icon.png` | 180 × 180 opaque Sumi icon, no baked corners (iOS rounds it) |
+| `apps/web/public/icon-{192,512}.png`, `icon-maskable-512.png` | Manifest icons; the maskable one keeps the mark inside the safe zone |
+| `apps/web/public/favicon.ico`, `site/favicon.ico` | 16, 32 and 48 px fallback |
+| `apps/web/public/manifest.webmanifest` | Name and Sumi colors for the app; not a PWA, no service worker |
+
+The outputs sit under `site/brand/` because GitHub Pages serves that folder and the
+[published brand guide](../../site/brand.html) links to them as downloads.
+
+### Reference material
+
+| Path | What it is |
+| --- | --- |
+| [`proposals/`](proposals/) | The three logo directions explored before Open Gate (A · Open Gate, B · Practice Loop, C · Hanko D), with a comparison page and contact sheet. Only A is approved |
+
+### Fonts
+
+The public site ships Inter and JetBrains Mono locally in `site/fonts/` with their licenses. The app
+gets the same families from `@fontsource-variable/*`; upgrade both when a font changes.
+
+---
+
 ## Related documents
 
-- [`DESIGN.md`](DESIGN.md) — tokens, themes, motifs, components, motion.
-- [`VISION.md`](VISION.md) — product strategy.
-- [`prd/031-belt-progression-rubric.md`](prd/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
-- [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md) — the rename that introduced `scroll / kata / belt / milestone` as the visible vocabulary.
+- [`DESIGN.md`](../../docs/DESIGN.md) — tokens, themes, motifs, components, motion.
+- [`VISION.md`](../../docs/VISION.md) — product strategy.
+- [`prd/031-belt-progression-rubric.md`](../../docs/prd/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
+- [`adr/020-ubiquitous-language-pass.md`](../../docs/adr/020-ubiquitous-language-pass.md) — the rename that introduced `scroll / kata / belt / milestone` as the visible vocabulary.

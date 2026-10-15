@@ -2,7 +2,7 @@
 
 > **Status:** Closed — merged to `master` and deployed 2026-06-06
 > **ADR:** [ADR 021](../../adr/021-sumi-e-dual-theme-architecture.md)
-> **Companion docs:** [DESIGN.md](../../DESIGN.md), [BRANDING.md](../../BRANDING.md)
+> **Companion docs:** [DESIGN.md](../../DESIGN.md), [BRANDING.md](../../../design/brand/README.md)
 
 ## What this sprint was
 

@@ -59,7 +59,7 @@ Expert panel output must end with: **recommended option, key risks, fallback/rol
 | [GitHub issues and milestones](https://github.com/rodacato/dojo/issues) | Work state — what is planned, in progress and done. See [Tracking Work](docs/WORKFLOW.md#tracking-work) |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
-| [docs/BRANDING.md](docs/BRANDING.md) | Colors, typography, tokens, voice |
+| [design/brand/README.md](design/brand/README.md) | Brand guide — voice, vocabulary, logo, brand sources and the generated-asset map |
 | [docs/VISION.md](docs/VISION.md) | Why Dojo exists, philosophy, who it is for |
 
 **Architectural direction:** Domain-Driven Design + Hexagonal Architecture (Ports & Adapters) + Event-Driven. Bounded contexts: Practice (core), Content, Identity, Recognition. Consult Darius Osei before any domain or application layer decision.
