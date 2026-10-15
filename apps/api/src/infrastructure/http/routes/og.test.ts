@@ -193,7 +193,7 @@ describe('GET /og/u/:username', () => {
     expect(findFirst).toHaveBeenCalledTimes(1)
   })
 
-  it('returns OG HTML for a crawler when the user exists (no image meta)', async () => {
+  it('returns OG HTML for a crawler when the user exists, with the generic card image', async () => {
     findFirst.mockResolvedValue({ username: 'rodacato' })
     const app = makeApp()
     const res = await app.request('/og/u/rodacato', {
@@ -207,8 +207,15 @@ describe('GET /og/u/:username', () => {
     expect(html).toContain('<title>@rodacato | dojo_</title>')
     expect(html).toContain('<meta property="og:title" content="@rodacato | dojo_">')
     expect(html).toContain(`<meta property="og:url" content="${WEB_URL}/u/rodacato">`)
-    // profile OG has no image → twitter:card image meta must be absent
-    expect(html).not.toContain('og:image')
-    expect(html).not.toContain('twitter:card')
+    expect(html).toContain(`<meta property="og:image" content="${WEB_URL}/og-image.png">`)
+    expect(html).toContain('<meta property="og:image:width" content="1200">')
+    expect(html).toContain('<meta property="og:image:height" content="630">')
+    expect(html).toContain('<meta name="twitter:card" content="summary_large_image">')
+    expect(html).toContain('<meta property="og:site_name" content="dojo_">')
+    expect(html).toContain('<meta name="theme-color" content="#0A0908">')
+    expect(html).toContain(
+      `<meta name="description" content="rodacato's practice record in the dojo. Daily kata for developers who still have something to prove.">`,
+    )
+    expect(html).toContain(`<link rel="icon" href="${WEB_URL}/favicon.svg"`)
   })
 })

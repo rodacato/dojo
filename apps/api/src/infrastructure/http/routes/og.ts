@@ -13,20 +13,26 @@ function isCrawler(ua: string | undefined): boolean {
   return BOT_UA.test(ua ?? '')
 }
 
-function ogHtml(props: { title: string; description: string; image?: string; url: string }): string {
+function ogHtml(props: { title: string; description: string; image: string; url: string }): string {
   const { title, description, image, url } = props
   return `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <title>${escapeHtml(title)}</title>
+  <meta name="description" content="${escapeHtml(description)}">
+  <meta name="theme-color" content="#0A0908">
+  <link rel="icon" href="${escapeHtml(config.WEB_URL)}/favicon.svg" type="image/svg+xml">
+  <meta property="og:site_name" content="dojo_">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${escapeHtml(url)}">
-  ${image ? `<meta property="og:image" content="${escapeHtml(image)}">
+  <meta property="og:image" content="${escapeHtml(image)}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="${escapeHtml(image)}">` : ''}
+  <meta name="twitter:image" content="${escapeHtml(image)}">
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
 </head>
@@ -108,6 +114,7 @@ ogRoutes.get('/og/u/:username', async (c) => {
   return c.html(ogHtml({
     title: `@${user.username} | dojo_`,
     description: `${user.username}'s practice record in the dojo. Daily kata for developers who still have something to prove.`,
+    image: `${config.WEB_URL}/og-image.png`,
     url: `${config.WEB_URL}/u/${username}`,
   }))
 })
