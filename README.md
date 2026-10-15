@@ -225,7 +225,7 @@ Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it 
 | [docs/ROADMAP.md](docs/ROADMAP.md) | What's shipped, what's next, what's out of scope |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [docs/adr/](docs/adr/) | Architecture decision records |
-| [docs/BRANDING.md](docs/BRANDING.md) | Voice, vocabulary, Open Gate logo sources and `pnpm brand:assets` / `brand:check` |
+| [design/brand/](design/brand/README.md) | Brand guide: voice, vocabulary, Open Gate logo sources and `pnpm brand:assets` / `brand:check` |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Build cycle, testing strategy, definition of done |
 | [AGENTS.md](AGENTS.md) | AI agent behavior and working rules |
 

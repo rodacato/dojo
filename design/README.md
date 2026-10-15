@@ -23,6 +23,7 @@ as context for AI agents.
 | `CODE_CHANGES.md` | Work order for design-decided consolidations pending in code |
 | `exports/` | Canvas PNGs for PM/PO/PR review — **committed** (they must travel) |
 | `references/` | Local-only device captures — **never commit: real user data** (gitignored) |
+| `brand/` | **Brand sources and guide** — start at [`brand/README.md`](brand/README.md) (voice, logo, sources, generated-asset map) |
 
 ### The flows
 

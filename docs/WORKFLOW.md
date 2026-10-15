@@ -29,7 +29,7 @@ For a navigable entry point with lifecycle-by-lifecycle organization, see [`docs
 | `docs/IDENTITY.md` | `docs/IDENTITY.md` | Canonical | Primary build persona — decision style and defaults |
 | `docs/EXPERTS.md` | `docs/EXPERTS.md` | Canonical | Virtual advisory panel — 11 specialist personas (quick reference at top) |
 | `docs/ROADMAP.md` | `docs/ROADMAP.md` | Canonical | Direction, phases, and the spec / PRD / ADR history |
-| `docs/BRANDING.md` | `docs/BRANDING.md` | Canonical | Voice, vocabulary, IA, UX principles, microcopy |
+| Brand guide | `design/brand/README.md` | Canonical | Voice, vocabulary, IA, UX principles, microcopy, logo, brand sources and asset map |
 | `docs/DESIGN.md` | `docs/DESIGN.md` | Canonical | Design system — tokens, themes (Sumi + Washi themes, hanko vermillion accent, Slate Indigo as an explicit option), motifs, components, motion |
 | `docs/ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | Canonical | DDD model, bounded contexts, ports, events, decisions |
 | `docs/adr/` | `docs/adr/` | History (immutable) | Architecture Decision Records — never deleted |

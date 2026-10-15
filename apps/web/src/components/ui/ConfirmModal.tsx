@@ -56,7 +56,7 @@ const TONE_TEXT: Record<ConfirmTone, string> = {
  * Confirmation modal — renders a Modal with the dojo confirm shell.
  * Pass `typedConfirm` to require the user to type a value (e.g. a slug)
  * before the primary becomes enabled. Filled-red `danger` variant is
- * reserved for typed-confirm flows per the BRANDING.md note "Filled red
+ * reserved for typed-confirm flows per the brand guide note "Filled red
  * is allowed ONLY here — a deliberate second-confirmation."
  */
 export function ConfirmModal(props: ConfirmModalProps) {

@@ -1,6 +1,6 @@
 # Dojo — Design System
 
-> Roles, invariants and rules for how the product looks and moves. **Values live in code:** token hex values are in [`apps/web/src/styles/main.css`](../apps/web/src/styles/main.css), the primitives in [`apps/web/src/components/ui/`](../apps/web/src/components/ui/). Voice, glossary and microcopy are in [`BRANDING.md`](BRANDING.md).
+> Roles, invariants and rules for how the product looks and moves. **Values live in code:** token hex values are in [`apps/web/src/styles/main.css`](../apps/web/src/styles/main.css), the primitives in [`apps/web/src/components/ui/`](../apps/web/src/components/ui/). Voice, glossary and microcopy are in the [brand guide](../design/brand/README.md).
 
 ---
 
@@ -51,7 +51,7 @@ White, yellow, green, brown and black. Same in every theme. They are used for th
 
 ## Typography
 
-JetBrains Mono for the product's identity surfaces: eyebrows (small, uppercase, tracked) and verdicts (caps, never softened, never followed by encouraging copy). Error states show the actual error message verbatim. Voice rules are in `BRANDING.md`.
+JetBrains Mono for the product's identity surfaces: eyebrows (small, uppercase, tracked) and verdicts (caps, never softened, never followed by encouraging copy). Error states show the actual error message verbatim. Voice rules are in `design/brand/README.md`.
 
 ## Motifs
 
@@ -95,6 +95,6 @@ Share cards are PNGs rendered server-side in `apps/api/src/infrastructure/http/r
 
 ## Related
 
-- [`BRANDING.md`](BRANDING.md): voice, glossary, microcopy, identity
+- [`design/brand/README.md`](../design/brand/README.md): brand guide — voice, glossary, microcopy, identity, brand assets
 - [`VISION.md`](VISION.md): product strategy
 - [`adr/020-ubiquitous-language-pass.md`](adr/020-ubiquitous-language-pass.md): the `scroll / kata / belt / milestone` vocabulary
