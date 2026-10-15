@@ -1,5 +1,7 @@
 export type ThemeChoice = 'auto' | 'sumi' | 'washi' | 'slate'
 
+type ResolvedTheme = 'sumi' | 'washi' | 'slate'
+
 const STORAGE_KEY = 'dojo-theme'
 
 export function getStoredTheme(): ThemeChoice {
@@ -19,18 +21,31 @@ export function setStoredTheme(theme: ThemeChoice): void {
 export function resolveTheme(
   choice: ThemeChoice,
   prefersDark: boolean,
-): 'sumi' | 'washi' | 'slate' {
+): ResolvedTheme {
   if (choice === 'auto') return prefersDark ? 'sumi' : 'washi'
   return choice
 }
 
-export function applyTheme(resolved: 'sumi' | 'washi' | 'slate'): void {
+export function applyTheme(resolved: ResolvedTheme): void {
   if (typeof document === 'undefined') return
   if (resolved === 'slate') {
     delete document.documentElement.dataset.theme
   } else {
     document.documentElement.dataset.theme = resolved
   }
+  syncThemeColor(resolved)
+}
+
+const THEME_COLORS = { sumi: '#0A0908', washi: '#F5F1E8' } as const
+
+// An explicit choice collapses the media-scoped tags into one color; slate has no brand color.
+function syncThemeColor(resolved: ResolvedTheme): void {
+  const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
+  if (metas.length === 0 || resolved === 'slate') return
+  const [first, ...rest] = metas
+  rest.forEach((meta) => meta.remove())
+  first?.removeAttribute('media')
+  if (first) first.content = THEME_COLORS[resolved]
 }
 
 // Boot-time initializer — runs before React mounts so the first paint
