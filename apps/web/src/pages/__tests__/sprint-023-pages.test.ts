@@ -15,6 +15,9 @@ import { describe, expect, it } from 'vitest'
  * after a 150-file rename.
  */
 
+// Each page pulls in its whole module graph, transformed on first import.
+const IMPORT_TIMEOUT_MS = 30_000
+
 const pages = [
   { name: 'BeltsPage', loader: () => import('../BeltsPage') },
   { name: 'KumitePlaceholderPage', loader: () => import('../KumitePlaceholderPage') },
@@ -30,7 +33,7 @@ describe('Sprint 023 pages — import smoke', () => {
     it(`${name} exports a callable component`, async () => {
       const mod = (await loader()) as Record<string, unknown>
       expect(typeof mod[name]).toBe('function')
-    })
+    }, IMPORT_TIMEOUT_MS)
   }
 })
 
@@ -45,7 +48,7 @@ describe('Sprint 023 admin pages — import smoke', () => {
     it(`${name} exports a callable component`, async () => {
       const mod = (await loader()) as Record<string, unknown>
       expect(typeof mod[name]).toBe('function')
-    })
+    }, IMPORT_TIMEOUT_MS)
   }
 })
 
