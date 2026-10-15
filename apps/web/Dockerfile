@@ -50,7 +50,7 @@ FROM nginx:alpine AS runner
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 COPY apps/web/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --chmod=755 apps/web/require-api-host.sh /docker-entrypoint.d/10-require-api-host.sh
-# Space-separated exact origins allowed to be framed as scrolls. Must be defined
-# (even empty) or nginx fails on the unknown variable in the CSP.
-ENV SCROLL_FRAME_ORIGINS=""
+# Kamal passes an empty SCROLL_FRAME_ORIGINS as a bare --env, which unsets it, and nginx
+# fails on an undefined variable in the CSP. Sourced before the envsubst step.
+COPY --chmod=755 apps/web/scroll-frame-origins.envsh /docker-entrypoint.d/05-scroll-frame-origins.envsh
 EXPOSE 80
