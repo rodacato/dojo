@@ -28,7 +28,11 @@ broken.
 | `site/brand/social-{washi,sumi}.{svg,png}` | Project link-preview card. Not a personal session image |
 | `site/brand/tokens.css` | Theme variables for the public site |
 | `site/favicon.svg`, `apps/web/public/favicon.svg` | Favicon |
-| `apps/web/public/apple-touch-icon.svg` | Home-screen icon |
+| `apps/web/public/og-image.png` | App link preview, the Sumi social card (1200 × 630) |
+| `apps/web/public/apple-touch-icon.png`, `site/apple-touch-icon.png` | 180 × 180 opaque Sumi icon, no baked corners (iOS rounds it) |
+| `apps/web/public/icon-{192,512}.png`, `icon-maskable-512.png` | Manifest icons; the maskable one keeps the mark inside the safe zone |
+| `apps/web/public/favicon.ico`, `site/favicon.ico` | 16, 32 and 48 px fallback |
+| `apps/web/public/manifest.webmanifest` | Name and Sumi colors for the app; not a PWA, no service worker |
 
 The outputs sit under `site/brand/` because GitHub Pages serves that folder and the
 [brand guide](../site/brand.html) links to them as downloads.
@@ -42,4 +46,3 @@ gets the same families from `@fontsource-variable/*`; upgrade both when a font c
 
 - The repository's GitHub social preview is uploaded by hand in Settings → General; use
   `site/brand/social-sumi.png`.
-- `apps/web/public/og-image.svg` is the app's own link preview and is not generated here.

@@ -23,6 +23,24 @@ export function themeTokens(css, theme) {
 const svg = (content, viewBox = '0 0 100 100') =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">${content}</svg>\n`
 
+function icoFromPngs(pngs) {
+  const header = Buffer.alloc(6 + 16 * pngs.length)
+  header.writeUInt16LE(1, 2)
+  header.writeUInt16LE(pngs.length, 4)
+  let offset = header.length
+  pngs.forEach(({ size, data }, index) => {
+    const entry = 6 + 16 * index
+    header.writeUInt8(size, entry)
+    header.writeUInt8(size, entry + 1)
+    header.writeUInt16LE(1, entry + 4)
+    header.writeUInt16LE(32, entry + 6)
+    header.writeUInt32LE(data.length, entry + 8)
+    header.writeUInt32LE(offset, entry + 12)
+    offset += data.length
+  })
+  return Buffer.concat([header, ...pngs.map(({ data }) => data)])
+}
+
 export async function buildAssets(root = repo) {
   const css = await readFile(path.join(root, 'apps/web/src/styles/main.css'), 'utf8')
   const logo = JSON.parse(await readFile(path.join(root, 'apps/web/src/brand/logo.json'), 'utf8'))
@@ -67,12 +85,50 @@ export async function buildAssets(root = repo) {
       new Resvg(card, { font: { loadSystemFonts: false } }).render().asPng(),
     )
   }
+  const png = (source, size) =>
+    new Resvg(source, { fitTo: { mode: 'width', value: size } }).render().asPng()
+  const sumi = themes.sumi
+  const square = (inset, rounded) =>
+    svg(
+      `<rect width="100" height="100"${rounded ? ' rx="8"' : ''} fill="${sumi['--color-page']}"/><g color="${sumi['--color-accent']}" transform="translate(50 50) scale(${inset}) translate(-50 -50)">${mark}</g>`,
+    )
+  const opaque = square(1, false)
+  const touch = png(opaque, 180)
+  const favicons = [16, 32, 48].map((size) => ({
+    size,
+    data: png(assets.get('site/brand/icon-sumi.svg'), size),
+  }))
+  const ico = icoFromPngs(favicons)
+  assets.set('apps/web/public/og-image.png', assets.get('site/brand/social-sumi.png'))
+  assets.set('apps/web/public/apple-touch-icon.png', touch)
+  assets.set('apps/web/public/icon-192.png', png(assets.get('site/brand/icon-sumi.svg'), 192))
+  assets.set('apps/web/public/icon-512.png', png(assets.get('site/brand/icon-sumi.svg'), 512))
+  assets.set('apps/web/public/icon-maskable-512.png', png(square(0.8, false), 512))
+  assets.set('apps/web/public/favicon.ico', ico)
+  assets.set(
+    'apps/web/public/manifest.webmanifest',
+    `${JSON.stringify(
+      {
+        name: 'dojo_',
+        short_name: 'dojo_',
+        start_url: '/',
+        display: 'browser',
+        theme_color: sumi['--color-page'],
+        background_color: sumi['--color-page'],
+        icons: [
+          { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      null,
+      2,
+    )}\n`,
+  )
+  assets.set('site/favicon.ico', ico)
+  assets.set('site/apple-touch-icon.png', touch)
   assets.set('site/favicon.svg', assets.get('site/brand/icon-washi.svg'))
   assets.set('apps/web/public/favicon.svg', assets.get('site/brand/icon-washi.svg'))
-  assets.set(
-    'apps/web/public/apple-touch-icon.svg',
-    assets.get('site/brand/icon-sumi.svg').replace('rx="8"', 'rx="20"'),
-  )
   return assets
 }
 

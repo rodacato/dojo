@@ -23,6 +23,11 @@
     <meta name="twitter:image" content="https://rodacato.github.io/dojo/brand/social-washi.png" />
     <link rel="canonical" href="https://rodacato.github.io/dojo/brand.html" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta property="og:site_name" content="Dojo" />
+    <meta name="theme-color" content="#0A0908" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)" />
     <link rel="stylesheet" href="styles.css" />
     <script src="site.js" defer></script>
   </head>
@@ -434,8 +439,8 @@
         </div>
         <p class="guidance">
           The PNG cards are 1200 × 630. Use the PNG in Open Graph and Twitter metadata; keep the SVG
-          as the editable source/export. The same card can be uploaded as the repository’s social
-          preview, with a crop check in GitHub. A session share card is a different resource: retain
+          as the editable source/export. For the repository’s social preview upload
+          <code>brand/social-sumi.png</code>: GitHub shows it on a dark or light page alike, and the Sumi card keeps its contrast on both. Check the crop in GitHub. A session share card is a different resource: retain
           its real verdict, kata and quote when applying the visual system.
         </p>
         <div class="layout-code">
@@ -572,9 +577,10 @@ pnpm test:scripts</code></pre>
         <details>
           <summary>5. Apply repository and app icons</summary>
           <p>
-            The generated favicon is wired to the project site and web app. The icon SVG exports are
-            source material for an app installation icon; they do not establish a PWA or promise
-            offline use. For GitHub, upload the project PNG as the repository social preview and
+            The generated favicon (SVG and ICO) and the 180 × 180 apple-touch icon PNG are wired to the
+            project site and web app. The icon SVG exports are source material for an app
+            installation icon; they do not establish a PWA or promise
+            offline use. For GitHub, upload <code>brand/social-sumi.png</code> as the repository social preview and
             inspect its crop. That repository setting is not changed by committing these files.
           </p>
         </details>
