@@ -8,6 +8,172 @@ generated from the conventional commits since the previous tag — see [RELEASIN
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-15
+
+### Added
+
+- **web:** derive success and warning text tokens for washi and give REVIEW its own hue
+- **admin:** report a degraded Piston when only some runtimes are missing
+- **web:** confirm before leaving the kata form with unsaved edits
+- **brand:** integrate Open Gate identity, marketing landing and asset generator
+- **scroll-conformance:** ignore messages with no dojo field and count them in the report
+- **scroll-conformance:** add the Playwright browser adapter and the bin entry
+- **scroll-conformance:** add the dojo-scroll-conformance CLI with text and JSON reports
+- **scroll-conformance:** add the scenarios, the reference host and the report behind a driver interface
+- **scroll-conformance:** add the rule list and the pure trace validator
+- **scroll-conformance:** scaffold the conformance package with trace types
+- **web:** add DojoScroll.run to the scroll-kit shim
+- **web:** run scroll code through the API from the scroll page
+- **web:** grant run in the scroll host and answer capability-denied
+- **shared:** let the host answer a denied run with an error message
+- **api:** add POST /scrolls/:slug/execute with its own queue
+- **api:** add scroll execution limiter and config variables
+- **api:** run several files through the execution port and queue
+- **shared:** add scroll code execution DTOs
+- **shared:** add run and result messages to the scroll protocol
+- **web:** load progress before the scroll frame and persist what it reports
+- **web:** add anonymous id, scroll progress client and hook
+- **web:** let the scroll host start from stored progress and userRef
+- **api:** add scroll progress routes with rate limiting
+- **api:** add scroll_progress table, migration and repository
+- **api:** add scroll progress domain and use cases
+- **shared:** add scroll progress DTOs and request schemas
+- **web:** add the scrolls admin page
+- **web:** add the scroll catalog and restore its navigation entries
+- **web:** add the scroll page with the sandboxed iframe container
+- **web:** add the scroll host protocol module
+- **web:** build CSP frame-src from SCROLL_FRAME_ORIGINS
+- **api:** expose the scroll registry routes
+- **api:** add the scrolls table, migration and Postgres repository
+- **api:** add SCROLL_FRAME_ORIGINS config with boot validation
+- **api:** add the scroll registry domain and use cases
+- **shared:** add the scroll registry contract
+- **web:** add scroll-kit v0 shim with tests
+- **shared:** generate committed JSON Schemas for the scroll protocol
+- **shared:** add scroll protocol v0 and manifest schemas
+- **db:** drop native scroll tables and COURSE_ badges
+- **web:** speak as the operator's instance, and record the self-hosted turn in the changelog
+- **site:** add a static GitHub Pages site for the OSS project
+
+### Fixed
+
+- **web:** ink the verdict stroke in the verdict colour and keep one filled button on Results
+- **web:** drop the remaining low-contrast text opacities
+- **web:** extend the toggle touch target to 44px without changing its look
+- **web:** show the username once in the public profile header
+- **web:** show a load error with retry on history and settings
+- **web:** make the error page retry go back instead of reloading /error
+- **web:** make admin tables and feedback usable without a mouse
+- **web:** add readable text tokens for danger and accent
+- **web:** settle the wording and links the UI review flagged
+- **web:** align admin and public screens with the rules the code already states
+- **web:** resolve bugs found in the UI review
+- **api:** parse boolean env flags strictly so false means false
+- **scroll-conformance:** accept any text before the closing script bracket
+- **scroll-conformance:** match script tags case-insensitively
+- **scroll-conformance:** stop the driver when it fails to start so the process exits
+- **web:** expose the scroll test hooks and allow loopback http in development
+- **api:** accept spaces as well as commas in SCROLL_FRAME_ORIGINS
+- **api:** refuse to start with a Resend key and no sender
+- **api:** never send mail from the author's domain, and refuse the dev session secret in production
+- **api:** fail truncated LLM streams and bound every OpenAI-compatible request
+- **api:** hold back a split <evaluation> tag across stream chunks
+- **api:** resolve drizzle-kit through its bin under the hoisted linker
+- **web:** make the in-app copy true on any self-hosted instance
+- **web:** point the open-source page at the real repository
+
+### Changed
+
+- **web:** make the katas tag hash and card arrow neutral
+- **web:** make decorative card rails neutral
+- **web:** reserve accent for the primary action, links, focus and the mark
+- **web:** use secondary text for readable copy, keep muted for placeholders and disabled
+- **shared:** remove the native scroll schemas and types
+- **web:** remove the scroll pages, player and admin tooling
+- **web:** remove the scroll state color tokens
+- **api:** remove scroll share card, nudge, seeds, flag and scroll-only mock output
+- **api:** remove native scroll routes, use cases, repositories and milestone subscription
+
+### Documentation
+
+- **design:** bring the kit to 0.4.0 and record D50
+- list editor keyword colour as an accent exception
+- **design:** re-check stale findings against the code and fix the default theme in DESIGN.md
+- describe the accent rule and its exceptions, and the degraded Piston state
+- **design:** draw the degraded Piston state on Health and record D49
+- **design:** draw the unsaved changes modal and record D48
+- **design:** close D43, D45 and D47
+- **design:** mark the error-state findings D15 and D44 as resolved
+- **design:** kit 0.3.0 with accent discipline and readable text
+- **prd:** note that a Needs work kata does not count toward belts
+- **site:** correct belt, setup and attempt claims on the public page
+- **design:** mirror the Open Gate logo in kit 0.2.0
+- **design:** record the contrast measurements and decision (D46)
+- **design:** record the accent usage decision (D42)
+- **design:** sync the flows and exports with the UI review fixes
+- **design:** add Pencil design system mirrored from the web code
+- **brand:** map canonical sources and generated outputs, generate apple-touch icon
+- **scrolls:** add the conformance guide and ADR 029, link them from authoring and the roadmap
+- list ADRs 026 to 028 and mark run as no longer reserved in ADR 026
+- **scrolls:** document code execution for scrolls and add ADR 028
+- **scrolls:** document complete semantics, userRef and progress endpoints
+- **readme:** document the scroll endpoints and SCROLL_FRAME_ORIGINS
+- **scrolls:** add protocol v0 spec, authoring guide and ADRs 026 and 027
+- **workflow:** remove the deleted docs/courses row from the docs map
+- **readme:** say scrolls are being rebuilt as external apps and drop native-scroll claims
+- **roadmap:** note scrolls are being rebuilt as external apps and mark superseded ADRs
+- **experts:** drop dead course doc references from scroll expert profiles
+- **design:** remove native scroll figure tokens, Rive and scroll-player motion
+- **branding:** describe scrolls as external apps and drop native-scroll motion and milestones
+- drop native scrolls from architecture, docs index and agent panel
+- delete native scroll authoring docs (archived at archive/scrolls-final)
+- **adr:** add ADR 025 for external embedded scrolls and mark 015, 016, 022 superseded
+- point the roadmap banner at GitHub, the sprint docs are gone
+- rewrite .env.example for an operator
+- align vision, roadmap and brand docs with the self-hosted direction (ADR 024)
+- **ops:** add the operator runbook a self-hoster was missing
+- **security:** describe the session, rate limits and headers the code really has
+- make a fresh install reach a working first kata
+- retire sprint docs and point work state at GitHub
+- explain running the sensei on SheLLM
+- say that invitations belong to whoever runs the instance
+- accept ADR 024 and retire the invite-only framing
+- **readme:** lead with the self-host story and move operations to docs/ops
+
+### Maintenance
+
+- **brand:** regenerate site tokens for the accent-text and danger-text additions
+- **deps-dev:** bump @types/node from 24.19.2 to 26.6.5
+- **deps:** bump all dependencies to latest compatible versions
+- **deps:** bump pending Dependabot updates in one PR
+- **scroll-conformance:** keep isProtocolMessage private
+- **scroll-conformance:** register the package entries with knip and drop unused exports
+- **deploy:** wire the scroll execution variables through deploy
+- **deploy:** give the API SCROLL_FRAME_ORIGINS and normalise it for the web
+- **dev:** stop seeding scrolls in the devcontainer and setup script
+- **deploy:** drop FF_COURSE_NUDGE_ENABLED from deploy config and workflows
+- **devcontainer:** stop installing an AI coding agent in the container
+- **devcontainer:** stop passing the host's gh token into the container
+- **devcontainer:** install tooling before the database steps
+- **deps:** bump six dependencies Dependabot opened separately
+
+### Testing
+
+- **e2e:** repair the specs broken by the redesign
+- **web:** stop two heavy tests from timing out under CPU load
+- **web:** find scroll replies by request id instead of call position
+- **scroll-conformance:** add broken-scroll fixtures and run them, and the e2e fixture, through the suite
+- **scroll-conformance:** one broken trace per rule and the evaluation statuses
+- **e2e:** read the fixture manifest without import.meta
+- **e2e:** mock the scroll detail with the real DTO shape
+- **e2e:** add scroll host handshake spec
+- **e2e:** add cross-origin scroll fixture and static server
+- **e2e:** drop the scroll specs
+
+### CI
+
+- run an E2E smoke on pull requests and the full suite nightly
+
 ## [0.1.0] - 2026-09-22
 
 First tagged version. It marks the dojo at the end of Sprint 034 — Phase 1 (Alpha), invite-only,
