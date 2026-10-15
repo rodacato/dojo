@@ -1,0 +1,2 @@
+#!/bin/sh
+export SCROLL_FRAME_ORIGINS="${SCROLL_FRAME_ORIGINS:-}"
