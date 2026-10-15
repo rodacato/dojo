@@ -25,6 +25,8 @@ The domain adds a layer of personality the name alone lacks — *"the dojo for d
 
 **Tagline:** *"The dojo for developers who still have something to prove. To themselves."*
 
+**Headline vs tagline:** the public headline (site, social cards, app metadata) is *"Practice thinking for yourself"*. The long line above stays as the brand tagline: it is the voice, not the first thing a stranger reads.
+
 ---
 
 ## Glossary
@@ -248,7 +250,7 @@ Milestones have no points or XP. They are collections — you have them or you d
 **Open Gate** is the approved mark: a restrained evolution of the earlier torii, with a curved lintel, a crossbar and two open posts. It sits next to the `dojo_` wordmark (JetBrains Mono, lowercase, blinking cursor `_`). The cursor says "still writing, still learning" and does not change with the theme.
 
 - **Canonical geometry:** `apps/web/src/brand/logo.json` (consumed by `LogoMark`). The outlined wordmark and the social composition are `brand/wordmark.svg` and `brand/social-template.svg`. Colors always come from the app's theme tokens in `apps/web/src/styles/main.css`.
-- **Generated, never hand-edited:** `site/brand/*` (lockups, icons, social cards, theme CSS), `site/favicon.svg` and `apps/web/public/favicon.svg`. Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
+- **Generated, never hand-edited:** `site/brand/*` (lockups, icons, social cards, theme CSS), `site/favicon.svg` and the `apps/web/public/` icons and social image (`favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `og-image.png`, `manifest.webmanifest`). Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
 - **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session. The full map of canonical sources and generated outputs is [`brand/README.md`](../brand/README.md).
 - **Uploading the repository preview:** GitHub has no API for it. In the repository's Settings → General → Social preview, upload `site/brand/social-sumi.png` (1280×640 is recommended; the card is 1200×630).
 

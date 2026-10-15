@@ -91,7 +91,7 @@ Scrolls are external apps embedded by iframe (ADR 025), so their interior motion
 
 ## Share cards
 
-Share cards are PNGs rendered server-side in `apps/api/src/infrastructure/http/routes/share.ts`, using `@resvg/resvg-js`. The hanko is composed as inline SVG with the verdict color, milestone slug and belt color as per-share inputs.
+Share cards are PNGs rendered server-side in `apps/api/src/infrastructure/http/routes/share.ts`, using `@resvg/resvg-js`. The card uses the Sumi palette and the Open Gate mark (lockup: mark in accent, `dojo_` in primary), with the verdict color as a per-share input. It does not draw a hanko yet.
 
 ## Related
 
