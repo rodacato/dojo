@@ -1,13 +1,7 @@
-name: Ops · Piston Liveness
+name: Ops · Piston Health
 
-# Synthetic check of the Piston accessory via /health/piston every 30 min.
-# Alerts on 2 consecutive failures (not single — Piston flakes occasionally,
-# and single-hit alerts would be noise). A red run sends an email via
-# GitHub's default notification settings — no extra observability wiring
-# is required.
-#
-# See docs/specs/027-sprint-022-playground.md §1.2 and ADR 018 for the
-# decision rationale. Runbook on recovery: scripts/piston-reprovision.sh.
+# check: /health/piston, alerts on 2 consecutive misses (ADR 019; recovery: scripts/piston-reprovision.sh).
+# smoke: real execute per language, catches what a 200 from /health/piston hides (compile-timeout regression).
 
 on:
   schedule:
@@ -62,3 +56,29 @@ jobs:
         run: |
           echo "::error title=Piston down::2 consecutive /health/piston probes failed ($FIRST_STATUS, $SECOND_STATUS). Recovery: ./scripts/piston-reprovision.sh"
           exit 1
+
+  smoke:
+    name: Execute one hello-world per language
+    runs-on: ubuntu-latest
+    # CRON_SECRET is production-scoped: without the environment it reads empty and every run 401s.
+    environment: production
+    timeout-minutes: 3
+    steps:
+      - name: Call /cron/piston-smoke
+        env:
+          API_HOST: ${{ vars.API_HOST }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -uo pipefail
+          response=$(mktemp)
+          status=$(curl -sS -o "$response" -w '%{http_code}' --max-time 90 \
+            -X POST "https://$API_HOST/cron/piston-smoke" \
+            -H "Authorization: Bearer $CRON_SECRET" || echo 000)
+          echo "status=$status"
+          echo "--- body ---"
+          cat "$response" 2>/dev/null || true
+          echo ""
+          if [ "$status" != "200" ]; then
+            echo "::error title=Piston execute smoke failed::endpoint returned $status — at least one language failed end-to-end. See body above for per-language detail."
+            exit 1
+          fi
