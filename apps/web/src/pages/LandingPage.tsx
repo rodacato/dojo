@@ -118,7 +118,7 @@ function StickyNav() {
   }, [])
   return (
     <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
         scrolled ? 'bg-page/95 backdrop-blur-md border-b border-border/30' : 'border-b border-transparent'
       }`}
     >

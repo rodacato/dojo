@@ -10,7 +10,7 @@ export function AchievementBadge({ name, description, earned, earnedAt, prestige
   if (prestige) {
     return (
       <div
-        className={`rounded-md p-6 border w-full transition-all ${
+        className={`rounded-md p-6 border w-full transition-colors ${
           earned
             ? 'bg-surface border-primary/40'
             : 'bg-transparent border-border border-dashed'
@@ -33,7 +33,7 @@ export function AchievementBadge({ name, description, earned, earnedAt, prestige
 
   return (
     <div
-      className={`rounded-md p-5 border transition-all ${
+      className={`rounded-md p-5 border transition-colors ${
         earned
           ? 'bg-surface border-primary/30'
           : 'bg-transparent border-border border-dashed'
