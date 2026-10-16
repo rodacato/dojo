@@ -92,9 +92,6 @@ function renderAt(path = '/engawa') {
       <Routes>
         <Route path="/engawa" element={<EngawaPage />} />
         <Route path="/engawa/:language" element={<EngawaPage />} />
-        {/* changeLanguage navigates to /playground/:lang; mount the page
-            there too so it survives the redirect and re-reads the param. */}
-        <Route path="/playground/:language" element={<EngawaPage />} />
       </Routes>
     </MemoryRouter>,
   )
@@ -273,7 +270,7 @@ describe('EngawaPage', () => {
     expect(screen.getByText('Ready')).toBeInTheDocument()
     expect(screen.getAllByText('output will appear here.').length).toBeGreaterThan(0)
     // ...and the URL is rewritten to the new runtime.
-    expect(mockNavigate).toHaveBeenCalledWith('/playground/ruby', { replace: true })
+    expect(mockNavigate).toHaveBeenCalledWith('/engawa/ruby', { replace: true })
   })
 
   it('streams an ask-the-sensei answer in the modal for authed users', async () => {
