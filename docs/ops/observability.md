@@ -5,9 +5,9 @@ What an instance exposes for monitoring, and how to recover its moving parts. De
 
 ## Logs
 
-The API writes one JSON object per line to stdout (errors to stderr) — `kamal app logs` shows them as they happen. In `development` the same events print as readable lines instead.
+The API logs through [pino](https://getpino.io): one JSON object per line on stdout, which `kamal app logs` shows as they happen. In `development` the same events print as readable lines instead.
 
-Every event has `level`, `time` and `evt` (a `domain.action` name such as `http.request`, `llm.response`, `ws.handler_failed`). Everything that runs inside a request also carries `requestId` — the same id returned in the `X-Request-Id` response header and stored with the error report — so one request can be followed across access log, LLM calls and errors. Errors are logged under `err` as `{ name, message, stack }`, never as free text.
+Every event has `level` (pino's numeric levels: 20 debug, 30 info, 40 warn, 50 error), `time` and `evt` (a `domain.action` name such as `http.request`, `llm.response`, `ws.handler_failed`). Everything that runs inside a request also carries `requestId` — the same id returned in the `X-Request-Id` response header and stored with the error report — so one request can be followed across access log, LLM calls and errors. Errors are logged under `err` as `{ type, message, stack }`, never as free text. Authorization and cookie headers and `token`/`password` fields are redacted wherever they appear.
 
 `http.request` is the access log: `method`, `route` (the matched pattern), `path`, `status`, `durationMs` and `userId` when authenticated. 2xx/3xx are `info`, 4xx `warn`, 5xx `error`; successful `/health` and `/metrics` probes are not logged.
 
@@ -15,10 +15,18 @@ Every event has `level`, `time` and `evt` (a `domain.action` name such as `http.
 |---|---|---|
 | `LOG_LEVEL` | `info` (`silent` under `NODE_ENV=test`) | `debug`, `info`, `warn`, `error` or `silent`. |
 
+**Reading production logs.** Raw JSON is for machines; `scripts/logs.sh` pipes `kamal app logs` through `pino-pretty` (a dev dependency of the API, so run `pnpm install` first):
+
 ```bash
-kamal app logs --grep '"level":"error"'
-kamal app logs --grep '"requestId":"<id>"'
+scripts/logs.sh -f                # follow
+scripts/logs.sh -l warn           # warn and above
+scripts/logs.sh -r <requestId>    # one request, end to end (the id is in the X-Request-Id header)
+scripts/logs.sh -e llm.           # events whose name contains "llm."
+scripts/logs.sh -s 1h -n 500      # time window and size
+scripts/logs.sh -w                # the web app instead of the API
 ```
+
+Without the script, filter the raw stream: `kamal app logs -c config/deploy.api.yml --grep '"level":50'`.
 
 ## Error reporting
 

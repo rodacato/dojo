@@ -1,10 +1,9 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
+import pino from 'pino'
 import { config } from '../../config'
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 export type LogFields = Record<string, unknown>
-
-const RANK: Record<LogLevel | 'silent', number> = { debug: 10, info: 20, warn: 30, error: 40, silent: 100 }
 
 const requestContext = new AsyncLocalStorage<LogFields>()
 
@@ -17,23 +16,10 @@ export function addLogContext(fields: LogFields): void {
   if (store) Object.assign(store, fields)
 }
 
-export function serializeError(err: unknown): LogFields {
-  if (!(err instanceof Error)) return { message: String(err) }
-  const status = (err as { status?: unknown }).status
-  const code = (err as { code?: unknown }).code
-  return {
-    name: err.name,
-    message: err.message,
-    ...(typeof status === 'number' ? { status } : {}),
-    ...(typeof code === 'string' ? { code } : {}),
-    stack: err.stack,
-  }
-}
-
 export interface LoggerOptions {
   level: LogLevel | 'silent'
   pretty: boolean
-  write: (line: string, level: LogLevel) => void
+  destination?: { write(line: string): void }
   now?: () => Date
 }
 
@@ -44,60 +30,51 @@ export interface Logger {
   error(evt: string, fields?: LogFields): void
 }
 
+// Values that must never reach stdout, wherever they appear in an event.
+const REDACT_PATHS = [
+  'headers.authorization',
+  'headers.cookie',
+  '*.headers.authorization',
+  '*.headers.cookie',
+  '*.password',
+  '*.token',
+  'token',
+]
+
 export function createLogger(opts: LoggerOptions): Logger {
   const now = opts.now ?? (() => new Date())
-
-  function emit(level: LogLevel, evt: string, fields: LogFields = {}): void {
-    if (RANK[level] < RANK[opts.level]) return
-    const { err, ...rest } = fields
-    const record: LogFields = {
-      level,
-      time: now().toISOString(),
-      evt,
-      ...requestContext.getStore(),
-      ...rest,
-      ...(err === undefined ? {} : { err: serializeError(err) }),
-    }
-    opts.write(opts.pretty ? formatPretty(record) : safeStringify(record), level)
+  const pinoOptions: pino.LoggerOptions = {
+    level: opts.level,
+    base: null,
+    messageKey: 'evt',
+    timestamp: () => `,"time":"${now().toISOString()}"`,
+    mixin: () => requestContext.getStore() ?? {},
+    redact: { paths: REDACT_PATHS, censor: '[redacted]' },
   }
 
-  return {
-    debug: (evt, fields) => emit('debug', evt, fields),
-    info: (evt, fields) => emit('info', evt, fields),
-    warn: (evt, fields) => emit('warn', evt, fields),
-    error: (evt, fields) => emit('error', evt, fields),
+  let instance: pino.Logger
+  if (opts.destination) {
+    instance = pino(pinoOptions, opts.destination)
+  } else if (opts.pretty) {
+    instance = pino({
+      ...pinoOptions,
+      transport: { target: 'pino-pretty', options: prettyOptions() },
+    })
+  } else {
+    instance = pino(pinoOptions)
   }
+
+  const emit = (level: LogLevel) => (evt: string, fields: LogFields = {}) => instance[level](fields, evt)
+  return { debug: emit('debug'), info: emit('info'), warn: emit('warn'), error: emit('error') }
 }
 
-function safeStringify(record: LogFields): string {
-  try {
-    return JSON.stringify(record)
-  } catch {
-    return JSON.stringify({ level: record['level'], time: record['time'], evt: record['evt'], logError: 'unserializable_fields' })
-  }
+// Shared with the `pino-pretty` CLI used to read `kamal app logs` locally.
+export function prettyOptions() {
+  return { messageKey: 'evt', ignore: 'pid,hostname', translateTime: 'HH:MM:ss.l' }
 }
-
-function formatValue(v: unknown): string {
-  return typeof v === 'string' ? v : (JSON.stringify(v) ?? String(v))
-}
-
-function formatPretty(record: LogFields): string {
-  const { level, time, evt, err, ...rest } = record
-  const head = `${String(time).slice(11, 23)} ${String(level).toUpperCase().padEnd(5)} ${String(evt)}`
-  const fields = Object.entries(rest)
-    .filter(([, v]) => v !== undefined)
-    .map(([k, v]) => `${k}=${formatValue(v)}`)
-    .join(' ')
-  const line = [head, fields].filter(Boolean).join(' ')
-  const e = err as LogFields | undefined
-  if (!e) return line
-  return `${line}\n  ${String(e['name'])}: ${String(e['message'])}\n${String(e['stack'] ?? '')}`
-}
-
-const sink = (line: string, level: LogLevel) => (level === 'error' ? console.error(line) : console.log(line))
 
 export const log: Logger = createLogger({
-  level: config.LOG_LEVEL ?? (config.NODE_ENV === 'test' ? 'silent' : 'info'),
+  // process.env, not config: tests that mock config partially still stay silent.
+  level: config.LOG_LEVEL ?? (process.env['NODE_ENV'] === 'test' ? 'silent' : 'info'),
   pretty: config.NODE_ENV === 'development',
-  write: sink,
 })
