@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, type Mock } from 'vitest'
+import { PgDialect } from 'drizzle-orm/pg-core'
 import { PostgresKataRepository } from './PostgresKataRepository'
 import type { DB } from './drizzle/client'
 import { UserId } from '../../domain/shared/types'
@@ -230,5 +231,33 @@ describe('PostgresKataRepository.findEligible (groupRowsToKatas folding)', () =>
   it('returns an empty array when both primary and fallback are empty', async () => {
     const repo = new PostgresKataRepository(makeExecuteDb([[], []]))
     expect(await repo.findEligible(UserId('u'), {})).toEqual([])
+  })
+})
+
+// The ordering SQL is executed by Postgres, which types each parameter from
+// its context. These assertions render the query the repository sends and
+// check the parameter shapes Postgres rejected in production.
+describe('PostgresKataRepository.findEligible (query parameters)', () => {
+  async function sentQuery(filters: Parameters<PostgresKataRepository['findEligible']>[1]) {
+    const db = makeExecuteDb([[eligibleRow()]])
+    await new PostgresKataRepository(db).findEligible(UserId('u'), filters)
+    const sent = (db.execute as unknown as Mock).mock.calls[0]![0]
+    return new PgDialect().sqlToQuery(sent)
+  }
+
+  it('casts the ordering weight so a fractional value is not read as an integer', async () => {
+    const { sql, params } = await sentQuery({ userLevel: 'mid', randomness: 0.75 })
+
+    expect(sql).toMatch(/THEN \$\d+::float8 ELSE 0 END/)
+    expect(sql).not.toMatch(/THEN \$\d+ ELSE/)
+    expect(params).toContain(0.25)
+  })
+
+  it('sends each interest as its own parameter instead of one array literal', async () => {
+    const { sql, params } = await sentQuery({ interests: ['backend', 'frontend'], randomness: 0.5 })
+
+    expect(sql).toMatch(/e\.category IN \(\$\d+, \$\d+\)/)
+    expect(params).toEqual(expect.arrayContaining(['backend', 'frontend']))
+    expect(params.some((p) => Array.isArray(p))).toBe(false)
   })
 })
