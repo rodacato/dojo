@@ -37,7 +37,7 @@ async function* askSensei(body: AskSenseiRequest): AsyncGenerator<string> {
   }
   if (token) headers['Authorization'] = `Bearer ${token}`
 
-  const res = await fetch(`${API_URL}/playground/ask`, {
+  const res = await fetch(`${API_URL}/engawa/ask`, {
     method: 'POST',
     headers,
     body: JSON.stringify(body),

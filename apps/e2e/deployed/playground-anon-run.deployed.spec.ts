@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-// Playground anon-run smoke — exercises POST /playground/run end-to-end
+// Playground anon-run smoke — exercises POST /engawa/run end-to-end
 // against a real deploy without an authenticated session. Validates:
 //   - feature flag is on (404 from a flag-off deploy is a clear signal,
 //     not a false negative)
@@ -33,7 +33,7 @@ test.describe('smoke: playground anon run', () => {
   )
 
   test('anonymous python run returns a structured execution result', async ({ request }) => {
-    const res = await request.post(`${API_URL}/playground/run`, {
+    const res = await request.post(`${API_URL}/engawa/run`, {
       data: {
         language: 'python',
         version: '3.12.0',
@@ -46,7 +46,7 @@ test.describe('smoke: playground anon run', () => {
 
     expect(
       res.status(),
-      `POST /playground/run should return 200 (got ${res.status()}: ${await res.text()})`,
+      `POST /engawa/run should return 200 (got ${res.status()}: ${await res.text()})`,
     ).toBe(200)
 
     const result = (await res.json()) as RunResponse
