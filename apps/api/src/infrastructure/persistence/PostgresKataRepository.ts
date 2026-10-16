@@ -55,10 +55,13 @@ export class PostgresKataRepository implements KataRepositoryPort {
 
     // Interest-based ordering: weight katas matching user interests
     const randomness = filters.randomness ?? 1
-    const focusWeight = 1 - randomness
+    // Cast: next to `ELSE 0` Postgres types a bare parameter as integer and rejects 0.25.
+    const focusWeight = sql`${1 - randomness}::float8`
 
-    const interestClause = filters.interests && filters.interests.length > 0
-      ? sql`CASE WHEN e.category = ANY(${filters.interests}) THEN ${focusWeight} ELSE 0 END`
+    const interestParams = (filters.interests ?? []).map((interest) => sql`${interest}`)
+    const interestList = sql.join(interestParams, sql`, `)
+    const interestClause = interestParams.length > 0
+      ? sql`CASE WHEN e.category IN (${interestList}) THEN ${focusWeight} ELSE 0 END`
       : sql`0`
 
     // Level-based ordering: prefer matching difficulty
