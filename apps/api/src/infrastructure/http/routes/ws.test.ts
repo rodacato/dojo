@@ -6,12 +6,17 @@ import type { WSInstance, ClientMessage } from './ws-handlers'
 import type * as WsHandlers from './ws-handlers'
 
 // ── Hoisted spies for the boundaries the route touches ────────────────────────
-const { findFirst, getSessionExecute, handleSubmit, handleReconnect, send } = vi.hoisted(() => ({
+const { findFirst, getSessionExecute, handleSubmit, handleReconnect, send, logError } = vi.hoisted(() => ({
+  logError: vi.fn(),
   findFirst: vi.fn(),
   getSessionExecute: vi.fn(),
   handleSubmit: vi.fn(),
   handleReconnect: vi.fn(),
   send: vi.fn(),
+}))
+
+vi.mock('../../observability/logger', () => ({
+  log: { error: logError, warn: vi.fn(), info: vi.fn(), debug: vi.fn() },
 }))
 
 vi.mock('../../container', () => ({
@@ -236,15 +241,15 @@ describe('createWsRoutes — onMessage', () => {
   it('reports INTERNAL_ERROR instead of rejecting when a handler throws', async () => {
     const events = await ownedEvents()
     const ws = makeSocket()
-    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
-    handleSubmit.mockRejectedValueOnce(new Error('db down'))
+    const failure = new Error('db down')
+    handleSubmit.mockRejectedValueOnce(failure)
 
     await expect(
       events.onMessage?.({ data: JSON.stringify({ type: 'submit', attemptId: 'att-1' }) }, ws),
     ).resolves.toBeUndefined()
 
     expect(send).toHaveBeenCalledWith(ws, { type: 'error', code: 'INTERNAL_ERROR' })
-    errSpy.mockRestore()
+    expect(logError).toHaveBeenCalledWith('ws.handler_failed', expect.objectContaining({ err: failure }))
   })
 
   it('routes a reconnect message to handleReconnect with the attemptId', async () => {
@@ -313,13 +318,11 @@ describe('createWsRoutes — onClose / onError', () => {
   it('onError removes the connection and closes with 1011', async () => {
     const ws = makeSocket()
     const events = await ownedEventsConnected(ws)
-    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
     events.onError?.({ message: 'boom' }, ws)
 
     expect(activeConnections.has(VALID_USER.id)).toBe(false)
     expect(ws.close).toHaveBeenCalledWith(1011, 'Internal error')
-    expect(errSpy).toHaveBeenCalled()
-    errSpy.mockRestore()
+    expect(logError).toHaveBeenCalledWith('ws.socket_error', expect.objectContaining({ userId: VALID_USER.id }))
   })
 })

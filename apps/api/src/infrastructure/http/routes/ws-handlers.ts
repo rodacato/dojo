@@ -5,6 +5,7 @@ import { MAX_ATTEMPTS } from '../../../domain/practice/session'
 import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { recordSenseiEvaluation } from '../../observability/prometheus'
+import { log } from '../../observability/logger'
 
 // ── Minimal WebSocket interface used by handlers ──────────────────────────────
 export interface WSInstance {
@@ -89,7 +90,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
     }
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : 'Unknown LLM error'
-    console.error('LLM stream error for session', pending.sessionId, ':', errorMsg)
+    log.error('ws.llm_stream_failed', { userId: _userId, sessionId: pending.sessionId, attemptId, err })
     await useCases.submitAttempt.recordIncompleteAttempt({
       attemptId,
       sessionId: pending.sessionId,
@@ -143,7 +144,7 @@ async function runTestCode(
     send(ws, { type: 'execution_result', result: execResult })
     return buildExecutionContext(execResult)
   } catch (err) {
-    console.warn('Code execution failed, continuing without results:', err)
+    log.warn('ws.code_execution_failed', { err })
     return undefined
   }
 }

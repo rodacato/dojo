@@ -14,6 +14,7 @@ import { attempts, errors, playgroundRuns, sessions, users } from '../../persist
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { pendingAttempts } from './pending-attempts'
+import { log } from '../../observability/logger'
 
 export const practiceRoutes = new Hono<AppEnv>()
 
@@ -71,7 +72,7 @@ practiceRoutes.post('/access-requests', async (c) => {
   const { githubHandle, reason } = parsed.data
 
   if (!config.RESEND_API_KEY || !config.RESEND_FROM_EMAIL) {
-    console.warn('access-requests: RESEND_API_KEY or RESEND_FROM_EMAIL not configured — dropping request')
+    log.warn('access_request.dropped', { reason: 'mail_not_configured' })
     return c.json({ error: 'Access request channel not available' }, 503)
   }
 
@@ -95,7 +96,7 @@ practiceRoutes.post('/access-requests', async (c) => {
       `,
     })
   } catch (err) {
-    console.error('access-requests: resend delivery failed:', err)
+    log.error('access_request.delivery_failed', { err })
     return c.json({ error: 'Email delivery failed' }, 502)
   }
 
@@ -508,7 +509,7 @@ practiceRoutes.post('/cron/reminders', async (c) => {
       })
       sent++
     } catch (err) {
-      console.warn(`Failed to send reminder email to user ${user.id}:`, err)
+      log.warn('email.reminder_failed', { targetUserId: user.id, err })
     }
   }
 
@@ -539,14 +540,11 @@ practiceRoutes.post('/cron/cleanup-errors', async (c) => {
     .returning({ id: errors.id })
 
   const deleted = deletedRows.length
-  console.log(
-    JSON.stringify({
-      evt: 'cron.cleanup_errors',
-      deleted,
-      thresholdIso: threshold.toISOString(),
-      retentionDays: ERRORS_RETENTION_DAYS,
-    }),
-  )
+  log.info('cron.cleanup_errors', {
+    deleted,
+    thresholdIso: threshold.toISOString(),
+    retentionDays: ERRORS_RETENTION_DAYS,
+  })
 
   return c.json({ deleted, threshold: threshold.toISOString(), retentionDays: ERRORS_RETENTION_DAYS })
 })

@@ -1,7 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { HTTPException } from 'hono/http-exception'
-import { logger } from 'hono/logger'
 import { config } from '../../config'
 import { healthRoutes } from './routes/health'
 import { authRoutes } from './routes/auth'
@@ -28,6 +27,7 @@ import { errorRoutes } from './routes/errors'
 import { landingRoutes } from './routes/landing'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 import { requestIdMiddleware } from './middleware/requestId'
+import { requestLoggerMiddleware } from './middleware/requestLogger'
 import { registerMetrics } from './registerMetrics'
 import { errorReporter } from '../container'
 import type { AppEnv } from './app-env'
@@ -36,7 +36,7 @@ export function createRouter() {
   const app = new Hono<AppEnv>()
 
   app.use('*', requestIdMiddleware)
-  app.use('*', logger())
+  app.use('*', requestLoggerMiddleware)
   // credentials:true — required so the playground's dojo_playground_session
   // cookie flows on cross-origin XHR in prod (web on dojo.*, API on dojo-api.*).
   // All other auth uses Bearer tokens from localStorage, so allowing cookies

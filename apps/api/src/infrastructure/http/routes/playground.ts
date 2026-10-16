@@ -21,6 +21,7 @@ import {
 } from '../middleware/playground-rate-limiters'
 import { playgroundTurnstileMiddleware } from '../middleware/playground-turnstile'
 import type { AppEnv } from '../app-env'
+import { log } from '../../observability/logger'
 
 // Every Piston language we want anonymous visitors to be able to run.
 // Narrower than the full adapter LANGUAGE_MAP — javascript (vanilla)
@@ -142,12 +143,7 @@ playgroundRoutes.post(
         runtimeMs: result.executionTimeMs,
       })
       .catch((err) => {
-        console.error(
-          JSON.stringify({
-            evt: 'playground.log_insert_failed',
-            message: err instanceof Error ? err.message : String(err),
-          }),
-        )
+        log.error('playground.log_insert_failed', { err })
       })
 
     // Spec 027 §4.8 — structured metric event for the funnel dashboard.
@@ -249,10 +245,7 @@ playgroundRoutes.post('/engawa/ask', requireAuth, async (c) => {
           outputTokens: u.outputTokens,
         })
       } catch (logErr) {
-        console.error(JSON.stringify({
-          evt: 'ask_sensei.log_insert_failed',
-          message: logErr instanceof Error ? logErr.message : String(logErr),
-        }))
+        log.error('ask_sensei.log_insert_failed', { err: logErr })
       }
     } catch (err) {
       await sse.writeSSE({

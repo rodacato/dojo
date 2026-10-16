@@ -3,6 +3,23 @@
 What an instance exposes for monitoring, and how to recover its moving parts. Deploying is
 [deploy.md](deploy.md).
 
+## Logs
+
+The API writes one JSON object per line to stdout (errors to stderr) — `kamal app logs` shows them as they happen. In `development` the same events print as readable lines instead.
+
+Every event has `level`, `time` and `evt` (a `domain.action` name such as `http.request`, `llm.response`, `ws.handler_failed`). Everything that runs inside a request also carries `requestId` — the same id returned in the `X-Request-Id` response header and stored with the error report — so one request can be followed across access log, LLM calls and errors. Errors are logged under `err` as `{ name, message, stack }`, never as free text.
+
+`http.request` is the access log: `method`, `route` (the matched pattern), `path`, `status`, `durationMs` and `userId` when authenticated. 2xx/3xx are `info`, 4xx `warn`, 5xx `error`; successful `/health` and `/metrics` probes are not logged.
+
+| Env var | Default | Notes |
+|---|---|---|
+| `LOG_LEVEL` | `info` (`silent` under `NODE_ENV=test`) | `debug`, `info`, `warn`, `error` or `silent`. |
+
+```bash
+kamal app logs --grep '"level":"error"'
+kamal app logs --grep '"requestId":"<id>"'
+```
+
 ## Error reporting
 
 Three sinks run in parallel (Console + Postgres + Sentry) via a `CompositeErrorReporter` — see [ADR 017](../adr/017-error-reporting-port.md). Sentry is opt-in; empty DSN leaves it off.

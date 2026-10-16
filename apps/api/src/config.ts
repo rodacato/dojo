@@ -46,6 +46,7 @@ export const envSchema = z.object({
   API_PORT: z.coerce.number().default(3001),
   WEB_URL: z.url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+  LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error', 'silent']).optional(),
   SENTRY_DSN: z.string().default(''),
   SENTRY_ENVIRONMENT: z.string().default(''), // defaults to NODE_ENV after parse
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),

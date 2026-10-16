@@ -1,5 +1,6 @@
 import type { MiddlewareHandler } from 'hono'
 import { config } from '../../../config'
+import { log } from '../../observability/logger'
 import type { AppEnv } from '../app-env'
 
 // Layer 1 of spec 027 §4.5 — Cloudflare Turnstile bot gate.
@@ -75,23 +76,13 @@ async function verifyTurnstile(token: string, clientIp: string | null): Promise<
     })
 
     if (!res.ok) {
-      console.error(
-        JSON.stringify({
-          evt: 'turnstile.siteverify_http_error',
-          status: res.status,
-        }),
-      )
+      log.error('turnstile.siteverify_http_error', { status: res.status })
       return { success: false, 'error-codes': ['siteverify_http_error'] }
     }
 
     return (await res.json()) as SiteverifyResponse
   } catch (err) {
-    console.error(
-      JSON.stringify({
-        evt: 'turnstile.siteverify_network_error',
-        message: err instanceof Error ? err.message : String(err),
-      }),
-    )
+    log.error('turnstile.siteverify_network_error', { err })
     return { success: false, 'error-codes': ['siteverify_network_error'] }
   }
 }

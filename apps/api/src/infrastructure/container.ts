@@ -41,6 +41,7 @@ import { ConsoleErrorReporter } from './observability/ConsoleErrorReporter'
 import { PostgresErrorReporter } from './observability/PostgresErrorReporter'
 import { SentryErrorReporter } from './observability/SentryErrorReporter'
 import { CompositeErrorReporter } from './observability/CompositeErrorReporter'
+import { log } from './observability/logger'
 
 const sessionRepo = new PostgresSessionRepository(db)
 const kataRepo = new PostgresKataRepository(db)
@@ -94,10 +95,10 @@ function createErrorReporter(): ErrorReporterPort {
 
   const sentryGated = config.SENTRY_DSN && SENTRY_SKIPPED_ENVS.has(config.SENTRY_ENVIRONMENT)
   if (sentryGated) {
-    console.warn(
-      `[observability] SENTRY_DSN is set but SENTRY_ENVIRONMENT=${config.SENTRY_ENVIRONMENT} — skipping Sentry adapter. ` +
-        `Set SENTRY_ENVIRONMENT to production|staging to enable.`,
-    )
+    log.warn('observability.sentry_skipped', {
+      sentryEnvironment: config.SENTRY_ENVIRONMENT,
+      hint: 'Set SENTRY_ENVIRONMENT to production|staging to enable.',
+    })
   }
 
   if (config.SENTRY_DSN && !SENTRY_SKIPPED_ENVS.has(config.SENTRY_ENVIRONMENT)) {
