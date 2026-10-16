@@ -74,11 +74,11 @@
   --radius-md: 6px;
 
   /* Animations */
-  --animate-cursor: cursor-blink 1s step-end infinite;
+  --animate-cursor: cursor-blink 1s step-end 5;
   --animate-skeleton: skeleton-sweep 1500ms ease-in-out infinite;
 }
 
-/* Brand cursor — 1Hz crisp blink (NOT a soft pulse). */
+/* Brand cursor — 1Hz crisp blink (NOT a soft pulse), five blinks then it rests visible. */
 /* Used on the dojo_ wordmark, streaming text, and 404 headline. */
 @keyframes cursor-blink {
   50% { opacity: 0; }
@@ -107,7 +107,6 @@ html {
   background-color: var(--color-page);
   color: var(--color-primary);
   font-family: 'Inter Variable', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 
 /* ── Sumi-e theme overrides (DESIGN.md §Color tokens) ──────────────────
