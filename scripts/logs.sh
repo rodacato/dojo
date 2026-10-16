@@ -34,10 +34,12 @@ while getopts "fwl:r:e:s:n:h" opt; do
   esac
 done
 
-kamal_args=(app logs -c "$config" --lines "$lines")
-[ -n "$follow" ] && kamal_args+=("$follow")
+# -T: kamal prefixes every line with a timestamp, which makes it invalid JSON for pino-pretty.
+kamal_args=(app logs -c "$config" -T --lines "$lines")
 [ -n "$since" ] && kamal_args+=(--since "$since")
 [ -n "$request_id" ] && kamal_args+=(--grep "$request_id")
+# Last: -f takes no declared type, so an option after it could be read as its value.
+[ -n "$follow" ] && kamal_args+=("$follow")
 
 pretty=(pnpm --silent --filter @dojo/api exec pino-pretty
   --messageKey evt --ignore pid,hostname --translateTime 'HH:MM:ss.l' --minimumLevel "$level")
