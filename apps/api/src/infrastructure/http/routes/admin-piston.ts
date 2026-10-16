@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { pistonRuntimeProvisioner } from '../../container'
 import { requireAuth, requireCreator } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
+import { log } from '../../observability/logger'
 
 export const adminPistonRoutes = new Hono<AppEnv>()
 
@@ -17,7 +18,7 @@ adminPistonRoutes.post('/reprovision', async (c) => {
     const status = report.failed.length === 0 ? 200 : 500
     return c.json(report, status)
   } catch (err) {
-    console.error('Admin piston reprovision failed:', err)
+    log.error('admin.piston_reprovision_failed', { err })
     const message = err instanceof Error ? err.message : 'Reprovision failed'
     return c.json({ error: message }, 500)
   }

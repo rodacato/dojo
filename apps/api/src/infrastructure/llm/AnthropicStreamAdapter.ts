@@ -6,6 +6,7 @@ import { buildSessionBodyPrompt, buildAskSenseiPrompt } from '../../prompts/sens
 import { config } from '../../config'
 import { runEvaluation, type SenseiMessage, type BuildMessagesParams } from './sensei-evaluation'
 import { REQUEST_TIMEOUT_MS, normalizeBaseURL } from './llm-endpoint'
+import { log } from '../observability/logger'
 
 export { LLMParseError } from './sensei-evaluation'
 
@@ -69,17 +70,16 @@ export class AnthropicStreamAdapter implements LLMPort {
     kataDescription: string
   }): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
-    const reqId = crypto.randomUUID()
+    const llmRequestId = crypto.randomUUID()
     const startedAt = Date.now()
 
-    console.log(JSON.stringify({
-      evt: 'llm.request',
+    log.info('llm.request', {
       purpose: 'session_body',
-      reqId,
+      llmRequestId,
       model: config.LLM_MODEL,
       baseUrl: config.LLM_BASE_URL ?? 'default',
       promptChars: prompt.length,
-    }))
+    })
 
     try {
       const response = await this.client.messages.create({
@@ -93,28 +93,24 @@ export class AnthropicStreamAdapter implements LLMPort {
         throw new Error('Unexpected response type from Anthropic')
       }
 
-      console.log(JSON.stringify({
-        evt: 'llm.response',
+      log.info('llm.response', {
         purpose: 'session_body',
-        reqId,
+        llmRequestId,
         latencyMs: Date.now() - startedAt,
         inputTokens: response.usage?.input_tokens,
         outputTokens: response.usage?.output_tokens,
         stopReason: response.stop_reason,
         responseChars: block.text.length,
-      }))
+      })
 
       return block.text
     } catch (err) {
-      console.error(JSON.stringify({
-        evt: 'llm.error',
+      log.error('llm.error', {
         purpose: 'session_body',
-        reqId,
+        llmRequestId,
         latencyMs: Date.now() - startedAt,
-        message: err instanceof Error ? err.message : String(err),
-        status: (err as { status?: number })?.status,
-        name: err instanceof Error ? err.name : undefined,
-      }))
+        err,
+      })
       throw err
     }
   }
@@ -125,17 +121,16 @@ export class AnthropicStreamAdapter implements LLMPort {
     kataDescription: string
   }): AsyncIterable<string> {
     const prompt = buildSessionBodyPrompt(params)
-    const reqId = crypto.randomUUID()
+    const llmRequestId = crypto.randomUUID()
     const startedAt = Date.now()
 
-    console.log(JSON.stringify({
-      evt: 'llm.request',
+    log.info('llm.request', {
       purpose: 'session_body_stream',
-      reqId,
+      llmRequestId,
       model: config.LLM_MODEL,
       baseUrl: config.LLM_BASE_URL ?? 'default',
       promptChars: prompt.length,
-    }))
+    })
 
     let chars = 0
     try {
@@ -153,23 +148,19 @@ export class AnthropicStreamAdapter implements LLMPort {
         }
       }
 
-      console.log(JSON.stringify({
-        evt: 'llm.response',
+      log.info('llm.response', {
         purpose: 'session_body_stream',
-        reqId,
+        llmRequestId,
         latencyMs: Date.now() - startedAt,
         responseChars: chars,
-      }))
+      })
     } catch (err) {
-      console.error(JSON.stringify({
-        evt: 'llm.error',
+      log.error('llm.error', {
         purpose: 'session_body_stream',
-        reqId,
+        llmRequestId,
         latencyMs: Date.now() - startedAt,
-        message: err instanceof Error ? err.message : String(err),
-        status: (err as { status?: number })?.status,
-        name: err instanceof Error ? err.name : undefined,
-      }))
+        err,
+      })
       throw err
     }
   }
@@ -183,7 +174,7 @@ export class AnthropicStreamAdapter implements LLMPort {
     usage: Promise<{ inputTokens: number | null; outputTokens: number | null }>
   } {
     const prompt = buildAskSenseiPrompt(params)
-    const reqId = crypto.randomUUID()
+    const llmRequestId = crypto.randomUUID()
     const startedAt = Date.now()
 
     let resolveUsage: (u: { inputTokens: number | null; outputTokens: number | null }) => void = () => {}
@@ -196,13 +187,12 @@ export class AnthropicStreamAdapter implements LLMPort {
     const client = this.client
 
     async function* generator(): AsyncIterable<string> {
-      console.log(JSON.stringify({
-        evt: 'llm.request',
+      log.info('llm.request', {
         purpose: 'ask_sensei',
-        reqId,
+        llmRequestId,
         model: config.LLM_MODEL,
         promptChars: prompt.length,
-      }))
+      })
 
       let inputTokens: number | null = null
       let outputTokens: number | null = null
@@ -224,24 +214,21 @@ export class AnthropicStreamAdapter implements LLMPort {
           }
         }
 
-        console.log(JSON.stringify({
-          evt: 'llm.response',
+        log.info('llm.response', {
           purpose: 'ask_sensei',
-          reqId,
+          llmRequestId,
           latencyMs: Date.now() - startedAt,
           inputTokens,
           outputTokens,
-        }))
+        })
         resolveUsage({ inputTokens, outputTokens })
       } catch (err) {
-        console.error(JSON.stringify({
-          evt: 'llm.error',
+        log.error('llm.error', {
           purpose: 'ask_sensei',
-          reqId,
+          llmRequestId,
           latencyMs: Date.now() - startedAt,
-          message: err instanceof Error ? err.message : String(err),
-          status: (err as { status?: number })?.status,
-        }))
+          err,
+        })
         rejectUsage(err)
         throw err
       }

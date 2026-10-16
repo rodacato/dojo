@@ -8,6 +8,7 @@ import { db } from '../../persistence/drizzle/client'
 import { attempts, katas, invitations, kataFeedback, sessions, users, variations } from '../../persistence/drizzle/schema'
 import { requireAuth, requireCreator } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
+import { log } from '../../observability/logger'
 
 export const adminKatasRoutes = new Hono<AppEnv>()
 
@@ -315,7 +316,7 @@ adminKatasRoutes.post('/invitations', async (c) => {
       })
       emailSent = true
     } catch (err) {
-      console.error('Failed to send invite email:', err)
+      log.error('email.invite_failed', { err })
     }
   }
 

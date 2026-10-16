@@ -3,6 +3,7 @@ import { findActiveSession } from '../middleware/auth'
 import { useCases } from '../../container'
 import { SessionId } from '../../../domain/shared/types'
 import type { upgradeWebSocket as nodeUpgradeWebSocket } from '@hono/node-server'
+import { log } from '../../observability/logger'
 import {
   activeConnections,
   handleSubmit,
@@ -86,7 +87,7 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
               await handleSubmit(ws, msg.attemptId, session.id, user.id)
             }
           } catch (err) {
-            console.error('WebSocket handler failed for user', user.id, 'session', session.id, err)
+            log.error('ws.handler_failed', { userId: user.id, sessionId: session.id, err })
             send(ws, { type: 'error', code: 'INTERNAL_ERROR' })
           }
         },
@@ -96,7 +97,7 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
         },
 
         onError(evt: unknown, ws: WSInstance) {
-          console.error('WebSocket error for user', user.id, 'session', session.id, evt)
+          log.error('ws.socket_error', { userId: user.id, sessionId: session.id, event: evt })
           releaseConnection(user.id, ws)
           ws.close(1011, 'Internal error')
         },

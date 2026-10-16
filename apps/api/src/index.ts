@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws'
 import { createRouter } from './infrastructure/http/router'
 import { createWsRoutes } from './infrastructure/http/routes/ws'
 import { runMigrations } from './infrastructure/persistence/migrate'
+import { log } from './infrastructure/observability/logger'
 
 async function start() {
   await runMigrations()
@@ -19,12 +20,12 @@ async function start() {
       websocket: { server: new WebSocketServer({ noServer: true }) },
     },
     (info) => {
-      console.log(`dojo_ api running on port ${info.port}`)
+      log.info('server.started', { port: info.port, env: config.NODE_ENV })
     },
   )
 }
 
 start().catch((err) => {
-  console.error('Startup failed:', err)
+  log.error('server.startup_failed', { err })
   process.exit(1)
 })
