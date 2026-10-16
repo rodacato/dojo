@@ -35,15 +35,8 @@
     <meta name="theme-color" content="#0A0908" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#F5F1E8" media="(prefers-color-scheme: light)" />
 
-    <!-- Apply the stored theme before first paint -->
-    <script>
-      try {
-        var c = localStorage.getItem('dojo-theme')
-        var t = c === 'sumi' || c === 'washi' || c === 'slate' ? c : matchMedia('(prefers-color-scheme: dark)').matches ? 'sumi' : 'washi'
-        if (t === 'slate') document.documentElement.removeAttribute('data-theme')
-        else document.documentElement.setAttribute('data-theme', t)
-      } catch (e) {}
-    </script>
+    <!-- Apply the stored theme before first paint. External file: the CSP allows no inline scripts. -->
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>
