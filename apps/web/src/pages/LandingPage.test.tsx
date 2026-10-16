@@ -66,7 +66,7 @@ describe('LandingPage — auth gating', () => {
     // The hero headline (ghost copy) must NOT be present during loading.
     expect(
       screen.queryByText(
-        'The dojo for developers who still have something to prove.',
+        'Practice thinking for yourself.',
       ),
     ).not.toBeInTheDocument()
     expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
@@ -80,7 +80,7 @@ describe('LandingPage — auth gating', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'The dojo for developers who still have something to prove.',
+        name: 'Practice thinking for yourself.',
       }),
     ).toBeInTheDocument()
     expect(screen.getByRole('navigation')).toBeInTheDocument()
