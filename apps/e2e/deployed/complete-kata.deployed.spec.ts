@@ -5,7 +5,7 @@ import { test, expect } from '@playwright/test'
 // itself: that goes through the WebSocket adapter and burns tokens
 // against the live model. What we assert is everything up to (and
 // including) the attempt submission, which is enough to catch:
-//   - kata listing breakage  (GET /exercises)
+//   - kata listing breakage  (GET /katas)
 //   - session start breakage (POST /sessions)
 //   - body-generation regression (GET /sessions/:id keeps polling
 //     until `body` is non-null, then validates structure)
@@ -20,7 +20,7 @@ const API_URL = process.env['SMOKE_API_URL']!
 const AUTH_TOKEN = process.env['SMOKE_AUTH_TOKEN']
 const USE_MOCK_LLM = process.env['SMOKE_USE_MOCK_LLM'] === '1'
 
-interface ExerciseOption {
+interface KataOption {
   id: string
   title: string
   type: string
@@ -34,7 +34,7 @@ interface SessionDetail {
   id: string
   body: string | null
   status: string
-  exercise: { id: string; title: string }
+  kata: { id: string; title: string }
 }
 
 test.describe('smoke: complete kata', () => {
@@ -44,17 +44,17 @@ test.describe('smoke: complete kata', () => {
   test('pick → start → solve flow accepts an attempt end-to-end', async ({ request }) => {
     const auth = { Authorization: `Bearer ${AUTH_TOKEN}` }
 
-    // 1. Pick — the exercise list must come back populated.
-    const exercisesRes = await request.get(`${API_URL}/exercises`, { headers: auth })
-    expect(exercisesRes.status(), 'GET /exercises should return 200').toBe(200)
-    const exercises = (await exercisesRes.json()) as ExerciseOption[]
-    expect(exercises.length, 'at least one exercise must be available').toBeGreaterThan(0)
-    const exercise = exercises[0]!
+    // 1. Pick — the kata list must come back populated.
+    const katasRes = await request.get(`${API_URL}/katas`, { headers: auth })
+    expect(katasRes.status(), 'GET /katas should return 200').toBe(200)
+    const katas = (await katasRes.json()) as KataOption[]
+    expect(katas.length, 'at least one kata must be available').toBeGreaterThan(0)
+    const kata = katas[0]!
 
     // 2. Start — POST /sessions kicks off body generation in the background.
     const startRes = await request.post(`${API_URL}/sessions`, {
       headers: auth,
-      data: { exerciseId: exercise.id },
+      data: { kataId: kata.id },
     })
     expect(startRes.status(), 'POST /sessions should return 201').toBe(201)
     const { sessionId } = (await startRes.json()) as SessionStartResponse
