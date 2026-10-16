@@ -19,7 +19,7 @@ interface GitHubStats {
   language: string
 }
 
-const HERO_LINE_1 = 'The dojo for developers who still have something to prove.'
+const HERO_LINE_1 = 'Practice thinking for yourself.'
 
 export function LandingPage() {
   const { user, loading } = useAuth()
@@ -222,7 +222,10 @@ function Hero() {
             {/* Ghost text reserves the final layout — keeps the container from
                 growing as the typewriter types. opacity-0 stays in layout AND
                 is announced by screen readers (vs. `invisible` which would not). */}
-            <span className="opacity-0 select-none">{HERO_LINE_1}</span>
+            <span className="opacity-0 select-none">
+              {HERO_LINE_1}
+              <span aria-hidden>_</span>
+            </span>
             {/* Visual typewriter overlays the ghost. aria-hidden so screen
                 readers only announce the ghost (the full headline). */}
             <span aria-hidden className="absolute inset-0">
@@ -234,16 +237,17 @@ function Hero() {
           </h1>
           <span
             ref={line2Ref}
-            className="block font-mono text-3xl md:text-4xl lg:text-5xl text-secondary leading-tight"
+            className="block font-mono text-lg md:text-xl text-secondary leading-snug mt-4"
           >
-            To themselves.
+            The dojo for developers who still have something to prove. To themselves.
           </span>
           <p
             ref={paragraphRef}
             className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
           >
-            You've been delegating the thinking. The muscle is atrophying. Dojo is the
-            deliberate resistance.
+            Vibe coding is making developers faster and their instincts weaker. Dojo is the
+            counter-practice: timed katas with no AI, then a sensei that reviews your reasoning
+            after you submit.
           </p>
           <a
             ref={ctaRef}
@@ -252,9 +256,19 @@ function Hero() {
           >
             Enter dojo →
           </a>
+          <p className="mt-4 text-sm text-secondary max-w-md">
+            This is the author's reference instance, not a hosted service.{' '}
+            <Link to="/open-source" className="underline underline-offset-4 hover:text-primary">
+              Run your own
+            </Link>
+            .
+          </p>
         </div>
         <div ref={terminalRef}>
           <TerminalDemo />
+          <p className="mt-3 text-center font-mono text-sm text-secondary">
+            Illustrative session, not real data.
+          </p>
         </div>
       </div>
     </section>
@@ -290,7 +304,6 @@ const TERMINAL_SESSIONS: TerminalSession[] = [
     args: '--kata 0421 --strict',
     lines: [
       { tone: 'muted', content: <>analyzing submission... <span className="text-success-text">[OK]</span></> },
-      { tone: 'muted', content: <>cross-checking against 12 reference impls...</> },
       { tone: 'secondary', content: <><span className="text-accent">verdict</span> = PASSED_WITH_NOTES</> },
       { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "O(n^2) where O(n log n) was on the table"</> },
       { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "naming: `data` and `result` say nothing"</> },
@@ -308,7 +321,7 @@ const TERMINAL_SESSIONS: TerminalSession[] = [
       { tone: 'secondary', content: <><span className="text-accent">katas</span>    = 23 / 40</> },
       { tone: 'secondary', content: <><span className="text-accent">clusters</span> = 3 / 4</> },
       { tone: 'secondary', content: <><span className="text-accent">active</span>   = 8 / 10 days (last 30)</> },
-      { tone: 'muted', content: <>green belt requires: 17 katas, 1 cluster, 2 active days.</> },
+      { tone: 'muted', content: <>green belt needs 17 more katas, 1 more cluster and 2 more active days.</> },
     ],
     prompt: 'no progress bar. the dojo doesn\'t babysit.',
   },

@@ -37,8 +37,9 @@ It is not a certification platform, and it is not a leaderboard. It is a daily p
 # needs Docker and a GitHub OAuth app
 git clone https://github.com/rodacato/dojo
 cd dojo
-cp .env.example .env    # set the GitHub OAuth values
+cp .env.example .env    # set the GitHub OAuth values, CREATOR_GITHUB_ID (your numeric GitHub id) and WEB_URL=http://localhost
 docker compose up --build
+docker compose exec dojo-api node dist/infrastructure/persistence/seed.js   # a new instance starts with no katas
 ```
 
 The sensei defaults to `mock`, so no LLM key is needed to try it. The full guide — all run paths, GitHub sign-in setup, first-run check, troubleshooting — is [GETTING_STARTED.md](GETTING_STARTED.md).
