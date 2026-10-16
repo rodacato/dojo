@@ -31,7 +31,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
 
   return (
     <aside
-      className={`hidden md:flex flex-col h-screen sticky top-0 bg-surface border-r border-border/40 transition-all duration-200 ${
+      className={`hidden md:flex flex-col h-screen sticky top-0 bg-surface border-r border-border/40 transition-[width] duration-200 ${
         collapsed ? 'w-12' : 'w-48'
       }`}
     >

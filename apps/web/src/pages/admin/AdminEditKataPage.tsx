@@ -526,7 +526,7 @@ function SignalCard({
       </div>
       <div className="h-1 rounded-sm bg-page overflow-hidden">
         <div
-          className={`h-full ${barColor} transition-all`}
+          className={`h-full ${barColor} transition-[width]`}
           style={{ width: `${fill}%` }}
         />
       </div>
