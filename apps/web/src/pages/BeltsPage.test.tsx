@@ -138,6 +138,28 @@ describe('BeltsPage', () => {
     expect(screen.queryByText(/^Earned /)).not.toBeInTheDocument()
   })
 
+  it('tells a first-time user how to earn their first milestone', async () => {
+    authed()
+    mockedGetBelts.mockResolvedValue({ belt, milestones: [] })
+
+    renderPage()
+
+    expect(await screen.findByText(/Complete a kata to earn your first milestone/)).toBeInTheDocument()
+  })
+
+  it('drops the first-milestone hint once something is earned', async () => {
+    authed()
+    mockedGetBelts.mockResolvedValue({
+      belt,
+      milestones: [{ id: 'FIRST_KATA', earnedAt: '2026-03-04T10:00:00.000Z', contextRef: 's1' }],
+    })
+
+    renderPage()
+
+    await screen.findByText('First Kata')
+    expect(screen.queryByText(/Complete a kata to earn your first milestone/)).not.toBeInTheDocument()
+  })
+
   it('does not call the API for an anonymous visitor and stays on the skeleton', () => {
     mockedUseAuth.mockReturnValue({ user: null, loading: false, logout: vi.fn() })
     mockedGetBelts.mockResolvedValue({ belt, milestones: [] })

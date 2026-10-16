@@ -163,6 +163,13 @@ export function BeltsPage() {
           </div>
         </div>
 
+        {views.length > 0 && earnedCount === 0 && (
+          <p className="text-secondary text-sm mb-6">
+            Complete a kata to earn your first milestone. Your belt grows with the katas you
+            finish, the topics you cover and the days you show up.
+          </p>
+        )}
+
         {views.length === 0 && (
           <EmptyState
             eyebrow="Empty"
