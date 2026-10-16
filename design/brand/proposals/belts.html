@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en" data-theme="washi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Dojo — five belt directions</title>
+    <link rel="icon" type="image/svg+xml" href="../../../site/brand/icon-sumi.svg" />
+    <link rel="stylesheet" href="../../../site/brand/tokens.css" />
+    <style>
+      @font-face {
+        font-family: Inter;
+        src: url('../../../site/fonts/inter.woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        src: url('../../../site/fonts/jetbrains-mono.woff2') format('woff2');
+        font-weight: 100 900;
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--color-page);
+        color: var(--color-primary);
+        font:
+          15px/1.6 Inter,
+          system-ui,
+          sans-serif;
+      }
+      a {
+        color: inherit;
+        text-underline-offset: 5px;
+        touch-action: manipulation;
+      }
+      button {
+        font:
+          500 13px/1.5 Inter,
+          system-ui,
+          sans-serif;
+        min-height: 44px;
+        min-width: 44px;
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--color-primary);
+        padding: 9px 13px;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      button:hover {
+        border-color: var(--color-primary);
+      }
+      button[aria-pressed='true'] {
+        color: var(--color-page);
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+      }
+      button:focus-visible,
+      a:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 4px;
+      }
+      .wrap {
+        max-width: 1400px;
+        padding-inline: 40px;
+        margin: auto;
+      }
+      .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        padding-block: 24px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        display: inline-block;
+        flex: none;
+        width: 36px;
+        height: 36px;
+        background: currentColor;
+        mask: url('../../../site/brand/mark.svg') center/contain no-repeat;
+      }
+      .wordmark {
+        font:
+          600 28px/1 'JetBrains Mono',
+          monospace;
+        letter-spacing: -1.4px;
+      }
+      .cursor {
+        color: var(--color-accent);
+      }
+      .meta,
+      .eyebrow,
+      .size-label {
+        font:
+          500 11px/1.6 'JetBrains Mono',
+          monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        color: var(--color-secondary);
+      }
+      .top .meta {
+        text-align: right;
+      }
+      .intro {
+        padding-block: 42px 28px;
+      }
+      .intro .eyebrow {
+        margin: 0 0 12px;
+      }
+      h1 {
+        font-size: clamp(34px, 4.3vw, 56px);
+        letter-spacing: -0.05em;
+        font-weight: 600;
+        line-height: 1.1;
+        margin: 0;
+        max-width: 930px;
+      }
+      .intro > p:last-child {
+        font-size: 16px;
+        color: var(--color-secondary);
+        max-width: 750px;
+        margin: 18px 0 0;
+      }
+      .reference {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 20px 24px;
+        margin-bottom: 28px;
+      }
+      .reference .logo {
+        width: 76px;
+        height: 76px;
+      }
+      .reference h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+      }
+      .reference p {
+        font-size: 13px;
+        color: var(--color-secondary);
+        margin: 0;
+        max-width: 760px;
+      }
+      .reference .meta {
+        display: block;
+        margin-top: 8px;
+      }
+      .tools {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .tools p {
+        margin: 0;
+        color: var(--color-secondary);
+        font-size: 13px;
+      }
+      .tools a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        font-size: 13px;
+      }
+      .tools-actions {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 24px;
+      }
+      .direction {
+        min-width: 0;
+        border-top: 1px solid var(--color-primary);
+        padding-top: 16px;
+        display: flex;
+        flex-direction: column;
+      }
+      .direction-heading {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        min-height: 45px;
+      }
+      .letter {
+        font:
+          500 12px 'JetBrains Mono',
+          monospace;
+        color: var(--color-secondary);
+      }
+      .direction h2 {
+        font-size: 19px;
+        line-height: 1.25;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        margin: 0;
+      }
+      .description {
+        font-size: 13px;
+        color: var(--color-secondary);
+        margin: 0 0 18px;
+        min-height: 84px;
+      }
+      .stage {
+        background: var(--color-page);
+        color: var(--color-primary);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        padding: 18px 12px;
+      }
+      .stage + .stage {
+        margin-top: 10px;
+      }
+      .stage-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+      .hero {
+        display: grid;
+        place-items: center;
+        min-height: 154px;
+        padding-block: 12px;
+      }
+      .hero > .mark {
+        width: 120px;
+        height: 120px;
+      }
+      .micro {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-secondary);
+        font:
+          11px 'JetBrains Mono',
+          monospace;
+      }
+      .color-pair {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .color-sample {
+        display: grid;
+        justify-items: center;
+        gap: 7px;
+        font:
+          500 10px/1.5 'JetBrains Mono',
+          monospace;
+        color: var(--color-secondary);
+      }
+      .color-sample .mark {
+        width: 40px;
+        height: 40px;
+      }
+      .light-pair {
+        margin-top: 14px;
+      }
+      .mark {
+        display: inline-block;
+        flex: none;
+        vertical-align: middle;
+        --mark-edge: var(--color-primary);
+        --mark-paper: var(--color-page);
+      }
+      [data-theme='washi'] {
+        --white-halo: inline;
+        --black-halo: none;
+      }
+      [data-theme='sumi'] {
+        --white-halo: none;
+        --black-halo: inline;
+      }
+      .mark[data-rank='white'] {
+        --halo-display: var(--white-halo);
+      }
+      .mark[data-rank='black'] {
+        --halo-display: var(--black-halo);
+      }
+      .mark .ink {
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        stroke: var(--mark-edge);
+      }
+      .mark .halo {
+        display: var(--halo-display, none);
+        stroke: var(--mark-edge);
+        stroke-width: 13;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+      .mark .paper {
+        fill: var(--mark-paper);
+      }
+      .mark[data-rank='white'] .ink {
+        stroke: var(--color-primary);
+      }
+      .mark[data-rank='black'] .ink {
+        stroke: var(--color-page);
+      }
+      html[data-monochrome='true'] .mark .ink {
+        stroke: var(--mark-edge);
+      }
+      html[data-monochrome='true'] .mark .halo {
+        display: none;
+      }
+      .direction dl {
+        font-size: 12px;
+        line-height: 1.6;
+        margin: 16px 0 0;
+      }
+      .direction dt {
+        font-weight: 600;
+        margin-top: 10px;
+      }
+      .direction dd {
+        color: var(--color-secondary);
+        margin: 3px 0 0;
+      }
+      .direction .inspect {
+        margin-top: auto;
+        padding-top: 18px;
+      }
+      .inspect button {
+        width: 100%;
+        text-align: left;
+      }
+      .workbench {
+        margin-top: 44px;
+        padding-top: 28px;
+        border-top: 1px solid var(--color-border);
+        scroll-margin-top: 24px;
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      .section-head h2 {
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: -0.03em;
+        margin: 0;
+      }
+      .section-head p {
+        font-size: 13px;
+        color: var(--color-secondary);
+        margin: 7px 0 0;
+      }
+      .control-groups {
+        display: flex;
+        align-items: start;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      fieldset {
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      legend {
+        font:
+          500 11px/1.6 'JetBrains Mono',
+          monospace;
+        color: var(--color-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 8px;
+      }
+      .control-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .context-preview {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        margin-top: 24px;
+        padding: 28px 32px;
+      }
+      .context-preview .eyebrow {
+        margin: 0 0 12px;
+      }
+      .rank-heading {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .rank-heading .mark {
+        width: 48px;
+        height: 48px;
+      }
+      .rank-title {
+        font:
+          600 30px/1 'JetBrains Mono',
+          monospace;
+        letter-spacing: -0.025em;
+        text-transform: uppercase;
+        margin: 0;
+      }
+      .size-tests {
+        display: flex;
+        align-items: end;
+        gap: 32px;
+        flex-wrap: wrap;
+        padding-top: 24px;
+        margin-top: 24px;
+        border-top: 1px solid var(--color-border);
+      }
+      .size-test {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+        min-width: 40px;
+      }
+      .size-label {
+        letter-spacing: 0;
+      }
+      .bench-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+      .status {
+        font-size: 12px;
+        color: var(--color-secondary);
+        margin: 14px 0 0;
+      }
+      .notes {
+        margin-block: 32px;
+        font-size: 13px;
+        color: var(--color-secondary);
+        max-width: 880px;
+      }
+      .notes strong {
+        color: var(--color-primary);
+        font-weight: 600;
+      }
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        padding-block: 20px 30px;
+        border-top: 1px solid var(--color-border);
+        font-size: 12px;
+        color: var(--color-secondary);
+      }
+      .footer-links {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      footer a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+      }
+      @media (min-width: 768px) {
+        .rank-title {
+          font-size: 48px;
+        }
+      }
+      @media (max-width: 1199px) {
+        .gallery {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .description {
+          min-height: 84px;
+        }
+        .direction-heading {
+          min-height: 32px;
+        }
+        .direction .inspect {
+          margin-top: 0;
+        }
+        .gallery {
+          row-gap: 36px;
+        }
+      }
+      @media (max-width: 850px) {
+        .wrap {
+          padding-inline: 24px;
+        }
+        .gallery {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .description {
+          min-height: 63px;
+        }
+        .reference {
+          gap: 20px;
+        }
+        .reference .logo {
+          width: 64px;
+          height: 64px;
+        }
+      }
+      @media (max-width: 540px) {
+        .wrap {
+          padding-inline: 20px;
+        }
+        .top {
+          align-items: start;
+        }
+        .wordmark {
+          font-size: 24px;
+        }
+        .lockup {
+          gap: 8px;
+        }
+        .top .logo {
+          width: 28px;
+          height: 28px;
+        }
+        .top .meta {
+          font-size: 10px;
+          max-width: 115px;
+        }
+        .intro {
+          padding-block: 28px 24px;
+        }
+        .reference {
+          padding: 18px;
+          gap: 16px;
+          align-items: start;
+        }
+        .reference .logo {
+          width: 48px;
+          height: 48px;
+        }
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+        .direction-heading {
+          min-height: 0;
+          margin-bottom: 10px;
+        }
+        .direction h2 {
+          font-size: 22px;
+        }
+        .description {
+          min-height: 0;
+          max-width: 420px;
+        }
+        .stage {
+          padding-inline: 20px;
+        }
+        .hero {
+          min-height: 170px;
+        }
+        .hero > .mark {
+          width: 136px;
+          height: 136px;
+        }
+        .direction dl {
+          display: grid;
+          grid-template-columns: 72px 1fr;
+          gap: 10px 12px;
+          font-size: 13px;
+        }
+        .direction dt,
+        .direction dd {
+          margin: 0;
+        }
+        .context-preview {
+          padding: 24px 16px;
+        }
+        .size-tests {
+          gap: 24px;
+        }
+        .tools-actions {
+          gap: 16px;
+        }
+        .control-groups {
+          gap: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="top">
+        <span class="lockup"
+          ><span class="logo" aria-hidden="true"></span
+          ><span class="wordmark">dojo<span class="cursor">_</span></span></span
+        ><span class="meta">Identity studies<br />Belts · five directions</span>
+      </header>
+      <section class="intro">
+        <p class="eyebrow">Round strokes · curved lintel · open space</p>
+        <h1>Five directions. One visual family.</h1>
+        <p>
+          Five directions built from Open Gate’s linework. Compare the silhouette first; each study
+          uses the same stroke weight and round endings as the approved mark.
+        </p>
+      </section>
+      <aside class="reference" aria-label="Approved logo reference">
+        <span class="logo" aria-hidden="true"></span>
+        <div>
+          <h2>Open Gate · the reference</h2>
+          <p>
+            The shallow curve, upright rhythm and generous gaps are the starting point. Each
+            direction below carries those features into a different construction.
+          </p>
+          <span class="meta">Approved logo · unchanged</span>
+        </div>
+      </aside>
+      <div class="tools">
+        <p>Five directions, A–E. All are drafts.</p>
+        <div class="tools-actions">
+          <a href="#workbench">Compare in context ↓</a
+          ><button id="monochrome" type="button" aria-pressed="false">Monochrome</button>
+        </div>
+      </div>
+      <section class="gallery" id="gallery" aria-label="Five belt proposals"></section>
+      <section class="workbench" id="workbench" aria-labelledby="workbench-title">
+        <div class="section-head">
+          <div>
+            <h2 id="workbench-title">Compare in context</h2>
+            <p>Switch the direction at the existing /belts heading size.</p>
+          </div>
+          <div class="control-groups">
+            <fieldset>
+              <legend>Direction</legend>
+              <div class="control-group" id="direction-controls" data-control="direction"></div>
+            </fieldset>
+            <fieldset>
+              <legend>Rank color</legend>
+              <div class="control-group" data-control="rank">
+                <button type="button" data-value="white" aria-pressed="true">White</button
+                ><button type="button" data-value="black" aria-pressed="false">Black</button>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Theme</legend>
+              <div class="control-group" data-control="theme">
+                <button type="button" data-value="washi" aria-pressed="true">Washi</button
+                ><button type="button" data-value="sumi" aria-pressed="false">Sumi</button>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <p class="status" id="status" role="status"></p>
+        <div class="context-preview">
+          <p class="eyebrow">Your rank</p>
+          <div class="rank-heading" id="rank-heading"></div>
+          <div class="size-tests" id="size-tests" aria-label="Mark sizes"></div>
+        </div>
+        <div class="bench-actions">
+          <button id="tab-icon" type="button">Try as tab icon</button>
+        </div>
+      </section>
+      <p class="notes">
+        <strong>Direction only.</strong> White and black here test color treatments on the same
+        drawing. The five-rank shape system, final colors and production assets come after a
+        direction is chosen. An outline keeps paper and ink visible against matching backgrounds.
+      </p>
+      <footer>
+        <div class="footer-links">
+          <a href="index.html">Logo studies</a><a href="../README.md">Brand guide</a>
+        </div>
+        <span>Explorations · no direction approved</span>
+      </footer>
+    </main>
+    <noscript
+      ><p class="wrap">
+        Enable JavaScript to render the five proposals and preview controls.
+      </p></noscript
+    >
+    <script>
+      const directions = [
+        {
+          id: 'a',
+          name: 'Folded Belt',
+          description:
+            'A folded band with a compact knot. The curved edges borrow the lintel; the loose ends give it the clearest belt silhouette.',
+          borrows: 'The curved lintel becomes the upper and lower edges of the band.',
+          cost: 'The most literal direction; the knot needs a simpler small form.',
+          paths: [
+            { d: 'M12 35Q50 42 88 35V49Q50 56 12 49Z' },
+            { d: 'M44 50L31 78L43 73L54 54', paper: true },
+            { d: 'M56 50L73 75L60 71L48 55', paper: true },
+            { d: 'M41 35L59 40L56 57L39 51Z', paper: true },
+          ],
+        },
+        {
+          id: 'b',
+          name: 'Loop Knot',
+          description:
+            'Two rounded loops meet at the knot, with two open ends. It translates the belt into the logo’s flowing, continuous line.',
+          borrows: 'Round endings and balanced curves, held on a horizontal axis.',
+          cost: 'More fluid and less architectural; can resemble a bow at small sizes.',
+          paths: [
+            { d: 'M49 45C38 29 17 29 17 43C17 57 38 59 50 45C62 31 83 29 83 43C83 57 62 59 50 45' },
+            { d: 'M43 57L34 80M57 57L66 80' },
+          ],
+        },
+        {
+          id: 'c',
+          name: 'Tied Gate',
+          description:
+            'The gate’s lintel stays intact; its posts cross into a knot. It makes the strongest direct connection between practice and the existing mark.',
+          borrows: 'The original lintel and crossbar; crossed posts become the belt ends.',
+          cost: 'Closest to the logo, so it needs careful placement to remain a rank symbol.',
+          paths: [
+            { d: 'M15 25Q50 32 85 25' },
+            { d: 'M25 45H75' },
+            { d: 'M30 32L65 82M70 32L35 82' },
+          ],
+        },
+        {
+          id: 'd',
+          name: 'Open Cord',
+          description:
+            'A single cord loops back through itself and leaves one end open. It brings the enso’s continuity into the same rounded stroke language.',
+          borrows: 'The logo’s round stroke and the open-circle motif already in Dojo.',
+          cost: 'The least literal direction; the inner turn needs room to stay readable.',
+          paths: [
+            {
+              d: 'M73 28C58 14 31 19 24 38C14 64 40 82 61 67C77 55 69 39 54 42C41 45 44 61 57 73L70 85',
+            },
+          ],
+        },
+        {
+          id: 'e',
+          name: 'Woven Gate',
+          description:
+            'Two upright strokes fold inward and pass through the band. It keeps the gate’s architecture while making the lower half feel woven.',
+          borrows: 'The original lintel and upright spacing, with folded returns below.',
+          cost: 'A denser construction; the over-and-under reading needs testing at 16 px.',
+          paths: [
+            { d: 'M15 25Q50 32 85 25' },
+            { d: 'M30 32V65Q30 76 41 76H63' },
+            { d: 'M70 32V53Q70 64 59 64H37' },
+            { d: 'M25 45H75' },
+          ],
+        },
+      ]
+      const state = { direction: 'c', rank: 'white', theme: 'washi' }
+      const titleCase = (value) => value[0].toUpperCase() + value.slice(1)
+      function mark(id, size, rank = null) {
+        const direction = directions.find((item) => item.id === id)
+        const paths = direction.paths
+          .map((path) => `<path${path.paper ? ' class="paper"' : ''} d="${path.d}"/>`)
+          .join('')
+        const rankAttribute = rank ? ` data-rank="${rank}"` : ''
+        return `<svg class="mark"${rankAttribute} width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true"><g class="halo">${paths}</g><g class="ink"${rank ? ' data-theme="sumi"' : ''}>${paths}</g></svg>`
+      }
+      function colorPair(id) {
+        return ['white', 'black']
+          .map(
+            (rank) =>
+              `<div class="color-sample">${mark(id, 40, rank)}<span>${titleCase(rank)}</span></div>`,
+          )
+          .join('')
+      }
+      document.querySelector('#gallery').innerHTML = directions
+        .map(
+          (direction) =>
+            `<article class="direction" aria-labelledby="name-${direction.id}"><div class="direction-heading"><span class="letter">${direction.id.toUpperCase()}</span><h2 id="name-${direction.id}">${direction.name}</h2></div><p class="description">${direction.description}</p><div class="stage" data-theme="sumi"><div class="stage-head"><span class="meta">Sumi</span><span class="micro">${mark(direction.id, 16)}16 px</span></div><div class="hero">${mark(direction.id, 120)}</div><div class="color-pair">${colorPair(direction.id)}</div></div><div class="stage" data-theme="washi"><span class="meta">Washi</span><div class="color-pair light-pair">${colorPair(direction.id)}</div></div><dl><dt>From Open Gate</dt><dd>${direction.borrows}</dd><dt>Trade-off</dt><dd>${direction.cost}</dd></dl><div class="inspect"><button type="button" data-inspect="${direction.id}">Inspect ${direction.id.toUpperCase()} · ${direction.name} ↗</button></div></article>`,
+        )
+        .join('')
+      document.querySelector('#direction-controls').innerHTML = directions
+        .map(
+          (direction) =>
+            `<button type="button" data-value="${direction.id}" aria-label="Preview ${direction.id.toUpperCase()} · ${direction.name}" aria-pressed="${direction.id === state.direction}">${direction.id.toUpperCase()}</button>`,
+        )
+        .join('')
+      function renderPreview() {
+        document.documentElement.dataset.theme = state.theme
+        document.querySelector('#rank-heading').innerHTML =
+          `${mark(state.direction, 48, state.rank)}<h3 class="rank-title">${state.rank} belt</h3>`
+        document.querySelector('#size-tests').innerHTML = [16, 32, 64, 128]
+          .map(
+            (size) =>
+              `<div class="size-test">${mark(state.direction, size, state.rank)}<span class="size-label">${size} px</span></div>`,
+          )
+          .join('')
+        for (const button of document.querySelectorAll('#direction-controls button'))
+          button.setAttribute('aria-pressed', String(button.dataset.value === state.direction))
+        const direction = directions.find((item) => item.id === state.direction)
+        document.querySelector('#status').textContent =
+          `Previewing ${direction.id.toUpperCase()} · ${direction.name} · ${titleCase(state.rank)} · ${titleCase(state.theme)}. Preview only.`
+      }
+      for (const group of document.querySelectorAll('[data-control]'))
+        group.addEventListener('click', (event) => {
+          const button = event.target.closest('button')
+          if (!button) return
+          state[group.dataset.control] = button.dataset.value
+          for (const sibling of group.querySelectorAll('button'))
+            sibling.setAttribute('aria-pressed', String(sibling === button))
+          renderPreview()
+        })
+      document.querySelector('#gallery').addEventListener('click', (event) => {
+        const button = event.target.closest('[data-inspect]')
+        if (!button) return
+        state.direction = button.dataset.inspect
+        renderPreview()
+        document.querySelector('#workbench').scrollIntoView()
+        document
+          .querySelector(`#direction-controls [data-value="${state.direction}"]`)
+          .focus({ preventScroll: true })
+      })
+      document.querySelector('#monochrome').addEventListener('click', (event) => {
+        const enabled = event.currentTarget.getAttribute('aria-pressed') !== 'true'
+        event.currentTarget.setAttribute('aria-pressed', String(enabled))
+        document.documentElement.dataset.monochrome = String(enabled)
+      })
+      document.querySelector('#tab-icon').addEventListener('click', () => {
+        const original = document.querySelector('#rank-heading svg')
+        const icon = original.cloneNode(true)
+        const originalNodes = [original, ...original.querySelectorAll('*')]
+        const copiedNodes = [icon, ...icon.querySelectorAll('*')]
+        copiedNodes.forEach((node, index) => {
+          const style = getComputedStyle(originalNodes[index])
+          for (const name of [
+            'fill',
+            'stroke',
+            'stroke-width',
+            'stroke-linecap',
+            'stroke-linejoin',
+            'display',
+          ])
+            node.setAttribute(name, style.getPropertyValue(name))
+          node.removeAttribute('class')
+          node.removeAttribute('data-theme')
+        })
+        icon.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+        icon.setAttribute('width', '32')
+        icon.setAttribute('height', '32')
+        const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+        for (const [name, value] of Object.entries({
+          width: '100',
+          height: '100',
+          fill: getComputedStyle(document.documentElement).getPropertyValue('--color-page').trim(),
+        }))
+          background.setAttribute(name, value)
+        icon.prepend(background)
+        document.querySelector('link[rel="icon"]').href =
+          `data:image/svg+xml,${encodeURIComponent(new XMLSerializer().serializeToString(icon))}`
+        document.querySelector('#status').textContent =
+          `Tab icon: ${state.direction.toUpperCase()} · ${titleCase(state.rank)} · ${titleCase(state.theme)}. Preview only.`
+      })
+      renderPreview()
+    </script>
+  </body>
+</html>
