@@ -1,10 +1,15 @@
 name: CD · Smoke
 
-# Manual run only — smoke tests hit a real deployed environment and use
-# a pre-issued bearer token. They are intentionally not wired to PR/push
-# so a broken secret never blocks merges. See docs/specs/027-sprint-022-playground.md §3.
+# Smoke tests hit a real deployed environment and use a pre-issued bearer
+# token. They are intentionally not wired to PR/push so a broken secret never
+# blocks merges. They run nightly against prod, and on demand for either
+# environment. A red nightly sends GitHub's native failed-workflow notification
+# and opens no issue: the repo is public and a failing test can describe a
+# weakness. See docs/specs/027-sprint-022-playground.md §3.
 
 on:
+  schedule:
+    - cron: '0 9 * * *' # 09:00 UTC, after the nightly E2E at 08:00
   workflow_dispatch:
     inputs:
       environment:
@@ -21,12 +26,12 @@ permissions:
 
 # Queue, never cancel: a smoke cut short against a live environment reads as a false red.
 concurrency:
-  group: cd-smoke-${{ inputs.environment }}
+  group: cd-smoke-${{ inputs.environment || 'prod' }}
   cancel-in-progress: false
 
 jobs:
   smoke:
-    name: Deployed smoke (${{ inputs.environment }})
+    name: Deployed smoke (${{ inputs.environment || 'prod' }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -57,25 +62,25 @@ jobs:
         run: pnpm --filter=@dojo/e2e test:deployed
         env:
           CI: 'true'
-          SMOKE_BASE_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_BASE_URL || secrets.SMOKE_STAGING_BASE_URL }}
-          SMOKE_API_URL: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_API_URL || secrets.SMOKE_STAGING_API_URL }}
-          SMOKE_AUTH_TOKEN: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_AUTH_TOKEN || secrets.SMOKE_STAGING_AUTH_TOKEN }}
-          SMOKE_PUBLIC_USERNAME: ${{ inputs.environment == 'prod' && secrets.SMOKE_PROD_PUBLIC_USERNAME || secrets.SMOKE_STAGING_PUBLIC_USERNAME }}
+          SMOKE_BASE_URL: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_BASE_URL || secrets.SMOKE_STAGING_BASE_URL }}
+          SMOKE_API_URL: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_API_URL || secrets.SMOKE_STAGING_API_URL }}
+          SMOKE_AUTH_TOKEN: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_AUTH_TOKEN || secrets.SMOKE_STAGING_AUTH_TOKEN }}
+          SMOKE_PUBLIC_USERNAME: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_PUBLIC_USERNAME || secrets.SMOKE_STAGING_PUBLIC_USERNAME }}
           # Set to '1' on a target whose API runs LLM_ADAPTER_FORMAT=mock,
           # so the complete-kata smoke can run without burning tokens or
           # depending on a real model's latency. Off by default.
-          SMOKE_USE_MOCK_LLM: ${{ inputs.environment == 'prod' && vars.SMOKE_PROD_USE_MOCK_LLM || vars.SMOKE_STAGING_USE_MOCK_LLM }}
+          SMOKE_USE_MOCK_LLM: ${{ (inputs.environment || 'prod') == 'prod' && vars.SMOKE_PROD_USE_MOCK_LLM || vars.SMOKE_STAGING_USE_MOCK_LLM }}
           # Set to '1' on a target whose Turnstile is configured with the
           # Cloudflare dummy "always-passes" secret key, so the playground
           # anon-run smoke can submit the dummy response token without
           # being blocked by Layer 1. Off by default — prod with a real
           # Turnstile secret key MUST leave this unset.
-          SMOKE_PLAYGROUND_ENABLED: ${{ inputs.environment == 'prod' && vars.SMOKE_PROD_PLAYGROUND_ENABLED || vars.SMOKE_STAGING_PLAYGROUND_ENABLED }}
+          SMOKE_PLAYGROUND_ENABLED: ${{ (inputs.environment || 'prod') == 'prod' && vars.SMOKE_PROD_PLAYGROUND_ENABLED || vars.SMOKE_STAGING_PLAYGROUND_ENABLED }}
 
       - name: Upload traces on failure
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
-          name: playwright-traces-${{ inputs.environment }}
+          name: playwright-traces-${{ inputs.environment || 'prod' }}
           path: apps/e2e/test-results/
           retention-days: 7
