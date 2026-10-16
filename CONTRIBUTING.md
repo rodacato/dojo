@@ -131,6 +131,15 @@ You cannot assert the sensei says exactly X. You can assert the structural contr
 | Infrastructure (routes, repos) | Integration — real DB, mock LLM |
 | Browser behavior (`apps/e2e/tests`) | E2E — only what a unit test cannot see; mock the API at `page.route` |
 
+Tests named `*.integration.test.ts` run raw SQL against a real Postgres and are skipped unless `TEST_DATABASE_URL` points at a database they may write to (they add and remove their own rows and apply the migrations). Use a separate database, never the one you develop in:
+
+```bash
+createdb dojo_test   # once; in the devcontainer: PGPASSWORD=dojo psql -h db -U dojo dojo_dev -c 'create database dojo_test'
+TEST_DATABASE_URL=postgresql://dojo:dojo@db:5432/dojo_test pnpm test --filter=api
+```
+
+CI runs them against a Postgres service and fails, rather than skips, if the database is missing.
+
 Tag a spec `{ tag: '@smoke' }` only when a broken PR must fail on it: the subset runs on every pull
 request and should stay at a few minutes. Everything else runs in the nightly full suite.
 

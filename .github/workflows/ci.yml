@@ -19,6 +19,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
+    services:
+      postgres:
+        # Same major as production (config/deploy.api.yml); the integration tests need a real server.
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: dojo
+          POSTGRES_PASSWORD: dojo
+          POSTGRES_DB: dojo_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dojo -d dojo_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -66,6 +82,9 @@ jobs:
           LLM_API_KEY: ci-test-api-key
           WEB_URL: http://localhost:5173
           NODE_ENV: test
+          # Integration tests run raw SQL against the service above; REQUIRE makes a missing database fail, not skip.
+          TEST_DATABASE_URL: postgresql://dojo:dojo@localhost:5432/dojo_test
+          REQUIRE_DB_TESTS: '1'
 
       - name: Test web (enforced coverage gate)
         # Gate was decorative before S034 — the threshold lived in vitest.config
