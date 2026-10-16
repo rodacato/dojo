@@ -37,7 +37,7 @@ test.describe('smoke: the CSP lets the web reach its API', () => {
   test('a public page loads with no CSP violation', async ({ page }) => {
     await trackCspViolations(page)
     await page.goto('/engawa')
-    await page.waitForTimeout(2_000)
+    await expect(page.getByLabel('Language')).toBeVisible()
 
     expect(await cspViolations(page), 'the CSP blocked something the app needs').toEqual([])
   })
@@ -86,7 +86,6 @@ test.describe('smoke: signed-in pages', () => {
       await expect(page).not.toHaveURL(/session_expired/)
       await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10_000 })
 
-      await page.waitForTimeout(1_000)
       expect(await cspViolations(page), 'the CSP blocked something on this page').toEqual([])
     })
   }
