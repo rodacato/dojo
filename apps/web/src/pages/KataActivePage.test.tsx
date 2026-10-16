@@ -76,6 +76,7 @@ function renderPage(sessionId = 'sess-1') {
 }
 
 beforeEach(() => {
+  sessionStorage.clear()
   navigate.mockReset()
   getSession.mockReset()
   submitAttempt.mockReset()
@@ -184,6 +185,37 @@ describe('KataActivePage', () => {
       expect(submitAttempt).toHaveBeenCalledWith('sess-1', 'My approach: token bucket.'),
     )
     expect(navigate).toHaveBeenCalledWith('/katas/sess-1/eval')
+  })
+
+  it('restores the unsent answer when the learner comes back to the kata', async () => {
+    sessionStorage.setItem('dojo-draft-sess-1', 'half-written token bucket')
+    getSession.mockResolvedValue(makeSession())
+
+    renderPage('sess-1')
+
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+    expect(screen.getByRole('textbox')).toHaveValue('half-written token bucket')
+  })
+
+  it('keeps what the learner types so a failed evaluation does not lose it', async () => {
+    getSession.mockResolvedValue(makeSession())
+
+    renderPage('sess-1')
+
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'my approach' } })
+
+    await waitFor(() => expect(sessionStorage.getItem('dojo-draft-sess-1')).toBe('my approach'))
+  })
+
+  it('does not leak one session\'s draft into another', async () => {
+    sessionStorage.setItem('dojo-draft-other', 'someone else')
+    getSession.mockResolvedValue(makeSession())
+
+    renderPage('sess-1')
+
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+    expect(screen.getByRole('textbox')).toHaveValue('')
   })
 
   it('keeps Submit disabled until the user writes a response, then enables it', async () => {

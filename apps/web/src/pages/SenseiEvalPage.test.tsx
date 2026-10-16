@@ -218,4 +218,22 @@ describe('SenseiEvalPage', () => {
     await user.click(screen.getByRole('button', { name: 'Back to kata' }))
     expect(navigate).toHaveBeenCalledWith('/katas/sess-5')
   })
+
+  it('offers a way out of the failed evaluation that does not depend on the kata', async () => {
+    streamState = { status: 'error', code: 'WS_ERROR', message: 'Connection error' }
+    const user = userEvent.setup()
+    renderPage('sess-6')
+
+    await user.click(await screen.findByRole('button', { name: 'Dashboard' }))
+
+    expect(navigate).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('does not offer the dashboard exit while the evaluation is healthy', async () => {
+    streamState = { status: 'connecting' }
+    renderPage('sess-7')
+
+    await screen.findByText('The sensei is evaluating.')
+    expect(screen.queryByRole('button', { name: 'Dashboard' })).not.toBeInTheDocument()
+  })
 })

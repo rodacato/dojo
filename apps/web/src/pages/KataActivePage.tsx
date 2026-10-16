@@ -28,6 +28,24 @@ const PREPARE_POLL_INTERVAL_MS = 2000
 const PREPARE_MAX_POLLS = 60
 const PREPARE_SLOW_NOTICE_AFTER = 8
 
+const draftKey = (sessionId: string) => `dojo-draft-${sessionId}`
+
+function readDraft(sessionId: string): string | null {
+  try {
+    return sessionStorage.getItem(draftKey(sessionId))
+  } catch {
+    return null
+  }
+}
+
+function writeDraft(sessionId: string, value: string): void {
+  try {
+    sessionStorage.setItem(draftKey(sessionId), value)
+  } catch {
+    // storage unavailable (private mode, quota): the draft just isn't kept
+  }
+}
+
 export function KataActivePage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -51,7 +69,10 @@ export function KataActivePage() {
     function applyActiveSession(s: SessionWithKata): void {
       setPreparing(false)
       setSession(s)
-      if (s.kata.starterCode) {
+      const draft = readDraft(s.id)
+      if (draft) {
+        setUserResponse(draft)
+      } else if (s.kata.starterCode) {
         setUserResponse(s.kata.starterCode)
       }
     }
@@ -155,6 +176,11 @@ export function KataActivePage() {
     return () => { cancelled = true }
   }, [sessionId, navigate])
 
+  useEffect(() => {
+    if (!session) return
+    writeDraft(session.id, userResponse)
+  }, [session, userResponse])
+
   // Warn before closing tab during active kata
   useEffect(() => {
     if (!session) return
@@ -206,7 +232,7 @@ export function KataActivePage() {
         <EnsoLoader size={32} label="Preparing your kata" />
         <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
         {prepareSlow && (
-          <p className="font-mono text-secondary text-xs text-center max-w-sm">
+          <p className="font-mono text-secondary text-sm text-center max-w-sm">
             This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can go back and retry.
           </p>
         )}
@@ -234,10 +260,10 @@ export function KataActivePage() {
             dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
           <span className="h-4 w-px bg-border hidden sm:block" />
-          <span className="font-mono text-xs tracking-wider text-success-text border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
+          <span className="font-mono text-sm font-medium tracking-wider text-success-text border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
             READY
           </span>
-          <span className="font-mono text-xs text-secondary truncate hidden md:inline">
+          <span className="font-mono text-sm text-secondary truncate hidden md:inline">
             Active Task
           </span>
         </div>
@@ -281,7 +307,7 @@ export function KataActivePage() {
                   {kata.type === 'whiteboard' && kata.tags.length > 0 && kata.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-warning-text text-xs font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
+                      className="text-warning-text text-sm font-mono px-2 py-0.5 bg-warning/10 border border-warning/30 rounded-sm"
                     >
                       #{tag}
                     </span>
@@ -344,9 +370,9 @@ function ResponsePanel({
       <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
         {isCode || isWhiteboard ? (
           <>
-            <span className="font-mono text-xs text-primary">{filename}</span>
+            <span className="font-mono text-sm text-primary">{filename}</span>
             <span className="h-3 w-px bg-border" />
-            <span className="font-mono text-xs text-secondary">{editorLabel}</span>
+            <span className="font-mono text-sm text-secondary">{editorLabel}</span>
           </>
         ) : (
           <>
@@ -456,7 +482,7 @@ function ChatEditor({
         <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
           ⌘+Enter to submit
         </span>
-        <span className="font-mono text-xs text-secondary">{wordCount} words</span>
+        <span className="font-mono text-sm text-secondary">{wordCount} words</span>
       </div>
     </div>
   )
