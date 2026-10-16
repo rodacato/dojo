@@ -218,6 +218,47 @@ describe('KataActivePage', () => {
     expect(screen.getByRole('textbox')).toHaveValue('')
   })
 
+  it('asks before leaving and tells the learner the timer keeps running', async () => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+
+    renderPage('sess-1')
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+
+    await user.click(screen.getByRole('button', { name: 'Leave' }))
+
+    expect(screen.getByText(/The timer keeps running/)).toBeInTheDocument()
+    expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('goes to the dashboard once the learner confirms leaving', async () => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+
+    renderPage('sess-1')
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+
+    await user.click(screen.getByRole('button', { name: 'Leave' }))
+    const buttons = screen.getAllByRole('button', { name: 'Leave' })
+    await user.click(buttons[buttons.length - 1]!)
+
+    expect(navigate).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('stays on the kata when the learner picks Stay', async () => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+
+    renderPage('sess-1')
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+
+    await user.click(screen.getByRole('button', { name: 'Leave' }))
+    await user.click(screen.getByRole('button', { name: 'Stay' }))
+
+    expect(navigate).not.toHaveBeenCalled()
+    expect(screen.queryByText(/The timer keeps running/)).not.toBeInTheDocument()
+  })
+
   it('keeps Submit disabled until the user writes a response, then enables it', async () => {
     getSession.mockResolvedValue(makeSession())
 
