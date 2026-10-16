@@ -241,13 +241,15 @@ export function KatasPage() {
         </div>
 
         {picksError && (
-          <p role="alert" className="text-danger-text text-xs font-mono text-center">
+          <p role="alert" className="text-danger-text text-sm font-mono text-center">
             Couldn't load your kata. Try again.
           </p>
         )}
 
-        <p className="text-secondary text-xs font-mono text-center max-w-md mx-auto">
-          Your kata are generated from your selections. No skip. No reroll.
+        <p className="text-secondary text-sm font-mono text-center max-w-md mx-auto">
+          {ready
+            ? 'Your kata are generated from your selections. No skip. No reroll.'
+            : 'Pick your mood and how long you have to continue.'}
         </p>
 
         {picks !== null && (
@@ -304,7 +306,7 @@ export function KatasPage() {
 function PickCard({ title, children }: Readonly<{ title: string; children: React.ReactNode }>) {
   return (
     <section className="bg-surface border border-border/40 rounded-md p-5">
-      <h2 className="font-mono text-sm text-primary mb-4">{title}</h2>
+      <h2 className="font-mono text-base font-medium text-primary mb-4">{title}</h2>
       {children}
     </section>
   )
@@ -335,10 +337,10 @@ function SelectablePill({
           : 'border-border bg-page text-secondary hover:border-secondary'
       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent`}
     >
-      <span className="block uppercase tracking-wider text-xs">
+      <span className="block text-sm font-medium">
         {label}
       </span>
-      {sub && <span className="block text-xs text-secondary normal-case mt-0.5">{sub}</span>}
+      {sub && <span className="block text-sm text-secondary mt-0.5">{sub}</span>}
     </button>
   )
 }
@@ -513,7 +515,7 @@ function CustomizePanel({
         aria-expanded={open}
         className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated"
       >
-        <h2 className="font-mono text-sm text-primary">Customize</h2>
+        <h2 className="font-mono text-base font-medium text-primary">Customize</h2>
         <span className={`text-secondary transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden>
           ⌃
         </span>
@@ -541,7 +543,7 @@ function CustomizePanel({
                 <div>
                   <div className="flex items-baseline justify-between mb-2">
                     <Eyebrow inline>Randomness</Eyebrow>
-                    <span className="text-secondary text-xs font-mono">{randomLabel}</span>
+                    <span className="text-secondary text-sm font-mono">{randomLabel}</span>
                   </div>
                   <input
                     type="range"
@@ -567,7 +569,7 @@ function CustomizePanel({
                         type="button"
                         onClick={() => onToggleInterest(interest)}
                         aria-pressed={selected}
-                        className={`inline-flex items-center gap-1.5 rounded-sm border px-3 py-1.5 font-mono text-xs transition-colors ${
+                        className={`inline-flex items-center gap-1.5 rounded-sm border px-3 py-1.5 font-mono text-sm font-medium transition-colors ${
                           selected
                             ? 'border-primary bg-elevated text-primary'
                             : 'border-border bg-page text-secondary hover:border-secondary'
@@ -580,14 +582,14 @@ function CustomizePanel({
                   })}
                 </div>
                 {interests.length === 0 && (
-                  <p className="text-secondary text-xs font-mono mt-2">None selected = all categories.</p>
+                  <p className="text-secondary text-sm font-mono mt-2">None selected = all categories.</p>
                 )}
               </div>
 
               <div>
                 <div className="flex items-baseline justify-between mb-2">
                   <Eyebrow inline>Weekly goal</Eyebrow>
-                  <span className="text-secondary text-xs font-mono">
+                  <span className="text-secondary text-sm font-mono">
                     {goalWeeklyTarget} {goalWeeklyTarget === 1 ? 'day' : 'days'}
                   </span>
                 </div>
@@ -598,7 +600,7 @@ function CustomizePanel({
                       type="button"
                       onClick={() => onGoal(n)}
                       aria-pressed={goalWeeklyTarget === n}
-                      className={`aspect-square rounded-sm border font-mono text-xs transition-colors ${
+                      className={`aspect-square rounded-sm border font-mono text-sm font-medium transition-colors ${
                         goalWeeklyTarget === n
                           ? 'border-primary bg-elevated text-primary'
                           : 'border-border bg-page text-secondary hover:border-secondary'
@@ -621,7 +623,7 @@ function CustomizePanel({
 
 function Eyebrow({ children, inline }: Readonly<{ children: React.ReactNode; inline?: boolean }>) {
   return (
-    <p className={`text-secondary text-xs font-mono uppercase tracking-wider ${inline ? '' : 'mb-3'}`}>
+    <p className={`text-secondary text-xs font-medium font-mono uppercase tracking-wider ${inline ? '' : 'mb-3'}`}>
       {children}
     </p>
   )

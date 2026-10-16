@@ -37,7 +37,7 @@ export function ScrollsPage() {
         <EmptyState
           eyebrow="Empty · Scrolls"
           headline="No scrolls are published yet."
-          microcopy="Check back soon."
+          microcopy="Scrolls are small apps the operator of this instance adds."
         />
       ) : (
         <ul aria-label="Scrolls" className="grid gap-4 sm:grid-cols-2">

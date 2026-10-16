@@ -35,7 +35,7 @@ describe('AchievementBadge', () => {
         <AchievementBadge name="Streak" description="Seven days" earned />,
       )
 
-      expect(container.firstChild).not.toHaveClass('opacity-40')
+      expect(container.firstChild).not.toHaveClass('border-dashed')
     })
   })
 
@@ -45,7 +45,7 @@ describe('AchievementBadge', () => {
         <AchievementBadge name="Locked" description="Not yet" earned={false} />,
       )
 
-      expect(container.firstChild).toHaveClass('opacity-40')
+      expect(container.firstChild).toHaveClass('border-dashed')
       expect(screen.getByText('Locked')).toHaveClass('text-secondary')
     })
 
@@ -122,7 +122,7 @@ describe('AchievementBadge', () => {
         />,
       )
 
-      expect(container.firstChild).toHaveClass('opacity-40')
+      expect(container.firstChild).toHaveClass('border-dashed')
       expect(screen.queryByText(localized)).not.toBeInTheDocument()
     })
   })

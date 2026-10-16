@@ -27,7 +27,7 @@ const VERDICT_LABELS: Record<Verdict, string> = {
 
 export function TypeBadge({ type }: Readonly<{ type: KataType }>) {
   return (
-    <span className={`font-mono text-xs px-2 py-0.5 rounded-sm ${TYPE_STYLES[type]}`}>
+    <span className={`font-mono text-xs font-medium px-2 py-0.5 rounded-sm ${TYPE_STYLES[type]}`}>
       {type.toUpperCase()}
     </span>
   )
@@ -35,7 +35,7 @@ export function TypeBadge({ type }: Readonly<{ type: KataType }>) {
 
 export function DifficultyBadge({ difficulty }: Readonly<{ difficulty: Difficulty }>) {
   return (
-    <span className={`font-mono text-xs px-2 py-0.5 rounded-sm ${DIFFICULTY_STYLES[difficulty]}`}>
+    <span className={`font-mono text-xs font-medium px-2 py-0.5 rounded-sm ${DIFFICULTY_STYLES[difficulty]}`}>
       {difficulty.toUpperCase()}
     </span>
   )
