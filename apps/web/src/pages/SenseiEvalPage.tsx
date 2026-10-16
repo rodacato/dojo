@@ -132,13 +132,13 @@ export function SenseiEvalPage() {
     )
   } else if (result?.isFinalEvaluation) {
     bottomBandContent = (
-      <p className="text-secondary text-xs font-mono uppercase tracking-[0.08em] text-center">
+      <p className="text-secondary text-sm font-mono text-center">
         The sensei has spoken.
       </p>
     )
   } else if (state.status === 'error') {
     bottomBandContent = (
-      <p className="text-secondary text-xs font-mono uppercase tracking-[0.08em] text-center">
+      <p className="text-secondary text-sm font-mono text-center">
         Evaluation stopped.
       </p>
     )
@@ -161,7 +161,7 @@ export function SenseiEvalPage() {
         {session && (
           <>
             <span className="h-4 w-px bg-border hidden sm:block" />
-            <span className="font-mono text-xs text-primary truncate hidden sm:inline max-w-[40ch]">
+            <span className="font-mono text-sm text-primary truncate hidden sm:inline max-w-[40ch]">
               {session.kata.title}
             </span>
             <div className="hidden md:flex items-center gap-1.5">
@@ -234,7 +234,7 @@ export function SenseiEvalPage() {
               }
             >
               {state.status === 'complete' && (
-                <p className="text-secondary text-xs font-mono animate-pulse">
+                <p className="text-secondary text-sm font-mono animate-pulse">
                   Evaluation complete — opening full analysis...
                 </p>
               )}
@@ -247,13 +247,16 @@ export function SenseiEvalPage() {
               <p className="text-secondary font-mono text-sm">
                 The sensei couldn't evaluate your response.
               </p>
-              <p className="text-secondary text-xs">{state.message}</p>
+              <p className="text-secondary text-sm">{state.message}</p>
               <div className="flex gap-3 mt-2">
                 <Button variant="primary" size="md" onClick={() => connect()}>
                   Try again
                 </Button>
                 <Button variant="ghost" size="md" onClick={() => navigate(`/katas/${sessionId}`)}>
                   Back to kata
+                </Button>
+                <Button variant="subtle" size="md" onClick={() => navigate('/dashboard')}>
+                  Dashboard
                 </Button>
               </div>
             </div>
