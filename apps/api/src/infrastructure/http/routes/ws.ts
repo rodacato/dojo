@@ -97,7 +97,8 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
         },
 
         onError(evt: unknown, ws: WSInstance) {
-          log.error('ws.socket_error', { userId: user.id, sessionId: session.id, event: evt })
+          const err = (evt as { error?: unknown } | null)?.error ?? evt
+          log.error('ws.socket_error', { userId: user.id, sessionId: session.id, err })
           releaseConnection(user.id, ws)
           ws.close(1011, 'Internal error')
         },

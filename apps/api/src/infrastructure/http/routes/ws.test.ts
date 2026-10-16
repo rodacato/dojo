@@ -319,10 +319,15 @@ describe('createWsRoutes — onClose / onError', () => {
     const ws = makeSocket()
     const events = await ownedEventsConnected(ws)
 
-    events.onError?.({ message: 'boom' }, ws)
+    const socketError = new Error('connection reset')
+
+    events.onError?.({ error: socketError }, ws)
 
     expect(activeConnections.has(VALID_USER.id)).toBe(false)
     expect(ws.close).toHaveBeenCalledWith(1011, 'Internal error')
-    expect(logError).toHaveBeenCalledWith('ws.socket_error', expect.objectContaining({ userId: VALID_USER.id }))
+    expect(logError).toHaveBeenCalledWith(
+      'ws.socket_error',
+      expect.objectContaining({ userId: VALID_USER.id, err: socketError }),
+    )
   })
 })
