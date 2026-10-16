@@ -80,7 +80,7 @@ describe('playground.askSensei (SSE)', () => {
   beforeEach(() => localStorage.clear())
   afterEach(() => vi.restoreAllMocks())
 
-  it('POSTs JSON to /playground/ask with event-stream Accept and bearer auth', async () => {
+  it('POSTs JSON to /engawa/ask with event-stream Accept and bearer auth', async () => {
     localStorage.setItem('dojo_token', 'tok')
     const fetchSpy = vi
       .spyOn(globalThis, 'fetch')
@@ -89,7 +89,7 @@ describe('playground.askSensei (SSE)', () => {
     await collect(playground.askSensei({ question: 'why?', code: 'x', language: 'py' }))
 
     const [url, init] = call(fetchSpy, 0)
-    expect(url).toBe(u('/playground/ask'))
+    expect(url).toBe(u('/engawa/ask'))
     expect(init?.method).toBe('POST')
     const headers = init?.headers as Record<string, string>
     expect(headers['Content-Type']).toBe('application/json')
