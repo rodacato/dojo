@@ -64,7 +64,7 @@ Adrian unless noted.
 | **D18** | Sidebar logout has no confirm, Settings logout does | inconsistency |
 | **D19** | Sidebar has no History link; mobile nav lacks kumite, engawa, theme, logout | UX |
 | **D20** | "Make profile private" is permanently disabled | decision |
-| **D22** | Kata flow errors are silent; no abandon, no toasts | UX |
+| **D22** | Kata flow errors are silent; no abandon, no toasts | UX. Part resolved: the active kata has a *Leave* action with a confirmation. It does not abandon: the session and its timer keep running and can be resumed from the dashboard. Errors are still silent and there are still no toasts |
 | **D23** | Engawa navigates to a non-existent `/playground/:lang` | 🐞 |
 | **D35** | Katas copy says "below" while Customize is above | copy |
 | **D37** | No run-tests button in the kata editor | decision |

@@ -4,6 +4,7 @@ import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'reac
 import { api, ApiError, type SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
+import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { EnsoLoader } from '../components/ui/EnsoLoader'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
@@ -58,6 +59,7 @@ export function KataActivePage() {
   const [submitting, setSubmitting] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
   const [prepareError, setPrepareError] = useState(false)
+  const [leaving, setLeaving] = useState(false)
   const [responseFont, setResponseFont] = useState<'mono' | 'sans'>('sans')
   const msgIndex = useRef(0)
   const pollCount = useRef(0)
@@ -259,6 +261,9 @@ export function KataActivePage() {
           <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
             dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
+          <Button variant="subtle" size="sm" onClick={() => setLeaving(true)}>
+            Leave
+          </Button>
           <span className="h-4 w-px bg-border hidden sm:block" />
           <span className="font-mono text-sm font-medium tracking-wider text-success-text border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
             READY
@@ -338,6 +343,21 @@ export function KataActivePage() {
           onSubmit={handleSubmit}
         />
       </PanelGroup>
+
+      <ConfirmModal
+        open={leaving}
+        onCancel={() => setLeaving(false)}
+        eyebrow="Leave kata?"
+        tone="amber"
+        title="Leave this kata?"
+        cancelLabel="Stay"
+        primaryVariant="primary"
+        primaryLabel="Leave"
+        onConfirm={() => navigate('/dashboard')}
+      >
+        <p>The timer keeps running. You can resume from the dashboard until time runs out.</p>
+        <p>Your unsent answer is kept in this browser tab.</p>
+      </ConfirmModal>
     </div>
   )
 }
