@@ -23,6 +23,9 @@ const DURATIONS: Array<{ value: Duration; label: string }> = [
   { value: 45, label: '45m+' },
 ]
 
+const LOAD_ERROR = "Couldn't load your kata. Try again."
+const START_ERROR = "Couldn't start that kata. Try again."
+
 const LEVELS: Array<{ value: UserLevel; label: string }> = [
   { value: 'junior', label: 'Junior' },
   { value: 'mid', label: 'Mid' },
@@ -60,7 +63,7 @@ export function KatasPage() {
   const [surpriseLoading, setSurpriseLoading] = useState(false)
   const [picks, setPicks] = useState<KataDTO[] | null>(null)
   const [picksLoading, setPicksLoading] = useState(false)
-  const [picksError, setPicksError] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [starting, setStarting] = useState<string | null>(null)
   const picksRef = useRef<HTMLDivElement | null>(null)
   const navigate = useNavigate()
@@ -111,7 +114,7 @@ export function KatasPage() {
   async function handleShowKata() {
     if (!mood || !duration) return
     setPicksLoading(true)
-    setPicksError(false)
+    setError(null)
     try {
       const result = await api.getKatas({ mood, maxDuration: duration })
       setPicks(result)
@@ -119,7 +122,7 @@ export function KatasPage() {
         picksRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       })
     } catch {
-      setPicksError(true)
+      setError(LOAD_ERROR)
     } finally {
       setPicksLoading(false)
     }
@@ -131,16 +134,20 @@ export function KatasPage() {
 
   async function handleSelectKata(kataId: string) {
     setStarting(kataId)
+    setError(null)
     try {
       const { sessionId } = await api.startSession(kataId)
       navigate(`/katas/${sessionId}`)
     } catch {
+      setError(START_ERROR)
       setStarting(null)
     }
   }
 
   async function handleSurpriseMe() {
     setSurpriseLoading(true)
+    setError(null)
+    let failure = LOAD_ERROR
     try {
       const params = {
         ...(mood ? { mood } : {}),
@@ -153,9 +160,11 @@ export function KatasPage() {
         return
       }
       const picked = result[Math.floor(Math.random() * result.length)]!
+      failure = START_ERROR
       const { sessionId } = await api.startSession(picked.id)
       navigate(`/katas/${sessionId}`)
     } catch {
+      setError(failure)
       setSurpriseLoading(false)
     }
   }
@@ -240,9 +249,9 @@ export function KatasPage() {
           </Button>
         </div>
 
-        {picksError && (
+        {error && (
           <p role="alert" className="text-danger-text text-sm font-mono text-center">
-            Couldn't load your kata. Try again.
+            {error}
           </p>
         )}
 

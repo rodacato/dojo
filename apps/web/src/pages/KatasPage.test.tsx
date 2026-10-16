@@ -207,6 +207,48 @@ describe('KatasPage', () => {
     expect(await screen.findByText('session screen')).toBeInTheDocument()
   })
 
+  it('Surprise me says so when the katas cannot be loaded and leaves the button usable', async () => {
+    mockedApi.getKatas.mockRejectedValueOnce(new Error('500'))
+    const user = userEvent.setup()
+    renderPage()
+    await screen.findByText('Skill level')
+
+    await user.click(screen.getByRole('button', { name: 'Surprise me' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't load your kata. Try again.")
+    expect(mockedApi.startSession).not.toHaveBeenCalled()
+    expect(screen.getByRole('button', { name: 'Surprise me' })).toBeEnabled()
+  })
+
+  it('Surprise me says so when the picked kata cannot be started', async () => {
+    mockedApi.startSession.mockRejectedValueOnce(new Error('500'))
+    const user = userEvent.setup()
+    renderPage()
+    await screen.findByText('Skill level')
+
+    await user.click(screen.getByRole('button', { name: 'Surprise me' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't start that kata. Try again.")
+    expect(screen.queryByText('session screen')).not.toBeInTheDocument()
+  })
+
+  it('says so when a selected kata cannot be started, and clears the message on retry', async () => {
+    mockedApi.startSession.mockRejectedValueOnce(new Error('500'))
+    const user = userEvent.setup()
+    renderPage()
+    await screen.findByText('Skill level')
+
+    await user.click(screen.getByRole('button', { name: /In flow/ }))
+    await user.click(screen.getByRole('button', { name: '10m' }))
+    await user.click(screen.getByRole('button', { name: /Show kata/ }))
+    await user.click(await screen.findByText('Idempotency keys'))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't start that kata. Try again.")
+
+    await user.click(screen.getByText('Idempotency keys'))
+    expect(await screen.findByText('session screen')).toBeInTheDocument()
+  })
+
   it('persists a preference change via updatePreferences when toggling an interest', async () => {
     const user = userEvent.setup()
     renderPage()
