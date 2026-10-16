@@ -30,7 +30,7 @@ It is not a certification platform, and it is not a leaderboard. It is a daily p
 ## Run your own
 
 - **Your data, your server.** Kata history, verdicts and progression never leave your box.
-- **Your keys.** Bring any streaming LLM endpoint — Anthropic, OpenAI, or a compatible proxy. Evaluation cost is yours: API credits, or your own subscription through a proxy.
+- **Your keys.** Bring any streaming LLM endpoint — Anthropic, OpenAI, or a compatible proxy. Evaluation cost is yours: API credits, or your own subscription through a proxy. That endpoint receives what you write in a kata so it can evaluate it.
 - **Your network.** Public, VPN-gated, or on a laptop — deploy it wherever you want.
 
 ```bash
