@@ -141,7 +141,7 @@ export function EngawaPage() {
     setSelectedVersion(nextRuntime.versions.default)
     setCode(nextRuntime.starterCode)
     setRun(INITIAL_RUN)
-    navigate(`/playground/${next}`, { replace: true })
+    navigate(`/engawa/${next}`, { replace: true })
   }
 
   function trackRun(extra: Record<string, unknown>): void {
