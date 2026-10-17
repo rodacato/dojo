@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # Stage 1: build
 FROM node:24-alpine AS builder
 RUN npm install -g pnpm@9.15.4
@@ -32,18 +33,17 @@ ARG VITE_TURNSTILE_SITE_KEY=
 ENV VITE_TURNSTILE_SITE_KEY=$VITE_TURNSTILE_SITE_KEY
 
 # Source map upload (build-time only — @sentry/vite-plugin reads process.env).
-# Skipped silently when any of the three is empty.
-ARG SENTRY_AUTH_TOKEN=
+# Skipped silently when any of the three is empty; the token is a build secret.
 ARG SENTRY_ORG=
 ARG SENTRY_PROJECT=
-ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 ENV SENTRY_ORG=$SENTRY_ORG
 ENV SENTRY_PROJECT=$SENTRY_PROJECT
 # Build @dojo/shared first so vite's production resolution of the
 # "default" export condition (./dist/index.js) succeeds. Without this
 # the build fails with 'Failed to resolve entry for package "@dojo/shared"'.
 RUN pnpm --filter=@dojo/shared build
-RUN pnpm --filter=@dojo/web build
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
+  pnpm --filter=@dojo/web build
 
 # Stage 2: serve with Nginx
 FROM nginx:alpine AS runner
