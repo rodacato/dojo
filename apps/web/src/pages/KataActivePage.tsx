@@ -257,11 +257,11 @@ export function KataActivePage() {
     <div className="h-screen bg-page flex flex-col overflow-hidden">
       {/* Top bar */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md grid grid-cols-3 items-center px-4">
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex items-center gap-3 max-md:gap-2 min-w-0">
           <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
             dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
           </span>
-          <Button variant="subtle" size="sm" onClick={() => setLeaving(true)}>
+          <Button variant="subtle" size="sm" className="max-md:h-11" onClick={() => setLeaving(true)}>
             Leave
           </Button>
           <span className="h-4 w-px bg-border hidden sm:block" />
@@ -284,6 +284,7 @@ export function KataActivePage() {
           <Button
             variant="primary"
             size="sm"
+            className="max-md:h-11"
             onClick={handleSubmit}
             loading={submitting}
             disabled={submitting || (!userResponse.trim() && !timedOut)}
