@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ErrorState } from '../../components/ui/ErrorState'
 import { Pagination } from '../../components/ui/Pagination'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { AdminBreadcrumb } from './_form-parts'
 
 interface Invitation {
@@ -36,6 +37,7 @@ export function AdminInvitationsPage() {
   const [copiedTokenId, setCopiedTokenId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
   const [now, setNow] = useState(() => Date.now())
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     loadInvitations()
@@ -105,6 +107,8 @@ export function AdminInvitationsPage() {
     return relativeFromNow(now, lastCreated.createdAt, 'past')
   }, [lastCreated, now])
 
+  const listEmpty = !loading && invitations.length === 0
+
   return (
     <div className="max-w-5xl">
       <AdminBreadcrumb trail={['ADMIN', 'INVITATIONS']} />
@@ -120,12 +124,12 @@ export function AdminInvitationsPage() {
 
       <form
         onSubmit={handleCreate}
-        className="rounded-md border border-border bg-surface p-6 mb-6"
+        className="rounded-md border border-border bg-surface p-4 md:p-6 mb-6"
       >
         <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-4">
           Create invitation
         </div>
-        <div className="flex gap-3 items-end">
+        <div className="flex flex-col md:flex-row gap-3 md:items-end">
           <div className="flex-1">
             <label
               htmlFor="invite-email"
@@ -142,7 +146,7 @@ export function AdminInvitationsPage() {
               className="admin-input"
             />
           </div>
-          <Button type="submit" size="md" loading={creating}>
+          <Button type="submit" size="md" className="max-md:w-full max-md:h-11" loading={creating}>
             Generate
           </Button>
         </div>
@@ -168,6 +172,7 @@ export function AdminInvitationsPage() {
               <Button
                 variant="ghost"
                 size="sm"
+                className="max-md:h-11"
                 onClick={() => copyUrl(lastCreated.token, lastCreated.url)}
               >
                 {copiedTokenId === lastCreated.token ? 'Copied' : 'Copy URL'}
@@ -192,13 +197,23 @@ export function AdminInvitationsPage() {
         />
       )}
 
-      {!loadError && (!loading && invitations.length === 0 ? (
+      {!loadError && listEmpty && (
         <EmptyState
           eyebrow="Empty · Invitations"
           headline="No invitations created yet."
           microcopy="Tokens are single-use and expire after 7 days."
         />
-      ) : (
+      )}
+      {!loadError && !listEmpty && isMobile && (
+        <InvitationCards
+          loading={loading}
+          invitations={pageRows}
+          now={now}
+          copiedTokenId={copiedTokenId}
+          onCopy={copyUrl}
+        />
+      )}
+      {!loadError && !listEmpty && !isMobile && (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -272,10 +287,10 @@ export function AdminInvitationsPage() {
           </table>
         </div>
       </div>
-      ))}
+      )}
 
       {!loading && invitations.length > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
+        <div className="flex flex-col gap-3 md:flex-row items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
           <span>
             Showing {startIdx}–{endIdx} of {invitations.length}
           </span>
@@ -301,6 +316,49 @@ function Th({ children, align = 'left' }: Readonly<{ children: React.ReactNode; 
     >
       {children}
     </th>
+  )
+}
+
+function InvitationCards({
+  loading,
+  invitations,
+  now,
+  copiedTokenId,
+  onCopy,
+}: Readonly<{
+  loading: boolean
+  invitations: Invitation[]
+  now: number
+  copiedTokenId: string | null
+  onCopy: (id: string, url: string) => void
+}>) {
+  if (loading) {
+    return <p className="py-10 text-center text-secondary font-mono">Loading_</p>
+  }
+  return (
+    <ul className="flex flex-col gap-3">
+      {invitations.map((inv) => {
+        const expiresMs = new Date(inv.expiresAt).getTime()
+        const expired = inv.status === 'expired' || expiresMs < now
+        return (
+          <li key={inv.id} className="rounded-md border border-border bg-surface p-4 flex flex-col gap-2.5">
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-mono text-sm text-secondary tracking-wide">{midEllipsis(inv.token)}</span>
+              <InviteStatusBadge status={inv.status} />
+            </div>
+            <div className="flex items-center justify-between gap-3 font-mono text-xs text-secondary">
+              <span>Redeemed by {inv.usedBy ? `@${inv.usedBy}` : '—'}</span>
+              <span className={expired ? 'text-danger-text' : undefined}>{expiryLabel(inv.status, expired, now, expiresMs)}</span>
+            </div>
+            {inv.status === 'pending' && (
+              <Button variant="ghost" size="sm" className="h-11" onClick={() => onCopy(inv.id, `${globalThis.location.origin}/invite/${inv.token}`)}>
+                {copiedTokenId === inv.id ? 'Copied' : 'Copy URL'}
+              </Button>
+            )}
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 

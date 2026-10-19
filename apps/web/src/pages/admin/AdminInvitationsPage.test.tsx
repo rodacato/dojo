@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
@@ -146,5 +146,23 @@ describe('AdminInvitationsPage', () => {
     renderPage()
 
     expect(await screen.findByText('boom')).toBeInTheDocument()
+  })
+
+  describe('below md', () => {
+    const desktopWidth = window.innerWidth
+    beforeEach(() => {
+      window.innerWidth = 390
+    })
+    afterEach(() => {
+      window.innerWidth = desktopWidth
+    })
+
+    it('lists invitations as cards, with Copy URL only on the pending one', async () => {
+      renderPage()
+
+      expect(await screen.findByText('Redeemed by @alice')).toBeInTheDocument()
+      expect(screen.queryByRole('table')).not.toBeInTheDocument()
+      expect(screen.getAllByRole('button', { name: 'Copy URL' })).toHaveLength(1)
+    })
   })
 })

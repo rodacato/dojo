@@ -3,6 +3,7 @@ import { admin } from '../../lib/api/admin'
 import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Pagination } from '../../components/ui/Pagination'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { AdminBreadcrumb } from './_form-parts'
 
 type ErrorRow = Awaited<ReturnType<typeof admin.getErrors>>['rows'][number]
@@ -34,6 +35,7 @@ export function AdminErrorsPage() {
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string | null>(null)
+  const isMobile = useIsMobile()
   const [copied, setCopied] = useState<string | null>(null)
   const [secondsToRefresh, setSecondsToRefresh] = useState(30)
   const lastFetchedAt = useRef<number>(0)
@@ -145,18 +147,20 @@ export function AdminErrorsPage() {
     />
   )
 
+  const isEmpty = !loading && !error && rows.length === 0
+
   return (
     <div className="max-w-7xl">
       <AdminBreadcrumb trail={['ADMIN', 'ERRORS']} />
 
-      <div className="flex items-start justify-between gap-6 mb-8">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-6 mb-6 md:mb-8">
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Error log</h1>
           <div className="mt-1 text-sm text-secondary">
             Errors logged across api and web. Retention: 30 days.
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-2">
+        <div className="flex items-center justify-between gap-3 md:mt-2">
           <span className="font-mono text-xs uppercase tracking-wider text-secondary flex items-center gap-2">
             <span
               className={`inline-block w-1.5 h-1.5 rounded-full ${
@@ -170,14 +174,14 @@ export function AdminErrorsPage() {
             type="button"
             onClick={() => void fetchRows({ silent: true })}
             disabled={refreshing}
-            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-wait"
+            className="max-md:min-h-11 font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors disabled:text-muted disabled:cursor-wait"
           >
             ↻ Refresh
           </button>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-6 p-3 rounded-md border border-border bg-surface">
+      <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center md:gap-3 mb-6 p-3 rounded-md border border-border bg-surface">
         <FilterSelect
           label="Source"
           value={source}
@@ -194,14 +198,23 @@ export function AdminErrorsPage() {
           onChange={resetPageOn((v) => setStatus(v))}
           options={STATUS_OPTIONS}
         />
-        <span className="font-mono text-xs uppercase tracking-wider text-secondary ml-auto">
+        <span className="col-span-2 font-mono text-xs uppercase tracking-wider text-secondary md:ml-auto">
           {total} total
         </span>
       </div>
 
-      {!loading && !error && rows.length === 0 ? (
-        emptyState
-      ) : (
+      {isEmpty && emptyState}
+      {!isEmpty && isMobile && (
+        <ErrorCards
+          loading={loading}
+          error={error}
+          rows={rows}
+          expanded={expanded}
+          onToggle={(id) => setExpanded(expanded === id ? null : id)}
+          renderDetail={(row) => <ExpandedDetail row={row} onCopy={() => copyTrace(row)} copied={copied === row.id} />}
+        />
+      )}
+      {!isEmpty && !isMobile && (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -303,7 +316,7 @@ export function AdminErrorsPage() {
       )}
 
       {!loading && total > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
+        <div className="flex flex-col gap-3 md:flex-row items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
           <span>
             Showing {startIdx}–{endIdx} of {total}
           </span>
@@ -326,6 +339,61 @@ function emptyMatchEyebrow(source: string, status: string): string {
   return `No matches · Errors${sourceSegment}${statusSegment}`
 }
 
+function ErrorCards({
+  loading,
+  error,
+  rows,
+  expanded,
+  onToggle,
+  renderDetail,
+}: Readonly<{
+  loading: boolean
+  error: string | null
+  rows: ErrorRow[]
+  expanded: string | null
+  onToggle: (id: string) => void
+  renderDetail: (row: ErrorRow) => React.ReactNode
+}>) {
+  if (loading && rows.length === 0) {
+    return <p className="py-10 text-center text-secondary font-mono">Loading_</p>
+  }
+  if (error) {
+    return <p className="py-10 text-center text-danger-text font-mono">{error}</p>
+  }
+  return (
+    <ul className="flex flex-col gap-3">
+      {rows.map((row) => {
+        const isOpen = expanded === row.id
+        const ts = new Date(row.createdAt)
+        return (
+          <li key={row.id} className="rounded-md border border-border bg-surface">
+            <button
+              type="button"
+              aria-expanded={isOpen}
+              onClick={() => onToggle(row.id)}
+              className="w-full text-left p-3.5 flex flex-col gap-2 focus-visible:outline-2 focus-visible:outline-accent rounded-md"
+            >
+              <span className="flex items-center gap-2 font-mono text-xs">
+                <span className="text-sm tabular-nums text-primary">{ts.toISOString().slice(11, 19)}</span>
+                <span className="text-secondary">{ts.toISOString().slice(5, 10)}</span>
+                <SourcePill source={row.source} />
+                <span className={statusColor(row.status)}>{row.status ?? '—'}</span>
+                <span className={methodColor(row.method)}>{row.method ?? '—'}</span>
+                <span className={`ml-auto text-secondary transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden>
+                  ↓
+                </span>
+              </span>
+              <span className="font-mono text-xs text-primary truncate">{row.route ?? '—'}</span>
+              <span className="text-sm text-secondary line-clamp-2">{row.message}</span>
+            </button>
+            {isOpen && <div className="border-t border-border mx-3.5 py-3">{renderDetail(row)}</div>}
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 function FragmentRow({ children }: Readonly<{ children: React.ReactNode }>) {
   return <>{children}</>
 }
@@ -341,7 +409,7 @@ function ExpandedDetail({
 }>) {
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
         <div className="font-mono text-xs uppercase tracking-wider text-secondary">
           {row.requestId ? <>request_id: <span className="text-secondary normal-case tracking-normal">{row.requestId}</span></> : 'no request_id'}
           {row.userId && (
@@ -354,7 +422,7 @@ function ExpandedDetail({
         <button
           type="button"
           onClick={onCopy}
-          className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+          className="max-md:min-h-11 max-md:px-4 max-md:border max-md:border-border max-md:rounded-sm shrink-0 font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
         >
           {copied ? 'Copied' : 'Copy trace'}
         </button>
@@ -429,7 +497,7 @@ function FilterSelect<T extends string>({
 }>) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
-    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
+    <label className="relative inline-flex items-center h-11 md:h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
       <span className="text-secondary mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
       <ChevronDownIcon className="w-3 h-3 text-secondary" />

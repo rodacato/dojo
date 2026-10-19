@@ -257,4 +257,24 @@ describe('AdminScrollsPage — delete', () => {
 
     await waitFor(() => expect(mockedToast.error).toHaveBeenCalledWith('Delete failed', 'boom'))
   })
+
+  describe('below md', () => {
+    const desktopWidth = window.innerWidth
+    beforeEach(() => {
+      window.innerWidth = 390
+    })
+    afterEach(() => {
+      window.innerWidth = desktopWidth
+    })
+
+    it('lists scrolls as cards whose 44px actions still publish', async () => {
+      const u = userEvent.setup()
+      mockedApi.updateScroll.mockResolvedValue(entry({ status: 'published' }))
+      renderPage()
+
+      await u.click(await screen.findByRole('button', { name: 'Publish pattern-circuit' }))
+      expect(screen.queryByRole('table')).not.toBeInTheDocument()
+      expect(mockedApi.updateScroll).toHaveBeenCalledWith(entry().id, { status: 'published' })
+    })
+  })
 })
