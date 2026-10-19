@@ -225,7 +225,9 @@ export function EngawaPage() {
   const ctaHref = user ? '/katas' : '/'
 
   return (
-    <div className="h-dvh bg-page text-primary flex flex-col overflow-hidden">
+    <div
+      className={`${user ? 'h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] md:h-dvh' : 'h-dvh'} bg-page text-primary flex flex-col overflow-hidden`}
+    >
       {/* Header. Authed users get chrome from the sidebar, so the logo
           + Dashboard chip collapse into a single inline CTA line. */}
       {user ? (
@@ -441,7 +443,7 @@ export function EngawaPage() {
 
       {/* Anonymous footer only; authed users already get the sidebar. */}
       {!user && (
-        <footer className="shrink-0 border-t border-border/20 bg-page px-4 py-1 flex items-center justify-between text-secondary text-xs font-mono">
+        <footer className="shrink-0 border-t border-border/20 bg-page px-4 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] flex items-center justify-between text-secondary text-xs font-mono">
           <span>sandbox · not graded</span>
         </footer>
       )}
