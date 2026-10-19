@@ -94,12 +94,12 @@ describe('KatasPage (Advanced)', () => {
     await user.click(chip('Language', 'Go'))
     await user.click(screen.getByRole('button', { name: /start/i }))
 
-    expect(await screen.findByText('No kata fits all three.')).toBeInTheDocument()
+    expect(await screen.findByText('No kata fits these filters.')).toBeInTheDocument()
     expect(screen.getByText('Widen one: set Type or Language to Any.')).toBeInTheDocument()
     expect(mockedApi.startSession).not.toHaveBeenCalled()
 
     await user.click(chip('Language', 'Any'))
-    expect(screen.queryByText('No kata fits all three.')).not.toBeInTheDocument()
+    expect(screen.queryByText('No kata fits these filters.')).not.toBeInTheDocument()
   })
 
   it('reports a failed start and lets the learner try again', async () => {

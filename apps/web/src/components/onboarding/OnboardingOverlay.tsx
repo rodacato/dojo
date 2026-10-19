@@ -1,12 +1,20 @@
-import { useNavigate } from 'react-router-dom'
 import { LogoMark } from '../Logo'
 import { Button } from '../ui/Button'
 
 interface OnboardingOverlayProps {
+  daily: boolean
+  onStart: () => void
   onDismiss: () => void
 }
 
-const STAGES = [
+const DAILY_STAGES = [
+  { n: '01', label: "Open today's kata" },
+  { n: '02', label: 'Work it' },
+  { n: '03', label: 'Submit' },
+  { n: '04', label: 'Sensei evaluates' },
+] as const
+
+const ADVANCED_STAGES = [
   { n: '01', label: 'Set the constraints' },
   { n: '02', label: 'Get one kata' },
   { n: '03', label: 'Work it' },
@@ -16,12 +24,12 @@ const STAGES = [
 // First-visit welcome card. Non-modal — clicking the backdrop does NOT
 // dismiss; user must use Skip, X, or the primary CTA. The backdrop is a
 // flat 60% page color (no blur) so the underlying dashboard stays visible.
-export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps>) {
-  const navigate = useNavigate()
+export function OnboardingOverlay({ daily, onStart, onDismiss }: Readonly<OnboardingOverlayProps>) {
+  const stages = daily ? DAILY_STAGES : ADVANCED_STAGES
 
   function handleStart() {
     onDismiss()
-    navigate('/katas')
+    onStart()
   }
 
   return (
@@ -60,7 +68,7 @@ export function OnboardingOverlay({ onDismiss }: Readonly<OnboardingOverlayProps
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-          {STAGES.map((stage) => (
+          {stages.map((stage) => (
             <div
               key={stage.n}
               className="border border-border bg-page rounded-sm px-2.5 py-2 flex flex-col gap-0.5"

@@ -53,9 +53,14 @@ export function DashboardPage() {
   }
   if (!dashboard) return <PageLoader />
 
+  const daily = dashboard.dailyKataMinutes !== null
+  const startKata = daily ? startDailyKata : () => navigate('/katas')
+
   return (
     <div className="px-4 md:px-6 py-6 md:py-10 max-w-6xl mx-auto flex flex-col gap-8">
-      {onboarding.isFirstVisit && <OnboardingOverlay onDismiss={onboarding.dismiss} />}
+      {onboarding.isFirstVisit && (
+        <OnboardingOverlay daily={daily} onStart={startKata} onDismiss={onboarding.dismiss} />
+      )}
       <DateStrip />
 
       <section className="bg-surface border border-border/40 rounded-md p-6 md:p-8">
@@ -67,7 +72,7 @@ export function DashboardPage() {
           isFirstVisit={isFirstVisit}
           starting={starting}
           startError={startError}
-          onStart={dashboard.dailyKataMinutes === null ? () => navigate('/katas') : startDailyKata}
+          onStart={startKata}
           onResume={(id) => navigate(`/katas/${id}`)}
           onViewResults={(id) => navigate(`/katas/${id}/result`)}
         />

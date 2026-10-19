@@ -17,7 +17,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
 
-A self-hosted, open-source practice space for developers. Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
+A self-hosted, open-source practice space for developers: one surprise kata a day, about five minutes. Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
 
 It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, through scrolls (external learning apps the operator registers), a place to learn as much as a place to be tested.
 
@@ -94,14 +94,11 @@ The creator registers a scroll at `/admin/scrolls` by pasting its `scroll.json`.
 
 ## How it works
 
-You enter the dojo. You get 3 kata — no skip, no reroll. You pick one: a code refactor, a system design, a technical discussion. A sensei (an LLM with a specific role and 12 years of experience in whatever domain the kata covers) evaluates your work in real time. Not with praise, not with the answer — with honest, specific feedback on what you did and what you missed.
+Once a day the dojo serves you one kata, about five minutes, small enough to answer on a phone. You don't see the topic until it opens — that's the point: you practice the part where you don't know what's coming. Want something longer or more specific? **Advanced** asks for a type, a language and how long you have, and gives you one kata inside them. Either way, a sensei (an LLM with a specific role and 12 years of experience in whatever domain the kata covers) evaluates your work in real time. Not with praise, not with the answer — with honest, specific feedback on what you did and what you missed.
 
 ```
-Enter the dojo
-     ↓
-Pick mood + available time
-     ↓
-3 kata options — choose one
+Open today's kata (~5 min, topic hidden until it opens)
+  — or Advanced: type + language + time → one kata
      ↓
 Work through it (timer running, no AI, no autocomplete)
      ↓
