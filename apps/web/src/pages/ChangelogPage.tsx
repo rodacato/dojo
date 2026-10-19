@@ -12,6 +12,13 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
+    phase: 'Practice',
+    title: 'Spot the bug in five minutes',
+    description:
+      'A new kind of kata built for a phone: read a few lines, tap the one with the bug, and say why in two or three sentences. The sensei grades the why. Three ship with the seed to start; rerun it after upgrading.',
+  },
+  {
+    date: '2026-10-19',
     phase: 'Mobile',
     title: 'Dojo on your home screen',
     description:

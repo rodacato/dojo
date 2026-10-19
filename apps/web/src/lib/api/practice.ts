@@ -51,6 +51,12 @@ export const practice = {
       body: JSON.stringify({ userResponse }),
     }),
 
+  submitPointAttempt: (sessionId: string, pointedLine: number, why: string) =>
+    request<SubmitAttemptResponse>(`/sessions/${sessionId}/attempts`, {
+      method: 'POST',
+      body: JSON.stringify({ userResponse: why, pointedLine }),
+    }),
+
   retryEvaluation: (sessionId: string) =>
     request<SubmitAttemptResponse>(`/sessions/${sessionId}/retry-evaluation`, {
       method: 'POST',
