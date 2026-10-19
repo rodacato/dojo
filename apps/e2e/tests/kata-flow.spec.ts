@@ -17,6 +17,7 @@ const MOCK_DASHBOARD = {
   todayComplete: false,
   todaySession: null,
   activeSessionId: null,
+  dailyKataMinutes: null,
   heatmapData: [],
   recentSessions: [],
   weakAreas: [],
@@ -42,8 +43,8 @@ const MOCK_PREFERENCES = {
   goalWeeklyTarget: 3,
 }
 
-test.describe('Kata flow (Katas page)', () => {
-  test('select mood and duration, then "Show kata" becomes enabled', async ({ page }) => {
+test.describe('Kata flow (Advanced page)', () => {
+  test('Start waits for a duration; type and language default to Any', async ({ page }) => {
     await page.route(`${API_BASE}/auth/me`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
     )
@@ -54,32 +55,16 @@ test.describe('Kata flow (Katas page)', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_PREFERENCES) }),
     )
 
-    // Set auth token before navigating
     await page.goto('/')
     await page.evaluate(() => localStorage.setItem('dojo_token', 'fake-token'))
-
-    // Sprint 023 merged DayStart + KataSelection into the single /katas page.
     await page.goto('/katas')
 
-    // Mood buttons should be visible
-    await expect(page.getByRole('button', { name: /in flow/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /^ok/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /foggy/i })).toBeVisible()
+    const start = page.getByRole('button', { name: /start/i })
+    await expect(start).toBeDisabled()
+    await expect(page.getByRole('group', { name: 'Type' }).getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.getByRole('group', { name: 'Language' }).getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
 
-    // "Show kata" button should be disabled initially
-    const submitButton = page.getByRole('button', { name: /show kata/i })
-    await expect(submitButton).toBeDisabled()
-
-    // Click a mood
-    await page.getByRole('button', { name: /in flow/i }).click()
-
-    // Click a duration
-    await page.getByRole('button', { name: /^20m/ }).click()
-
-    // "Show kata" button should now be enabled
-    await expect(submitButton).toBeEnabled()
-
-    // Sprint 016: "Surprise me →" alternative CTA is also present
-    await expect(page.getByRole('button', { name: /surprise me/i })).toBeVisible()
+    await page.getByRole('group', { name: 'How long?' }).getByRole('button', { name: '20m' }).click()
+    await expect(start).toBeEnabled()
   })
 })

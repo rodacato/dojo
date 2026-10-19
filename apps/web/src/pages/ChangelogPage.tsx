@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
     phase: 'Practice',
+    title: 'Advanced: set the constraints, get one kata',
+    description:
+      'When today\'s kata is not what you want, the katas page now asks for how long, a type and a language, and starts one kata inside them. No mood picker and no list of three to choose from. Your level, interests and weekly goal live in Settings.',
+  },
+  {
+    date: '2026-10-19',
+    phase: 'Practice',
     title: "Today's kata, one tap away",
     description:
       'The dashboard holds a five-minute kata picked for you today. You see how long it is, not what it is, so there is nothing to skip; one tap opens it. Once it is done, One more kata gives you another.',

@@ -28,10 +28,11 @@ async function* streamSessionBody(sessionId: string): AsyncGenerator<string> {
 export const practice = {
   getDashboard: () => request<DashboardData>('/dashboard'),
 
-  getKatas: (params: { mood?: string; maxDuration?: number }) => {
+  getKatas: (params: { maxDuration?: number; type?: string; language?: string }) => {
     const qs = new URLSearchParams()
-    if (params.mood) qs.set('mood', params.mood)
     if (params.maxDuration) qs.set('maxDuration', String(params.maxDuration))
+    if (params.type) qs.set('type', params.type)
+    if (params.language) qs.set('language', params.language)
     return request<KataDTO[]>(`/katas?${qs}`)
   },
 
