@@ -1,4 +1,5 @@
-import { drizzle } from 'drizzle-orm/postgres-js'
+import { isNull } from 'drizzle-orm'
+import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from './drizzle/schema'
 import { katas as katasTable, variations as variationsTable, users as usersTable } from './drizzle/schema'
@@ -11,13 +12,14 @@ import { isLineInCode } from '../../domain/practice/point-answer'
 // ---------------------------------------------------------------------------
 
 const SYSTEM_USER_ID = uuidv5('dojo-system-user')
+const SEED_DATE = new Date('2026-01-01T00:00:00Z')
 
 const SYSTEM_USER = {
   id: SYSTEM_USER_ID,
   githubId: 'dojo-system',
   username: 'dojo-system',
   avatarUrl: '',
-  createdAt: new Date('2026-01-01T00:00:00Z'),
+  createdAt: SEED_DATE,
 }
 
 // ---------------------------------------------------------------------------
@@ -48,6 +50,64 @@ export function validateKatas(katas: SeedKata[]): void {
   }
 }
 
+// The seed owns a kata until the operator edits or archives it in admin, which
+// sets updated_at; from then on the operator's copy wins, variations included.
+export async function seedKatas(
+  db: Pick<PostgresJsDatabase, 'insert'>,
+  katas: SeedKata[],
+): Promise<{ written: number; kept: string[] }> {
+  await db.insert(usersTable).values(SYSTEM_USER).onConflictDoNothing()
+
+  let written = 0
+  const kept: string[] = []
+  for (const kata of katas) {
+    const content = {
+      title: kata.title,
+      description: kata.description,
+      duration: kata.duration,
+      difficulty: kata.difficulty,
+      category: kata.category,
+      type: kata.type,
+      language: kata.languages,
+      tags: kata.tags,
+      topics: kata.topics,
+      ownerRole: kata.variations[0]!.ownerRole,
+      ownerContext: kata.variations[0]!.ownerContext,
+      testCode: kata.testCode ?? null,
+      starterCode: kata.starterCode ?? null,
+      rubric: kata.rubric ?? null,
+    }
+    const owned = await db
+      .insert(katasTable)
+      .values({ id: kata.id, ...content, status: 'published', createdBy: SYSTEM_USER_ID, createdAt: SEED_DATE })
+      .onConflictDoUpdate({ target: katasTable.id, set: content, setWhere: isNull(katasTable.updatedAt) })
+      .returning({ id: katasTable.id })
+
+    if (owned.length === 0) {
+      kept.push(kata.title)
+      continue
+    }
+
+    for (const [i, variation] of kata.variations.entries()) {
+      await db
+        .insert(variationsTable)
+        .values({
+          id: uuidv5(`variation-${kata.id}-${i}`),
+          kataId: kata.id,
+          ownerRole: variation.ownerRole,
+          ownerContext: variation.ownerContext,
+          createdAt: SEED_DATE,
+        })
+        .onConflictDoUpdate({
+          target: variationsTable.id,
+          set: { ownerRole: variation.ownerRole, ownerContext: variation.ownerContext },
+        })
+    }
+    written++
+  }
+  return { written, kept }
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -63,63 +123,10 @@ export async function seed(): Promise<void> {
     console.log('Validating seed data...')
     validateKatas(KATAS)
 
-    console.log('Inserting system user...')
-    await db.insert(usersTable).values(SYSTEM_USER).onConflictDoNothing()
-
-    console.log(`Inserting ${KATAS.length} katas...`)
-    for (const kata of KATAS) {
-      await db
-        .insert(katasTable)
-        .values({
-          id: kata.id,
-          title: kata.title,
-          description: kata.description,
-          duration: kata.duration,
-          difficulty: kata.difficulty,
-          category: kata.category,
-          type: kata.type,
-          status: 'published',
-          language: kata.languages,
-          tags: kata.tags,
-          topics: kata.topics,
-          ownerRole: kata.variations[0]!.ownerRole,
-          ownerContext: kata.variations[0]!.ownerContext,
-          testCode: kata.testCode ?? null,
-          starterCode: kata.starterCode ?? null,
-          rubric: kata.rubric ?? null,
-          createdBy: SYSTEM_USER_ID,
-          createdAt: new Date('2026-01-01T00:00:00Z'),
-        })
-        .onConflictDoUpdate({
-          target: katasTable.id,
-          set: {
-            title: kata.title,
-            description: kata.description,
-            testCode: kata.testCode ?? null,
-            starterCode: kata.starterCode ?? null,
-            rubric: kata.rubric ?? null,
-            status: 'published',
-          },
-        })
-
-      for (let i = 0; i < kata.variations.length; i++) {
-        const variation = kata.variations[i]!
-        const variationId = uuidv5(`variation-${kata.id}-${i}`)
-
-        await db
-          .insert(variationsTable)
-          .values({
-            id: variationId,
-            kataId: kata.id,
-            ownerRole: variation.ownerRole,
-            ownerContext: variation.ownerContext,
-            createdAt: new Date('2026-01-01T00:00:00Z'),
-          })
-          .onConflictDoNothing()
-      }
-
-      console.log(`  \u2713 ${kata.title}`)
-    }
+    console.log(`Seeding ${KATAS.length} katas...`)
+    const { written, kept } = await seedKatas(db, KATAS)
+    for (const title of kept) console.log(`  = ${title} (edited by the operator, left as is)`)
+    console.log(`  \u2713 ${written} written from the seed`)
 
     console.log(`\nSeed complete. ${KATAS.length} katas, ${KATAS.reduce((n, e) => n + e.variations.length, 0)} variations.`)
   } finally {
