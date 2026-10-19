@@ -3,13 +3,14 @@ import { Hono } from 'hono'
 import { z } from 'zod'
 import { db } from '../../persistence/drizzle/client'
 import { kataFeedback, sessions } from '../../persistence/drizzle/schema'
+import { saveKataFeedback } from '../../persistence/kata-feedback'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 
 export const feedbackRoutes = new Hono<AppEnv>()
 
 // ---------------------------------------------------------------------------
-// POST /sessions/:id/feedback — Submit kata feedback
+// POST /sessions/:id/feedback — Save kata feedback, one vote at a time (D62)
 // ---------------------------------------------------------------------------
 
 feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
@@ -19,10 +20,10 @@ feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
   // Validate body
   const body = await c.req.json()
   const feedbackSchema = z.object({
-    clarity: z.enum(['clear', 'somewhat_unclear', 'confusing']).nullable().default(null),
-    timing: z.enum(['too_short', 'about_right', 'too_long']).nullable().default(null),
-    evaluation: z.enum(['fair_and_relevant', 'too_generic', 'missed_the_point']).nullable().default(null),
-    note: z.string().max(280).nullable().default(null),
+    clarity: z.enum(['clear', 'somewhat_unclear', 'confusing']).nullable().optional(),
+    timing: z.enum(['too_short', 'about_right', 'too_long']).nullable().optional(),
+    evaluation: z.enum(['fair_and_relevant', 'too_generic', 'missed_the_point']).nullable().optional(),
+    note: z.string().max(280).nullable().optional(),
   })
   const parsed = feedbackSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid feedback', details: z.flattenError(parsed.error) }, 400)
@@ -37,26 +38,13 @@ feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
     return c.json({ error: 'Session not yet completed' }, 409)
   }
 
-  // Check for existing feedback (UNIQUE constraint will also catch this)
-  const existing = await db.query.kataFeedback.findFirst({
-    where: eq(kataFeedback.sessionId, sessionId),
-  })
-  if (existing) return c.json({ error: 'Feedback already submitted' }, 409)
+  await saveKataFeedback(
+    db,
+    { sessionId: session.id, kataId: session.kataId, variationId: session.variationId, userId: user.id },
+    parsed.data,
+  )
 
-  // Insert feedback
-  const { clarity, timing, evaluation, note } = parsed.data
-  await db.insert(kataFeedback).values({
-    sessionId: session.id,
-    kataId: session.kataId,
-    variationId: session.variationId,
-    userId: user.id,
-    clarity,
-    timing,
-    evaluation,
-    note,
-  })
-
-  return c.json({ ok: true }, 201)
+  return c.json({ ok: true }, 200)
 })
 
 // ---------------------------------------------------------------------------

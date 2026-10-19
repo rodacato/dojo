@@ -133,7 +133,7 @@ describe('practice api client', () => {
     await practice.submitFeedback('s1', {
       clarity: 'clear',
       timing: null,
-      evaluation: 'fair',
+      evaluation: 'fair_and_relevant',
       note: 'good',
     })
 
@@ -142,7 +142,7 @@ describe('practice api client', () => {
     expect(JSON.parse(init?.body as string)).toEqual({
       clarity: 'clear',
       timing: null,
-      evaluation: 'fair',
+      evaluation: 'fair_and_relevant',
       note: 'good',
     })
   })

@@ -13,6 +13,11 @@ const { db } = vi.hoisted(() => ({
 
 vi.mock('../../persistence/drizzle/client', () => ({ db }))
 
+const saveKataFeedback = vi.fn()
+vi.mock('../../persistence/kata-feedback', () => ({
+  saveKataFeedback: (...args: unknown[]) => saveKataFeedback(...args),
+}))
+
 vi.mock('../../persistence/drizzle/schema', () => ({
   sessions: {},
   kataFeedback: {},
@@ -88,62 +93,34 @@ describe('POST /sessions/:id/feedback', () => {
     expect(db.query.sessions.findFirst).not.toHaveBeenCalled()
   })
 
-  it('inserts feedback and returns 201 on the happy path', async () => {
+  const OWNER = { sessionId: SESSION_ID, kataId: 'kata-1', variationId: 'var-1', userId: USER_ID }
+
+  it('saves only the vote that was tapped (D62)', async () => {
     db.query.sessions.findFirst.mockResolvedValue(completedSession())
-    db.query.kataFeedback.findFirst.mockResolvedValue(undefined)
-    const values = vi.fn().mockResolvedValue(undefined)
-    db.insert.mockReturnValue({ values })
 
-    const app = makeApp()
-    const res = await post(app, {
-      clarity: 'clear',
-      timing: 'about_right',
-      evaluation: 'fair_and_relevant',
-      note: 'good kata',
-    })
+    const res = await post(makeApp(), { timing: 'about_right' })
 
-    expect(res.status).toBe(201)
+    expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
-    expect(values).toHaveBeenCalledWith({
-      sessionId: SESSION_ID,
-      kataId: 'kata-1',
-      variationId: 'var-1',
-      userId: USER_ID,
-      clarity: 'clear',
-      timing: 'about_right',
-      evaluation: 'fair_and_relevant',
-      note: 'good kata',
-    })
+    expect(saveKataFeedback).toHaveBeenCalledWith(db, OWNER, { timing: 'about_right' })
   })
 
-  it('accepts an empty body and defaults all fields to null', async () => {
+  it('accepts a second vote on a session that already has feedback', async () => {
     db.query.sessions.findFirst.mockResolvedValue(completedSession())
-    db.query.kataFeedback.findFirst.mockResolvedValue(undefined)
-    const values = vi.fn().mockResolvedValue(undefined)
-    db.insert.mockReturnValue({ values })
+    db.query.kataFeedback.findFirst.mockResolvedValue({ id: 'fb-1', sessionId: SESSION_ID })
 
-    const app = makeApp()
-    const res = await post(app, {})
+    const res = await post(makeApp(), { evaluation: 'fair_and_relevant' })
 
-    expect(res.status).toBe(201)
-    expect(values).toHaveBeenCalledWith(
-      expect.objectContaining({
-        clarity: null,
-        timing: null,
-        evaluation: null,
-        note: null,
-      }),
-    )
+    expect(res.status).toBe(200)
+    expect(saveKataFeedback).toHaveBeenCalledWith(db, OWNER, { evaluation: 'fair_and_relevant' })
   })
 
   it('treats a failed session as eligible for feedback', async () => {
     db.query.sessions.findFirst.mockResolvedValue(completedSession({ status: 'failed' }))
-    db.query.kataFeedback.findFirst.mockResolvedValue(undefined)
 
-    const app = makeApp()
-    const res = await post(app, { clarity: 'confusing' })
+    const res = await post(makeApp(), { clarity: 'confusing' })
 
-    expect(res.status).toBe(201)
+    expect(res.status).toBe(200)
   })
 
   it('returns 400 when clarity is not a valid enum value', async () => {
@@ -193,18 +170,7 @@ describe('POST /sessions/:id/feedback', () => {
 
     expect(res.status).toBe(409)
     expect(await res.json()).toEqual({ error: 'Session not yet completed' })
-  })
-
-  it('returns 409 when feedback was already submitted', async () => {
-    db.query.sessions.findFirst.mockResolvedValue(completedSession())
-    db.query.kataFeedback.findFirst.mockResolvedValue({ id: 'fb-1', sessionId: SESSION_ID })
-
-    const app = makeApp()
-    const res = await post(app, { clarity: 'clear' })
-
-    expect(res.status).toBe(409)
-    expect(await res.json()).toEqual({ error: 'Feedback already submitted' })
-    expect(db.insert).not.toHaveBeenCalled()
+    expect(saveKataFeedback).not.toHaveBeenCalled()
   })
 })
 

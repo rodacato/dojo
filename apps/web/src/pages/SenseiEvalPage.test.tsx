@@ -180,21 +180,14 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument()
   })
 
-  it('asks for feedback where the kata now ends, since nothing leads to Results anymore', async () => {
+  it('asks the trial questions above Done, where the kata now ends (D62)', async () => {
     streamState = { status: 'complete', tokens: 't', result: makeResult() }
     renderPage('sess-4')
 
-    expect(await screen.findByRole('button', { name: 'how was this kata? (optional)' })).toBeInTheDocument()
+    const timing = await screen.findByRole('group', { name: 'Was the time limit right?' })
+    const done = screen.getByRole('button', { name: 'Done' })
+    expect(timing.compareDocumentPosition(done) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(getFeedback).toHaveBeenCalledWith('sess-4')
-  })
-
-  it('does not ask again once feedback was sent', async () => {
-    getFeedback.mockResolvedValue({ submitted: true })
-    streamState = { status: 'complete', tokens: 't', result: makeResult() }
-    renderPage()
-
-    expect(await screen.findByText('feedback received — thank you.')).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'how was this kata? (optional)' })).not.toBeInTheDocument()
   })
 
   it('keeps the feedback out while the sensei is still writing', async () => {
@@ -202,7 +195,7 @@ describe('SenseiEvalPage', () => {
     renderPage()
 
     await screen.findByText('Looking')
-    expect(screen.queryByRole('button', { name: 'how was this kata? (optional)' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: 'Was the time limit right?' })).not.toBeInTheDocument()
     expect(getFeedback).not.toHaveBeenCalled()
   })
 

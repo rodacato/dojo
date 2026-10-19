@@ -15577,7 +15577,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)",
+          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15604,7 +15604,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- WS /ws/sessions/:id; on 'ready' it reads the attempt id from sessionStorage and submits once; 'Try again' after an error reconnects to the same attempt (useEvaluationStream.ts)\n- A final evaluation redirects to /result 1500ms after complete\n- Follow-up turns have no client cap; a failed follow-up submit releases the Send button\n- WS close 4001 clears the token and redirects to /?error=session_expired\n- On error the bottom band reads 'Evaluation stopped.'\n- D60: one post-kata screen, no redirect. The sensei streams into the verdict card's body; the verdict label and its ink colour appear only when the evaluation lands (neutral border stroke while streaming). The learner's line (lines ±1) and why sit below from the first token, so nothing moves when the result arrives.\n- Insight tags (<strengths>, <improvements>, <approach_note>) never reach the screen while streaming.\n- After evaluation only: the answer (rubric answer.line ±1, expectedIssues[].title and why) under the learner's answer.\n- Exit: Done is the filled action (to the dashboard's done state); One more kata and Share are ghosts (D54, D61). Share opens navigator.share, else copies the link.",
+          "content": "- WS /ws/sessions/:id; on 'ready' it reads the attempt id from sessionStorage and submits once; 'Try again' after an error reconnects to the same attempt (useEvaluationStream.ts)\n- A final evaluation redirects to /result 1500ms after complete\n- Follow-up turns have no client cap; a failed follow-up submit releases the Send button\n- WS close 4001 clears the token and redirects to /?error=session_expired\n- On error the bottom band reads 'Evaluation stopped.'\n- D60: one post-kata screen, no redirect. The sensei streams into the verdict card's body; the verdict label and its ink colour appear only when the evaluation lands (neutral border stroke while streaming). The learner's line (lines ±1) and why sit below from the first token, so nothing moves when the result arrives.\n- Insight tags (<strengths>, <improvements>, <approach_note>) never reach the screen while streaming.\n- After evaluation only: the answer (rubric answer.line ±1, expectedIssues[].title and why) under the learner's answer.\n- Exit: Done is the filled action (to the dashboard's done state); One more kata and Share are ghosts (D54, D61). Share opens navigator.share, else copies the link.\n- D62: once the verdict is final, the time-limit and sensei-review questions sit open above the exits; each tap saves (upsert per session). Clarity and the note sit behind More feedback; the note saves with a ghost Send note. Done stays the only filled action.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15631,7 +15631,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy. Proposed copy for D60/D61, not in code yet: 'YOU POINTED AT LINE n · YOUR WHY', 'THE ANSWER · LINE n', 'Done', 'Share'. Answer text is seed kata-micro-001's rubric.",
+          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy. Proposed copy for D60/D61, not in code yet: 'YOU POINTED AT LINE n · YOUR WHY', 'THE ANSWER · LINE n', 'Done', 'Share'. Answer text is seed kata-micro-001's rubric. Proposed for D62: 'How was the sensei\\'s review?', 'Somewhat unclear', 'Clear', 'Too generic', 'More feedback', 'Send note', 'Anything to add?', and the placeholder 'One thing you\\'d change, or something you noticed'.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15685,7 +15685,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D22, D32, D33, D60, D61",
+          "content": "D22, D32, D33, D60, D61, D62",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15866,7 +15866,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Verdict variants differ only by label and colour; there is no per-verdict layout\n- Expired = no final attempt and status is not active\n- Notes and actions render only when a verdict exists\n- The hero prose shows only the text outside the structured tags; the tagged blocks render as the insight cards\n- VerdictBlock gets no role here (D21)\n- D60: /result is the post-kata view rebuilt from stored data: verdict once, the learner's point answer, the answer, notes, Done / One more kata / Share. No share preview card (D61), no breadcrumb.\n- The desktop frames left here (Expired, No evaluation, Load error, Feedback open) keep their logic but predate the single column.",
+          "content": "- Verdict variants differ only by label and colour; there is no per-verdict layout\n- Expired = no final attempt and status is not active\n- Notes and actions render only when a verdict exists\n- The hero prose shows only the text outside the structured tags; the tagged blocks render as the insight cards\n- VerdictBlock gets no role here (D21)\n- D60: /result is the post-kata view rebuilt from stored data: verdict once, the learner's point answer, the answer, notes, Done / One more kata / Share. No share preview card (D61), no breadcrumb.\n- Expired, No evaluation, Load error and Feedback open draw the component alone; D60 did not change their markup",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16012,6 +16012,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "xfDPw",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · D62 drawn: feedback inline above the exits (Feedback inline, More feedback); labels follow the stored values; ui-review gate run by a fresh reviewer",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -20455,6 +20468,875 @@
               "fontSize": 14,
               "fontWeight": "normal",
               "fontStyle": "italic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "B5SD4",
+      "x": 10600,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Feedback inline",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "fmcXY",
+          "name": "Feedback",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "XNN0B",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "QUICK FEEDBACK",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "OtcjS",
+              "name": "Question",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QQ9Nv",
+                  "fill": "$color-primary",
+                  "content": "Was the time limit right?",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "dWMw9",
+                  "name": "Options",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "a00UG",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iwqEe",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Too tight",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sEJLy",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-elevated",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-primary",
+                      "strokeWidth": 2,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Ub9qr",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "About right",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fNtbm",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rL1Xj",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Too loose",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "D42qbC",
+              "name": "Question",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "VHCnP",
+                  "fill": "$color-primary",
+                  "content": "How was the sensei's review?",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "iVX76",
+                  "name": "Options",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bFfZJ",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iJBnP",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Missed the point",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "PfKaQ",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Iy2ma",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Too generic",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "DHGP8",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Iqm7D",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Spot on",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "LtNZd",
+              "type": "ref",
+              "ref": "oI7dz",
+              "width": "fill_container",
+              "descendants": {
+                "Wuiek": {
+                  "content": "More feedback"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "i5UG5K",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "id": "PbuVb",
+              "type": "ref",
+              "ref": "WDpQp",
+              "width": "fill_container",
+              "descendants": {
+                "NnDrs": {
+                  "content": "Done"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "Egxtr",
+              "name": "Secondary",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "LkdDF",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "One more kata"
+                    }
+                  }
+                },
+                {
+                  "id": "sNFds",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Share"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "KelYT",
+      "x": 11110,
+      "y": 4387,
+      "name": "Post-kata / Mobile / More feedback",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "k2xl7",
+          "name": "Feedback",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "bSBmQ",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "QUICK FEEDBACK",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "AlL8P",
+              "name": "Question",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Bltah",
+                  "fill": "$color-primary",
+                  "content": "Was the time limit right?",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "gbQcO",
+                  "name": "Options",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "uZOfZ",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "itq2w",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Too tight",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UhCez",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-elevated",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-primary",
+                      "strokeWidth": 2,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "h7mKZ",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "About right",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C3bzN",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "FuU79",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Too loose",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "llaRi",
+              "name": "Question",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M4hNLf",
+                  "fill": "$color-primary",
+                  "content": "How was the sensei's review?",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "xfxcV",
+                  "name": "Options",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "H6Xh60",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "h5IDHX",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Missed the point",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xdi4d",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Riykt",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Too generic",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fo8Wt",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-elevated",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-primary",
+                      "strokeWidth": 2,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tYmCL",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Spot on",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DF2pn",
+              "name": "Question",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zyoae",
+                  "fill": "$color-primary",
+                  "content": "Was the description clear?",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "kH3rA",
+                  "name": "Options",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kf7hL",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "x8Hdg",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Confusing",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ACXoJ",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-page",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-border",
+                      "strokeWidth": 1,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "uYUWK",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Somewhat unclear",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "B6fFc",
+                      "name": "Option",
+                      "width": "fill_container",
+                      "height": 52,
+                      "fill": "$color-elevated",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$color-primary",
+                      "strokeWidth": 2,
+                      "padding": [
+                        4,
+                        6
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "r3gep",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Clear",
+                          "lineHeight": 1.25,
+                          "textAlign": "center",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F8JW5",
+              "name": "Note",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Oa9Vr",
+                  "fill": "$color-primary",
+                  "content": "Anything to add?",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "IpWTp",
+                  "name": "Textarea",
+                  "width": "fill_container",
+                  "height": 88,
+                  "fill": "$color-page",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "padding": [
+                    8,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z1zOf",
+                      "fill": "$color-muted",
+                      "content": "One thing you'd change, or something you noticed",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "Z5KwdV",
+              "type": "ref",
+              "ref": "oI7dz",
+              "width": "fill_container",
+              "descendants": {
+                "Wuiek": {
+                  "content": "Send note"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "dFjCY",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "id": "UjjRB",
+              "type": "ref",
+              "ref": "WDpQp",
+              "width": "fill_container",
+              "descendants": {
+                "NnDrs": {
+                  "content": "Done"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "e5IMlN",
+              "name": "Secondary",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "NbDdi",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "One more kata"
+                    }
+                  }
+                },
+                {
+                  "id": "h7meuK",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Share"
+                    }
+                  }
+                }
+              ]
             }
           ]
         }

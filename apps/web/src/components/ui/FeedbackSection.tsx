@@ -1,142 +1,146 @@
-import { useState } from 'react'
-import { api } from '../../lib/api'
-import { GroupButtons } from './GroupButtons'
+import { useEffect, useId, useState } from 'react'
+import { api, type KataFeedback } from '../../lib/api'
+import { useAsync } from '../../hooks/useAsync'
+import { Button } from './Button'
 
-const CLARITY_OPTIONS = [
-  { value: 'confusing', label: 'Confusing' },
-  { value: 'somewhat_unclear', label: 'Somewhat clear' },
-  { value: 'clear', label: 'Crystal clear' },
-] as const
+type Vote = 'clarity' | 'timing' | 'evaluation'
 
-const TIMING_OPTIONS = [
+// D62: labels say exactly what is stored, since these votes measure the #193 trial.
+const TIMING = [
   { value: 'too_short', label: 'Too tight' },
   { value: 'about_right', label: 'About right' },
   { value: 'too_long', label: 'Too loose' },
 ] as const
 
-const EVALUATION_OPTIONS = [
+const EVALUATION = [
   { value: 'missed_the_point', label: 'Missed the point' },
-  { value: 'too_generic', label: 'Somewhat relevant' },
+  { value: 'too_generic', label: 'Too generic' },
   { value: 'fair_and_relevant', label: 'Spot on' },
 ] as const
 
-interface FeedbackSectionProps {
-  sessionId: string
-  alreadySubmitted: boolean
-}
+const CLARITY = [
+  { value: 'confusing', label: 'Confusing' },
+  { value: 'somewhat_unclear', label: 'Somewhat unclear' },
+  { value: 'clear', label: 'Clear' },
+] as const
 
-export function FeedbackSection({ sessionId, alreadySubmitted }: Readonly<FeedbackSectionProps>) {
-  const [open, setOpen] = useState(false)
-  const [submitted, setSubmitted] = useState(alreadySubmitted)
-  const [submitting, setSubmitting] = useState(false)
-  const [clarity, setClarity] = useState<string | null>(null)
-  const [timing, setTiming] = useState<string | null>(null)
-  const [evaluation, setEvaluation] = useState<string | null>(null)
+const SELECTED = 'border-primary ring-1 ring-inset ring-primary bg-elevated text-primary font-bold'
+const UNSELECTED = 'border-border text-secondary font-medium hover:border-primary'
+
+// D62: the trial questions sit open above the exits and every tap saves on its own.
+export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) {
+  const { data: saved } = useAsync(() => api.getFeedback(sessionId), [sessionId])
+  const [votes, setVotes] = useState<Partial<KataFeedback>>({})
+  const [more, setMore] = useState(false)
   const [note, setNote] = useState('')
+  const [noteSent, setNoteSent] = useState(false)
   const [failed, setFailed] = useState(false)
+  const noteId = useId()
 
-  if (submitted) {
-    return (
-      <p className="text-secondary text-xs font-mono text-center mt-6">
-        feedback received — thank you.
-      </p>
-    )
-  }
+  useEffect(() => {
+    if (saved) setVotes({ clarity: saved.clarity, timing: saved.timing, evaluation: saved.evaluation })
+  }, [saved])
 
-  async function handleSubmit() {
-    setSubmitting(true)
+  if (!saved) return null
+
+  async function save(fields: Partial<KataFeedback>) {
     setFailed(false)
     try {
-      await api.submitFeedback(sessionId, {
-        clarity,
-        timing,
-        evaluation,
-        note: note.trim() || null,
-      })
-      setSubmitted(true)
+      await api.submitFeedback(sessionId, fields)
+      return true
     } catch {
       setFailed(true)
-      setSubmitting(false)
+      return false
     }
   }
 
-  if (!open) {
-    return (
-      <button
-        onClick={() => setOpen(true)}
-        className="text-secondary text-xs font-mono hover:text-primary transition-colors mt-6 block mx-auto"
-      >
-        how was this kata? (optional)
-      </button>
-    )
+  function vote(field: Vote) {
+    return (value: string) => {
+      setVotes((prev) => ({ ...prev, [field]: value }))
+      void save({ [field]: value })
+    }
+  }
+
+  async function sendNote() {
+    if (await save({ note: note.trim() })) setNoteSent(true)
   }
 
   return (
-    <div className="mt-6 border border-border/30 rounded-md p-5 max-w-md mx-auto space-y-5">
-      <p className="text-secondary text-xs font-mono uppercase tracking-wider">quick feedback</p>
+    <section className="flex flex-col gap-5">
+      <h2 className="text-secondary text-xs font-mono uppercase tracking-[0.08em]">Quick feedback</h2>
+      <Question label="Was the time limit right?" options={TIMING} value={votes.timing} onChange={vote('timing')} />
+      <Question label="How was the sensei's review?" options={EVALUATION} value={votes.evaluation} onChange={vote('evaluation')} />
 
-      <div>
-        <p className="text-secondary text-xs mb-2">Was the description clear?</p>
-        <GroupButtons
-          options={[...CLARITY_OPTIONS]}
-          value={clarity}
-          onChange={setClarity}
-          size="sm"
-        />
-      </div>
-
-      <div>
-        <p className="text-secondary text-xs mb-2">Was the time limit right?</p>
-        <GroupButtons
-          options={[...TIMING_OPTIONS]}
-          value={timing}
-          onChange={setTiming}
-          size="sm"
-        />
-      </div>
-
-      <div>
-        <p className="text-secondary text-xs mb-2">Did the evaluation feel fair?</p>
-        <GroupButtons
-          options={[...EVALUATION_OPTIONS]}
-          value={evaluation}
-          onChange={setEvaluation}
-          size="sm"
-        />
-      </div>
-
-      <div>
-        <p className="text-secondary text-xs mb-2">Anything to add? <span className="text-secondary">(optional)</span></p>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value.slice(0, 280))}
-          placeholder="One thing you'd change or noticed"
-          rows={2}
-          className="w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted focus:outline-none focus:border-accent transition-colors resize-none"
-        />
-        <p className="text-secondary text-xs font-mono text-right mt-1">{note.length}/280</p>
-      </div>
+      {more ? (
+        <>
+          <Question label="Was the description clear?" options={CLARITY} value={votes.clarity} onChange={vote('clarity')} />
+          <div className="flex flex-col gap-2">
+            <label htmlFor={noteId} className="text-primary text-sm font-medium">
+              Anything to add?
+            </label>
+            <textarea
+              id={noteId}
+              value={note}
+              onChange={(e) => setNote(e.target.value.slice(0, 280))}
+              placeholder="One thing you'd change, or something you noticed"
+              rows={3}
+              className="w-full bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans placeholder:text-muted focus:outline-none focus:border-accent transition-colors resize-none"
+            />
+          </div>
+          {noteSent ? (
+            <p className="text-secondary text-xs font-mono text-center">feedback received — thank you.</p>
+          ) : (
+            <Button variant="ghost" size="lg" className="w-full" onClick={sendNote} disabled={!note.trim()}>
+              Send note
+            </Button>
+          )}
+        </>
+      ) : (
+        <Button variant="ghost" size="lg" className="w-full" onClick={() => setMore(true)}>
+          More feedback
+        </Button>
+      )}
 
       {failed && (
         <p role="alert" className="text-danger-text text-xs font-mono">
           Couldn't send your feedback. Try again.
         </p>
       )}
+    </section>
+  )
+}
 
-      <div className="flex gap-2">
-        <button
-          onClick={() => setOpen(false)}
-          className="flex-1 py-2 text-secondary text-xs font-mono hover:text-secondary transition-colors"
-        >
-          skip
-        </button>
-        <button
-          onClick={handleSubmit}
-          disabled={submitting || (!clarity && !timing && !evaluation && !note.trim())}
-          className="flex-1 py-2 bg-accent text-on-accent text-xs font-mono rounded-sm hover:bg-accent/90 disabled:opacity-30 transition-colors"
-        >
-          {submitting ? '...' : 'send'}
-        </button>
+function Question({
+  label,
+  options,
+  value,
+  onChange,
+}: Readonly<{
+  label: string
+  options: ReadonlyArray<{ value: string; label: string }>
+  value: string | null | undefined
+  onChange: (value: string) => void
+}>) {
+  const id = useId()
+  return (
+    <div role="group" aria-labelledby={id} className="flex flex-col gap-2">
+      <p id={id} className="text-primary text-sm font-medium">
+        {label}
+      </p>
+      <div className="grid grid-cols-3 gap-2">
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            aria-pressed={value === option.value}
+            onClick={() => onChange(option.value)}
+            className={`min-h-13 px-1.5 py-1 rounded-sm border font-sans text-sm leading-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+              value === option.value ? SELECTED : UNSELECTED
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
       </div>
     </div>
   )
