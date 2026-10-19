@@ -8664,7 +8664,7 @@
                           "id": "XTciX",
                           "name": "Eyebrow",
                           "fill": "$color-secondary",
-                          "content": "TODAY",
+                          "content": "TODAY · ~5 MIN",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal",
@@ -8675,7 +8675,7 @@
                           "id": "viGJn",
                           "name": "Headline",
                           "fill": "$color-primary",
-                          "content": "The dojo was empty today.",
+                          "content": "Today's kata is waiting.",
                           "lineHeight": 1.27,
                           "fontFamily": "$font-mono",
                           "fontSize": 30,
@@ -9578,7 +9578,7 @@
                           "id": "xrYRS",
                           "name": "Eyebrow",
                           "fill": "$color-secondary",
-                          "content": "TODAY",
+                          "content": "TODAY · ~5 MIN",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal",
@@ -9604,7 +9604,7 @@
                           "fill": "$color-secondary",
                           "textGrowth": "fixed-width",
                           "width": 448,
-                          "content": "Pick mood. Pick time. Get 3 kata. Choose one. Work.",
+                          "content": "One kata, about five minutes. You see the topic when it opens.",
                           "fontFamily": "$font-sans",
                           "fontSize": 13,
                           "fontWeight": "normal"
@@ -10434,7 +10434,7 @@
       "id": "nYN2f",
       "x": 3880,
       "y": 0,
-      "name": "Dashboard / Mobile",
+      "name": "Dashboard / Mobile / Today · blind",
       "theme": {
         "theme": "sumi"
       },
@@ -10494,7 +10494,7 @@
                       "id": "kZbgm",
                       "name": "Eyebrow",
                       "fill": "$color-secondary",
-                      "content": "TODAY",
+                      "content": "TODAY · ~5 MIN",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -10507,7 +10507,7 @@
                       "fill": "$color-primary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "The dojo was empty today.",
+                      "content": "Today's kata is waiting.",
                       "lineHeight": 1.33,
                       "fontFamily": "$font-mono",
                       "fontSize": 24,
@@ -10531,6 +10531,7 @@
                   "id": "vyeGV",
                   "type": "ref",
                   "ref": "WDpQp",
+                  "width": "fill_container",
                   "descendants": {
                     "NnDrs": {
                       "content": "ENTER THE DOJO →"
@@ -14579,7 +14580,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.4.0 · brief-schema: 1 · updated: 2026-10-19",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14606,7 +14607,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Where a signed-in practitioner lands: today's hero, belt, streak and recent kata.",
+          "content": "Where a signed-in practitioner lands: today's hero (the daily micro kata, blind), belt, streak and recent kata.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14660,7 +14661,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Dashboard — Populated\n- Dashboard — First visit + onboarding overlay\n- Dashboard — Mobile (bottom nav)\n- Dashboard — Load error (inline ErrorState with retry)",
+          "content": "- Dashboard — Populated (today's kata, blind)\n- Dashboard — First visit + onboarding overlay\n- Dashboard / Mobile — Today · blind (bottom nav)\n- Dashboard — Load error (inline ErrorState with retry)\n- Dashboard / Mobile — Done today + one more",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14687,7 +14688,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Hero has three states by priority: active session > done today > empty; first visit swaps copy only (TodayCard.tsx)\n- isFirstVisit = streak 0 and no recent sessions (DashboardPage.tsx:25); overlay shows once per device ('dojo-onboarding-seen')\n- Patterns and Weak areas need totalCompleted >= 3; Recent kata hides when empty\n- Streak = consecutive UTC days ending today or yesterday (query-helpers.ts:21)",
+          "content": "- Hero has three states by priority: active session > done today > empty; first visit swaps copy only (TodayCard.tsx)\n- With micro kata on the instance (dailyKataMinutes), the empty state is blind: 'Today · ~5 min', no topic; Enter the dojo starts today's kata in one tap (POST /sessions/daily, D53). Without micro kata it routes to /katas as before\n- Today's kata is fixed per learner and day on the server, so there is no reroll; Done today adds One more kata, never one already practiced today (D54)\n- Hero buttons are full width below md\n- isFirstVisit = streak 0 and no recent sessions (DashboardPage.tsx:25); overlay shows once per device ('dojo-onboarding-seen')\n- Patterns and Weak areas need totalCompleted >= 3; Recent kata hides when empty\n- Streak = consecutive UTC days ending today or yesterday (query-helpers.ts:21)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14741,7 +14742,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Hero 'In progress' and 'Done today' — same card, copy in TodayCard.tsx\n- Loading — PageLoader, no skeleton\n- Collapsed sidebar (48px) — localStorage toggle",
+          "content": "- Hero 'In progress' — same card, copy in TodayCard.tsx\n- Starting today's kata — Enter the dojo shows its loading cursor; a failure reads \"Couldn't start that kata. Try again.\" under the body\n- Hero without micro kata on the instance — the old 'Today' copy routing to /katas\n- Loading — PageLoader, no skeleton\n- Collapsed sidebar (48px) — localStorage toggle",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14768,7 +14769,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D15 (resolved in code by PR #154 for the dashboard; Settings prefs failure still open), D19, D29, D31",
+          "content": "D15 (resolved in code by PR #154 for the dashboard; Settings prefs failure still open), D19, D29, D31, D53 and D54 (shipped, PR #203)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15360,6 +15361,19 @@
         },
         {
           "type": "text",
+          "id": "aFRFn",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · daily kata shipped (PR #203): hero blind with 'Today · ~5 min' on populated, first visit and mobile; Done today + one more drawn on mobile; moved from the playground",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "lZUtc",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -15495,6 +15509,427 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "P74pXF",
+      "x": 5950,
+      "y": 0,
+      "name": "Dashboard / Mobile / Done today + one more",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "IcxMV",
+          "name": "Main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            24,
+            16,
+            80,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "wnh3j",
+              "name": "Date",
+              "fill": "$color-secondary",
+              "content": "WEDNESDAY, OCTOBER 14, 2026",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 0.88
+            },
+            {
+              "type": "frame",
+              "id": "Z9w5So",
+              "name": "Hero card",
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 6,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "V45HZb",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "EuDGu",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "DONE TODAY",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "text",
+                      "id": "gc1m9",
+                      "name": "Headline",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Off-by-one in pagination",
+                      "lineHeight": 1.33,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 24,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "F5SVri",
+                      "name": "Body",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "The dojo received your work. The verdict is on the page.",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AIfs5",
+                  "name": "Actions",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "Do22T",
+                      "type": "ref",
+                      "ref": "oI7dz",
+                      "name": "View results",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Wuiek": {
+                          "content": "VIEW RESULTS →"
+                        }
+                      }
+                    },
+                    {
+                      "id": "uT3xI",
+                      "type": "ref",
+                      "ref": "F7gs9",
+                      "name": "One more kata",
+                      "width": "fill_container",
+                      "descendants": {
+                        "JOBdd": {
+                          "content": "ONE MORE KATA"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "JbaQd",
+              "name": "Belt strip",
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 6,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "u4nc56",
+                  "name": "Belt",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "DLom7",
+                      "name": "Belt dot",
+                      "fill": "$color-belt-yellow",
+                      "width": 28,
+                      "height": 28
+                    },
+                    {
+                      "type": "text",
+                      "id": "X6Pmi",
+                      "name": "Rank",
+                      "fill": "$color-primary",
+                      "content": "YELLOW BELT",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 18,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "b517w",
+                  "name": "Stats",
+                  "width": "fill_container",
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Pw468",
+                      "name": "Stat katas",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NK30P",
+                          "name": "Key",
+                          "fill": "$color-secondary",
+                          "content": "katas",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Ndlpy",
+                          "name": "Value",
+                          "fill": "$color-primary",
+                          "content": "23",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 18,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "pSljE",
+                      "name": "Stat clusters",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "oin8Y",
+                          "name": "Key",
+                          "fill": "$color-secondary",
+                          "content": "clusters",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Y4lzci",
+                          "name": "Value",
+                          "fill": "$color-primary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 18,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dNxXt",
+                      "name": "Stat active (30)",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "A8kgY",
+                          "name": "Key",
+                          "fill": "$color-secondary",
+                          "content": "active (30)",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Bo2rP",
+                          "name": "Value",
+                          "fill": "$color-primary",
+                          "content": "8",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 18,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IOwlL",
+                      "name": "Stat at rank",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eTkUh",
+                          "name": "Key",
+                          "fill": "$color-secondary",
+                          "content": "at rank",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "em8YA",
+                          "name": "Value",
+                          "fill": "$color-primary",
+                          "content": "12",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 18,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hd5ji",
+              "name": "StreakCard",
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 6,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Q9LXVP",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "oHRCs",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "CURRENT STREAK",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "text",
+                      "id": "sU1Fv",
+                      "name": "Goal",
+                      "fill": "$color-secondary",
+                      "content": "3/5 this week",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JGImZ",
+                  "name": "Number",
+                  "gap": 8,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "m6Ffe",
+                      "name": "Value",
+                      "fill": "$color-primary",
+                      "content": "5",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 48,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "TpT93",
+                      "name": "Unit",
+                      "fill": "$color-secondary",
+                      "content": "days",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hyBgr",
+              "name": "Recent list",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 6,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "n77Qd",
+                  "type": "ref",
+                  "ref": "mtVru",
+                  "width": "fill_container",
+                  "descendants": {
+                    "jsZ3n": {
+                      "content": "Refactor a 200-line useEffect"
+                    }
+                  }
+                },
+                {
+                  "id": "L7IEc",
+                  "type": "ref",
+                  "ref": "mtVru",
+                  "width": "fill_container",
+                  "descendants": {
+                    "jsZ3n": {
+                      "content": "The angry CTO"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "WTBNd",
+          "type": "ref",
+          "ref": "HVTrX",
+          "width": "fill_container"
         }
       ]
     }
