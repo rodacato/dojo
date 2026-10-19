@@ -162,7 +162,7 @@ describe.skipIf(!url)('PostgresKataRepository.findDailyCandidates against Postgr
 
   it('lists published micro kata with when this learner last practiced each', async () => {
     const candidates = (await repo.findDailyCandidates(UserId(learner))).filter((c) =>
-      [micro.id, long.id, draft.id].includes(c.kataId),
+      [micro.id, long.id, draft.id].some((id) => id === c.kataId),
     )
 
     expect(candidates).toEqual([{ kataId: micro.id, durationMinutes: 5, lastPracticedAt: practicedAt }])
