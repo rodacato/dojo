@@ -31,7 +31,7 @@ const collect = async (it: AsyncIterable<string>): Promise<string[]> => {
 
 const makeStubSessionRepo = () => ({
   save: vi.fn(),
-  updateBody: vi.fn().mockResolvedValue(undefined),
+  activate: vi.fn().mockResolvedValue(undefined),
   delete: vi.fn().mockResolvedValue(undefined),
   saveIncompleteAttempt: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn(),
@@ -68,7 +68,7 @@ describe('GenerateSessionBody', () => {
       ownerContext: 'Startup context',
       kataDescription: 'A test code review kata',
     })
-    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR that...')
+    expect(sessionRepo.activate).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR that...')
   })
 
   it('deletes session when kata is not found', async () => {
@@ -88,7 +88,7 @@ describe('GenerateSessionBody', () => {
     })
 
     expect(llm.generateSessionBody).not.toHaveBeenCalled()
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 
@@ -110,7 +110,7 @@ describe('GenerateSessionBody', () => {
     })
 
     expect(llm.generateSessionBody).not.toHaveBeenCalled()
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 
@@ -142,7 +142,7 @@ describe('GenerateSessionBody', () => {
       }),
     ).rejects.toThrow('shellm: 401 Unauthorized')
 
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
     expect(errorReporter.report).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -172,7 +172,7 @@ describe('GenerateSessionBody', () => {
     await useCase.execute({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id })
 
     expect(llm.generateSessionBody).not.toHaveBeenCalled()
-    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'Deterministic diff to review')
+    expect(sessionRepo.activate).toHaveBeenCalledWith(SessionId('session-1'), 'Deterministic diff to review')
   })
 })
 
@@ -200,7 +200,7 @@ describe('GenerateSessionBody.executeStream', () => {
       ownerContext: 'Startup context',
       kataDescription: 'A test code review kata',
     })
-    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR.')
+    expect(sessionRepo.activate).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR.')
   })
 
   it('review kata yields the description as a single chunk and persists it without the LLM', async () => {
@@ -222,7 +222,7 @@ describe('GenerateSessionBody.executeStream', () => {
 
     expect(chunks).toEqual(['Diff body'])
     expect(llm.generateSessionBodyStream).not.toHaveBeenCalled()
-    expect(sessionRepo.updateBody).toHaveBeenCalledWith(SessionId('session-1'), 'Diff body')
+    expect(sessionRepo.activate).toHaveBeenCalledWith(SessionId('session-1'), 'Diff body')
   })
 
   it('deletes the session and never persists a body when the kata is missing', async () => {
@@ -246,7 +246,7 @@ describe('GenerateSessionBody.executeStream', () => {
 
     expect(chunks).toEqual([])
     expect(llm.generateSessionBodyStream).not.toHaveBeenCalled()
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 
@@ -272,7 +272,7 @@ describe('GenerateSessionBody.executeStream', () => {
 
     expect(chunks).toEqual([])
     expect(llm.generateSessionBodyStream).not.toHaveBeenCalled()
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 
@@ -295,7 +295,7 @@ describe('GenerateSessionBody.executeStream', () => {
       collect(useCase.executeStream({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id })),
     ).rejects.toThrow('LLM returned empty session body')
 
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
     expect(errorReporter.report).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -327,7 +327,7 @@ describe('GenerateSessionBody.executeStream', () => {
       collect(useCase.executeStream({ sessionId: SessionId('session-1'), kataId: kata.id, variationId: variation.id })),
     ).rejects.toThrow('stream blew up')
 
-    expect(sessionRepo.updateBody).not.toHaveBeenCalled()
+    expect(sessionRepo.activate).not.toHaveBeenCalled()
     expect(sessionRepo.delete).toHaveBeenCalledWith(SessionId('session-1'))
   })
 })

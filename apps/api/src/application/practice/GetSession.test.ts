@@ -21,7 +21,7 @@ describe('GetSession', () => {
     const session = makeSession()
     const sessionRepo = {
       save: vi.fn(),
-      updateBody: vi.fn(),
+      activate: vi.fn(),
       delete: vi.fn(),
       saveIncompleteAttempt: vi.fn(),
       findById: vi.fn().mockResolvedValue(session),
@@ -39,7 +39,7 @@ describe('GetSession', () => {
   it('returns null when session does not exist', async () => {
     const sessionRepo = {
       save: vi.fn(),
-      updateBody: vi.fn(),
+      activate: vi.fn(),
       delete: vi.fn(),
       saveIncompleteAttempt: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
