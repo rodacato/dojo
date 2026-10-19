@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { and, count, desc, eq, gte, lt, sql } from 'drizzle-orm'
-import { Hono } from 'hono'
+import { Hono, type Context } from 'hono'
 import { getCookie } from 'hono/cookie'
 import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
@@ -154,18 +154,28 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
   const parsed = startSessionSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
 
-  const { kataId } = parsed.data
+  return startKataSession(c, user.id, KataId(parsed.data.kataId))
+})
 
+// Today's surprise micro kata, or one more once a micro kata is done today (D53, D54).
+practiceRoutes.post('/sessions/daily', requireAuth, async (c) => {
+  const user = c.get('user') as { id: string }
+  const pick = await useCases.pickDailyKata.execute(UserId(user.id))
+  if (!pick) return c.json({ error: 'No daily kata available' }, 404)
+  return startKataSession(c, user.id, pick.kataId)
+})
+
+async function startKataSession(c: Context<AppEnv>, userId: string, kataId: KataId) {
   // Fetch kata to pick a random variation
-  const kata = await useCases.getKataById.execute(KataId(kataId))
+  const kata = await useCases.getKataById.execute(kataId)
   if (!kata) return c.json({ error: 'Kata not found' }, 404)
   if (kata.variations.length === 0) return c.json({ error: 'Kata has no variations' }, 422)
 
   const variation = kata.variations[Math.floor(Math.random() * kata.variations.length)]
 
   const session = await useCases.startSession.execute({
-    userId: UserId(user.id),
-    kataId: KataId(kataId),
+    userId: UserId(userId),
+    kataId,
     variationId: variation.id,
   })
 
@@ -186,10 +196,10 @@ practiceRoutes.post('/sessions', requireAuth, async (c) => {
   // Funnel signal — playground → kata conversion. Fire-and-forget: a
   // failed lookup must never block a real session creation. See spec
   // 027 §4.8.
-  void trackPlaygroundConversion(c, session.id, user.id).catch(() => {})
+  void trackPlaygroundConversion(c, session.id, userId).catch(() => {})
 
   return c.json({ sessionId: session.id }, 201)
-})
+}
 
 // Spec 027 §4.8: playground_signup_conversion fires when a session is
 // created and the same browser previously ran code in the playground

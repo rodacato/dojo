@@ -3,7 +3,7 @@ import type { Belt } from '../../../domain/recognition/belt'
 
 // vi.hoisted runs at the very top so the mock factories below can close over
 // these bindings without hitting "Cannot access X before initialization".
-const { db, selectQueue, calculateBelt } = vi.hoisted(() => {
+const { db, selectQueue, calculateBelt, pickDailyKata } = vi.hoisted(() => {
   const selectQueue: unknown[][] = []
 
   function chainable(rows: unknown[] = []) {
@@ -39,6 +39,7 @@ const { db, selectQueue, calculateBelt } = vi.hoisted(() => {
       },
     },
     calculateBelt: vi.fn(),
+    pickDailyKata: vi.fn(),
   }
 })
 
@@ -52,7 +53,7 @@ vi.mock('../../persistence/drizzle/schema', () => ({
 }))
 
 vi.mock('../../container', () => ({
-  useCases: { calculateBelt: { execute: calculateBelt } },
+  useCases: { calculateBelt: { execute: calculateBelt }, pickDailyKata: { execute: pickDailyKata } },
 }))
 
 vi.mock('../middleware/auth', () => ({
@@ -93,7 +94,23 @@ describe('GET /dashboard', () => {
     vi.clearAllMocks()
     db.query.userPreferences.findFirst.mockResolvedValue(undefined)
     calculateBelt.mockResolvedValue(WHITE_BELT)
+    pickDailyKata.mockResolvedValue(null)
     seedEmpty()
+  })
+
+  it('tells how long the daily kata is without naming it', async () => {
+    pickDailyKata.mockResolvedValue({ kataId: 'kata-micro', durationMinutes: 5, lastPracticedAt: null })
+    const res = await makeApp().request('/dashboard')
+    const text = await res.text()
+
+    expect((JSON.parse(text) as { dailyKataMinutes: number }).dailyKataMinutes).toBe(5)
+    expect(text).not.toContain('kata-micro')
+  })
+
+  it('has no daily kata when the instance has no micro kata', async () => {
+    const res = await makeApp().request('/dashboard')
+
+    expect(((await res.json()) as { dailyKataMinutes: unknown }).dailyKataMinutes).toBeNull()
   })
 
   it('returns 200 with default-empty shape for a new user', async () => {
