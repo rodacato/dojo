@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type { UserDTO } from '@dojo/shared'
 import { AdminLayout } from './AdminLayout'
@@ -27,6 +27,7 @@ function renderLayout(initial = '/admin/katas') {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="katas" element={<div>katas outlet</div>} />
           <Route path="invitations" element={<div>invitations outlet</div>} />
+          <Route path="katas/:id/edit" element={<div>edit outlet</div>} />
         </Route>
       </Routes>
     </MemoryRouter>,
@@ -89,5 +90,32 @@ describe('AdminLayout', () => {
     renderLayout()
 
     expect(screen.getByRole('link', { name: /Back to dojo/ })).toHaveAttribute('href', '/dashboard')
+  })
+
+  describe('below md', () => {
+    const desktopWidth = window.innerWidth
+    beforeEach(() => {
+      window.innerWidth = 390
+    })
+    afterEach(() => {
+      window.innerWidth = desktopWidth
+    })
+
+    it('swaps the sidebar for a top bar and a bottom bar with the five sections', () => {
+      renderLayout('/admin/invitations')
+
+      expect(screen.queryByRole('navigation', { name: 'Admin navigation' })).not.toBeInTheDocument()
+      const bar = screen.getByRole('navigation', { name: 'Admin sections' })
+      expect(within(bar).getAllByRole('link')).toHaveLength(5)
+      expect(within(bar).getByRole('link', { name: 'invitations' })).toHaveAttribute('aria-current', 'page')
+      expect(screen.getByRole('link', { name: /Back to dojo/ })).toHaveAttribute('href', '/dashboard')
+    })
+
+    it('hides the bottom bar on a kata form, where the sticky save bar takes its place', () => {
+      renderLayout('/admin/katas/k1/edit')
+
+      expect(screen.getByText('edit outlet')).toBeInTheDocument()
+      expect(screen.queryByRole('navigation', { name: 'Admin sections' })).not.toBeInTheDocument()
+    })
   })
 })

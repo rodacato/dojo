@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -174,5 +174,28 @@ describe('AdminKatasPage', () => {
     renderPage()
 
     expect(await screen.findByText('No katas in the catalog yet.')).toBeInTheDocument()
+  })
+
+  describe('below md', () => {
+    const desktopWidth = window.innerWidth
+    beforeEach(() => {
+      window.innerWidth = 390
+    })
+    afterEach(() => {
+      window.innerWidth = desktopWidth
+    })
+
+    it('lists katas as cards that open the editor, with no table', async () => {
+      const u = userEvent.setup()
+      renderPage()
+
+      const card = await screen.findByRole('link', { name: /Rate limiter/ })
+      expect(screen.queryByRole('table')).not.toBeInTheDocument()
+      expect(screen.getAllByRole('link').filter((a) => a.getAttribute('href')?.endsWith('/edit'))).toHaveLength(3)
+      expect(card).toHaveTextContent('50 sessions · 90%')
+
+      await u.click(card)
+      expect(screen.getByText('edit kata form')).toBeInTheDocument()
+    })
   })
 })

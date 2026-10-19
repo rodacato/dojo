@@ -271,9 +271,10 @@ export function EngawaPage() {
             onClick={() => handleCtaClick('banner')}
             className="hover:text-secondary transition-colors truncate"
           >
-            like running code? <span className="text-accent-text">practice with a kata →</span>
+            <span className="max-md:hidden">like running code? </span>
+            <span className="text-accent-text">practice with a kata →</span>
           </Link>
-          <span className="shrink-0 text-secondary">sandbox · not graded</span>
+          <span className="max-md:hidden shrink-0 text-secondary">sandbox · not graded</span>
         </header>
       ) : (
         <header className="flex items-center justify-between gap-4 px-4 py-2 border-b border-border/30 shrink-0">
@@ -283,7 +284,7 @@ export function EngawaPage() {
           <Link
             to={ctaHref}
             onClick={() => handleCtaClick('topbar')}
-            className="text-xs font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-primary shrink-0"
+            className="max-md:min-h-11 inline-flex items-center text-xs font-mono text-secondary hover:text-primary transition-colors px-2.5 py-1 border border-border/40 rounded-sm hover:border-primary shrink-0"
           >
             Sign in
           </Link>
