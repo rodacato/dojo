@@ -177,6 +177,8 @@ describe.skipIf(!url)('PostgresKataRepository.findDailyCandidates against Postgr
       [micro.id, long.id, draft.id].some((id) => id === c.kataId),
     )
 
-    expect(candidates).toEqual([{ kataId: micro.id, durationMinutes: 5, lastPracticedAt: practicedAt }])
+    expect(candidates).toEqual([
+      { kataId: micro.id, durationMinutes: 5, category: 'debugging', difficulty: 'easy', lastPracticedAt: practicedAt },
+    ])
   })
 })
