@@ -26,6 +26,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 
 const getSession = vi.fn()
 const submitAttempt = vi.fn()
+const submitPointAttempt = vi.fn()
 const streamSessionBody = vi.fn()
 
 vi.mock('../lib/api', async (importOriginal) => {
@@ -35,6 +36,7 @@ vi.mock('../lib/api', async (importOriginal) => {
     api: {
       getSession: (...args: unknown[]) => getSession(...args),
       submitAttempt: (...args: unknown[]) => submitAttempt(...args),
+      submitPointAttempt: (...args: unknown[]) => submitPointAttempt(...args),
       streamSessionBody: (...args: unknown[]) => streamSessionBody(...args),
     },
   }
@@ -80,6 +82,7 @@ beforeEach(() => {
   navigate.mockReset()
   getSession.mockReset()
   submitAttempt.mockReset()
+  submitPointAttempt.mockReset()
   streamSessionBody.mockReset()
 })
 
@@ -274,5 +277,72 @@ describe('KataActivePage', () => {
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled(),
     )
+  })
+
+  describe('point kata', () => {
+    function pointSession(): SessionWithKata {
+      const base = makeSession()
+      return makeSession({
+        body: 'Pages are 1-based.',
+        kata: {
+          ...base.kata,
+          title: 'Off-by-one in pagination',
+          type: 'review',
+          language: ['typescript'],
+          starterCode: 'function paginate() {\n  const start = page * limit\n}\n',
+          answerShape: 'point',
+        },
+      })
+    }
+
+    it('submits the tapped line and the why once both are given', async () => {
+      const user = userEvent.setup()
+      getSession.mockResolvedValue(pointSession())
+      submitPointAttempt.mockResolvedValue({ attemptId: 'att-7' })
+
+      renderPage('sess-1')
+
+      await screen.findByText('Tap the line with the bug.')
+      expect(screen.getAllByRole('button', { pressed: false })).toHaveLength(3)
+      const submitButton = screen.getByRole('button', { name: 'Submit' })
+
+      await user.click(screen.getByRole('button', { name: /const start = page \* limit/ }))
+      expect(screen.getByText("Line 2 selected. Now say why it's wrong.")).toBeInTheDocument()
+      expect(submitButton).toBeDisabled()
+
+      fireEvent.change(screen.getByLabelText('Why is it wrong?'), { target: { value: 'page 1 skips a page.' } })
+      await waitFor(() => expect(submitButton).toBeEnabled())
+      await user.click(submitButton)
+
+      await waitFor(() => expect(submitPointAttempt).toHaveBeenCalledWith('sess-1', 2, 'page 1 skips a page.'))
+      expect(submitAttempt).not.toHaveBeenCalled()
+      expect(navigate).toHaveBeenCalledWith('/katas/sess-1/eval')
+    })
+
+    it('keeps Submit disabled with a why but no tapped line', async () => {
+      getSession.mockResolvedValue(pointSession())
+
+      renderPage('sess-1')
+
+      fireEvent.change(await screen.findByLabelText('Why is it wrong?'), { target: { value: 'something is off' } })
+      expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
+    })
+
+    it('starts the why empty instead of copying the code into it', async () => {
+      getSession.mockResolvedValue(pointSession())
+
+      renderPage('sess-1')
+
+      expect(await screen.findByLabelText('Why is it wrong?')).toHaveValue('')
+    })
+
+    it('restores the tapped line when the learner comes back', async () => {
+      sessionStorage.setItem('dojo-point-sess-1', '2')
+      getSession.mockResolvedValue(pointSession())
+
+      renderPage('sess-1')
+
+      expect(await screen.findByRole('button', { name: /const start/ })).toHaveAttribute('aria-pressed', 'true')
+    })
   })
 })
