@@ -10,7 +10,7 @@ function makeSessionRepo(
 ): SessionRepositoryPort {
   return {
     save: vi.fn(),
-    updateBody: vi.fn(),
+    activate: vi.fn(),
     delete: vi.fn(),
     saveIncompleteAttempt: vi.fn(),
     findById: vi.fn(),

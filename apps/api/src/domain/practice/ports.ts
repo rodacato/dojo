@@ -62,7 +62,8 @@ export interface CompletedKataHistoryEntry {
 
 export interface SessionRepositoryPort {
   save(session: Session): Promise<void>
-  updateBody(id: SessionId, body: string): Promise<void>
+  /** Stores the prepared body and starts the kata clock, so prep time never counts against it. */
+  activate(id: SessionId, body: string): Promise<void>
   delete(id: SessionId): Promise<void>
   /**
    * Persist an incomplete attempt (no evaluation) when an LLM stream errors

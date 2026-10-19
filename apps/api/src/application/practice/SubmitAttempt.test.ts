@@ -25,7 +25,7 @@ const makeActiveSession = () =>
 
 const makeStubSessionRepo = (session: Session | null = null) => ({
   save: vi.fn().mockResolvedValue(undefined),
-  updateBody: vi.fn(),
+  activate: vi.fn(),
   delete: vi.fn(),
   saveIncompleteAttempt: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn().mockResolvedValue(session),

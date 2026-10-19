@@ -39,7 +39,7 @@ export class GenerateSessionBody {
       // into the kata description. Running it through the LLM would drift
       // the diff every session, which defeats the rubric. Skip the call.
       if (kata.type === 'review') {
-        await this.deps.sessionRepo.updateBody(params.sessionId, kata.description)
+        await this.deps.sessionRepo.activate(params.sessionId, kata.description)
         return
       }
 
@@ -49,7 +49,7 @@ export class GenerateSessionBody {
         kataDescription: kata.description,
       })
 
-      await this.deps.sessionRepo.updateBody(params.sessionId, body)
+      await this.deps.sessionRepo.activate(params.sessionId, body)
     } catch (err) {
       await this.cleanupAndReport(params, err, 'GenerateSessionBody')
       throw err
@@ -81,7 +81,7 @@ export class GenerateSessionBody {
 
       if (kata.type === 'review') {
         yield kata.description
-        await this.deps.sessionRepo.updateBody(params.sessionId, kata.description)
+        await this.deps.sessionRepo.activate(params.sessionId, kata.description)
         return
       }
 
@@ -102,7 +102,7 @@ export class GenerateSessionBody {
         throw new Error('LLM returned empty session body')
       }
 
-      await this.deps.sessionRepo.updateBody(params.sessionId, acc)
+      await this.deps.sessionRepo.activate(params.sessionId, acc)
     } catch (err) {
       await this.cleanupAndReport(params, err, 'GenerateSessionBody.executeStream')
       throw err

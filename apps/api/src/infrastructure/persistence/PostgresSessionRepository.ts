@@ -59,10 +59,10 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     }
   }
 
-  async updateBody(id: SessionId, body: string): Promise<void> {
+  async activate(id: SessionId, body: string): Promise<void> {
     await this.db
       .update(sessions)
-      .set({ body, status: 'active' })
+      .set({ body, status: 'active', startedAt: new Date() })
       .where(eq(sessions.id, id))
   }
 
