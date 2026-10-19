@@ -41,6 +41,8 @@ export const practice = {
       body: JSON.stringify({ kataId }),
     }),
 
+  startDailyKata: () => request<StartSessionResponse>('/sessions/daily', { method: 'POST' }),
+
   getSession: (id: string) => request<SessionWithKata>(`/sessions/${id}`),
 
   streamSessionBody,

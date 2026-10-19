@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
     phase: 'Practice',
+    title: "Today's kata, one tap away",
+    description:
+      'The dashboard holds a five-minute kata picked for you today. You see how long it is, not what it is, so there is nothing to skip; one tap opens it. Once it is done, One more kata gives you another.',
+  },
+  {
+    date: '2026-10-19',
+    phase: 'Practice',
     title: 'Spot the bug in five minutes',
     description:
       'A new kind of kata built for a phone: read a few lines, tap the one with the bug, and say why in two or three sentences. The sensei grades the why. Three ship with the seed to start; rerun it after upgrading.',
