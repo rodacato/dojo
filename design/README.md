@@ -18,7 +18,7 @@ as context for AI agents.
 | `ui-kit.lib.pen` | **The design library** — tokens + components, mirrored 1:1 from the code |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** (a user journey with enough weight to justify one) |
-| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; today: the daily micro kata on mobile (D52–D54) |
+| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; today: the daily kata dashboard entry (D53, D54), Advanced, admin and Engawa on mobile |
 | `DECISIONS.md` | The numbered findings registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for design-decided consolidations pending in code |
 | `exports/` | Canvas PNGs for PM/PO/PR review — **committed** (they must travel) |
@@ -31,7 +31,7 @@ as context for AI agents.
 |---|---|---|---|
 | `public.pen` | 13 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
 | `app-core.pen` | 10 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
-| `kata.pen` | 18 | 0.4.0 | Katas list, active kata (code, chat, whiteboard), evaluation, results |
+| `kata.pen` | 20 | 0.5.0 | Katas list, active kata (code, chat, whiteboard, point on mobile), evaluation, results |
 | `learn.pen` | 11 | 0.4.0 | Scrolls catalog and player, Engawa playground |
 | `admin.pen` | 11 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
 
