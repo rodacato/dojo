@@ -223,6 +223,19 @@ describe('SettingsPage', () => {
       )
     })
 
+    it('offers debugging, the category of the micro kata, so it can steer today\'s kata', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ interests: ['backend'] }))
+
+      renderSettings()
+
+      await u.click(await screen.findByRole('button', { name: /^debugging$/ }))
+
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(
+        expect.objectContaining({ interests: ['backend', 'debugging'] }),
+      )
+    })
+
     it('surfaces the Error indicator when the save request rejects', async () => {
       const u = userEvent.setup()
       mockedGetPreferences.mockResolvedValue(basePrefs({ goalWeeklyTarget: 3 }))

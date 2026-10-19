@@ -13076,7 +13076,7 @@
       },
       "clip": true,
       "width": 1440,
-      "height": 1354,
+      "height": 1402,
       "fill": "$color-page",
       "children": [
         {
@@ -13439,7 +13439,7 @@
                                   "fill": "$color-elevated",
                                   "cornerRadius": "$radius-sm",
                                   "stroke": "$color-primary",
-                                  "strokeWidth": 1,
+                                  "strokeWidth": 2,
                                   "padding": [
                                     6,
                                     16
@@ -13453,7 +13453,7 @@
                                       "content": "Auto",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 13,
-                                      "fontWeight": "normal"
+                                      "fontWeight": "700"
                                     }
                                   ]
                                 },
@@ -13649,7 +13649,7 @@
                                   "fill": "$color-elevated",
                                   "cornerRadius": "$radius-sm",
                                   "stroke": "$color-primary",
-                                  "strokeWidth": 1,
+                                  "strokeWidth": 2,
                                   "padding": [
                                     6,
                                     16
@@ -13663,7 +13663,7 @@
                                       "content": "Mid",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 13,
-                                      "fontWeight": "normal"
+                                      "fontWeight": "700"
                                     }
                                   ]
                                 },
@@ -13725,200 +13725,265 @@
                               "type": "frame",
                               "id": "heDJp",
                               "name": "Chips",
+                              "layout": "vertical",
                               "gap": 8,
                               "children": [
                                 {
                                   "type": "frame",
-                                  "id": "CnqZp",
-                                  "name": "Chip backend",
-                                  "fill": "$color-elevated",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-primary",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
+                                  "id": "wNC9C",
+                                  "name": "Row 1",
+                                  "gap": 8,
                                   "children": [
                                     {
-                                      "type": "text",
-                                      "id": "D01y7p",
-                                      "name": "Label",
-                                      "fill": "$color-primary",
-                                      "content": "✓ backend",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
+                                      "type": "frame",
+                                      "id": "CnqZp",
+                                      "name": "Chip backend",
+                                      "fill": "$color-elevated",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-primary",
+                                      "strokeWidth": 2,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "D01y7p",
+                                          "name": "Label",
+                                          "fill": "$color-primary",
+                                          "content": "✓ backend",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "700"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "jdLYd",
+                                      "name": "Chip frontend",
+                                      "fill": "$color-elevated",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-primary",
+                                      "strokeWidth": 2,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "QvlAK",
+                                          "name": "Label",
+                                          "fill": "$color-primary",
+                                          "content": "✓ frontend",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "700"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "XbLoT",
+                                      "name": "Chip architecture",
+                                      "fill": "$color-elevated",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-primary",
+                                      "strokeWidth": 2,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "FeayH",
+                                          "name": "Label",
+                                          "fill": "$color-primary",
+                                          "content": "✓ architecture",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "700"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "oMG6k",
+                                      "name": "Chip security",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "OUShN",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "security",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "aVvHu",
+                                      "name": "Chip devops",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "S2Rx0K",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "devops",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "tFz4Q",
+                                      "name": "Chip testing",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "K7KUzt",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "testing",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "S64Aa9",
+                                      "name": "Chip process",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "lcnZN",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "process",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "frame",
+                                      "id": "Yfu0k",
+                                      "name": "Chip reliability",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "m4BG8f",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "reliability",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
                                     }
                                   ]
                                 },
                                 {
                                   "type": "frame",
-                                  "id": "jdLYd",
-                                  "name": "Chip frontend",
-                                  "fill": "$color-elevated",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-primary",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
+                                  "id": "iqydq",
+                                  "name": "Row 2",
+                                  "gap": 8,
                                   "children": [
                                     {
-                                      "type": "text",
-                                      "id": "QvlAK",
-                                      "name": "Label",
-                                      "fill": "$color-primary",
-                                      "content": "✓ frontend",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "XbLoT",
-                                  "name": "Chip architecture",
-                                  "fill": "$color-elevated",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-primary",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "children": [
+                                      "type": "frame",
+                                      "id": "Fdt0v",
+                                      "name": "Chip debugging",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "Y83NN6",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "debugging",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
+                                    },
                                     {
-                                      "type": "text",
-                                      "id": "FeayH",
-                                      "name": "Label",
-                                      "fill": "$color-primary",
-                                      "content": "✓ architecture",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "oMG6k",
-                                  "name": "Chip security",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "OUShN",
-                                      "name": "Label",
-                                      "fill": "$color-secondary",
-                                      "content": "security",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "aVvHu",
-                                  "name": "Chip devops",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "S2Rx0K",
-                                      "name": "Label",
-                                      "fill": "$color-secondary",
-                                      "content": "devops",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "tFz4Q",
-                                  "name": "Chip testing",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "K7KUzt",
-                                      "name": "Label",
-                                      "fill": "$color-secondary",
-                                      "content": "testing",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "S64Aa9",
-                                  "name": "Chip process",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "lcnZN",
-                                      "name": "Label",
-                                      "fill": "$color-secondary",
-                                      "content": "process",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "Yfu0k",
-                                  "name": "Chip reliability",
-                                  "cornerRadius": "$radius-sm",
-                                  "stroke": "$color-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    6,
-                                    12
-                                  ],
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "m4BG8f",
-                                      "name": "Label",
-                                      "fill": "$color-secondary",
-                                      "content": "reliability",
-                                      "fontFamily": "$font-mono",
-                                      "fontSize": 11,
-                                      "fontWeight": "normal"
+                                      "type": "frame",
+                                      "id": "AKrZI",
+                                      "name": "Chip sql",
+                                      "cornerRadius": "$radius-sm",
+                                      "stroke": "$color-border",
+                                      "strokeWidth": 1,
+                                      "padding": [
+                                        6,
+                                        12
+                                      ],
+                                      "children": [
+                                        {
+                                          "type": "text",
+                                          "id": "nbZTh",
+                                          "name": "Label",
+                                          "fill": "$color-secondary",
+                                          "content": "sql",
+                                          "fontFamily": "$font-mono",
+                                          "fontSize": 11,
+                                          "fontWeight": "normal"
+                                        }
+                                      ]
                                     }
                                   ]
                                 }
@@ -14127,7 +14192,7 @@
                                   "fill": "$color-elevated",
                                   "cornerRadius": "$radius-sm",
                                   "stroke": "$color-primary",
-                                  "strokeWidth": 1,
+                                  "strokeWidth": 2,
                                   "justifyContent": "center",
                                   "alignItems": "center",
                                   "children": [
@@ -14139,7 +14204,7 @@
                                       "content": "3",
                                       "fontFamily": "$font-mono",
                                       "fontSize": 13,
-                                      "fontWeight": "normal"
+                                      "fontWeight": "700"
                                     }
                                   ]
                                 },
@@ -15104,7 +15169,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.4.0 · brief-schema: 1 · updated: 2026-10-19",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15185,7 +15250,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Settings — Default (all four sections)\n- Settings — Sign out modal\n- Kumite — Placeholder",
+          "content": "- Settings — Default (all four sections)\n- Settings — Sign out modal\n- Kumite — Placeholder\n- Settings / Mobile (scroll)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15212,7 +15277,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Every change autosaves (PUT preferences), no toasts; header chip shows Saved / Error (SettingsPage.tsx)\n- Theme choice is local (dojo-theme), not part of the preferences save\n- Make profile private is permanently disabled (D20)\n- Settings logout asks for confirmation; the sidebar logout does not (D18)",
+          "content": "- Every change autosaves (PUT preferences), no toasts; header chip shows Saved / Error (SettingsPage.tsx)\n- Theme choice is local (dojo-theme), not part of the preferences save\n- Make profile private is permanently disabled (D20)\n- Settings logout asks for confirmation; the sidebar logout does not (D18)\n- Selected pills, chips and goal read like Advanced's chips (D42): primary border plus inset ring, elevated fill, bold label\n- Interests include debugging and sql, the categories the micro kata use, so they can steer today's kata (D57)\n- Below md: cards p-4; pills, chips, inputs and account buttons 44px; weekly goal in seven equal columns; slider row 44px",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15266,7 +15331,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Settings loading — PageLoader; stuck forever if preferences fail (D15)\n- SaveIndicator Saving_ / Error — string swap\n- Reminder fields hidden when the toggle is off",
+          "content": "- Settings loading — PageLoader; stuck forever if preferences fail (D15)\n- SaveIndicator Saving_ / Error — string swap\n- Reminder fields hidden when the toggle is off\n- Mobile: reminders off, sign out modal",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15358,6 +15423,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "A26waZ",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · Settings on mobile drawn with the code (44px controls, seven-column goal); selected pills follow D42 on desktop too; debugging and sql join the interests",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -15929,6 +16007,1584 @@
           "id": "WTBNd",
           "type": "ref",
           "ref": "HVTrX",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "wjm7w",
+      "x": 5440,
+      "y": 3131,
+      "name": "Settings / Mobile (scroll)",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1999,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "lgaGv",
+          "name": "Main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            32,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "uUHhq",
+              "name": "Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "end",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "d28INd",
+                  "name": "H1",
+                  "fill": "$color-primary",
+                  "content": "Settings",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 24,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "vaxv5",
+                  "name": "Saved",
+                  "fill": "$color-success-text",
+                  "content": "SAVED",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.88
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ky0F9",
+              "name": "Section ACCOUNT",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ofuNG",
+                  "name": "Title",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "I9ZTV",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "ACCOUNT",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vD1bE",
+                      "name": "Rule",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$color-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "jAFMY",
+                  "name": "Card",
+                  "width": "fill_container",
+                  "fill": "$color-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 24,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Khaxk",
+                      "name": "Identity",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "n5wAD",
+                          "type": "ref",
+                          "ref": "T48S9",
+                          "name": "Avatar"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "N5AYC",
+                          "name": "Names",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Et2YC",
+                              "name": "Name",
+                              "fill": "$color-primary",
+                              "content": "username",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Jt76Q",
+                              "name": "Handle",
+                              "fill": "$color-secondary",
+                              "content": "@username",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "OnK3f",
+                              "name": "Since",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Member since October 2026 · yellow belt",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 12,
+                              "fontWeight": "normal",
+                              "letterSpacing": 0.5
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xh9Mu",
+                      "name": "Actions",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "id": "BOIeh",
+                          "type": "ref",
+                          "ref": "oI7dz",
+                          "name": "Public profile",
+                          "width": "fill_container",
+                          "descendants": {
+                            "Wuiek": {
+                              "content": "VIEW PUBLIC PROFILE →"
+                            }
+                          }
+                        },
+                        {
+                          "id": "VfUZN",
+                          "type": "ref",
+                          "ref": "oI7dz",
+                          "name": "Sign out",
+                          "width": "fill_container",
+                          "descendants": {
+                            "Wuiek": {
+                              "content": "SIGN OUT"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "XarF7",
+                      "name": "Public at",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Your profile is public at host/u/username",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.5
+                    },
+                    {
+                      "type": "frame",
+                      "id": "y9hnQ",
+                      "name": "Private row",
+                      "width": "fill_container",
+                      "height": 44,
+                      "stroke": "$color-border",
+                      "strokeWidth": {
+                        "top": 1
+                      },
+                      "padding": [
+                        16,
+                        0,
+                        0,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HGba9",
+                          "name": "Label",
+                          "fill": "$color-secondary",
+                          "content": "Make profile private",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "zHcJt",
+                          "type": "ref",
+                          "ref": "P1Lh4",
+                          "name": "Toggle off (disabled)",
+                          "opacity": 0.5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "l9NhbA",
+              "name": "Section THEME",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yfGHJ",
+                  "name": "Title",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Ah5An",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "THEME",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "frame",
+                      "id": "p1cxsj",
+                      "name": "Rule",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$color-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NgwkG",
+                  "name": "Card",
+                  "width": "fill_container",
+                  "fill": "$color-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 24,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "xdbwa",
+                      "name": "Field Visual theme",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "qyICS",
+                          "name": "Head",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "IehTL",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Visual theme",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Lbyfv",
+                              "name": "Hint",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Auto follows your OS color preference. Sumi-e is in calibration.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "H1e3hh",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "ALeTI",
+                              "name": "Pill AUTO (selected)",
+                              "height": 44,
+                              "fill": "$color-elevated",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-primary",
+                              "strokeWidth": 2,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Zevxj",
+                                  "name": "Label",
+                                  "fill": "$color-primary",
+                                  "content": "AUTO",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "700",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "OCVfm",
+                              "name": "Pill SUMI (DARK)",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "c1FWp",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "SUMI (DARK)",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "AqT4h",
+                              "name": "Pill WASHI (LIGHT)",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "kxzGZ",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "WASHI (LIGHT)",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Q7MKP",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "U2GrXy",
+                              "name": "Pill SLATE INDIGO",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "t0GqO",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "SLATE INDIGO",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "gEbsQ",
+              "name": "Section PRACTICE",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JMcX8",
+                  "name": "Title",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z7Tc6",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "PRACTICE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "frame",
+                      "id": "k5Yq1",
+                      "name": "Rule",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$color-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "j4HoGm",
+                  "name": "Card",
+                  "width": "fill_container",
+                  "fill": "$color-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 24,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KI1oa",
+                      "name": "Field Skill level",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "tFbov",
+                          "name": "Head",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "UQG1H",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Skill level",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "FQtR3",
+                              "name": "Hint",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Shapes kata difficulty and sensei tone.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "EosHX",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "t1FJWi",
+                              "name": "Pill JUNIOR",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "eXQgo",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "JUNIOR",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "b6Sfxp",
+                              "name": "Pill MID (selected)",
+                              "height": 44,
+                              "fill": "$color-elevated",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-primary",
+                              "strokeWidth": 2,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "FGRyq",
+                                  "name": "Label",
+                                  "fill": "$color-primary",
+                                  "content": "MID",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "700",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "pylpR",
+                              "name": "Pill SENIOR",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "rWirB",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "SENIOR",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.88
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O0NEt",
+                      "name": "Field Interests",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "M4TWrh",
+                          "name": "Head",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "awn8X",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Interests",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "xbVck",
+                              "name": "Hint",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Topics you'd like more of in the rotation.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "kjkwI",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "ztn5y",
+                              "name": "Pill ✓ backend (selected)",
+                              "height": 44,
+                              "fill": "$color-elevated",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-primary",
+                              "strokeWidth": 2,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "K8USE",
+                                  "name": "Label",
+                                  "fill": "$color-primary",
+                                  "content": "✓ backend",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VmFWh",
+                              "name": "Pill ✓ frontend (selected)",
+                              "height": 44,
+                              "fill": "$color-elevated",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-primary",
+                              "strokeWidth": 2,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "wSfNI",
+                                  "name": "Label",
+                                  "fill": "$color-primary",
+                                  "content": "✓ frontend",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "G287z",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "N5wip",
+                              "name": "Pill ✓ architecture (selected)",
+                              "height": 44,
+                              "fill": "$color-elevated",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-primary",
+                              "strokeWidth": 2,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Y1QyG",
+                                  "name": "Label",
+                                  "fill": "$color-primary",
+                                  "content": "✓ architecture",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "jme4o",
+                              "name": "Pill security",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "oLbHm",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "security",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "I3BL6B",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "a0BmA",
+                              "name": "Pill devops",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "nufhL",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "devops",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "XGM1C",
+                              "name": "Pill testing",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "p0IlO5",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "testing",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "f8mYr",
+                              "name": "Pill process",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "I8Ydj",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "process",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RKgDy",
+                          "name": "Row",
+                          "width": "fill_container",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Ild6u",
+                              "name": "Pill reliability",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "GqZtl",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "reliability",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "AdML2",
+                              "name": "Pill debugging",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "W7ylNv",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "debugging",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Gt5e2",
+                              "name": "Pill sql",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "padding": [
+                                0,
+                                14
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "nxbL2",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "sql",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vTf0j",
+                      "name": "Field Randomness",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "SVjUq",
+                          "name": "Head",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZX7Yt",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Randomness",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "chl69",
+                              "name": "Hint",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "How far the dojo strays from your interests.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HsqPw",
+                          "name": "Slider",
+                          "width": "fill_container",
+                          "height": 44,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "xRFfc",
+                              "name": "Track",
+                              "width": "fill_container",
+                              "height": 4,
+                              "fill": "$color-border",
+                              "cornerRadius": 2,
+                              "children": [
+                                {
+                                  "type": "frame",
+                                  "id": "ze7ro",
+                                  "name": "Fill",
+                                  "width": 164,
+                                  "height": 4,
+                                  "fill": "$color-accent",
+                                  "cornerRadius": 2
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tQh0o",
+                          "name": "Stops",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "C23MLo",
+                              "name": "S",
+                              "fill": "$color-secondary",
+                              "content": "PREDICTABLE",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 0.88
+                            },
+                            {
+                              "type": "text",
+                              "id": "p256N",
+                              "name": "S",
+                              "fill": "$color-secondary",
+                              "content": "BALANCED",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 0.88
+                            },
+                            {
+                              "type": "text",
+                              "id": "Eh0NU",
+                              "name": "S",
+                              "fill": "$color-secondary",
+                              "content": "WILD",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal",
+                              "letterSpacing": 0.88
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SMNxf",
+                      "name": "Field Weekly goal",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "KlpT2",
+                          "name": "Head",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "utePK",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Weekly goal",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "huYRf",
+                              "name": "Hint",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "How many kata you'd like to complete per week.",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pSU4D",
+                          "name": "Goal",
+                          "width": "fill_container",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "SJcuC",
+                              "name": "Goal 1",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Fcpih",
+                                  "name": "N",
+                                  "fill": "$color-secondary",
+                                  "content": "1",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "jFO36",
+                              "name": "Goal 2",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "sqSyc",
+                                  "name": "N",
+                                  "fill": "$color-secondary",
+                                  "content": "2",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "FyGL9",
+                              "name": "Goal 3",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "D1X1B",
+                                  "name": "N",
+                                  "fill": "$color-secondary",
+                                  "content": "3",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "gRw9t",
+                              "name": "Goal 4",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "HmkPx",
+                                  "name": "N",
+                                  "fill": "$color-secondary",
+                                  "content": "4",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ErjK2",
+                              "name": "Goal 5 (selected)",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-elevated",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-primary",
+                              "strokeWidth": 2,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "szxfu",
+                                  "name": "N",
+                                  "fill": "$color-primary",
+                                  "content": "5",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VivYR",
+                              "name": "Goal 6",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "V1Dtd6",
+                                  "name": "N",
+                                  "fill": "$color-secondary",
+                                  "content": "6",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "gUUUB",
+                              "name": "Goal 7",
+                              "width": "fill_container",
+                              "height": 44,
+                              "fill": "$color-surface",
+                              "cornerRadius": "$radius-sm",
+                              "stroke": "$color-border",
+                              "strokeWidth": 1,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "pnSWj",
+                                  "name": "N",
+                                  "fill": "$color-secondary",
+                                  "content": "7",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "C24jS",
+              "name": "Section REMINDERS",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KLsBN",
+                  "name": "Title",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "H059DE",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "REMINDERS",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Ybay1",
+                      "name": "Rule",
+                      "width": "fill_container",
+                      "height": 1,
+                      "fill": "$color-border"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "f1OFzn",
+                  "name": "Card",
+                  "width": "fill_container",
+                  "fill": "$color-surface",
+                  "cornerRadius": "$radius-md",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 24,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UNUvo",
+                      "name": "Toggle row",
+                      "width": "fill_container",
+                      "height": 44,
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "jG5a0",
+                          "name": "Label",
+                          "fill": "$color-secondary",
+                          "content": "Daily reminder",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "rtQHu",
+                          "type": "ref",
+                          "ref": "CB6zv",
+                          "name": "Toggle on"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jhd6B",
+                      "name": "Field Email",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ymTRF",
+                          "name": "Label",
+                          "fill": "$color-secondary",
+                          "content": "Email",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        },
+                        {
+                          "type": "frame",
+                          "id": "S7Guul",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "height": 44,
+                          "fill": "$color-page",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "pDLuu",
+                              "name": "Value",
+                              "fill": "$color-primary",
+                              "content": "you@example.com",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q2MhKz",
+                      "name": "Field Hour (0–23 local)",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "aoEuu",
+                          "name": "Label",
+                          "fill": "$color-secondary",
+                          "content": "Hour (0–23 local)",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal",
+                          "letterSpacing": 0.5
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PIVED",
+                          "name": "Input",
+                          "width": "fill_container",
+                          "height": 44,
+                          "fill": "$color-page",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "x4aZRX",
+                              "name": "Value",
+                              "fill": "$color-primary",
+                              "content": "8",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZhSV1",
+                      "name": "Note",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Sent at the time you pick. Not before. Never weekends if your goal is < 5 days/week.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "sneUB",
+              "name": "Footer",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "CHANGES AUTO-SAVE.",
+              "textAlign": "center",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 0.88
+            }
+          ]
+        },
+        {
+          "id": "yUhiu",
+          "type": "ref",
+          "ref": "sO1Pf",
+          "name": "BottomNav (settings active)",
           "width": "fill_container"
         }
       ]
