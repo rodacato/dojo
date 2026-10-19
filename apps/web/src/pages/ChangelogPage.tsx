@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-10-19',
+    phase: 'Mobile',
+    title: 'Dojo on your home screen',
+    description:
+      'Add dojo to your phone\'s home screen and it opens like an app: full screen, no browser bar. Screens now respect the notch and the home indicator, and full-height screens no longer slide under the address bar. It still needs a connection, because the sensei does.',
+  },
+  {
     date: '2026-10-15',
     phase: 'Brand',
     title: 'A new mark: the open gate',
