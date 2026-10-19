@@ -8590,7 +8590,7 @@
       "type": "frame",
       "id": "p76TsT",
       "x": 0,
-      "y": 2259,
+      "y": 2860,
       "name": "LOG — Playground",
       "theme": {
         "theme": "sumi"
@@ -8616,6 +8616,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "y6L8D",
+          "name": "Recognition exploration entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · Recognition proposal added from kit 0.4.0: rank, collection, result receipt, promotion card; D63–D65; PRD-035",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -8824,6 +8837,4032 @@
           "fontFamily": "$font-mono",
           "fontSize": 11,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "C36Lht",
+      "x": 0,
+      "y": 0,
+      "name": "BRIEF — Recognition · direction and desktop",
+      "theme": {
+        "theme": "sumi"
+      },
+      "width": 640,
+      "height": 1000,
+      "fill": "$color-surface",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 32,
+      "children": [
+        {
+          "type": "text",
+          "id": "avRj4",
+          "name": "Brief title",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "RECOGNITION · DESIGN PROPOSAL",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 22,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "azhXA",
+          "name": "1. PURPOSE",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "1. PURPOSE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "j7qIu",
+          "name": "1. PURPOSE content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Review the recognition identity and desktop progress proposal; no runtime changes.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "XXjPo",
+          "name": "2. ENTRY POINTS",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2. ENTRY POINTS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "CSVcf",
+          "name": "2. ENTRY POINTS content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Proposed /belts and promotion share. Existing owner: apps/web/src/pages/BeltsPage.tsx:147.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "eUJzY",
+          "name": "3. SCREENS",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "3. SCREENS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "CKPA7",
+          "name": "3. SCREENS content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Art direction → progress desktop. Mobile progress, collection, result and share follow in the next band.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "SwX3F",
+          "name": "4. BUSINESS RULES",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "4. BUSINESS RULES",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "z2bA7",
+          "name": "4. BUSINESS RULES content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "PRD-035: eligible final evaluation, one credited practice day per date, all verdicts. Numeric targets are fictional fixtures.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "cw3JP",
+          "name": "5. COPY SOURCE",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "5. COPY SOURCE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "EuctT",
+          "name": "5. COPY SOURCE content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "design/brand/recognition.md: proposal copy. Logo, tokens and navigation reuse kit 0.4.0.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "j1Hca4",
+          "name": "6. STATES NOT DRAWN",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "6. STATES NOT DRAWN",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "gaiWo",
+          "name": "6. STATES NOT DRAWN content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "First visit, failure, loading, rest policy and final thresholds wait for implementation. Contrast is checked in Sumi/Washi; the slate theme is unchanged. Full screens use Sumi.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "PfQME",
+          "name": "7. OPEN FINDINGS",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "7. OPEN FINDINGS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "rhkgN",
+          "name": "7. OPEN FINDINGS content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "D63, D64, D65",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "wnGFB",
+          "name": "8. HISTORY",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "8. HISTORY",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "j7JfY",
+          "name": "8. HISTORY content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "→ LOG — Playground, below every band.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zOgzu",
+      "x": 760,
+      "y": 0,
+      "name": "Recognition / Art direction / Proposal",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 1000,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "gap": 28,
+      "padding": 56,
+      "children": [
+        {
+          "type": "frame",
+          "id": "hu7uj",
+          "name": "Identity and proposal status",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "CtAVD",
+              "type": "ref",
+              "ref": "AbS82",
+              "name": "Existing Open Gate lockup"
+            },
+            {
+              "type": "text",
+              "id": "oTmQC",
+              "name": "Draft status",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": 400,
+              "content": "DESIGN PROPOSAL · EXAMPLE DATA",
+              "lineHeight": 1.5,
+              "textAlign": "right",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "A1Jg1k",
+          "name": "Concept headline",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Practice leaves\na mark.",
+          "lineHeight": 1.1,
+          "fontFamily": "$font-mono",
+          "fontSize": 68,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "A1dWO6",
+          "name": "Concept explanation",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "A record of the days you practiced, the paths you explored,\nand the moments you earned.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 21,
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "PdN4y",
+          "name": "Divider",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "$color-border",
+          "layout": "vertical"
+        },
+        {
+          "type": "frame",
+          "id": "LmjD5",
+          "name": "Visual language",
+          "width": "fill_container",
+          "gap": 56,
+          "children": [
+            {
+              "type": "frame",
+              "id": "n9V9d7",
+              "name": "Rank language",
+              "width": 400,
+              "layout": "vertical",
+              "gap": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "VvlBy",
+                  "name": "Rank heading",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "01 / A TRAJECTORY",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "Nkt83",
+                  "name": "Rank example",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "White belt",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 32,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "tJXJS",
+                  "name": "Four stripe slots",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ExytM",
+                      "name": "Stripe 1 earned",
+                      "width": 68,
+                      "height": 10,
+                      "fill": "$color-belt-white",
+                      "stroke": "$color-secondary",
+                      "strokeWidth": 1,
+                      "layout": "vertical"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "uhnzi",
+                      "name": "Stripe 2 earned",
+                      "width": 68,
+                      "height": 10,
+                      "fill": "$color-belt-white",
+                      "stroke": "$color-secondary",
+                      "strokeWidth": 1,
+                      "layout": "vertical"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "g2DQ2T",
+                      "name": "Stripe 3 pending",
+                      "width": 68,
+                      "height": 10,
+                      "stroke": "$color-secondary",
+                      "strokeWidth": 1,
+                      "layout": "vertical"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "q8dhR8",
+                      "name": "Stripe 4 pending",
+                      "width": 68,
+                      "height": 10,
+                      "stroke": "$color-secondary",
+                      "strokeWidth": 1,
+                      "layout": "vertical"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "bkkWa",
+                  "name": "Stripe equivalent",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "2 of 4 stripes · 24 practice days",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "WDceL",
+                  "name": "Terminal black belt example",
+                  "width": "fill_container",
+                  "height": 32,
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "P6EwWt",
+                      "name": "Black belt visible outline",
+                      "fill": "$color-belt-black",
+                      "width": 28,
+                      "height": 28,
+                      "stroke": "$color-secondary",
+                      "strokeWidth": 2
+                    },
+                    {
+                      "type": "text",
+                      "id": "E7nXtA",
+                      "name": "Terminal rank text equivalent",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Black belt · terminal",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "k2bgH",
+                  "name": "Rank meaning",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Practice over time. Each stripe records sustained practice, with no claim about seniority.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "c9EreW",
+              "name": "Hanko language",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "usGTQ",
+                  "name": "Hanko heading",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "02 / A FACT, DATED",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "Rm4Fw",
+                  "name": "Seal and fact",
+                  "width": "fill_container",
+                  "gap": 20,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "uQ1XV",
+                      "type": "ref",
+                      "ref": "JgN0v",
+                      "name": "Existing hanko form",
+                      "width": 64,
+                      "height": 64,
+                      "justifyContent": "center",
+                      "descendants": {
+                        "fkVnb": {
+                          "content": "FIRST",
+                          "fontSize": 14
+                        },
+                        "gDhIc": {
+                          "content": "PRACTICE",
+                          "fontSize": 10
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VQC1Z",
+                      "name": "Recorded fact",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BDpOp",
+                          "name": "Fact headline",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "First practice",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 24,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Nygko",
+                          "name": "Fact date",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Recorded 02 Sep 2026",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "fkYGl",
+                  "name": "Hanko meaning",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "English lettering. Vermillion ink. One concrete moment. Earned, never unlocked.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "F8d0a",
+          "name": "Divider",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "$color-border",
+          "layout": "vertical"
+        },
+        {
+          "type": "frame",
+          "id": "t30FJv",
+          "name": "Canonical palette",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "qUiD2",
+              "name": "Palette INK",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CTVH5",
+                  "name": "INK swatch",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$color-page",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "text",
+                  "id": "V9fXja",
+                  "name": "INK label",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "INK",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "e3FOB",
+                  "name": "INK value",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "#0A0908",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "m0Isj3",
+              "name": "Palette PAPER",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "P7AHVa",
+                  "name": "PAPER swatch",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$color-primary",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "text",
+                  "id": "h04jmr",
+                  "name": "PAPER label",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "PAPER",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "OaryK",
+                  "name": "PAPER value",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "#F2EDE3",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GNjjE",
+              "name": "Palette SECONDARY",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fB5jL",
+                  "name": "SECONDARY swatch",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$color-secondary",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "text",
+                  "id": "PncT5",
+                  "name": "SECONDARY label",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "SECONDARY",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "aOkvA",
+                  "name": "SECONDARY value",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "#A39A8C",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iI8jG",
+              "name": "Palette HANKO",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fKBCT",
+                  "name": "HANKO swatch",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$color-accent",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "text",
+                  "id": "uZ2QY",
+                  "name": "HANKO label",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "HANKO",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "Cb5Je",
+                  "name": "HANKO value",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "#B73A2F",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QNY7m",
+              "name": "Palette RANK",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "WrorI",
+                  "name": "RANK swatch",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$color-belt-green",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "text",
+                  "id": "f5KS8",
+                  "name": "RANK label",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "RANK",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "AQ8ML",
+                  "name": "RANK value",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "#7D9B6A",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GQjYX",
+          "name": "Voice samples",
+          "width": "fill_container",
+          "gap": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "EDbBi",
+              "name": "Voice FACTUAL",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ljhmf",
+                  "name": "FACTUAL",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "FACTUAL",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "AVBlt",
+                  "name": "FACTUAL example",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "24 practice days",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 17,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y9211",
+              "name": "Voice EARNED",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rk4Tn",
+                  "name": "EARNED",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "EARNED",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "zVPCK",
+                  "name": "EARNED example",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Third stripe earned",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 17,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cX9X9",
+              "name": "Voice UNFINISHED",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Hngdc",
+                  "name": "UNFINISHED",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "UNFINISHED",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "KZWNm",
+                  "name": "UNFINISHED example",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "You came back. Practice continues.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 17,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "vncAd",
+          "name": "Proposal boundary",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Preserve Dojo. Inter + JetBrains Mono. No new logo or palette. New recognition is proposed, not shipped.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "SoxGT",
+      "x": 2320,
+      "y": 0,
+      "name": "Recognition / Progress desktop / Proposal",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 1000,
+      "fill": "$color-page",
+      "children": [
+        {
+          "id": "XNa9g",
+          "type": "ref",
+          "ref": "Z5c9M5",
+          "name": "Existing Belts sidebar",
+          "height": 1000
+        },
+        {
+          "type": "frame",
+          "id": "bxKJi",
+          "name": "Progress content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 32,
+          "padding": [
+            40,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ehK8J",
+              "name": "Page heading",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "SXX0X",
+                  "name": "Belts page title",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Belts",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 32,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "p3xlOo",
+                  "name": "Prototype status",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 360,
+                  "content": "DESIGN PROPOSAL · EXAMPLE DATA",
+                  "lineHeight": 1.5,
+                  "textAlign": "right",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ZfsdL",
+              "name": "Practice introduction",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UBQJi",
+                  "name": "Main headline",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Your practice, recorded.",
+                  "lineHeight": 1.2,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 36,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "yGpvs",
+                  "name": "Practice description",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "The days you practiced. The paths you explored. The moments you earned.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uWxrJ",
+              "name": "Rank and next step",
+              "width": "fill_container",
+              "gap": 48,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "eczGG",
+                  "name": "Current rank",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "i2VoO",
+                      "name": "Avatar and rank",
+                      "width": "fill_container",
+                      "gap": 20,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "EB7bX",
+                          "type": "ref",
+                          "ref": "BxoCm",
+                          "name": "Existing white belt avatar",
+                          "descendants": {
+                            "vQx9X": {
+                              "width": 72,
+                              "height": 72
+                            }
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "keuc0",
+                          "name": "Rank identity",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LkPBq",
+                              "name": "Current rank label",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "YOUR RANK",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "h5Mt4T",
+                              "name": "White belt",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "White belt",
+                              "lineHeight": 1.1,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 36,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "R2QfPY",
+                      "name": "Stripe slots",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "L2tf8b",
+                          "name": "Stripe 1 earned",
+                          "width": 64,
+                          "height": 8,
+                          "fill": "$color-belt-white",
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lfn9V",
+                          "name": "Stripe 2 earned",
+                          "width": 64,
+                          "height": 8,
+                          "fill": "$color-belt-white",
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "X92Rj",
+                          "name": "Stripe 3 pending",
+                          "width": 64,
+                          "height": 8,
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Q4MqaN",
+                          "name": "Stripe 4 pending",
+                          "width": 64,
+                          "height": 8,
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "uv3Zu",
+                      "name": "Current stripe number",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "2 of 4 stripes",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 16,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i9227",
+                      "name": "Practice day fact",
+                      "width": "fill_container",
+                      "gap": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "p2rzA",
+                          "name": "Practice day count",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": 110,
+                          "content": "24",
+                          "lineHeight": 1,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 72,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "o9n88",
+                          "name": "Practice day unit",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "practice days",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 20,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ltmok",
+                  "name": "Next requirement",
+                  "width": 340,
+                  "fill": "$color-surface",
+                  "cornerRadius": "$radius-md",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": 28,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "L5HizZ",
+                      "name": "Next stripe label",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "NEXT: THIRD STRIPE",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "M5Khvq",
+                      "name": "Remaining requirement",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "4 more\npractice days",
+                      "lineHeight": 1.25,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 28,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mvauU",
+                      "name": "One credit rule",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "One credited day per date. Every verdict counts.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "V9P2AC",
+                      "name": "Illustrative target note",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Illustrative target; final rubric pending.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YX5Zo",
+              "name": "Divider",
+              "width": "fill_container",
+              "height": 1,
+              "fill": "$color-border",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "T9cncz",
+              "name": "Paths and earned moments",
+              "width": "fill_container",
+              "gap": 48,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "b1dVW",
+                  "name": "Practiced paths",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UyfkK",
+                      "name": "Paths heading",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Paths",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 24,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SPabd",
+                      "name": "Paths explanation",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Topics practiced on distinct days.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kzXkJ",
+                      "name": "Database practice row",
+                      "width": "fill_container",
+                      "stroke": "$color-border",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "gap": 16,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "o63tT",
+                          "name": "Database practice details",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "W9JxyY",
+                              "name": "Database practice",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Database practice",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 16,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "y5ddN",
+                              "name": "Database practice count",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "6 practice days",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "bVHRu",
+                          "name": "Database practice tier",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 130,
+                          "content": "Tier I",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nfmM3",
+                      "name": "System design practice row",
+                      "width": "fill_container",
+                      "stroke": "$color-border",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "gap": 16,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "a7bXCW",
+                          "name": "System design practice details",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "qOSXN",
+                              "name": "System design practice",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "System design practice",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 16,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "WrjEI",
+                              "name": "System design practice count",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "5 practice days",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "PY3Um",
+                          "name": "System design practice tier",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 130,
+                          "content": "Tier I",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fbD3Q",
+                      "name": "Code quality practice row",
+                      "width": "fill_container",
+                      "stroke": "$color-border",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "gap": 16,
+                      "padding": [
+                        12,
+                        0
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "nUEM3",
+                          "name": "Code quality practice details",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 2,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "eTUOv",
+                              "name": "Code quality practice",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Code quality practice",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 16,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "sCCBJ",
+                              "name": "Code quality practice count",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "2 practice days",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "C70v4l",
+                          "name": "Code quality practice tier",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": 130,
+                          "content": "Next: Tier I",
+                          "lineHeight": 1.5,
+                          "textAlign": "right",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "VX0Dg",
+                  "name": "Recent recognition",
+                  "width": 270,
+                  "layout": "vertical",
+                  "gap": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gLo0W",
+                      "name": "Recent marks heading",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Recent marks",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 24,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "c1ZeiC",
+                      "name": "First practice receipt",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "Pzj77",
+                          "type": "ref",
+                          "ref": "JgN0v",
+                          "name": "First practice hanko",
+                          "descendants": {
+                            "fkVnb": {
+                              "content": "FIRST"
+                            },
+                            "gDhIc": {
+                              "content": "PRACTICE",
+                              "fontSize": 7
+                            }
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T2oNC",
+                          "name": "First practice fact",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "XaIkf",
+                              "name": "First practice",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "First practice",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "k5WWQ",
+                              "name": "First practice date",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Recorded 02 Sep 2026",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OFyo1",
+                      "name": "You came back receipt",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "yB8D2",
+                          "type": "ref",
+                          "ref": "JgN0v",
+                          "name": "You came back hanko",
+                          "descendants": {
+                            "fkVnb": {
+                              "content": "CAME"
+                            },
+                            "gDhIc": {
+                              "content": "BACK",
+                              "fontSize": 7
+                            }
+                          }
+                        },
+                        {
+                          "type": "frame",
+                          "id": "iCtCh",
+                          "name": "You came back fact",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "OeNJB",
+                              "name": "You came back",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "You came back",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 15,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "text",
+                              "id": "kudps",
+                              "name": "You came back date",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Recorded 12 Oct 2026",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-sans",
+                              "fontSize": 12,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "qANFa",
+                      "type": "ref",
+                      "ref": "yeeYl",
+                      "name": "View all milestones control",
+                      "width": "fill_container",
+                      "height": 48,
+                      "stroke": "$color-secondary",
+                      "descendants": {
+                        "eH0ay": {
+                          "content": "View all milestones",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "nSBgs",
+              "name": "Rank meaning boundary",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Your belt records sustained practice. Paths record exposure. Neither is a certification.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "500"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "EWwmX",
+      "x": 0,
+      "y": 1260,
+      "name": "BRIEF — Recognition · mobile and share",
+      "theme": {
+        "theme": "sumi"
+      },
+      "width": 640,
+      "height": 1200,
+      "fill": "$color-surface",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": 32,
+      "children": [
+        {
+          "type": "text",
+          "id": "m21Q33",
+          "name": "Mobile brief heading",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "RECOGNITION · MOBILE + SHARE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 22,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "fzkFa",
+          "name": "1. PURPOSE",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "1. PURPOSE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "uHb1I",
+          "name": "1. PURPOSE content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Inspect a readable daily-practice progression and one shareable earning moment on a phone.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "nrBe2",
+          "name": "2. ENTRY POINTS",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2. ENTRY POINTS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "PPKlZ",
+          "name": "2. ENTRY POINTS content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Proposed /belts, collection detail and post-kata receipt. Existing result: apps/web/src/pages/ResultsPage.tsx:97.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "q9ret",
+          "name": "3. SCREENS",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "3. SCREENS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "KBjJI",
+          "name": "3. SCREENS content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Progress mobile → collection mobile → result with NEEDS WORK → promotion card.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "F4Ir7Q",
+          "name": "4. BUSINESS RULES",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "4. BUSINESS RULES",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "Q4vIde",
+          "name": "4. BUSINESS RULES content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "One day credit per date, no verdict currency, practice before recognition. Draft numeric fixtures; no live users. PRD-035 governs the proposal.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "j2OhJ",
+          "name": "5. COPY SOURCE",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "5. COPY SOURCE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "mOHD3",
+          "name": "5. COPY SOURCE content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "design/brand/recognition.md; ResultsPage and FeedbackSection for existing result structure and D62 controls.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "ApFUl",
+          "name": "6. STATES NOT DRAWN",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "6. STATES NOT DRAWN",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "fBQ5c",
+          "name": "6. STATES NOT DRAWN content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Loading and network error reuse existing owners at implementation. Rest allowance, tier thresholds and full history are not specified by mock data. No animation is represented.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "I8ThZs",
+          "name": "7. OPEN FINDINGS",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "7. OPEN FINDINGS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "bKPRx",
+          "name": "7. OPEN FINDINGS content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "D63, D64, D65",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "WVytV",
+          "name": "8. HISTORY",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "8. HISTORY",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 12,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "p5Pfk1",
+          "name": "8. HISTORY content",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "→ LOG — Playground, below every band.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-sans",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LgFua",
+      "x": 760,
+      "y": 1260,
+      "name": "Recognition / Progress mobile / Proposal",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1100,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "hTNbU",
+          "name": "Brand and location",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "padding": [
+            22,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "prXqM",
+              "type": "ref",
+              "ref": "AbS82",
+              "name": "Existing brand lockup"
+            },
+            {
+              "type": "text",
+              "id": "B7mQJ",
+              "name": "Location label",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "BELTS",
+              "lineHeight": 1.5,
+              "textAlign": "right",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JPRiK",
+          "name": "Progress body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 22,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "bdH6N",
+              "name": "Prototype status",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "DESIGN PROPOSAL · EXAMPLE DATA",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "wq1Xr",
+              "name": "Progress headline",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Your practice,\nrecorded.",
+              "lineHeight": 1.2,
+              "fontFamily": "$font-mono",
+              "fontSize": 30,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "P7Ed1A",
+              "name": "Rank identity",
+              "width": "fill_container",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "gKPfn",
+                  "type": "ref",
+                  "ref": "BxoCm",
+                  "name": "White belt avatar"
+                },
+                {
+                  "type": "frame",
+                  "id": "DABPi",
+                  "name": "Rank copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "IT3vA",
+                      "name": "Rank title",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "White belt",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 26,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zCWK8",
+                      "name": "Stripe count",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "2 of 4 stripes",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nJg4y",
+              "name": "Four stripe slots",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "l30T8",
+                  "name": "Stripe 1 earned",
+                  "width": 64,
+                  "height": 8,
+                  "fill": "$color-belt-white",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "frame",
+                  "id": "SMRyN",
+                  "name": "Stripe 2 earned",
+                  "width": 64,
+                  "height": 8,
+                  "fill": "$color-belt-white",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "frame",
+                  "id": "gqD0J",
+                  "name": "Stripe 3 pending",
+                  "width": 64,
+                  "height": 8,
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "frame",
+                  "id": "BRNYd",
+                  "name": "Stripe 4 pending",
+                  "width": 64,
+                  "height": 8,
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "f5VbF",
+              "name": "Credited practice days",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kTqWs",
+                  "name": "Practice days value",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 74,
+                  "content": "24",
+                  "lineHeight": 1,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 48,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "tyFtD",
+                  "name": "Practice days unit",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "practice days",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 18,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KcNaS",
+              "name": "Next stripe requirement",
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": "$radius-md",
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "vxByF",
+                  "name": "Next stripe title",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "NEXT: THIRD STRIPE",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "h0ZTEg",
+                  "name": "Remaining days",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "4 more practice days",
+                  "lineHeight": 1.2,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 24,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "jUKLH",
+                  "name": "Daily credit rule",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "One credited day per date. Every verdict counts.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "ZMvuj",
+                  "name": "Fixture threshold boundary",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Illustrative target; final rubric pending.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Hbi1c",
+              "name": "Paths preview",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "U7gkQc",
+                  "name": "Paths heading",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Paths",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 22,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "jwlBC",
+                  "name": "Database practice row",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "gap": 12,
+                  "padding": [
+                    12,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "uEuLe",
+                      "name": "Database practice detail",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "viXDr",
+                          "name": "Database practice",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Database practice",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "x9QBs",
+                          "name": "Database practice count",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "6 practice days",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "sHhqw",
+                      "name": "Database practice tier",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": 60,
+                      "content": "Tier I",
+                      "lineHeight": 1.5,
+                      "textAlign": "right",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m0XAM",
+                  "name": "System design practice row",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "gap": 12,
+                  "padding": [
+                    12,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "O0GUS",
+                      "name": "System design practice detail",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "l1UW3P",
+                          "name": "System design practice",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "System design practice",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 15,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "lnK25",
+                          "name": "System design practice count",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "5 practice days",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "rQC97",
+                      "name": "System design practice tier",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": 60,
+                      "content": "Tier I",
+                      "lineHeight": 1.5,
+                      "textAlign": "right",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "yghOx",
+              "type": "ref",
+              "ref": "yeeYl",
+              "name": "Collection entry",
+              "height": 48,
+              "width": "fill_container",
+              "stroke": "$color-secondary",
+              "descendants": {
+                "eH0ay": {
+                  "content": "View all milestones",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "XoaR0",
+              "name": "Meaning disclaimer",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "A record of practice. No claim of mastery.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "id": "x3gNu5",
+          "type": "ref",
+          "ref": "RfkWF",
+          "name": "Existing mobile Belts navigation",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "O6Pjwf",
+      "x": 1270,
+      "y": 1260,
+      "name": "Recognition / Collection mobile / Proposal",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1100,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "tbEQt",
+          "name": "Brand and location",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "padding": [
+            22,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "IRfpg",
+              "type": "ref",
+              "ref": "AbS82",
+              "name": "Existing brand lockup"
+            },
+            {
+              "type": "text",
+              "id": "O1lQRr",
+              "name": "Location label",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "BELTS",
+              "lineHeight": 1.5,
+              "textAlign": "right",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "RzL89",
+          "name": "Collection body",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 22,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "zloty",
+              "name": "Prototype status",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "DESIGN PROPOSAL · EXAMPLE DATA",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "id": "v575sY",
+              "type": "ref",
+              "ref": "yeeYl",
+              "name": "Back to belts navigation",
+              "height": 48,
+              "width": "fill_container",
+              "stroke": "$color-secondary",
+              "descendants": {
+                "eH0ay": {
+                  "content": "Back to belts",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "IM0Kc",
+              "name": "Collection title",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Collection",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-mono",
+              "fontSize": 30,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "NjO9z",
+              "name": "Collection meaning",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "A few moments. A growing practice.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 16,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "S5ET2",
+              "name": "Practice collection",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j7541u",
+                  "name": "Practice category",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "PRACTICE",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "kFJUY",
+                  "name": "First practice earned row",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "OchXg",
+                      "type": "ref",
+                      "ref": "JgN0v",
+                      "name": "First practice hanko",
+                      "descendants": {
+                        "fkVnb": {
+                          "content": "FIRST"
+                        },
+                        "gDhIc": {
+                          "content": "PRACTICE",
+                          "fontSize": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "kec2R",
+                      "name": "First practice facts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SMIZl",
+                          "name": "First practice",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "First practice",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 18,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ImJcf",
+                          "name": "First practice recorded date",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Recorded 02 Sep 2026",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "N1LcK",
+                  "name": "You came back earned row",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "pURkM",
+                      "type": "ref",
+                      "ref": "JgN0v",
+                      "name": "You came back hanko",
+                      "descendants": {
+                        "fkVnb": {
+                          "content": "CAME"
+                        },
+                        "gDhIc": {
+                          "content": "BACK",
+                          "fontSize": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bOkrt",
+                      "name": "You came back facts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WGkGn",
+                          "name": "You came back",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "You came back",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 18,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mdehE",
+                          "name": "You came back recorded date",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Recorded 12 Oct 2026",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kcY8W",
+              "name": "Paths collection",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "hZ5Yy",
+                  "name": "Paths category",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "PATHS",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "oWgeu",
+                  "name": "Paths explanation",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Topics practiced on distinct days.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "b9Q1x",
+                  "name": "Database practice earned row",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "jDp4v",
+                      "type": "ref",
+                      "ref": "JgN0v",
+                      "name": "Database practice hanko",
+                      "descendants": {
+                        "fkVnb": {
+                          "content": "PATH"
+                        },
+                        "gDhIc": {
+                          "content": "I",
+                          "fontSize": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wOght",
+                      "name": "Database practice facts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "h8rWm",
+                          "name": "Database practice",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Database practice",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vtUbU",
+                          "name": "Database practice count",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tier I · 6 practice days",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "b01UkI",
+                  "name": "System design practice earned row",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "gap": 16,
+                  "padding": [
+                    14,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "e68fF",
+                      "type": "ref",
+                      "ref": "JgN0v",
+                      "name": "System design practice hanko",
+                      "descendants": {
+                        "fkVnb": {
+                          "content": "PATH"
+                        },
+                        "gDhIc": {
+                          "content": "I",
+                          "fontSize": 7
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KVx6j",
+                      "name": "System design practice facts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ToFi8",
+                          "name": "System design practice",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "System design practice",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "d4DduF",
+                          "name": "System design practice count",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tier I · 5 practice days",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ghx0L",
+              "name": "Relevant next milestone",
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": "$radius-md",
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eanYI",
+                  "name": "Next milestone heading",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "ONE TO WORK TOWARD",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "B6x8lf",
+                  "name": "Next path",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Code quality practice",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 20,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "z6w9n",
+                  "name": "Next path requirement",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "4 more practice days in this path.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "Sm298",
+                  "name": "Fixture threshold boundary",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Illustrative target; final rubric pending.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "id": "r6C5Z",
+              "type": "ref",
+              "ref": "yeeYl",
+              "name": "Full catalog entry",
+              "height": 48,
+              "width": "fill_container",
+              "stroke": "$color-secondary",
+              "descendants": {
+                "eH0ay": {
+                  "content": "View all milestones",
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "HmMmK",
+          "type": "ref",
+          "ref": "RfkWF",
+          "name": "Existing mobile Belts navigation",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "f06QD",
+      "x": 1780,
+      "y": 1260,
+      "name": "Recognition / Result mobile / Proposal",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1340,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "w8iy2W",
+          "name": "Brand header",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "padding": [
+            22,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "J85od",
+              "type": "ref",
+              "ref": "AbS82",
+              "name": "Existing brand lockup"
+            },
+            {
+              "type": "text",
+              "id": "aK42T",
+              "name": "Location label",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "RESULT",
+              "lineHeight": 1.5,
+              "textAlign": "right",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "o7y805",
+          "name": "Result reading order",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "Debg6",
+              "name": "Prototype status",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "DESIGN PROPOSAL · EXAMPLE DATA",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "rIPsR",
+              "name": "Kata heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M5iWV",
+                  "name": "Real pilot kata title",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Off-by-one in pagination",
+                  "lineHeight": 1.2,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 28,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "l35GP8",
+                  "name": "Kata metadata",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "kghcS",
+                      "type": "ref",
+                      "ref": "r26Bq",
+                      "name": "Existing Review badge"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wGsNv",
+                      "name": "Completion time",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "04:38",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "a5xsW",
+              "name": "Sensei evaluation",
+              "width": "fill_container",
+              "stroke": "$color-danger-text",
+              "strokeWidth": {
+                "left": 2
+              },
+              "layout": "vertical",
+              "gap": 12,
+              "padding": [
+                0,
+                0,
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "V8vqzK",
+                  "name": "Unsoftened verdict",
+                  "fill": "$color-danger-text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "NEEDS WORK",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 24,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "cKjVI",
+                  "name": "Fictional evaluation excerpt",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "You found the offset. Your explanation did not connect the 1-based page contract to the zero-based slice.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FRjHT",
+              "name": "Solution before recognition",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WTHuU",
+                  "name": "Solution heading",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "The answer",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 20,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "FYaaK",
+                  "name": "Correct line excerpt",
+                  "width": "fill_container",
+                  "fill": "$color-surface",
+                  "cornerRadius": "$radius-sm",
+                  "layout": "vertical",
+                  "padding": 14,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kVqua",
+                      "name": "Real kata corrected line",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "3  const start =\n   (page - 1) * limit",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "jrBAp",
+                  "name": "Why explanation",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Page 1 must start at index 0. Subtract one before multiplying by the page size.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "IR8va",
+              "name": "Recognition after solution",
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": "$radius-md",
+              "layout": "vertical",
+              "gap": 14,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JKZPz",
+                  "name": "Receipt eyebrow",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "PRACTICE RECORDED",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "KvOPv",
+                  "name": "Earned stripe receipt",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "kUSOr",
+                      "type": "ref",
+                      "ref": "JgN0v",
+                      "name": "Third stripe hanko",
+                      "descendants": {
+                        "fkVnb": {
+                          "content": "STRIPE"
+                        },
+                        "gDhIc": {
+                          "content": "III"
+                        }
+                      }
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CdD3h",
+                      "name": "Earned fact",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 4,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tq1cP",
+                          "name": "Earned stripe title",
+                          "fill": "$color-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Third stripe earned",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 18,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "u8TmPo",
+                          "name": "Credited day fact",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "28 practice days",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "uxiYv",
+                  "name": "Failure still counts",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "NEEDS WORK counts here, too.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                },
+                {
+                  "id": "MKqjB",
+                  "type": "ref",
+                  "ref": "yeeYl",
+                  "name": "Share promotion secondary action",
+                  "height": 48,
+                  "width": "fill_container",
+                  "stroke": "$color-secondary",
+                  "descendants": {
+                    "eH0ay": {
+                      "content": "Share promotion",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sNzNB",
+              "name": "Existing D62 feedback instrument",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Jt33N",
+                  "name": "Feedback title",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "QUICK FEEDBACK",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "iTB26",
+                  "name": "Was the time limit right? group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ziV1j",
+                      "name": "Was the time limit right?",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Was the time limit right?",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aOHcW",
+                      "name": "Was the time limit right? options",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "q9ogxe",
+                          "name": "Too tight option",
+                          "width": "fill_container",
+                          "height": 64,
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nOkCI",
+                              "name": "Too tight label",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Too tight",
+                              "lineHeight": 1.5,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "f7nXk",
+                          "name": "About right option",
+                          "width": "fill_container",
+                          "height": 64,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "CvYU8",
+                              "name": "About right label",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "About right",
+                              "lineHeight": 1.5,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "f6WM2",
+                          "name": "Too loose option",
+                          "width": "fill_container",
+                          "height": 64,
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YTjKv",
+                              "name": "Too loose label",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Too loose",
+                              "lineHeight": 1.5,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PjrSr",
+                  "name": "How was the sensei’s review? group",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xIjRg",
+                      "name": "How was the sensei’s review?",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "How was the sensei’s review?",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "o0kXf",
+                      "name": "How was the sensei’s review? options",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "jIUFP",
+                          "name": "Missed the point option",
+                          "width": "fill_container",
+                          "height": 64,
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "u3NRCO",
+                              "name": "Missed the point label",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Missed the point",
+                              "lineHeight": 1.5,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "p7Xso",
+                          "name": "Too generic option",
+                          "width": "fill_container",
+                          "height": 64,
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-secondary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "u0mFb",
+                              "name": "Too generic label",
+                              "fill": "$color-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Too generic",
+                              "lineHeight": 1.5,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "q1foi",
+                          "name": "Spot on option",
+                          "width": "fill_container",
+                          "height": 64,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "layout": "vertical",
+                          "padding": [
+                            8,
+                            6
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "SUIXS",
+                              "name": "Spot on label",
+                              "fill": "$color-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Spot on",
+                              "lineHeight": 1.5,
+                              "textAlign": "center",
+                              "fontFamily": "$font-sans",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "heqSL",
+                  "type": "ref",
+                  "ref": "yeeYl",
+                  "name": "More feedback entry",
+                  "height": 48,
+                  "width": "fill_container",
+                  "stroke": "$color-secondary",
+                  "descendants": {
+                    "eH0ay": {
+                      "content": "More feedback",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NdO3N",
+              "name": "Practice exits",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "H1qwBt",
+                  "type": "ref",
+                  "ref": "WDpQp",
+                  "name": "Done primary exit",
+                  "height": 48,
+                  "width": "fill_container",
+                  "stroke": "$color-accent",
+                  "descendants": {
+                    "NnDrs": {
+                      "content": "Done",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14
+                    }
+                  }
+                },
+                {
+                  "id": "BFFTj",
+                  "type": "ref",
+                  "ref": "yeeYl",
+                  "name": "One more secondary exit",
+                  "height": 48,
+                  "width": "fill_container",
+                  "stroke": "$color-secondary",
+                  "descendants": {
+                    "eH0ay": {
+                      "content": "One more",
+                      "fontFamily": "$font-sans",
+                      "fontSize": 14
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "I1oFbB",
+              "name": "Existing practice footer",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Consistency compounds.",
+              "lineHeight": 1.5,
+              "textAlign": "center",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Tgluy",
+      "x": 2290,
+      "y": 1260,
+      "name": "Recognition / Promotion card / Proposal",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1200,
+      "height": 630,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "gap": 28,
+      "padding": 48,
+      "children": [
+        {
+          "type": "frame",
+          "id": "LP7HT",
+          "name": "Card brand and example boundary",
+          "width": "fill_container",
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "f777sK",
+              "type": "ref",
+              "ref": "AbS82",
+              "name": "Existing Dojo lockup"
+            },
+            {
+              "type": "text",
+              "id": "LIAgu",
+              "name": "Card example data status",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": 440,
+              "content": "DESIGN PROPOSAL · EXAMPLE DATA",
+              "lineHeight": 1.5,
+              "textAlign": "right",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PZmLh",
+          "name": "Fictional practitioner",
+          "width": "fill_container",
+          "gap": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "Hd2r5",
+              "type": "ref",
+              "ref": "BxoCm",
+              "name": "Existing white belt avatar"
+            },
+            {
+              "type": "frame",
+              "id": "qe6Or",
+              "name": "Fictional practitioner name",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ACHiq",
+                  "name": "Example handle",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "example_practitioner",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 20,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "OkRsD",
+                  "name": "Instance identity",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "dojo.example",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 14,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "njXs1",
+          "name": "Promotion identity",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 14,
+          "children": [
+            {
+              "type": "text",
+              "id": "z80Wd",
+              "name": "Promotion headline",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Third stripe earned",
+              "lineHeight": 1.1,
+              "fontFamily": "$font-mono",
+              "fontSize": 52,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "P7xRlw",
+              "name": "Rank and stripe",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "White belt · 3 of 4 stripes",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 22,
+              "fontWeight": "500"
+            },
+            {
+              "type": "frame",
+              "id": "rNq6N",
+              "name": "Earned stripe slots",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BtoK2",
+                  "name": "Stripe 1 earned",
+                  "width": 72,
+                  "height": 8,
+                  "fill": "$color-belt-white",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "frame",
+                  "id": "j4aq7C",
+                  "name": "Stripe 2 earned",
+                  "width": 72,
+                  "height": 8,
+                  "fill": "$color-belt-white",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "frame",
+                  "id": "kzXo5",
+                  "name": "Stripe 3 earned",
+                  "width": 72,
+                  "height": 8,
+                  "fill": "$color-belt-white",
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                },
+                {
+                  "type": "frame",
+                  "id": "EG4Qm",
+                  "name": "Stripe 4 pending",
+                  "width": 72,
+                  "height": 8,
+                  "stroke": "$color-secondary",
+                  "strokeWidth": 1,
+                  "layout": "vertical"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JZXPw",
+          "name": "Promotion supporting facts",
+          "width": "fill_container",
+          "gap": 24,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "NpGja",
+              "name": "Credited day count",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": 92,
+              "content": "28",
+              "lineHeight": 1,
+              "fontFamily": "$font-mono",
+              "fontSize": 64,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "s3wft9",
+              "name": "Credited day unit",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "practice days",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 20,
+              "fontWeight": "500"
+            },
+            {
+              "id": "n4DWME",
+              "type": "ref",
+              "ref": "JgN0v",
+              "name": "Dated promotion hanko",
+              "width": 56,
+              "height": 56,
+              "justifyContent": "center",
+              "descendants": {
+                "fkVnb": {
+                  "content": "STRIPE",
+                  "fontSize": 11
+                },
+                "gDhIc": {
+                  "content": "III",
+                  "fontSize": 14
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Fxz77",
+          "name": "Earned date and system line",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "padding": [
+            20,
+            0,
+            0,
+            0
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "VkDJk",
+              "name": "Earned date",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": 320,
+              "content": "Earned 19 Oct 2026",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "kb6qJ",
+              "name": "Recognition concept line",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": 440,
+              "content": "Practice leaves a mark.",
+              "lineHeight": 1.5,
+              "textAlign": "right",
+              "fontFamily": "$font-mono",
+              "fontSize": 14,
+              "fontWeight": "500"
+            }
+          ]
         }
       ]
     }
