@@ -13700,357 +13700,6 @@
     },
     {
       "type": "frame",
-      "id": "PjM5U",
-      "x": 3880,
-      "y": 4387,
-      "name": "Eval / Complete",
-      "theme": {
-        "theme": "sumi"
-      },
-      "clip": true,
-      "width": 1440,
-      "height": 900,
-      "fill": "$color-page",
-      "layout": "vertical",
-      "children": [
-        {
-          "type": "frame",
-          "id": "X0utb",
-          "name": "Top bar",
-          "width": "fill_container",
-          "height": 56,
-          "fill": "$tint-surface-50",
-          "stroke": "$color-border",
-          "strokeWidth": {
-            "bottom": 1
-          },
-          "strokeAlignment": "inner",
-          "padding": [
-            0,
-            24
-          ],
-          "justifyContent": "space_between",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "djUjK",
-              "name": "Left",
-              "gap": 12,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "mzEtR",
-                  "name": "Wordmark",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "B4djHO",
-                      "fill": "$color-accent",
-                      "content": "dojo",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 15,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "FWwCk",
-                      "fill": "$color-accent",
-                      "content": "_",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 15,
-                      "fontWeight": "700"
-                    }
-                  ]
-                },
-                {
-                  "type": "rectangle",
-                  "id": "HXcIH",
-                  "fill": "$color-border",
-                  "width": 1,
-                  "height": 20
-                },
-                {
-                  "type": "text",
-                  "id": "Q2gJ3E",
-                  "name": "Kata title",
-                  "fill": "$color-secondary",
-                  "content": "Fix: Off-by-one in pagination",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                },
-                {
-                  "id": "d8wnzR",
-                  "type": "ref",
-                  "ref": "AZb7Z"
-                },
-                {
-                  "id": "smBWV",
-                  "type": "ref",
-                  "ref": "u4llC"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "QfGJx",
-              "name": "StatusChip",
-              "cornerRadius": "$radius-sm",
-              "stroke": "$color-success",
-              "strokeWidth": 1,
-              "padding": [
-                4,
-                10
-              ],
-              "children": [
-                {
-                  "type": "text",
-                  "id": "BZfh6",
-                  "name": "Label",
-                  "fill": "$color-success-text",
-                  "content": "COMPLETE",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.88
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "ufTqj",
-          "name": "Conversation",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "padding": [
-            32,
-            16
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "b3j3L",
-              "name": "Column",
-              "width": 880,
-              "layout": "vertical",
-              "gap": 24,
-              "children": [
-                {
-                  "id": "b1vBbw",
-                  "type": "ref",
-                  "ref": "W7SBA",
-                  "width": "fill_container"
-                },
-                {
-                  "id": "m3vDu",
-                  "type": "ref",
-                  "ref": "ZQYQ3",
-                  "width": "fill_container",
-                  "descendants": {
-                    "O7y6vs": {
-                      "content": "SB"
-                    },
-                    "YDBr5": {
-                      "content": "[SENIOR BACKEND ENGINEER WHO HAS DEBUGGED COUNTLESS OFF-BY-ONE ERRORS IN APIS]"
-                    },
-                    "Z9ZIp": {
-                      "content": "You found the root cause: page is 1-indexed, so page * limit skips the whole first page. The fix (page - 1) * limit is right, and the tests pass."
-                    }
-                  }
-                },
-                {
-                  "type": "frame",
-                  "id": "VviOX",
-                  "name": "VerdictBlock / local",
-                  "width": "fill_container",
-                  "fill": "$color-surface",
-                  "cornerRadius": 6,
-                  "stroke": "$color-border",
-                  "strokeWidth": 1,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "s9Qyea",
-                      "layoutPosition": "absolute",
-                      "x": 0,
-                      "y": 0,
-                      "name": "Ink wrap",
-                      "width": 14,
-                      "height": 277,
-                      "layout": "vertical",
-                      "padding": [
-                        12,
-                        0,
-                        12,
-                        8
-                      ],
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "id": "Q7iV7z",
-                          "name": "Ink stroke",
-                          "fill": "$color-warning",
-                          "width": 3,
-                          "height": 253
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "ZyML4",
-                      "name": "Content",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 16,
-                      "padding": [
-                        24,
-                        24,
-                        24,
-                        32
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "hsUXt",
-                          "name": "Persona",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "[SENIOR BACKEND ENGINEER WHO HAS DEBUGGED COUNTLESS OFF-BY-ONE ERRORS IN APIS]",
-                          "lineHeight": 1.4,
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal",
-                          "letterSpacing": 0.88
-                        },
-                        {
-                          "type": "text",
-                          "id": "BociY",
-                          "name": "Verdict",
-                          "fill": "$color-warning-text",
-                          "content": "PASSED WITH NOTES",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 32,
-                          "fontWeight": "700",
-                          "letterSpacing": -0.8
-                        },
-                        {
-                          "type": "text",
-                          "id": "a71iF2",
-                          "name": "Status",
-                          "fill": "$color-primary",
-                          "content": "Evaluation complete — opening full analysis...",
-                          "fontFamily": "$font-sans",
-                          "fontSize": 15,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "kcywp",
-                          "name": "Topics label",
-                          "fill": "$color-secondary",
-                          "content": "TOPICS TO REVIEW",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal",
-                          "letterSpacing": 0.88
-                        },
-                        {
-                          "type": "frame",
-                          "id": "Z72BW",
-                          "name": "Chips",
-                          "gap": 6,
-                          "children": [
-                            {
-                              "id": "C4WAf",
-                              "type": "ref",
-                              "ref": "GXr8r",
-                              "descendants": {
-                                "m8V6pg": {
-                                  "content": "index-arithmetic"
-                                }
-                              }
-                            },
-                            {
-                              "id": "UADhB",
-                              "type": "ref",
-                              "ref": "GXr8r",
-                              "descendants": {
-                                "m8V6pg": {
-                                  "content": "off-by-one-errors"
-                                }
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "id": "Xilvk",
-                          "type": "ref",
-                          "ref": "IVs1G",
-                          "descendants": {
-                            "a5Zxx": {
-                              "content": "VIEW FULL ANALYSIS →"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "iqkp8",
-          "name": "Bottom band",
-          "width": "fill_container",
-          "height": 96,
-          "fill": "$tint-surface-40",
-          "stroke": "$color-border",
-          "strokeWidth": {
-            "top": 1
-          },
-          "strokeAlignment": "inner",
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "frame",
-              "id": "duDVo",
-              "name": "Inner",
-              "width": 880,
-              "gap": 12,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "r347Zw",
-                  "name": "Label",
-                  "fill": "$color-secondary",
-                  "content": "THE SENSEI HAS SPOKEN.",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.88
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
       "id": "hVQzC",
       "x": 5440,
       "y": 4387,
@@ -14308,721 +13957,6 @@
                   "letterSpacing": 0.88
                 }
               ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "SiQkl",
-      "x": 760,
-      "y": 5547,
-      "name": "Results / Passed with notes",
-      "theme": {
-        "theme": "sumi"
-      },
-      "clip": true,
-      "width": 1440,
-      "fill": "$color-page",
-      "layout": "vertical",
-      "children": [
-        {
-          "type": "frame",
-          "id": "V4VU0",
-          "name": "Container",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": 24,
-          "padding": [
-            32,
-            80
-          ],
-          "children": [
-            {
-              "type": "text",
-              "id": "wIX6x",
-              "name": "Breadcrumb",
-              "fill": "$color-secondary",
-              "content": "DASHBOARD / RECENT KATA / THIS RESULT",
-              "fontFamily": "$font-mono",
-              "fontSize": 11,
-              "fontWeight": "normal",
-              "letterSpacing": 0.88
-            },
-            {
-              "type": "frame",
-              "id": "lfEEQ",
-              "name": "Header band",
-              "width": "fill_container",
-              "justifyContent": "space_between",
-              "alignItems": "end",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "XiemV",
-                  "name": "Left",
-                  "layout": "vertical",
-                  "gap": 10,
-                  "children": [
-                    {
-                      "id": "EkrC1",
-                      "type": "ref",
-                      "ref": "ZX9MU",
-                      "descendants": {
-                        "z92OT": {
-                          "content": "[SENIOR BACKEND ENGINEER WHO HAS DEBUGGED COUNTLESS OFF-BY-ONE ERRORS IN APIS]"
-                        }
-                      }
-                    },
-                    {
-                      "type": "text",
-                      "id": "I3c33",
-                      "name": "H1",
-                      "fill": "$color-primary",
-                      "content": "Fix: Off-by-one in pagination",
-                      "fontFamily": "$font-sans",
-                      "fontSize": 30,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "path",
-                      "id": "wqI6f",
-                      "name": "Brushstroke",
-                      "geometry": "M2 6c18-4 38 3 62-2s46 4 62 0",
-                      "viewBox": [
-                        0,
-                        0,
-                        128,
-                        10
-                      ],
-                      "width": 128,
-                      "height": 8,
-                      "stroke": "$color-accent",
-                      "strokeWidth": 2,
-                      "strokeLinecap": "round"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "YTSsj",
-                      "name": "Chips",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "id": "Ugrp0",
-                          "type": "ref",
-                          "ref": "AZb7Z"
-                        },
-                        {
-                          "id": "oMJH4",
-                          "type": "ref",
-                          "ref": "u4llC"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "OTJsn",
-                          "name": "Duration chip",
-                          "cornerRadius": "$radius-sm",
-                          "stroke": "$color-border",
-                          "strokeWidth": 1,
-                          "padding": [
-                            2,
-                            8
-                          ],
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "jtmCp",
-                              "fill": "$color-secondary",
-                              "content": "10 min",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "P28x0p",
-                  "name": "Completed",
-                  "layout": "vertical",
-                  "gap": 4,
-                  "alignItems": "end",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "gXL3i",
-                      "name": "Eyebrow",
-                      "fill": "$color-secondary",
-                      "content": "COMPLETED IN",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.88
-                    },
-                    {
-                      "type": "text",
-                      "id": "EweFf",
-                      "name": "Time",
-                      "fill": "$color-primary",
-                      "content": "7:12",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 24,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "I2Rg8A",
-              "name": "VerdictBlock / LG",
-              "width": "fill_container",
-              "fill": "$color-surface",
-              "cornerRadius": 6,
-              "stroke": "$color-border",
-              "strokeWidth": 1,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "r4DDn",
-                  "name": "Content",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 16,
-                  "padding": [
-                    32,
-                    32,
-                    32,
-                    40
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "WxU61",
-                      "name": "Verdict",
-                      "fill": "$color-warning-text",
-                      "content": "PASSED WITH NOTES",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 56,
-                      "fontWeight": "700",
-                      "letterSpacing": -1.4
-                    },
-                    {
-                      "type": "text",
-                      "id": "k3ift",
-                      "name": "Topics label",
-                      "fill": "$color-secondary",
-                      "content": "TOPICS TO REVIEW",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.88
-                    },
-                    {
-                      "type": "frame",
-                      "id": "NsMwq",
-                      "name": "Chips",
-                      "gap": 6,
-                      "children": [
-                        {
-                          "id": "v9OkBy",
-                          "type": "ref",
-                          "ref": "GXr8r",
-                          "descendants": {
-                            "m8V6pg": {
-                              "content": "index-arithmetic"
-                            }
-                          }
-                        },
-                        {
-                          "id": "fJAkO",
-                          "type": "ref",
-                          "ref": "GXr8r",
-                          "descendants": {
-                            "m8V6pg": {
-                              "content": "off-by-one-errors"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "BKYDi",
-              "name": "Grid",
-              "width": "fill_container",
-              "gap": 32,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "BYxhV",
-                  "name": "Share rail",
-                  "width": 480,
-                  "layout": "vertical",
-                  "gap": 16,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "xEEQQ",
-                      "name": "Eyebrow",
-                      "fill": "$color-secondary",
-                      "content": "SHARE THIS",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.88
-                    },
-                    {
-                      "type": "frame",
-                      "id": "SiiG5",
-                      "name": "ShareCardPreview",
-                      "width": 480,
-                      "height": 252,
-                      "fill": "$color-page",
-                      "cornerRadius": "$radius-sm",
-                      "stroke": "$color-border",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "padding": 20,
-                      "justifyContent": "space_between",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "rAWrN",
-                          "name": "Wordmark",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "w17SA",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "KXK5U",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "iqFvu",
-                          "name": "Mid",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 8,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Setco",
-                              "name": "Verdict",
-                              "fill": "$color-warning-text",
-                              "content": "PASSED WITH NOTES",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 24,
-                              "fontWeight": "700"
-                            },
-                            {
-                              "type": "text",
-                              "id": "d1fuam",
-                              "name": "Title",
-                              "fill": "$color-primary",
-                              "content": "Fix: Off-by-one in pagination",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 15,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "Ol1K5",
-                              "name": "Quote",
-                              "fill": "$color-secondary",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "“Guard the page argument at the top and throw on page < 1.”",
-                              "fontFamily": "$font-sans",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "fontStyle": "italic"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "T5Fr6G",
-                          "name": "Bottom",
-                          "width": "fill_container",
-                          "justifyContent": "space_between",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "njNgw",
-                              "fill": "$color-secondary",
-                              "textGrowth": "fixed-width",
-                              "width": 300,
-                              "content": "sensei — senior backend engineer who has debugged countless off-by-one errors in apis",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 9,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "MWmeX",
-                              "fill": "$color-secondary",
-                              "content": "Find yours →",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 9,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "id": "wuOwN",
-                      "type": "ref",
-                      "ref": "yeeYl",
-                      "width": "fill_container",
-                      "descendants": {
-                        "eH0ay": {
-                          "content": "COPY SHARE LINK"
-                        }
-                      }
-                    },
-                    {
-                      "id": "z1UMtI",
-                      "type": "ref",
-                      "ref": "yeeYl",
-                      "width": "fill_container",
-                      "descendants": {
-                        "eH0ay": {
-                          "content": "SHARE TO TWITTER"
-                        }
-                      }
-                    },
-                    {
-                      "type": "text",
-                      "id": "JeiBE",
-                      "name": "Url",
-                      "fill": "$color-secondary",
-                      "content": "host/share/a1b2c3d4",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "J3pAh",
-                  "name": "Right",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 16,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "RyOl9",
-                      "name": "InsightCards",
-                      "width": "fill_container",
-                      "gap": 16,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "pXCVO",
-                          "name": "Insight STRENGTHS",
-                          "width": "fill_container",
-                          "height": 200,
-                          "fill": "$color-surface",
-                          "cornerRadius": 6,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 12,
-                          "padding": 20,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "LVobb",
-                              "name": "Eyebrow",
-                              "fill": "$color-success-text",
-                              "content": "STRENGTHS",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.88
-                            },
-                            {
-                              "type": "text",
-                              "id": "uv74E",
-                              "name": "Body",
-                              "fill": "$color-secondary",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "· Traced the 1-indexed page boundary before touching the code\n· Kept the function signature intact",
-                              "lineHeight": 1.6,
-                              "fontFamily": "$font-sans",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "sZ1Kd",
-                          "name": "Insight IMPROVEMENTS",
-                          "width": "fill_container",
-                          "height": 200,
-                          "fill": "$color-surface",
-                          "cornerRadius": 6,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 12,
-                          "padding": 20,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "cGSHx",
-                              "name": "Eyebrow",
-                              "fill": "$color-warning-text",
-                              "content": "IMPROVEMENTS",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.88
-                            },
-                            {
-                              "type": "text",
-                              "id": "BnC0H",
-                              "name": "Body",
-                              "fill": "$color-secondary",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "· Did not say what page 0 should return",
-                              "lineHeight": 1.6,
-                              "fontFamily": "$font-sans",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "yeOQq",
-                          "name": "Insight ALTERNATIVE APPROACH",
-                          "width": "fill_container",
-                          "height": 200,
-                          "fill": "$color-surface",
-                          "cornerRadius": 6,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 12,
-                          "padding": 20,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "tC70z",
-                              "name": "Eyebrow",
-                              "fill": "$color-secondary",
-                              "content": "ALTERNATIVE APPROACH",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 11,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.88
-                            },
-                            {
-                              "type": "text",
-                              "id": "y2Ev9",
-                              "name": "Body",
-                              "fill": "$color-secondary",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Guard the page argument at the top and throw on page < 1.",
-                              "lineHeight": 1.6,
-                              "fontFamily": "$font-sans",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "fontStyle": "italic"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "L5m4Z",
-                      "name": "Collapsible Original kata",
-                      "width": "fill_container",
-                      "cornerRadius": 6,
-                      "stroke": "$color-border",
-                      "strokeWidth": 1,
-                      "padding": [
-                        14,
-                        20
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "zJgQ3",
-                          "name": "Label",
-                          "fill": "$color-primary",
-                          "content": "Original kata",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "gP5b1",
-                          "name": "Chevron",
-                          "fill": "$color-secondary",
-                          "content": "›",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 15,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "yn3K0",
-                      "name": "Collapsible Your response",
-                      "width": "fill_container",
-                      "cornerRadius": 6,
-                      "stroke": "$color-border",
-                      "strokeWidth": 1,
-                      "padding": [
-                        14,
-                        20
-                      ],
-                      "justifyContent": "space_between",
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "h12Rzv",
-                          "name": "Label",
-                          "fill": "$color-primary",
-                          "content": "Your response",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "JvfdO",
-                          "name": "Chevron",
-                          "fill": "$color-secondary",
-                          "content": "›",
-                          "fontFamily": "$font-mono",
-                          "fontSize": 15,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "PHQ8R",
-              "name": "Action row",
-              "width": "fill_container",
-              "stroke": "$color-border",
-              "strokeWidth": {
-                "top": 1
-              },
-              "strokeAlignment": "inner",
-              "padding": [
-                24,
-                0,
-                0,
-                0
-              ],
-              "justifyContent": "space_between",
-              "children": [
-                {
-                  "id": "DfL3W",
-                  "type": "ref",
-                  "ref": "yeeYl",
-                  "descendants": {
-                    "eH0ay": {
-                      "content": "← DASHBOARD"
-                    }
-                  }
-                },
-                {
-                  "id": "Yn1tx",
-                  "type": "ref",
-                  "ref": "IVs1G",
-                  "descendants": {
-                    "a5Zxx": {
-                      "content": "KEEP PRACTICING →"
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "AlrTL",
-              "name": "Feedback link",
-              "width": "fill_container",
-              "padding": [
-                16,
-                0,
-                0,
-                0
-              ],
-              "justifyContent": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "oGWH1",
-                  "fill": "$color-secondary",
-                  "content": "how was this kata? (optional)",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "text",
-              "id": "f2wVm",
-              "name": "Footer",
-              "fill": "$color-secondary",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Consistency compounds.",
-              "textAlign": "center",
-              "fontFamily": "$font-mono",
-              "fontSize": 11,
-              "fontWeight": "normal"
             }
           ]
         }
@@ -16562,7 +15496,7 @@
           "fill": "$color-muted",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.5.0 · brief-schema: 1 · updated: 2026-10-19",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16643,7 +15577,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Complete\n- Eval — Error",
+          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16670,7 +15604,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- WS /ws/sessions/:id; on 'ready' it reads the attempt id from sessionStorage and submits once; 'Try again' after an error reconnects to the same attempt (useEvaluationStream.ts)\n- A final evaluation redirects to /result 1500ms after complete\n- Follow-up turns have no client cap; a failed follow-up submit releases the Send button\n- WS close 4001 clears the token and redirects to /?error=session_expired\n- On error the bottom band reads 'Evaluation stopped.'",
+          "content": "- WS /ws/sessions/:id; on 'ready' it reads the attempt id from sessionStorage and submits once; 'Try again' after an error reconnects to the same attempt (useEvaluationStream.ts)\n- A final evaluation redirects to /result 1500ms after complete\n- Follow-up turns have no client cap; a failed follow-up submit releases the Send button\n- WS close 4001 clears the token and redirects to /?error=session_expired\n- On error the bottom band reads 'Evaluation stopped.'\n- D60: one post-kata screen, no redirect. The sensei streams into the verdict card's body; the verdict label and its ink colour appear only when the evaluation lands (neutral border stroke while streaming). The learner's line (lines ±1) and why sit below from the first token, so nothing moves when the result arrives.\n- Insight tags (<strengths>, <improvements>, <approach_note>) never reach the screen while streaming.\n- After evaluation only: the answer (rubric answer.line ±1, expectedIssues[].title and why) under the learner's answer.\n- Exit: Done is the filled action (to the dashboard's done state); One more kata and Share are ghosts (D54, D61). Share opens navigator.share, else copies the link.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16697,7 +15631,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy.",
+          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy. Proposed copy for D60/D61, not in code yet: 'YOU POINTED AT LINE n · YOUR WHY', 'THE ANSWER · LINE n', 'Done', 'Share'. Answer text is seed kata-micro-001's rubric.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16751,7 +15685,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D22, D32, D33",
+          "content": "D22, D32, D33, D60, D61",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16824,7 +15758,7 @@
           "fill": "$color-muted",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.5.0 · brief-schema: 1 · updated: 2026-10-19",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16905,7 +15839,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Results — Passed with notes\n- Results — Expired\n- Results — No evaluation\n- Results — Load error\n- Results — Feedback open",
+          "content": "- Results — Expired\n- Results — No evaluation\n- Results — Load error\n- Results — Feedback open\n- Passed with notes: see Post-kata / Mobile / Result (D60). /result renders that same single column at every width",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16932,7 +15866,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Verdict variants differ only by label and colour; there is no per-verdict layout\n- Expired = no final attempt and status is not active\n- The share rail and insight cards render only when a verdict exists\n- The hero prose shows only the text outside the structured tags; the tagged blocks render as the insight cards\n- VerdictBlock gets no role here (D21)",
+          "content": "- Verdict variants differ only by label and colour; there is no per-verdict layout\n- Expired = no final attempt and status is not active\n- Notes and actions render only when a verdict exists\n- The hero prose shows only the text outside the structured tags; the tagged blocks render as the insight cards\n- VerdictBlock gets no role here (D21)\n- D60: /result is the post-kata view rebuilt from stored data: verdict once, the learner's point answer, the answer, notes, Done / One more kata / Share. No share preview card (D61), no breadcrumb.\n- The desktop frames left here (Expired, No evaluation, Load error, Feedback open) keep their logic but predate the single column.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -17013,7 +15947,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D21, D22, D32",
+          "content": "D21, D22, D32, D60, D61",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -17078,6 +16012,32 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "bxaEe",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · D60 shipped with its code: Eval / Complete and Results / Passed with notes removed (superseded by Post-kata / Mobile; the code renders one column at every width)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "Taxvj",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · Post-kata drawn on mobile for D60/D61 (streaming, right line, wrong line, stream error); ui-review gate run by a fresh reviewer, findings applied",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -20032,6 +18992,1471 @@
           "type": "ref",
           "ref": "KCetR",
           "name": "BottomNav (katas active)"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "s0Lva",
+      "x": 8560,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Streaming",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "S0NMDA",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "yeGhw",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Z9gle",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "h88qz",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zyafX",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "V8XhB2",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "FWGhS",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "itiR2",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "fdlpe",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "ScreA",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "LP0pz",
+          "name": "Verdict",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "id": "ojUNl",
+              "type": "ref",
+              "ref": "OnhvJ",
+              "width": "fill_container",
+              "descendants": {
+                "XMk5X": {
+                  "height": 64
+                },
+                "T8B4d": {
+                  "fill": "$color-border"
+                },
+                "EwYZw": {
+                  "enabled": false
+                },
+                "iRUsk": {
+                  "content": "You found the root cause: page is 1-indexed, so page * limit skips the whole first page._"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "DdkEP",
+          "name": "Your answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "Qkj6G",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "YOU POINTED AT LINE 3 · YOUR WHY",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "CozW6",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "Fj2NP",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "ON7dG",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "3"
+                    },
+                    "jTq5I": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "U2jMa",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "4"
+                    },
+                    "w1iat6": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "U6yJgv",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "page is 1-based but start treats it as 0-based, so page 1 starts at the second page and the first one never shows. start should be (page - 1) * limit.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "fontStyle": "italic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Wm7FQ",
+      "x": 9070,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Result · right line",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "zMZVg",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "d3hQY",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ZoWRZ",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Oid5o",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "y0HWX",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "p3dvk",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "o2dZE",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "G7Qh1C",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "azYk6",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "Y3Ws3",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "uACVH",
+          "name": "Verdict",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "id": "Iyyzy",
+              "type": "ref",
+              "ref": "OnhvJ",
+              "width": "fill_container",
+              "descendants": {
+                "iRUsk": {
+                  "content": "You found the root cause: page is 1-indexed, so page * limit skips the whole first page. The fix (page - 1) * limit is right."
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "C5Axr",
+              "name": "Topics",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JCfHl",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "TOPICS TO REVIEW",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.96
+                },
+                {
+                  "type": "frame",
+                  "id": "WePOP",
+                  "name": "Chips",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "id": "BnAjB",
+                      "type": "ref",
+                      "ref": "GXr8r",
+                      "descendants": {
+                        "m8V6pg": {
+                          "content": "index-arithmetic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "m2F3U",
+                      "type": "ref",
+                      "ref": "GXr8r",
+                      "descendants": {
+                        "m8V6pg": {
+                          "content": "off-by-one-errors"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "pp4Ah",
+          "name": "Your answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "Ff4PR",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "YOU POINTED AT LINE 3 · YOUR WHY",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "kmUD3",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "oWRPY",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "aMlza",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "3"
+                    },
+                    "jTq5I": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "JRsu0",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "4"
+                    },
+                    "w1iat6": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "C72yi",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "page is 1-based but start treats it as 0-based, so page 1 starts at the second page and the first one never shows. start should be (page - 1) * limit.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "fontStyle": "italic"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "URq39",
+          "name": "The answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "Y1jdn",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "THE ANSWER · LINE 3",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "D69O3s",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "E7tey",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "rD0ok",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "3"
+                    },
+                    "jTq5I": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "g0DgMy",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "4"
+                    },
+                    "w1iat6": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "GA0kl",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "start treats a 1-based page as 0-based",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "N8d0m",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "With page = 1, start is limit, so the slice begins at the second page and the first page is unreachable. start should be (page - 1) * limit.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KgSOr",
+          "name": "Notes",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "W6CwP",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "STRENGTHS",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "text",
+              "id": "w7Wrr",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Traced the 1-indexed page boundary before touching the code",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "RY2gd",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "IMPROVEMENTS",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "text",
+              "id": "JKiqQ",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Did not say what page 0 should return",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "LBV3L",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "id": "i1gzW3",
+              "type": "ref",
+              "ref": "WDpQp",
+              "width": "fill_container",
+              "descendants": {
+                "NnDrs": {
+                  "content": "Done"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "nO2a0",
+              "name": "Secondary",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "zyHxE",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "One more kata"
+                    }
+                  }
+                },
+                {
+                  "id": "KkzxH",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Share"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "n0nllo",
+      "x": 9580,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Result · wrong line",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "tRvsr",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "ufkx5",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "s8ggc",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "I2FfIZ",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "QmfvH",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Kayhj",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "dq16a",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "fDDhW",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "WCCdo",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "cnj3d",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KCuR2",
+          "name": "Verdict",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "id": "Jn5Zm",
+              "type": "ref",
+              "ref": "HZweK",
+              "width": "fill_container",
+              "descendants": {
+                "S5TKe": {
+                  "content": "Line 4 is fine: slice excludes its end, so start + limit is exactly one page. The first page goes missing because of where each page starts, not where it ends."
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "IrRmp",
+              "name": "Topics",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "l5jqYE",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "TOPICS TO REVIEW",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.96
+                },
+                {
+                  "type": "frame",
+                  "id": "HQeTk",
+                  "name": "Chips",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "id": "s8cwz",
+                      "type": "ref",
+                      "ref": "GXr8r",
+                      "descendants": {
+                        "m8V6pg": {
+                          "content": "index-arithmetic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "lxzen",
+                      "type": "ref",
+                      "ref": "GXr8r",
+                      "descendants": {
+                        "m8V6pg": {
+                          "content": "off-by-one-errors"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "U3C4Ya",
+          "name": "Your answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "i933ne",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "YOU POINTED AT LINE 4 · YOUR WHY",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "pgWv2",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "TxoW0",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "g3K4ul",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "3"
+                    },
+                    "w1iat6": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "ocLun",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "4"
+                    },
+                    "jTq5I": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "n0Tcrf",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "end should be start + limit - 1, otherwise each page shows one item too many.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "fontStyle": "italic"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HOzq9",
+          "name": "The answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "e2twLm",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "THE ANSWER · LINE 3",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "jh0QC",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "O3h12o",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "CXzQD",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "3"
+                    },
+                    "jTq5I": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "YW4m9",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "4"
+                    },
+                    "w1iat6": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "J7bqm5",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "start treats a 1-based page as 0-based",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "XZXJd",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "With page = 1, start is limit, so the slice begins at the second page and the first page is unreachable. start should be (page - 1) * limit.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "F4bxq",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "id": "oCW0H",
+              "type": "ref",
+              "ref": "WDpQp",
+              "width": "fill_container",
+              "descendants": {
+                "NnDrs": {
+                  "content": "Done"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "L8WZ0",
+              "name": "Secondary",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "pTZu3",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "One more kata"
+                    }
+                  }
+                },
+                {
+                  "id": "DCubd",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Share"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YPXdP",
+      "x": 10090,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Stream error",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "oLz3P",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "L9NxSD",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "P2DzTy",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Y0ya6",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wIXNv",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ajrd0",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "D5hrH",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "S4nFQ",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "HElrO",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "bjIzQ",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "DP8IF",
+          "name": "Error",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "vnOP7",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "The sensei couldn't evaluate your response.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "id": "CwUBY",
+              "type": "ref",
+              "ref": "WDpQp",
+              "width": "fill_container",
+              "descendants": {
+                "NnDrs": {
+                  "content": "Try again"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "cAu6R",
+              "name": "Secondary",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "oGmHe",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Back to kata"
+                    }
+                  }
+                },
+                {
+                  "id": "rU8cM",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Dashboard"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PLved",
+          "name": "Your answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "J8Z90",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "YOU POINTED AT LINE 3 · YOUR WHY",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "C5CMrx",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "ise9Y",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "gNete",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "3"
+                    },
+                    "jTq5I": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "YNRhW",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "4"
+                    },
+                    "w1iat6": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "B7MOe",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "page is 1-based but start treats it as 0-based, so page 1 starts at the second page and the first one never shows. start should be (page - 1) * limit.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "fontStyle": "italic"
+            }
+          ]
         }
       ]
     }

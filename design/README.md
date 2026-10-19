@@ -31,7 +31,7 @@ as context for AI agents.
 |---|---|---|---|
 | `public.pen` | 13 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
 | `app-core.pen` | 12 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
-| `kata.pen` | 21 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results |
+| `kata.pen` | 23 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results |
 | `learn.pen` | 13 | 0.4.0 | Scrolls catalog and player, Engawa playground (mobile too) |
 | `admin.pen` | 16 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health — mobile too |
 

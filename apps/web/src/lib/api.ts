@@ -7,6 +7,7 @@ export {
   type DashboardData,
   type SessionAttempt,
   type SessionWithKata,
+  type RevealedAnswer,
   type StartSessionResponse,
   type SubmitAttemptResponse,
   type AdminKataDTO,

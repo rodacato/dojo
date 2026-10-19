@@ -48,6 +48,13 @@ export interface SessionWithKata {
   variationId: string
   ownerRole: string
   finalAttempt: SessionAttempt | null
+  answer: RevealedAnswer | null
+}
+
+export interface RevealedAnswer {
+  line: number
+  title: string
+  why: string
 }
 
 export interface StartSessionResponse {

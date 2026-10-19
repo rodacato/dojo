@@ -62,6 +62,7 @@ function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata 
     variationId: 'v1',
     ownerRole: 'staff_engineer',
     finalAttempt: null,
+    answer: null,
     ...overrides,
   }
 }
@@ -213,26 +214,38 @@ describe('ResultsPage', () => {
     expect(await screen.findByText('eval screen')).toBeInTheDocument()
   })
 
-  it('copies a share link built from the verdict and kata title', async () => {
+  it('shares the result page through the system sheet when there is one (D61)', async () => {
+    const user = userEvent.setup()
+    const share = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'share', { configurable: true, value: share })
+    mockedApi.getSession.mockResolvedValue(makeSession({ finalAttempt: makeAttempt({ verdict: 'passed' }) }))
+
+    renderAt('/results/s1')
+    await user.click(await screen.findByRole('button', { name: 'Share' }))
+
+    expect(share).toHaveBeenCalledWith({ url: expect.stringContaining('/share/s1') })
+    Object.defineProperty(navigator, 'share', { configurable: true, value: undefined })
+  })
+
+  it('copies the share link where there is no system sheet', async () => {
     const user = userEvent.setup()
     const writeText = vi.fn().mockResolvedValue(undefined)
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText },
-    })
-    mockedApi.getSession.mockResolvedValue(
-      makeSession({ finalAttempt: makeAttempt({ verdict: 'passed' }) }),
-    )
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
+    mockedApi.getSession.mockResolvedValue(makeSession({ finalAttempt: makeAttempt({ verdict: 'passed' }) }))
+
+    renderAt('/results/s1')
+    await user.click(await screen.findByRole('button', { name: 'Share' }))
+
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('/share/s1'))
+    expect(await screen.findByText('Link copied!')).toBeInTheDocument()
+  })
+
+  it('shows the verdict once, with no share preview repeating it', async () => {
+    mockedApi.getSession.mockResolvedValue(makeSession({ finalAttempt: makeAttempt({ verdict: 'passed' }) }))
 
     renderAt('/results/s1')
 
-    const copyBtn = await screen.findByRole('button', { name: 'Copy share link' })
-    await user.click(copyBtn)
-
-    expect(writeText).toHaveBeenCalledTimes(1)
-    const copied = writeText.mock.calls[0]?.[0] as string
-    expect(copied).toContain('PASSED — Binary Search Boundaries | dojo_')
-    expect(copied).toContain('/share/s1')
-    expect(await screen.findByText('Link copied!')).toBeInTheDocument()
+    expect(await screen.findAllByText('PASSED')).toHaveLength(1)
+    expect(screen.getAllByText('Binary Search Boundaries')).toHaveLength(1)
   })
 })

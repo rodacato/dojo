@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
@@ -12,6 +12,8 @@ import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
 import { EnsoLoader } from '../components/ui/EnsoLoader'
+import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
+import { hideInsightTags } from '../lib/parse-insight'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -33,7 +35,7 @@ type StatusChipKind = 'connecting' | 'executing' | 'streaming' | 'follow-up' | '
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: session } = useAsync(() => api.getSession(sessionId!), [sessionId])
+  const { data: session, reload: reloadSession } = useAsync(() => api.getSession(sessionId!), [sessionId])
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
   const [history, setHistory] = useState<Exchange[]>([])
@@ -65,23 +67,20 @@ export function SenseiEvalPage() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [state])
 
-  const isExecuting = state.status === 'executing'
   const isStreaming = state.status === 'streaming'
   const hasResult = state.status === 'evaluation' || state.status === 'complete'
   const tokens = 'tokens' in state ? state.tokens : ''
   const executionResult = 'executionResult' in state ? state.executionResult : undefined
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
+  const isFinal = !!result?.isFinalEvaluation
+  useEffect(() => {
+    if (isFinal) reloadSession()
+  }, [isFinal, reloadSession])
   const senseiInitials = useMemo(
     () => deriveInitials(session?.ownerRole),
     [session?.ownerRole],
   )
   const revealedTokens = useTypingReveal(tokens, !isStreaming)
-  const isLoadingStream =
-    state.status === 'idle' ||
-    state.status === 'connecting' ||
-    state.status === 'ready' ||
-    (isStreaming && !tokens)
-  const isWaiting = (isLoadingStream || isExecuting || state.status === 'execution_done') && !tokens
 
   const status = deriveStatus({
     state: state.status,
@@ -108,168 +107,110 @@ export function SenseiEvalPage() {
     }
   }
 
-  let bottomBandContent: ReactNode
-  if (result && !result.isFinalEvaluation && result.followUpQuestion) {
-    bottomBandContent = (
-      <div className="flex gap-2">
-        <textarea
-          value={followUpText}
-          onChange={(e) => setFollowUpText(e.target.value)}
-          placeholder="Your answer..."
-          rows={2}
-          className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
-        />
-        <Button
-          variant="primary"
-          size="md"
-          onClick={handleFollowUp}
-          disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
-          loading={followUpSubmitting}
-        >
-          Send →
-        </Button>
-      </div>
-    )
-  } else if (result?.isFinalEvaluation) {
-    bottomBandContent = (
-      <p className="text-secondary text-sm font-mono text-center">
-        The sensei has spoken.
-      </p>
-    )
-  } else if (state.status === 'error') {
-    bottomBandContent = (
-      <p className="text-secondary text-sm font-mono text-center">
-        Evaluation stopped.
-      </p>
-    )
-  } else {
-    bottomBandContent = (
-      <div className="text-secondary text-sm font-mono text-center inline-flex items-center justify-center gap-3 w-full">
-        <EnsoLoader size={28} label="The sensei is evaluating" />
-        <span>The sensei is evaluating.</span>
-      </div>
-    )
-  }
+  const final = result?.isFinalEvaluation ? result : null
+  const prose = hideInsightTags(revealedTokens)
+  const code = session?.kata.starterCode ?? null
+  const pointed = code ? parsePointResponse(session?.finalAttempt?.userResponse) : null
+  const awaitingFollowUp = !!result && !result.isFinalEvaluation && !!result.followUpQuestion
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
-      {/* Top bar — focus mode, no sidebar */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
           dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
         </span>
-        {session && (
-          <>
-            <span className="h-4 w-px bg-border hidden sm:block" />
-            <span className="font-mono text-sm text-primary truncate hidden sm:inline max-w-[40ch]">
-              {session.kata.title}
-            </span>
-            <div className="hidden md:flex items-center gap-1.5">
-              <TypeBadge type={session.kata.type} />
-              <DifficultyBadge difficulty={session.kata.difficulty} />
-            </div>
-          </>
-        )}
         <div className="ml-auto">
           <StatusChip kind={status} />
         </div>
       </header>
 
-      {/* Conversation column — max 880px centered */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-8">
-        <div className="max-w-220 mx-auto flex flex-col gap-6">
-          {/* Execution result card — code katas only */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:py-8">
+        <div className="max-w-xl mx-auto flex flex-col gap-6">
+          {session && (
+            <div className="flex flex-col gap-3">
+              <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight">{session.kata.title}</h1>
+              <div className="flex items-center gap-1.5">
+                <TypeBadge type={session.kata.type} />
+                <DifficultyBadge difficulty={session.kata.difficulty} />
+              </div>
+            </div>
+          )}
+
           {executionResult && <ExecutionResultCard result={executionResult} />}
 
-          {/* Past exchanges (multi-turn follow-ups) */}
           {history.map((exchange, i) => (
             <div key={i} className="flex flex-col gap-6">
               <SenseiBubble initials={senseiInitials} role={session?.ownerRole}>
-                <StreamingText text={exchange.tokens} done className="text-primary" />
+                <StreamingText text={hideInsightTags(exchange.tokens)} done className="text-primary" />
               </SenseiBubble>
               <UserBubble>{exchange.userAnswer}</UserBubble>
             </div>
           ))}
 
-          {/* Live sensei message */}
-          {(isWaiting || revealedTokens || isStreaming) && (
-            <SenseiBubble
-              initials={senseiInitials}
-              role={session?.ownerRole}
-              streaming={isStreaming || isWaiting}
-            >
-              {isWaiting && !revealedTokens ? (
-                <span className="text-secondary text-sm font-sans">{evalMessage}</span>
+          {state.status === 'error' ? (
+            <div role="alert" className="flex flex-col gap-3">
+              <p className="text-primary">The sensei couldn't evaluate your response.</p>
+              <p className="text-secondary text-sm">{state.message}</p>
+              <Button variant="primary" size="lg" className="w-full" onClick={() => connect()}>
+                Try again
+              </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button variant="ghost" size="lg" onClick={() => navigate(`/katas/${sessionId}`)}>
+                  Back to kata
+                </Button>
+                <Button variant="ghost" size="lg" onClick={() => navigate('/dashboard')}>
+                  Dashboard
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <VerdictBlock verdict={final?.verdict} topics={final?.topicsToReview}>
+              {prose ? (
+                <StreamingText text={prose} done={!isStreaming && revealedTokens === tokens} className="text-primary" />
               ) : (
-                <StreamingText
-                  text={revealedTokens}
-                  done={!isStreaming && revealedTokens === tokens}
-                  className="text-primary"
-                />
+                <span className="inline-flex items-center gap-3 text-secondary text-sm">
+                  <EnsoLoader size={28} label="The sensei is evaluating" />
+                  {evalMessage}
+                </span>
               )}
-            </SenseiBubble>
+            </VerdictBlock>
           )}
 
-          {/* Follow-up question (mid-conversation, before user answers) */}
-          {result && !result.isFinalEvaluation && result.followUpQuestion && (
+          {awaitingFollowUp && (
             <SenseiBubble initials={senseiInitials} role={session?.ownerRole}>
               <p className="text-primary">{result.followUpQuestion}</p>
             </SenseiBubble>
           )}
 
-          {/* Verdict block — final evaluation */}
-          {result && result.isFinalEvaluation && (
-            <VerdictBlock
-              verdict={result.verdict}
-              role={session?.ownerRole}
-              topics={result.topicsToReview}
-              cta={
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={() => navigate(`/katas/${sessionId}/result`)}
-                >
-                  View full analysis →
-                </Button>
-              }
+          {code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} />}
+          {final && code && session?.answer && <TheAnswer code={code} answer={session.answer} />}
+          {final && <KataNotes analysis={tokens} />}
+          {final && sessionId && <PostKataActions sessionId={sessionId} />}
+        </div>
+      </div>
+
+      {awaitingFollowUp && (
+        <div className="shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3">
+          <div className="max-w-xl mx-auto w-full flex gap-2">
+            <textarea
+              value={followUpText}
+              onChange={(e) => setFollowUpText(e.target.value)}
+              placeholder="Your answer..."
+              rows={2}
+              className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
+            />
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleFollowUp}
+              disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
+              loading={followUpSubmitting}
             >
-              {state.status === 'complete' && (
-                <p className="text-secondary text-sm font-mono animate-pulse">
-                  Evaluation complete — opening full analysis...
-                </p>
-              )}
-            </VerdictBlock>
-          )}
-
-          {/* Stream error */}
-          {state.status === 'error' && (
-            <div className="flex flex-col items-center justify-center py-16 gap-3">
-              <p className="text-secondary font-mono text-sm">
-                The sensei couldn't evaluate your response.
-              </p>
-              <p className="text-secondary text-sm">{state.message}</p>
-              <div className="flex gap-3 mt-2">
-                <Button variant="primary" size="md" onClick={() => connect()}>
-                  Try again
-                </Button>
-                <Button variant="ghost" size="md" onClick={() => navigate(`/katas/${sessionId}`)}>
-                  Back to kata
-                </Button>
-                <Button variant="subtle" size="md" onClick={() => navigate('/dashboard')}>
-                  Dashboard
-                </Button>
-              </div>
-            </div>
-          )}
+              Send →
+            </Button>
+          </div>
         </div>
-      </div>
-
-      {/* Bottom band — 96px tall, status / textarea / final CTA */}
-      <div className="h-24 shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3 flex items-center">
-        <div className="max-w-220 mx-auto w-full">
-          {bottomBandContent}
-        </div>
-      </div>
+      )}
     </div>
   )
 }

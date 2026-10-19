@@ -39,3 +39,11 @@ export function pointContextFor(
   if (!answer) return undefined
   return { code: starterCode, correctLine, pointedLine: answer.line, why: answer.why }
 }
+
+// Shown only once the sensei has delivered the final verdict, never while the kata can still be answered.
+export function revealedAnswer(rubric: Rubric | null | undefined): { line: number; title: string; why: string } | null {
+  const line = rubric?.answer?.line
+  const issue = rubric?.expectedIssues[0]
+  if (!line || !issue) return null
+  return { line, title: issue.title, why: issue.why }
+}
