@@ -14,6 +14,7 @@ export interface DashboardData {
   todayComplete: boolean
   todaySession: { id: string; kataTitle: string; verdict: string | null } | null
   activeSessionId: string | null
+  dailyKataMinutes: number | null
   heatmapData: HeatmapDayDTO[]
   recentSessions: SessionSummaryDTO[]
   // Extended dashboard (Phase 2)

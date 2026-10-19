@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import type { BeltDTO } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
@@ -10,6 +10,8 @@ import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
 import { useFirstVisit } from '../hooks/useFirstVisit'
 import { BELT_COLOR } from '../lib/belt-colors'
+
+const START_ERROR = "Couldn't start that kata. Try again."
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
 const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
@@ -25,6 +27,20 @@ export function DashboardPage() {
 
   const isFirstVisit = !!dashboard && dashboard.streak === 0 && dashboard.recentSessions.length === 0
   const onboarding = useFirstVisit(isFirstVisit)
+  const [starting, setStarting] = useState(false)
+  const [startError, setStartError] = useState<string | null>(null)
+
+  async function startDailyKata() {
+    setStarting(true)
+    setStartError(null)
+    try {
+      const { sessionId } = await api.startDailyKata()
+      navigate(`/katas/${sessionId}`)
+    } catch {
+      setStartError(START_ERROR)
+      setStarting(false)
+    }
+  }
 
   if (error && !dashboard) {
     return (
@@ -47,8 +63,11 @@ export function DashboardPage() {
           todayComplete={dashboard.todayComplete}
           todaySession={dashboard.todaySession}
           activeSessionId={dashboard.activeSessionId}
+          dailyKataMinutes={dashboard.dailyKataMinutes}
           isFirstVisit={isFirstVisit}
-          onStart={() => navigate('/katas')}
+          starting={starting}
+          startError={startError}
+          onStart={dashboard.dailyKataMinutes === null ? () => navigate('/katas') : startDailyKata}
           onResume={(id) => navigate(`/katas/${id}`)}
           onViewResults={(id) => navigate(`/katas/${id}/result`)}
         />

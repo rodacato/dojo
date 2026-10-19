@@ -5,7 +5,10 @@ interface TodayCardProps {
   todayComplete: boolean
   todaySession: DashboardData['todaySession']
   activeSessionId: string | null
+  dailyKataMinutes: number | null
   isFirstVisit: boolean
+  starting: boolean
+  startError: string | null
   onStart: () => void
   onResume: (id: string) => void
   onViewResults: (id: string) => void
@@ -19,7 +22,10 @@ export function TodayCard({
   todayComplete,
   todaySession,
   activeSessionId,
+  dailyKataMinutes,
   isFirstVisit,
+  starting,
+  startError,
   onStart,
   onResume,
   onViewResults,
@@ -31,7 +37,7 @@ export function TodayCard({
         headline="You have an active kata."
         body="Pick up where you left off. The timer remembers."
         cta={
-          <Button variant="primary" size="lg" onClick={() => onResume(activeSessionId)}>
+          <Button variant="primary" size="lg" className="max-md:w-full" onClick={() => onResume(activeSessionId)}>
             Resume kata →
           </Button>
         }
@@ -45,22 +51,42 @@ export function TodayCard({
         eyebrow="Done today"
         headline={todaySession.kataTitle}
         body="The dojo received your work. The verdict is on the page."
+        error={startError}
         cta={
-          <Button variant="ghost" size="lg" onClick={() => onViewResults(todaySession.id)}>
-            View results →
-          </Button>
+          <div className="flex flex-col md:flex-row gap-3">
+            <Button variant="ghost" size="lg" className="max-md:w-full" onClick={() => onViewResults(todaySession.id)}>
+              View results →
+            </Button>
+            {dailyKataMinutes !== null && (
+              <Button variant="subtle" size="lg" className="max-md:w-full" loading={starting} onClick={onStart}>
+                One more kata
+              </Button>
+            )}
+          </div>
         }
       />
     )
   }
 
+  const blind = dailyKataMinutes !== null
+  let body = 'Your streak resets at midnight. The dojo opens again whether you show up or not.'
+  if (isFirstVisit) {
+    body = blind
+      ? 'One kata, about five minutes. You see the topic when it opens.'
+      : 'Pick mood. Pick time. Get 3 kata. Choose one. Work.'
+  }
+  let headline = 'The dojo was empty today.'
+  if (isFirstVisit) headline = 'First kata. The hardest one is always the first.'
+  else if (blind) headline = "Today's kata is waiting."
+
   return (
     <HeroLayout
-      eyebrow="Today"
-      headline={isFirstVisit ? 'First kata. The hardest one is always the first.' : 'The dojo was empty today.'}
-      body={isFirstVisit ? 'Pick mood. Pick time. Get 3 kata. Choose one. Work.' : 'Your streak resets at midnight. The dojo opens again whether you show up or not.'}
+      eyebrow={blind ? `Today · ~${dailyKataMinutes} min` : 'Today'}
+      headline={headline}
+      body={body}
+      error={startError}
       cta={
-        <Button variant="primary" size="lg" onClick={onStart}>
+        <Button variant="primary" size="lg" className="max-md:w-full" loading={starting} onClick={onStart}>
           Enter the dojo →
         </Button>
       }
@@ -73,11 +99,13 @@ function HeroLayout({
   headline,
   body,
   cta,
+  error = null,
 }: Readonly<{
   eyebrow: string
   headline: string
   body: string
   cta: React.ReactNode
+  error?: string | null
 }>) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
@@ -87,6 +115,11 @@ function HeroLayout({
           {headline}
         </h2>
         <p className="text-secondary text-sm leading-relaxed max-w-md">{body}</p>
+        {error && (
+          <p role="alert" className="text-danger-text text-sm font-mono mt-3">
+            {error}
+          </p>
+        )}
       </div>
       <div className="shrink-0">{cta}</div>
     </div>

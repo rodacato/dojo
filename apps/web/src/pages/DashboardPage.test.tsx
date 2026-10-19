@@ -7,10 +7,11 @@ import { DashboardPage } from './DashboardPage'
 import { api } from '../lib/api'
 
 vi.mock('../lib/api', () => ({
-  api: { getDashboard: vi.fn() },
+  api: { getDashboard: vi.fn(), startDailyKata: vi.fn() },
 }))
 
 const mockedGetDashboard = vi.mocked(api.getDashboard)
+const mockedStartDailyKata = vi.mocked(api.startDailyKata)
 
 function baseDashboard(overrides: Partial<DashboardData> = {}): DashboardData {
   return {
@@ -19,6 +20,7 @@ function baseDashboard(overrides: Partial<DashboardData> = {}): DashboardData {
     todayComplete: false,
     todaySession: null,
     activeSessionId: null,
+    dailyKataMinutes: null,
     heatmapData: [],
     recentSessions: [],
     weakAreas: [],
@@ -53,6 +55,7 @@ function renderDashboard(initialEntry = '/dashboard') {
 
 beforeEach(() => {
   mockedGetDashboard.mockReset()
+  mockedStartDailyKata.mockReset()
   window.localStorage.clear()
 })
 
@@ -200,6 +203,66 @@ describe('DashboardPage', () => {
       await user.click(screen.getByRole('button', { name: /view results/i }))
 
       expect(screen.getByText('kata result page')).toBeInTheDocument()
+    })
+  })
+
+  describe('daily kata', () => {
+    it('shows the daily kata blind, with only its length, and opens it straight away', async () => {
+      const user = userEvent.setup()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5 }))
+      mockedStartDailyKata.mockResolvedValue({ sessionId: 'sess-daily' })
+
+      renderDashboard()
+
+      expect(await screen.findByText('Today · ~5 min')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: "Today's kata is waiting." })).toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: /enter the dojo/i }))
+
+      expect(mockedStartDailyKata).toHaveBeenCalledOnce()
+      expect(screen.getByText('resume kata page')).toBeInTheDocument()
+    })
+
+    it('offers one more kata once today is done', async () => {
+      const user = userEvent.setup()
+      mockedGetDashboard.mockResolvedValue(
+        baseDashboard({
+          dailyKataMinutes: 5,
+          todayComplete: true,
+          todaySession: { id: 'done-1', kataTitle: 'Off-by-one in pagination', verdict: 'passed' },
+        }),
+      )
+      mockedStartDailyKata.mockResolvedValue({ sessionId: 'sess-more' })
+
+      renderDashboard()
+
+      await user.click(await screen.findByRole('button', { name: 'One more kata' }))
+
+      expect(mockedStartDailyKata).toHaveBeenCalledOnce()
+      expect(screen.getByText('resume kata page')).toBeInTheDocument()
+    })
+
+    it('says so and stays put when the kata cannot start', async () => {
+      const user = userEvent.setup()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5 }))
+      mockedStartDailyKata.mockRejectedValue(new Error('boom'))
+
+      renderDashboard()
+
+      await user.click(await screen.findByRole('button', { name: /enter the dojo/i }))
+
+      expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't start that kata. Try again.")
+      expect(screen.queryByText('resume kata page')).not.toBeInTheDocument()
+    })
+
+    it('has no one more without micro kata, and Enter still goes to the picker', async () => {
+      mockedGetDashboard.mockResolvedValue(
+        baseDashboard({ todayComplete: true, todaySession: { id: 'done-1', kataTitle: 'Binary search', verdict: null } }),
+      )
+
+      renderDashboard()
+
+      await screen.findByRole('heading', { name: 'Binary search' })
+      expect(screen.queryByRole('button', { name: 'One more kata' })).not.toBeInTheDocument()
     })
   })
 

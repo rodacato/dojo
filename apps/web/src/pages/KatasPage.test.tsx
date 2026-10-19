@@ -25,6 +25,7 @@ const dashboard: DashboardData = {
   todayComplete: false,
   todaySession: null,
   activeSessionId: null,
+  dailyKataMinutes: null,
   heatmapData: [{ date: '2026-06-20', count: 2 }],
   recentSessions: [],
   weakAreas: [],
