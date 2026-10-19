@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
     phase: 'Practice',
+    title: 'Feedback in one tap',
+    description:
+      "After a kata, two quick questions sit right above Done: was the time limit right, and how was the sensei's review. Each tap is saved on the spot, so leaving never loses a vote. Clarity and a note are one tap further, under More feedback.",
+  },
+  {
+    date: '2026-10-19',
+    phase: 'Practice',
     title: 'The answer, right where the sensei finishes',
     description:
       "When the sensei finishes, the screen becomes your result instead of jumping to another page. On a point kata you see the line you tapped and your why, then the answer and why it is the answer. The sensei's notes no longer show up as raw tags while it writes. Done takes you home; one more kata and share sit beside it.",
