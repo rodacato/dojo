@@ -21,6 +21,10 @@ const THEME_CHOICES: Array<{ value: ThemeChoice; label: string }> = [
 
 type Level = 'junior' | 'mid' | 'senior'
 
+// D42: selected reads by weight and a 2px-looking edge, the same as Advanced's chips.
+const SELECTED = 'border-primary ring-1 ring-inset ring-primary bg-elevated text-primary font-bold'
+const UNSELECTED = 'border-border text-secondary hover:border-primary'
+
 const LEVELS: Array<{ value: Level; label: string }> = [
   { value: 'junior', label: 'Junior' },
   { value: 'mid', label: 'Mid' },
@@ -30,6 +34,7 @@ const LEVELS: Array<{ value: Level; label: string }> = [
 const INTEREST_OPTIONS = [
   'backend', 'frontend', 'architecture', 'security',
   'devops', 'testing', 'process', 'reliability',
+  'debugging', 'sql',
 ] as const
 
 const RANDOMNESS_STOPS = [
@@ -132,7 +137,7 @@ export function SettingsPage() {
       </header>
 
       <Section title="Account">
-        <div className="bg-surface border border-border rounded-md p-6">
+        <div className="bg-surface border border-border rounded-md p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-start gap-6">
             <div className="flex items-center gap-4 md:flex-1 min-w-0">
               {belt ? (
@@ -157,11 +162,11 @@ export function SettingsPage() {
             <div className="flex flex-col gap-2 md:w-56">
               <Link
                 to={`/u/${user.username}`}
-                className={buttonClasses({ variant: 'ghost', size: 'md' })}
+                className={`${buttonClasses({ variant: 'ghost', size: 'md' })} max-md:h-11`}
               >
                 View public profile →
               </Link>
-              <Button variant="ghost" size="md" onClick={() => setShowLogoutModal(true)}>
+              <Button variant="ghost" size="md" className="max-md:h-11" onClick={() => setShowLogoutModal(true)}>
                 Sign out
               </Button>
             </div>
@@ -187,7 +192,7 @@ export function SettingsPage() {
       </Section>
 
       <Section title="Theme">
-        <div className="bg-surface border border-border rounded-md p-6">
+        <div className="bg-surface border border-border rounded-md p-4 md:p-6">
           <Field label="Visual theme" hint="Auto follows your OS color preference. Sumi-e is in calibration.">
             <div className="flex gap-2 flex-wrap">
               {THEME_CHOICES.map((c) => (
@@ -205,7 +210,7 @@ export function SettingsPage() {
       </Section>
 
       <Section title="Practice">
-        <div className="bg-surface border border-border rounded-md p-6 flex flex-col gap-6">
+        <div className="bg-surface border border-border rounded-md p-4 md:p-6 flex flex-col gap-6">
           <Field label="Skill level" hint="Shapes kata difficulty and sensei tone.">
             <div className="flex gap-2 flex-wrap">
               {LEVELS.map((l) => (
@@ -230,10 +235,8 @@ export function SettingsPage() {
                     type="button"
                     onClick={() => toggleInterest(topic)}
                     aria-pressed={active}
-                    className={`font-mono text-xs px-3 py-1.5 rounded-sm border transition-colors ${
-                      active
-                        ? 'border-primary text-primary'
-                        : 'border-border text-secondary hover:border-primary'
+                    className={`font-mono text-xs px-3 py-1.5 max-md:min-h-11 max-md:px-3.5 rounded-sm border transition-colors ${
+                      active ? SELECTED : UNSELECTED
                     }`}
                   >
                     {active && <span className="mr-1">✓</span>}
@@ -253,7 +256,7 @@ export function SettingsPage() {
                 step={0.1}
                 value={prefs.randomness}
                 onChange={(e) => update({ randomness: Number(e.target.value) })}
-                className="w-full accent-accent"
+                className="w-full max-md:h-11 accent-accent"
                 aria-label="Randomness"
               />
               <div className="flex justify-between font-mono text-xs tracking-[0.08em] uppercase text-secondary">
@@ -265,17 +268,15 @@ export function SettingsPage() {
           </Field>
 
           <Field label="Weekly goal" hint="How many kata you'd like to complete per week.">
-            <div className="flex gap-2 flex-wrap">
+            <div className="grid grid-cols-7 gap-1.5 md:flex md:gap-2 md:flex-wrap">
               {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                 <button
                   key={n}
                   type="button"
                   onClick={() => update({ goalWeeklyTarget: n })}
                   aria-pressed={prefs.goalWeeklyTarget === n}
-                  className={`w-10 h-10 inline-flex items-center justify-center font-mono text-sm rounded-sm border transition-colors ${
-                    prefs.goalWeeklyTarget === n
-                      ? 'border-primary text-primary'
-                      : 'border-border text-secondary hover:border-primary'
+                  className={`h-11 md:w-10 md:h-10 inline-flex items-center justify-center font-mono text-sm rounded-sm border transition-colors ${
+                    prefs.goalWeeklyTarget === n ? SELECTED : UNSELECTED
                   }`}
                 >
                   {n}
@@ -287,7 +288,7 @@ export function SettingsPage() {
       </Section>
 
       <Section title="Reminders">
-        <div className="bg-surface border border-border rounded-md p-6 flex flex-col gap-4">
+        <div className="bg-surface border border-border rounded-md p-4 md:p-6 flex flex-col gap-4">
           <Toggle
             label="Daily reminder"
             checked={prefs.reminderEnabled}
@@ -306,7 +307,7 @@ export function SettingsPage() {
                     value={prefs.email ?? ''}
                     onChange={(e) => update({ email: e.target.value || null })}
                     placeholder="you@example.com"
-                    className="w-full h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm focus:outline-none focus:border-accent transition-colors"
+                    className="w-full h-11 md:h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
                 <div>
@@ -320,7 +321,7 @@ export function SettingsPage() {
                     max={23}
                     value={prefs.reminderHour}
                     onChange={(e) => update({ reminderHour: Number(e.target.value) })}
-                    className="w-full h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm tabular-nums focus:outline-none focus:border-accent transition-colors"
+                    className="w-full h-11 md:h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm tabular-nums focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
               </div>
@@ -400,8 +401,8 @@ function PillButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`font-mono text-xs tracking-[0.08em] uppercase px-3 py-1.5 rounded-sm border transition-colors ${
-        active ? 'border-primary text-primary' : 'border-border text-secondary hover:border-primary'
+      className={`font-mono text-xs tracking-[0.08em] uppercase px-3 py-1.5 max-md:min-h-11 max-md:px-3.5 rounded-sm border transition-colors ${
+        active ? SELECTED : UNSELECTED
       }`}
     >
       {children}

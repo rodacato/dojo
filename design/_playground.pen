@@ -8590,7 +8590,7 @@
       "type": "frame",
       "id": "p76TsT",
       "x": 0,
-      "y": 0,
+      "y": 2259,
       "name": "LOG — Playground",
       "theme": {
         "theme": "sumi"
@@ -8616,6 +8616,32 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "V2C2l",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · Settings / Mobile moved to flows/app-core.pen with the code; band removed",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "UhgHN",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · Settings on mobile drawn: 44px pills and inputs, seven-column weekly goal, p-4 cards; selected pills aligned with Advanced (D42)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
