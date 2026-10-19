@@ -12,6 +12,13 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
+    phase: 'Mobile',
+    title: 'Settings, sized for thumbs',
+    description:
+      'On a phone every pill, input and button in Settings is now big enough to tap, and the weekly goal fits on one row. Selected options read the same as the katas page. Debugging and SQL join the interests, so they can steer today\'s kata.',
+  },
+  {
+    date: '2026-10-19',
     phase: 'Practice',
     title: "Your preferences shape today's kata",
     description:
