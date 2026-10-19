@@ -130,7 +130,7 @@ export function ResultsPage() {
         </CollapsibleRow>
       )}
 
-      {verdict && sessionId && (session.status === 'completed' || session.status === 'failed') && (
+      {sessionId && (session.status === 'completed' || session.status === 'failed') && (
         <FeedbackSection sessionId={sessionId} />
       )}
       {verdict && sessionId && <PostKataActions sessionId={sessionId} />}
