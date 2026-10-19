@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.4.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.5.0 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -8583,6 +8583,205 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "Hx3fA",
+          "name": "Group CodeLine (kit 0.5.0)",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "XEtBg",
+              "name": "Section label",
+              "fill": "$color-muted",
+              "content": "CODELINE — tappable code line (point kata)",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 0.55
+            },
+            {
+              "type": "frame",
+              "id": "p32VpP",
+              "name": "Row CodeLine",
+              "width": "fill_container",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NPKC6",
+                  "name": "CodeLine/Default",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-page",
+                  "stroke": "$color-page",
+                  "strokeWidth": {
+                    "left": 3
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "YORwg",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "O0BUdS",
+                          "name": "Number",
+                          "fill": "$color-secondary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "w1iat6",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DxrQk",
+                  "name": "CodeLine/Selected",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-elevated",
+                  "stroke": "$color-primary",
+                  "strokeWidth": {
+                    "left": 3
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Q0Wj0",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ai3rk",
+                          "name": "Number",
+                          "fill": "$color-primary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "jTq5I",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "X3Ndv",
+                  "name": "CodeLine/Focus",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-page",
+                  "stroke": "$color-accent",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "z3jtQ",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tlHyt",
+                          "name": "Number",
+                          "fill": "$color-secondary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "h7DFx",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -14866,7 +15065,7 @@
       "type": "frame",
       "id": "YKjRy",
       "x": 760,
-      "y": 3107,
+      "y": 3227,
       "name": "KataActive / Preparing",
       "theme": {
         "theme": "sumi"
@@ -14915,7 +15114,7 @@
       "type": "frame",
       "id": "NjnBK",
       "x": 2320,
-      "y": 3107,
+      "y": 3227,
       "name": "KataActive / Prepare error",
       "theme": {
         "theme": "sumi"
@@ -14956,7 +15155,7 @@
       "type": "frame",
       "id": "R0P00",
       "x": 3880,
-      "y": 3107,
+      "y": 3227,
       "name": "KataActive / Time expired",
       "theme": {
         "theme": "sumi"
@@ -16461,7 +16660,7 @@
       "type": "frame",
       "id": "CGBTM",
       "x": 5440,
-      "y": 3107,
+      "y": 3227,
       "name": "KataActive / Mobile",
       "theme": {
         "theme": "sumi"
@@ -16731,7 +16930,7 @@
       "type": "frame",
       "id": "KrlxX",
       "x": 760,
-      "y": 4267,
+      "y": 4387,
       "name": "Eval / Streaming",
       "theme": {
         "theme": "sumi"
@@ -16955,7 +17154,7 @@
       "type": "frame",
       "id": "e3I1et",
       "x": 2320,
-      "y": 4267,
+      "y": 4387,
       "name": "Eval / Follow-up",
       "theme": {
         "theme": "sumi"
@@ -17211,7 +17410,7 @@
       "type": "frame",
       "id": "PjM5U",
       "x": 3880,
-      "y": 4267,
+      "y": 4387,
       "name": "Eval / Complete",
       "theme": {
         "theme": "sumi"
@@ -17562,7 +17761,7 @@
       "type": "frame",
       "id": "hVQzC",
       "x": 5440,
-      "y": 4267,
+      "y": 4387,
       "name": "Eval / Error",
       "theme": {
         "theme": "sumi"
@@ -17826,7 +18025,7 @@
       "type": "frame",
       "id": "SiQkl",
       "x": 760,
-      "y": 5427,
+      "y": 5547,
       "name": "Results / Passed with notes",
       "theme": {
         "theme": "sumi"
@@ -18541,7 +18740,7 @@
       "type": "frame",
       "id": "LSQ8C",
       "x": 2320,
-      "y": 5427,
+      "y": 5547,
       "name": "Results / Expired",
       "theme": {
         "theme": "sumi"
@@ -18686,7 +18885,7 @@
       "type": "frame",
       "id": "M5j95",
       "x": 3880,
-      "y": 5427,
+      "y": 5547,
       "name": "Results / No evaluation",
       "theme": {
         "theme": "sumi"
@@ -18752,7 +18951,7 @@
       "type": "frame",
       "id": "IHH25",
       "x": 5440,
-      "y": 5427,
+      "y": 5547,
       "name": "Results / Load error",
       "theme": {
         "theme": "sumi"
@@ -18794,7 +18993,7 @@
       "type": "frame",
       "id": "tzLAl",
       "x": 7000,
-      "y": 5427,
+      "y": 5547,
       "name": "Results / Feedback open",
       "theme": {
         "theme": "sumi"
@@ -19547,7 +19746,7 @@
           "fill": "$color-muted",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.5.0 · brief-schema: 1 · updated: 2026-10-19",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19574,7 +19773,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Solve one kata under a running timer: code, chat or whiteboard, with no AI inside.",
+          "content": "Solve one kata under a running timer: code, chat, whiteboard, or a five-minute point kata (tap the line with the bug, say why), with no AI inside.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19628,7 +19827,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- KataActive — Code\n- KataActive — Chat\n- KataActive — Whiteboard",
+          "content": "- KataActive — Code\n- KataActive — Chat\n- KataActive — Whiteboard\n- KataActive / Mobile / Point — nothing selected\n- KataActive / Mobile / Point — line + why",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19655,7 +19854,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Problem panel 40% / response 60% on desktop, stacked below 768px (KataActivePage.tsx:515)\n- Timer counts down from server startedAt, so a refresh keeps it; at 0 it auto-submits unless the response is blank (KataActivePage.tsx:242)\n- Submit needs a non-blank response; 408 goes to /result (KataActivePage.tsx:176)\n- No run-tests button: code executes server-side after submit (D37)",
+          "content": "- Problem panel 40% / response 60% on desktop, stacked below 768px (KataActivePage.tsx:515)\n- Timer counts down from server startedAt, so a refresh keeps it; at 0 it auto-submits unless the response is blank (KataActivePage.tsx:242)\n- Submit needs a non-blank response; 408 goes to /result (KataActivePage.tsx:176)\n- No run-tests button: code executes server-side after submit (D37)\n- Point kata (answerShape 'point', D52): Submit needs a tapped line and a why; the instruction under the brief names what is missing. Below 768px the brief, code and why scroll as one column with no owner-role eyebrow; desktop keeps the two panes with the code lines in the response pane. The tapped line survives a reload",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19682,7 +19881,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "pages/KataActivePage.tsx; kata content from the seeds (starterCode, description, ownerRole verbatim). Timer shown at a sample value.",
+          "content": "pages/KataActivePage.tsx and components/ui/CodeLine.tsx; kata content from the seeds (starterCode, description, ownerRole verbatim; point screens use kata-micro-001, bug on line 3). Timer shown at a sample value; the why on the second point screen is a sample answer.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19709,7 +19908,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Chat font toggle 'Mono' state — toggle swap\n- Review kata — same editor as Chat, header 'CODE REVIEW' and a different placeholder\n- Whiteboard with a valid diagram and with 'Invalid Mermaid syntax' — preview swap\n- Timer warning (<=20%) and danger (<=10%) — colour change on the same text",
+          "content": "- Chat font toggle 'Mono' state — toggle swap\n- Review kata — same editor as Chat, header 'CODE REVIEW' and a different placeholder\n- Whiteboard with a valid diagram and with 'Invalid Mermaid syntax' — preview swap\n- Timer warning (<=20%) and danger (<=10%) — colour change on the same text\n- Point kata with a line but no why — instruction reads \"Line N selected. Now say why it's wrong.\"\n- Point kata on desktop — two panes, CodeLine rows in the response pane",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19736,7 +19935,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D6, D22, D33, D34, D37",
+          "content": "D6, D22, D33, D34, D37, D52 (decided)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -19775,7 +19974,7 @@
       "type": "frame",
       "id": "JDZDY",
       "x": 0,
-      "y": 3107,
+      "y": 3227,
       "name": "BRIEF — Kata · work edge states",
       "theme": {
         "theme": "sumi"
@@ -20037,7 +20236,7 @@
       "type": "frame",
       "id": "ECmfG",
       "x": 0,
-      "y": 4267,
+      "y": 4387,
       "name": "BRIEF — Kata · evaluation",
       "theme": {
         "theme": "sumi"
@@ -20299,7 +20498,7 @@
       "type": "frame",
       "id": "HNgfA",
       "x": 0,
-      "y": 5427,
+      "y": 5547,
       "name": "BRIEF — Kata · results",
       "theme": {
         "theme": "sumi"
@@ -20561,7 +20760,7 @@
       "type": "frame",
       "id": "Wx6ep",
       "x": 0,
-      "y": 6990,
+      "y": 7110,
       "name": "LOG — Kata",
       "theme": {
         "theme": "sumi"
@@ -20587,6 +20786,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "LB6z2",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · kit 0.5.0 · CodeLine vendored; point kata drawn on mobile (nothing selected, line + why) from KataActivePage after PR #201; moved from the playground, where the drafts are removed",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -20667,6 +20879,799 @@
           "fontWeight": "normal"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "Y4ecZ",
+      "x": 5440,
+      "y": 1947,
+      "name": "KataActive / Mobile / Point · nothing selected",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "rq7xv",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Kfkew",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "U39nE",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "POCKL",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZJAsz",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "id": "mmXEr",
+                  "type": "ref",
+                  "ref": "F7gs9",
+                  "name": "Leave",
+                  "descendants": {
+                    "JOBdd": {
+                      "content": "LEAVE"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "a8iweg",
+              "type": "ref",
+              "ref": "qZKKM",
+              "name": "Timer",
+              "descendants": {
+                "O2yMOO": {
+                  "content": "04:41"
+                }
+              }
+            },
+            {
+              "id": "itZL0",
+              "type": "ref",
+              "ref": "WDpQp",
+              "name": "Submit (disabled)",
+              "opacity": 0.5,
+              "descendants": {
+                "NnDrs": {
+                  "content": "SUBMIT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "oyH2k",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "A9fKbK",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "ZnAYo",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "A4jaq4",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "ucKBj",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "U3ETm",
+              "name": "Body (seed kata-micro-001)",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Pages are 1-based: page 1 should return the first limit items. Users report that the first page of results never shows up.",
+              "lineHeight": 1.6,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "xcmiH",
+              "name": "PointInstruction",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tap the line with the bug.",
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "YTa6i",
+          "name": "Code",
+          "width": "fill_container",
+          "fill": "$color-page",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "As8xV",
+              "name": "Sub-header",
+              "width": "fill_container",
+              "height": 36,
+              "fill": "$color-surface",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "strokeAlignment": "inner",
+              "gap": 12,
+              "padding": [
+                0,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p8Ihp",
+                  "name": "File",
+                  "fill": "$color-secondary",
+                  "content": "solution.ts",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "rectangle",
+                  "id": "oGlTF",
+                  "name": "Divider",
+                  "fill": "$color-border",
+                  "width": 1,
+                  "height": 12
+                },
+                {
+                  "type": "text",
+                  "id": "kM46j",
+                  "name": "Language",
+                  "fill": "$color-secondary",
+                  "content": "TypeScript",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "id": "Ilc5e",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 1",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "1"
+                },
+                "w1iat6": {
+                  "content": "function paginate<T>(items: T[], page: number, limit: number): T[] {"
+                }
+              }
+            },
+            {
+              "id": "u4UFi",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 2",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "2"
+                },
+                "w1iat6": {
+                  "content": "  if (page < 1 || limit < 1) return []"
+                }
+              }
+            },
+            {
+              "id": "eSuTO",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 3",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "3"
+                },
+                "w1iat6": {
+                  "content": "  const start = page * limit"
+                }
+              }
+            },
+            {
+              "id": "eJsuT",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 4",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "4"
+                },
+                "w1iat6": {
+                  "content": "  const end = start + limit"
+                }
+              }
+            },
+            {
+              "id": "ZjO5L",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 5",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "5"
+                },
+                "w1iat6": {
+                  "content": "  return items.slice(start, end)"
+                }
+              }
+            },
+            {
+              "id": "x95STw",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 6",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "6"
+                },
+                "w1iat6": {
+                  "content": "}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "S3HGgs",
+          "name": "Why",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "sL7Gw",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "WHY IS IT WRONG?",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "RgRAr",
+              "name": "Textarea",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$color-page",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "padding": [
+                10,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zzt0M",
+                  "name": "Placeholder",
+                  "fill": "$color-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Think out loud. The sensei reads everything.",
+                  "lineHeight": 1.625,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "nYDBE",
+      "x": 5950,
+      "y": 1947,
+      "name": "KataActive / Mobile / Point · line + why",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "A2toX",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "OUzU2",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "cdzkT",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cH8Cx",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "EHUGO",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "id": "X0NE1",
+                  "type": "ref",
+                  "ref": "F7gs9",
+                  "name": "Leave",
+                  "descendants": {
+                    "JOBdd": {
+                      "content": "LEAVE"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "W4d7xd",
+              "type": "ref",
+              "ref": "qZKKM",
+              "name": "Timer",
+              "descendants": {
+                "O2yMOO": {
+                  "content": "03:12"
+                }
+              }
+            },
+            {
+              "id": "cPDwe",
+              "type": "ref",
+              "ref": "WDpQp",
+              "name": "Submit",
+              "opacity": 1,
+              "descendants": {
+                "NnDrs": {
+                  "content": "SUBMIT"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HBK7I",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "pEntV",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "K4o2H",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "No5U1",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "jeRy4",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "d97oF",
+              "name": "Body (seed kata-micro-001)",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Pages are 1-based: page 1 should return the first limit items. Users report that the first page of results never shows up.",
+              "lineHeight": 1.6,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "uyvom",
+              "name": "PointInstruction",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Line 3 selected. Tap another line to change it.",
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "I2BEP",
+          "name": "Code",
+          "width": "fill_container",
+          "fill": "$color-page",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "RzF3y",
+              "name": "Sub-header",
+              "width": "fill_container",
+              "height": 36,
+              "fill": "$color-surface",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "strokeAlignment": "inner",
+              "gap": 12,
+              "padding": [
+                0,
+                16
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TM5nO",
+                  "name": "File",
+                  "fill": "$color-secondary",
+                  "content": "solution.ts",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "rectangle",
+                  "id": "l4ZHt",
+                  "name": "Divider",
+                  "fill": "$color-border",
+                  "width": 1,
+                  "height": 12
+                },
+                {
+                  "type": "text",
+                  "id": "AMQs1",
+                  "name": "Language",
+                  "fill": "$color-secondary",
+                  "content": "TypeScript",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "id": "Pxz0A",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 1",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "1"
+                },
+                "w1iat6": {
+                  "content": "function paginate<T>(items: T[], page: number, limit: number): T[] {"
+                }
+              }
+            },
+            {
+              "id": "nG51O",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 2",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "2"
+                },
+                "w1iat6": {
+                  "content": "  if (page < 1 || limit < 1) return []"
+                }
+              }
+            },
+            {
+              "id": "Icu3S",
+              "type": "ref",
+              "ref": "DxrQk",
+              "name": "Line 3",
+              "width": "fill_container",
+              "descendants": {
+                "ai3rk": {
+                  "content": "3"
+                },
+                "jTq5I": {
+                  "content": "  const start = page * limit"
+                }
+              }
+            },
+            {
+              "id": "pRsab",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 4",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "4"
+                },
+                "w1iat6": {
+                  "content": "  const end = start + limit"
+                }
+              }
+            },
+            {
+              "id": "MandE",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 5",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "5"
+                },
+                "w1iat6": {
+                  "content": "  return items.slice(start, end)"
+                }
+              }
+            },
+            {
+              "id": "wnar9",
+              "type": "ref",
+              "ref": "NPKC6",
+              "name": "Line 6",
+              "width": "fill_container",
+              "descendants": {
+                "O0BUdS": {
+                  "content": "6"
+                },
+                "w1iat6": {
+                  "content": "}"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wWyC5",
+          "name": "Why",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "YelgJ",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "WHY IS IT WRONG?",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "NT7TT",
+              "name": "Textarea",
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$color-page",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "padding": [
+                10,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wbFbf",
+                  "name": "Value (sample answer)",
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "page is 1-based but start treats it as 0-based, so page 1 starts at the second page and the first one never shows. start should be (page - 1) * limit.",
+                  "lineHeight": 1.625,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ellipse",
+      "id": "gxd1o",
+      "x": 5115,
+      "y": 9155,
+      "fill": "#CCCCCC",
+      "width": 8,
+      "height": 7
     }
   ],
   "themes": {
@@ -21597,7 +22602,7 @@
     },
     "kit-version-source": {
       "type": "string",
-      "value": "0.4.0"
+      "value": "0.5.0"
     },
     "grid-x0": {
       "type": "number",

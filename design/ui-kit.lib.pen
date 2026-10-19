@@ -28,7 +28,7 @@
           "id": "pKGla",
           "name": "Subtitle",
           "fill": "#555555",
-          "content": "kit 0.4.0 · every value comes from main.css @theme",
+          "content": "kit 0.5.0 · every value comes from main.css @theme",
           "fontFamily": "Inter",
           "fontSize": 14,
           "fontWeight": "normal"
@@ -4863,7 +4863,7 @@
       "type": "frame",
       "id": "Ks6Rd",
       "x": 0,
-      "y": 1283,
+      "y": 1922,
       "name": "Components",
       "theme": {
         "theme": "sumi"
@@ -13441,6 +13441,205 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "EFTcs",
+          "name": "Group CodeLine",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "tgU00",
+              "name": "Section label",
+              "fill": "$color-muted",
+              "content": "CODELINE — tappable code line (point kata)",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 0.55
+            },
+            {
+              "type": "frame",
+              "id": "jMVxK",
+              "name": "Row CodeLine",
+              "width": "fill_container",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mli02",
+                  "name": "CodeLine/Default",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-page",
+                  "stroke": "$color-page",
+                  "strokeWidth": {
+                    "left": 3
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "SWHu8",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iK2iU",
+                          "name": "Number",
+                          "fill": "$color-secondary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "TByeG",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HX4Zc",
+                  "name": "CodeLine/Selected",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-elevated",
+                  "stroke": "$color-primary",
+                  "strokeWidth": {
+                    "left": 3
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KFgMy",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sede2",
+                          "name": "Number",
+                          "fill": "$color-primary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "a2gwPB",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xlF8u",
+                  "name": "CodeLine/Focus",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-page",
+                  "stroke": "$color-accent",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KkTW2",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "feBCq",
+                          "name": "Number",
+                          "fill": "$color-secondary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "s8Tlf",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -13859,7 +14058,7 @@
     },
     "kit-version": {
       "type": "string",
-      "value": "0.4.0"
+      "value": "0.5.0"
     },
     "tint-accent-5": {
       "type": "color",

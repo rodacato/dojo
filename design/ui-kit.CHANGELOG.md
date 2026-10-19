@@ -13,6 +13,12 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.5.0 — CodeLine for the point kata
+
+**Components:** `CodeLine/Default`, `CodeLine/Selected` and `CodeLine/Focus`, mirrored from `apps/web/src/components/ui/CodeLine.tsx`. Each is a 44px tappable row: 36px gutter with a 12px number, 13px mono code, 3px left border that turns primary with an elevated fill when selected, and a 1px accent ring on focus. The playground's proposed copy had a 37px gutter, an 11px number and a bottom rule; the code has neither, so the kit follows the code.
+
+**Vendored by:** `kata.pen` (kit-version-source `0.5.0`), the only flow that draws a point kata. The other flows stay on `0.4.0`: the bump is additive.
+
 ## 0.4.0 — readable status text and a REVIEW hue of its own
 
 **Tokens:** `color-success-text` and `color-warning-text` (washi `#4A6640` and `#7A5A12`, 5.22 and 5.16 on surface; slate and sumi equal the base). `color-type-review` is `#0EA5E9` in slate and `#3F6AA8` in sumi and washi, and `tint-type-review-20` and `-40` are now themed (they were a single slate value). Foundations lists the new swatches and ratios.
