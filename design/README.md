@@ -18,7 +18,7 @@ as context for AI agents.
 | `ui-kit.lib.pen` | **The design library** — tokens + components, mirrored 1:1 from the code |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** (a user journey with enough weight to justify one) |
-| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; today: admin on mobile |
+| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; today: empty |
 | `DECISIONS.md` | The numbered findings registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for design-decided consolidations pending in code |
 | `exports/` | Canvas PNGs for PM/PO/PR review — **committed** (they must travel) |
@@ -33,7 +33,7 @@ as context for AI agents.
 | `app-core.pen` | 11 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
 | `kata.pen` | 21 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results |
 | `learn.pen` | 13 | 0.4.0 | Scrolls catalog and player, Engawa playground (mobile too) |
-| `admin.pen` | 11 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
+| `admin.pen` | 13 | 0.4.0 | `/admin/*`: katas catalog and authoring (mobile too), scrolls, invitations, errors, health |
 
 **This table is present tense — it never carries history.** "Migrated on <date>, six
 components consolidated" belongs in that flow's `Log` frame, not here.
