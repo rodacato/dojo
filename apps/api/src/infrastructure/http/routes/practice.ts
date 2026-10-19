@@ -4,6 +4,7 @@ import { Hono, type Context } from 'hono'
 import { getCookie } from 'hono/cookie'
 import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
+import { kataTypeSchema } from '@dojo/shared'
 import { config } from '../../../config'
 import { composePointAnswer, isLineInCode } from '../../../domain/practice/point-answer'
 import { SessionExpiredError } from '../../../domain/shared/errors'
@@ -111,19 +112,24 @@ practiceRoutes.post('/access-requests', async (c) => {
 const kataFiltersSchema = z.object({
   mood: z.enum(['focused', 'regular', 'low_energy']).optional(),
   maxDuration: z.coerce.number().int().positive().optional(),
+  type: kataTypeSchema.optional(),
+  language: z.string().regex(/^[a-z]{1,20}$/).optional(),
 })
 
 practiceRoutes.get('/katas', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
   const query = c.req.query()
-  const filters = kataFiltersSchema.parse({
+  const parsed = kataFiltersSchema.safeParse({
     mood: query['mood'],
     maxDuration: query['maxDuration'],
+    type: query['type'],
+    language: query['language'],
   })
+  if (!parsed.success) return c.json({ error: 'Invalid filters' }, 400)
 
   const exerciseList = await useCases.getKataOptions.execute({
     userId: UserId(user.id),
-    filters,
+    filters: parsed.data,
   })
 
   return c.json(

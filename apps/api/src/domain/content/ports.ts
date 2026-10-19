@@ -1,9 +1,12 @@
+import type { KataType } from './values'
 import type { KataId, UserId } from '../shared/types'
 import type { Kata } from './kata'
 
 export interface KataFilters {
   mood?: 'focused' | 'regular' | 'low_energy'
   maxDuration?: number // minutes
+  type?: KataType
+  language?: string
   userLevel?: 'junior' | 'mid' | 'senior'
   interests?: string[]
   randomness?: number // 0.0–1.0

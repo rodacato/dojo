@@ -53,6 +53,10 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
     const maxDurationClause = filters.maxDuration
       ? sql`AND e.duration <= ${filters.maxDuration}`
       : sql``
+    const typeClause = filters.type ? sql`AND e.type = ${filters.type}` : sql``
+    const languageClause = filters.language
+      ? sql`AND e.language @> ${JSON.stringify([filters.language])}::jsonb`
+      : sql``
 
     // Interest-based ordering: weight katas matching user interests
     const randomness = filters.randomness ?? 1
@@ -101,6 +105,8 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
             AND started_at > NOW() - INTERVAL '6 months'
         )
         ${maxDurationClause}
+        ${typeClause}
+        ${languageClause}
       ORDER BY ${orderClause}
       LIMIT 3
     `)
@@ -120,6 +126,8 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
         JOIN variations v ON v.exercise_id = e.id
         WHERE e.status = 'published'
           ${maxDurationClause}
+          ${typeClause}
+          ${languageClause}
         ORDER BY ${orderClause}
         LIMIT 3
       `)
