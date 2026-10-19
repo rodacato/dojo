@@ -10,6 +10,8 @@
 
 ---
 
+**Recognition exploration:** [art direction and voice](recognition.md) accompanies PRD-035. Its Pencil artboards and PNG asset map are a proposal, separate from the shipped behavior described below.
+
 ## The name
 
 **Dojo** — from Japanese, the place where an art is practiced until mastered.
