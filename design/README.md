@@ -30,7 +30,7 @@ as context for AI agents.
 | File | Screens | Kit | Domain entry point |
 |---|---|---|---|
 | `public.pen` | 13 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
-| `app-core.pen` | 10 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
+| `app-core.pen` | 11 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
 | `kata.pen` | 20 | 0.5.0 | Katas list, active kata (code, chat, whiteboard, point on mobile), evaluation, results |
 | `learn.pen` | 11 | 0.4.0 | Scrolls catalog and player, Engawa playground |
 | `admin.pen` | 11 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health |
@@ -106,7 +106,7 @@ flow even when nothing renders differently.
 
 1. Design changes go through PRs, like code — atomic with the implementing code when possible.
 2. One person per `.pen` at a time. Kit changes get review.
-3. No auto-save: **save often, commit often**.
+4. Nothing moves from `_playground.pen` to `flows/` without cleanup + approval. A screen moves when the code that ships it exists, never before: flows describe what the app does today.
 4. Nothing moves from `_playground.pen` to `flows/` without cleanup + approval.
 5. Export PNGs of changed flows for PM/PO review.
 
