@@ -12,6 +12,13 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
+    phase: 'Practice',
+    title: 'The answer, right where the sensei finishes',
+    description:
+      "When the sensei finishes, the screen becomes your result instead of jumping to another page. On a point kata you see the line you tapped and your why, then the answer and why it is the answer. The sensei's notes no longer show up as raw tags while it writes. Done takes you home; one more kata and share sit beside it.",
+  },
+  {
+    date: '2026-10-19',
     phase: 'Mobile',
     title: 'Settings, sized for thumbs',
     description:
