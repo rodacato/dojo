@@ -246,8 +246,8 @@ function Hero() {
             className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
           >
             Vibe coding is making developers faster and their instincts weaker. Dojo is the
-            counter-practice: timed katas with no AI, then a sensei that reviews your reasoning
-            after you submit.
+            counter-practice: one surprise kata a day, about five minutes, no AI. Then a sensei
+            reviews your reasoning after you submit.
           </p>
           <a
             ref={ctaRef}
@@ -286,17 +286,16 @@ interface TerminalSession {
 const TERMINAL_SESSIONS: TerminalSession[] = [
   {
     id: 'session_a3f8c2d',
-    command: 'dojo kata start',
-    args: '--time 30 --mood focused',
+    command: 'dojo kata today',
+    args: '',
     lines: [
-      { tone: 'muted', content: <>fetching kata catalog... <span className="text-success-text">[OK]</span></> },
-      { tone: 'muted', content: <>filtering by your weak areas... <span className="text-success-text">[OK]</span></> },
-      { tone: 'muted', content: <>3 candidates loaded:</> },
-      { tone: 'secondary', content: <><span className="text-warning-text">*</span> CODE        Refactor a 200-line useEffect      28 min</> },
-      { tone: 'secondary', content: <><span className="text-warning-text">*</span> CHAT        The angry CTO                      25 min</> },
-      { tone: 'secondary', content: <><span className="text-warning-text">*</span> WHITEBOARD  Multi-tenant rate limiting         30 min</> },
+      { tone: 'muted', content: <>today's kata ... ~5 min <span className="text-success-text">[OK]</span></> },
+      { tone: 'secondary', content: <>1  async function notifyAll(users) {'{'}</> },
+      { tone: 'secondary', content: <>2    users.forEach(async (u) =&gt; {'{'}</> },
+      { tone: 'secondary', content: <>3      await send(u)</> },
+      { tone: 'secondary', content: <>4    {'})'}</> },
     ],
-    prompt: 'choose one. no skip. no reroll.',
+    prompt: 'tap the line with the bug. say why.',
   },
   {
     id: 'session_7d2e4b1',
@@ -445,7 +444,7 @@ function WhyItExists() {
       n: '03',
       tag: 'FLOW',
       title: 'Deliberate practice.',
-      body: 'A minimalist interface designed to disappear. Pick mood. Pick time. Get 3 kata. Choose one. Work. The dojo does not beg you to come back.',
+      body: 'A minimalist interface designed to disappear. One kata a day, about five minutes, a surprise until it opens. Want more? Set the constraints and get one kata. The dojo does not beg you to come back.',
     },
   ]
   return (
@@ -479,13 +478,13 @@ function ExecutionFlow() {
   const steps = [
     {
       n: '01',
-      title: 'Enter the dojo',
-      body: 'Pick your mood. Pick your time. The dojo serves you 3 kata.',
+      title: 'Open today\'s kata',
+      body: 'One kata a day, about five minutes. You see the topic when it opens.',
     },
     {
       n: '02',
-      title: 'Choose your kata',
-      body: '3 options. No skip. No reroll. These are your kata.',
+      title: 'Or go Advanced',
+      body: 'Set type, language and time. You get one kata. Do the one you get.',
     },
     {
       n: '03',

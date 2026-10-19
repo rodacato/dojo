@@ -157,10 +157,9 @@ Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "id
   - Current streak
   - Prompt if you have not done your challenge
        ↓
-[Mood + Time] — simple group buttons, one submit
-       ↓
-[3 options] — cards with title, type, difficulty, language
-  No skip. No reroll. These are your katas.
+[Today's kata] — one card, topic hidden until it opens (~5 min)
+  Done today → "One more kata"
+  Or Advanced: type + language + time → one kata
        ↓
 [Active kata] — split view
   Left: problem context
@@ -181,7 +180,7 @@ Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "id
 
 ### UX principles
 
-**Intentional friction:** no easy escape. The timer runs, the three options are what they are. By design — the point is to face the kata, not to optimize it.
+**Intentional friction:** no easy escape. The timer runs, today's kata is what it is. By design — the point is to face the kata, not to optimize it.
 
 **No distractions during the kata:** the split view is all there is. No navigation, no notifications, no external links.
 
@@ -195,7 +194,7 @@ Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "id
 
 Shape (radius, padding, color, motion) lives in [`DESIGN.md`](../../docs/DESIGN.md). Here are only the voice and behavior decisions the components embody.
 
-- **Kata card (selection):** the 3 picks are the 3 picks. The card doesn't hint that you could change them. Hover only confirms the target — it doesn't animate a "preview" of the kata.
+- **Today card:** blind until it opens — it shows the time, never the topic. It doesn't hint that you could swap it. Hover only confirms the target — it doesn't animate a "preview" of the kata.
 - **Timer:** number-first, no "minutes" label. No pause, no extend. The color change (normal → amber → red) is the only narration of remaining time. Nothing else moves.
 - **Code editor:** no autocomplete during the kata. Honor code, not enforcement. It should feel "clean", not "limited".
 - **Sensei chat:** the "the expert is evaluating…" indicator uses the blinking cursor, not a spinner or dots. The expert speaks when it has something to say; there is no continuous typing indicator.
@@ -210,7 +209,7 @@ How the product sounds at key moments:
 | Moment | Text |
 |---|---|
 | No kata completed | "No practice today. The dojo was empty." |
-| Kata selection | "These are your kata. No skip. No reroll." |
+| Today's kata | "Today's kata is waiting." |
 | Timer approaching end | "Time's almost up. What do you have?" |
 | Time out | "Time. The sensei evaluates with what you submitted." |
 | Analysis ready | "Verdict is in. It's honest." |

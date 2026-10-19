@@ -1,6 +1,6 @@
 # Vision
 
-> **Status:** Canonical · **Last reviewed:** 2026-10-02 (audience aligned with ADR 024)
+> **Status:** Canonical · **Last reviewed:** 2026-10-19 (the daily kata becomes the core practice)
 
 ## The Problem
 
@@ -16,6 +16,14 @@ Dojo creates **intentional friction**. The path of least resistance here is the 
 
 It's not about preparing for interviews. It's about staying technically alive in a world where the pressure is to delegate everything.
 
+## The Practice
+
+**One kata a day, about five minutes.** The dojo picks it, you don't see the topic until it opens, and it is small enough to answer on a phone: tap the line with the bug, then say why. The surprise is the exercise. Real work doesn't announce what it is about, and the reflex being trained is reaching for your own reasoning before you know what's coming. Today's kata stays the same all day; once it's done you can ask for one more.
+
+**Advanced is for specific practice.** When you want something longer or narrower, you set the type, the language and the time you have, and you get one kata inside them.
+
+What it replaces is not another product. It is the prompt as the first reflex, five minutes a day at a time.
+
 ## The Philosophy
 
 **Process over correctness.** The sensei doesn't evaluate whether you found the optimal solution. It evaluates whether you reasoned well, identified the right tradeoffs, and understood what you were building. A working solution written badly is more interesting than a perfect solution you can't explain.
@@ -24,7 +32,7 @@ It's not about preparing for interviews. It's about staying technically alive in
 
 **Vulnerability with humor.** The share card that says "the sensei told me a junior with 6 months experience would have written this cleaner 💀" — that's the tone. Honest about failure, light about it, proud of showing up anyway.
 
-**The dojo doesn't babysit.** No pause button on the timer. No reroll on the kata selection. No AI during the exercise. The system trusts you to honor the practice. If you cheat yourself here, that's between you and your career.
+**The dojo doesn't babysit.** No pause button on the timer. No reroll on today's kata. No AI during the exercise. The system trusts you to honor the practice. If you cheat yourself here, that's between you and your career.
 
 ## Who It's For
 

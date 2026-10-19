@@ -101,7 +101,7 @@ export function KatasPage() {
         <div className="flex flex-col gap-3">
           {noMatch && (
             <div role="status" className="flex flex-col gap-1 p-3 rounded-sm border border-warning/30 bg-warning/10">
-              <p className="text-warning-text text-sm">No kata fits all three.</p>
+              <p className="text-warning-text text-sm">No kata fits these filters.</p>
               <p className="text-secondary text-[13px]">Widen one: set Type or Language to Any.</p>
             </div>
           )}
@@ -114,7 +114,7 @@ export function KatasPage() {
             Start →
           </Button>
           <p className="text-secondary text-xs font-mono text-center">
-            {duration ? 'Your kata comes from your selections. No skip. No reroll.' : 'Pick how long you have to continue.'}
+            {duration ? 'You get one kata. Do the one you get.' : 'Pick how long you have to continue.'}
           </p>
         </div>
       </div>

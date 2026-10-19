@@ -6,13 +6,13 @@
     <title>Dojo — practice thinking for yourself</title>
     <meta
       name="description"
-      content="Timed katas with no AI, then a sensei that reviews your reasoning. A self-hosted, open-source practice space for developers."
+      content="One surprise kata a day, about five minutes, no AI. Then a sensei reviews your reasoning. A self-hosted, open-source practice space for developers."
     />
     <meta name="color-scheme" content="light dark" />
     <meta property="og:title" content="Dojo — practice thinking for yourself" />
     <meta
       property="og:description"
-      content="Timed katas with no AI, then a sensei that reviews your reasoning. Self-hosted and open source."
+      content="One surprise kata a day, about five minutes, no AI. Then a sensei reviews your reasoning. Self-hosted and open source."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://rodacato.github.io/dojo/" />
@@ -27,7 +27,7 @@
     <meta name="twitter:title" content="Dojo — practice thinking for yourself" />
     <meta
       name="twitter:description"
-      content="Timed katas with no AI, then a sensei that reviews your reasoning."
+      content="One surprise kata a day, about five minutes, no AI. Then a sensei reviews your reasoning."
     />
     <meta name="twitter:image" content="https://rodacato.github.io/dojo/brand/social-washi.png" />
     <link rel="canonical" href="https://rodacato.github.io/dojo/" />
@@ -70,8 +70,8 @@
           <h1>Practice thinking for yourself.</h1>
           <p class="lede">
             Vibe coding is making developers faster and their instincts weaker. Dojo is the
-            counter-practice: timed katas with no AI, then a sensei that reviews your reasoning
-            after you submit.
+            counter-practice: one surprise kata a day, about five minutes, no AI. Then a sensei
+            reviews your reasoning after you submit.
           </p>
           <div class="actions">
             <a class="btn btn-primary" href="#run">Run your own</a
@@ -115,8 +115,9 @@
           <ol class="flow">
             <li>
               <div>
-                <strong>Pick your session.</strong>Set your mood and the time you have, then choose
-                one of three katas: code, a technical conversation, or a whiteboard design.
+                <strong>Open today's kata.</strong>One kata a day, about five minutes, and you see
+                the topic when it opens. Want something longer? Set the type, language and time,
+                and you get one kata inside them.
               </div>
             </li>
             <li>
@@ -234,11 +235,12 @@
             </div>
           </div>
           <div class="command">
-            <p class="command-label">A full instance, Docker only</p>
+            <p class="command-label">An instance with Docker</p>
             <pre><code>git clone https://github.com/rodacato/dojo
 cd dojo
 cp .env.example .env
-# set the GitHub OAuth values and WEB_URL=http://localhost in .env
+# set the GitHub OAuth values, CREATOR_GITHUB_ID (your numeric
+# GitHub id) and WEB_URL=http://localhost in .env
 docker compose up --build
 docker compose exec dojo-api \
   node dist/infrastructure/persistence/seed.js</code></pre>

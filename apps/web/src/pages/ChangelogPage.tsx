@@ -22,7 +22,7 @@ const ENTRIES: ChangelogEntry[] = [
     phase: 'Practice',
     title: "Today's kata, one tap away",
     description:
-      'The dashboard holds a five-minute kata picked for you today. You see how long it is, not what it is, so there is nothing to skip; one tap opens it. Once it is done, One more kata gives you another.',
+      'The dashboard holds a five-minute kata picked for you today. You see how long it is, not what it is, so there is nothing to skip; one tap opens it. Once it is done, One more kata gives you another. The welcome on your first visit starts it too.',
   },
   {
     date: '2026-10-19',
