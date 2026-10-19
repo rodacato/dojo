@@ -1,6 +1,7 @@
 import type { AttemptId, SessionId, UserId } from '../shared/types'
 import type { Session } from './session'
 import type { EvaluationToken } from './values'
+import type { PointContext } from './point-answer'
 import type { Rubric } from '@dojo/shared'
 
 export interface ConversationTurn {
@@ -22,6 +23,7 @@ export interface LLMPort {
     // the review prompt variant and evaluate the learner's prose against
     // the rubric rather than running a generic code evaluation.
     rubric?: Rubric
+    point?: PointContext
   }): AsyncIterable<EvaluationToken>
 
   generateSessionBody(params: {

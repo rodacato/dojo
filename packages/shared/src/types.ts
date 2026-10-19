@@ -31,10 +31,20 @@ export interface RubricIssue {
   why: string
 }
 
+// The line the bug is on, 1-based in the kata's starter code. Its presence
+// makes the kata a point kata (D52): tap a line, then explain why.
+export interface PointAnswerKey {
+  shape: 'point'
+  line: number
+}
+
 export interface Rubric {
   expectedIssues: RubricIssue[]
   contextNotes?: string
+  answer?: PointAnswerKey
 }
+
+export type AnswerShape = PointAnswerKey['shape']
 
 export type ClaritySignal = 'clear' | 'somewhat_unclear' | 'confusing'
 export type TimingSignal = 'too_short' | 'about_right' | 'too_long'
@@ -58,6 +68,7 @@ export interface KataDTO {
   language: string[]
   tags: string[]
   starterCode?: string | null
+  answerShape?: AnswerShape | null
 }
 
 export interface VariationDTO {

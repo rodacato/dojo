@@ -4,6 +4,7 @@ import * as schema from './drizzle/schema'
 import { katas as katasTable, variations as variationsTable, users as usersTable } from './drizzle/schema'
 import { KATAS, uuidv5 } from './katas'
 import type { SeedKata } from './katas'
+import { isLineInCode } from '../../domain/practice/point-answer'
 
 // ---------------------------------------------------------------------------
 // System user — required by katas.created_by FK
@@ -23,7 +24,7 @@ const SYSTEM_USER = {
 // Validation
 // ---------------------------------------------------------------------------
 
-function validateKatas(katas: SeedKata[]): void {
+export function validateKatas(katas: SeedKata[]): void {
   const errors: string[] = []
 
   for (const ex of katas) {
@@ -31,6 +32,10 @@ function validateKatas(katas: SeedKata[]): void {
     if (!ex.description.trim()) errors.push(`${ex.id}: empty description`)
     if (ex.duration <= 0) errors.push(`${ex.id}: invalid duration ${ex.duration}`)
     if (ex.variations.length < 1) errors.push(`${ex.id}: no variations`)
+    const answer = ex.rubric?.answer
+    if (answer && (ex.type !== 'review' || !ex.starterCode || !isLineInCode(ex.starterCode, answer.line))) {
+      errors.push(`${ex.id}: point answer line ${answer.line} must be a line of the starter code of a review kata`)
+    }
     for (const v of ex.variations) {
       if (!v.ownerRole.trim()) errors.push(`${ex.id}: empty ownerRole`)
       if (!v.ownerContext.trim()) errors.push(`${ex.id}: empty ownerContext`)

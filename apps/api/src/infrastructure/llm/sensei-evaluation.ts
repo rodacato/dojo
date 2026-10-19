@@ -1,8 +1,9 @@
 import type { ConversationTurn } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
+import type { PointContext } from '../../domain/practice/point-answer'
 import type { Rubric } from '@dojo/shared'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildReviewPrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildPointPrompt, buildReviewPrompt } from '../../prompts/sensei'
 
 // Transport-agnostic chat message. Structurally a subtype of both the OpenAI
 // chat shape and Anthropic's MessageParam (content as a plain string), so the
@@ -21,6 +22,7 @@ export interface BuildMessagesParams {
   history: ConversationTurn[]
   category?: string
   rubric?: Rubric
+  point?: PointContext
 }
 
 export class LLMParseError extends Error {
@@ -32,6 +34,21 @@ export class LLMParseError extends Error {
 
 export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
   const messages: SenseiMessage[] = []
+
+  if (params.rubric && params.point) {
+    messages.push({
+      role: 'user',
+      content: buildPointPrompt({
+        ownerRole: params.ownerRole,
+        ownerContext: params.ownerContext,
+        kataTitle: params.kataTitle,
+        problem: params.sessionBody,
+        point: params.point,
+        rubric: params.rubric,
+      }),
+    })
+    return messages
+  }
 
   // Review kata: rubric presence switches the whole prompt. No history is
   // expected — review kata don't have follow-ups.

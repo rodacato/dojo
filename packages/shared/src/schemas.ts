@@ -22,9 +22,14 @@ export const rubricIssueSchema = z.object({
   severity: rubricSeveritySchema,
   why: z.string().min(1),
 })
+export const pointAnswerKeySchema = z.object({
+  shape: z.literal('point'),
+  line: z.number().int().positive(),
+})
 export const rubricSchema = z.object({
   expectedIssues: z.array(rubricIssueSchema).min(1),
   contextNotes: z.string().optional(),
+  answer: pointAnswerKeySchema.optional(),
 })
 
 export const userDTOSchema = z.object({

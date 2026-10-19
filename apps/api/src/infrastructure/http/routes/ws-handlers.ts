@@ -2,6 +2,7 @@ import { useCases, executionQueue } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
 import { MAX_ATTEMPTS } from '../../../domain/practice/session'
+import { pointContextFor } from '../../../domain/practice/point-answer'
 import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { recordSenseiEvaluation } from '../../observability/prometheus'
@@ -85,6 +86,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       executionContext,
       category: kata?.category,
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
+      point: kata?.type === 'review' ? pointContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
     })) {
       streamToken(ws, cache, token)
     }
