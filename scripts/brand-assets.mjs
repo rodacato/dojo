@@ -112,7 +112,7 @@ export async function buildAssets(root = repo) {
         id: '/',
         name: 'dojo_',
         short_name: 'dojo_',
-        description: 'Timed katas with no AI, then a sensei that reviews your reasoning.',
+        description: 'One surprise kata a day, about five minutes, no AI. Then a sensei reviews your reasoning.',
         start_url: '/',
         scope: '/',
         display: 'standalone',
