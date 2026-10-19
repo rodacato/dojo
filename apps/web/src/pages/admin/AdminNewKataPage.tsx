@@ -40,7 +40,8 @@ export function AdminNewKataPage() {
   const [saving, setSaving] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [showErrors, setShowErrors] = useState(false)
-  const guard = useUnsavedGuard(JSON.stringify(form) !== JSON.stringify(INITIAL))
+  const dirty = JSON.stringify(form) !== JSON.stringify(INITIAL)
+  const guard = useUnsavedGuard(dirty)
 
   const titleInvalid = form.title.trim().length === 0
   const variationsInvalid = form.variations.every((v) => !v.ownerRole.trim())
@@ -119,18 +120,18 @@ export function AdminNewKataPage() {
     <div className="max-w-4xl">
       <AdminBreadcrumb trail={['ADMIN', 'EXERCISES', 'NEW']} />
 
-      <div className="flex items-start justify-between gap-6 mb-8">
+      <div className="flex items-start justify-between gap-6 mb-6 md:mb-8">
         <div>
           <button
             type="button"
             onClick={() => guard.leave('/admin/katas')}
-            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
+            className="hidden md:inline-block font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
           >
             ← Back to katas
           </button>
           <h1 className="text-xl font-semibold text-primary leading-tight">New kata</h1>
         </div>
-        <div className="flex items-center gap-3 mt-7">
+        <div className="max-md:hidden flex items-center gap-3 mt-7">
           <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
             Cancel
           </Button>
@@ -205,7 +206,7 @@ export function AdminNewKataPage() {
         </SectionCard>
       </div>
 
-      <StickyFormBar hint="⌘+S to save">
+      <StickyFormBar hint="⌘+S to save" dirty={dirty}>
         <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
           Cancel
         </Button>

@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
-import { NavLink, Outlet, Link } from 'react-router-dom'
+import { NavLink, Outlet, Link, useMatch } from 'react-router-dom'
 import { LogoMark } from '../../components/Logo'
 import { useAuth } from '../../context/AuthContext'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 interface NavItem {
   to: string
@@ -18,83 +19,140 @@ const NAV_ITEMS: NavItem[] = [
 ]
 
 export function AdminLayout() {
-  const { user } = useAuth()
+  const onNewForm = useMatch('/admin/katas/new')
+  const onEditForm = useMatch('/admin/katas/:id/edit')
+  const onForm = Boolean(onNewForm ?? onEditForm)
+  const isMobile = useIsMobile()
 
   return (
-    <div className="min-h-screen bg-page flex">
-      <aside className="w-48 shrink-0 border-r border-border/40 bg-surface flex flex-col h-dvh sticky top-0">
-        <div className="px-4 py-5 border-b border-border/20">
-          <Link to="/admin/katas" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <LogoMark size={20} className="text-accent shrink-0" />
-            <span className="font-mono text-sm text-primary tracking-wider">
-              dojo<span className="animate-cursor">_</span>
-            </span>
-          </Link>
-          <div className="mt-2 font-mono text-xs uppercase tracking-wider text-secondary">
-            ADMIN
-          </div>
-        </div>
+    <div className={`min-h-screen bg-page ${isMobile ? '' : 'flex'}`}>
+      {isMobile ? <MobileHeader /> : <AdminSidebar />}
 
-        <nav className="flex-1 py-3" aria-label="Admin navigation">
-          {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `flex items-center gap-2 px-3 h-8 text-sm transition-colors border-l-2 ${
-                  isActive
-                    ? 'bg-elevated text-primary border-primary'
-                    : 'text-secondary border-transparent hover:text-primary'
-                }`
-              }
-            >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span>{label}</span>
-            </NavLink>
-          ))}
-
-          <div className="flex items-center justify-between gap-2 px-3 h-8 text-sm text-muted border-l-2 border-transparent cursor-not-allowed">
-            <span className="flex items-center gap-2">
-              <PageIcon className="w-4 h-4 shrink-0" />
-              <span>Pages</span>
-            </span>
-            <span className="font-mono text-xs uppercase tracking-wider text-secondary">
-              PHASE 2
-            </span>
-          </div>
-        </nav>
-
-        <div className="border-t border-border/20 px-3 py-3">
-          {user && (
-            <div className="flex items-center gap-2 mb-2">
-              <img
-                src={user.avatarUrl}
-                alt=""
-                className="w-6 h-6 rounded-full shrink-0"
-              />
-              <div className="min-w-0">
-                <div className="text-sm text-primary truncate">{user.username}</div>
-                <div className="font-mono text-xs uppercase tracking-wider text-secondary">
-                  creator
-                </div>
-              </div>
-            </div>
-          )}
-          <Link
-            to="/dashboard"
-            className="block font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
-          >
-            ← Back to dojo
-          </Link>
-        </div>
-      </aside>
-
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-8 py-8">
+      <main
+        className={`flex-1 overflow-y-auto ${isMobile && !onForm ? 'pb-[calc(3.5rem+env(safe-area-inset-bottom))]' : ''}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-8">
           <Outlet />
         </div>
       </main>
+
+      {isMobile && !onForm && (
+        <nav
+          aria-label="Admin sections"
+          className="fixed bottom-0 inset-x-0 z-40 bg-surface border-t border-border/40 pb-[env(safe-area-inset-bottom)]"
+        >
+          <div className="flex">
+            {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  `flex-1 min-h-14 flex flex-col items-center justify-center gap-0.5 font-mono text-xs transition-colors ${
+                    isActive ? 'text-primary font-semibold' : 'text-secondary'
+                  }`
+                }
+              >
+                <Icon className="w-5 h-5" />
+                <span>{label.toLowerCase()}</span>
+              </NavLink>
+            ))}
+          </div>
+        </nav>
+      )}
     </div>
+  )
+}
+
+function MobileHeader() {
+  return (
+    <header className="sticky top-0 z-30 h-14 flex items-center justify-between gap-4 px-4 border-b border-border bg-surface/50 backdrop-blur">
+      <Link to="/admin/katas" className="flex items-center gap-2">
+        <LogoMark size={20} className="text-accent shrink-0" />
+        <span className="font-mono text-sm text-primary tracking-wider">
+          dojo<span className="animate-cursor">_</span>
+        </span>
+        <span className="font-mono text-xs uppercase tracking-wider text-secondary">ADMIN</span>
+      </Link>
+      <Link
+        to="/dashboard"
+        className="h-11 inline-flex items-center font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+      >
+        ← Back to dojo
+      </Link>
+    </header>
+  )
+}
+
+function AdminSidebar() {
+  const { user } = useAuth()
+
+  return (
+    <aside className="w-48 shrink-0 border-r border-border/40 bg-surface flex flex-col h-dvh sticky top-0">
+      <div className="px-4 py-5 border-b border-border/20">
+        <Link to="/admin/katas" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <LogoMark size={20} className="text-accent shrink-0" />
+          <span className="font-mono text-sm text-primary tracking-wider">
+            dojo<span className="animate-cursor">_</span>
+          </span>
+        </Link>
+        <div className="mt-2 font-mono text-xs uppercase tracking-wider text-secondary">
+          ADMIN
+        </div>
+      </div>
+
+      <nav className="flex-1 py-3" aria-label="Admin navigation">
+        {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              `flex items-center gap-2 px-3 h-8 text-sm transition-colors border-l-2 ${
+                isActive
+                  ? 'bg-elevated text-primary border-primary'
+                  : 'text-secondary border-transparent hover:text-primary'
+              }`
+            }
+          >
+            <Icon className="w-4 h-4 shrink-0" />
+            <span>{label}</span>
+          </NavLink>
+        ))}
+
+        <div className="flex items-center justify-between gap-2 px-3 h-8 text-sm text-muted border-l-2 border-transparent cursor-not-allowed">
+          <span className="flex items-center gap-2">
+            <PageIcon className="w-4 h-4 shrink-0" />
+            <span>Pages</span>
+          </span>
+          <span className="font-mono text-xs uppercase tracking-wider text-secondary">
+            PHASE 2
+          </span>
+        </div>
+      </nav>
+
+      <div className="border-t border-border/20 px-3 py-3">
+        {user && (
+          <div className="flex items-center gap-2 mb-2">
+            <img
+              src={user.avatarUrl}
+              alt=""
+              className="w-6 h-6 rounded-full shrink-0"
+            />
+            <div className="min-w-0">
+              <div className="text-sm text-primary truncate">{user.username}</div>
+              <div className="font-mono text-xs uppercase tracking-wider text-secondary">
+                creator
+              </div>
+            </div>
+          </div>
+        )}
+        <Link
+          to="/dashboard"
+          className="block font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+        >
+          ← Back to dojo
+        </Link>
+      </div>
+    </aside>
   )
 }
 

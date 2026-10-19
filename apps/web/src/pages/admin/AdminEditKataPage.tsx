@@ -224,12 +224,12 @@ export function AdminEditKataPage() {
     <div className="max-w-4xl">
       <AdminBreadcrumb trail={['ADMIN', 'EXERCISES', `EDIT — ${form.title || 'Untitled'}`]} />
 
-      <div className="flex items-start justify-between gap-6 mb-8">
-        <div>
+      <div className="flex items-start justify-between gap-4 md:gap-6 mb-6 md:mb-8">
+        <div className="min-w-0">
           <button
             type="button"
             onClick={() => guard.leave('/admin/katas')}
-            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
+            className="hidden md:inline-block font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors mb-2"
           >
             ← Back to katas
           </button>
@@ -237,16 +237,16 @@ export function AdminEditKataPage() {
             {form.title || 'Untitled kata'}
           </h1>
         </div>
-        <div className="flex items-center gap-3 mt-7">
+        <div className="flex items-center gap-3 md:mt-7 shrink-0">
           {!archived && (
-            <Button variant="destructive" size="sm" onClick={() => setShowArchiveConfirm(true)} loading={archiving}>
+            <Button variant="destructive" size="sm" className="max-md:h-11" onClick={() => setShowArchiveConfirm(true)} loading={archiving}>
               Archive
             </Button>
           )}
-          <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
+          <Button variant="ghost" size="sm" className="max-md:hidden" onClick={() => guard.leave('/admin/katas')}>
             Cancel
           </Button>
-          <Button variant="ghost" size="sm" onClick={handleSave} loading={saving}>
+          <Button variant="ghost" size="sm" className="max-md:hidden" onClick={handleSave} loading={saving}>
             {dirty && <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-warning shrink-0" />}
             Save changes
           </Button>
@@ -257,7 +257,7 @@ export function AdminEditKataPage() {
       {submitError && <ValidationBanner message={submitError} />}
 
       <div className="space-y-8">
-        <div className="rounded-md border border-border bg-surface px-6 py-4 flex items-center justify-between gap-6">
+        <div className="rounded-md border border-border bg-surface px-4 md:px-6 py-4 flex items-center justify-between gap-4 md:gap-6">
           <div className="flex items-center gap-3">
             <span className="font-mono text-xs uppercase tracking-wider text-secondary">Status</span>
             <StatusPill status={form.status} />
@@ -334,7 +334,7 @@ export function AdminEditKataPage() {
         )}
       </div>
 
-      <StickyFormBar hint={dirty ? 'Unsaved changes · ⌘+S to save' : '⌘+S to save'}>
+      <StickyFormBar hint={dirty ? 'Unsaved changes · ⌘+S to save' : '⌘+S to save'} dirty={dirty}>
         <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>
           Cancel
         </Button>

@@ -7,6 +7,7 @@ import { Button } from '../../components/ui/Button'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { ErrorState } from '../../components/ui/ErrorState'
 import { Pagination } from '../../components/ui/Pagination'
+import { useIsMobile } from '../../hooks/useIsMobile'
 
 type StatusFilter = 'all' | 'published' | 'draft' | 'archived'
 type TypeFilter = 'all' | 'code' | 'chat' | 'whiteboard' | 'review'
@@ -17,6 +18,7 @@ const PAGE_SIZE = 12
 
 export function AdminKatasPage() {
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
   const [katas, setKatas] = useState<AdminKataDTO[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
@@ -92,7 +94,7 @@ export function AdminKatasPage() {
         ADMIN / EXERCISES
       </div>
 
-      <div className="flex items-start justify-between gap-6 mb-8">
+      <div className="flex items-start justify-between gap-4 md:gap-6 mb-6 md:mb-8">
         <div>
           <h1 className="text-xl font-semibold text-primary leading-tight">Katas</h1>
           <div className="mt-1 text-sm text-secondary">
@@ -103,11 +105,11 @@ export function AdminKatasPage() {
             <span>{counts.archived} archived</span>
           </div>
         </div>
-        <Button onClick={() => navigate('/admin/katas/new')}>+ New kata</Button>
+        <Button className="max-md:h-11 shrink-0" onClick={() => navigate('/admin/katas/new')}>+ New kata</Button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-6 p-3 rounded-md border border-border bg-surface">
-        <div className="relative flex-1 min-w-60">
+      <div className="grid grid-cols-2 gap-2 md:flex md:flex-wrap md:items-center md:gap-3 mb-6 p-3 rounded-md border border-border bg-surface">
+        <div className="relative col-span-2 md:flex-1 md:min-w-60">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary pointer-events-none" />
           <input
             type="text"
@@ -117,7 +119,7 @@ export function AdminKatasPage() {
               setPage(1)
             }}
             placeholder="Search title..."
-            className="w-full h-8 pl-9 pr-3 rounded-sm border border-border bg-page text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+            className="w-full h-11 md:h-8 pl-9 pr-3 rounded-sm border border-border bg-page text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
           />
         </div>
         <FilterSelect
@@ -203,7 +205,10 @@ export function AdminKatasPage() {
           microcopy="Use the New kata button above to create the first one."
         />
       )}
-      {!(!loading && (loadError || katas.length === 0 || pageRows.length === 0)) && (
+      {isMobile && !(!loading && (loadError || katas.length === 0 || pageRows.length === 0)) && (
+        <KataCards loading={loading} katas={pageRows} />
+      )}
+      {!isMobile && !(!loading && (loadError || katas.length === 0 || pageRows.length === 0)) && (
       <div className="rounded-md border border-border bg-surface overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -282,7 +287,7 @@ export function AdminKatasPage() {
       )}
 
       {!loading && sorted.length > 0 && (
-        <div className="flex items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
+        <div className="flex flex-col gap-3 md:flex-row items-center justify-between mt-6 font-mono text-xs uppercase tracking-wider text-secondary">
           <span>
             Showing {startIdx}–{endIdx} of {sorted.length}
           </span>
@@ -343,6 +348,41 @@ function StatusBadge({ status }: Readonly<{ status: string }>) {
   )
 }
 
+function KataCards({ loading, katas }: Readonly<{ loading: boolean; katas: AdminKataDTO[] }>) {
+  if (loading) {
+    return <p className="py-10 text-center text-secondary font-mono text-sm">Loading_</p>
+  }
+  return (
+    <ul className="flex flex-col gap-3">
+      {katas.map((ex) => (
+        <li key={ex.id}>
+          <Link
+            to={`/admin/katas/${ex.id}/edit`}
+            className="block rounded-md border border-border bg-surface p-3.5 hover:bg-elevated transition-colors focus-visible:outline-2 focus-visible:outline-accent"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-1.5">
+                <TypeBadge type={ex.type as KataType} />
+                <DifficultyBadge difficulty={ex.difficulty as Difficulty} />
+              </div>
+              <StatusBadge status={ex.status} />
+            </div>
+            <p className={`mt-2 text-base font-medium ${ex.status === 'archived' ? 'text-secondary' : 'text-primary'}`}>
+              {ex.title}
+            </p>
+            <p className="mt-1.5 font-mono text-xs text-secondary tabular-nums">
+              {ex.sessionCount.toLocaleString()} sessions ·{' '}
+              <span className={avgScoreClass(ex.avgScore)}>
+                {ex.avgScore === null ? '—' : `${Math.round(ex.avgScore * 100)}%`}
+              </span>
+            </p>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function avgScoreClass(score: number | null) {
   if (score === null) return 'text-secondary'
   if (score >= 0.7) return 'text-success-text/80'
@@ -368,7 +408,7 @@ function FilterSelect<T extends string>({
 }>) {
   const current = options.find((o) => o.value === value)?.label ?? ''
   return (
-    <label className="relative inline-flex items-center h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
+    <label className="relative inline-flex items-center h-11 md:h-8 px-3 rounded-sm border border-border bg-page font-mono text-xs uppercase tracking-wider text-secondary hover:border-accent focus-within:ring-2 focus-within:ring-accent transition-colors cursor-pointer">
       <span className="text-secondary mr-1">{label}:</span>
       <span className="text-primary mr-1">{current}</span>
       <ChevronDownIcon className="w-3 h-3 text-secondary" />

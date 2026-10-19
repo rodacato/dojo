@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
     phase: 'Mobile',
+    title: 'Admin works on a phone',
+    description:
+      'Below tablet width, /admin swaps its sidebar for a bottom bar with the five sections and a top bar back to the dojo. The katas list becomes cards you tap to edit, and the kata forms pin Cancel and Save to the bottom. The playground header now shows the kata link on a phone, and Sign in is big enough to tap.',
+  },
+  {
+    date: '2026-10-19',
+    phase: 'Mobile',
     title: 'Run within thumb reach on a phone',
     description:
       'On a phone the playground keeps one row of selectors at the top and puts Run, Ask the sensei and the run status in a bar at the bottom. Every control is big enough to tap, and the toolbar no longer wraps over the editor.',

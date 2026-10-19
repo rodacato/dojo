@@ -266,18 +266,26 @@ export function ValidationBanner({ message }: Readonly<{ message: string }>) {
 
 export function StickyFormBar({
   hint,
+  dirty = false,
   children,
 }: Readonly<{
   hint?: string
+  dirty?: boolean
   children: ReactNode
 }>) {
   return (
-    <div className="sticky bottom-0 -mx-8 mt-8 px-8 py-4 border-t border-border bg-page/95 backdrop-blur z-10">
-      <div className="flex items-center justify-between gap-4">
-        <div className="font-mono text-xs uppercase tracking-wider text-secondary">
+    <div className="sticky bottom-0 -mx-4 md:-mx-8 mt-8 px-4 md:px-8 pt-3 md:py-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-border bg-page/95 backdrop-blur z-10">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-4">
+        <div className="hidden md:block font-mono text-xs uppercase tracking-wider text-secondary">
           {hint}
         </div>
-        <div className="flex items-center gap-3">{children}</div>
+        {dirty && (
+          <div className="md:hidden flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-warning-text">
+            <span aria-hidden className="w-1.5 h-1.5 rounded-full bg-warning" />
+            Unsaved changes
+          </div>
+        )}
+        <div className="grid grid-cols-2 gap-3 max-md:*:h-11 max-md:*:w-full md:flex md:items-center">{children}</div>
       </div>
     </div>
   )
