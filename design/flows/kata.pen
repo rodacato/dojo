@@ -16493,27 +16493,48 @@
           "children": [
             {
               "type": "frame",
-              "id": "lYu3z",
-              "name": "Wordmark",
+              "id": "cQeQl",
+              "name": "Left",
+              "gap": 8,
               "alignItems": "center",
               "children": [
                 {
-                  "type": "text",
-                  "id": "Rd67P",
-                  "fill": "$color-accent",
-                  "content": "dojo",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 15,
-                  "fontWeight": "700"
+                  "type": "frame",
+                  "id": "lYu3z",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Rd67P",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SPINv",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    }
+                  ]
                 },
                 {
-                  "type": "text",
-                  "id": "SPINv",
-                  "fill": "$color-accent",
-                  "content": "_",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 15,
-                  "fontWeight": "700"
+                  "id": "h465hK",
+                  "type": "ref",
+                  "ref": "lqgHU",
+                  "name": "Leave",
+                  "height": 44,
+                  "descendants": {
+                    "Pax83": {
+                      "content": "LEAVE"
+                    }
+                  }
                 }
               ]
             },
@@ -16526,6 +16547,7 @@
               "id": "l6DnmR",
               "type": "ref",
               "ref": "tNtFP",
+              "height": 44,
               "descendants": {
                 "Oa0VU": {
                   "content": "SUBMIT"
@@ -20565,6 +20587,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "snqBz",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · KataActive / Mobile: header gains Leave (subtle sm) and both header actions are 44 tall on mobile, as KataActivePage after PR #196; resolves D55",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
