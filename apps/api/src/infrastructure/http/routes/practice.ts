@@ -5,6 +5,7 @@ import { getCookie } from 'hono/cookie'
 import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
 import { config } from '../../../config'
+import { composePointAnswer, isLineInCode } from '../../../domain/practice/point-answer'
 import { SessionExpiredError } from '../../../domain/shared/errors'
 import { KataId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
@@ -274,6 +275,7 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
       language: kata.languages,
       tags: kata.tags,
       starterCode: kata.starterCode ?? null,
+      answerShape: kata.rubric?.answer?.shape ?? null,
     },
     finalAttempt: finalAttempt
       ? {
@@ -370,6 +372,7 @@ practiceRoutes.get('/sessions/:id/body-stream', requireAuth, async (c) => {
 
 const submitAttemptSchema = z.object({
   userResponse: z.string().min(1),
+  pointedLine: z.number().int().positive().optional(),
 })
 
 practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
@@ -393,9 +396,21 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
     throw new SessionExpiredError(sessionId)
   }
 
+  const { pointedLine } = parsed.data
+  let userResponse = parsed.data.userResponse
+  if (kata.rubric?.answer?.shape === 'point') {
+    const code = kata.starterCode
+    if (!code || pointedLine === undefined || !isLineInCode(code, pointedLine) || !userResponse.trim()) {
+      return c.json({ error: 'Invalid request body' }, 400)
+    }
+    userResponse = composePointAnswer(code, pointedLine, userResponse)
+  } else if (pointedLine !== undefined) {
+    return c.json({ error: 'Invalid request body' }, 400)
+  }
+
   // Store in pendingAttempts for the WebSocket handler (ADR-008)
   const attemptId = crypto.randomUUID()
-  pendingAttempts.set(attemptId, { sessionId, userResponse: parsed.data.userResponse })
+  pendingAttempts.set(attemptId, { sessionId, userResponse })
   setTimeout(() => pendingAttempts.delete(attemptId), 5 * 60 * 1000)
 
   return c.json({ attemptId }, 202)

@@ -569,6 +569,22 @@ describe('GET /sessions/:id', () => {
     expect(eqSpy).toHaveBeenCalledWith('attempts.sessionId', SESSION_ID)
   })
 
+  it('tells the page a kata is answered by pointing, without leaking the correct line', async () => {
+    authState.user = authedUser()
+    getSession.mockResolvedValue(sessionEntity())
+    getKataById.mockResolvedValue(
+      kataEntity({
+        type: 'review',
+        rubric: { expectedIssues: [{ title: 'secret issue', severity: 'high', why: 'w' }], answer: { shape: 'point', line: 7 } },
+      }),
+    )
+    const res = await get()
+    const text = await res.text()
+    expect((JSON.parse(text) as { kata: { answerShape: string } }).kata.answerShape).toBe('point')
+    expect(text).not.toContain('secret issue')
+    expect(text).not.toContain('"line"')
+  })
+
   it('parses the LLM JSON of the final attempt into verdict/analysis/topics', async () => {
     authState.user = authedUser()
     getSession.mockResolvedValue(sessionEntity())
@@ -812,6 +828,45 @@ describe('POST /sessions/:id/attempts', () => {
     // The TTL evicts the entry after 5 minutes.
     vi.advanceTimersByTime(5 * 60 * 1000)
     expect(pendingAttempts.has(attemptId)).toBe(false)
+  })
+
+  describe('point kata', () => {
+    function pointKata() {
+      return kataEntity({
+        type: 'review',
+        starterCode: 'const a = 1\nconst b = a + 1\nreturn b\n',
+        rubric: { expectedIssues: [{ title: 't', severity: 'high', why: 'w' }], answer: { shape: 'point', line: 2 } },
+      })
+    }
+
+    beforeEach(() => {
+      authState.user = authedUser()
+      getSession.mockResolvedValue(sessionEntity())
+      getKataById.mockResolvedValue(pointKata())
+    })
+
+    it('stores the tapped line with its code ahead of the why', async () => {
+      const res = await submit({ userResponse: '  b is off by one.  ', pointedLine: 3 })
+      expect(res.status).toBe(202)
+      const { attemptId } = (await res.json()) as { attemptId: string }
+      expect(pendingAttempts.get(attemptId)?.userResponse).toBe('Line 3: return b\n\nb is off by one.')
+    })
+
+    it.each([
+      ['no line', { userResponse: 'why' }],
+      ['a line past the end of the code', { userResponse: 'why', pointedLine: 4 }],
+      ['a blank why', { userResponse: '   ', pointedLine: 2 }],
+    ])('rejects %s', async (_label, body) => {
+      const res = await submit(body)
+      expect(res.status).toBe(400)
+      expect(pendingAttempts.size).toBe(0)
+    })
+
+    it('rejects a pointed line on a kata that is not a point kata', async () => {
+      getKataById.mockResolvedValue(kataEntity())
+      const res = await submit({ userResponse: 'answer', pointedLine: 1 })
+      expect(res.status).toBe(400)
+    })
   })
 })
 

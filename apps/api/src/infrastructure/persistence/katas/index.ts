@@ -10,6 +10,7 @@ import { testCodeKatas } from './testcode-katas'
 import { debuggingKatas } from './debugging'
 import { sqlAdvancedKatas } from './sql-advanced'
 import { reviewKatas } from './review'
+import { microKatas } from './micro'
 
 export type { SeedKata } from './types'
 export { uuidv5 } from './types'
@@ -27,4 +28,5 @@ export const KATAS = [
   ...debuggingKatas,
   ...sqlAdvancedKatas,
   ...reviewKatas,
+  ...microKatas,
 ]
