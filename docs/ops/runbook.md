@@ -29,6 +29,9 @@ New katas are not loaded by an upgrade. After one that adds katas, rerun the see
 [GETTING_STARTED.md](../../GETTING_STARTED.md) (idempotent). A Kamal deploy runs it for you
 ([.kamal/hooks/post-deploy](../../.kamal/hooks/post-deploy)).
 
+The seed also brings shipped katas up to date, but only those you never edited or archived in
+`/admin`: once you touch one, your copy wins on every later run.
+
 ## Roll back
 
 Reverting the code does not revert the database: migrations only go forward, and there are no down
