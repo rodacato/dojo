@@ -73,6 +73,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     weeklyRows,
     prefs,
     belt,
+    dailyKata,
   ] = await Promise.all([
     db
       .select({
@@ -158,6 +159,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.startedAt, weekStart))),
     db.query.userPreferences.findFirst({ where: eq(userPreferences.userId, userId) }),
     useCases.calculateBelt.execute(UserId(userId)),
+    useCases.pickDailyKata.execute(UserId(userId)),
   ])
 
   const totalCompleted = Number(totalRows[0]?.count ?? 0)
@@ -196,6 +198,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     todayComplete,
     todaySession,
     activeSessionId,
+    dailyKataMinutes: dailyKata?.durationMinutes ?? null,
     heatmapData: heatmapRows.map((r) => ({ date: r.date, count: Number(r.count) })),
     recentSessions: recentRows.map((s) => ({
       id: s.id,

@@ -2,6 +2,7 @@ import { CalculateBelt } from '../application/recognition/CalculateBelt'
 import { ListUserMilestones } from '../application/recognition/ListUserMilestones'
 import { PostgresMilestoneRepository } from './persistence/PostgresMilestoneRepository'
 import { GetKataOptions } from '../application/practice/GetKataOptions'
+import { PickDailyKata } from '../application/practice/PickDailyKata'
 import { GetSession } from '../application/practice/GetSession'
 import { GenerateSessionBody } from '../application/practice/GenerateSessionBody'
 import { StartSession } from '../application/practice/StartSession'
@@ -126,6 +127,7 @@ export const useCases = {
   generateSessionBody: new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
   getKataOptions: new GetKataOptions({ kataRepo, preferencesRepo }),
+  pickDailyKata: new PickDailyKata({ dailyKatas: kataRepo }),
   getKataById: new GetKataById({ kataRepo }),
   createKata: new CreateKata({ kataRepo }),
   getSession: new GetSession({ sessionRepo }),

@@ -6,7 +6,7 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 import { PostgresKataRepository } from './PostgresKataRepository'
-import { katas, users, variations } from './drizzle/schema'
+import { katas, sessions, users, variations } from './drizzle/schema'
 import type { DB } from './drizzle/client'
 import { UserId } from '../../domain/shared/types'
 
@@ -101,5 +101,70 @@ describe.skipIf(!url)('PostgresKataRepository.findEligible against Postgres', ()
     const picks = await seededPicks({ maxDuration: 20 })
 
     expect(picks.map((k) => k.category).sort()).toEqual(['frontend', 'security'])
+  })
+})
+
+describe.skipIf(!url)('PostgresKataRepository.findDailyCandidates against Postgres', () => {
+  const client = postgres(url ?? '', { max: 2 })
+  const db = drizzle(client)
+  const repo = new PostgresKataRepository(db as unknown as DB)
+
+  const creatorId = randomUUID()
+  const learner = randomUUID()
+  const otherLearner = randomUUID()
+  const micro = { id: randomUUID(), duration: 5, status: 'published' }
+  const long = { id: randomUUID(), duration: 15, status: 'published' }
+  const draft = { id: randomUUID(), duration: 5, status: 'draft' }
+  const practicedAt = new Date('2026-10-18T09:00:00Z')
+
+  beforeAll(async () => {
+    await migrate(db, { migrationsFolder: join(__dirname, 'drizzle/migrations') })
+    await db.insert(users).values(
+      [creatorId, learner, otherLearner].map((id) => ({
+        id,
+        githubId: `integration-${id}`,
+        username: `integration-${id.slice(0, 8)}`,
+        avatarUrl: 'https://example.test/a.png',
+      })),
+    )
+    await db.insert(katas).values(
+      [micro, long, draft].map((k) => ({
+        id: k.id,
+        title: 'integration daily',
+        description: 'integration fixture',
+        duration: k.duration,
+        difficulty: 'easy',
+        category: 'debugging',
+        type: 'review',
+        status: k.status,
+        ownerRole: 'role',
+        ownerContext: 'context',
+        createdBy: creatorId,
+      })),
+    )
+    const variationRows = [micro, long, draft].map((k) => ({ id: randomUUID(), kataId: k.id, ownerRole: 'role', ownerContext: 'context' }))
+    await db.insert(variations).values(variationRows)
+    const microVariation = variationRows[0]!.id
+    await db.insert(sessions).values([
+      { id: randomUUID(), userId: learner, kataId: micro.id, variationId: microVariation, body: 'b', status: 'completed', startedAt: practicedAt },
+      { id: randomUUID(), userId: otherLearner, kataId: micro.id, variationId: microVariation, body: 'b', status: 'completed', startedAt: new Date() },
+    ])
+  })
+
+  afterAll(async () => {
+    const kataIds = [micro, long, draft].map((k) => k.id)
+    await db.delete(sessions).where(inArray(sessions.kataId, kataIds))
+    await db.delete(variations).where(inArray(variations.kataId, kataIds))
+    await db.delete(katas).where(inArray(katas.id, kataIds))
+    await db.delete(users).where(inArray(users.id, [creatorId, learner, otherLearner]))
+    await client.end()
+  })
+
+  it('lists published micro kata with when this learner last practiced each', async () => {
+    const candidates = (await repo.findDailyCandidates(UserId(learner))).filter((c) =>
+      [micro.id, long.id, draft.id].includes(c.kataId),
+    )
+
+    expect(candidates).toEqual([{ kataId: micro.id, durationMinutes: 5, lastPracticedAt: practicedAt }])
   })
 })

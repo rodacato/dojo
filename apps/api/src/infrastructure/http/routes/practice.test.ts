@@ -16,6 +16,7 @@ const {
   authState,
   getKataOptions,
   getKataById,
+  pickDailyKata,
   startSession,
   getSession,
   generateSessionBodyExecute,
@@ -64,6 +65,7 @@ const {
     getKataOptions: vi.fn(),
     getKataById: vi.fn(),
     startSession: vi.fn(),
+    pickDailyKata: vi.fn(),
     getSession: vi.fn(),
     generateSessionBodyExecute: vi.fn(),
     generateSessionBodyStream: vi.fn(),
@@ -87,6 +89,7 @@ vi.mock('../../container', () => ({
     getKataOptions: { execute: getKataOptions },
     getKataById: { execute: getKataById },
     startSession: { execute: startSession },
+    pickDailyKata: { execute: pickDailyKata },
     getSession: { execute: getSession },
     generateSessionBody: {
       execute: generateSessionBodyExecute,
@@ -514,6 +517,37 @@ describe('POST /sessions', () => {
 // ===========================================================================
 // GET /sessions/:id
 // ===========================================================================
+describe('POST /sessions/daily', () => {
+  it('returns 401 when unauthenticated', async () => {
+    const res = await post('/sessions/daily', {})
+    expect(res.status).toBe(401)
+  })
+
+  it('starts the kata the daily pick chose for this learner', async () => {
+    authState.user = authedUser()
+    pickDailyKata.mockResolvedValue({ kataId: KATA_UUID, durationMinutes: 5, lastPracticedAt: null })
+    getKataById.mockResolvedValue(kataEntity())
+    startSession.mockResolvedValue({ id: SESSION_ID, kataId: KATA_UUID, variationId: 'var-1' })
+
+    const res = await post('/sessions/daily', {})
+
+    expect(res.status).toBe(201)
+    expect(await res.json()).toEqual({ sessionId: SESSION_ID })
+    expect(pickDailyKata).toHaveBeenCalledWith('user-1')
+    expect(startSession).toHaveBeenCalledWith({ userId: 'user-1', kataId: KATA_UUID, variationId: 'var-1' })
+  })
+
+  it('returns 404 and starts nothing when the instance has no micro kata', async () => {
+    authState.user = authedUser()
+    pickDailyKata.mockResolvedValue(null)
+
+    const res = await post('/sessions/daily', {})
+
+    expect(res.status).toBe(404)
+    expect(startSession).not.toHaveBeenCalled()
+  })
+})
+
 describe('GET /sessions/:id', () => {
   function get(id = SESSION_ID) {
     return makeApp().request(`/sessions/${id}`)

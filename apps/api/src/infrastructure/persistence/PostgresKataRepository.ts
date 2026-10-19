@@ -2,6 +2,7 @@ import { eq, sql } from 'drizzle-orm'
 import { Kata } from '../../domain/content/kata'
 import type { Variation } from '../../domain/content/kata'
 import type { KataFilters, KataRepositoryPort } from '../../domain/content/ports'
+import { MICRO_KATA_MAX_MINUTES, type DailyCandidate, type DailyKataCandidatesPort } from '../../domain/practice/daily-kata'
 import type { Difficulty, KataStatus, KataType } from '../../domain/content/values'
 import { KataId, UserId, VariationId } from '../../domain/shared/types'
 import type { DB } from './drizzle/client'
@@ -36,7 +37,7 @@ type EligibleRow = {
   v_created_at: Date
 }
 
-export class PostgresKataRepository implements KataRepositoryPort {
+export class PostgresKataRepository implements KataRepositoryPort, DailyKataCandidatesPort {
   constructor(private readonly db: DB) {}
 
   async findById(id: KataId): Promise<Kata | null> {
@@ -126,6 +127,24 @@ export class PostgresKataRepository implements KataRepositoryPort {
     }
 
     return this.groupRowsToKatas(rows)
+  }
+
+  async findDailyCandidates(userId: UserId): Promise<DailyCandidate[]> {
+    const rows = await this.db.execute<{ id: string; duration: number; last_practiced_at: Date | string | null }>(sql`
+      SELECT e.id, e.duration, MAX(s.started_at) AS last_practiced_at
+      FROM exercises e
+      LEFT JOIN sessions s ON s.exercise_id = e.id AND s.user_id = ${userId}
+      WHERE e.status = 'published'
+        AND e.duration <= ${MICRO_KATA_MAX_MINUTES}
+        AND EXISTS (SELECT 1 FROM variations v WHERE v.exercise_id = e.id)
+      GROUP BY e.id, e.duration
+      ORDER BY e.id
+    `)
+    return rows.map((r) => ({
+      kataId: KataId(r.id),
+      durationMinutes: r.duration,
+      lastPracticedAt: r.last_practiced_at === null ? null : new Date(r.last_practiced_at),
+    }))
   }
 
   async save(kata: Kata): Promise<void> {
