@@ -138,7 +138,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 | **Scrolls** | External learning apps embedded in Dojo by iframe. The host (registration, frame allow-list, progress, optional code execution) works. What is available depends on the scrolls your operator registers ([#116](https://github.com/rodacato/dojo/issues/116)) |
 | **Code execution** | Code kata run in a Piston sandbox — the sensei sees real test results (pass/fail/compile error), not just your code |
 | **Interest selection** | Set your level (junior/mid/senior), pick topics of interest, control randomness — the dojo adapts to you |
-| **Kata feedback** | Optional micro-feedback after each kata (clarity, timing, evaluation fairness) — signals feed back into kata quality |
+| **Kata feedback** | Optional feedback after each kata, saved with each tap: time limit, the sensei's review, and description clarity — signals feed back into kata quality |
 | **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
 | **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations |
 | **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The verdict adds no points, but a kata that ends in Needs work does not count as completed (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |

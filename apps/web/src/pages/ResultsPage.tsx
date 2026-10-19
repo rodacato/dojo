@@ -18,7 +18,6 @@ export function ResultsPage() {
   const [session, setSession] = useState<SessionWithKata | null>(null)
   const [loadError, setLoadError] = useState(false)
   const [retryTick, setRetryTick] = useState(0)
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
 
   useEffect(() => {
     if (!sessionId) return
@@ -27,9 +26,6 @@ export function ResultsPage() {
     api.getSession(sessionId)
       .then((s) => { if (!cancelled) setSession(s) })
       .catch(() => { if (!cancelled) setLoadError(true) })
-    api.getFeedback(sessionId)
-      .then((r) => { if (!cancelled) setFeedbackSubmitted(r.submitted) })
-      .catch(() => {})
     return () => { cancelled = true }
   }, [sessionId, retryTick])
 
@@ -134,11 +130,10 @@ export function ResultsPage() {
         </CollapsibleRow>
       )}
 
-      {verdict && sessionId && <PostKataActions sessionId={sessionId} />}
-
-      {sessionId && (session.status === 'completed' || session.status === 'failed') && (
-        <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
+      {verdict && sessionId && (session.status === 'completed' || session.status === 'failed') && (
+        <FeedbackSection sessionId={sessionId} />
       )}
+      {verdict && sessionId && <PostKataActions sessionId={sessionId} />}
 
       <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase">
         Consistency compounds.

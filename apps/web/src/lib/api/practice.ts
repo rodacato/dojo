@@ -3,7 +3,7 @@ import { API_URL } from '../config'
 import { getToken } from '../auth-token'
 import { request, ApiError } from './client'
 import { streamSseTokens } from './sse'
-import type { DashboardData, SessionWithKata, StartSessionResponse, SubmitAttemptResponse } from './types'
+import type { DashboardData, KataFeedback, SessionWithKata, StartSessionResponse, SubmitAttemptResponse } from './types'
 
 // SSE stream of the kata-prep body — S022 Part 6. Yields plain text
 // chunks as the model produces them, then resolves when the server
@@ -65,19 +65,14 @@ export const practice = {
       method: 'POST',
     }),
 
-  submitFeedback: (sessionId: string, feedback: {
-    clarity: string | null
-    timing: string | null
-    evaluation: string | null
-    note: string | null
-  }) =>
+  submitFeedback: (sessionId: string, feedback: Partial<KataFeedback>) =>
     request<{ ok: boolean }>(`/sessions/${sessionId}/feedback`, {
       method: 'POST',
       body: JSON.stringify(feedback),
     }),
 
   getFeedback: (sessionId: string) =>
-    request<{ submitted: boolean }>(`/sessions/${sessionId}/feedback`),
+    request<{ submitted: boolean } & Partial<KataFeedback>>(`/sessions/${sessionId}/feedback`),
 
   getHistory: (page = 1) =>
     request<{

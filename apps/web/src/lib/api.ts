@@ -8,6 +8,7 @@ export {
   type SessionAttempt,
   type SessionWithKata,
   type RevealedAnswer,
+  type KataFeedback,
   type StartSessionResponse,
   type SubmitAttemptResponse,
   type AdminKataDTO,

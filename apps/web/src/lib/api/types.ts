@@ -57,6 +57,13 @@ export interface RevealedAnswer {
   why: string
 }
 
+export interface KataFeedback {
+  clarity: 'clear' | 'somewhat_unclear' | 'confusing' | null
+  timing: 'too_short' | 'about_right' | 'too_long' | null
+  evaluation: 'fair_and_relevant' | 'too_generic' | 'missed_the_point' | null
+  note: string | null
+}
+
 export interface StartSessionResponse {
   sessionId: string
 }

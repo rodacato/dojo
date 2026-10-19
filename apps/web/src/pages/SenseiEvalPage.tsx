@@ -77,10 +77,6 @@ export function SenseiEvalPage() {
   useEffect(() => {
     if (isFinal) reloadSession()
   }, [isFinal, reloadSession])
-  const { data: feedback } = useAsync(
-    () => (isFinal ? api.getFeedback(sessionId!) : Promise.resolve(null)),
-    [sessionId, isFinal],
-  )
   const senseiInitials = useMemo(
     () => deriveInitials(session?.ownerRole),
     [session?.ownerRole],
@@ -190,10 +186,8 @@ export function SenseiEvalPage() {
           {code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} />}
           {final && code && session?.answer && <TheAnswer code={code} answer={session.answer} />}
           {final && <KataNotes analysis={tokens} />}
+          {final && sessionId && <FeedbackSection sessionId={sessionId} />}
           {final && sessionId && <PostKataActions sessionId={sessionId} />}
-          {final && sessionId && feedback && (
-            <FeedbackSection sessionId={sessionId} alreadySubmitted={feedback.submitted} />
-          )}
         </div>
       </div>
 

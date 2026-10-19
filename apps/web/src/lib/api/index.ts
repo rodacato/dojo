@@ -17,6 +17,7 @@ export type {
   SessionAttempt,
   SessionWithKata,
   RevealedAnswer,
+  KataFeedback,
   StartSessionResponse,
   SubmitAttemptResponse,
   AdminKataDTO,
