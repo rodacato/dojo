@@ -138,19 +138,27 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
   }
 
   async findDailyCandidates(userId: UserId): Promise<DailyCandidate[]> {
-    const rows = await this.db.execute<{ id: string; duration: number; last_practiced_at: Date | string | null }>(sql`
-      SELECT e.id, e.duration, MAX(s.started_at) AS last_practiced_at
+    const rows = await this.db.execute<{
+      id: string
+      duration: number
+      category: string
+      difficulty: Difficulty
+      last_practiced_at: Date | string | null
+    }>(sql`
+      SELECT e.id, e.duration, e.category, e.difficulty, MAX(s.started_at) AS last_practiced_at
       FROM exercises e
       LEFT JOIN sessions s ON s.exercise_id = e.id AND s.user_id = ${userId}
       WHERE e.status = 'published'
         AND e.duration <= ${MICRO_KATA_MAX_MINUTES}
         AND EXISTS (SELECT 1 FROM variations v WHERE v.exercise_id = e.id)
-      GROUP BY e.id, e.duration
+      GROUP BY e.id, e.duration, e.category, e.difficulty
       ORDER BY e.id
     `)
     return rows.map((r) => ({
       kataId: KataId(r.id),
       durationMinutes: r.duration,
+      category: r.category,
+      difficulty: r.difficulty,
       lastPracticedAt: r.last_practiced_at === null ? null : new Date(r.last_practiced_at),
     }))
   }

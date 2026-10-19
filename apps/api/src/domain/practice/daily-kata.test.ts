@@ -5,8 +5,8 @@ import { pickDailyKata, pickOneMore, pickTodaysKata, type DailyCandidate } from 
 const NOW = new Date(2026, 9, 19, 9, 30)
 const learner = UserId('11111111-1111-4111-8111-111111111111')
 
-function candidate(id: string, lastPracticedAt: Date | null = null): DailyCandidate {
-  return { kataId: KataId(id), durationMinutes: 5, lastPracticedAt }
+function candidate(id: string, lastPracticedAt: Date | null = null, over: Partial<DailyCandidate> = {}): DailyCandidate {
+  return { kataId: KataId(id), durationMinutes: 5, category: 'debugging', difficulty: 'easy', lastPracticedAt, ...over }
 }
 
 const catalog = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => candidate(id))
@@ -43,7 +43,7 @@ describe('pickOneMore', () => {
   it('never hands back a kata already practiced today', () => {
     const doneThisMorning = [candidate('a', new Date(2026, 9, 19, 8)), candidate('b')]
     for (const roll of [0, 0.5, 0.99]) {
-      expect(pickOneMore(doneThisMorning, NOW, () => roll)?.kataId).toBe('b')
+      expect(pickOneMore(doneThisMorning, NOW, null, () => roll)?.kataId).toBe('b')
     }
   })
 })
@@ -54,6 +54,46 @@ describe('pickDailyKata', () => {
     const afterIt = catalog.map((c) => (c.kataId === todays.kataId ? { ...c, lastPracticedAt: new Date(2026, 9, 19, 8) } : c))
     for (let i = 0; i < 20; i++) {
       expect(pickDailyKata(afterIt, learner, NOW)?.kataId).not.toBe(todays.kataId)
+    }
+  })
+})
+
+describe('preferences (D57)', () => {
+  const mixed = [
+    candidate('sql-hard', null, { category: 'sql', difficulty: 'hard' }),
+    candidate('sql-easy', null, { category: 'sql', difficulty: 'easy' }),
+    candidate('css-hard', null, { category: 'frontend', difficulty: 'hard' }),
+    candidate('css-easy', null, { category: 'frontend', difficulty: 'easy' }),
+  ]
+  const focused = { level: 'senior' as const, interests: ['sql'], randomness: 0 }
+
+  it('picks the kata that fits both the interests and the level when the learner wants focus', () => {
+    const days = Array.from({ length: 10 }, (_, day) => pickTodaysKata(mixed, learner, new Date(2026, 9, 19 + day), focused)?.kataId)
+    expect(new Set(days)).toEqual(new Set(['sql-hard']))
+  })
+
+  it('weighs nothing at full randomness, so the whole catalog stays in play', () => {
+    const loose = { ...focused, randomness: 1 }
+    const days = Array.from({ length: 30 }, (_, day) => pickTodaysKata(mixed, learner, new Date(2026, 9, 1 + day), loose)?.kataId)
+    expect(new Set(days).size).toBeGreaterThan(1)
+  })
+
+  it('still gives a kata when nothing matches the preferences', () => {
+    const nothingFits = { level: 'senior' as const, interests: ['devops'], randomness: 0 }
+    const easyOnly = mixed.filter((c) => c.difficulty === 'easy')
+    expect(pickTodaysKata(easyOnly, learner, NOW, nothingFits)).not.toBeNull()
+  })
+
+  it('does not let a fitting kata already practiced recently beat a fresh one', () => {
+    const lastWeek = new Date(2026, 9, 12)
+    const sqlHardDone = mixed.map((c) => (c.kataId === 'sql-hard' ? { ...c, lastPracticedAt: lastWeek } : c))
+    expect(pickTodaysKata(sqlHardDone, learner, NOW, focused)?.kataId).not.toBe('sql-hard')
+  })
+
+  it('applies to one more as well', () => {
+    const doneSqlEasy = mixed.map((c) => (c.kataId === 'sql-easy' ? { ...c, lastPracticedAt: new Date(2026, 9, 19, 8) } : c))
+    for (const roll of [0, 0.5, 0.99]) {
+      expect(pickOneMore(doneSqlEasy, NOW, focused, () => roll)?.kataId).toBe('sql-hard')
     }
   })
 })
