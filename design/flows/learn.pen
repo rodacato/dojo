@@ -12747,7 +12747,7 @@
           "fill": "$color-muted",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.4.0 · brief-schema: 1 · updated: 2026-10-19",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -12828,7 +12828,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Engawa — Anonymous · idle\n- Engawa — Authed · run ok\n- Engawa — Run error\n- Engawa — Ask the sensei",
+          "content": "- Engawa — Anonymous · idle\n- Engawa — Authed · run ok\n- Engawa — Run error\n- Engawa — Ask the sensei\n- Engawa / Mobile — Authed · idle\n- Engawa / Mobile — Anonymous · run ok (older open)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -12855,7 +12855,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Unknown or missing language falls back to TypeScript (EngawaPage.tsx:111)\n- Six runtimes; only Python shows an older-versions toggle\n- Run is disabled while running, with empty code, or while the bot check has no token\n- Ask the sensei is signed-in only and sends the code only when it is non-empty; 429 shows the daily limit message",
+          "content": "- Unknown or missing language falls back to TypeScript (EngawaPage.tsx:111)\n- Six runtimes; only Python shows an older-versions toggle\n- Run is disabled while running, with empty code, or while the bot check has no token\n- Ask the sensei is signed-in only and sends the code only when it is non-empty; 429 shows the daily limit message\n- Below md (D59): one row of selectors at 44px (Language fills, labels sr-only); Run, Ask and the status chip sit in a bottom bar above the BottomNav or the anonymous footer. The controls render once (useIsMobile)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -12909,7 +12909,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Other languages — starter code swap\n- Run state Running_ and 'Error · exit {n}' (the program ran and failed) — chip text only; 'Error · did not run' is drawn\n- Ask the sensei answer, quota and error states — same shared Modal, text swap\n- Mobile layout — editor stacked over the output\n- Bot-check widget slot — only when a site key is configured",
+          "content": "- Other languages — starter code swap\n- Run state Running_ and 'Error · exit {n}' (the program ran and failed) — chip text only; 'Error · did not run' is drawn\n- Ask the sensei answer, quota and error states — same shared Modal, text swap\n- Mobile: running and error states, the Ask modal, keyboard open\n- Bot-check widget slot — only when a site key is configured (above the run bar on mobile)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -12936,7 +12936,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D8, D23",
+          "content": "D8, D23, D59. Mobile notes: the authed header CTA truncates to 'like running co…' at 390, so the kata link is not visible (short form proposed, not decided); anonymous Sign in is about 24px tall",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -13004,6 +13004,19 @@
         },
         {
           "type": "text",
+          "id": "zOUG3",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · Engawa on mobile shipped (PR #208, D59): authed idle and anonymous run ok drawn from EngawaPage, header and Sign in as in code; moved from the playground",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "r2kHq",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -13066,6 +13079,780 @@
           "fontFamily": "$font-mono",
           "fontSize": 11,
           "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "OoHlu",
+      "x": 7000,
+      "y": 2320,
+      "name": "Engawa / Mobile / Authed · idle",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "wiTcZ",
+          "name": "Header (authed)",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 16,
+          "padding": [
+            8,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "qmwOm",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "playground",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "iv7JZ",
+              "name": "CTA link (truncated at 390)",
+              "fill": "$color-secondary",
+              "content": "like running co…",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "TwjfV",
+              "name": "Note",
+              "fill": "$color-secondary",
+              "content": "sandbox · not graded",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KTOOC",
+          "name": "Selectors",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 8,
+          "padding": [
+            6,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "fQuU1",
+              "name": "Language select",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$color-page",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Gtjq6",
+                  "name": "Value",
+                  "fill": "$color-primary",
+                  "content": "TypeScript",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "h2JwZ",
+                  "name": "Chevron",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "keyboard_arrow_down",
+                  "library": "Material Symbols Outlined",
+                  "fill": "$color-secondary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zoCDm",
+              "name": "Version select",
+              "width": 112,
+              "height": 44,
+              "fill": "$color-page",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "jbcQR",
+                  "name": "Value",
+                  "fill": "$color-primary",
+                  "content": "5.0.3",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "W0GAc1",
+                  "name": "Chevron",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "keyboard_arrow_down",
+                  "library": "Material Symbols Outlined",
+                  "fill": "$color-secondary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "GrzID",
+          "name": "Editor",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color-page",
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            12,
+            0
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "lASyq",
+              "name": "Line 1",
+              "gap": 12,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NfBzE",
+                  "name": "No",
+                  "fill": "$color-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 16,
+                  "content": "1",
+                  "textAlign": "right",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "my6Ak",
+                  "name": "Code",
+                  "fill": "$color-primary",
+                  "content": "const greeting: string = \"dojo_\"",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OWBoj",
+              "name": "Line 2",
+              "gap": 12,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "f4GNC",
+                  "name": "No",
+                  "fill": "$color-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 16,
+                  "content": "2",
+                  "textAlign": "right",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "y17Rc",
+                  "name": "Code",
+                  "fill": "$color-primary",
+                  "content": "console.log(greeting)",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XHccV",
+          "name": "Output",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            12,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "KuXze",
+              "name": "Text",
+              "fill": "$color-secondary",
+              "content": "output will appear here.",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zYXGI",
+          "name": "Run bar",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "gap": 8,
+          "padding": [
+            8,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Pol4y",
+              "name": "RunStatusChip",
+              "fill": "$color-elevated",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "padding": [
+                2,
+                8
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "qnoiR",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "READY",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.9
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "r5Pqv",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "nkspK",
+              "name": "Ask the sensei",
+              "height": 44,
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "irDCX",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "ASK THE SENSEI",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zMlQi",
+              "name": "Run",
+              "height": 44,
+              "fill": "$color-accent",
+              "cornerRadius": "$radius-sm",
+              "padding": [
+                0,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T5A1I",
+                  "name": "Label",
+                  "fill": "$color-on-accent",
+                  "content": "▶ RUN",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "x38vJn",
+          "type": "ref",
+          "ref": "HVTrX",
+          "name": "BottomNav (no item active)",
+          "width": "fill_container",
+          "descendants": {
+            "RD8XB": {
+              "fill": "$color-muted"
+            },
+            "BTGl8": {
+              "fill": "$color-secondary"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "FdwMP",
+      "x": 7510,
+      "y": 2320,
+      "name": "Engawa / Mobile / Anonymous · run ok (older open)",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "d6pa0w",
+          "name": "Header (anonymous)",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "padding": [
+            8,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "SWkIp",
+              "type": "ref",
+              "ref": "AbS82",
+              "name": "LogoWordmark"
+            },
+            {
+              "type": "frame",
+              "id": "XzMAt",
+              "name": "Sign in",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "padding": [
+                4,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "dI9FB",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "Sign in",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "erFw1",
+          "name": "Selectors",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 8,
+          "padding": [
+            6,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "EPG3X",
+              "name": "Language select",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$color-page",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "u7871V",
+                  "name": "Value",
+                  "fill": "$color-primary",
+                  "content": "Python",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "hb2Bt",
+                  "name": "Chevron",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "keyboard_arrow_down",
+                  "library": "Material Symbols Outlined",
+                  "fill": "$color-secondary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YebsI",
+              "name": "Version select",
+              "width": 104,
+              "height": 44,
+              "fill": "$color-page",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "gCEGu",
+                  "name": "Value",
+                  "fill": "$color-primary",
+                  "content": "3.10.0",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "UOW7i",
+                  "name": "Chevron",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "keyboard_arrow_down",
+                  "library": "Material Symbols Outlined",
+                  "fill": "$color-secondary"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MdCY8",
+              "name": "Older toggle",
+              "height": 44,
+              "padding": [
+                0,
+                4
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zHVvg",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "— hide older",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JHVGP",
+          "name": "Editor",
+          "width": "fill_container",
+          "height": "fill_container",
+          "fill": "$color-page",
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            12,
+            0
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "ZZe12",
+              "name": "Line 1",
+              "gap": 12,
+              "padding": [
+                0,
+                16
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "j9H6jq",
+                  "name": "No",
+                  "fill": "$color-muted",
+                  "textGrowth": "fixed-width",
+                  "width": 16,
+                  "content": "1",
+                  "textAlign": "right",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "t2k1o",
+                  "name": "Code",
+                  "fill": "$color-primary",
+                  "content": "print(\"dojo_\")",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "na0vx",
+          "name": "Output",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            12,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "yVH6K",
+              "name": "Text",
+              "fill": "$color-secondary",
+              "content": "dojo_",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "EtKDe",
+          "name": "Run bar",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "gap": 8,
+          "padding": [
+            8,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "M8ojB",
+              "name": "RunStatusChip",
+              "fill": "$color-surface",
+              "cornerRadius": "$radius-sm",
+              "stroke": "$color-success",
+              "strokeWidth": 1,
+              "padding": [
+                2,
+                8
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "izUi0",
+                  "name": "Label",
+                  "fill": "$color-success-text",
+                  "content": "OK · EXIT 0 · 48MS",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.9
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GQ0vg",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "frame",
+              "id": "WSCdA",
+              "name": "Run",
+              "height": 44,
+              "fill": "$color-accent",
+              "cornerRadius": "$radius-sm",
+              "padding": [
+                0,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UUcjQ",
+                  "name": "Label",
+                  "fill": "$color-on-accent",
+                  "content": "▶ RUN",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.5
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "RsB2g",
+          "name": "Footer (anonymous) + safe area",
+          "width": "fill_container",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "padding": [
+            4,
+            16,
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "V3ywqm",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "sandbox · not graded",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
         }
       ]
     }
