@@ -1,12 +1,12 @@
-# Design decisions — open questions & findings (D1–D51)
+# Design decisions — open questions & findings (D1–D55)
 
 > **This is the registry the `.pen` files point at.** Briefs in `flows/*.pen` and warning
 > notes in `ui-kit.lib.pen` cite these by number. Keep entries after resolution — record the
 > outcome instead of deleting; the reasoning is the useful part.
 
-**Status:** 51 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
-neighbours or fixed in-flow while drawing, so the series has gaps) · 15 resolved (D1, D2, D6, D15, D21,
-D42, D43, D44, D45, D46, D47, D48, D49, D50, D51) · the rest open until Adrian decides · 🐞 real app bugs
+**Status:** 55 numbered entries (D14, D24–D25, D27, D36 and D38–D39 were folded into
+neighbours or fixed in-flow while drawing, so the series has gaps) · 18 resolved (D1, D2, D6, D15, D21,
+D42, D43, D44, D45, D46, D47, D48, D49, D50, D51, D52, D53, D54) · the rest open until Adrian decides · 🐞 real app bugs
 are tagged and belong in the board, not here.
 
 **How entries work.** A `D<n>` is a *finding*: logged when the design and the code disagree
@@ -102,6 +102,17 @@ Kumite placeholder trimmed, whiteboard kata copy, Ask the sensei on the shared m
 **Fixed in the flows after the review:** error states are centered (kit 0.1.1), sidebar says
 "sign out", the profile heatmap wraps, admin sample data matches the code, Dashboard load error
 added.
+
+## Daily micro kata, mobile-first (2026-10-19)
+
+Direction change: one surprise kata a day of about 5 minutes, the picker moved to Advanced. Designed mobile-first, before code.
+
+| # | Finding | Recommendation |
+|---|---|---|
+| **D52** | How a 5-minute micro kata is answered on a phone. Today the `review` kata is a free-text box, which on a phone spends the 5 minutes typing where the bug is | ✅ **Decided: A · Point + why, refined to an answer shape per kata** (2026-10-19). Each micro kata declares its shape: **point** (tap the line with the bug; on a diff, approve or reject and tap the line) for spot-the-bug and diff review, **choice** (pick one option) for tradeoffs and "what happens if", **text** for what has neither code to point at nor clear options. Every shape requires a why (two or three sentences; for text, the text is the why), and that is what the sensei grades. Point ships the correct line, and choice the correct option, as seed data. Point needs a tappable-lines component the kit does not have yet. The pilot builds point only; text and choice land with the first kata that needs each. **Rejected B · Text only** — tested reusing the existing `review` answer box for every kata; lost on thumb typing eating the time budget and the sensei guessing which line was meant; kept as the text shape. **Rejected: choice without a why** — it is trivia, one in four by guessing and nothing for the sensei to grade |
+| **D53** | The entry: what the learner sees of today's kata on the dashboard before committing to it | ✅ **Decided: A · Blind** (2026-10-19). The hero shows that today's kata is waiting and its length (about 5 minutes) with one primary action; the topic is revealed when the kata opens. Today's pick is fixed server-side before the tap (no reroll), which also lets it be prepared ahead. Reaches the first line of code in two taps or fewer. **Rejected B · Revealed** — tested showing title, type and language of today's fixed kata before starting, so the learner can pick the moment; lost because reading the topic is a reason to skip the day, a reroll in all but name; would come back if the pilot shows katas abandoned after a blind start because the topic did not fit |
+| **D54** | After today's kata is done, what the dashboard offers: only "done today" and the result, or one more kata | ✅ **Decided: B · One more** (2026-10-19). The done state keeps "Done today" and the result as the main content, plus a secondary action that starts another surprise micro kata. Accepted cost: it can turn into an endless feed of 5-minute katas, and each one spends the operator's LLM tokens. **Rejected A · Closed for today** — tested making one a day the whole product, with Advanced reachable only from navigation; lost because it slows down the days when the learner wants more; would come back if the pilot shows the second kata becoming a habit that replaces depth, or if token cost per instance becomes a complaint |
+| **D55** | `kata.pen` › `KataActive / Mobile` has no Leave button; the code has had one in the header since the leave-kata change (`KataActivePage.tsx:263`, confirm via `ConfirmModal`). Found when the playground copied that screen | Open — fix in the flow (one file) next time `kata.pen` is opened for real work. The playground micro kata already draws Leave |
 
 ## Out of scope (confirmed)
 
