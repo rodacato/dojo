@@ -21,7 +21,7 @@ const STROKE_COLORS: Record<Verdict, string> = {
 }
 
 interface VerdictBlockProps {
-  verdict: Verdict
+  verdict?: Verdict
   role?: string
   size?: 'md' | 'lg'
   children?: ReactNode
@@ -32,7 +32,7 @@ interface VerdictBlockProps {
 // Hero verdict block — full-width card with a drawn ink stroke on the
 // left edge. `md` (24px verdict) lands at the bottom of the eval
 // conversation; `lg` (36px, 48px from the md breakpoint) is the page-hero
-// variant used on Results.
+// variant used on Results. Without a verdict it holds the sensei's text while it streams.
 //
 // The left stroke is an SVG path inked in the verdict colour,
 // animated stroke-dashoffset → 0 in 600ms on mount. Pure CSS so this
@@ -54,7 +54,7 @@ export function VerdictBlock({
     >
       <svg
         aria-hidden
-        className={`absolute left-1.5 top-3 bottom-3 w-3 ${STROKE_COLORS[verdict]}`}
+        className={`absolute left-1.5 top-3 bottom-3 w-3 ${verdict ? STROKE_COLORS[verdict] : 'text-border'}`}
         viewBox="0 0 12 200"
         preserveAspectRatio="none"
       >
@@ -68,11 +68,13 @@ export function VerdictBlock({
         />
       </svg>
       {role && <PersonaEyebrow role={role} className="mb-3 block" />}
-      <h2
-        className={`font-mono ${verdictSize} font-bold uppercase tracking-tight ${VERDICT_COLORS[verdict]} leading-none mb-4`}
-      >
-        {VERDICT_LABELS[verdict]}
-      </h2>
+      {verdict && (
+        <h2
+          className={`font-mono ${verdictSize} font-bold uppercase tracking-tight ${VERDICT_COLORS[verdict]} leading-none mb-4`}
+        >
+          {VERDICT_LABELS[verdict]}
+        </h2>
+      )}
       {children && (
         <div className="text-primary text-base leading-relaxed font-sans space-y-3 whitespace-pre-wrap">
           {children}

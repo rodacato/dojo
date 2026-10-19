@@ -31,3 +31,11 @@ export function parseInsight(text: string): Insight {
 export function stripInsightTags(text: string): string {
   return text.replace(/<(strengths|improvements|approach_note)>[\s\S]*?<\/\1>/g, '').replace(/\n{3,}/g, '\n\n').trim()
 }
+
+const OPEN_INSIGHT = /<(strengths|improvements|approach_note)>[\s\S]*$/
+const TRAILING_PARTIAL_TAG = /<\/?[a-z_]*$/
+
+// While streaming, a block can be unclosed or its opening tag split across chunks.
+export function hideInsightTags(text: string): string {
+  return stripInsightTags(text).replace(OPEN_INSIGHT, '').replace(TRAILING_PARTIAL_TAG, '').trimEnd()
+}

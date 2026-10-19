@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseInsight, stripInsightTags } from './parse-insight'
+import { hideInsightTags, parseInsight, stripInsightTags } from './parse-insight'
 
 describe('parseInsight', () => {
   describe('strengths / improvements bullet extraction', () => {
@@ -175,5 +175,26 @@ describe('stripInsightTags', () => {
 
   it('returns an empty string when the analysis is only tagged blocks', () => {
     expect(stripInsightTags('<improvements>\n- One\n</improvements>')).toBe('')
+  })
+})
+
+describe('hideInsightTags', () => {
+  const prose = 'You found the root cause.'
+
+  it('shows only the prose while an insight block is still streaming', () => {
+    expect(hideInsightTags(`${prose}\n\n<strengths>\n- traced the bou`)).toBe(prose)
+  })
+
+  it('holds back an opening tag split across chunks', () => {
+    expect(hideInsightTags(`${prose}\n\n<streng`)).toBe(prose)
+    expect(hideInsightTags(`${prose}\n\n<`)).toBe(prose)
+  })
+
+  it('drops closed blocks and keeps prose that follows them', () => {
+    expect(hideInsightTags(`${prose}\n<strengths>\n- a\n</strengths>\nMore.`)).toBe(`${prose}\n\nMore.`)
+  })
+
+  it('leaves a comparison in the prose alone', () => {
+    expect(hideInsightTags('Use i < n here.')).toBe('Use i < n here.')
   })
 })

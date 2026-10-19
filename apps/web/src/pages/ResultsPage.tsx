@@ -5,13 +5,12 @@ import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
-import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
-import { BrushstrokeUnderline } from '../components/ui/BrushstrokeUnderline'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { ErrorState } from '../components/ui/ErrorState'
-import { parseInsight, stripInsightTags } from '../lib/parse-insight'
+import { stripInsightTags } from '../lib/parse-insight'
+import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -89,119 +88,59 @@ export function ResultsPage() {
     )
   }
 
-  return (
-    <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
-      {/* Breadcrumb */}
-      <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mb-6">
-        Dashboard / Recent kata / This result
-      </p>
+  const code = session.kata.starterCode
+  const pointed = code ? parsePointResponse(attempt?.userResponse) : null
 
-      {/* Page header band */}
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div className="min-w-0">
-          {session.ownerRole && <PersonaEyebrow role={session.ownerRole} className="mb-3 block" />}
-          <h1 className="text-primary text-3xl md:text-2xl font-semibold leading-tight tracking-tight mb-1">
-            {session.kata.title}
-          </h1>
-          <BrushstrokeUnderline seed={session.kata.title} className="w-32 h-2 mb-3" />
-          <div className="flex items-center gap-2 flex-wrap">
+  return (
+    <div className="px-4 py-6 md:py-10 max-w-xl mx-auto flex flex-col gap-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex flex-col gap-3">
+          <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight">{session.kata.title}</h1>
+          <div className="flex items-center gap-1.5">
             <TypeBadge type={session.kata.type} />
             <DifficultyBadge difficulty={session.kata.difficulty} />
-            <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary px-2 py-1 border border-border rounded-sm">
-              {session.kata.duration} min
-            </span>
           </div>
         </div>
         {completionTime && (
           <div className="shrink-0 text-right">
-            <span className="block font-mono text-xs tracking-[0.08em] uppercase text-secondary">
-              Completed in
-            </span>
-            <span className="block font-mono text-base text-primary tabular-nums">
-              {completionTime}
-            </span>
+            <span className="block font-mono text-xs tracking-[0.08em] uppercase text-secondary">Completed in</span>
+            <span className="block font-mono text-base text-primary tabular-nums">{completionTime}</span>
           </div>
         )}
       </div>
 
-      {/* Hero verdict block */}
       {verdict && (
-        <div className="mb-8">
-          <VerdictBlock
-            verdict={verdict}
-            size="lg"
-            topics={attempt?.topicsToReview ?? undefined}
-          >
-            {attempt?.analysis && <AnalysisProse analysis={attempt.analysis} />}
-          </VerdictBlock>
-        </div>
+        <VerdictBlock verdict={verdict} topics={attempt?.topicsToReview ?? undefined}>
+          {attempt?.analysis && <AnalysisProse analysis={attempt.analysis} />}
+        </VerdictBlock>
       )}
 
-      {/* No verdict on a present attempt = eval failed — surface the retry */}
-      {attempt && !verdict && !attempt.analysis && (
-        <NoEvaluationCard sessionId={sessionId!} />
+      {attempt && !verdict && !attempt.analysis && <NoEvaluationCard sessionId={sessionId!} />}
+
+      {code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} />}
+      {code && session.answer && <TheAnswer code={code} answer={session.answer} />}
+      {attempt?.analysis && <KataNotes analysis={attempt.analysis} />}
+
+      {!pointed && session.body && (
+        <CollapsibleRow title="Original kata">
+          <KataBody body={session.body} />
+        </CollapsibleRow>
+      )}
+      {!pointed && attempt?.userResponse && (
+        <CollapsibleRow title="Your response">
+          <pre className="text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
+            {attempt.userResponse}
+          </pre>
+        </CollapsibleRow>
       )}
 
-      {/* 2-col split — share rail (left 40%) + insights stack (right 60%) */}
-      {verdict && sessionId && (
-        <div className="grid lg:grid-cols-[2fr_3fr] gap-6 lg:gap-8 mb-8">
-          {/* LEFT — share rail */}
-          <div className="lg:sticky lg:top-8 self-start flex flex-col gap-3">
-            <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
-              Share this
-            </p>
-            <ShareCardPreview
-              kataTitle={session.kata.title}
-              verdict={verdict}
-              analysis={attempt?.analysis}
-              approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
-              ownerRole={session.ownerRole}
-            />
-            <ShareActions
-              sessionId={sessionId}
-              kataTitle={session.kata.title}
-              verdict={verdict}
-              approachNote={attempt?.analysis ? parseInsight(attempt.analysis).approachNote : null}
-            />
-          </div>
+      {verdict && sessionId && <PostKataActions sessionId={sessionId} />}
 
-          {/* RIGHT — insights + topics + collapsibles */}
-          <div className="min-w-0 flex flex-col gap-6">
-            <InsightCards analysis={attempt?.analysis} />
-
-            {session.body && (
-              <CollapsibleRow title="Original kata">
-                <KataBody body={session.body} />
-              </CollapsibleRow>
-            )}
-
-            {attempt?.userResponse && (
-              <CollapsibleRow title="Your response">
-                <pre className="text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">
-                  {attempt.userResponse}
-                </pre>
-              </CollapsibleRow>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Action row */}
-      <div className="flex items-center justify-between gap-3 pt-6 border-t border-border mb-8">
-        <Button variant="ghost" size="md" onClick={() => navigate('/dashboard', { replace: true })}>
-          ← Dashboard
-        </Button>
-        <Button variant="primary" size="md" onClick={() => navigate('/katas', { replace: true })}>
-          Keep practicing →
-        </Button>
-      </div>
-
-      {/* Feedback */}
       {sessionId && (session.status === 'completed' || session.status === 'failed') && (
         <FeedbackSection sessionId={sessionId} alreadySubmitted={feedbackSubmitted} />
       )}
 
-      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8">
+      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase">
         Consistency compounds.
       </p>
     </div>
@@ -235,67 +174,6 @@ function CollapsibleRow({ title, children }: Readonly<{ title: string; children:
   )
 }
 
-function InsightCards({ analysis }: Readonly<{ analysis?: string }>) {
-  if (!analysis) return null
-  const insight = parseInsight(analysis)
-  const hasAny = insight.strengths || insight.improvements || insight.approachNote
-  if (!hasAny) return null
-
-  return (
-    <div className="grid md:grid-cols-3 gap-4">
-      {insight.strengths && (
-        <InsightCard title="Strengths" tone="success">
-          <ul className="list-disc list-outside ml-4 text-secondary text-sm leading-relaxed space-y-1">
-            {insight.strengths.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
-        </InsightCard>
-      )}
-      {insight.improvements && (
-        <InsightCard title="Improvements" tone="warning">
-          <ul className="list-disc list-outside ml-4 text-secondary text-sm leading-relaxed space-y-1">
-            {insight.improvements.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
-        </InsightCard>
-      )}
-      {insight.approachNote && (
-        <InsightCard title="Alternative approach" tone="accent">
-          <p className="text-secondary text-sm italic leading-relaxed">{insight.approachNote}</p>
-        </InsightCard>
-      )}
-    </div>
-  )
-}
-
-function getToneClass(tone: 'success' | 'warning' | 'accent') {
-  if (tone === 'success') return 'text-success-text'
-  if (tone === 'warning') return 'text-warning-text'
-  return 'text-primary'
-}
-
-function InsightCard({
-  title,
-  tone,
-  children,
-}: Readonly<{
-  title: string
-  tone: 'success' | 'warning' | 'accent'
-  children: React.ReactNode
-}>) {
-  const toneClass = getToneClass(tone)
-  return (
-    <div className="bg-surface border border-border rounded-md p-4 flex flex-col gap-3 min-h-50">
-      <p className={`font-mono text-xs tracking-[0.08em] uppercase ${toneClass}`}>
-        {title}
-      </p>
-      <div className="flex-1">{children}</div>
-    </div>
-  )
-}
-
 function NoEvaluationCard({ sessionId }: Readonly<{ sessionId: string }>) {
   const navigate = useNavigate()
   const [retrying, setRetrying] = useState(false)
@@ -318,117 +196,6 @@ function NoEvaluationCard({ sessionId }: Readonly<{ sessionId: string }>) {
       <Button variant="primary" size="md" onClick={handleRetry} disabled={retrying} loading={retrying}>
         Request re-evaluation
       </Button>
-    </div>
-  )
-}
-
-function ShareActions({
-  sessionId,
-  kataTitle,
-  verdict,
-  approachNote,
-}: Readonly<{
-  sessionId: string
-  kataTitle: string
-  verdict: string
-  approachNote?: string | null
-}>) {
-  const [copied, setCopied] = useState(false)
-  const shareUrl = `${globalThis.location.origin}/share/${sessionId}`
-
-  async function handleCopy() {
-    const base = `${verdict.replaceAll('_', ' ').toUpperCase()} — ${kataTitle} | dojo_`
-    const text = approachNote ? `${base}\n\n"${approachNote}"` : base
-    try {
-      await navigator.clipboard.writeText(`${text}\n${shareUrl}`)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      // Clipboard API unavailable — silently no-op; user can use the Twitter button.
-    }
-  }
-
-  function handleTwitter() {
-    const text = `${verdict.replaceAll('_', ' ').toUpperCase()} — ${kataTitle} | dojo_`
-    globalThis.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`,
-      '_blank',
-      'noopener,noreferrer',
-    )
-  }
-
-  return (
-    <div className="flex flex-col gap-2 mt-1">
-      <Button variant="ghost" size="md" onClick={handleCopy} className="w-full">
-        {copied ? 'Link copied!' : 'Copy share link'}
-      </Button>
-      <Button variant="ghost" size="md" onClick={handleTwitter} className="w-full">
-        Share to Twitter
-      </Button>
-      <p
-        className="text-secondary text-xs font-mono tracking-[0.08em] truncate mt-1"
-        title={shareUrl}
-      >
-        {shareUrl.replace(/^https?:\/\//, '')}
-      </p>
-    </div>
-  )
-}
-
-function getVerdictColor(verdict: string) {
-  if (verdict === 'passed') return 'text-success-text'
-  if (verdict === 'needs_work') return 'text-danger-text'
-  return 'text-warning-text'
-}
-
-function truncateAnalysis(analysis?: string) {
-  if (!analysis) return null
-  return analysis.length > 120 ? analysis.slice(0, 117) + '...' : analysis
-}
-
-function ShareCardPreview({
-  kataTitle,
-  verdict,
-  analysis,
-  approachNote,
-  ownerRole,
-}: Readonly<{
-  kataTitle: string
-  verdict: string
-  analysis?: string
-  approachNote?: string | null
-  ownerRole?: string
-}>) {
-  const verdictLabel = verdict.replaceAll('_', ' ').toUpperCase()
-  const verdictColor = getVerdictColor(verdict)
-  const pullQuote = approachNote ?? truncateAnalysis(analysis)
-
-  return (
-    <div className="bg-page border border-border rounded-md p-5 flex flex-col gap-4 aspect-1200/630">
-      <span className="font-mono font-bold text-accent text-sm inline-flex items-center select-none">
-        dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
-      </span>
-      <p className={`font-mono text-2xl font-bold uppercase tracking-tight leading-none ${verdictColor}`}>
-        {verdictLabel}
-      </p>
-      <p className="text-primary text-base font-semibold leading-snug line-clamp-2">
-        {kataTitle}
-      </p>
-      {pullQuote && (
-        <p className="text-secondary text-xs italic leading-relaxed line-clamp-3">
-          &ldquo;{pullQuote}&rdquo;
-        </p>
-      )}
-      <div className="mt-auto flex items-end justify-between gap-2">
-        {ownerRole && (
-          <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase truncate">
-            sensei — {ownerRole.toLowerCase()}
-          </p>
-        )}
-        <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase shrink-0">
-          Find yours →
-        </p>
-      </div>
     </div>
   )
 }

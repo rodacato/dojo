@@ -184,7 +184,7 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('does not redirect on a non-final completion', () => {
+  it('stays on the screen after a completion, final or not (D60)', () => {
     vi.useFakeTimers()
     const { result } = setup()
     act(() => result.current.connect())
@@ -192,23 +192,12 @@ describe('useEvaluationStream', () => {
 
     act(() => ws.emit({ type: 'evaluation', result: passingResult }))
     act(() => ws.emit({ type: 'complete' }))
+    act(() => ws.emit({ type: 'evaluation', result: finalResult }))
+    act(() => ws.emit({ type: 'complete' }))
     act(() => vi.advanceTimersByTime(5000))
 
     expect(navigateMock).not.toHaveBeenCalled()
-  })
-
-  it('navigates to the result page 1500ms after a final completion', () => {
-    vi.useFakeTimers()
-    const { result } = setup()
-    act(() => result.current.connect())
-    const ws = FakeWebSocket.last()
-
-    act(() => ws.emit({ type: 'evaluation', result: finalResult }))
-    act(() => ws.emit({ type: 'complete' }))
-
-    expect(navigateMock).not.toHaveBeenCalled()
-    act(() => vi.advanceTimersByTime(1500))
-    expect(navigateMock).toHaveBeenCalledWith(`/katas/${SESSION}/result`)
+    expect(result.current.state).toMatchObject({ status: 'complete', result: finalResult })
   })
 
   it('surfaces an error message from the server', () => {
@@ -331,19 +320,5 @@ describe('useEvaluationStream', () => {
     unmount()
 
     expect(ws.closed).toBe(true)
-  })
-
-  it('cancels the pending redirect timer on unmount', () => {
-    vi.useFakeTimers()
-    const { result, unmount } = setup()
-    act(() => result.current.connect())
-    const ws = FakeWebSocket.last()
-    act(() => ws.emit({ type: 'evaluation', result: finalResult }))
-    act(() => ws.emit({ type: 'complete' }))
-
-    unmount()
-    act(() => vi.advanceTimersByTime(5000))
-
-    expect(navigateMock).not.toHaveBeenCalled()
   })
 })

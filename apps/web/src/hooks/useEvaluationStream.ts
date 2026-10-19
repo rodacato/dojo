@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { WS_URL } from '../lib/config'
 import { getToken, clearToken } from '../lib/auth-token'
 
@@ -39,17 +38,11 @@ interface WsMessage {
   isFinal?: boolean
 }
 
-function scheduleResultRedirect(navigate: (path: string) => void, sessionId: string) {
-  return setTimeout(() => navigate(`/katas/${sessionId}/result`), 1500)
-}
-
 export function useEvaluationStream(sessionId: string) {
   const [state, setState] = useState<EvalStreamState>({ status: 'idle' })
   const wsRef = useRef<WebSocket | null>(null)
-  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const latestResult = useRef<EvaluationResult | null>(null)
   const latestExecResult = useRef<ExecutionResult | undefined>(undefined)
-  const navigate = useNavigate()
 
   const connect = useCallback(() => {
     setState({ status: 'connecting' })
@@ -98,16 +91,12 @@ export function useEvaluationStream(sessionId: string) {
           setState((prev) => {
             const result = prev.status === 'evaluation' ? prev.result : latestResult.current
             if (!result) return prev
-            const next: EvalStreamState = {
+            return {
               status: 'complete',
               result,
               tokens: 'tokens' in prev ? prev.tokens : '',
               executionResult: latestExecResult.current,
             }
-            if (result.isFinalEvaluation) {
-              redirectTimerRef.current = scheduleResultRedirect(navigate, sessionId)
-            }
-            return next
           })
           break
 
@@ -136,7 +125,7 @@ export function useEvaluationStream(sessionId: string) {
         }
       })
     }
-  }, [sessionId, navigate])
+  }, [sessionId])
 
   const submit = useCallback((attemptId: string) => {
     wsRef.current?.send(JSON.stringify({ type: 'submit', attemptId }))
@@ -155,7 +144,6 @@ export function useEvaluationStream(sessionId: string) {
   useEffect(() => {
     return () => {
       wsRef.current?.close()
-      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current)
     }
   }, [])
 

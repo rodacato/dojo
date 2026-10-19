@@ -6,7 +6,7 @@ import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
 import { kataTypeSchema } from '@dojo/shared'
 import { config } from '../../../config'
-import { composePointAnswer, isLineInCode } from '../../../domain/practice/point-answer'
+import { composePointAnswer, isLineInCode, revealedAnswer } from '../../../domain/practice/point-answer'
 import { SessionExpiredError } from '../../../domain/shared/errors'
 import { KataId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
@@ -302,6 +302,7 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
           submittedAt: finalAttempt.submittedAt.toISOString(),
         }
       : null,
+    answer: finalAttempt?.isFinalEvaluation ? revealedAnswer(kata.rubric) : null,
   })
 })
 

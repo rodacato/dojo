@@ -629,6 +629,26 @@ describe('GET /sessions/:id', () => {
     expect(text).not.toContain('"line"')
   })
 
+  it('reveals the answer of a point kata once the sensei has given the final verdict', async () => {
+    authState.user = authedUser()
+    getSession.mockResolvedValue(sessionEntity())
+    getKataById.mockResolvedValue(
+      kataEntity({
+        type: 'review',
+        rubric: { expectedIssues: [{ title: 'off by one', severity: 'high', why: 'starts a page late' }], answer: { shape: 'point', line: 7 } },
+      }),
+    )
+    const attempt = { id: 'a', userResponse: 'Line 7: x\n\nwhy', submittedAt: new Date('2026-06-01T10:05:00.000Z') }
+
+    selectResult.rows = [{ ...attempt, llmResponse: '{}', isFinalEvaluation: false }]
+    const pending = (await (await get()).json()) as { answer: unknown }
+    expect(pending.answer).toBeNull()
+
+    selectResult.rows = [{ ...attempt, llmResponse: '{"verdict":"passed"}', isFinalEvaluation: true }]
+    const done = (await (await get()).json()) as { answer: unknown }
+    expect(done.answer).toEqual({ line: 7, title: 'off by one', why: 'starts a page late' })
+  })
+
   it('parses the LLM JSON of the final attempt into verdict/analysis/topics', async () => {
     authState.user = authedUser()
     getSession.mockResolvedValue(sessionEntity())

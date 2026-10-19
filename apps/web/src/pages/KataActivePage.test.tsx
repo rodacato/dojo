@@ -52,6 +52,7 @@ function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata 
     variationId: 'var-1',
     ownerRole: 'staff engineer',
     finalAttempt: null,
+    answer: null,
     kata: {
       id: 'kata-1',
       title: 'Rate Limiter Design',

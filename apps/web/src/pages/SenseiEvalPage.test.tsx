@@ -24,6 +24,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 
 const getSession = vi.fn()
 const submitAttempt = vi.fn()
+const startDailyKata = vi.fn()
 
 vi.mock('../lib/api', async (importOriginal) => {
   const actual = await importOriginal<typeof ApiModule>()
@@ -32,6 +33,7 @@ vi.mock('../lib/api', async (importOriginal) => {
     api: {
       getSession: (...args: unknown[]) => getSession(...args),
       submitAttempt: (...args: unknown[]) => submitAttempt(...args),
+      startDailyKata: (...args: unknown[]) => startDailyKata(...args),
     },
   }
 })
@@ -57,6 +59,7 @@ function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata 
     variationId: 'var-1',
     ownerRole: 'Staff Engineer',
     finalAttempt: null,
+    answer: null,
     kata: {
       id: 'kata-1',
       title: 'Rate Limiter Design',
@@ -112,8 +115,7 @@ describe('SenseiEvalPage', () => {
     streamState = { status: 'connecting' }
     renderPage()
 
-    // Bottom band falls back to the evaluating affordance.
-    expect(screen.getByText('The sensei is evaluating.')).toBeInTheDocument()
+    expect(screen.getByText('The sensei is reviewing your work...')).toBeInTheDocument()
     expect(screen.getByText('CONNECTING')).toBeInTheDocument()
     // No verdict and no answer box until the stream resolves.
     expect(screen.queryByRole('heading', { name: 'PASSED' })).not.toBeInTheDocument()
@@ -137,33 +139,80 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByText('STREAMING')).toBeInTheDocument()
   })
 
-  it('renders the verdict block with CTA on a final evaluation', async () => {
+  it('turns into the result in place on a final evaluation, without leaving the screen (D60)', async () => {
     streamState = {
       status: 'complete',
-      tokens: 'Nice work.',
+      tokens: 'Nice work.\n\n<strengths>\n- named the bucket refill\n</strengths>',
       result: makeResult({ verdict: 'passed_with_notes', topicsToReview: ['idempotency'] }),
     }
     renderPage()
 
     expect(await screen.findByRole('heading', { name: 'PASSED WITH NOTES' })).toBeInTheDocument()
     expect(screen.getByText('idempotency')).toBeInTheDocument()
+    expect(screen.getByText('named the bucket refill')).toBeInTheDocument()
     expect(screen.getByText('COMPLETE')).toBeInTheDocument()
-    expect(screen.getByText('The sensei has spoken.')).toBeInTheDocument()
-    // No follow-up answer box on a terminal verdict.
     expect(screen.queryByPlaceholderText('Your answer...')).not.toBeInTheDocument()
+    expect(navigate).not.toHaveBeenCalled()
   })
 
-  it('navigates to the full result analysis from the verdict CTA', async () => {
-    streamState = {
-      status: 'complete',
-      tokens: 't',
-      result: makeResult({ verdict: 'needs_work' }),
-    }
+  it('never shows the insight tags while the sensei is still writing them', async () => {
+    streamState = { status: 'streaming', tokens: 'Walking through your approach.\n\n<strengths>\n- trac' }
+    renderPage()
+
+    expect(await screen.findByText('Walking through your approach.')).toBeInTheDocument()
+    expect(screen.queryByText(/strengths/)).not.toBeInTheDocument()
+  })
+
+  it('ends on Done, with one more kata and share beside it', async () => {
+    streamState = { status: 'complete', tokens: 't', result: makeResult({ verdict: 'needs_work' }) }
+    startDailyKata.mockResolvedValue({ sessionId: 'next-1' })
     const user = userEvent.setup()
     renderPage('sess-9')
 
-    await user.click(await screen.findByRole('button', { name: /View full analysis/i }))
-    expect(navigate).toHaveBeenCalledWith('/katas/sess-9/result')
+    await user.click(await screen.findByRole('button', { name: 'Done' }))
+    expect(navigate).toHaveBeenCalledWith('/dashboard', { replace: true })
+
+    await user.click(screen.getByRole('button', { name: 'One more kata' }))
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/katas/next-1'))
+    expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument()
+  })
+
+  describe('point kata', () => {
+    const code = 'function f(page) {\n  const start = page * limit\n  return start\n}\n'
+    const pointSession = (answer: SessionWithKata['answer']) =>
+      makeSession({
+        kata: { ...makeSession().kata, type: 'review', starterCode: code },
+        finalAttempt: {
+          id: 'a1',
+          userResponse: 'Line 3: return start\n\nIt returns the wrong page.',
+          verdict: null,
+          analysis: '',
+          topicsToReview: [],
+          isFinalEvaluation: false,
+          submittedAt: '2026-10-19T10:00:00.000Z',
+        },
+        answer,
+      })
+
+    it('shows the line and why the learner gave while the sensei writes, and no answer yet', async () => {
+      getSession.mockResolvedValue(pointSession(null))
+      streamState = { status: 'streaming', tokens: 'Looking at it' }
+      renderPage()
+
+      expect(await screen.findByRole('heading', { name: /You pointed at line 3/i })).toBeInTheDocument()
+      expect(screen.getByText('It returns the wrong page.')).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: /The answer/i })).not.toBeInTheDocument()
+    })
+
+    it('reveals the answer once the verdict is final', async () => {
+      getSession.mockResolvedValue(pointSession({ line: 2, title: 'start is a page late', why: 'page is 1-based.' }))
+      streamState = { status: 'complete', tokens: 'Close.', result: makeResult({ verdict: 'needs_work' }) }
+      renderPage()
+
+      expect(await screen.findByRole('heading', { name: /The answer · line 2/i })).toBeInTheDocument()
+      expect(screen.getByText('start is a page late')).toBeInTheDocument()
+      expect(screen.getByText('page is 1-based.')).toBeInTheDocument()
+    })
   })
 
   it('shows the follow-up question with an answer box and submits it', async () => {
@@ -233,7 +282,7 @@ describe('SenseiEvalPage', () => {
     streamState = { status: 'connecting' }
     renderPage('sess-7')
 
-    await screen.findByText('The sensei is evaluating.')
+    await screen.findByText('The sensei is reviewing your work...')
     expect(screen.queryByRole('button', { name: 'Dashboard' })).not.toBeInTheDocument()
   })
 })
