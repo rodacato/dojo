@@ -1,8 +1,11 @@
 {
+  "id": "/",
   "name": "dojo_",
   "short_name": "dojo_",
+  "description": "Timed katas with no AI, then a sensei that reviews your reasoning.",
   "start_url": "/",
-  "display": "browser",
+  "scope": "/",
+  "display": "standalone",
   "theme_color": "#0A0908",
   "background_color": "#0A0908",
   "icons": [

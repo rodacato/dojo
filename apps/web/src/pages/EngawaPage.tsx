@@ -225,7 +225,7 @@ export function EngawaPage() {
   const ctaHref = user ? '/katas' : '/'
 
   return (
-    <div className="h-screen bg-page text-primary flex flex-col overflow-hidden">
+    <div className="h-dvh bg-page text-primary flex flex-col overflow-hidden">
       {/* Header. Authed users get chrome from the sidebar, so the logo
           + Dashboard chip collapse into a single inline CTA line. */}
       {user ? (

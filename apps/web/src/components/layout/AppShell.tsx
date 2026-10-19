@@ -41,7 +41,7 @@ export function AppShell() {
       <Sidebar collapsed={collapsed} onToggle={toggleCollapsed} />
       <div className="flex-1 min-w-0 flex flex-col">
         <OfflineBanner />
-        <main className="flex-1 min-w-0 pb-16 md:pb-0">
+        <main className="flex-1 min-w-0 pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
           <Outlet />
         </main>
       </div>

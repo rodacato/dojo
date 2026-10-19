@@ -22,7 +22,7 @@ export function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-page flex">
-      <aside className="w-48 shrink-0 border-r border-border/40 bg-surface flex flex-col h-screen sticky top-0">
+      <aside className="w-48 shrink-0 border-r border-border/40 bg-surface flex flex-col h-dvh sticky top-0">
         <div className="px-4 py-5 border-b border-border/20">
           <Link to="/admin/katas" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <LogoMark size={20} className="text-accent shrink-0" />

@@ -109,6 +109,12 @@ html {
   font-family: 'Inter Variable', system-ui, sans-serif;
 }
 
+/* With viewport-fit=cover, landscape notches would otherwise overlap the side edges. */
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
 /* ── Sumi-e theme overrides (DESIGN.md §Color tokens) ──────────────────
    Activated by adding data-theme="sumi" or data-theme="washi" on <html>.
    When neither is set, the @theme defaults (Slate Indigo, the legacy theme) render.

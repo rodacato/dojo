@@ -66,7 +66,7 @@ export function LandingPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-page text-secondary font-mono text-sm">
+      <div className="flex items-center justify-center h-dvh bg-page text-secondary font-mono text-sm">
         <span className="text-accent animate-cursor" aria-hidden>_</span>
       </div>
     )

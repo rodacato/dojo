@@ -152,7 +152,7 @@ export function SenseiEvalPage() {
   }
 
   return (
-    <div className="h-screen bg-page flex flex-col overflow-hidden">
+    <div className="h-dvh bg-page flex flex-col overflow-hidden">
       {/* Top bar — focus mode, no sidebar */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
         <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">

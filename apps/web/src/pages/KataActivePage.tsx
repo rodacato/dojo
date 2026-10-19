@@ -230,7 +230,7 @@ export function KataActivePage() {
 
   if (preparing || !session) {
     return (
-      <div className="h-screen bg-page flex flex-col items-center justify-center gap-4 px-4">
+      <div className="h-dvh bg-page flex flex-col items-center justify-center gap-4 px-4">
         <EnsoLoader size={32} label="Preparing your kata" />
         <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
         {prepareSlow && (
@@ -254,7 +254,7 @@ export function KataActivePage() {
   const orientation = isMobile ? 'vertical' : 'horizontal'
 
   return (
-    <div className="h-screen bg-page flex flex-col overflow-hidden">
+    <div className="h-dvh bg-page flex flex-col overflow-hidden">
       {/* Top bar */}
       <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md grid grid-cols-3 items-center px-4">
         <div className="flex items-center gap-3 max-md:gap-2 min-w-0">
