@@ -12,6 +12,7 @@ import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
 import { EnsoLoader } from '../components/ui/EnsoLoader'
+import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
 import { hideInsightTags } from '../lib/parse-insight'
 
@@ -76,6 +77,10 @@ export function SenseiEvalPage() {
   useEffect(() => {
     if (isFinal) reloadSession()
   }, [isFinal, reloadSession])
+  const { data: feedback } = useAsync(
+    () => (isFinal ? api.getFeedback(sessionId!) : Promise.resolve(null)),
+    [sessionId, isFinal],
+  )
   const senseiInitials = useMemo(
     () => deriveInitials(session?.ownerRole),
     [session?.ownerRole],
@@ -186,6 +191,9 @@ export function SenseiEvalPage() {
           {final && code && session?.answer && <TheAnswer code={code} answer={session.answer} />}
           {final && <KataNotes analysis={tokens} />}
           {final && sessionId && <PostKataActions sessionId={sessionId} />}
+          {final && sessionId && feedback && (
+            <FeedbackSection sessionId={sessionId} alreadySubmitted={feedback.submitted} />
+          )}
         </div>
       </div>
 

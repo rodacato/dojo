@@ -25,6 +25,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 const getSession = vi.fn()
 const submitAttempt = vi.fn()
 const startDailyKata = vi.fn()
+const getFeedback = vi.fn()
 
 vi.mock('../lib/api', async (importOriginal) => {
   const actual = await importOriginal<typeof ApiModule>()
@@ -34,6 +35,7 @@ vi.mock('../lib/api', async (importOriginal) => {
       getSession: (...args: unknown[]) => getSession(...args),
       submitAttempt: (...args: unknown[]) => submitAttempt(...args),
       startDailyKata: (...args: unknown[]) => startDailyKata(...args),
+      getFeedback: (...args: unknown[]) => getFeedback(...args),
     },
   }
 })
@@ -100,6 +102,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   streamState = { status: 'idle' }
   getSession.mockResolvedValue(makeSession())
+  getFeedback.mockResolvedValue({ submitted: false })
 })
 
 describe('SenseiEvalPage', () => {
@@ -175,6 +178,32 @@ describe('SenseiEvalPage', () => {
     await user.click(screen.getByRole('button', { name: 'One more kata' }))
     await waitFor(() => expect(navigate).toHaveBeenCalledWith('/katas/next-1'))
     expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument()
+  })
+
+  it('asks for feedback where the kata now ends, since nothing leads to Results anymore', async () => {
+    streamState = { status: 'complete', tokens: 't', result: makeResult() }
+    renderPage('sess-4')
+
+    expect(await screen.findByRole('button', { name: 'how was this kata? (optional)' })).toBeInTheDocument()
+    expect(getFeedback).toHaveBeenCalledWith('sess-4')
+  })
+
+  it('does not ask again once feedback was sent', async () => {
+    getFeedback.mockResolvedValue({ submitted: true })
+    streamState = { status: 'complete', tokens: 't', result: makeResult() }
+    renderPage()
+
+    expect(await screen.findByText('feedback received — thank you.')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'how was this kata? (optional)' })).not.toBeInTheDocument()
+  })
+
+  it('keeps the feedback out while the sensei is still writing', async () => {
+    streamState = { status: 'streaming', tokens: 'Looking' }
+    renderPage()
+
+    await screen.findByText('Looking')
+    expect(screen.queryByRole('button', { name: 'how was this kata? (optional)' })).not.toBeInTheDocument()
+    expect(getFeedback).not.toHaveBeenCalled()
   })
 
   describe('point kata', () => {
