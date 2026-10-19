@@ -10,6 +10,7 @@ import { ConfirmModal } from '../../components/ui/ConfirmModal'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Toggle } from '../../components/ui/Toggle'
 import { toast } from '../../components/ui/Toast'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { AdminBreadcrumb } from './_form-parts'
 
 const FIELD_LABEL = 'block font-mono text-xs uppercase tracking-wider text-secondary mb-1.5'
@@ -40,6 +41,7 @@ export function AdminScrollsPage() {
   const [pendingDelete, setPendingDelete] = useState<ScrollEntryDTO | null>(null)
   const [deleting, setDeleting] = useState(false)
   const locale = preferredLocale()
+  const isMobile = useIsMobile()
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault()
@@ -105,7 +107,7 @@ export function AdminScrollsPage() {
         </div>
       </div>
 
-      <form onSubmit={handleRegister} noValidate className="rounded-md border border-border bg-surface p-6 mb-6">
+      <form onSubmit={handleRegister} noValidate className="rounded-md border border-border bg-surface p-4 md:p-6 mb-6">
         <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-4">Register scroll</div>
         <div className="mb-4">
           <label htmlFor="scroll-slug" className={FIELD_LABEL}>Slug</label>
@@ -148,7 +150,7 @@ export function AdminScrollsPage() {
         )}
 
         <div className="mt-4 flex justify-end">
-          <Button type="submit" size="md" loading={registering}>
+          <Button type="submit" size="md" className="max-md:w-full max-md:h-11" loading={registering}>
             Register
           </Button>
         </div>
@@ -177,7 +179,37 @@ export function AdminScrollsPage() {
         />
       )}
 
-      {scrolls && scrolls.length > 0 && (
+      {scrolls && scrolls.length > 0 && isMobile && (
+        <ul className="flex flex-col gap-3">
+          {scrolls.map((scroll) => (
+            <li key={scroll.id} className="rounded-md border border-border bg-surface p-4 flex flex-col gap-3">
+              <div>
+                <Link to={`/scrolls/${scroll.slug}`} className="text-base font-medium text-primary hover:underline">
+                  {pickLocalized(scroll.manifest.title, scroll.manifest.locales, locale)}
+                </Link>
+                <div className="font-mono text-xs text-secondary">{scroll.slug} · v{scroll.manifest.version}</div>
+              </div>
+              <div className="font-mono text-xs text-secondary break-all">{scrollOriginOf(scroll.manifest.entry) ?? '—'}</div>
+              <div className="flex items-center justify-between gap-3">
+                <StatusBadge status={scroll.status} />
+                <span className="flex items-center gap-2.5 font-mono text-xs uppercase tracking-wider text-secondary">
+                  Public
+                  <Toggle
+                    checked={scroll.visibility === 'public'}
+                    onChange={(next) => handleUpdate(scroll, { visibility: next ? 'public' : 'private' })}
+                    ariaLabel={`Public: ${scroll.slug}`}
+                  />
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 *:h-11">
+                <ScrollActions scroll={scroll} onToggleStatus={handleUpdate} onDelete={setPendingDelete} />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {scrolls && scrolls.length > 0 && !isMobile && (
         <div className="rounded-md border border-border bg-surface overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -212,24 +244,8 @@ export function AdminScrollsPage() {
                         ariaLabel={`Public: ${scroll.slug}`}
                       />
                     </td>
-                    <td className="px-4 h-14 align-middle text-right whitespace-nowrap">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleUpdate(scroll, { status: scroll.status === 'published' ? 'draft' : 'published' })}
-                        aria-label={`${scroll.status === 'published' ? 'Unpublish' : 'Publish'} ${scroll.slug}`}
-                      >
-                        {scroll.status === 'published' ? 'Unpublish' : 'Publish'}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        className="ml-2"
-                        onClick={() => setPendingDelete(scroll)}
-                        aria-label={`Delete ${scroll.slug}`}
-                      >
-                        Delete
-                      </Button>
+                    <td className="px-4 h-14 align-middle text-right whitespace-nowrap space-x-2">
+                      <ScrollActions scroll={scroll} onToggleStatus={handleUpdate} onDelete={setPendingDelete} />
                     </td>
                   </tr>
                 ))}
@@ -252,6 +268,33 @@ export function AdminScrollsPage() {
         <p>It disappears from the catalog and its page stops working. The scroll's own app is not touched.</p>
       </ConfirmModal>
     </div>
+  )
+}
+
+function ScrollActions({
+  scroll,
+  onToggleStatus,
+  onDelete,
+}: Readonly<{
+  scroll: ScrollEntryDTO
+  onToggleStatus: (scroll: ScrollEntryDTO, patch: UpdateScrollInput) => void
+  onDelete: (scroll: ScrollEntryDTO) => void
+}>) {
+  const published = scroll.status === 'published'
+  return (
+    <>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => onToggleStatus(scroll, { status: published ? 'draft' : 'published' })}
+        aria-label={`${published ? 'Unpublish' : 'Publish'} ${scroll.slug}`}
+      >
+        {published ? 'Unpublish' : 'Publish'}
+      </Button>
+      <Button variant="destructive" size="sm" onClick={() => onDelete(scroll)} aria-label={`Delete ${scroll.slug}`}>
+        Delete
+      </Button>
+    </>
   )
 }
 

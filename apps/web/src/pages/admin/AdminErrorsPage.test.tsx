@@ -226,4 +226,27 @@ describe('AdminErrorsPage', () => {
       }),
     )
   })
+
+  describe('below md', () => {
+    const desktopWidth = window.innerWidth
+    beforeEach(() => {
+      window.innerWidth = 390
+    })
+    afterEach(() => {
+      window.innerWidth = desktopWidth
+    })
+
+    it('lists errors as cards that open their detail on tap', async () => {
+      const u = userEvent.setup()
+      renderPage()
+
+      const card = await screen.findByRole('button', { name: /DB write failed/ })
+      expect(screen.queryByRole('table')).not.toBeInTheDocument()
+      expect(card).toHaveAttribute('aria-expanded', 'false')
+
+      await u.click(card)
+      expect(card).toHaveAttribute('aria-expanded', 'true')
+      expect(screen.getByRole('button', { name: 'Copy trace' })).toBeInTheDocument()
+    })
+  })
 })

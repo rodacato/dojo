@@ -67,7 +67,7 @@ export function AdminHealthPage() {
             Subsystem liveness — API, database, Piston runtimes, LLM adapter.
           </div>
         </div>
-        <Button variant="ghost" size="sm" onClick={load} loading={loading}>
+        <Button variant="ghost" size="sm" className="max-md:h-11 shrink-0" onClick={load} loading={loading}>
           ↻ Refresh
         </Button>
       </div>
@@ -113,6 +113,7 @@ export function AdminHealthPage() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  className="max-md:h-11"
                   onClick={onReprovision}
                   loading={reprovisioning}
                   title="Idempotent install of every missing runtime"

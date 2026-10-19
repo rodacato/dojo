@@ -8619,6 +8619,32 @@
         },
         {
           "type": "text",
+          "id": "oHIvU",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · admin operations shipped with their design (same PR): the band moves to flows/admin.pen; the playground is empty again",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "zdDSf",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-19 · admin operations band added (D58): Scrolls, Invitations and Errors as stacked cards on mobile; Health needs only 44px buttons",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "DDKeh",
           "name": "Entry",
           "fill": "$color-secondary",

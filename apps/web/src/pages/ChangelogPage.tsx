@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
     phase: 'Mobile',
+    title: 'The rest of admin, on a phone',
+    description:
+      'Scrolls, Invitations and the error log now list their entries as cards below tablet width, with every action big enough to tap. An error card opens its stack and context in place. Health keeps its cards and gets bigger Refresh and Reprovision buttons.',
+  },
+  {
+    date: '2026-10-19',
+    phase: 'Mobile',
     title: 'Admin works on a phone',
     description:
       'Below tablet width, /admin swaps its sidebar for a bottom bar with the five sections and a top bar back to the dojo. The katas list becomes cards you tap to edit, and the kata forms pin Cancel and Save to the bottom. The playground header now shows the kata link on a phone, and Sign in is big enough to tap.',
