@@ -66,7 +66,7 @@ Adrian unless noted.
 | **D20** | "Make profile private" is permanently disabled | decision |
 | **D22** | Kata flow errors are silent; no abandon, no toasts | UX. Part resolved: the active kata has a *Leave* action with a confirmation. It does not abandon: the session and its timer keep running and can be resumed from the dashboard. Errors are still silent and there are still no toasts |
 | **D23** | Engawa navigates to a non-existent `/playground/:lang` | 🐞 |
-| **D35** | Katas copy says "below" while Customize is above | copy |
+| **D35** | Katas copy says "below" while Customize is above | ✅ Obsolete: Advanced (PR #205) removed Customize; preferences live in Settings (D57) |
 | **D37** | No run-tests button in the kata editor | decision |
 | **D40** | ScrollFrame is not step-based (iframe + postMessage) | note |
 
