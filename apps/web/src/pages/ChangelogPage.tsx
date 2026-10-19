@@ -12,6 +12,13 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
+    phase: 'Mobile',
+    title: 'Run within thumb reach on a phone',
+    description:
+      'On a phone the playground keeps one row of selectors at the top and puts Run, Ask the sensei and the run status in a bar at the bottom. Every control is big enough to tap, and the toolbar no longer wraps over the editor.',
+  },
+  {
+    date: '2026-10-19',
     phase: 'Practice',
     title: 'Advanced: set the constraints, get one kata',
     description:

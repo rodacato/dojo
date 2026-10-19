@@ -12,6 +12,7 @@ import { CodeLine } from '../components/ui/CodeLine'
 import { KataBody } from '../components/ui/KataBody'
 import { ErrorState } from '../components/ui/ErrorState'
 import { lazyWithRetry } from '../lib/lazyWithRetry'
+import { useIsMobile } from '../hooks/useIsMobile'
 const MermaidEditor = lazyWithRetry(() => import('../components/ui/MermaidEditor').then(m => ({ default: m.MermaidEditor })))
 
 const PREPARING_MESSAGES = [
@@ -702,15 +703,4 @@ function fileExtension(lang: Language): string {
 
 function languageLabel(lang: Language): string {
   return { javascript: 'JavaScript', typescript: 'TypeScript', python: 'Python', sql: 'SQL' }[lang]
-}
-
-function useIsMobile() {
-  const [mobile, setMobile] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const mq = globalThis.matchMedia('(max-width: 767px)')
-    const handler = (e: MediaQueryListEvent) => setMobile(e.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
-  return mobile
 }

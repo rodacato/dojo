@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import type { ReactNode } from 'react'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -341,5 +341,27 @@ describe('EngawaPage', () => {
     // A click on the dialog element itself (the dimmed backdrop) dismisses it.
     await u.click(dialog)
     expect(screen.queryByRole('dialog', { name: 'Ask the sensei' })).not.toBeInTheDocument()
+  })
+
+  describe('below md', () => {
+    const desktopWidth = window.innerWidth
+    beforeEach(() => {
+      window.innerWidth = 390
+    })
+    afterEach(() => {
+      window.innerWidth = desktopWidth
+    })
+
+    it('moves Run, Ask the sensei and the status into the run bar, leaving the selectors on top', () => {
+      asUser()
+      renderAt('/engawa/python')
+
+      const bar = screen.getByRole('group', { name: 'Run' })
+      expect(within(bar).getByRole('button', { name: /Run/ })).toBeInTheDocument()
+      expect(within(bar).getByRole('button', { name: 'Ask the sensei' })).toBeInTheDocument()
+      expect(within(bar).getByText('Ready')).toBeInTheDocument()
+      expect(within(bar).queryByLabelText('Language')).not.toBeInTheDocument()
+      expect(screen.getAllByRole('button', { name: /Run/ })).toHaveLength(1)
+    })
   })
 })

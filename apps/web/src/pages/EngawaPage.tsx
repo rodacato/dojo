@@ -7,6 +7,7 @@ import { Modal } from '../components/ui/Modal'
 import { LogoWordmark } from '../components/Logo'
 import { TurnstileWidget, type TurnstileHandle } from '../components/ui/TurnstileWidget'
 import { useAuth } from '../context/AuthContext'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { trackEvent } from '../lib/metrics'
 import { TURNSTILE_SITE_KEY } from '../lib/config'
 
@@ -223,6 +224,38 @@ export function EngawaPage() {
   }
 
   const ctaHref = user ? '/katas' : '/'
+  const isMobile = useIsMobile()
+
+  const runControls = (
+    <>
+      <RunStatusChip run={run} />
+      <div className="ml-auto flex items-center gap-2 md:gap-3">
+        {user && (
+          <button
+            type="button"
+            onClick={() => setAsk((a) => ({ ...a, open: true }))}
+            className="font-mono text-xs tracking-[0.04em] uppercase border border-border text-secondary hover:border-primary hover:text-primary transition-colors px-3 h-11 md:h-7 inline-flex items-center rounded-sm"
+          >
+            Ask the sensei
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handleRun}
+          disabled={runDisabled}
+          className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-on-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-5 md:px-3 h-11 md:h-7 inline-flex items-center gap-1.5 rounded-sm"
+        >
+          {run.status === 'running' ? (
+            <>
+              Running{' '}<span className="animate-cursor leading-none" aria-hidden>_</span>
+            </>
+          ) : (
+            <>▶ Run</>
+          )}
+        </button>
+      </div>
+    </>
+  )
 
   return (
     <div
@@ -257,14 +290,14 @@ export function EngawaPage() {
         </header>
       )}
 
-      {/* Toolbar — language + version dropdowns + run controls */}
-      <div className="h-12 flex items-center flex-wrap gap-3 px-4 border-b border-border bg-surface/40 shrink-0">
-        <DropdownLabel label="Language">
+      {/* Toolbar: the selectors, plus the run controls from md up. Below md those sit in the run bar (D59). */}
+      <div className="h-14 md:h-12 flex items-center gap-2 md:gap-3 px-4 border-b border-border bg-surface/40 shrink-0">
+        <DropdownLabel label="Language" className="max-md:flex-1 max-md:min-w-0">
           <select
             aria-label="Language"
             value={selectedLanguage}
             onChange={(e) => changeLanguage(e.target.value)}
-            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-xs font-mono focus:outline-none focus:border-accent transition-colors"
+            className="bg-page border border-border rounded-sm px-2 h-11 md:h-7 max-md:w-full text-primary text-xs font-mono focus:outline-none focus:border-accent transition-colors"
           >
             {RUNTIMES.map((r) => (
               <option key={r.language} value={r.language}>
@@ -278,7 +311,7 @@ export function EngawaPage() {
             aria-label="Version"
             value={selectedVersion}
             onChange={(e) => setSelectedVersion(e.target.value)}
-            className="bg-page border border-border rounded-sm px-2 h-7 text-primary text-xs font-mono tabular-nums focus:outline-none focus:border-accent transition-colors"
+            className="bg-page border border-border rounded-sm px-2 h-11 md:h-7 text-primary text-xs font-mono tabular-nums focus:outline-none focus:border-accent transition-colors"
           >
             {availableVersions.map((v) => (
               <option key={v} value={v}>
@@ -291,38 +324,13 @@ export function EngawaPage() {
           <button
             type="button"
             onClick={() => setShowAdvanced((s) => !s)}
-            className="font-mono text-xs tracking-[0.04em] text-secondary hover:text-primary transition-colors"
+            className="shrink-0 h-11 md:h-auto font-mono text-xs tracking-[0.04em] text-secondary hover:text-primary transition-colors"
           >
             {showAdvanced ? '— hide older' : '+ older'}
           </button>
         )}
 
-        <div className="ml-auto flex items-center gap-3">
-          <RunStatusChip run={run} />
-          {user && (
-            <button
-              type="button"
-              onClick={() => setAsk((a) => ({ ...a, open: true }))}
-              className="font-mono text-xs tracking-[0.04em] uppercase border border-border text-secondary hover:border-primary hover:text-primary transition-colors px-3 h-7 inline-flex items-center rounded-sm"
-            >
-              Ask the sensei
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleRun}
-            disabled={runDisabled}
-            className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-on-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-3 h-7 inline-flex items-center gap-1.5 rounded-sm"
-          >
-            {run.status === 'running' ? (
-              <>
-                Running{' '}<span className="animate-cursor leading-none" aria-hidden>_</span>
-              </>
-            ) : (
-              <>▶ Run</>
-            )}
-          </button>
-        </div>
+        {!isMobile && <div className="ml-auto flex items-center gap-3">{runControls}</div>}
       </div>
 
       {/* Editor + output side-by-side (VSCode feel). Stacks vertically on
@@ -369,6 +377,16 @@ export function EngawaPage() {
             siteKey={TURNSTILE_SITE_KEY}
             onToken={setTurnstileToken}
           />
+        </div>
+      )}
+
+      {isMobile && (
+        <div
+          role="group"
+          aria-label="Run"
+          className="h-15 flex items-center gap-2 px-4 border-t border-border bg-surface/40 shrink-0"
+        >
+          {runControls}
         </div>
       )}
 
@@ -451,10 +469,14 @@ export function EngawaPage() {
   )
 }
 
-function DropdownLabel({ label, children }: Readonly<{ label: string; children: React.ReactNode }>) {
+function DropdownLabel({
+  label,
+  className = '',
+  children,
+}: Readonly<{ label: string; className?: string; children: React.ReactNode }>) {
   return (
-    <label className="inline-flex items-center gap-2">
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">{label}</span>
+    <label className={`inline-flex items-center gap-2 ${className}`}>
+      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary max-md:sr-only">{label}</span>
       {children}
     </label>
   )
