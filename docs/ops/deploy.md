@@ -70,6 +70,11 @@ Adding a secret to a config takes three edits in the same PR — `env.secret` in
 Environment. A missing `.kamal/secrets` line or workflow entry reaches the container as an empty
 string, silently.
 
+A secret the image build needs goes under `builder.secrets` instead of `env.secret`, with the same
+`.kamal/secrets` line and workflow entry. Kamal passes it as `docker build --secret id=NAME`, and the
+Dockerfile reads it only in the `RUN --mount=type=secret,id=NAME,env=NAME` step that uses it, so it
+never becomes a build arg or an image `ENV`. `SENTRY_AUTH_TOKEN` is the one build secret today.
+
 ## First deploy on a new host
 
 Actions → **Deploy** → **Run workflow** from `master`, with `action` = `setup`. It installs
