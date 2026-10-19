@@ -296,7 +296,7 @@ Edit these, never the generated files.
 | `apps/web/public/apple-touch-icon.png`, `site/apple-touch-icon.png` | 180 × 180 opaque Sumi icon, no baked corners (iOS rounds it) |
 | `apps/web/public/icon-{192,512}.png`, `icon-maskable-512.png` | Manifest icons; the maskable one keeps the mark inside the safe zone |
 | `apps/web/public/favicon.ico`, `site/favicon.ico` | 16, 32 and 48 px fallback |
-| `apps/web/public/manifest.webmanifest` | Name and Sumi colors for the app; not a PWA, no service worker |
+| `apps/web/public/manifest.webmanifest` | Name, Sumi colors and `display: standalone`, so an installed app opens without browser chrome; no service worker on purpose |
 
 The outputs sit under `site/brand/` because GitHub Pages serves that folder and the
 [published brand guide](../../site/brand.html) links to them as downloads.

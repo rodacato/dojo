@@ -109,10 +109,13 @@ export async function buildAssets(root = repo) {
     'apps/web/public/manifest.webmanifest',
     `${JSON.stringify(
       {
+        id: '/',
         name: 'dojo_',
         short_name: 'dojo_',
+        description: 'Timed katas with no AI, then a sensei that reviews your reasoning.',
         start_url: '/',
-        display: 'browser',
+        scope: '/',
+        display: 'standalone',
         theme_color: sumi['--color-page'],
         background_color: sumi['--color-page'],
         icons: [
