@@ -64,14 +64,14 @@ describe('practice api client', () => {
   it('getKatas only appends the params that are present', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => jsonResponse([]))
 
-    await practice.getKatas({ mood: 'focused' })
-    expect(call(fetchSpy, 0)[0]).toBe(u('/katas?mood=focused'))
+    await practice.getKatas({ type: 'review' })
+    expect(call(fetchSpy, 0)[0]).toBe(u('/katas?type=review'))
 
     await practice.getKatas({ maxDuration: 15 })
     expect(call(fetchSpy, 1)[0]).toBe(u('/katas?maxDuration=15'))
 
-    await practice.getKatas({ mood: 'calm', maxDuration: 30 })
-    expect(call(fetchSpy, 2)[0]).toBe(u('/katas?mood=calm&maxDuration=30'))
+    await practice.getKatas({ maxDuration: 30, type: 'code', language: 'go' })
+    expect(call(fetchSpy, 2)[0]).toBe(u('/katas?maxDuration=30&type=code&language=go'))
 
     await practice.getKatas({})
     expect(call(fetchSpy, 3)[0]).toBe(u('/katas?'))

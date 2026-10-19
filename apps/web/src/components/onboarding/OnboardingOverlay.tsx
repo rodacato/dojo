@@ -7,8 +7,8 @@ interface OnboardingOverlayProps {
 }
 
 const STAGES = [
-  { n: '01', label: 'Mood + time' },
-  { n: '02', label: 'Pick from 3' },
+  { n: '01', label: 'Set the constraints' },
+  { n: '02', label: 'Get one kata' },
   { n: '03', label: 'Work it' },
   { n: '04', label: 'Sensei evaluates' },
 ] as const

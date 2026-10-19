@@ -73,7 +73,7 @@ export function TodayCard({
   if (isFirstVisit) {
     body = blind
       ? 'One kata, about five minutes. You see the topic when it opens.'
-      : 'Pick mood. Pick time. Get 3 kata. Choose one. Work.'
+      : 'Set the constraints. Get one kata. Work.'
   }
   let headline = 'The dojo was empty today.'
   if (isFirstVisit) headline = 'First kata. The hardest one is always the first.'
