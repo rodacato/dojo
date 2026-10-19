@@ -34,8 +34,8 @@ describe('ChangelogPage', () => {
     renderPage()
 
     const articles = screen.getAllByRole('article')
-    // Distinct from the single-entry/empty case: the fixed set ships 18 entries.
-    expect(articles).toHaveLength(18)
+    // Distinct from the single-entry/empty case: the fixed set ships 19 entries.
+    expect(articles).toHaveLength(19)
 
     expect(
       screen.getByRole('heading', {
@@ -49,7 +49,7 @@ describe('ChangelogPage', () => {
 
     // The date renders in its own <time> element next to the newest entry.
     const newest = screen
-      .getByRole('heading', { level: 2, name: 'The rest of admin, on a phone' })
+      .getByRole('heading', { level: 2, name: "Your preferences shape today's kata" })
       .closest('article')
     expect(newest).not.toBeNull()
     expect(within(newest as HTMLElement).getByText('2026-10-19').tagName).toBe('TIME')

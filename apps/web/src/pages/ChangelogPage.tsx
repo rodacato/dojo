@@ -12,6 +12,13 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-19',
+    phase: 'Practice',
+    title: "Your preferences shape today's kata",
+    description:
+      "Skill level and interests in Settings now steer today's kata too, not only Advanced. The less randomness you set, the more often today's surprise lands on your topics and your level. It still stays the same all day.",
+  },
+  {
+    date: '2026-10-19',
     phase: 'Mobile',
     title: 'The rest of admin, on a phone',
     description:
