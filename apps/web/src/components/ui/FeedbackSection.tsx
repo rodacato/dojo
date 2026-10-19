@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import { api, type KataFeedback } from '../../lib/api'
 import { useAsync } from '../../hooks/useAsync'
 import { Button } from './Button'
@@ -29,7 +29,7 @@ const UNSELECTED = 'border-border text-secondary font-medium hover:border-primar
 
 // D62: the trial questions sit open above the exits and every tap saves on its own.
 export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) {
-  const { data: saved } = useAsync(() => api.getFeedback(sessionId), [sessionId])
+  const { data: saved, error: loadError } = useAsync(() => api.getFeedback(sessionId), [sessionId])
   const [votes, setVotes] = useState<Partial<KataFeedback>>({})
   const [more, setMore] = useState(false)
   const [note, setNote] = useState('')
@@ -37,11 +37,9 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
   const [failed, setFailed] = useState(false)
   const noteId = useId()
 
-  useEffect(() => {
-    if (saved) setVotes({ clarity: saved.clarity, timing: saved.timing, evaluation: saved.evaluation })
-  }, [saved])
+  if (!saved && !loadError) return null
 
-  if (!saved) return null
+  const current = (field: Vote) => (field in votes ? votes[field] : saved?.[field])
 
   async function save(fields: Partial<KataFeedback>) {
     setFailed(false)
@@ -55,9 +53,10 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
   }
 
   function vote(field: Vote) {
-    return (value: string) => {
+    return async (value: string) => {
+      const previous = current(field)
       setVotes((prev) => ({ ...prev, [field]: value }))
-      void save({ [field]: value })
+      if (!(await save({ [field]: value }))) setVotes((prev) => ({ ...prev, [field]: previous }))
     }
   }
 
@@ -68,12 +67,12 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
   return (
     <section className="flex flex-col gap-5">
       <h2 className="text-secondary text-xs font-mono uppercase tracking-[0.08em]">Quick feedback</h2>
-      <Question label="Was the time limit right?" options={TIMING} value={votes.timing} onChange={vote('timing')} />
-      <Question label="How was the sensei's review?" options={EVALUATION} value={votes.evaluation} onChange={vote('evaluation')} />
+      <Question label="Was the time limit right?" options={TIMING} value={current('timing')} onChange={vote('timing')} />
+      <Question label="How was the sensei's review?" options={EVALUATION} value={current('evaluation')} onChange={vote('evaluation')} />
 
       {more ? (
         <>
-          <Question label="Was the description clear?" options={CLARITY} value={votes.clarity} onChange={vote('clarity')} />
+          <Question label="Was the description clear?" options={CLARITY} value={current('clarity')} onChange={vote('clarity')} />
           <div className="flex flex-col gap-2">
             <label htmlFor={noteId} className="text-primary text-sm font-medium">
               Anything to add?

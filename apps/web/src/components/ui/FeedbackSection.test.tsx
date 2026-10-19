@@ -101,5 +101,16 @@ describe('FeedbackSection', () => {
     await user.click(await screen.findByRole('button', { name: 'Spot on' }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't send your feedback. Try again.")
+    expect(screen.getByRole('button', { name: 'Spot on' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('still lets the learner vote when the saved votes could not be loaded', async () => {
+    getFeedback.mockRejectedValue(new Error('500'))
+    const user = userEvent.setup()
+    render(<FeedbackSection sessionId="s1" />)
+
+    await user.click(await screen.findByRole('button', { name: 'About right' }))
+
+    expect(submitFeedback).toHaveBeenCalledWith('s1', { timing: 'about_right' })
   })
 })
