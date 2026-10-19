@@ -128,6 +128,33 @@ describe('SubmitAttempt', () => {
     expect(published).toContain('SessionCompleted')
   })
 
+  it('has saved the session by the time the final token reaches the caller', async () => {
+    const session = makeActiveSession()
+    const sessionRepo = makeStubSessionRepo(session)
+    const result = { verdict: 'passed' as const, analysis: 'ok', topicsToReview: [], followUpQuestion: null, isFinalEvaluation: true }
+    const llm = {
+      evaluate: vi.fn().mockReturnValue(fakeEvaluationStream([{ chunk: '', isFinal: true, result }])),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      askSensei: vi.fn(),
+    }
+
+    const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus: new InMemoryEventBus() })
+    const savedWhenFinalArrived: boolean[] = []
+    for await (const token of useCase.execute({
+      sessionId: SessionId('session-1'),
+      userResponse: 'My solution',
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Context',
+      kataTitle: 'Test kata',
+    })) {
+      if (token.isFinal) savedWhenFinalArrived.push(sessionRepo.save.mock.calls.length > 0)
+    }
+
+    expect(savedWhenFinalArrived).toEqual([true])
+    expect(session.status).toBe('completed')
+  })
+
   it('throws SessionNotFoundError when session does not exist', async () => {
     const sessionRepo = makeStubSessionRepo(null)
     const eventBus = new InMemoryEventBus()
