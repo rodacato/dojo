@@ -29,7 +29,7 @@ describe.skipIf(!url)('PostgresKataRepository.findEligible against Postgres', ()
 
   const creatorId = randomUUID()
   const seeded = [
-    { id: randomUUID(), category: 'backend', difficulty: 'hard', duration: 30 },
+    { id: randomUUID(), category: 'backend', difficulty: 'hard', duration: 30, language: ['go', 'sql'] },
     { id: randomUUID(), category: 'frontend', difficulty: 'easy', duration: 15 },
     { id: randomUUID(), category: 'security', difficulty: 'medium', duration: 20 },
   ]
@@ -53,6 +53,7 @@ describe.skipIf(!url)('PostgresKataRepository.findEligible against Postgres', ()
         difficulty: k.difficulty,
         category: k.category,
         type: 'code',
+        language: k.language ?? [],
         status: 'published',
         ownerRole: 'role',
         ownerContext: 'context',
@@ -101,6 +102,17 @@ describe.skipIf(!url)('PostgresKataRepository.findEligible against Postgres', ()
     const picks = await seededPicks({ maxDuration: 20 })
 
     expect(picks.map((k) => k.category).sort()).toEqual(['frontend', 'security'])
+  })
+
+  it('keeps only kata of the asked type', async () => {
+    expect(await seededPicks({ type: 'chat' })).toEqual([])
+    expect(await seededPicks({ type: 'code' })).toHaveLength(3)
+  })
+
+  it('keeps only kata that list the asked language', async () => {
+    const picks = await seededPicks({ language: 'sql' })
+
+    expect(picks.map((k) => k.category)).toEqual(['backend'])
   })
 })
 

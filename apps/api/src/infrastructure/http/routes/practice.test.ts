@@ -391,11 +391,21 @@ describe('GET /katas', () => {
     })
   })
 
-  it('returns 500 via onError when an invalid mood fails the schema parse', async () => {
-    // The handler uses .parse() (not safeParse) so a bad enum throws -> onError.
+  it('forwards the Advanced type and language filters', async () => {
     authState.user = authedUser()
-    const res = await makeApp().request('/katas?mood=sleepy')
-    expect(res.status).toBe(500)
+    getKataOptions.mockResolvedValue([])
+    const res = await makeApp().request('/katas?maxDuration=10&type=review&language=typescript')
+    expect(res.status).toBe(200)
+    expect(getKataOptions).toHaveBeenCalledWith({
+      userId: 'user-1',
+      filters: { maxDuration: 10, type: 'review', language: 'typescript' },
+    })
+  })
+
+  it.each(['mood=sleepy', 'type=essay', 'language=C%2B%2B'])('rejects %s with 400 and asks for nothing', async (query) => {
+    authState.user = authedUser()
+    const res = await makeApp().request(`/katas?${query}`)
+    expect(res.status).toBe(400)
     expect(getKataOptions).not.toHaveBeenCalled()
   })
 })
