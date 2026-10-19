@@ -38,8 +38,6 @@ export class SubmitAttempt {
         followUpQuestion: a.evaluationResult?.followUpQuestion ?? null,
       }))
 
-    let finalToken: EvaluationToken | null = null
-
     // Append execution results to user response so the sensei sees them
     const userResponseWithContext = params.executionContext
       ? `${params.userResponse}\n\n${params.executionContext}`
@@ -56,26 +54,23 @@ export class SubmitAttempt {
       rubric: params.rubric,
       point: params.point,
     })) {
+      // Saved before the final token goes out: the client reads the session and posts feedback as soon as it lands.
+      if (token.isFinal && token.result) {
+        const attempt = Attempt.create({
+          sessionId: params.sessionId,
+          userResponse: params.userResponse,
+          evaluationResult: token.result,
+          isFinalEvaluation: token.result.isFinalEvaluation,
+        })
+
+        session.addAttempt(attempt)
+        await this.deps.sessionRepo.save(session)
+
+        for (const event of session.pullEvents()) {
+          await this.deps.eventBus.publish(event)
+        }
+      }
       yield token
-      if (token.isFinal) {
-        finalToken = token
-      }
-    }
-
-    if (finalToken?.result) {
-      const attempt = Attempt.create({
-        sessionId: params.sessionId,
-        userResponse: params.userResponse,
-        evaluationResult: finalToken.result,
-        isFinalEvaluation: finalToken.result.isFinalEvaluation,
-      })
-
-      session.addAttempt(attempt)
-      await this.deps.sessionRepo.save(session)
-
-      for (const event of session.pullEvents()) {
-        await this.deps.eventBus.publish(event)
-      }
     }
   }
 
