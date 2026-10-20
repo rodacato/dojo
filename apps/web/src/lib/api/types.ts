@@ -4,6 +4,7 @@ import type {
   HeatmapDayDTO,
   SessionSummaryDTO,
   PublicSessionDTO,
+  PieceId,
 } from '@dojo/shared'
 
 export { type AttemptDTO } from '@dojo/shared'
@@ -49,6 +50,7 @@ export interface SessionWithKata {
   ownerRole: string
   finalAttempt: SessionAttempt | null
   answer: RevealedAnswer | null
+  earnedPieces: PieceId[]
 }
 
 export interface RevealedAnswer {

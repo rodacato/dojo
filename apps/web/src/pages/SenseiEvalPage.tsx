@@ -13,6 +13,7 @@ import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
 import { EnsoLoader } from '../components/ui/EnsoLoader'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
+import { PieceReceipt } from '../components/recognition/PieceReceipt'
 import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
 import { hideInsightTags } from '../lib/parse-insight'
 
@@ -186,6 +187,9 @@ export function SenseiEvalPage() {
           {code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} />}
           {final && code && session?.answer && <TheAnswer code={code} answer={session.answer} />}
           {final && <KataNotes analysis={tokens} />}
+          {final && session && session.earnedPieces.length > 0 && (
+            <PieceReceipt pieceIds={session.earnedPieces} needsWork={final.verdict === 'needs_work'} />
+          )}
           {final && sessionId && <FeedbackSection sessionId={sessionId} />}
           {final && sessionId && <PostKataActions sessionId={sessionId} />}
         </div>

@@ -1,6 +1,6 @@
 import { request } from './client'
 import type { PublicProfileData } from './types'
-import type { BeltDTO, MilestoneDTO } from '@dojo/shared'
+import type { BeltDTO, MilestoneDTO, PractitionerDTO, PractitionerLook } from '@dojo/shared'
 
 export const profile = {
   getPublicProfile: (username: string) =>
@@ -8,6 +8,14 @@ export const profile = {
 
   getBelts: () =>
     request<{ belt: BeltDTO; milestones: MilestoneDTO[] }>('/belts'),
+
+  getPractitioner: () => request<PractitionerDTO>('/recognition/practitioner'),
+
+  updatePractitionerLook: (look: PractitionerLook) =>
+    request<{ look: PractitionerLook }>('/recognition/practitioner/look', {
+      method: 'PUT',
+      body: JSON.stringify(look),
+    }),
 
   getPreferences: () =>
     request<{

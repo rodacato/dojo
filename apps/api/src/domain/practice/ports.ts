@@ -81,13 +81,13 @@ export interface SessionRepositoryPort {
   findById(id: SessionId): Promise<Session | null>
   findActiveByUserId(userId: UserId): Promise<Session | null>
   /**
-   * Read projection used by belt computation. Returns one row per session that
+   * Read projection used by recognition (belt, practitioner pieces). Returns one row per session that
    * reached a final evaluation, whatever the verdict, in chronological order,
    * joined to the kata's topics. Crosses the
    * Practice→Content boundary as a read-only projection — implementations
    * may join the underlying tables directly.
    */
-  listPracticeHistoryForBelt(userId: UserId): Promise<PracticeHistoryEntry[]>
+  listPracticeHistory(userId: UserId): Promise<PracticeHistoryEntry[]>
 }
 
 export interface ExecutionResult {

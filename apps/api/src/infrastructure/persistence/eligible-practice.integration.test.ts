@@ -80,14 +80,14 @@ describe.skipIf(!url)('eligible practice against Postgres', () => {
   })
 
   it('counts a NEEDS WORK session toward the belt history', async () => {
-    const history = await repo.listPracticeHistoryForBelt(UserId(userId))
+    const history = await repo.listPracticeHistory(UserId(userId))
 
     expect(history.map((entry) => entry.startedAt)).toEqual([day(1), day(2)])
     expect(history[1]!.topics).toEqual(['indexes'])
   })
 
   it('never counts a session that ended without a final evaluation', async () => {
-    const history = await repo.listPracticeHistoryForBelt(UserId(userId))
+    const history = await repo.listPracticeHistory(UserId(userId))
 
     expect(history.map((entry) => entry.startedAt)).not.toContainEqual(day(3))
     expect(history.map((entry) => entry.startedAt)).not.toContainEqual(day(4))

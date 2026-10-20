@@ -143,6 +143,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 | **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations |
 | **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from evaluated kata count, distinct topic clusters touched, active days, and cooldown at previous rank. Any verdict counts, Needs work included; a session that ended without an evaluation does not (see [PRD-031](docs/prd/031-belt-progression-rubric.md#the-hard-constraint)) |
 | **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, consistency streaks. Surfaced alongside the belt on `/belts` |
+| **Practitioner** | A pixel avatar on `/belts`, dressed with pieces earned by showing up: practice days, a return after time away, seasons. Any verdict counts. `GET /recognition/practitioner` returns the look, rank and every piece with its progress; `PUT /recognition/practitioner/look` saves a look and rejects a piece not yet earned. Both require sign-in |
 | **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
 | **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel |
 | **Error view** | Every unhandled error lands in Postgres and is visible at `/admin/errors` — no external tracker required. Sentry is opt-in ([ADR 017](docs/adr/017-error-reporting-port.md)) |

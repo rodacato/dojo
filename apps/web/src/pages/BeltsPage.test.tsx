@@ -12,7 +12,7 @@ vi.mock('../context/AuthContext', () => ({
 }))
 
 vi.mock('../lib/api', () => ({
-  api: { getBelts: vi.fn() },
+  api: { getBelts: vi.fn(), getPractitioner: vi.fn(() => new Promise(() => {})) },
 }))
 
 // BrushstrokeUnderline pulls GSAP + IntersectionObserver + SVGPath.getTotalLength,

@@ -16,6 +16,7 @@ import { adminHealthRoutes } from './routes/admin-health'
 import { cronPistonSmokeRoutes } from './routes/cron-piston-smoke'
 import { shareRoutes } from './routes/share'
 import { beltsRoutes } from './routes/belts'
+import { recognitionRoutes } from './routes/recognition'
 import { playgroundRoutes } from './routes/playground'
 import { ogRoutes } from './routes/og'
 import { scrollsRoutes } from './routes/scrolls'
@@ -64,6 +65,7 @@ export function createRouter() {
   app.route('/', profileRoutes)
   app.route('/', shareRoutes)
   app.route('/', beltsRoutes)
+  app.route('/', recognitionRoutes)
   app.route('/', playgroundRoutes)
   app.route('/', ogRoutes)
   app.route('/', errorRoutes)

@@ -1,5 +1,9 @@
 import { CalculateBelt } from '../application/recognition/CalculateBelt'
 import { ListUserMilestones } from '../application/recognition/ListUserMilestones'
+import { AwardPractitionerPieces } from '../application/recognition/AwardPractitionerPieces'
+import { GetPractitioner } from '../application/recognition/GetPractitioner'
+import { UpdatePractitionerLook } from '../application/recognition/UpdatePractitionerLook'
+import { PostgresPractitionerRepository } from './persistence/PostgresPractitionerRepository'
 import { PostgresMilestoneRepository } from './persistence/PostgresMilestoneRepository'
 import { GetKataOptions } from '../application/practice/GetKataOptions'
 import { PickDailyKata } from '../application/practice/PickDailyKata'
@@ -31,6 +35,7 @@ import { AnthropicStreamAdapter } from './llm/AnthropicStreamAdapter'
 import { OpenAIStreamAdapter } from './llm/OpenAIStreamAdapter'
 import { config } from '../config'
 import { registerMilestoneHandlers } from './events/MilestoneEventHandler'
+import { registerPractitionerPieceHandlers } from './events/PractitionerPieceEventHandler'
 import { PostgresPreferencesRepository } from './persistence/PostgresPreferencesRepository'
 import { PistonAdapter } from './execution/PistonAdapter'
 import { MockExecutionAdapter } from './execution/MockExecutionAdapter'
@@ -49,6 +54,7 @@ const kataRepo = new PostgresKataRepository(db)
 const userRepo = new PostgresUserRepository(db)
 const preferencesRepo = new PostgresPreferencesRepository(db)
 const milestoneRepo = new PostgresMilestoneRepository(db)
+const practitionerRepo = new PostgresPractitionerRepository(db)
 const scrollRepo = new PostgresScrollRepository(db)
 const scrollProgressRepo = new PostgresScrollProgressRepository(db)
 const userRefSecret = config.SESSION_SECRET
@@ -121,6 +127,8 @@ export const eventBus = new InMemoryEventBus()
 
 // Register domain event handlers
 registerMilestoneHandlers(eventBus, db)
+const awardPractitionerPieces = new AwardPractitionerPieces({ sessionRepo, practitionerRepo })
+registerPractitionerPieceHandlers(eventBus, awardPractitionerPieces)
 
 export const useCases = {
   startSession: new StartSession({ kataRepo, sessionRepo, eventBus }),
@@ -134,6 +142,9 @@ export const useCases = {
   upsertUser: new UpsertUser({ userRepo }),
   calculateBelt: new CalculateBelt({ sessionRepo }),
   listUserMilestones: new ListUserMilestones({ milestoneRepo }),
+  getPractitioner: new GetPractitioner({ sessionRepo, practitionerRepo }),
+  updatePractitionerLook: new UpdatePractitionerLook({ practitionerRepo }),
+  piecesEarnedInSession: (sessionId: string) => practitionerRepo.piecesEarnedInSession(sessionId),
   registerScroll: new RegisterScroll({ scrollRepo, originPolicy: scrollOriginPolicy }),
   updateScroll: new UpdateScroll({ scrollRepo, originPolicy: scrollOriginPolicy }),
   deleteScroll: new DeleteScroll({ scrollRepo }),
