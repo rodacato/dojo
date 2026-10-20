@@ -108,7 +108,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     return this.toSession(row)
   }
 
-  async listPracticeHistoryForBelt(userId: UserId): Promise<PracticeHistoryEntry[]> {
+  async listPracticeHistory(userId: UserId): Promise<PracticeHistoryEntry[]> {
     const rows = await this.db
       .select({
         startedAt: sessions.startedAt,

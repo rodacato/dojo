@@ -141,7 +141,7 @@ describe('PostgresSessionRepository.findById (toSession mapping)', () => {
   })
 })
 
-describe('PostgresSessionRepository.listPracticeHistoryForBelt', () => {
+describe('PostgresSessionRepository.listPracticeHistory', () => {
   function makeSelectDb(rows: unknown[]): DB {
     const orderBy = vi.fn().mockResolvedValue(rows)
     const where = vi.fn().mockReturnValue({ orderBy })
@@ -158,7 +158,7 @@ describe('PostgresSessionRepository.listPracticeHistoryForBelt', () => {
     ])
     const repo = new PostgresSessionRepository(db)
 
-    const history = await repo.listPracticeHistoryForBelt(UserId('user-1'))
+    const history = await repo.listPracticeHistory(UserId('user-1'))
 
     expect(history).toEqual([
       { startedAt: STARTED, topics: ['recursion', 'trees'] },
@@ -173,7 +173,7 @@ describe('PostgresSessionRepository.listPracticeHistoryForBelt', () => {
     ])
     const repo = new PostgresSessionRepository(db)
 
-    const history = await repo.listPracticeHistoryForBelt(UserId('user-1'))
+    const history = await repo.listPracticeHistory(UserId('user-1'))
 
     expect(history).toEqual([
       { startedAt: STARTED, topics: [] },
@@ -184,7 +184,7 @@ describe('PostgresSessionRepository.listPracticeHistoryForBelt', () => {
   it('returns an empty array when there are no completed sessions', async () => {
     const db = makeSelectDb([])
     const repo = new PostgresSessionRepository(db)
-    expect(await repo.listPracticeHistoryForBelt(UserId('user-1'))).toEqual([])
+    expect(await repo.listPracticeHistory(UserId('user-1'))).toEqual([])
   })
 })
 

@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-20',
     phase: 'Recognition',
+    title: 'Your practitioner',
+    description:
+      "Belts now has a pixel practitioner you dress yourself. Pieces come from showing up: your first kata, three and seven practice days, coming back after a week away, and a Día de Muertos season. Any verdict counts, and a new piece shows up after the kata that earned it.",
+  },
+  {
+    date: '2026-10-20',
+    phase: 'Recognition',
     title: 'Every verdict counts toward your belt',
     description:
       "A kata that ends in Needs work now counts as practice, for your belt and for milestones like First kata. Only a session that ended without an evaluation is left out. Your public profile shows your milestones again, and its pass rate is now passes over every evaluated kata.",

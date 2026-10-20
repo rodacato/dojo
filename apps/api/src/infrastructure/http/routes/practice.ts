@@ -272,6 +272,7 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
     .orderBy(desc(attempts.submittedAt))
 
   const finalAttempt = sessionAttempts.find((a) => a.isFinalEvaluation) ?? sessionAttempts[0] ?? null
+  const earnedPieces = await useCases.piecesEarnedInSession(sessionId)
 
   return c.json({
     id: session.id,
@@ -303,6 +304,7 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
         }
       : null,
     answer: finalAttempt?.isFinalEvaluation ? revealedAnswer(kata.rubric) : null,
+    earnedPieces,
   })
 })
 

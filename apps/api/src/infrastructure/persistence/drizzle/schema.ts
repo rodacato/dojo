@@ -294,3 +294,28 @@ export const scrollProgress = pgTable(
       .where(sql`${table.anonymousId} IS NOT NULL`),
   ],
 )
+
+export const userPieces = pgTable(
+  'user_pieces',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    pieceId: varchar('piece_id', { length: 64 }).notNull(),
+    sessionId: uuid('session_id').references(() => sessions.id, { onDelete: 'set null' }),
+    earnedAt: timestamp('earned_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('user_pieces_user_piece_uniq').on(table.userId, table.pieceId),
+    index('user_pieces_session_idx').on(table.sessionId),
+  ],
+)
+
+export const practitionerLooks = pgTable('practitioner_looks', {
+  userId: uuid('user_id')
+    .primaryKey()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  look: jsonb('look').notNull(), // PractitionerLook, validated by practitionerLookSchema on write
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
