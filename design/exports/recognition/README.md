@@ -1,26 +1,23 @@
 # Recognition — proposal gallery
 
-These are Pencil exports with fictional example data, not running-app captures. The source is `design/_playground.pen`; the [brief and copy](../../brand/recognition.md) and [PRD-035](../../../docs/prd/035-recognition-revamp.md) define the proposal boundary. Export at 1× and rename by this map.
+Pixel direction (D66), with fictional example data. These are renders of the interactive prototype [`brand/proposals/practitioner/index.html`](../../brand/proposals/practitioner/index.html), not running-app captures and not Pencil exports: the `Recognition / Pixel / …` artboards in `_playground.pen` embed these files. Regenerate them from the prototype (`#full` for the furnished room); never redraw them on the canvas.
 
-An independent visual review checked all six exports against the PRD and brand rules. Its two opportunities were applied: an explicit return from Collection and a terminal black-rank sample. Interaction and motion still require implementation checks.
+The Preserve direction (D63) that preceded it was removed; its artboards and exports remain in git at `fd3a36e`.
 
-| Artboard | Node | PNG |
-|---|---|---|
-| Recognition / Art direction / Proposal | `zOgzu` | [direction.png](direction.png) · 1440 × 1000 |
-| Recognition / Progress desktop / Proposal | `SoxGT` | [progress-desktop.png](progress-desktop.png) · 1440 × 1000 |
-| Recognition / Progress mobile / Proposal | `LgFua` | [progress-mobile.png](progress-mobile.png) · 390 × 1100 |
-| Recognition / Collection mobile / Proposal | `O6Pjwf` | [collection-mobile.png](collection-mobile.png) · 390 × 1100 |
-| Recognition / Result mobile / Proposal | `f06QD` | [result-mobile.png](result-mobile.png) · 390 × 1340, full scrollable content |
-| Recognition / Promotion card / Proposal | `Tgluy` | [promotion-card.png](promotion-card.png) · 1200 × 630 |
+| Artboard | PNG |
+|---|---|
+| Recognition / Pixel / Practitioner desktop | [pixel-practitioner-desktop.png](pixel-practitioner-desktop.png) · 1440 × 3361 |
+| Recognition / Pixel / Dojo desktop | [pixel-dojo-desktop.png](pixel-dojo-desktop.png) · 1440 × 3232 |
+| Recognition / Pixel / Furnished room | [pixel-room-full.png](pixel-room-full.png) · 1280 × 720 |
+| Recognition / Pixel / Share card | [pixel-share-card.png](pixel-share-card.png) · 1200 × 630 |
+| Recognition / Pixel / Result mobile | [pixel-result-mobile.png](pixel-result-mobile.png) · 390 × 1090 |
+| Recognition / Pixel / Collection mobile | [pixel-collection-mobile.png](pixel-collection-mobile.png) · 390 × 1090 |
+| Recognition / Pixel / Piece · earned | [pixel-piece-earned.png](pixel-piece-earned.png) · 390 × 618 |
+| Recognition / Pixel / Piece · locked | [pixel-piece-locked.png](pixel-piece-locked.png) · 390 × 563 |
+| Recognition / Pixel / Piece · season preview | [pixel-piece-preview.png](pixel-piece-preview.png) · 390 × 622 |
 
-![Recognition art direction](direction.png)
+![Furnished dojo](pixel-room-full.png)
 
-![Progress desktop](progress-desktop.png)
+![Result with a new piece and a comeback](pixel-result-mobile.png)
 
-![Progress mobile](progress-mobile.png)
-
-![Collection mobile](collection-mobile.png)
-
-![Result with NEEDS WORK and earned stripe](result-mobile.png)
-
-![Promotion card with example data](promotion-card.png)
+![Collection](pixel-collection-mobile.png)
