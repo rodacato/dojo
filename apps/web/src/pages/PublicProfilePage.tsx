@@ -7,6 +7,7 @@ import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
 import { Heatmap, heatmapIntensity } from '../components/ui/Heatmap'
 import { BELT_COLOR } from '../lib/belt-colors'
+import { PublicPractitioner } from '../components/recognition/PublicPractitioner'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
 const BADGE_NAMES: Record<string, string> = {
@@ -17,7 +18,7 @@ const BADGE_NAMES: Record<string, string> = {
   RUBBER_DUCK: 'Rubber Duck',
   SQL_SURVIVOR: 'SQL Survivor',
   CONSISTENT: 'Consistent',
-  SENSEI_APPROVED: 'Sensei Approved',
+  SENSEI_APPROVED: 'Sensei Approved · Legacy',
   ARCHITECT: 'Architect',
   UNDEFINED_NO_MORE: 'Undefined No More',
   COURSE_TYPESCRIPT_FUNDAMENTALS: 'TypeScript Fundamentals',
@@ -113,6 +114,11 @@ export function PublicProfilePage() {
               <StatCell label="Languages" value={String(profile.stats.languages.length)} />
             </div>
           </div>
+        </section>
+
+        <section className="bg-surface border border-border rounded-md p-6 md:p-8">
+          <SectionEyebrow title="Practitioner" />
+          <PublicPractitioner username={profile.username} practitioner={profile.practitioner} />
         </section>
 
         {/* Activity */}

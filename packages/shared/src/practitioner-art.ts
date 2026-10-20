@@ -1,6 +1,7 @@
-import type { BeltRank, GI_COLORS, PieceId, PieceSlot, PractitionerLook } from '@dojo/shared'
+import type { BeltRank } from './types'
+import type { GI_COLORS, PieceId, PieceSlot, PractitionerLook } from './practitioner'
 
-// Pixel palette for canvas art; belt hexes mirror the --color-belt-* tokens in main.css.
+// Pixel palette shared by the canvas and the server-rendered card; belt hexes mirror the --color-belt-* tokens in main.css.
 const C = {
   ink: '#1a1714', woodDark: '#4f3a28', washi: '#f2ede3', verm: '#b73a2f', vermDark: '#8a2a22',
   mossDark: '#56704a', marigold: '#e8892b', marigoldLight: '#f5b041', straw: '#d7b67a', bone: '#efe6d2',
@@ -20,21 +21,12 @@ const BELT: Record<BeltRank, string> = {
 export const AVATAR_COLS = 20
 export const AVATAR_ROWS = 34
 
-type Paint = (x: number, y: number, w: number, h: number, color: string) => void
+export type Paint = (x: number, y: number, w: number, h: number, color: string) => void
 
 export function shade(hex: string, amount: number): string {
   return '#' + hex.slice(1).match(/../g)!
     .map((part) => Math.max(0, Math.min(255, parseInt(part, 16) + amount)).toString(16).padStart(2, '0'))
     .join('')
-}
-
-export function painter(ctx: CanvasRenderingContext2D, scale: number, ox = 0, oy = 0): Paint {
-  return (x, y, w, h, color) => {
-    const left = Math.round(ox + x * scale)
-    const top = Math.round(oy + y * scale)
-    ctx.fillStyle = color
-    ctx.fillRect(left, top, Math.round(ox + (x + w) * scale) - left, Math.round(oy + (y + h) * scale) - top)
-  }
 }
 
 const PIECE_ART: Record<PieceId, (a: Paint) => void> = {
@@ -103,3 +95,6 @@ export function drawAvatar(paint: Paint, look: PractitionerLook, belt: BeltRank,
     if (id) PIECE_ART[id](a)
   }
 }
+
+/** Paper behind the avatar wherever it is shown, so its ink outline reads on both themes. */
+export const PRACTITIONER_BACKDROP = '#d6cab3'

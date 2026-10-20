@@ -5,6 +5,7 @@ import type {
   SessionSummaryDTO,
   PublicSessionDTO,
   PieceId,
+  PublicPractitionerDTO,
 } from '@dojo/shared'
 
 export { type AttemptDTO } from '@dojo/shared'
@@ -105,4 +106,5 @@ export interface PublicProfileData {
     earnedAt: string
   }>
   belt: BeltDTO
+  practitioner: PublicPractitionerDTO
 }

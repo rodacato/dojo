@@ -16,6 +16,7 @@ interface MilestoneView {
   description: string
   category: string
   isPrestige: boolean
+  isLegacy?: boolean
   earned: boolean
   earnedAt: string | null
 }
@@ -26,6 +27,8 @@ const ALL_MILESTONES: Array<{
   description: string
   category: string
   isPrestige: boolean
+  /** No longer earnable; shown only to those who earned it. */
+  isLegacy?: boolean
 }> = [
   { slug: 'FIRST_KATA', name: 'First Kata', description: 'You completed your first kata. The hardest one was always the first.', category: 'practice', isPrestige: false },
   { slug: 'POLYGLOT', name: 'Polyglot', description: 'Practiced kata of three different types.', category: 'practice', isPrestige: false },
@@ -34,7 +37,7 @@ const ALL_MILESTONES: Array<{
   { slug: 'SQL_SURVIVOR', name: 'SQL Survivor', description: 'Completed three kata involving SQL.', category: 'mastery', isPrestige: false },
   { slug: '5_STREAK', name: '5 Streak', description: 'Practiced five consecutive days.', category: 'consistency', isPrestige: false },
   { slug: 'CONSISTENT', name: 'Consistent', description: 'Thirty consecutive days of practice.', category: 'consistency', isPrestige: false },
-  { slug: 'SENSEI_APPROVED', name: 'Sensei Approved', description: 'Received a clean PASSED verdict five times.', category: 'mastery', isPrestige: false },
+  { slug: 'SENSEI_APPROVED', name: 'Sensei Approved', description: 'Received a clean PASSED verdict five times.', category: 'mastery', isPrestige: false, isLegacy: true },
   { slug: 'ARCHITECT', name: 'Architect', description: 'Completed three WHITEBOARD kata.', category: 'architect', isPrestige: false },
   { slug: 'UNDEFINED_NO_MORE', name: 'Undefined No More', description: "Fifty kata completed. You're not undefined anymore. The cursor disagrees and keeps blinking.", category: 'mastery', isPrestige: true },
 ]
@@ -80,7 +83,7 @@ export function BeltsPage() {
 
   const views: MilestoneView[] = useMemo(
     () =>
-      ALL_MILESTONES.map((m) => ({
+      ALL_MILESTONES.filter((m) => !m.isLegacy || earnedMap.has(m.slug)).map((m) => ({
         ...m,
         earned: earnedMap.has(m.slug),
         earnedAt: earnedMap.get(m.slug) ?? null,
@@ -226,11 +229,13 @@ function Factor({ label, value }: Readonly<{ label: string; value: number }>) {
   )
 }
 
-function MilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
-  const earnedDate = milestone.earnedAt
-    ? new Date(milestone.earnedAt).toISOString().slice(0, 10)
-    : null
+function earnedLabel({ earnedAt, isLegacy }: MilestoneView): string {
+  if (!earnedAt) return '—'
+  const earned = `Earned ${new Date(earnedAt).toISOString().slice(0, 10)}`
+  return isLegacy ? `${earned} · Legacy` : earned
+}
 
+function MilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
   return (
     <div
       className={`bg-surface border border-border rounded-md p-6 min-h-50 flex flex-col justify-between ${
@@ -257,17 +262,13 @@ function MilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
           milestone.earned ? 'text-secondary' : 'text-muted text-center'
         }`}
       >
-        {earnedDate ? `Earned ${earnedDate}` : '—'}
+        {earnedLabel(milestone)}
       </p>
     </div>
   )
 }
 
 function PrestigeMilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
-  const earnedDate = milestone.earnedAt
-    ? new Date(milestone.earnedAt).toISOString().slice(0, 10)
-    : null
-
   return (
     <div
       className={`bg-surface border border-border border-l-2 border-l-secondary rounded-md p-6 md:p-8 ${
@@ -295,7 +296,7 @@ function PrestigeMilestoneCard({ milestone }: Readonly<{ milestone: MilestoneVie
             milestone.earned ? 'text-secondary' : 'text-muted'
           }`}
         >
-          {earnedDate ? `Earned ${earnedDate}` : '—'}
+          {earnedLabel(milestone)}
         </p>
       </div>
     </div>

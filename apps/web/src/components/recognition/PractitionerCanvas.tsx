@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { findPiece, type BeltRank, type PieceId, type PractitionerLook } from '@dojo/shared'
-import { AVATAR_COLS, AVATAR_ROWS, drawAvatar, painter } from '../../lib/practitioner/art'
+import { AVATAR_COLS, AVATAR_ROWS, drawAvatar, findPiece, type BeltRank, type PieceId, type PractitionerLook } from '@dojo/shared'
+import { painter } from '../../lib/practitioner/painter'
 
 const SILHOUETTE = '#3a342d'
 

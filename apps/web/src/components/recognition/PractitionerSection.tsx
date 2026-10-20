@@ -3,6 +3,7 @@ import {
   GI_COLORS,
   HAIR_COLORS,
   HAIR_STYLES,
+  PRACTITIONER_BACKDROP,
   PRACTITIONER_PIECES,
   SKIN_TONES,
   type BeltRank,
@@ -15,7 +16,6 @@ import { Button } from '../ui/Button'
 import { PractitionerCanvas } from './PractitionerCanvas'
 import { ProgressPips } from './ProgressPips'
 
-const BACKDROP = '#d6cab3'
 
 export function PractitionerSection() {
   const [data, setData] = useState<PractitionerDTO | null>(null)
@@ -57,7 +57,7 @@ export function PractitionerSection() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-6 mb-8">
-        <div className="shrink-0 self-start rounded-sm p-3" style={{ backgroundColor: BACKDROP }}>
+        <div className="shrink-0 self-start rounded-sm p-3" style={{ backgroundColor: PRACTITIONER_BACKDROP }}>
           <PractitionerCanvas look={data.look} belt={data.belt} scale={6} label="Your practitioner" />
         </div>
         <LookControls look={data.look} onChange={changeLook} />
@@ -154,7 +154,7 @@ function PieceTile({ piece, state, look, belt, onToggle }: Readonly<TileProps>) 
   const idleBorder = 'season' in piece ? 'border-warning/50' : 'border-border'
   return (
     <li className={`bg-surface border rounded-sm p-3 flex flex-col gap-2 ${worn ? 'border-primary' : idleBorder}`}>
-      <div className="mx-auto rounded-sm" style={{ backgroundColor: BACKDROP }}>
+      <div className="mx-auto rounded-sm" style={{ backgroundColor: PRACTITIONER_BACKDROP }}>
         <PractitionerCanvas look={look} belt={belt} scale={4} framing="bust" piece={{ id: piece.id, earned }} />
       </div>
       <div>

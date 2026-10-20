@@ -4,6 +4,7 @@ import { db } from '../../persistence/drizzle/client'
 import { attempts, katas, sessions, userMilestones, users } from '../../persistence/drizzle/schema'
 import { useCases } from '../../container'
 import { UserId } from '../../../domain/shared/types'
+import { toPublicPractitioner } from '@dojo/shared'
 import type { AppEnv } from '../app-env'
 import { isEligiblePractice } from '../../persistence/eligible-practice'
 import { verdictSubquery, calculateStreak } from './query-helpers'
@@ -105,7 +106,10 @@ profileRoutes.get('/u/:username', async (c) => {
     .where(eq(userMilestones.userId, userId))
     .orderBy(userMilestones.earnedAt)
 
-  const belt = await useCases.calculateBelt.execute(UserId(userId))
+  const [belt, practitioner] = await Promise.all([
+    useCases.calculateBelt.execute(UserId(userId)),
+    useCases.getPractitioner.execute(UserId(userId)),
+  ])
 
   return c.json({
     username: user.username,
@@ -134,5 +138,6 @@ profileRoutes.get('/u/:username', async (c) => {
       earnedAt: b.earnedAt.toISOString(),
     })),
     belt,
+    practitioner: toPublicPractitioner(practitioner),
   })
 })
