@@ -11219,7 +11219,7 @@
       },
       "clip": true,
       "width": 1440,
-      "height": 1509,
+      "height": 2145,
       "fill": "$color-page",
       "children": [
         {
@@ -11441,6 +11441,1262 @@
                               "fontFamily": "$font-mono",
                               "fontSize": 24,
                               "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "B5BN39",
+                  "name": "Practitioner",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yP35c",
+                      "name": "Heading",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "padding": [
+                        0,
+                        0,
+                        24,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "n2ddFf",
+                          "name": "H2",
+                          "fill": "$color-primary",
+                          "content": "Practitioner",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 24,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "lIr02",
+                          "name": "Subtitle",
+                          "fill": "$color-secondary",
+                          "content": "Easy. Showing up is enough.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "joNer",
+                      "name": "Avatar + look",
+                      "gap": 24,
+                      "padding": [
+                        0,
+                        0,
+                        32,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "KFpx7",
+                          "name": "Backdrop",
+                          "fill": "#d6cab3",
+                          "cornerRadius": 2,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "rectangle",
+                              "id": "ZkMBU",
+                              "name": "Avatar render",
+                              "fill": {
+                                "type": "image",
+                                "enabled": true,
+                                "url": "../exports/recognition/belts-practitioner-avatar.png",
+                                "mode": "contain"
+                              },
+                              "width": 120,
+                              "height": 204
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HKBdw",
+                          "name": "Look controls",
+                          "layout": "vertical",
+                          "gap": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "NQdSg",
+                              "name": "Skin",
+                              "gap": 8,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "r8WfeS",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "Skin",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "zrj0i",
+                                  "name": "Skin 1",
+                                  "fill": "#f1c9a5",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "h0pW6",
+                                  "name": "Skin 2",
+                                  "fill": "#d9a47c",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "n0XLR",
+                                  "name": "Skin 3",
+                                  "fill": "#c18b65",
+                                  "width": 28,
+                                  "height": 28,
+                                  "stroke": "$color-primary",
+                                  "strokeWidth": 2
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Li8NM",
+                                  "name": "Skin 4",
+                                  "fill": "#9a6646",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "M5Gcey",
+                                  "name": "Skin 5",
+                                  "fill": "#6e4530",
+                                  "width": 28,
+                                  "height": 28
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "JaX0e",
+                              "name": "Hair",
+                              "gap": 8,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "qQoRk",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "Hair",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "zeZM4",
+                                  "name": "Hair 1",
+                                  "fill": "#1f1b16",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "cYS3I",
+                                  "name": "Hair 2",
+                                  "fill": "#4a3a30",
+                                  "width": 28,
+                                  "height": 28,
+                                  "stroke": "$color-primary",
+                                  "strokeWidth": 2
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Lprqq",
+                                  "name": "Hair 3",
+                                  "fill": "#7a5532",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "W5CMry",
+                                  "name": "Hair 4",
+                                  "fill": "#b07d45",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "maMW3",
+                                  "name": "Hair 5",
+                                  "fill": "#c9c2b4",
+                                  "width": 28,
+                                  "height": 28
+                                },
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "p1ILv",
+                                  "name": "Hair 6",
+                                  "fill": "#b73a2f",
+                                  "width": 28,
+                                  "height": 28
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "H8sG9",
+                              "name": "Style",
+                              "gap": 8,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "h9ujE0",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "Style",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "DmOqP",
+                                  "name": "short",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "NHsmP",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "short",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "PDgZt",
+                                  "name": "bun",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-primary",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "C2Lmv",
+                                      "name": "Value",
+                                      "fill": "$color-primary",
+                                      "content": "bun",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "hbnrz",
+                                  "name": "long",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "TdPnQ",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "long",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "vhQbv",
+                                  "name": "bob",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "wBOgZ",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "bob",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "KtqOr",
+                                  "name": "buzz",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "ThHO8",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "buzz",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "G6cSab",
+                              "name": "Gi",
+                              "gap": 8,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "esIBq",
+                                  "name": "Label",
+                                  "fill": "$color-secondary",
+                                  "content": "Gi",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "OgYIb",
+                                  "name": "oat",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-primary",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "ltcUP",
+                                      "name": "Value",
+                                      "fill": "$color-primary",
+                                      "content": "oat",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "NRq2W",
+                                  "name": "indigo",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "zuEJw",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "indigo",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "UOqeZ",
+                                  "name": "ink",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "k5iPm",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "ink",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Mx7O9",
+                                  "name": "moss",
+                                  "height": 28,
+                                  "fill": "$color-elevated",
+                                  "cornerRadius": 2,
+                                  "stroke": "$color-border",
+                                  "strokeWidth": 1,
+                                  "padding": [
+                                    0,
+                                    8
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "gr5H5",
+                                      "name": "Value",
+                                      "fill": "$color-secondary",
+                                      "content": "moss",
+                                      "fontFamily": "$font-sans",
+                                      "fontSize": 13,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dta3h",
+                      "name": "Belt note",
+                      "gap": 4,
+                      "padding": [
+                        0,
+                        0,
+                        24,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g5ssI",
+                          "name": "Prefix",
+                          "fill": "$color-secondary",
+                          "content": "Belt:",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Kmpxk",
+                          "name": "Rank",
+                          "fill": "$color-primary",
+                          "content": "Yellow belt.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PR5aL",
+                          "name": "Rule",
+                          "fill": "$color-secondary",
+                          "content": "It follows your rank; you can't equip it.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "BaPEA",
+                      "name": "H3",
+                      "fill": "$color-secondary",
+                      "content": "PIECES",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YuC3M",
+                      "name": "Spacer",
+                      "width": 1,
+                      "height": 12
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zx8Kk",
+                      "name": "Pieces",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "I97SVd",
+                          "name": "Piece Hachimaki",
+                          "width": "fill_container",
+                          "fill": "$color-surface",
+                          "cornerRadius": 2,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "P3Zqz3",
+                              "name": "Thumb row",
+                              "width": "fill_container",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "SjW1O",
+                                  "name": "Bust render",
+                                  "fill": [
+                                    "#d6cab3",
+                                    {
+                                      "type": "image",
+                                      "enabled": true,
+                                      "url": "../exports/recognition/belts-practitioner-tile-hachimaki.png",
+                                      "mode": "contain"
+                                    }
+                                  ],
+                                  "width": 80,
+                                  "height": 80
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "kZUOa",
+                              "name": "Text",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "ZEgHc",
+                                  "name": "Name",
+                                  "fill": "$color-primary",
+                                  "content": "Hachimaki",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "QRB7F",
+                                  "name": "Source",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "FIRST PRACTICE",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.44
+                                }
+                              ]
+                            },
+                            {
+                              "id": "TdWpE",
+                              "type": "ref",
+                              "ref": "PchKh",
+                              "name": "Button WEAR",
+                              "width": "fill_container",
+                              "descendants": {
+                                "lNC2l": {
+                                  "content": "WEAR"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tMqlN",
+                          "name": "Piece Straw kasa",
+                          "width": "fill_container",
+                          "fill": "$color-surface",
+                          "cornerRadius": 2,
+                          "stroke": "$color-primary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "kmgNU",
+                              "name": "Thumb row",
+                              "width": "fill_container",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "Gzebi",
+                                  "name": "Bust render",
+                                  "fill": [
+                                    "#d6cab3",
+                                    {
+                                      "type": "image",
+                                      "enabled": true,
+                                      "url": "../exports/recognition/belts-practitioner-tile-kasa.png",
+                                      "mode": "contain"
+                                    }
+                                  ],
+                                  "width": 80,
+                                  "height": 80
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "IXMen",
+                              "name": "Text",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Y4CA9L",
+                                  "name": "Name",
+                                  "fill": "$color-primary",
+                                  "content": "Straw kasa",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Qxe8K",
+                                  "name": "Source",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "3 PRACTICE DAYS",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.44
+                                }
+                              ]
+                            },
+                            {
+                              "id": "bv0JB",
+                              "type": "ref",
+                              "ref": "PchKh",
+                              "name": "Button TAKE OFF",
+                              "width": "fill_container",
+                              "descendants": {
+                                "lNC2l": {
+                                  "content": "TAKE OFF"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RvVIU",
+                          "name": "Piece Red scarf",
+                          "width": "fill_container",
+                          "fill": "$color-surface",
+                          "cornerRadius": 2,
+                          "stroke": "$color-primary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "hkRsH",
+                              "name": "Thumb row",
+                              "width": "fill_container",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "MR5Nu",
+                                  "name": "Bust render",
+                                  "fill": [
+                                    "#d6cab3",
+                                    {
+                                      "type": "image",
+                                      "enabled": true,
+                                      "url": "../exports/recognition/belts-practitioner-tile-scarf.png",
+                                      "mode": "contain"
+                                    }
+                                  ],
+                                  "width": 80,
+                                  "height": 80
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "MwM7c",
+                              "name": "Text",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "I8Et7G",
+                                  "name": "Name",
+                                  "fill": "$color-primary",
+                                  "content": "Red scarf",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "rOtPX",
+                                  "name": "Source",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "7 PRACTICE DAYS",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.44
+                                }
+                              ]
+                            },
+                            {
+                              "id": "KPokj",
+                              "type": "ref",
+                              "ref": "PchKh",
+                              "name": "Button TAKE OFF",
+                              "width": "fill_container",
+                              "descendants": {
+                                "lNC2l": {
+                                  "content": "TAKE OFF"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tCAH1",
+                          "name": "Piece Happi jacket",
+                          "width": "fill_container",
+                          "fill": "$color-surface",
+                          "cornerRadius": 2,
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "D8EuI",
+                              "name": "Thumb row",
+                              "width": "fill_container",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "S5uRh",
+                                  "name": "Bust render",
+                                  "fill": [
+                                    "#d6cab3",
+                                    {
+                                      "type": "image",
+                                      "enabled": true,
+                                      "url": "../exports/recognition/belts-practitioner-tile-happi.png",
+                                      "mode": "contain"
+                                    }
+                                  ],
+                                  "width": 80,
+                                  "height": 80
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "sW0gk",
+                              "name": "Text",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "CBCCB",
+                                  "name": "Name",
+                                  "fill": "$color-primary",
+                                  "content": "Happi jacket",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "l2F0R",
+                                  "name": "Source",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "YOU CAME BACK",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.44
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "vD2yc",
+                              "name": "Locked",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "gUkxC",
+                                  "name": "Condition",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Come back after a week or more away.",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "aJmWh",
+                                  "name": "Progress",
+                                  "gap": 8,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "zFBGh",
+                                      "name": "Pips",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "rectangle",
+                                          "id": "woCX8",
+                                          "name": "Pip 1",
+                                          "width": 10,
+                                          "height": 8,
+                                          "stroke": "$color-muted",
+                                          "strokeWidth": 1
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "YV7Qe",
+                                      "name": "Count",
+                                      "fill": "$color-secondary",
+                                      "content": "0 of 1",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "t5FfOA",
+                          "name": "Piece Cempasúchil crown",
+                          "width": "fill_container",
+                          "fill": "$color-surface",
+                          "cornerRadius": 2,
+                          "stroke": "#d4a54780",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "KxDxX",
+                              "name": "Thumb row",
+                              "width": "fill_container",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "cKpWo",
+                                  "name": "Bust render",
+                                  "fill": [
+                                    "#d6cab3",
+                                    {
+                                      "type": "image",
+                                      "enabled": true,
+                                      "url": "../exports/recognition/belts-practitioner-tile-cempasuchil-crown.png",
+                                      "mode": "contain"
+                                    }
+                                  ],
+                                  "width": 80,
+                                  "height": 80
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "D1DgiR",
+                              "name": "Text",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "J3JPp",
+                                  "name": "Name",
+                                  "fill": "$color-primary",
+                                  "content": "Cempasúchil crown",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "D0S2c",
+                                  "name": "Source",
+                                  "fill": "$color-warning-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "SEASON · DÍA DE MUERTOS",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.44
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "T6gErA",
+                              "name": "Locked",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "HePMd",
+                                  "name": "Condition",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Finish one kata between 25 Oct and 2 Nov.",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "DaMYg",
+                                  "name": "Progress",
+                                  "gap": 8,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "ewSdA",
+                                      "name": "Pips",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "rectangle",
+                                          "id": "kg6HU",
+                                          "name": "Pip 1",
+                                          "width": 10,
+                                          "height": 8,
+                                          "stroke": "$color-muted",
+                                          "strokeWidth": 1
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "tNmZZ",
+                                      "name": "Count",
+                                      "fill": "$color-secondary",
+                                      "content": "0 of 1",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pJiTn",
+                          "name": "Piece Calavera paint",
+                          "width": "fill_container",
+                          "fill": "$color-surface",
+                          "cornerRadius": 2,
+                          "stroke": "#d4a54780",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "p48Aqa",
+                              "name": "Thumb row",
+                              "width": "fill_container",
+                              "justifyContent": "center",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "cornerRadius": 2,
+                                  "id": "p66ZSy",
+                                  "name": "Bust render",
+                                  "fill": [
+                                    "#d6cab3",
+                                    {
+                                      "type": "image",
+                                      "enabled": true,
+                                      "url": "../exports/recognition/belts-practitioner-tile-calavera.png",
+                                      "mode": "contain"
+                                    }
+                                  ],
+                                  "width": 80,
+                                  "height": 80
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "u5pzMx",
+                              "name": "Text",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "CaZ79",
+                                  "name": "Name",
+                                  "fill": "$color-primary",
+                                  "content": "Calavera paint",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "VY6Cs",
+                                  "name": "Source",
+                                  "fill": "$color-warning-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "SEASON · DÍA DE MUERTOS",
+                                  "fontFamily": "$font-mono",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal",
+                                  "letterSpacing": 0.44
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "uIAw7",
+                              "name": "Locked",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Q0F1I",
+                                  "name": "Condition",
+                                  "fill": "$color-secondary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Finish three kata between 25 Oct and 2 Nov.",
+                                  "fontFamily": "$font-sans",
+                                  "fontSize": 11,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "KWyU7",
+                                  "name": "Progress",
+                                  "gap": 8,
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "frame",
+                                      "id": "B3jS7",
+                                      "name": "Pips",
+                                      "gap": 2,
+                                      "children": [
+                                        {
+                                          "type": "rectangle",
+                                          "id": "iRrhC",
+                                          "name": "Pip 1",
+                                          "fill": "$color-accent",
+                                          "width": 10,
+                                          "height": 8,
+                                          "stroke": "$color-accent",
+                                          "strokeWidth": 1
+                                        },
+                                        {
+                                          "type": "rectangle",
+                                          "id": "LbE3j",
+                                          "name": "Pip 2",
+                                          "width": 10,
+                                          "height": 8,
+                                          "stroke": "$color-muted",
+                                          "strokeWidth": 1
+                                        },
+                                        {
+                                          "type": "rectangle",
+                                          "id": "PqJ7X",
+                                          "name": "Pip 3",
+                                          "width": 10,
+                                          "height": 8,
+                                          "stroke": "$color-muted",
+                                          "strokeWidth": 1
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "ZrmD7",
+                                      "name": "Count",
+                                      "fill": "$color-secondary",
+                                      "content": "1 of 3",
+                                      "fontFamily": "$font-mono",
+                                      "fontSize": 11,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
                             }
                           ]
                         }
@@ -11807,7 +13063,7 @@
                                       "fill": "$color-secondary",
                                       "textGrowth": "fixed-width",
                                       "width": "fill_container",
-                                      "content": "Solved kata across all three types: CODE, CHAT, and WHITEBOARD.",
+                                      "content": "Practiced kata of three different types.",
                                       "lineHeight": 1.5,
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
@@ -13021,7 +14277,7 @@
                                       "id": "fAZfh",
                                       "name": "Description",
                                       "fill": "$color-secondary",
-                                      "content": "Completed ten WHITEBOARD kata.",
+                                      "content": "Completed three WHITEBOARD kata.",
                                       "fontFamily": "$font-sans",
                                       "fontSize": 13,
                                       "fontWeight": "normal"
@@ -13069,7 +14325,7 @@
       "type": "frame",
       "id": "r0uFiQ",
       "x": 760,
-      "y": 3131,
+      "y": 3767,
       "name": "Settings / Default",
       "theme": {
         "theme": "sumi"
@@ -14469,7 +15725,7 @@
       "type": "frame",
       "id": "cdWn3",
       "x": 2320,
-      "y": 3131,
+      "y": 3767,
       "name": "Settings / Sign out modal",
       "theme": {
         "theme": "sumi"
@@ -14517,7 +15773,7 @@
       "type": "frame",
       "id": "mYczb",
       "x": 3880,
-      "y": 3131,
+      "y": 3767,
       "name": "Kumite / Placeholder",
       "theme": {
         "theme": "sumi"
@@ -14907,7 +16163,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-14",
+          "content": "kit-version-source: 0.1.0 · brief-schema: 1 · updated: 2026-10-20",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14934,7 +16190,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Review past sessions and see belt rank plus milestones.",
+          "content": "Review past sessions and see belt rank, the practitioner and milestones.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14988,7 +16244,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- History — Populated\n- History — Empty\n- Belts — Populated",
+          "content": "- History — Populated\n- History — Empty\n- Belts — Populated (practitioner section, #229)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15015,7 +16271,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- History total counts every non-active session although the label says completed (D17); page size 20\n- Belt thresholds (completed / clusters / active days 30 / days at rank): yellow 10/2/5/0, green 40/4/10/21, brown 120/6/15/60, black 300/8/18/120 (belt.ts:26)\n- Belts has no next-belt progress UI (D16); the 10 milestones are a hard-coded list (BeltsPage.tsx:128)",
+          "content": "- History total counts every non-active session although the label says completed (D17); page size 20\n- Belt factors count every evaluated kata, any verdict (#225); thresholds live in domain/recognition/belt.ts\n- Practitioner pieces come from practice history, never the verdict; the belt follows rank and cannot be equipped (D66)\n- Belts has no next-belt progress UI (D16); the 10 milestones are a hard-coded list (BeltsPage.tsx)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15042,7 +16298,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "pages/HistoryPage.tsx, BeltsPage.tsx (milestones verbatim), components/ui/DenseSessionRow.tsx",
+          "content": "pages/HistoryPage.tsx, BeltsPage.tsx (milestones verbatim), components/recognition/PractitionerSection.tsx, components/ui/DenseSessionRow.tsx. Pixel renders: exports/recognition/belts-practitioner-*.png, captured from the app — regenerate, never redraw.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15069,7 +16325,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- History loading skeleton (8 rows) and page-change state\n- Belts error ('We couldn't load your belt progress.') and loading skeleton\n- Belts empty — dead code (D16)\n- Belts earned vs unearned — drawn on the same screen (4 of 10 earned)",
+          "content": "- History loading skeleton (8 rows) and page-change state\n- Belts error ('We couldn't load your belt progress.') and loading skeleton\n- Practitioner error ('We couldn't load your practitioner.') and failed save ('We couldn't save that change. Try again.'); it renders nothing while loading\n- Belts empty — dead code (D16)\n- Belts earned vs unearned — drawn on the same screen (4 of 10 earned)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15096,7 +16352,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D15, D16, D17, D19, D29, D30",
+          "content": "D15, D16, D17, D19, D29, D30, D66",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15135,7 +16391,7 @@
       "type": "frame",
       "id": "yArD0",
       "x": 0,
-      "y": 3131,
+      "y": 3767,
       "name": "BRIEF — App core · settings & kumite",
       "theme": {
         "theme": "sumi"
@@ -15397,7 +16653,7 @@
       "type": "frame",
       "id": "p76TsT",
       "x": 0,
-      "y": 9011,
+      "y": 9647,
       "name": "LOG — App core",
       "theme": {
         "theme": "sumi"
@@ -15423,6 +16679,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "UMauS",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-20 · Belts / Populated gains the shipped practitioner section (#229), drawn from PractitionerSection.tsx with renders captured from the app; Belts / Proposed / Practitioner removed, rows below moved down 636. Polyglot and Architect copy synced with BeltsPage.tsx (#225).",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -16028,7 +17297,7 @@
       "type": "frame",
       "id": "wjm7w",
       "x": 5440,
-      "y": 3131,
+      "y": 3767,
       "name": "Settings / Mobile (scroll)",
       "theme": {
         "theme": "sumi"
@@ -17606,7 +18875,7 @@
       "type": "frame",
       "id": "waUj1",
       "x": 0,
-      "y": 5390,
+      "y": 6026,
       "name": "BRIEF — App core · recognition (proposed)",
       "theme": {
         "theme": "sumi"
@@ -17640,7 +18909,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.4.0 · brief-schema: 1 · updated: 2026-10-20 · PROPOSED — not shipped; Belts / Populated above is the shipped screen",
+          "content": "kit-version-source: 0.4.0 · brief-schema: 1 · updated: 2026-10-20 · PROPOSED — not shipped. The practitioner shipped into Belts / Populated (#229); what remains here is the dojo, the collection and piece detail.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -17721,7 +18990,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Belts — Practitioner tab (desktop)\n- Belts — Dojo tab (desktop)\n- Belts — Furnished dojo\n- Collection (mobile)\n- Piece — earned · locked · season preview",
+          "content": "- Belts — Dojo tab (desktop)\n- Belts — Furnished dojo\n- Collection (mobile)\n- Piece — earned · locked · season preview",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -17866,28 +19135,9 @@
     },
     {
       "type": "frame",
-      "id": "Avuhc",
-      "x": 760,
-      "y": 5390,
-      "name": "Belts / Proposed / Practitioner (desktop)",
-      "theme": {
-        "theme": "sumi"
-      },
-      "clip": true,
-      "width": 1440,
-      "height": 3361,
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "../exports/recognition/pixel-practitioner-desktop.png",
-        "mode": "contain"
-      }
-    },
-    {
-      "type": "frame",
       "id": "VLH8r",
-      "x": 2320,
-      "y": 5390,
+      "x": 760,
+      "y": 6026,
       "name": "Belts / Proposed / Dojo (desktop)",
       "theme": {
         "theme": "sumi"
@@ -17905,8 +19155,8 @@
     {
       "type": "frame",
       "id": "xbxkn",
-      "x": 3880,
-      "y": 5390,
+      "x": 2320,
+      "y": 6026,
       "name": "Belts / Proposed / Furnished dojo",
       "theme": {
         "theme": "sumi"
@@ -17924,8 +19174,8 @@
     {
       "type": "frame",
       "id": "yCiSx",
-      "x": 5280,
-      "y": 5390,
+      "x": 3720,
+      "y": 6026,
       "name": "Belts / Proposed / Collection (mobile)",
       "theme": {
         "theme": "sumi"
@@ -17943,8 +19193,8 @@
     {
       "type": "frame",
       "id": "up9Hl",
-      "x": 5790,
-      "y": 5390,
+      "x": 4230,
+      "y": 6026,
       "name": "Belts / Proposed / Piece · earned",
       "theme": {
         "theme": "sumi"
@@ -17962,8 +19212,8 @@
     {
       "type": "frame",
       "id": "eCTnP",
-      "x": 6300,
-      "y": 5390,
+      "x": 4740,
+      "y": 6026,
       "name": "Belts / Proposed / Piece · locked",
       "theme": {
         "theme": "sumi"
@@ -17981,8 +19231,8 @@
     {
       "type": "frame",
       "id": "N0bXuR",
-      "x": 6810,
-      "y": 5390,
+      "x": 5250,
+      "y": 6026,
       "name": "Belts / Proposed / Piece · season preview",
       "theme": {
         "theme": "sumi"
