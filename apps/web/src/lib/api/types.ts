@@ -98,7 +98,7 @@ export interface PublicProfileData {
   streak: number
   heatmapData: HeatmapDayDTO[]
   recentSessions: PublicSessionDTO[]
-  badges: Array<{
+  milestones: Array<{
     slug: string
     earnedAt: string
   }>

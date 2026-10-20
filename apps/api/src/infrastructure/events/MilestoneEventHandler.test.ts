@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { PgDialect } from 'drizzle-orm/pg-core'
 import type { SQL } from 'drizzle-orm'
-import type { SessionCompleted } from '../../domain/practice/events'
+import type { SessionCompleted, SessionFailed } from '../../domain/practice/events'
 import type { UserId } from '../../domain/shared/types'
 import { InMemoryEventBus } from './InMemoryEventBus'
 import { registerMilestoneHandlers } from './MilestoneEventHandler'
@@ -250,6 +250,22 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     for (const query of verdictQueries) expect(query.sql).toContain('lower(')
   })
 
+  it('counts sessions by their final evaluation, never by completed status', async () => {
+    db.earnedSlugs = ['FIRST_KATA']
+    db.scriptSelects(NO_AWARDS)
+    await fireSessionCompleted(db)
+
+    const dialect = new PgDialect()
+    const sessionQueries = db.conditions
+      .map((condition) => dialect.sqlToQuery(condition).sql)
+      .filter((query) => query.includes('"sessions"."user_id"'))
+
+    expect(sessionQueries.length).toBeGreaterThan(0)
+    for (const query of sessionQueries) expect(query).not.toContain('"sessions"."status"')
+    const countQueries = sessionQueries.filter((query) => !query.includes("->>'verdict'"))
+    for (const query of countQueries) expect(query).toContain('"attempts"."is_final_evaluation" = true')
+  })
+
   it('filters ARCHITECT and RUBBER_DUCK by the lowercase kata types that are stored', async () => {
     db.earnedSlugs = ['FIRST_KATA']
     db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
@@ -287,6 +303,20 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual([])
+  })
+})
+
+describe('MilestoneEventHandler — SessionFailed (NEEDS WORK)', () => {
+  it('awards FIRST_KATA, because every verdict counts as practice', async () => {
+    const db = new FakeDb()
+    db.scriptSelects(NO_AWARDS)
+    const bus = new InMemoryEventBus()
+    registerMilestoneHandlers(bus, db as never)
+    const failed: SessionFailed = { type: 'SessionFailed', aggregateId: 'session-2', occurredAt: new Date(), userId: 'user-1' as UserId }
+    await bus.publish(failed)
+
+    expect(awardedSlugs(db)).toEqual(['FIRST_KATA'])
+    expect(db.awarded[0]?.sessionId).toBe('session-2')
   })
 })
 

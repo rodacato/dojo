@@ -33,6 +33,8 @@ This means:
 - The factors that count must be ones the user can't manipulate by attacking the evaluator.
 
 > **As built (2026-10-14):** the verdict adds no points, but it still gates what counts. Only sessions with status `completed` enter the history, and a `needs_work` verdict ends a session as `failed`, so that kata is not counted. `passed` and `passed_with_notes` both count.
+>
+> **As built (2026-10-20, [#225](https://github.com/rodacato/dojo/issues/225)):** the gate is gone. Any session with a final evaluation enters the history, whatever the verdict; a session that ended without one does not. Black requires 7 clusters, the number `topics.ts` defines.
 
 ---
 

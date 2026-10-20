@@ -57,7 +57,7 @@ export interface LLMPort {
   }
 }
 
-export interface CompletedKataHistoryEntry {
+export interface PracticeHistoryEntry {
   startedAt: Date
   topics: string[]
 }
@@ -81,12 +81,13 @@ export interface SessionRepositoryPort {
   findById(id: SessionId): Promise<Session | null>
   findActiveByUserId(userId: UserId): Promise<Session | null>
   /**
-   * Read projection used by belt computation. Returns one row per completed
-   * session in chronological order, joined to the kata's topics. Crosses the
+   * Read projection used by belt computation. Returns one row per session that
+   * reached a final evaluation, whatever the verdict, in chronological order,
+   * joined to the kata's topics. Crosses the
    * Practice→Content boundary as a read-only projection — implementations
    * may join the underlying tables directly.
    */
-  listCompletedKataHistoryForBelt(userId: UserId): Promise<CompletedKataHistoryEntry[]>
+  listPracticeHistoryForBelt(userId: UserId): Promise<PracticeHistoryEntry[]>
 }
 
 export interface ExecutionResult {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { TOPICS } from '@dojo/shared'
 import {
   BELT_THRESHOLDS,
   computeBeltFromHistory,
@@ -160,6 +161,14 @@ describe('computeBeltFromHistory', () => {
     const result = computeBeltFromHistory(history, day(100))
     expect(result.factors.activeDays30).toBe(0)
     expect(result.factors.completed).toBe(2)
+  })
+
+  it('can reach black with the topic clusters that actually exist', () => {
+    const history: KataHistoryEntry[] = Array.from({ length: 400 }, (_, i) => ({
+      startedAt: new Date(day(1).getTime() + i * DAY_MS),
+      topics: [TOPICS[i % TOPICS.length]!],
+    }))
+    expect(computeBeltFromHistory(history, history.at(-1)!.startedAt).rank).toBe('black')
   })
 
   it('silently skips unknown topic slugs (legacy data)', () => {
