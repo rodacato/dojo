@@ -27,7 +27,7 @@ const makeStubSessionRepo = () => ({
   saveIncompleteAttempt: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn().mockResolvedValue(null),
   findActiveByUserId: vi.fn(),
-  listCompletedKataHistoryForBelt: vi.fn().mockResolvedValue(null),
+  listPracticeHistoryForBelt: vi.fn().mockResolvedValue(null),
 })
 
 describe('StartSession', () => {

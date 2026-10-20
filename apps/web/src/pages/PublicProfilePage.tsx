@@ -126,11 +126,11 @@ export function PublicProfilePage() {
         </section>
 
         {/* Earned badges */}
-        {profile.badges.length > 0 && (
+        {profile.milestones.length > 0 && (
           <section className="bg-surface border border-border rounded-md p-6 md:p-8">
             <SectionEyebrow title="Earned badges" />
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {profile.badges.map((badge) => (
+              {profile.milestones.map((badge) => (
                 <BadgeMiniCard
                   key={badge.slug}
                   name={BADGE_NAMES[badge.slug] ?? badge.slug}

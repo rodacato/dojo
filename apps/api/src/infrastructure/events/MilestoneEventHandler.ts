@@ -1,13 +1,14 @@
 import { and, count, eq, gte, sql } from 'drizzle-orm'
-import type { SessionCompleted } from '../../domain/practice/events'
+import type { SessionCompleted, SessionFailed } from '../../domain/practice/events'
 import type { Verdict } from '../../domain/practice/values'
 import type { KataType } from '@dojo/shared'
 import type { InMemoryEventBus } from './InMemoryEventBus'
 import { attempts, katas, sessions, userMilestones } from '../persistence/drizzle/schema'
 import type { DB } from '../persistence/drizzle/client'
+import { isEligiblePractice } from '../persistence/eligible-practice'
 
 export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
-  eventBus.subscribe<SessionCompleted>('SessionCompleted', async (event) => {
+  const awardMilestones = async (event: SessionCompleted | SessionFailed) => {
     const { userId, aggregateId: sessionId } = event
 
     const earned = await getEarnedSlugs(db, userId)
@@ -17,14 +18,17 @@ export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
     await tryAward('FIRST_KATA', async () => true)
     await tryAward('5_STREAK', async () => (await getCurrentStreak(db, userId)) >= 5)
     await tryAward('CONSISTENT', async () => (await getCurrentStreak(db, userId)) >= 30)
-    await tryAward('POLYGLOT', () => hasCompletedDistinctTypes(db, userId, 3))
-    await tryAward('ARCHITECT', () => completedKataTypeCount(db, userId, 'whiteboard', 3))
-    await tryAward('RUBBER_DUCK', () => completedKataTypeCount(db, userId, 'chat', 3))
+    await tryAward('POLYGLOT', () => hasPracticedDistinctTypes(db, userId, 3))
+    await tryAward('ARCHITECT', () => practicedKataTypeCount(db, userId, 'whiteboard', 3))
+    await tryAward('RUBBER_DUCK', () => practicedKataTypeCount(db, userId, 'chat', 3))
     await tryAward('BRUTAL_TRUTH', () => finalVerdictCount(db, userId, 'needs_work', 3))
     await tryAward('SENSEI_APPROVED', () => finalVerdictCount(db, userId, 'passed', 5))
-    await tryAward('SQL_SURVIVOR', () => completedSqlTopicCount(db, userId, 3))
-    await tryAward('UNDEFINED_NO_MORE', () => completedSessionCount(db, userId, 50))
-  })
+    await tryAward('SQL_SURVIVOR', () => practicedSqlTopicCount(db, userId, 3))
+    await tryAward('UNDEFINED_NO_MORE', () => practicedSessionCount(db, userId, 50))
+  }
+
+  eventBus.subscribe<SessionCompleted>('SessionCompleted', awardMilestones)
+  eventBus.subscribe<SessionFailed>('SessionFailed', awardMilestones)
 }
 
 // Only runs `qualifies` (and its query) when the slug isn't already earned,
@@ -41,16 +45,16 @@ async function awardWhen(
   if (await qualifies()) await award(db, userId, slug, sessionId)
 }
 
-async function hasCompletedDistinctTypes(db: DB, userId: string, min: number): Promise<boolean> {
+async function hasPracticedDistinctTypes(db: DB, userId: string, min: number): Promise<boolean> {
   const types = await db
     .selectDistinct({ type: katas.type })
     .from(sessions)
     .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice()))
   return types.length >= min
 }
 
-async function completedKataTypeCount(
+async function practicedKataTypeCount(
   db: DB,
   userId: string,
   type: KataType,
@@ -60,7 +64,7 @@ async function completedKataTypeCount(
     .select({ count: count() })
     .from(sessions)
     .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), eq(katas.type, type)))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice(), eq(katas.type, type)))
   return Number(row?.count ?? 0) >= min
 }
 
@@ -84,7 +88,7 @@ async function finalVerdictCount(
   return Number(row?.count ?? 0) >= min
 }
 
-async function completedSqlTopicCount(db: DB, userId: string, min: number): Promise<boolean> {
+async function practicedSqlTopicCount(db: DB, userId: string, min: number): Promise<boolean> {
   const [row] = await db
     .select({ count: count() })
     .from(sessions)
@@ -92,18 +96,18 @@ async function completedSqlTopicCount(db: DB, userId: string, min: number): Prom
     .where(
       and(
         eq(sessions.userId, userId),
-        eq(sessions.status, 'completed'),
+        isEligiblePractice(),
         sql`${katas.topics}::jsonb ?| ARRAY['sql', 'SQL', 'database', 'postgresql', 'postgres', 'mysql', 'queries']`,
       ),
     )
   return Number(row?.count ?? 0) >= min
 }
 
-async function completedSessionCount(db: DB, userId: string, min: number): Promise<boolean> {
+async function practicedSessionCount(db: DB, userId: string, min: number): Promise<boolean> {
   const [row] = await db
     .select({ count: count() })
     .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice()))
   return Number(row?.count ?? 0) >= min
 }
 
@@ -126,7 +130,7 @@ async function getCurrentStreak(db: DB, userId: string): Promise<number> {
   const heatmapRows = await db
     .select({ date: sql<string>`DATE(${sessions.startedAt})::text` })
     .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.startedAt, thirtyDaysAgo)))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice(), gte(sessions.startedAt, thirtyDaysAgo)))
     .groupBy(sql`DATE(${sessions.startedAt})`)
 
   const dates = heatmapRows.map((r) => r.date)

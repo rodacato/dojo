@@ -7,6 +7,7 @@ import { useCases } from '../../container'
 import { UserId } from '../../../domain/shared/types'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
+import { isEligiblePractice } from '../../persistence/eligible-practice'
 import { verdictSubquery, calculateStreak } from './query-helpers'
 
 export const dashboardRoutes = new Hono<AppEnv>()
@@ -84,11 +85,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       .where(and(
         eq(sessions.userId, userId),
         gte(sessions.startedAt, thirtyDaysAgo),
-        sql`EXISTS (
-          SELECT 1 FROM ${attempts}
-          WHERE ${attempts.sessionId} = ${sessions.id}
-            AND ${attempts.isFinalEvaluation} = true
-        )`,
+        isEligiblePractice(),
       ))
       .groupBy(sql`DATE(${sessions.startedAt})`),
     db

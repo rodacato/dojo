@@ -1,6 +1,7 @@
 import { and, asc, eq } from 'drizzle-orm'
 import { Attempt } from '../../domain/practice/attempt'
-import type { CompletedKataHistoryEntry, SessionRepositoryPort } from '../../domain/practice/ports'
+import { isEligiblePractice } from './eligible-practice'
+import type { PracticeHistoryEntry, SessionRepositoryPort } from '../../domain/practice/ports'
 import { Session } from '../../domain/practice/session'
 import type { EvaluationResult } from '../../domain/practice/values'
 import { AttemptId, KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
@@ -107,7 +108,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
     return this.toSession(row)
   }
 
-  async listCompletedKataHistoryForBelt(userId: UserId): Promise<CompletedKataHistoryEntry[]> {
+  async listPracticeHistoryForBelt(userId: UserId): Promise<PracticeHistoryEntry[]> {
     const rows = await this.db
       .select({
         startedAt: sessions.startedAt,
@@ -115,7 +116,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
       })
       .from(sessions)
       .innerJoin(katas, eq(sessions.kataId, katas.id))
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+      .where(and(eq(sessions.userId, userId), isEligiblePractice()))
       .orderBy(asc(sessions.startedAt))
 
     return rows.map((row) => ({

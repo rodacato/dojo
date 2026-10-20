@@ -27,14 +27,14 @@ const ALL_MILESTONES: Array<{
   isPrestige: boolean
 }> = [
   { slug: 'FIRST_KATA', name: 'First Kata', description: 'You completed your first kata. The hardest one was always the first.', category: 'practice', isPrestige: false },
-  { slug: 'POLYGLOT', name: 'Polyglot', description: 'Solved kata across all three types: CODE, CHAT, and WHITEBOARD.', category: 'practice', isPrestige: false },
+  { slug: 'POLYGLOT', name: 'Polyglot', description: 'Practiced kata of three different types.', category: 'practice', isPrestige: false },
   { slug: 'BRUTAL_TRUTH', name: 'Brutal Truth', description: 'Received NEEDS WORK three times. You kept showing up.', category: 'practice', isPrestige: false },
   { slug: 'RUBBER_DUCK', name: 'Rubber Duck', description: 'Completed three CHAT kata. You think by writing.', category: 'practice', isPrestige: false },
   { slug: 'SQL_SURVIVOR', name: 'SQL Survivor', description: 'Completed three kata involving SQL.', category: 'mastery', isPrestige: false },
   { slug: '5_STREAK', name: '5 Streak', description: 'Practiced five consecutive days.', category: 'consistency', isPrestige: false },
   { slug: 'CONSISTENT', name: 'Consistent', description: 'Thirty consecutive days of practice.', category: 'consistency', isPrestige: false },
   { slug: 'SENSEI_APPROVED', name: 'Sensei Approved', description: 'Received a clean PASSED verdict five times.', category: 'mastery', isPrestige: false },
-  { slug: 'ARCHITECT', name: 'Architect', description: 'Completed ten WHITEBOARD kata.', category: 'architect', isPrestige: false },
+  { slug: 'ARCHITECT', name: 'Architect', description: 'Completed three WHITEBOARD kata.', category: 'architect', isPrestige: false },
   { slug: 'UNDEFINED_NO_MORE', name: 'Undefined No More', description: "Fifty kata completed. You're not undefined anymore. The cursor disagrees and keeps blinking.", category: 'mastery', isPrestige: true },
 ]
 

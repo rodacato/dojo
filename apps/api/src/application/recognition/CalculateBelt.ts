@@ -20,7 +20,7 @@ export class CalculateBelt {
   }
 
   async execute(userId: UserId): Promise<Belt> {
-    const history = await this.deps.sessionRepo.listCompletedKataHistoryForBelt(userId)
+    const history = await this.deps.sessionRepo.listPracticeHistoryForBelt(userId)
     return computeBeltFromHistory(history, this.now())
   }
 }
