@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_PRACTITIONER_LOOK, PRACTITIONER_PIECES, practitionerLookSchema } from './practitioner'
+import { DEFAULT_PRACTITIONER_LOOK, PRACTITIONER_PIECES, practitionerLookSchema, toPublicPractitioner } from './practitioner'
 
 const withEquip = (equip: Partial<typeof DEFAULT_PRACTITIONER_LOOK.equip>) => ({
   ...DEFAULT_PRACTITIONER_LOOK,
@@ -31,5 +31,24 @@ describe('PRACTITIONER_PIECES', () => {
   it('has unique ids', () => {
     const ids = PRACTITIONER_PIECES.map((piece) => piece.id)
     expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+describe('toPublicPractitioner', () => {
+  it('keeps earned pieces with their date and drops locked ones and all progress', () => {
+    const view = toPublicPractitioner({
+      look: DEFAULT_PRACTITIONER_LOOK,
+      belt: 'green',
+      pieces: [
+        { id: 'kasa', earnedAt: '2026-10-18T10:00:00.000Z', progress: { current: 3, target: 3 } },
+        { id: 'scarf', earnedAt: null, progress: { current: 5, target: 7 } },
+      ],
+    })
+
+    expect(view).toEqual({
+      look: DEFAULT_PRACTITIONER_LOOK,
+      belt: 'green',
+      earnedPieces: [{ id: 'kasa', earnedAt: '2026-10-18T10:00:00.000Z' }],
+    })
   })
 })

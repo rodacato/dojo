@@ -1,6 +1,6 @@
 # PRD-035: Recognition — a visible practice history
 
-> **Status:** Reviewed proposal; implementation has not started.
+> **Status:** In progress under #224. Foundation (#225) and the practitioner (#226) have shipped.
 > **Date:** 2026-10-19
 > **Context:** [PRD-031](031-belt-progression-rubric.md), [ADR-031](../adr/031-surprise-daily-kata.md), design [#189](https://github.com/rodacato/dojo/issues/189), daily pilot [#193](https://github.com/rodacato/dojo/issues/193).
 > **Visual proposal:** [recognition direction](../../design/brand/recognition.md), proposed bands in `design/flows/` (#224), D63–D66 in [DECISIONS](../../design/DECISIONS.md).
@@ -70,7 +70,7 @@ Start with Practice and Paths. Show earned items and at most three relevant next
 | Forms | Deferred | All current micro seed kata use REVIEW; other formats must not be required for daily progression. |
 | Contributions | Deferred to contributor work | Accepted contributions can earn recognition independently of belt rank. |
 
-Do not reward avoiding One more, rating kata, earning a favorable verdict, or repeatedly leaving and returning. Retire SENSEI_APPROVED as an earnable rule; preserve previously granted milestones with their original date and a legacy label. Other existing milestones need an explicit keep/rename/retire mapping before collection migration. Historical awards must not trigger a flood of earning receipts.
+Do not reward avoiding One more, rating kata, earning a favorable verdict, or repeatedly leaving and returning. Retire SENSEI_APPROVED as an earnable rule; preserve previously granted milestones with their original date and a legacy label. The other milestones are kept unchanged (2026-10-20): SENSEI_APPROVED is the only retirement, shown only to those who earned it. Historical awards must not trigger a flood of earning receipts.
 
 ## P3 · Share the earned moment
 
@@ -115,6 +115,7 @@ Keep that instrument during the trial. After its decision, experiment with one o
 | Q3 · Rhythm | Daily, automatic rest, actual-day counts remain honest | Weekly as the primary identity; revisit only if the core practice changes. |
 | Q4 · Rewards | Identity; permissions managed separately | Belt-gated proposals/review; no evidence that practice rank measures editorial trust. |
 | Q5 · Rating | Preserve D62 during the pilot; try one tap afterward | Immediate replacement of the calibration instrument; revisit after #193. |
+| Q6 · Favorable verdicts (2026-10-20) | Exception to P2 for the personal dojo only: its pieces may require PASSED on hard kata, because their difficulty is the point (D66). Guardrails: the sensei never sees recognition (D64), a verdict cannot be re-rolled (retry-evaluation refuses once one exists), and nothing decays. Practitioner pieces and milestones still never read the verdict. | Dojo pieces for any verdict on hard kata; it would erase the difference between the two tracks. Revisit if follow-ups start reading as arguing for a PASSED. |
 
 Per-track belts remain rejected as the main rank. Paths retain topic breadth without forcing seven parallel ladders. Visible requirements supersede PRD-031's hidden-next-step decision when implemented. The visual rule against illustrated trophies in DESIGN.md remains valid; hanko tiers do not require retiring it.
 

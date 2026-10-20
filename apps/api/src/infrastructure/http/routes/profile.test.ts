@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { eq } from 'drizzle-orm'
 import type * as DrizzleOrm from 'drizzle-orm'
+import { DEFAULT_PRACTITIONER_LOOK, type PractitionerDTO } from '@dojo/shared'
 import type { Belt } from '../../../domain/recognition/belt'
 
 // Partial mock: delegate to the real eq so the route's query-helpers keep
@@ -13,7 +14,7 @@ vi.mock('drizzle-orm', async (importOriginal) => {
 })
 
 // vi.hoisted runs first so the mock factories can close over these bindings.
-const { db, selectQueue, findFirst, calculateBelt } = vi.hoisted(() => {
+const { db, selectQueue, findFirst, calculateBelt, getPractitioner } = vi.hoisted(() => {
   const selectQueue: unknown[][] = []
 
   function chainable(rows: unknown[] = []) {
@@ -45,6 +46,7 @@ const { db, selectQueue, findFirst, calculateBelt } = vi.hoisted(() => {
       },
     },
     calculateBelt: vi.fn(),
+    getPractitioner: vi.fn(),
   }
 })
 
@@ -59,8 +61,17 @@ vi.mock('../../persistence/drizzle/schema', () => ({
 }))
 
 vi.mock('../../container', () => ({
-  useCases: { calculateBelt: { execute: calculateBelt } },
+  useCases: { calculateBelt: { execute: calculateBelt }, getPractitioner: { execute: getPractitioner } },
 }))
+
+const PRACTITIONER: PractitionerDTO = {
+  look: DEFAULT_PRACTITIONER_LOOK,
+  belt: 'white',
+  pieces: [
+    { id: 'hachimaki', earnedAt: '2026-10-18T10:00:00.000Z', progress: { current: 1, target: 1 } },
+    { id: 'kasa', earnedAt: null, progress: { current: 2, target: 3 } },
+  ],
+}
 
 // Import AFTER all mocks so the route grabs the mocked deps.
 import { profileRoutes } from './profile'
@@ -124,6 +135,7 @@ describe('GET /u/:username', () => {
     db.query.users.findFirst.mockReset()
     findFirst.mockReset()
     calculateBelt.mockResolvedValue(WHITE_BELT)
+    getPractitioner.mockResolvedValue(PRACTITIONER)
     seedSelects()
   })
 
@@ -349,6 +361,18 @@ describe('GET /u/:username', () => {
     expect(body.milestones).toEqual([
       { slug: 'first-kata', earnedAt: earnedAt.toISOString() },
     ])
+  })
+
+  it('shows the practitioner with earned pieces only, never progress toward the rest', async () => {
+    seedUser()
+    const res = await makeApp().request('/u/kenji')
+    const body = (await res.json()) as { practitioner: unknown }
+
+    expect(body.practitioner).toEqual({
+      look: DEFAULT_PRACTITIONER_LOOK,
+      belt: 'white',
+      earnedPieces: [{ id: 'hachimaki', earnedAt: '2026-10-18T10:00:00.000Z' }],
+    })
   })
 
   it('surfaces the belt computed by calculateBelt for the resolved user', async () => {

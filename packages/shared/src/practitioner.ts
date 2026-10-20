@@ -85,3 +85,18 @@ export interface PractitionerDTO {
   belt: BeltRank
   pieces: PractitionerPieceDTO[]
 }
+
+/** What a public profile shows: earned pieces only, never progress toward the rest. */
+export interface PublicPractitionerDTO {
+  look: PractitionerLook
+  belt: BeltRank
+  earnedPieces: Array<{ id: PieceId; earnedAt: string }>
+}
+
+export function toPublicPractitioner({ look, belt, pieces }: PractitionerDTO): PublicPractitionerDTO {
+  return {
+    look,
+    belt,
+    earnedPieces: pieces.flatMap(({ id, earnedAt }) => (earnedAt ? [{ id, earnedAt }] : [])),
+  }
+}

@@ -2,6 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { DEFAULT_PRACTITIONER_LOOK } from '@dojo/shared'
 import type { PublicProfileData } from '../lib/api'
 import type * as ApiModule from '../lib/api'
 import { api, ApiError } from '../lib/api'
@@ -46,6 +47,11 @@ function makeProfile(overrides: Partial<PublicProfileData> = {}): PublicProfileD
     belt: {
       rank: 'green',
       factors: { completed: 42, distinctClusters: 4, activeDays30: 12, daysAtRank: 30 },
+    },
+    practitioner: {
+      look: DEFAULT_PRACTITIONER_LOOK,
+      belt: 'green',
+      earnedPieces: [{ id: 'kasa', earnedAt: '2026-02-03T09:00:00.000Z' }],
     },
     ...overrides,
   }
@@ -128,6 +134,30 @@ describe('PublicProfilePage', () => {
     expect(screen.queryByText('Reverse a linked list')).not.toBeInTheDocument()
     // Header still renders so this is a populated-but-quiet profile, not an error.
     expect(screen.getByText(/Member since/)).toBeInTheDocument()
+  })
+
+  it('shows the practitioner with each earned piece, its source and date', async () => {
+    getPublicProfile.mockResolvedValue(makeProfile())
+    renderProfile()
+
+    expect(await screen.findByRole('img', { name: "kenobi's practitioner" })).toBeInTheDocument()
+    expect(screen.getByText('Straw kasa')).toBeInTheDocument()
+    expect(screen.getByText('3 practice days · 2026-02-03')).toBeInTheDocument()
+  })
+
+  it('says there are no pieces yet instead of listing locked ones', async () => {
+    getPublicProfile.mockResolvedValue(makeProfile({ practitioner: { look: DEFAULT_PRACTITIONER_LOOK, belt: 'white', earnedPieces: [] } }))
+    renderProfile()
+
+    expect(await screen.findByText('No pieces yet.')).toBeInTheDocument()
+    expect(screen.queryByText('Hachimaki')).toBeNull()
+  })
+
+  it('labels a retired milestone as legacy', async () => {
+    getPublicProfile.mockResolvedValue(makeProfile({ milestones: [{ slug: 'SENSEI_APPROVED', earnedAt: '2026-03-01T00:00:00.000Z' }] }))
+    renderProfile()
+
+    expect(await screen.findByText('Sensei Approved · Legacy')).toBeInTheDocument()
   })
 
   it('navigates to the share page when a recent kata row is clicked', async () => {

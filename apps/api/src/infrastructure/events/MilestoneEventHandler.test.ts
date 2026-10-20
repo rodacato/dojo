@@ -88,7 +88,6 @@ const NO_AWARDS: unknown[][] = [
   /* ARCHITECT  */ [{ count: 0 }],
   /* RUBBER_DUCK*/ [{ count: 0 }],
   /* BRUTAL     */ [{ count: 0 }],
-  /* SENSEI     */ [{ count: 0 }],
   /* SQL        */ [{ count: 0 }],
   /* UNDEFINED  */ [{ count: 0 }],
 ]
@@ -136,7 +135,6 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
       [{ count: 0 }],
       [{ count: 0 }],
       [{ count: 0 }],
-      [{ count: 0 }],
     ])
     await fireSessionCompleted(db)
 
@@ -146,7 +144,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
   it('a 4-day streak awards neither 5_STREAK nor CONSISTENT (below threshold)', async () => {
     db.earnedSlugs = ['FIRST_KATA']
     const streak4 = streakRows(4)
-    db.scriptSelects([streak4, streak4, [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([streak4, streak4, [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual([])
@@ -155,7 +153,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
   it('awards both 5_STREAK and CONSISTENT at a 30-day streak', async () => {
     db.earnedSlugs = ['FIRST_KATA']
     const streak30 = streakRows(30)
-    db.scriptSelects([streak30, streak30, [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([streak30, streak30, [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual(['5_STREAK', 'CONSISTENT'])
@@ -172,7 +170,6 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
       [{ count: 0 }],
       [{ count: 0 }],
       [{ count: 0 }],
-      [{ count: 0 }],
     ])
     await fireSessionCompleted(db)
 
@@ -181,7 +178,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
 
   it('does NOT award POLYGLOT with only 2 distinct types', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [{ type: 'code' }, { type: 'chat' }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [{ type: 'code' }, { type: 'chat' }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual([])
@@ -196,7 +193,6 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
       [{ count: 3 }], // ARCHITECT
       [{ count: 3 }], // RUBBER_DUCK
       [{ count: 0 }], // BRUTAL_TRUTH
-      [{ count: 0 }], // SENSEI_APPROVED
       [{ count: 0 }], // SQL_SURVIVOR
       [{ count: 0 }], // UNDEFINED_NO_MORE
     ])
@@ -207,28 +203,23 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
 
   it('does NOT award ARCHITECT at a count of 2 (below threshold of 3)', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 2 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [], [{ count: 2 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual([])
   })
 
-  it('awards SENSEI_APPROVED only at 5 clean PASSED verdicts (4 is not enough)', async () => {
+  it('never awards the retired SENSEI_APPROVED, however many verdicts a query reports', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 4 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [], [{ count: 99 }], [{ count: 99 }], [{ count: 99 }], [{ count: 99 }], [{ count: 99 }]])
     await fireSessionCompleted(db)
-    expect(awardedSlugs(db)).toEqual([])
 
-    db = new FakeDb()
-    db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 5 }], [{ count: 0 }], [{ count: 0 }]])
-    await fireSessionCompleted(db)
-    expect(awardedSlugs(db)).toEqual(['SENSEI_APPROVED'])
+    expect(awardedSlugs(db)).not.toContain('SENSEI_APPROVED')
   })
 
   it('awards BRUTAL_TRUTH at 3 NEEDS_WORK final verdicts', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 3 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 3 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual(['BRUTAL_TRUTH'])
@@ -236,7 +227,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
 
   it('compares final verdicts against the lowercase values the sensei parser stores', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     const dialect = new PgDialect()
@@ -244,9 +235,8 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
       .map((condition) => dialect.sqlToQuery(condition))
       .filter((query) => query.sql.includes("->>'verdict'"))
 
-    expect(verdictQueries).toHaveLength(2)
+    expect(verdictQueries).toHaveLength(1)
     expect(verdictQueries[0]!.params).toContain('needs_work')
-    expect(verdictQueries[1]!.params).toContain('passed')
     for (const query of verdictQueries) expect(query.sql).toContain('lower(')
   })
 
@@ -268,7 +258,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
 
   it('filters ARCHITECT and RUBBER_DUCK by the lowercase kata types that are stored', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     const dialect = new PgDialect()
@@ -282,7 +272,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
 
   it('awards SQL_SURVIVOR at 3 SQL-topic kata', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 3 }], [{ count: 0 }]])
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 3 }], [{ count: 0 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual(['SQL_SURVIVOR'])
@@ -290,7 +280,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
 
   it('awards UNDEFINED_NO_MORE at 50 total completed kata', async () => {
     db.earnedSlugs = ['FIRST_KATA']
-    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 50 }]])
+    db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 50 }]])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual(['UNDEFINED_NO_MORE'])
@@ -299,7 +289,7 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
   it('tolerates a missing count row (row?.count ?? 0 guard) without awarding', async () => {
     db.earnedSlugs = ['FIRST_KATA']
     // Empty result arrays for every count query → `[row]` is undefined → 0.
-    db.scriptSelects([[], [], [], [], [], [], [], [], []])
+    db.scriptSelects([[], [], [], [], [], [], [], []])
     await fireSessionCompleted(db)
 
     expect(awardedSlugs(db)).toEqual([])

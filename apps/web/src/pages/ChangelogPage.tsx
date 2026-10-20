@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-20',
     phase: 'Recognition',
+    title: 'Your practitioner on your profile',
+    description:
+      'Your public profile now shows your practitioner and the pieces you earned, with their dates. Sensei Approved is retired because it rewarded a verdict; if you already have it, it stays, marked Legacy.',
+  },
+  {
+    date: '2026-10-20',
+    phase: 'Recognition',
     title: 'Your practitioner',
     description:
       "Belts now has a pixel practitioner you dress yourself. Pieces come from showing up: your first kata, three and seven practice days, coming back after a week away, and a Día de Muertos season. Any verdict counts, and a new piece shows up after the kata that earned it.",

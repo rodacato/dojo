@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { findPiece, type PieceId, type PractitionerDTO } from '@dojo/shared'
+import { PRACTITIONER_BACKDROP, findPiece, type PieceId, type PractitionerDTO } from '@dojo/shared'
 import { api } from '../../lib/api'
 import { Button } from '../ui/Button'
 import { PractitionerCanvas } from './PractitionerCanvas'
 
-const BACKDROP = '#d6cab3'
 
 interface Props {
   pieceIds: readonly PieceId[]
@@ -41,11 +40,11 @@ export function PieceReceipt({ pieceIds, needsWork }: Readonly<Props>) {
     <section className="bg-surface border border-border border-l-[3px] border-l-accent rounded-sm p-4 grid gap-3" aria-label="New piece">
       <p className="font-mono text-xs tracking-[0.08em] uppercase text-accent-text">Practice recorded · new piece</p>
       <div className="flex items-center gap-3">
-        <div className="rounded-sm" style={{ backgroundColor: BACKDROP }}>
+        <div className="rounded-sm" style={{ backgroundColor: PRACTITIONER_BACKDROP }}>
           <PractitionerCanvas look={before} belt={belt} scale={3.6} framing="bust" />
         </div>
         <span className="font-mono text-secondary" aria-hidden="true">→</span>
-        <div className="rounded-sm" style={{ backgroundColor: BACKDROP }}>
+        <div className="rounded-sm" style={{ backgroundColor: PRACTITIONER_BACKDROP }}>
           <PractitionerCanvas look={after} belt={belt} scale={3.6} framing="bust" label={`Your practitioner wearing the ${piece.name}`} />
         </div>
       </div>

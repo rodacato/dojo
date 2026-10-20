@@ -22,7 +22,6 @@ export function registerMilestoneHandlers(eventBus: InMemoryEventBus, db: DB) {
     await tryAward('ARCHITECT', () => practicedKataTypeCount(db, userId, 'whiteboard', 3))
     await tryAward('RUBBER_DUCK', () => practicedKataTypeCount(db, userId, 'chat', 3))
     await tryAward('BRUTAL_TRUTH', () => finalVerdictCount(db, userId, 'needs_work', 3))
-    await tryAward('SENSEI_APPROVED', () => finalVerdictCount(db, userId, 'passed', 5))
     await tryAward('SQL_SURVIVOR', () => practicedSqlTopicCount(db, userId, 3))
     await tryAward('UNDEFINED_NO_MORE', () => practicedSessionCount(db, userId, 50))
   }

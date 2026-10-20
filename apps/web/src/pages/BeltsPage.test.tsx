@@ -90,9 +90,9 @@ describe('BeltsPage', () => {
     const clusters = screen.getByText('Topic clusters').closest('div')!
     expect(within(clusters).getByText('7')).toBeInTheDocument()
 
-    // 2 of the 10 catalogued milestones earned.
+    // 2 of the 9 earnable milestones; the retired SENSEI_APPROVED is not counted.
     expect(screen.getByText('2')).toBeInTheDocument()
-    expect(screen.getByText('of 10 earned')).toBeInTheDocument()
+    expect(screen.getByText('of 9 earned')).toBeInTheDocument()
   })
 
   it('reads the slug from the belt and passes the seed to the underline', async () => {
@@ -126,13 +126,27 @@ describe('BeltsPage', () => {
     expect(within(unearnedCard).queryByText(/^Earned /)).not.toBeInTheDocument()
   })
 
+  it('hides the retired SENSEI_APPROVED until someone has earned it, then marks it legacy', async () => {
+    authed()
+    mockedGetBelts.mockResolvedValue({ belt, milestones: [] })
+    const { unmount } = renderPage()
+    await screen.findByText('First Kata')
+    expect(screen.queryByText('Sensei Approved')).toBeNull()
+    unmount()
+
+    mockedGetBelts.mockResolvedValue({ belt, milestones: [{ id: 'SENSEI_APPROVED', earnedAt: '2026-03-04T10:00:00.000Z', contextRef: null }] })
+    renderPage()
+    expect(await screen.findByText('Earned 2026-03-04 · Legacy')).toBeInTheDocument()
+    expect(screen.getByText('of 10 earned')).toBeInTheDocument()
+  })
+
   it('shows zero earned when no milestones come back', async () => {
     authed()
     mockedGetBelts.mockResolvedValue({ belt, milestones: [] })
 
     renderPage()
 
-    expect(await screen.findByText('of 10 earned')).toBeInTheDocument()
+    expect(await screen.findByText('of 9 earned')).toBeInTheDocument()
     expect(screen.getByText('0')).toBeInTheDocument()
     // No card should claim an earned date.
     expect(screen.queryByText(/^Earned /)).not.toBeInTheDocument()
