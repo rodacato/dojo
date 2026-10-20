@@ -66,4 +66,4 @@ Existing result, navigation and feedback strings come from their current compone
 
 ## Assets and preview
 
-The PNGs in [exports/recognition](../exports/recognition/README.md) are renders of the prototype, embedded by the proposed recognition artboards in `flows/app-core.pen` (Belts), `flows/kata.pen` (post-kata receipt) and `flows/public.pen` (share card). Regenerate them from the prototype; never redraw them on the canvas. They support layout and contrast review only: keyboard interaction, native sharing, persistence and motion require implementation testing.
+The PNGs in [exports/recognition](../exports/recognition/README.md) are embedded by the recognition artboards, never redrawn on the canvas. What shipped (the practitioner section and the new-piece receipt, #229) uses captures from the app; what is still proposed (dojo, collection, comeback, share card) uses renders of the prototype. They support layout and contrast review only: keyboard interaction, native sharing, persistence and motion require implementation testing.

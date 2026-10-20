@@ -30,8 +30,8 @@ as context for AI agents.
 | File | Screens | Kit | Domain entry point |
 |---|---|---|---|
 | `public.pen` | 14 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
-| `app-core.pen` | 19 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite; proposed recognition (#224) |
-| `kata.pen` | 26 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results |
+| `app-core.pen` | 18 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite; proposed recognition (#224) |
+| `kata.pen` | 27 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results, new-piece receipt; proposed comeback (#224) |
 | `learn.pen` | 13 | 0.4.0 | Scrolls catalog and player, Engawa playground (mobile too) |
 | `admin.pen` | 16 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health — mobile too |
 

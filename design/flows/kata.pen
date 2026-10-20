@@ -15496,7 +15496,7 @@
           "fill": "$color-muted",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "kit-version-source: 0.5.0 · brief-schema: 1 · updated: 2026-10-19",
+          "content": "kit-version-source: 0.5.0 · brief-schema: 1 · updated: 2026-10-20",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15577,7 +15577,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)\n- Post-kata / Mobile — Proposed · recognition receipt: a new practitioner piece and, after NEEDS WORK, a comeback toward the Moon window (#224, D65, D66; proposal PNG, not shipped)",
+          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)\n- Post-kata / Mobile — Result · new piece: the practitioner receipt as shipped (#229), between the notes and the exits; renders captured from the app\n- Post-kata / Mobile — Proposed · comeback after NEEDS WORK: the Moon window path (#224, D65, D66; proposal PNG, not shipped — the receipt half shipped above)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15631,7 +15631,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy. Proposed copy for D60/D61, not in code yet: 'YOU POINTED AT LINE n · YOUR WHY', 'THE ANSWER · LINE n', 'Done', 'Share'. Answer text is seed kata-micro-001's rubric. Proposed for D62: 'How was the sensei\\'s review?', 'Somewhat unclear', 'Clear', 'Too generic', 'More feedback', 'Send note', 'Anything to add?', and the placeholder 'One thing you\\'d change, or something you noticed'.",
+          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy. Proposed copy for D60/D61, not in code yet: 'YOU POINTED AT LINE n · YOUR WHY', 'THE ANSWER · LINE n', 'Done', 'Share'. Answer text is seed kata-micro-001's rubric. Proposed for D62: 'How was the sensei\\'s review?', 'Somewhat unclear', 'Clear', 'Too generic', 'More feedback', 'Send note', 'Anything to add?', and the placeholder 'One thing you\\'d change, or something you noticed'. Receipt: components/recognition/PieceReceipt.tsx; piece names and sources from packages/shared/src/practitioner.ts.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16012,6 +16012,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "SuiVW",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-20 · Result · new piece drawn from the shipped PieceReceipt (#229); the proposed receipt artboard keeps only the comeback and moved one slot right",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -21358,9 +21371,9 @@
     {
       "type": "frame",
       "id": "V2nlYd",
-      "x": 11620,
+      "x": 12130,
       "y": 4387,
-      "name": "Post-kata / Mobile / Proposed · recognition receipt",
+      "name": "Post-kata / Mobile / Proposed · comeback after NEEDS WORK",
       "theme": {
         "theme": "sumi"
       },
@@ -21373,6 +21386,619 @@
         "url": "../exports/recognition/pixel-result-mobile.png",
         "mode": "contain"
       }
+    },
+    {
+      "type": "frame",
+      "id": "SJimd",
+      "x": 11620,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Result · new piece",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$color-page",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "SHqKU",
+          "name": "Top bar",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$tint-surface-50",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "zDYCr",
+              "name": "Left",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FvlmJ",
+                  "name": "Wordmark",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kiIe6",
+                      "name": "dojo",
+                      "fill": "$color-accent",
+                      "content": "dojo",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "l4cmJM",
+                      "name": "cursor",
+                      "fill": "$color-accent",
+                      "content": "_",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "X7v4G",
+          "name": "Problem",
+          "width": "fill_container",
+          "fill": "$color-surface",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "yOCH6",
+              "name": "H1",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Off-by-one in pagination",
+              "lineHeight": 1.25,
+              "fontFamily": "$font-sans",
+              "fontSize": 24,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "kqIb1",
+              "name": "Badges",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "c1mQE",
+                  "type": "ref",
+                  "ref": "r26Bq",
+                  "name": "Type"
+                },
+                {
+                  "id": "xwdcW",
+                  "type": "ref",
+                  "ref": "u4llC",
+                  "name": "Difficulty"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XxWn4",
+          "name": "Verdict",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "id": "K3FitT",
+              "type": "ref",
+              "ref": "HZweK",
+              "width": "fill_container",
+              "descendants": {
+                "S5TKe": {
+                  "content": "Line 4 is fine: slice excludes its end, so start + limit is exactly one page. The first page goes missing because of where each page starts, not where it ends."
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "ZTLyF",
+              "name": "Topics",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zje8i",
+                  "name": "Label",
+                  "fill": "$color-secondary",
+                  "content": "TOPICS TO REVIEW",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "letterSpacing": 0.96
+                },
+                {
+                  "type": "frame",
+                  "id": "vNsLy",
+                  "name": "Chips",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "id": "tfFCw",
+                      "type": "ref",
+                      "ref": "GXr8r",
+                      "descendants": {
+                        "m8V6pg": {
+                          "content": "index-arithmetic"
+                        }
+                      }
+                    },
+                    {
+                      "id": "PwIjz",
+                      "type": "ref",
+                      "ref": "GXr8r",
+                      "descendants": {
+                        "m8V6pg": {
+                          "content": "off-by-one-errors"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "z9Pk9",
+          "name": "Your answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "rYze4",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "YOU POINTED AT LINE 4 · YOUR WHY",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "PIllY",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "pZXz4",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "EpktO",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "3"
+                    },
+                    "w1iat6": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "naw4F",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "4"
+                    },
+                    "jTq5I": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "qnTPq",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "end should be start + limit - 1, otherwise each page shows one item too many.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 14,
+              "fontWeight": "normal",
+              "fontStyle": "italic"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vgBu9",
+          "name": "The answer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "cpn6x",
+              "name": "Label",
+              "fill": "$color-secondary",
+              "content": "THE ANSWER · LINE 3",
+              "fontFamily": "$font-mono",
+              "fontSize": 12,
+              "fontWeight": "normal",
+              "letterSpacing": 0.96
+            },
+            {
+              "type": "frame",
+              "id": "rtJZx",
+              "name": "Lines",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 4,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "children": [
+                {
+                  "id": "MTYqH",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "2"
+                    },
+                    "w1iat6": {
+                      "content": "  if (page < 1 || limit < 1) return []"
+                    }
+                  }
+                },
+                {
+                  "id": "FaICc",
+                  "type": "ref",
+                  "ref": "DxrQk",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ai3rk": {
+                      "content": "3"
+                    },
+                    "jTq5I": {
+                      "content": "  const start = page * limit"
+                    }
+                  }
+                },
+                {
+                  "id": "PosVw",
+                  "type": "ref",
+                  "ref": "NPKC6",
+                  "width": "fill_container",
+                  "descendants": {
+                    "O0BUdS": {
+                      "content": "4"
+                    },
+                    "w1iat6": {
+                      "content": "  const end = start + limit"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "e00Xb",
+              "fill": "$color-primary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "start treats a 1-based page as 0-based",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "OQISp",
+              "fill": "$color-secondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "With page = 1, start is limit, so the slice begins at the second page and the first page is unreachable. start should be (page - 1) * limit.",
+              "lineHeight": 1.5,
+              "fontFamily": "$font-sans",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rgtdF",
+          "name": "New piece",
+          "width": "fill_container",
+          "padding": [
+            0,
+            16,
+            16,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "UmzZK",
+              "name": "PieceReceipt",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "$color-surface",
+              "cornerRadius": 2,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "eA0rr",
+                  "name": "Accent edge",
+                  "fill": "$color-accent",
+                  "width": 3,
+                  "height": 218
+                },
+                {
+                  "type": "frame",
+                  "id": "rF1Rf",
+                  "name": "Content",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tseHb",
+                      "name": "Eyebrow",
+                      "fill": "$color-accent-text",
+                      "content": "PRACTICE RECORDED · NEW PIECE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "frame",
+                      "id": "pWzB4",
+                      "name": "Before → after",
+                      "gap": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "u7tMf",
+                          "name": "Before",
+                          "fill": [
+                            "#d6cab3",
+                            {
+                              "type": "image",
+                              "enabled": true,
+                              "url": "../exports/recognition/result-piece-before.png",
+                              "mode": "contain"
+                            }
+                          ],
+                          "width": 72,
+                          "height": 72
+                        },
+                        {
+                          "type": "text",
+                          "id": "trfJp",
+                          "name": "Arrow",
+                          "fill": "$color-secondary",
+                          "content": "→",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 16,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "rectangle",
+                          "cornerRadius": 2,
+                          "id": "v8opad",
+                          "name": "After",
+                          "fill": [
+                            "#d6cab3",
+                            {
+                              "type": "image",
+                              "enabled": true,
+                              "url": "../exports/recognition/result-piece-after.png",
+                              "mode": "contain"
+                            }
+                          ],
+                          "width": 72,
+                          "height": 72
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hurPQ",
+                      "name": "Text",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "NLmIu",
+                          "name": "Name",
+                          "fill": "$color-primary",
+                          "content": "Hachimaki",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "mCYc6",
+                          "name": "Source",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "First practice. NEEDS WORK counts here, too.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "f81AqA",
+                      "name": "Footer",
+                      "width": "fill_container",
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "JuQWU",
+                          "type": "ref",
+                          "ref": "PchKh",
+                          "name": "Try it on",
+                          "descendants": {
+                            "lNC2l": {
+                              "content": "TRY IT ON"
+                            }
+                          }
+                        },
+                        {
+                          "type": "text",
+                          "id": "QIAyX",
+                          "name": "Saved",
+                          "fill": "$color-secondary",
+                          "content": "Saved to your practitioner",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M28mY",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "id": "leIbJ",
+              "type": "ref",
+              "ref": "WDpQp",
+              "width": "fill_container",
+              "descendants": {
+                "NnDrs": {
+                  "content": "Done"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "yc3ph",
+              "name": "Secondary",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "id": "PcHpY",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "One more kata"
+                    }
+                  }
+                },
+                {
+                  "id": "e2gz6",
+                  "type": "ref",
+                  "ref": "oI7dz",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Wuiek": {
+                      "content": "Share"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "themes": {
