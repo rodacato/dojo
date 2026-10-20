@@ -110,7 +110,7 @@ Keep that instrument during the trial. After its decision, experiment with one o
 
 | Decision | Chosen | Rejected / reconsider when |
 |---|---|---|
-| Q1 · Visual mode | Preserve Dojo's Sumi-e identity | Illustrated trophy overhaul; reconsider only with a separate brand decision. |
+| Q1 · Visual mode | ~~Preserve Dojo's Sumi-e identity~~ Superseded by D66: pixel practitioner (easy) + personal dojo (hard) | The Preserve ledger; it was accurate and did not motivate. |
 | Q2 · Next step | Visible requirements in actual units | Surprise-only progress; revisit if practice becomes counter chasing. |
 | Q3 · Rhythm | Daily, automatic rest, actual-day counts remain honest | Weekly as the primary identity; revisit only if the core practice changes. |
 | Q4 · Rewards | Identity; permissions managed separately | Belt-gated proposals/review; no evidence that practice rank measures editorial trust. |

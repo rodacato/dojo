@@ -18,7 +18,7 @@ as context for AI agents.
 | `ui-kit.lib.pen` | **The design library** — tokens + components, mirrored 1:1 from the code |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** (a user journey with enough weight to justify one) |
-| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; Recognition proposal: rank, collection, result receipt and promotion share |
+| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; Recognition proposal: pixel practitioner + personal dojo (D66) |
 | `DECISIONS.md` | The numbered findings registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for design-decided consolidations pending in code |
 | `exports/` | Canvas PNGs for PM/PO/PR review — **committed** (they must travel) |
