@@ -12,7 +12,7 @@
 | Today | [BeltsPage](../../apps/web/src/pages/BeltsPage.tsx) displays a rank, four counters and milestones. [ResultsPage](../../apps/web/src/pages/ResultsPage.tsx) shows the verdict, reasoning and feedback. Stripes, the practitioner, the dojo and the share card are proposed. |
 | Distinctive experience | A short surprise kata, independent reasoning and an honest sensei. Recognition makes the resulting practice history legible; it promises neither expertise nor a kinder verdict. |
 | Existing identity | Keep Open Gate, `dojo_`, the Sumi palette, Inter, JetBrains Mono and existing belt colors. Sources are in the [brand guide](README.md), [DESIGN](../../docs/DESIGN.md) and [main.css](../../apps/web/src/styles/main.css). |
-| Surfaces | `/belts` with Practitioner and Dojo tabs, the post-kata receipt, the collection, a piece detail and the share card. Source: the prototype in `proposals/practitioner/`; review artboards in `design/_playground.pen`. No hosting or publication is requested. |
+| Surfaces | `/belts` with Practitioner and Dojo tabs, the post-kata receipt, the collection, a piece detail and the share card. Source: the prototype in `proposals/practitioner/`; proposed artboards in `design/flows/` (#224). No hosting or publication is requested. |
 
 ## Concept
 
@@ -66,4 +66,4 @@ Existing result, navigation and feedback strings come from their current compone
 
 ## Assets and preview
 
-The PNGs in [exports/recognition](../exports/recognition/README.md) are renders of the prototype, embedded by the `Recognition / Pixel / …` artboards in `design/_playground.pen`. Regenerate them from the prototype; never redraw them on the canvas. They support layout and contrast review only: keyboard interaction, native sharing, persistence and motion require implementation testing.
+The PNGs in [exports/recognition](../exports/recognition/README.md) are renders of the prototype, embedded by the proposed recognition artboards in `flows/app-core.pen` (Belts), `flows/kata.pen` (post-kata receipt) and `flows/public.pen` (share card). Regenerate them from the prototype; never redraw them on the canvas. They support layout and contrast review only: keyboard interaction, native sharing, persistence and motion require implementation testing.

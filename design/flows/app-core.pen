@@ -15397,7 +15397,7 @@
       "type": "frame",
       "id": "p76TsT",
       "x": 0,
-      "y": 4745,
+      "y": 9011,
       "name": "LOG — App core",
       "theme": {
         "theme": "sumi"
@@ -15423,6 +15423,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "kO5hV",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-20 · Recognition (proposed, #224) band added from _playground.pen: practitioner, dojo, furnished room, collection, piece detail; D66. Log moved below the tallest band.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -17588,6 +17601,401 @@
           "width": "fill_container"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "waUj1",
+      "x": 0,
+      "y": 5390,
+      "name": "BRIEF — App core · recognition (proposed)",
+      "theme": {
+        "theme": "sumi"
+      },
+      "width": 640,
+      "fill": "$color-surface",
+      "cornerRadius": 6,
+      "stroke": "$color-border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 14,
+      "padding": 32,
+      "children": [
+        {
+          "type": "text",
+          "id": "s4AqHG",
+          "name": "Title",
+          "fill": "$color-primary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "BRIEF — App core · recognition (proposed · #224)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 13,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "HPt36",
+          "name": "Meta",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "kit-version-source: 0.4.0 · brief-schema: 1 · updated: 2026-10-20 · PROPOSED — not shipped; Belts / Populated above is the shipped screen",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "gIPZJ",
+          "name": "Heading 1. PURPOSE",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "1. PURPOSE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "B174A",
+          "name": "Body 1. PURPOSE",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Proposed /belts: a pixel practitioner you dress with pieces earned by showing up (easy, may be promotional) and a personal dojo furnished with pieces earned by verdicts on hard kata (hard, never promotional). D66.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "Pasc9",
+          "name": "Heading 2. ENTRY POINTS",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2. ENTRY POINTS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "yzOFX",
+          "name": "Body 2. ENTRY POINTS",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "- /belts from the sidebar and bottom nav, as today\n- A piece detail from any tile, Next up row or the room",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "cRfRg",
+          "name": "Heading 3. SCREENS (left → right)",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "3. SCREENS (left → right)",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "v8pPt",
+          "name": "Body 3. SCREENS (left → right)",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "- Belts — Practitioner tab (desktop)\n- Belts — Dojo tab (desktop)\n- Belts — Furnished dojo\n- Collection (mobile)\n- Piece — earned · locked · season preview",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "d3XRuO",
+          "name": "Heading 4. BUSINESS RULES",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "4. BUSINESS RULES",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "EIJrS",
+          "name": "Body 4. BUSINESS RULES",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "- Belt mirrors rank; never a piece, never equippable\n- Practitioner pieces: practice days, a return, a share, seasons, invites\n- Dojo pieces: verdicts on hard kata, each names kata, verdict and date\n- Nothing bought, nothing decays; recognition never changes evaluation",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "FHW73",
+          "name": "Heading 5. COPY SOURCE",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "5. COPY SOURCE",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "k4oPi",
+          "name": "Body 5. COPY SOURCE",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "design/brand/proposals/practitioner/index.html (proposal copy, fictional fixtures). Artboards embed PNGs from design/exports/recognition/ — regenerate from the prototype, never redraw here.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "N1uVEQ",
+          "name": "Heading 6. STATES NOT DRAWN",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "6. STATES NOT DRAWN",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "plEEq",
+          "name": "Body 6. STATES NOT DRAWN",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "- Empty dojo on a new account\n- Season ended\n- Loading and error (reuse current owners)\n- Washi theme, reduced motion",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "G32NFs",
+          "name": "Heading 7. OPEN FINDINGS",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "7. OPEN FINDINGS",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "ivfKH",
+          "name": "Body 7. OPEN FINDINGS",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "D64, D66",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "tImEr",
+          "name": "Heading 8. HISTORY",
+          "fill": "$color-accent",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "8. HISTORY",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal",
+          "letterSpacing": 0.55
+        },
+        {
+          "type": "text",
+          "id": "t9Zlh1",
+          "name": "Body 8. HISTORY",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "→ Log frame, bottom of this file.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Avuhc",
+      "x": 760,
+      "y": 5390,
+      "name": "Belts / Proposed / Practitioner (desktop)",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 3361,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-practitioner-desktop.png",
+        "mode": "contain"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "VLH8r",
+      "x": 2320,
+      "y": 5390,
+      "name": "Belts / Proposed / Dojo (desktop)",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 3232,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-dojo-desktop.png",
+        "mode": "contain"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "xbxkn",
+      "x": 3880,
+      "y": 5390,
+      "name": "Belts / Proposed / Furnished dojo",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1280,
+      "height": 720,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-room-full.png",
+        "mode": "contain"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "yCiSx",
+      "x": 5280,
+      "y": 5390,
+      "name": "Belts / Proposed / Collection (mobile)",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1090,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-collection-mobile.png",
+        "mode": "contain"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "up9Hl",
+      "x": 5790,
+      "y": 5390,
+      "name": "Belts / Proposed / Piece · earned",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 618,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-piece-earned.png",
+        "mode": "contain"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "eCTnP",
+      "x": 6300,
+      "y": 5390,
+      "name": "Belts / Proposed / Piece · locked",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 563,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-piece-locked.png",
+        "mode": "contain"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "N0bXuR",
+      "x": 6810,
+      "y": 5390,
+      "name": "Belts / Proposed / Piece · season preview",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 622,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-piece-preview.png",
+        "mode": "contain"
+      }
     }
   ],
   "themes": {

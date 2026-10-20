@@ -15577,7 +15577,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)",
+          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)\n- Post-kata / Mobile — Proposed · recognition receipt: a new practitioner piece and, after NEEDS WORK, a comeback toward the Moon window (#224, D65, D66; proposal PNG, not shipped)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15685,7 +15685,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D22, D32, D33, D60, D61, D62",
+          "content": "D22, D32, D33, D60, D61, D62, D65, D66",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16012,6 +16012,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "A2Qpc",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-20 · Proposed recognition receipt (#224) added at the end of the Post-kata / Mobile row, moved from _playground.pen",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -21341,6 +21354,25 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "V2nlYd",
+      "x": 11620,
+      "y": 4387,
+      "name": "Post-kata / Mobile / Proposed · recognition receipt",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1090,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-result-mobile.png",
+        "mode": "contain"
+      }
     }
   ],
   "themes": {
