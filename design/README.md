@@ -18,7 +18,7 @@ as context for AI agents.
 | `ui-kit.lib.pen` | **The design library** — tokens + components, mirrored 1:1 from the code |
 | `ui-kit.CHANGELOG.md` | Kit versions and what each bump changed |
 | `flows/*.pen` | **One file per domain** (a user journey with enough weight to justify one) |
-| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; Recognition proposal: pixel practitioner + personal dojo (D66) |
+| `_playground.pen` | Experiments and design ahead of code — vendors the kit like a flow; today: empty |
 | `DECISIONS.md` | The numbered findings registry the `.pen` briefs cite |
 | `CODE_CHANGES.md` | Work order for design-decided consolidations pending in code |
 | `exports/` | Canvas PNGs for PM/PO/PR review — **committed** (they must travel) |
@@ -29,9 +29,9 @@ as context for AI agents.
 
 | File | Screens | Kit | Domain entry point |
 |---|---|---|---|
-| `public.pen` | 13 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
-| `app-core.pen` | 12 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite |
-| `kata.pen` | 25 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results |
+| `public.pen` | 14 | 0.4.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error |
+| `app-core.pen` | 19 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite; proposed recognition (#224) |
+| `kata.pen` | 26 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results |
 | `learn.pen` | 13 | 0.4.0 | Scrolls catalog and player, Engawa playground (mobile too) |
 | `admin.pen` | 16 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health — mobile too |
 
@@ -106,7 +106,7 @@ flow even when nothing renders differently.
 
 1. Design changes go through PRs, like code — atomic with the implementing code when possible.
 2. One person per `.pen` at a time. Kit changes get review.
-3. Nothing moves from `_playground.pen` to `flows/` without cleanup + approval. A screen moves when the code that ships it exists, never before: flows describe what the app does today.
+3. Nothing moves from `_playground.pen` to `flows/` without cleanup + approval. A screen moves when the code that ships it exists, never before: flows describe what the app does today. Exception, by explicit decision: a reviewed proposal may sit in its flow ahead of code as artboards named `… / Proposed / …`, with a brief marked PROPOSED and its issue (recognition, #224). It is replaced by the real screens in the PR that ships them.
 4. Export PNGs of changed flows for PM/PO review.
 
 ## Fidelity loop (design ↔ code)

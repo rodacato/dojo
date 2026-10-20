@@ -15524,7 +15524,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Profile — Default\n- Share — Default",
+          "content": "- Profile — Default\n- Share — Default\n- Share — Proposed · recognition card: practitioner in their dojo, belt and piece counts (#224, D66; proposal PNG, not shipped)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15632,7 +15632,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "D20, D28",
+          "content": "D20, D28, D66",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15697,6 +15697,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "uc3IO",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-20 · Proposed recognition share card (#224) added to the profile & share row, moved from _playground.pen",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -15777,6 +15790,25 @@
           "fontWeight": "normal"
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "gcj81",
+      "x": 3880,
+      "y": 6150,
+      "name": "Share / Proposed · recognition card",
+      "theme": {
+        "theme": "sumi"
+      },
+      "clip": true,
+      "width": 1200,
+      "height": 630,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "../exports/recognition/pixel-share-card.png",
+        "mode": "contain"
+      }
     }
   ],
   "themes": {
