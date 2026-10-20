@@ -187,7 +187,7 @@ describe('GET /u/:username', () => {
     expect(eq).toHaveBeenCalledWith(users.username, 'kenji')
   })
 
-  it('computes passRate as rounded percentage of passed over completed', async () => {
+  it('computes passRate as rounded percentage of passed over eligible practice', async () => {
     seedUser()
     seedSelects({
       total: [{ count: 8 }],
@@ -203,7 +203,7 @@ describe('GET /u/:username', () => {
     expect(body.stats.passRate).toBe(75)
   })
 
-  it('returns passRate 0 when there are no completed sessions (avoids divide-by-zero)', async () => {
+  it('returns passRate 0 when there is no eligible practice (avoids divide-by-zero)', async () => {
     seedUser()
     seedSelects({
       total: [{ count: 0 }],

@@ -141,7 +141,7 @@ describe('PostgresSessionRepository.findById (toSession mapping)', () => {
   })
 })
 
-describe('PostgresSessionRepository.listCompletedKataHistoryForBelt', () => {
+describe('PostgresSessionRepository.listPracticeHistoryForBelt', () => {
   function makeSelectDb(rows: unknown[]): DB {
     const orderBy = vi.fn().mockResolvedValue(rows)
     const where = vi.fn().mockReturnValue({ orderBy })
@@ -158,7 +158,7 @@ describe('PostgresSessionRepository.listCompletedKataHistoryForBelt', () => {
     ])
     const repo = new PostgresSessionRepository(db)
 
-    const history = await repo.listCompletedKataHistoryForBelt(UserId('user-1'))
+    const history = await repo.listPracticeHistoryForBelt(UserId('user-1'))
 
     expect(history).toEqual([
       { startedAt: STARTED, topics: ['recursion', 'trees'] },
@@ -173,7 +173,7 @@ describe('PostgresSessionRepository.listCompletedKataHistoryForBelt', () => {
     ])
     const repo = new PostgresSessionRepository(db)
 
-    const history = await repo.listCompletedKataHistoryForBelt(UserId('user-1'))
+    const history = await repo.listPracticeHistoryForBelt(UserId('user-1'))
 
     expect(history).toEqual([
       { startedAt: STARTED, topics: [] },
@@ -184,7 +184,7 @@ describe('PostgresSessionRepository.listCompletedKataHistoryForBelt', () => {
   it('returns an empty array when there are no completed sessions', async () => {
     const db = makeSelectDb([])
     const repo = new PostgresSessionRepository(db)
-    expect(await repo.listCompletedKataHistoryForBelt(UserId('user-1'))).toEqual([])
+    expect(await repo.listPracticeHistoryForBelt(UserId('user-1'))).toEqual([])
   })
 })
 

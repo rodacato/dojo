@@ -141,7 +141,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 | **Kata feedback** | Optional feedback after each kata, saved with each tap: time limit, the sensei's review, and description clarity — signals feed back into kata quality |
 | **Public share** | Share your verdict via `/share/:id` — public page with sensei quote, kata info, and OG image for social previews |
 | **Admin** | Aggregated feedback per kata and variation, admin notes, kata versioning, archive lifecycle, invitations |
-| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from completed kata count, distinct topic clusters touched, active days, and cooldown at previous rank. The verdict adds no points, but a kata that ends in Needs work does not count as completed (see [ADR 020](docs/adr/020-ubiquitous-language-pass.md)) |
+| **Belts** | Computed rank (white / yellow / green / brown / black) at `/belts` — derived from evaluated kata count, distinct topic clusters touched, active days, and cooldown at previous rank. Any verdict counts, Needs work included; a session that ended without an evaluation does not (see [PRD-031](docs/prd/031-belt-progression-rubric.md#the-hard-constraint)) |
 | **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, consistency streaks. Surfaced alongside the belt on `/belts` |
 | **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
 | **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel |

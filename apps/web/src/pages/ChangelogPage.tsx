@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-10-20',
+    phase: 'Recognition',
+    title: 'Every verdict counts toward your belt',
+    description:
+      "A kata that ends in Needs work now counts as practice, for your belt and for milestones like First kata. Only a session that ended without an evaluation is left out. Your public profile shows your milestones again, and its pass rate is now passes over every evaluated kata.",
+  },
+  {
     date: '2026-10-19',
     phase: 'Practice',
     title: 'Feedback in one tap',

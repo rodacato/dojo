@@ -30,7 +30,7 @@ const makeStubSessionRepo = (session: Session | null = null) => ({
   saveIncompleteAttempt: vi.fn().mockResolvedValue(undefined),
   findById: vi.fn().mockResolvedValue(session),
   findActiveByUserId: vi.fn(),
-  listCompletedKataHistoryForBelt: vi.fn(),
+  listPracticeHistoryForBelt: vi.fn(),
 })
 
 async function* fakeEvaluationStream(tokens: EvaluationToken[]): AsyncIterable<EvaluationToken> {

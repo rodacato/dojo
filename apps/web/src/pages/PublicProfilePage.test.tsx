@@ -42,7 +42,7 @@ function makeProfile(overrides: Partial<PublicProfileData> = {}): PublicProfileD
         status: 'completed',
       },
     ],
-    badges: [{ slug: 'FIRST_KATA', earnedAt: '2026-02-01T00:00:00.000Z' }],
+    milestones: [{ slug: 'FIRST_KATA', earnedAt: '2026-02-01T00:00:00.000Z' }],
     belt: {
       rank: 'green',
       factors: { completed: 42, distinctClusters: 4, activeDays30: 12, daysAtRank: 30 },
@@ -117,7 +117,7 @@ describe('PublicProfilePage', () => {
 
   it('omits the streak badge, badges section and recent kata when empty', async () => {
     getPublicProfile.mockResolvedValue(
-      makeProfile({ streak: 0, badges: [], recentSessions: [] }),
+      makeProfile({ streak: 0, milestones: [], recentSessions: [] }),
     )
 
     renderProfile()

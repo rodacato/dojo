@@ -5,6 +5,7 @@ import { attempts, katas, sessions, userMilestones, users } from '../../persiste
 import { useCases } from '../../container'
 import { UserId } from '../../../domain/shared/types'
 import type { AppEnv } from '../app-env'
+import { isEligiblePractice } from '../../persistence/eligible-practice'
 import { verdictSubquery, calculateStreak } from './query-helpers'
 
 export const profileRoutes = new Hono<AppEnv>()
@@ -33,14 +34,14 @@ profileRoutes.get('/u/:username', async (c) => {
       count: count(),
     })
     .from(sessions)
-    .where(and(eq(sessions.userId, userId), gte(sessions.startedAt, ninetyDaysAgo)))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice(), gte(sessions.startedAt, ninetyDaysAgo)))
     .groupBy(sql`DATE(${sessions.startedAt})`)
 
-  // Total completed
+  // Total practiced, any verdict
   const [totalRow] = await db
     .select({ count: count() })
     .from(sessions)
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice()))
   const totalCompleted = Number(totalRow?.count ?? 0)
 
   // Pass rate
@@ -51,8 +52,7 @@ profileRoutes.get('/u/:username', async (c) => {
     .where(
       and(
         eq(sessions.userId, userId),
-        eq(sessions.status, 'completed'),
-        sql`${attempts.llmResponse}::jsonb->>'verdict' IN ('PASSED', 'PASSED_WITH_NOTES')`,
+        sql`lower(${attempts.llmResponse}::jsonb->>'verdict') IN ('passed', 'passed_with_notes')`,
       ),
     )
   const passed = Number(passedRow?.count ?? 0)
@@ -63,7 +63,7 @@ profileRoutes.get('/u/:username', async (c) => {
     .selectDistinct({ lang: sql<string>`jsonb_array_elements_text(${katas.language})` })
     .from(sessions)
     .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice()))
 
   // Avg time (completed sessions)
   const [avgRow] = await db
@@ -72,7 +72,7 @@ profileRoutes.get('/u/:username', async (c) => {
     })
     .from(sessions)
     .where(
-      and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), sql`${sessions.completedAt} IS NOT NULL`),
+      and(eq(sessions.userId, userId), isEligiblePractice(), sql`${sessions.completedAt} IS NOT NULL`),
     )
 
   // Recent sessions (last 10, public)
@@ -89,7 +89,7 @@ profileRoutes.get('/u/:username', async (c) => {
     })
     .from(sessions)
     .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
+    .where(and(eq(sessions.userId, userId), isEligiblePractice()))
     .orderBy(desc(sessions.startedAt))
     .limit(10)
 

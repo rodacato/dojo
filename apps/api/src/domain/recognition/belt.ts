@@ -27,7 +27,7 @@ export const BELT_THRESHOLDS: Record<Exclude<BeltRank, 'white'>, BeltFactors> = 
   yellow: { completed: 10,  distinctClusters: 2, activeDays30: 5,  daysAtRank: 0   },
   green:  { completed: 40,  distinctClusters: 4, activeDays30: 10, daysAtRank: 21  },
   brown:  { completed: 120, distinctClusters: 6, activeDays30: 15, daysAtRank: 60  },
-  black:  { completed: 300, distinctClusters: 8, activeDays30: 18, daysAtRank: 120 },
+  black:  { completed: 300, distinctClusters: 7, activeDays30: 18, daysAtRank: 120 },
 }
 
 const ASCENDING_RANKS: BeltRank[] = ['white', 'yellow', 'green', 'brown', 'black']
