@@ -6,7 +6,7 @@ import { UserId } from '../../domain/shared/types'
 const day = (n: number) => new Date(Date.UTC(2026, 0, n, 12, 0, 0))
 
 function makeSessionRepo(
-  history: Awaited<ReturnType<SessionRepositoryPort['listPracticeHistoryForBelt']>>,
+  history: Awaited<ReturnType<SessionRepositoryPort['listPracticeHistory']>>,
 ): SessionRepositoryPort {
   return {
     save: vi.fn(),
@@ -15,7 +15,7 @@ function makeSessionRepo(
     saveIncompleteAttempt: vi.fn(),
     findById: vi.fn(),
     findActiveByUserId: vi.fn(),
-    listPracticeHistoryForBelt: vi.fn().mockResolvedValue(history),
+    listPracticeHistory: vi.fn().mockResolvedValue(history),
   }
 }
 
@@ -52,7 +52,7 @@ describe('CalculateBelt', () => {
     const useCase = new CalculateBelt({ sessionRepo: repo, now: () => day(0) })
     await useCase.execute(UserId('user-xyz'))
 
-    expect(repo.listPracticeHistoryForBelt).toHaveBeenCalledWith('user-xyz')
+    expect(repo.listPracticeHistory).toHaveBeenCalledWith('user-xyz')
   })
 
   it('accepts a now() override for deterministic tests', async () => {

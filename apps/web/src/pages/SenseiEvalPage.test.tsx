@@ -62,6 +62,7 @@ function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata 
     ownerRole: 'Staff Engineer',
     finalAttempt: null,
     answer: null,
+    earnedPieces: [],
     kata: {
       id: 'kata-1',
       title: 'Rate Limiter Design',

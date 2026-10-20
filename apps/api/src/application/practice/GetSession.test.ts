@@ -26,7 +26,7 @@ describe('GetSession', () => {
       saveIncompleteAttempt: vi.fn(),
       findById: vi.fn().mockResolvedValue(session),
       findActiveByUserId: vi.fn(),
-      listPracticeHistoryForBelt: vi.fn(),
+      listPracticeHistory: vi.fn(),
     }
 
     const useCase = new GetSession({ sessionRepo })
@@ -44,7 +44,7 @@ describe('GetSession', () => {
       saveIncompleteAttempt: vi.fn(),
       findById: vi.fn().mockResolvedValue(null),
       findActiveByUserId: vi.fn(),
-      listPracticeHistoryForBelt: vi.fn(),
+      listPracticeHistory: vi.fn(),
     }
 
     const useCase = new GetSession({ sessionRepo })

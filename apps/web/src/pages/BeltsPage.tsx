@@ -7,6 +7,7 @@ import { HankoBadge } from '../components/ui/HankoBadge'
 import { BrushstrokeUnderline } from '../components/ui/BrushstrokeUnderline'
 import { useAuth } from '../context/AuthContext'
 import { BELT_COLOR } from '../lib/belt-colors'
+import { PractitionerSection } from '../components/recognition/PractitionerSection'
 import type { BeltDTO, MilestoneDTO } from '@dojo/shared'
 
 interface MilestoneView {
@@ -151,6 +152,8 @@ export function BeltsPage() {
           <Factor label="Days at rank" value={belt.factors.daysAtRank} />
         </dl>
       </header>
+
+      <PractitionerSection />
 
       <section>
         <div className="flex items-end justify-between gap-4 mb-6">

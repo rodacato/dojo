@@ -91,6 +91,7 @@ vi.mock('../../container', () => ({
     startSession: { execute: startSession },
     pickDailyKata: { execute: pickDailyKata },
     getSession: { execute: getSession },
+    piecesEarnedInSession: async () => [],
     generateSessionBody: {
       execute: generateSessionBodyExecute,
       executeStream: generateSessionBodyStream,

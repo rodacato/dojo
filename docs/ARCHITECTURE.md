@@ -185,7 +185,8 @@ class Variation {
 Milestones react to events published by the Practice context, with no direct dependency on Practice code — only on the event contracts. Belts are computed from session history on read.
 
 - **Milestone** — awarded when specific patterns in a user's session history are met
-- **Belt** — rank derived from completed katas, topics touched, active days and cooldown ([ADR 020](adr/020-ubiquitous-language-pass.md))
+- **Belt** — rank derived from evaluated katas (any verdict), topics touched, active days and cooldown ([ADR 020](adr/020-ubiquitous-language-pass.md))
+- **Practitioner** — a pixel avatar with a saved look; its pieces are awarded from practice history after each evaluation, never from the verdict (D66). The catalog lives in `packages/shared/src/practitioner.ts`
 
 ---
 
@@ -204,8 +205,8 @@ Events published by aggregates. The only coupling between bounded contexts.
 |---|---|---|
 | `SessionCreated` | Session | (internal — triggers body generation) |
 | `AttemptSubmitted` | Session | (internal — triggers sensei evaluation) |
-| `SessionCompleted` | Session | Recognition (milestones) |
-| `SessionFailed` | Session | No consumer yet |
+| `SessionCompleted` | Session | Recognition (milestones, practitioner pieces) |
+| `SessionFailed` | Session | Recognition (milestones, practitioner pieces) |
 | `KataPublished` | Kata | No consumer yet |
 
 ---
@@ -233,6 +234,7 @@ The interfaces live next to the aggregates and are the source of truth; this lis
 | `KataRepositoryPort` | `domain/content/ports.ts` |
 | `UserRepositoryPort`, `UserPreferencesPort` | `domain/identity/ports.ts` |
 | `MilestoneRepositoryPort` | `domain/recognition/milestone.ts` |
+| `PractitionerRepositoryPort` | `domain/recognition/practitioner.ts` |
 | `ScrollRepositoryPort`, `ScrollProgressPort`, `ScrollCodeRunnerPort` | `domain/scrolls/ports.ts` |
 | `EventBusPort` — in-memory today, upgradeable to Redis/BullMQ if events must cross processes | `domain/shared/events.ts` |
 

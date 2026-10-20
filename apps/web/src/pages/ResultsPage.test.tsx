@@ -63,6 +63,7 @@ function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata 
     ownerRole: 'staff_engineer',
     finalAttempt: null,
     answer: null,
+    earnedPieces: [],
     ...overrides,
   }
 }

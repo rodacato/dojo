@@ -8,6 +8,7 @@ import { Button } from '../components/ui/Button'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { KataBody } from '../components/ui/KataBody'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
+import { PieceReceipt } from '../components/recognition/PieceReceipt'
 import { ErrorState } from '../components/ui/ErrorState'
 import { stripInsightTags } from '../lib/parse-insight'
 import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
@@ -130,6 +131,9 @@ export function ResultsPage() {
         </CollapsibleRow>
       )}
 
+      {verdict && session.earnedPieces.length > 0 && (
+        <PieceReceipt pieceIds={session.earnedPieces} needsWork={verdict === 'needs_work'} />
+      )}
       {sessionId && (session.status === 'completed' || session.status === 'failed') && (
         <FeedbackSection sessionId={sessionId} />
       )}
