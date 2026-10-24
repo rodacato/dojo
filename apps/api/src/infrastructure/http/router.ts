@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { HTTPException } from 'hono/http-exception'
 import { config } from '../../config'
 import { healthRoutes } from './routes/health'
 import { authRoutes } from './routes/auth'
@@ -23,13 +22,13 @@ import { scrollsRoutes } from './routes/scrolls'
 import { scrollProgressRoutes } from './routes/scroll-progress'
 import { adminScrollsRoutes } from './routes/admin-scrolls'
 import { scrollExecuteRoutes } from './routes/scroll-execute'
-import { domainErrorToStatus } from './domain-error-status'
 import { errorRoutes } from './routes/errors'
 import { landingRoutes } from './routes/landing'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 import { requestIdMiddleware } from './middleware/requestId'
 import { requestLoggerMiddleware } from './middleware/requestLogger'
 import { registerMetrics } from './registerMetrics'
+import { createErrorHandler } from './errorHandler'
 import { errorReporter } from '../container'
 import type { AppEnv } from './app-env'
 
@@ -79,29 +78,7 @@ export function createRouter() {
   app.route('/admin/health', adminHealthRoutes)
   app.route('/', cronPistonSmokeRoutes)
 
-  app.onError((err, c) => {
-    if (err instanceof HTTPException) return err.getResponse()
-
-    if (err.name === 'DomainError') {
-      const code = (err as { code?: string }).code
-      return c.json({ error: err.message, code }, domainErrorToStatus(code))
-    }
-
-    // Fire-and-forget: never block the error response on a reporter issue.
-    // CompositeErrorReporter already swallows per-adapter failures.
-    void errorReporter.report({
-      message: err.message,
-      stack: err.stack,
-      status: 500,
-      source: 'api',
-      route: c.req.path,
-      method: c.req.method,
-      userId: c.get('user')?.id,
-      requestId: c.get('requestId'),
-    })
-
-    return c.json({ error: 'Internal server error' }, 500)
-  })
+  app.onError(createErrorHandler(errorReporter))
 
   return app
 }
