@@ -8,6 +8,131 @@ generated from the conventional commits since the previous tag — see [RELEASIN
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-24
+
+### Added
+
+- show the practitioner on the public profile, retire Sensei Approved
+- pixel practitioner with pieces earned by showing up
+- ask the trial questions above Done, one tap each
+- **web:** turn the eval screen into the result, with the answer
+- **api:** grow the micro kata pilot to thirteen
+- **web:** size settings for thumbs on a phone
+- **api:** let practice preferences shape today's kata
+- **web:** list scrolls, invitations and errors as cards on a phone
+- **web:** make admin usable on a phone
+- **web:** move Engawa's Run to a bottom bar on a phone
+- **web:** turn the katas page into Advanced, three filters and one kata
+- **api:** filter kata options by type and language
+- **web:** open today's kata blind from the dashboard, then one more
+- **api:** pick today's micro kata on the server, and one more after it
+- **web:** tap the line with the bug in a point kata
+- **api:** answer a review kata by pointing at the line with the bug
+- **web:** open as a standalone app from the home screen
+- **web:** let a learner leave an active kata, with a confirmation
+- **web:** raise the type floor on the kata picker and make the empty states say what to do
+- **api:** run the logger on pino and add scripts/logs.sh to read kamal logs
+- **api:** structured logger with request context and a single access-log event
+- **web:** mention icons and link previews in the identity changelog entry
+- **web:** announce the Open Gate identity in the changelog
+- **api:** render share and profile link previews with the Sumi palette and Open Gate mark
+- **web:** brand the document head, set the theme before first paint and tune icon caching
+- **brand:** generate PNG/ICO icons, manifest and the app link preview
+
+### Fixed
+
+- count every evaluated kata as practice for recognition
+- **ci:** pin setup-ruby's version comment to its exact tag
+- **web:** undo a vote that failed to save, and ask even when saved votes fail to load
+- **api:** save the final attempt before the verdict reaches the client
+- **web:** ask for kata feedback on the eval screen again
+- **api:** let the seed update shipped katas without undoing admin edits
+- **web:** keep Engawa above the bottom nav on mobile
+- **brand:** generate the standalone manifest from the brand script
+- **web:** give the kata header actions a 44px target on mobile
+- **api:** start the kata clock when its body is ready, not at creation
+- **scripts:** skip kamal's timestamp prefix so logs.sh can parse each line
+- **web:** tell the learner when Surprise me or a kata pick fails
+- **api:** stop findEligible failing for users with a level or interests set
+- **api:** log the underlying error on a WebSocket failure
+- **web:** rest the brand cursor after five blinks and stop thinning text with antialiased
+- **web:** name the properties each transition animates instead of using transition-all
+- **web:** keep the unsent answer and give a failed evaluation a way out
+- **web:** fix the hero overlap and align the landing and README with what the product does
+- **web:** load the theme bootstrap from a file so the CSP stops blocking it
+- **web:** point the playground ask client and smoke at the /engawa routes, add a per-language e2e
+- **web:** navigate to /engawa/:language when changing the playground language
+- **web:** allow the API WebSocket in the CSP connect-src
+- **web:** use native dialog for Modal and the onboarding overlay, mark the auth bar decorative
+- **api:** count whiteboard and chat kata with the stored lowercase type
+- **api:** match kata types case-insensitively in the dashboard's avoided type
+- **api:** count verdicts in the case the sensei stores them for badges
+- **api:** handle the ask-sensei usage rejection so a failed stream cannot crash the API
+- **api:** stop caching a failed share-card font download
+- **api:** do not render share cards for unfinished sessions
+- **api:** give the sensei its real follow-up question on the second attempt
+- **api:** load sessions that hold an incomplete attempt
+- **api:** stop an evicted WebSocket from unregistering its replacement
+- **api:** keep a malformed WebSocket frame from crashing the process
+- **deploy:** define SCROLL_FRAME_ORIGINS in the web container even when Kamal omits it
+
+### Changed
+
+- **web:** align the lockup, SSR token fallback and stale indigo naming with Open Gate
+
+### Documentation
+
+- **design:** draw the shipped practitioner in its flows
+- **design:** move recognition proposal into its flows
+- **design:** pixel practitioner and personal dojo for recognition
+- define recognition revamp and visual direction
+- **web:** changelog entry for one-tap feedback
+- **web:** changelog entry for the answer after the sensei
+- **adr:** record the surprise daily kata direction
+- **brand:** pitch the daily kata on the social card and meta
+- **web:** changelog entry for settings on a phone
+- **web:** changelog entry for preferences in today's kata
+- pitch one five-minute kata a day across the surface
+- **design:** record D51, the type floor decision and the option that lost
+- say that the configured LLM endpoint receives what you write in a kata
+- **env:** document LOG_LEVEL and the mock sensei knobs in .env.example
+- **brand:** move brand sources and guide to design/brand
+- add the logo to the README and sync brand and theme docs
+- **roadmap:** sync ADR and PRD indexes and drop links to deleted docs
+- **sprints,design:** mark sprint docs as historical and fix stale design findings
+- **specs:** delete specs and research of removed features, annotate stale specs
+- **prd:** mark shipped PRDs and delete those of removed courses
+- **adr:** fix statuses and point dead course links at the archive tag
+- align root and top-level docs with the code
+
+### Maintenance
+
+- **deps:** override fflate to 0.7.5 for GHSA-px8p-9vwx-vf98
+- **deps:** bump satori from 0.56.2 to 0.63.2
+- **deps:** bump @anthropic-ai/sdk from 0.133.0 to 1.3.0
+- **deps:** bump @sentry/vite-plugin from 5.4.1 to 11.9.0
+- **deps:** refresh lockfile within declared ranges
+- **deps:** fold in open Dependabot updates
+- pin Node 24.22.1 and nginx 1.31.8 base images
+- **deps:** bump pnpm/action-setup from 6.0.10 to 6.1.0
+
+### Testing
+
+- **e2e:** give the results page fixture the fields the API always sends
+- **web:** stop ScrollTrigger's sync interval after the landing tests
+- **api:** compare branded kata ids without narrowing the fixture array
+- **api:** run the repository's SQL against a real Postgres in CI
+- **e2e:** wait on the page instead of a fixed delay in the CSP smoke
+
+### CI
+
+- run the deployed smoke nightly and add a browser check for the CSP and signed-in pages
+- add timeouts, concurrency and env-passed inputs to the remaining workflows
+- merge the Piston liveness and smoke workflows into Ops · Piston Health
+- lint workflows with actionlint and zizmor in the quality gate
+- pin actions to commit SHAs and tighten workflow permissions
+- name workflows by category (CI, CD, Release, Ops, Site)
+
 ## [0.2.0] - 2026-10-15
 
 ### Added
