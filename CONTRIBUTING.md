@@ -18,7 +18,7 @@ If you have found a bug or have an idea that is not captured in an issue yet, op
 
 ### Prerequisites
 
-- Node.js >= 24
+- Node.js 24 (exact version in `.nvmrc`)
 - pnpm >= 9
 - Docker + Docker Compose
 - A GitHub OAuth App ([create one here](https://github.com/settings/applications/new))

@@ -1,5 +1,5 @@
 # Stage 1: build
-FROM node:24-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 RUN npm install -g pnpm@9.15.4
 WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc ./
@@ -46,7 +46,7 @@ RUN pnpm --filter=@dojo/shared build
 RUN pnpm --filter=@dojo/web build
 
 # Stage 2: serve with Nginx
-FROM nginx:alpine AS runner
+FROM nginx:1.31.8-alpine AS runner
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 COPY apps/web/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --chmod=755 apps/web/require-api-host.sh /docker-entrypoint.d/10-require-api-host.sh
