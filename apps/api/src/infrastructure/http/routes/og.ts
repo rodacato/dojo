@@ -4,6 +4,7 @@ import { db } from '../../persistence/drizzle/client'
 import { sessions, katas, attempts, users } from '../../persistence/drizzle/schema'
 import { config } from '../../../config'
 import type { AppEnv } from '../app-env'
+import { isUuid } from '../middleware/uuidParam'
 
 export const ogRoutes = new Hono<AppEnv>()
 
@@ -62,6 +63,7 @@ ogRoutes.get('/og/kata/:sessionId', async (c) => {
   }
 
   const { sessionId } = c.req.param()
+  if (!isUuid(sessionId)) return c.redirect(`${config.WEB_URL}/kata/${sessionId}/result`)
 
   const [row] = await db
     .select({

@@ -68,34 +68,44 @@ beforeEach(() => {
 describe('GET /og/kata/:sessionId', () => {
   it('redirects a normal browser straight to the result page (no DB hit)', async () => {
     const app = makeApp()
-    const res = await app.request('/og/kata/sess-1', {
+    const res = await app.request('/og/kata/a1111111-1111-4111-8111-111111111111', {
       headers: { 'user-agent': BROWSER_UA },
     })
 
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/sess-1/result`)
+    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/a1111111-1111-4111-8111-111111111111/result`)
     expect(db.select).not.toHaveBeenCalled()
   })
 
   it('redirects when no user-agent header is present (treated as non-crawler)', async () => {
     const app = makeApp()
-    const res = await app.request('/og/kata/sess-2')
+    const res = await app.request('/og/kata/a2222222-2222-4222-8222-222222222222')
 
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/sess-2/result`)
+    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/a2222222-2222-4222-8222-222222222222/result`)
     expect(db.select).not.toHaveBeenCalled()
   })
 
   it('redirects a crawler to the result page when the session is not found', async () => {
     selectQueue.push([]) // empty result → no row
     const app = makeApp()
-    const res = await app.request('/og/kata/missing', {
+    const res = await app.request('/og/kata/b0000000-0000-4000-8000-000000000000', {
       headers: { 'user-agent': CRAWLER_UA },
     })
 
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/missing/result`)
+    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/b0000000-0000-4000-8000-000000000000/result`)
     expect(db.select).toHaveBeenCalledTimes(1)
+  })
+
+  it('redirects a crawler without querying when the id is not a uuid', async () => {
+    const res = await makeApp().request('/og/kata/not-a-uuid', {
+      headers: { 'user-agent': CRAWLER_UA },
+    })
+
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toBe(`${WEB_URL}/kata/not-a-uuid/result`)
+    expect(db.select).not.toHaveBeenCalled()
   })
 
   it('returns OG HTML with verdict/title/image for a crawler when the session exists', async () => {
@@ -108,7 +118,7 @@ describe('GET /og/kata/:sessionId', () => {
       },
     ])
     const app = makeApp()
-    const res = await app.request('/og/kata/sess-7', {
+    const res = await app.request('/og/kata/a7777777-7777-4777-8777-777777777777', {
       headers: { 'user-agent': CRAWLER_UA },
     })
 
@@ -124,9 +134,9 @@ describe('GET /og/kata/:sessionId', () => {
     expect(html).toContain(
       '<meta property="og:description" content="@rodacato completed a CODE kata in the dojo.">',
     )
-    expect(html).toContain(`<meta property="og:url" content="${WEB_URL}/kata/sess-7/result">`)
+    expect(html).toContain(`<meta property="og:url" content="${WEB_URL}/kata/a7777777-7777-4777-8777-777777777777/result">`)
     // image meta is emitted because image is set
-    expect(html).toContain('/share/sess-7.png">')
+    expect(html).toContain('/share/a7777777-7777-4777-8777-777777777777.png">')
     expect(html).toContain('<meta name="twitter:card" content="summary_large_image">')
   })
 
@@ -140,7 +150,7 @@ describe('GET /og/kata/:sessionId', () => {
       },
     ])
     const app = makeApp()
-    const res = await app.request('/og/kata/sess-9', {
+    const res = await app.request('/og/kata/a9999999-9999-4999-8999-999999999999', {
       headers: { 'user-agent': CRAWLER_UA },
     })
 
@@ -159,7 +169,7 @@ describe('GET /og/kata/:sessionId', () => {
       },
     ])
     const app = makeApp()
-    const res = await app.request('/og/kata/sess-x', {
+    const res = await app.request('/og/kata/a0000000-0000-4000-8000-000000000000', {
       headers: { 'user-agent': CRAWLER_UA },
     })
 

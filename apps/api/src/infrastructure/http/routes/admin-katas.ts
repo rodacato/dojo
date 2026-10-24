@@ -7,6 +7,7 @@ import { useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
 import { attempts, katas, invitations, kataFeedback, sessions, users, variations } from '../../persistence/drizzle/schema'
 import { requireAuth, requireCreator } from '../middleware/auth'
+import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
 import { log } from '../../observability/logger'
 
@@ -64,7 +65,7 @@ adminKatasRoutes.get('/katas', async (c) => {
 // GET /katas/:id
 // ---------------------------------------------------------------------------
 
-adminKatasRoutes.get('/katas/:id', async (c) => {
+adminKatasRoutes.get('/katas/:id', uuidParam('id', { error: 'Kata not found' }), async (c) => {
   const kataId = c.req.param('id')
   const kata = await useCases.getKataById.execute(KataId(kataId))
   if (!kata) return c.json({ error: 'Kata not found' }, 404)
@@ -94,7 +95,7 @@ adminKatasRoutes.get('/katas/:id', async (c) => {
 // GET /katas/:id/feedback — Aggregated feedback for kata
 // ---------------------------------------------------------------------------
 
-adminKatasRoutes.get('/katas/:id/feedback', async (c) => {
+adminKatasRoutes.get('/katas/:id/feedback', uuidParam('id', { error: 'Kata not found' }), async (c) => {
   const kataId = c.req.param('id')
 
   const feedbackRows = await db
@@ -168,7 +169,7 @@ const updateKataSchema = z.object({
     .min(1),
 })
 
-adminKatasRoutes.put('/katas/:id', async (c) => {
+adminKatasRoutes.put('/katas/:id', uuidParam('id', { error: 'Kata not found' }), async (c) => {
   const kataId = c.req.param('id')
   const body = await c.req.json()
   const parsed = updateKataSchema.safeParse(body)
@@ -213,7 +214,7 @@ adminKatasRoutes.put('/katas/:id', async (c) => {
 // POST /katas/:id/archive — Archive an kata
 // ---------------------------------------------------------------------------
 
-adminKatasRoutes.post('/katas/:id/archive', async (c) => {
+adminKatasRoutes.post('/katas/:id/archive', uuidParam('id', { error: 'Kata not found' }), async (c) => {
   const kataId = c.req.param('id')
   await db
     .update(katas)

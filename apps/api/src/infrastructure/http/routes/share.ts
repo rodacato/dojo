@@ -10,6 +10,7 @@ import {
   users,
 } from '../../persistence/drizzle/schema'
 import type { AppEnv } from '../app-env'
+import { isUuid, uuidParam } from '../middleware/uuidParam'
 
 export const shareRoutes = new Hono<AppEnv>()
 
@@ -73,6 +74,7 @@ function h(type: string, style: Record<string, unknown>, ...children: unknown[])
 
 shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
   const sessionId = c.req.param('sessionId').replace(/\.png$/, '')
+  if (!isUuid(sessionId)) return c.json({ error: 'Session not found' }, 404)
 
   const [row] = await db
     .select({
@@ -203,11 +205,8 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
 // GET /share/:sessionId — Public share data (JSON)
 // ---------------------------------------------------------------------------
 
-shareRoutes.get('/share/:sessionId', async (c) => {
+shareRoutes.get('/share/:sessionId', uuidParam('sessionId', { error: 'Not found' }), async (c) => {
   const sessionId = c.req.param('sessionId')
-
-  // Don't match .png requests
-  if (sessionId.endsWith('.png')) return c.notFound()
 
   const [row] = await db
     .select({

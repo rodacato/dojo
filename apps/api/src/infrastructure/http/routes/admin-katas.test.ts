@@ -248,7 +248,7 @@ describe('GET /admin/katas', () => {
   it('maps rows, coerces counts to Number and serialises createdAt', async () => {
     selectQueue.push([
       {
-        id: 'k-1',
+        id: '11111111-1111-4111-8111-111111111111',
         title: 'Kata One',
         type: 'code',
         difficulty: 'easy',
@@ -266,7 +266,7 @@ describe('GET /admin/katas', () => {
     const body = (await res.json()) as Array<Record<string, unknown>>
     expect(body).toHaveLength(1)
     expect(body[0]).toEqual({
-      id: 'k-1',
+      id: '11111111-1111-4111-8111-111111111111',
       title: 'Kata One',
       type: 'code',
       difficulty: 'easy',
@@ -282,7 +282,7 @@ describe('GET /admin/katas', () => {
   it('preserves a null avgScore (no sessions/attempts) instead of coercing to 0', async () => {
     selectQueue.push([
       {
-        id: 'k-2',
+        id: '22222222-2222-4222-8222-222222222222',
         title: 'Kata Two',
         type: 'chat',
         difficulty: 'hard',
@@ -323,7 +323,7 @@ describe('GET /admin/katas', () => {
 describe('GET /admin/katas/:id', () => {
   function fullKata(overrides: Record<string, unknown> = {}) {
     return {
-      id: 'k-1',
+      id: '11111111-1111-4111-8111-111111111111',
       title: 'Kata One',
       description: 'desc',
       durationMinutes: 30,
@@ -344,12 +344,12 @@ describe('GET /admin/katas/:id', () => {
 
   it('passes the path param to the use case and maps the result', async () => {
     getKataById.mockResolvedValue(fullKata())
-    const res = await makeApp().request('/admin/katas/k-1')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111')
     expect(res.status).toBe(200)
-    expect(getKataById).toHaveBeenCalledWith('k-1')
+    expect(getKataById).toHaveBeenCalledWith('11111111-1111-4111-8111-111111111111')
 
     expect(await res.json()).toEqual({
-      id: 'k-1',
+      id: '11111111-1111-4111-8111-111111111111',
       title: 'Kata One',
       description: 'desc',
       duration: 30,
@@ -367,7 +367,7 @@ describe('GET /admin/katas/:id', () => {
 
   it('defaults version to 1 and adminNotes to null when absent', async () => {
     getKataById.mockResolvedValue(fullKata({ version: null, adminNotes: null }))
-    const res = await makeApp().request('/admin/katas/k-1')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111')
     const body = (await res.json()) as { version: number; adminNotes: string | null }
     expect(body.version).toBe(1)
     expect(body.adminNotes).toBeNull()
@@ -375,14 +375,21 @@ describe('GET /admin/katas/:id', () => {
 
   it('returns 404 when the kata is not found', async () => {
     getKataById.mockResolvedValue(null)
-    const res = await makeApp().request('/admin/katas/missing')
+    const res = await makeApp().request('/admin/katas/99999999-9999-4999-8999-999999999999')
     expect(res.status).toBe(404)
     expect(await res.json()).toEqual({ error: 'Kata not found' })
   })
 
+  it('returns 404 without loading anything when the id is not a uuid', async () => {
+    const res = await makeApp().request('/admin/katas/not-a-uuid')
+    expect(res.status).toBe(404)
+    expect(await res.json()).toEqual({ error: 'Kata not found' })
+    expect(getKataById).not.toHaveBeenCalled()
+  })
+
   it('returns 500 when the use case rejects', async () => {
     getKataById.mockRejectedValue(new Error('repo blew up'))
-    const res = await makeApp().request('/admin/katas/k-1')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111')
     expect(res.status).toBe(500)
   })
 })
@@ -394,7 +401,7 @@ describe('GET /admin/katas/:id', () => {
 describe('GET /admin/katas/:id/feedback', () => {
   function fb(overrides: Record<string, unknown> = {}) {
     return {
-      kataId: 'k-1',
+      kataId: '11111111-1111-4111-8111-111111111111',
       variationId: 'v-1',
       clarity: 'clear',
       timing: 'just_right',
@@ -407,7 +414,7 @@ describe('GET /admin/katas/:id/feedback', () => {
 
   it('returns the empty-aggregate shape when there is no feedback', async () => {
     selectQueue.push([])
-    const res = await makeApp().request('/admin/katas/k-1/feedback')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/feedback')
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({
       total: 0,
@@ -418,7 +425,7 @@ describe('GET /admin/katas/:id/feedback', () => {
       byVariation: {},
     })
     // WHERE built from the path param.
-    expect(eq).toHaveBeenCalledWith(kataFeedback.kataId, 'k-1')
+    expect(eq).toHaveBeenCalledWith(kataFeedback.kataId, '11111111-1111-4111-8111-111111111111')
   })
 
   it('aggregates signal counts, groups by variation and collects notes', async () => {
@@ -428,7 +435,7 @@ describe('GET /admin/katas/:id/feedback', () => {
       fb({ variationId: 'v-2', clarity: 'confusing', timing: 'just_right', evaluation: 'harsh', note: 'meh' }),
     ])
 
-    const res = await makeApp().request('/admin/katas/k-1/feedback')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/feedback')
     expect(res.status).toBe(200)
     const body = (await res.json()) as {
       total: number
@@ -467,7 +474,7 @@ describe('GET /admin/katas/:id/feedback', () => {
     selectQueue.push([
       fb({ clarity: null, timing: null, evaluation: null, note: null }),
     ])
-    const res = await makeApp().request('/admin/katas/k-1/feedback')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/feedback')
     const body = (await res.json()) as {
       total: number
       clarity: Record<string, number>
@@ -482,7 +489,7 @@ describe('GET /admin/katas/:id/feedback', () => {
     dbSelect.mockImplementationOnce(() => {
       throw new Error('db down')
     })
-    const res = await makeApp().request('/admin/katas/k-1/feedback')
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/feedback')
     expect(res.status).toBe(500)
   })
 })
@@ -493,7 +500,7 @@ describe('GET /admin/katas/:id/feedback', () => {
 
 describe('PUT /admin/katas/:id', () => {
   it('updates the kata, replaces variations, and returns ok', async () => {
-    const res = await jsonReq('/admin/katas/k-1', 'PUT', validKataBody({
+    const res = await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', validKataBody({
       languages: ['python', 'go'],
       tags: ['a', 'b'],
       topics: ['x'],
@@ -518,19 +525,19 @@ describe('PUT /admin/katas/:id', () => {
     expect(setArg.status).toBe('published')
     expect(setArg.adminNotes).toBe('note')
     // WHERE on the kata id from the path param.
-    expect(eq).toHaveBeenCalledWith(katas.id, 'k-1')
+    expect(eq).toHaveBeenCalledWith(katas.id, '11111111-1111-4111-8111-111111111111')
 
     // Old variations deleted, then one insert per new variation.
     expect(dbDelete).toHaveBeenCalledWith(variations)
-    expect(eq).toHaveBeenCalledWith(variations.kataId, 'k-1')
+    expect(eq).toHaveBeenCalledWith(variations.kataId, '11111111-1111-4111-8111-111111111111')
     expect(dbInsert).toHaveBeenCalledTimes(2)
     expect(insertValues).toHaveBeenNthCalledWith(1, expect.objectContaining({
-      kataId: 'k-1',
+      kataId: '11111111-1111-4111-8111-111111111111',
       ownerRole: 'r1',
       ownerContext: 'c1',
     }))
     expect(insertValues).toHaveBeenNthCalledWith(2, expect.objectContaining({
-      kataId: 'k-1',
+      kataId: '11111111-1111-4111-8111-111111111111',
       ownerRole: 'r2',
       ownerContext: 'c2',
     }))
@@ -539,33 +546,33 @@ describe('PUT /admin/katas/:id', () => {
   it('omits status from the SET when status is not supplied', async () => {
     const body = validKataBody()
     delete (body as Record<string, unknown>).status
-    await jsonReq('/admin/katas/k-1', 'PUT', body)
+    await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', body)
     const setArg = updateSet.mock.calls[0][0] as Record<string, unknown>
     expect('status' in setArg).toBe(false)
   })
 
   it('persists adminNotes:null when explicitly null (distinct from omitted)', async () => {
-    await jsonReq('/admin/katas/k-1', 'PUT', validKataBody({ adminNotes: null }))
+    await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', validKataBody({ adminNotes: null }))
     const setArg = updateSet.mock.calls[0][0] as Record<string, unknown>
     expect('adminNotes' in setArg).toBe(true)
     expect(setArg.adminNotes).toBeNull()
   })
 
   it('returns 400 when the body fails schema validation (bad difficulty)', async () => {
-    const res = await jsonReq('/admin/katas/k-1', 'PUT', validKataBody({ difficulty: 'extreme' }))
+    const res = await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', validKataBody({ difficulty: 'extreme' }))
     expect(res.status).toBe(400)
     expect(await res.json()).toEqual({ error: 'Invalid request body' })
     expect(dbUpdate).not.toHaveBeenCalled()
   })
 
   it('returns 400 when variations is empty (min(1))', async () => {
-    const res = await jsonReq('/admin/katas/k-1', 'PUT', validKataBody({ variations: [] }))
+    const res = await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', validKataBody({ variations: [] }))
     expect(res.status).toBe(400)
     expect(dbUpdate).not.toHaveBeenCalled()
   })
 
   it('returns 500 when the body is not valid JSON', async () => {
-    const res = await makeApp().request('/admin/katas/k-1', {
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: 'not-json',
@@ -575,7 +582,7 @@ describe('PUT /admin/katas/:id', () => {
 
   it('returns 500 when the update query rejects', async () => {
     updateWhere.mockRejectedValueOnce(new Error('constraint'))
-    const res = await jsonReq('/admin/katas/k-1', 'PUT', validKataBody())
+    const res = await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', validKataBody())
     expect(res.status).toBe(500)
   })
 })
@@ -586,19 +593,19 @@ describe('PUT /admin/katas/:id', () => {
 
 describe('POST /admin/katas/:id/archive', () => {
   it('sets status archived for the path id and returns ok', async () => {
-    const res = await makeApp().request('/admin/katas/k-1/archive', { method: 'POST' })
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/archive', { method: 'POST' })
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
 
     expect(dbUpdate).toHaveBeenCalledWith(katas)
     const setArg = updateSet.mock.calls[0][0] as Record<string, unknown>
     expect(setArg.status).toBe('archived')
-    expect(eq).toHaveBeenCalledWith(katas.id, 'k-1')
+    expect(eq).toHaveBeenCalledWith(katas.id, '11111111-1111-4111-8111-111111111111')
   })
 
   it('returns 500 when the archive update rejects', async () => {
     updateWhere.mockRejectedValueOnce(new Error('db down'))
-    const res = await makeApp().request('/admin/katas/k-1/archive', { method: 'POST' })
+    const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/archive', { method: 'POST' })
     expect(res.status).toBe(500)
   })
 })
