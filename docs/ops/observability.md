@@ -7,7 +7,7 @@ What an instance exposes for monitoring, and how to recover its moving parts. De
 
 The API logs through [pino](https://getpino.io): one JSON object per line on stdout, which `kamal app logs` shows as they happen. In `development` the same events print as readable lines instead.
 
-Every event has `level` (pino's numeric levels: 20 debug, 30 info, 40 warn, 50 error), `time` and `evt` (a `domain.action` name such as `http.request`, `llm.response`, `ws.handler_failed`). Everything that runs inside a request also carries `requestId` — the same id returned in the `X-Request-Id` response header and stored with the error report — so one request can be followed across access log, LLM calls and errors. Errors are logged under `err` as `{ type, message, stack }`, never as free text. Authorization and cookie headers and `token`/`password` fields are redacted wherever they appear.
+Every event has `level` (the label: `debug`, `info`, `warn`, `error`), `time` (ISO 8601, UTC) and `evt` (a `domain.action` name such as `http.request`, `llm.response`, `ws.handler_failed`). There is no `pid` or `hostname`. Everything that runs inside a request also carries `request_id` — the same id returned in the `X-Request-Id` response header and stored with the error report — so one request can be followed across access log, LLM calls and errors. Errors are logged under `err` as `{ type, message, stack }` inside the same line, never as free text. Nothing in the server writes to stdout outside the logger, including boot-time config errors (`config.invalid_env`, `config.refused_to_start`). Authorization and cookie headers and `token`/`password` fields are redacted wherever they appear.
 
 `http.request` is the access log: `method`, `route` (the matched pattern), `path`, `status`, `durationMs` and `userId` when authenticated. 2xx/3xx are `info`, 4xx `warn`, 5xx `error`; successful `/health` and `/metrics` probes are not logged.
 
@@ -20,13 +20,13 @@ Every event has `level` (pino's numeric levels: 20 debug, 30 info, 40 warn, 50 e
 ```bash
 scripts/logs.sh -f                # follow
 scripts/logs.sh -l warn           # warn and above
-scripts/logs.sh -r <requestId>    # one request, end to end (the id is in the X-Request-Id header)
+scripts/logs.sh -r <request_id>   # one request, end to end (the id is in the X-Request-Id header)
 scripts/logs.sh -e llm.           # events whose name contains "llm."
 scripts/logs.sh -s 1h -n 500      # time window and size
 scripts/logs.sh -w                # the web app instead of the API
 ```
 
-Without the script, filter the raw stream: `kamal app logs -c config/deploy.api.yml --grep '"level":50'`.
+Without the script, filter the raw stream: `kamal app logs -c config/deploy.api.yml --grep '"level":"error"'`.
 
 ## Error reporting
 
@@ -65,7 +65,7 @@ The API can expose Prometheus metrics at `GET /metrics` on the main app port —
 | `METRICS_ENABLED` | variable | `false` | The gate. OFF mounts nothing — no endpoint, no default metrics, no middleware (zero overhead). |
 | `METRICS_TOKEN` | secret | — | Bearer token guarding `/metrics`. Generate with `openssl rand -hex 32`. |
 
-**Opt-in and token-gated.** Metrics are off by default. The token alone enables nothing — `METRICS_ENABLED` turns it on. With metrics enabled in production and **no** token set, `/metrics` returns `404` rather than serve data unauthenticated. In development with no token, the endpoint is open for convenience. The token is compared in constant time (SHA-256 + `timingSafeEqual`).
+**Opt-in and token-gated.** Metrics are off by default. The token alone enables nothing — `METRICS_ENABLED` turns it on. With metrics enabled and **no** token set, `/metrics` returns `404` in every environment rather than serve data unauthenticated; a wrong or missing bearer returns `401`. The token is compared in constant time (SHA-256 + `timingSafeEqual`).
 
 `/metrics` is mounted **before** the rate limiters — like `/health`, scraping is never throttled.
 

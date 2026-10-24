@@ -14,7 +14,7 @@ function levelFor(status: number): 'info' | 'warn' | 'error' {
 export const requestLoggerMiddleware: MiddlewareHandler<AppEnv> = async (c, next) => {
   const startedAt = performance.now()
 
-  await runWithLogContext({ requestId: c.get('requestId') }, async () => {
+  await runWithLogContext({ request_id: c.get('requestId') }, async () => {
     await next()
 
     const status = c.res.status

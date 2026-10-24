@@ -89,13 +89,17 @@ describe('boot', () => {
   })
 
   it('exits at boot naming the variable that holds an unknown value', () => {
-    let failure: { status: number; stderr: string } | undefined
+    let failure: { status: number; stdout: string } | undefined
     try {
       boot({ FF_PLAYGROUND_CONSOLE_ENABLED: 'off' })
     } catch (error) {
-      failure = error as { status: number; stderr: string }
+      failure = error as { status: number; stdout: string }
     }
     expect(failure?.status).toBe(1)
-    expect(failure?.stderr).toContain('FF_PLAYGROUND_CONSOLE_ENABLED')
+    expect(JSON.parse(failure!.stdout)).toMatchObject({
+      level: 'error',
+      evt: 'config.invalid_env',
+      fieldErrors: { FF_PLAYGROUND_CONSOLE_ENABLED: expect.any(Array) },
+    })
   })
 })

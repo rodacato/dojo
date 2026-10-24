@@ -50,7 +50,6 @@ export function createRouter() {
   registerMetrics(app, {
     enabled: config.METRICS_ENABLED,
     token: config.METRICS_TOKEN,
-    isProduction: config.NODE_ENV === 'production',
   })
 
   app.use('*', globalLimiter)

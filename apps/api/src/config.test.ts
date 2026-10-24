@@ -1,6 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type * as CreateLoggerModule from './infrastructure/observability/createLogger'
 
 class ExitCalled extends Error {}
+
+const written = vi.hoisted(() => [] as string[])
+
+vi.mock('./infrastructure/observability/createLogger', async () => {
+  const actual = await vi.importActual<typeof CreateLoggerModule>('./infrastructure/observability/createLogger')
+  return {
+    ...actual,
+    createLogger: (opts: CreateLoggerModule.LoggerOptions) =>
+      actual.createLogger({ ...opts, destination: { write: (line) => void written.push(line) } }),
+  }
+})
 
 async function loadConfig(env: Record<string, string>) {
   vi.resetModules()
@@ -9,15 +21,10 @@ async function loadConfig(env: Record<string, string>) {
 }
 
 describe('SCROLL_FRAME_ORIGINS', () => {
-  let errors: string[]
-
   beforeEach(() => {
-    errors = []
+    written.length = 0
     vi.spyOn(process, 'exit').mockImplementation(() => {
       throw new ExitCalled()
-    })
-    vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
-      errors.push(args.map(String).join(' '))
     })
   })
 
@@ -40,7 +47,7 @@ describe('SCROLL_FRAME_ORIGINS', () => {
 
   it('refuses to boot on an invalid value and names the variable', async () => {
     await expect(loadConfig({ SCROLL_FRAME_ORIGINS: 'https://*.example.org' })).rejects.toThrow(ExitCalled)
-    expect(errors.join('\n')).toContain('SCROLL_FRAME_ORIGINS')
+    expect(written.join('')).toContain('SCROLL_FRAME_ORIGINS')
   })
 
   it('refuses loopback http in production', async () => {
@@ -51,6 +58,6 @@ describe('SCROLL_FRAME_ORIGINS', () => {
         SCROLL_FRAME_ORIGINS: 'http://localhost:5174',
       }),
     ).rejects.toThrow(ExitCalled)
-    expect(errors.join('\n')).toContain('SCROLL_FRAME_ORIGINS')
+    expect(written.join('')).toContain('SCROLL_FRAME_ORIGINS')
   })
 })
