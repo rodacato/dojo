@@ -57,6 +57,8 @@ const MOCK_SESSION = {
     isFinalEvaluation: true,
     submittedAt: '2026-04-15T10:12:00.000Z',
   },
+  answer: null,
+  earnedPieces: [],
 }
 
 test.describe('Results page — post-kata insight (Sprint 012)', () => {
