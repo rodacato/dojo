@@ -150,6 +150,13 @@ afterEach(() => {
 // GET /share/:sessionId.png — OG card image
 // ===========================================================================
 describe('GET /share/:sessionId.png', () => {
+  it('returns 404 without querying for an id that is not a uuid', async () => {
+    const res = await makeApp().request('/share/not-a-uuid.png')
+
+    expect(res.status).toBe(404)
+    expect(db.select).not.toHaveBeenCalled()
+  })
+
   it('renders a 200 image/png with the long-cache header for an existing session', async () => {
     selectQueue.push([sessionRow()])
     const res = await makeApp().request(`/share/${SESSION_ID}.png`)
@@ -251,6 +258,13 @@ describe('GET /share/:sessionId.png', () => {
 // GET /share/:sessionId — public share JSON
 // ===========================================================================
 describe('GET /share/:sessionId', () => {
+  it('returns 404 without querying for an id that is not a uuid', async () => {
+    const res = await makeApp().request('/share/not-a-uuid')
+
+    expect(res.status).toBe(404)
+    expect(db.select).not.toHaveBeenCalled()
+  })
+
   it('returns mapped share data with an extracted pull quote for a completed session', async () => {
     selectQueue.push([sessionRow()])
     const res = await makeApp().request(`/share/${SESSION_ID}`)

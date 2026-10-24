@@ -5,6 +5,7 @@ import { db } from '../../persistence/drizzle/client'
 import { kataFeedback, sessions } from '../../persistence/drizzle/schema'
 import { saveKataFeedback } from '../../persistence/kata-feedback'
 import { requireAuth } from '../middleware/auth'
+import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
 
 export const feedbackRoutes = new Hono<AppEnv>()
@@ -13,7 +14,7 @@ export const feedbackRoutes = new Hono<AppEnv>()
 // POST /sessions/:id/feedback — Save kata feedback, one vote at a time (D62)
 // ---------------------------------------------------------------------------
 
-feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
+feedbackRoutes.post('/sessions/:id/feedback', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }
   const sessionId = c.req.param('id')!
 
@@ -51,7 +52,7 @@ feedbackRoutes.post('/sessions/:id/feedback', requireAuth, async (c) => {
 // GET /sessions/:id/feedback — Check if feedback exists for a session
 // ---------------------------------------------------------------------------
 
-feedbackRoutes.get('/sessions/:id/feedback', requireAuth, async (c) => {
+feedbackRoutes.get('/sessions/:id/feedback', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }
   const sessionId = c.req.param('id')!
 

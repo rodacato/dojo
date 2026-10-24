@@ -47,7 +47,7 @@ import { Hono } from 'hono'
 
 const USER_ID = 'user-1'
 const AUTH = { Authorization: `Bearer ${USER_ID}` }
-const SESSION_ID = 'sess-1'
+const SESSION_ID = 'c1111111-1111-4111-8111-111111111111'
 
 function makeApp() {
   const app = new Hono()

@@ -183,7 +183,7 @@ function makeApp() {
 }
 
 const KATA_UUID = '11111111-1111-4111-8111-111111111111'
-const SESSION_ID = 'sess-1'
+const SESSION_ID = 'c1111111-1111-4111-8111-111111111111'
 
 function authedUser(over: Record<string, unknown> = {}) {
   return {
@@ -575,6 +575,14 @@ describe('GET /sessions/:id', () => {
     const res = await get()
     expect(res.status).toBe(404)
     expect(await res.json()).toEqual({ error: 'Session not found' })
+  })
+
+  it('returns 404 without loading anything when the id is not a uuid', async () => {
+    authState.user = authedUser()
+    const res = await get('not-a-uuid')
+    expect(res.status).toBe(404)
+    expect(await res.json()).toEqual({ error: 'Session not found' })
+    expect(getSession).not.toHaveBeenCalled()
   })
 
   it('returns 403 when the session belongs to another user', async () => {

@@ -14,6 +14,7 @@ import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
 import { attempts, errors, playgroundRuns, sessions, users } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
+import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
 import { pendingAttempts } from './pending-attempts'
 import { log } from '../../observability/logger'
@@ -251,7 +252,7 @@ async function trackPlaygroundConversion(
 // GET /sessions/:id
 // ---------------------------------------------------------------------------
 
-practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
+practiceRoutes.get('/sessions/:id', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }
   const sessionId = c.req.param('id')!
 
@@ -327,7 +328,7 @@ practiceRoutes.get('/sessions/:id', requireAuth, async (c) => {
 
 const inFlightStreams = new Set<string>()
 
-practiceRoutes.get('/sessions/:id/body-stream', requireAuth, async (c) => {
+practiceRoutes.get('/sessions/:id/body-stream', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   if (!config.FF_LLM_PREP_STREAMING_ENABLED) {
     return c.json({ error: 'Not found' }, 404)
   }
@@ -394,7 +395,7 @@ const submitAttemptSchema = z.object({
   pointedLine: z.number().int().positive().optional(),
 })
 
-practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
+practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }
   const sessionId = c.req.param('id')!
 
@@ -439,7 +440,7 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, async (c) => {
 // POST /sessions/:id/retry-evaluation — Re-evaluate when LLM failed
 // ---------------------------------------------------------------------------
 
-practiceRoutes.post('/sessions/:id/retry-evaluation', requireAuth, async (c) => {
+practiceRoutes.post('/sessions/:id/retry-evaluation', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }
   const sessionId = c.req.param('id')!
 
