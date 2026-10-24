@@ -12,7 +12,7 @@ generated from the conventional commits since the previous tag — see [RELEASIN
 
 ### Added
 
-- show the practitioner on the public profile, retire Sensei Approved
+- show the practitioner on the public profile
 - pixel practitioner with pieces earned by showing up
 - ask the trial questions above Done, one tap each
 - **web:** turn the eval screen into the result, with the answer
@@ -33,8 +33,6 @@ generated from the conventional commits since the previous tag — see [RELEASIN
 - **web:** raise the type floor on the kata picker and make the empty states say what to do
 - **api:** run the logger on pino and add scripts/logs.sh to read kamal logs
 - **api:** structured logger with request context and a single access-log event
-- **web:** mention icons and link previews in the identity changelog entry
-- **web:** announce the Open Gate identity in the changelog
 - **api:** render share and profile link previews with the Sumi palette and Open Gate mark
 - **web:** brand the document head, set the theme before first paint and tune icon caching
 - **brand:** generate PNG/ICO icons, manifest and the app link preview
@@ -76,12 +74,22 @@ generated from the conventional commits since the previous tag — see [RELEASIN
 - **api:** keep a malformed WebSocket frame from crashing the process
 - **deploy:** define SCROLL_FRAME_ORIGINS in the web container even when Kamal omits it
 
+### Security
+
+- pin Node 24.22.1, the October 2026 security release (CVE-2026-111497, a Brotli out-of-bounds write in `node:zlib`, among others). Rebuild and redeploy both images
+- pin nginx 1.31.8, which carries the 1.31.7 fixes for CVE-2026-15176 and CVE-2026-93479
+- **deps:** override fflate to 0.7.5 for GHSA-px8p-9vwx-vf98
+- **deps:** clear the open `undici` advisories with the lockfile refresh
+
 ### Changed
 
+- stop awarding Sensei Approved, which rewarded a favorable verdict. Anyone who earned it keeps it, labeled Legacy, and it no longer counts toward the earnable total on /belts
 - **web:** align the lockup, SSR token fallback and stale indigo naming with Open Gate
 
 ### Documentation
 
+- **web:** mention icons and link previews in the identity changelog entry
+- **web:** announce the Open Gate identity in the changelog
 - **design:** draw the shipped practitioner in its flows
 - **design:** move recognition proposal into its flows
 - **design:** pixel practitioner and personal dojo for recognition
@@ -107,13 +115,11 @@ generated from the conventional commits since the previous tag — see [RELEASIN
 
 ### Maintenance
 
-- **deps:** override fflate to 0.7.5 for GHSA-px8p-9vwx-vf98
 - **deps:** bump satori from 0.56.2 to 0.63.2
 - **deps:** bump @anthropic-ai/sdk from 0.133.0 to 1.3.0
 - **deps:** bump @sentry/vite-plugin from 5.4.1 to 11.9.0
 - **deps:** refresh lockfile within declared ranges
 - **deps:** fold in open Dependabot updates
-- pin Node 24.22.1 and nginx 1.31.8 base images
 - **deps:** bump pnpm/action-setup from 6.0.10 to 6.1.0
 
 ### Testing
