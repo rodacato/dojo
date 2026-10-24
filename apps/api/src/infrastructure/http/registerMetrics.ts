@@ -6,7 +6,6 @@ import { initMetrics } from '../observability/prometheus'
 export interface RegisterMetricsOptions {
   enabled: boolean
   token: string
-  isProduction: boolean
 }
 
 // Mounts the request-timing middleware and the /metrics endpoint. Call this
@@ -34,25 +33,18 @@ export function registerMetrics(app: Hono<AppEnv>, opts: RegisterMetricsOptions)
   })
 
   app.get('/metrics', async (c) => {
-    if (!isAuthorized(c.req.header('authorization'), opts)) {
-      // No token in production → hide the endpoint entirely rather than ever
-      // serve metrics unauthenticated.
-      if (!opts.token && opts.isProduction) return c.notFound()
-      return c.text('Unauthorized', 401)
-    }
+    // No token configured → hide the endpoint rather than ever serve metrics unauthenticated.
+    if (!opts.token) return c.notFound()
+    if (!isAuthorized(c.req.header('authorization'), opts.token)) return c.text('Unauthorized', 401)
     return c.body(await metrics.registry.metrics(), 200, {
       'Content-Type': metrics.registry.contentType,
     })
   })
 }
 
-function isAuthorized(authHeader: string | undefined, opts: RegisterMetricsOptions): boolean {
-  // No token configured: open in dev for convenience, refused in prod (the
-  // caller turns the 404 into the response).
-  if (!opts.token) return !opts.isProduction
-
+function isAuthorized(authHeader: string | undefined, token: string): boolean {
   const provided = bearerToken(authHeader)
-  return provided !== null && constantTimeEqual(provided, opts.token)
+  return provided !== null && constantTimeEqual(provided, token)
 }
 
 function bearerToken(authHeader: string | undefined): string | null {

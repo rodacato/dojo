@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { insecureProductionSettings, mailSettingsProblems } from './config-checks'
 import { parseFrameOrigins } from './domain/scrolls/origins'
+import { createLogger } from './infrastructure/observability/createLogger'
 
 const envFlag = (fallback: boolean) =>
   z.preprocess(
@@ -103,9 +104,11 @@ export const envSchema = z.object({
 
 const result = envSchema.safeParse(process.env)
 
+// The app logger is configured from this file's output, so boot failures use a bare one.
+const bootLogger = () => createLogger({ level: 'error', pretty: false })
+
 if (!result.success) {
-  console.error('❌ Invalid or missing environment variables:')
-  console.error(z.flattenError(result.error).fieldErrors)
+  bootLogger().error('config.invalid_env', { fieldErrors: z.flattenError(result.error).fieldErrors })
   process.exit(1)
 }
 
@@ -117,8 +120,7 @@ const problems = [
   ...frameOrigins.problems,
 ]
 if (problems.length > 0) {
-  console.error('❌ Refusing to start:')
-  for (const problem of problems) console.error(`  - ${problem}`)
+  bootLogger().error('config.refused_to_start', { problems })
   process.exit(1)
 }
 

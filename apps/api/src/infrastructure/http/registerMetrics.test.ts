@@ -13,17 +13,17 @@ function buildApp(opts: RegisterMetricsOptions): Hono<AppEnv> {
   return app
 }
 
-const enabledDev: RegisterMetricsOptions = { enabled: true, token: 'secret', isProduction: false }
+const enabled: RegisterMetricsOptions = { enabled: true, token: 'secret' }
 
 describe('registerMetrics', () => {
   it('mounts nothing when disabled', async () => {
-    const app = buildApp({ enabled: false, token: 'secret', isProduction: true })
+    const app = buildApp({ enabled: false, token: 'secret' })
     const res = await app.request('/metrics', { headers: { authorization: 'Bearer secret' } })
     expect(res.status).toBe(404)
   })
 
   it('serves metrics with a valid token using the prometheus content type', async () => {
-    const app = buildApp(enabledDev)
+    const app = buildApp(enabled)
     const res = await app.request('/metrics', { headers: { authorization: 'Bearer secret' } })
     expect(res.status).toBe(200)
     expect(res.headers.get('content-type')).toBe(getMetrics()?.registry.contentType)
@@ -35,31 +35,25 @@ describe('registerMetrics', () => {
   })
 
   it('returns 401 with a wrong token', async () => {
-    const app = buildApp(enabledDev)
+    const app = buildApp(enabled)
     const res = await app.request('/metrics', { headers: { authorization: 'Bearer wrong' } })
     expect(res.status).toBe(401)
   })
 
   it('returns 401 with no token header when a token is required', async () => {
-    const app = buildApp(enabledDev)
+    const app = buildApp(enabled)
     const res = await app.request('/metrics')
     expect(res.status).toBe(401)
   })
 
-  it('returns 404 in production when enabled but no token is set', async () => {
-    const app = buildApp({ enabled: true, token: '', isProduction: true })
-    const res = await app.request('/metrics')
-    expect(res.status).toBe(404)
-  })
-
-  it('is open in dev when no token is set', async () => {
-    const app = buildApp({ enabled: true, token: '', isProduction: false })
-    const res = await app.request('/metrics')
-    expect(res.status).toBe(200)
+  it('returns 404 when enabled but no token is set, whatever the request sends', async () => {
+    const app = buildApp({ enabled: true, token: '' })
+    expect((await app.request('/metrics')).status).toBe(404)
+    expect((await app.request('/metrics', { headers: { authorization: 'Bearer ' } })).status).toBe(404)
   })
 
   it('labels the histogram with the matched route pattern, not the raw url', async () => {
-    const app = buildApp(enabledDev)
+    const app = buildApp(enabled)
     await app.request('/sessions/123')
     const body = await (
       await app.request('/metrics', { headers: { authorization: 'Bearer secret' } })
@@ -69,7 +63,7 @@ describe('registerMetrics', () => {
   })
 
   it('collapses unmatched requests to a single "unmatched" label', async () => {
-    const app = buildApp(enabledDev)
+    const app = buildApp(enabled)
     await app.request('/does-not-exist')
     const body = await (
       await app.request('/metrics', { headers: { authorization: 'Bearer secret' } })
@@ -78,7 +72,7 @@ describe('registerMetrics', () => {
   })
 
   it('records sensei evaluations by verdict', async () => {
-    const app = buildApp(enabledDev)
+    const app = buildApp(enabled)
     recordSenseiEvaluation('passed')
     recordSenseiEvaluation('needs_work')
     const body = await (

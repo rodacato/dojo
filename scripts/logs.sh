@@ -41,11 +41,21 @@ kamal_args=(app logs -c "$config" -T --lines "$lines")
 # Last: -f takes no declared type, so an option after it could be read as its value.
 [ -n "$follow" ] && kamal_args+=("$follow")
 
+# pino-pretty's --minimumLevel only compares numeric levels; ours are labels.
+case "$level" in
+  debug) below="trace" ;;
+  info) below="trace|debug" ;;
+  warn) below="trace|debug|info" ;;
+  error) below="trace|debug|info|warn" ;;
+  *) echo "unknown level: $level" >&2; usage 1 ;;
+esac
+
 pretty=(pnpm --silent --filter @dojo/api exec pino-pretty
-  --messageKey evt --ignore pid,hostname --translateTime 'HH:MM:ss.l' --minimumLevel "$level")
+  --messageKey evt --ignore pid,hostname --translateTime 'HH:MM:ss.l')
 
 if [ -n "$event" ]; then
-  kamal "${kamal_args[@]}" | grep --line-buffered -F "\"evt\":\"" | grep --line-buffered -F "$event" | "${pretty[@]}"
+  kamal "${kamal_args[@]}" | grep --line-buffered -F "\"evt\":\"" | grep --line-buffered -F "$event" \
+    | grep --line-buffered -vE "\"level\":\"($below)\"" | "${pretty[@]}"
 else
-  kamal "${kamal_args[@]}" | "${pretty[@]}"
+  kamal "${kamal_args[@]}" | grep --line-buffered -vE "\"level\":\"($below)\"" | "${pretty[@]}"
 fi
