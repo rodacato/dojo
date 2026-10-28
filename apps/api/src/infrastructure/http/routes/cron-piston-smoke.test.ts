@@ -21,7 +21,15 @@ vi.mock('../../execution/PistonAdapter', () => ({
 
 import { cronPistonSmokeRoutes } from './cron-piston-smoke'
 
-const SMOKE_LANGUAGES = ['python', 'ruby', 'typescript', 'rust', 'sql', 'go']
+const SMOKE_CHECKS = ['python', 'ruby', 'typescript', 'rust', 'sql', 'go', 'sandbox-network']
+const SMOKE_LANGUAGES = ['python', 'ruby', 'typescript', 'rust', 'sql', 'go', 'python']
+
+type ExecuteParams = { language: string; testCode: string }
+
+function healthyStdout({ language, testCode }: ExecuteParams): string {
+  if (testCode.includes('socket')) return 'isolated'
+  return language === 'sql' ? '1' : 'ok'
+}
 
 function ok(stdout: string): ExecutionResult {
   return {
@@ -63,8 +71,8 @@ describe('POST /cron/piston-smoke', () => {
     vi.clearAllMocks()
     config.CRON_SECRET = 'test-cron-secret'
     // Every language returns its expected stdout by default — the all-green path.
-    execute.mockImplementation(({ language }: { language: string }) =>
-      Promise.resolve(ok(language === 'sql' ? '1' : 'ok')),
+    execute.mockImplementation((params: ExecuteParams) =>
+      Promise.resolve(ok(healthyStdout(params))),
     )
   })
 
@@ -126,22 +134,23 @@ describe('POST /cron/piston-smoke', () => {
       const body = (await res.json()) as {
         allPassed: boolean
         criticalAllPassed: boolean
-        results: Array<{ language: string; passed: boolean; critical: boolean }>
+        results: Array<{ check: string; language: string; passed: boolean; critical: boolean }>
       }
       expect(body.allPassed).toBe(true)
       expect(body.criticalAllPassed).toBe(true)
+      expect(body.results.map((r) => r.check)).toEqual(SMOKE_CHECKS)
       expect(body.results.map((r) => r.language)).toEqual(SMOKE_LANGUAGES)
       expect(body.results.every((r) => r.passed)).toBe(true)
       expect(body.results.every((r) => r.critical)).toBe(true)
     })
 
-    it('runs the adapter once per smoke payload (6 languages)', async () => {
+    it('runs the adapter once per smoke payload (7 checks)', async () => {
       await makeApp().request('/cron/piston-smoke', {
         method: 'POST',
         ...bearer('test-cron-secret'),
       })
 
-      expect(execute).toHaveBeenCalledTimes(6)
+      expect(execute).toHaveBeenCalledTimes(7)
     })
 
     it('blanks stdout/stderr on passing results and surfaces exitCode + timing', async () => {
@@ -190,13 +199,13 @@ describe('POST /cron/piston-smoke', () => {
 
   describe('authorized — failures', () => {
     it('returns 503 with truncated stderr/stdout when a critical language fails', async () => {
-      execute.mockImplementation(({ language }: { language: string }) => {
-        if (language === 'ruby') {
+      execute.mockImplementation((params: ExecuteParams) => {
+        if (params.language === 'ruby') {
           return Promise.resolve(
             fail({ stderr: 'x'.repeat(500), stdout: 'y'.repeat(500), exitCode: 2 }),
           )
         }
-        return Promise.resolve(ok(language === 'sql' ? '1' : 'ok'))
+        return Promise.resolve(ok(healthyStdout(params)))
       })
 
       const res = await makeApp().request('/cron/piston-smoke', {
@@ -228,11 +237,11 @@ describe('POST /cron/piston-smoke', () => {
     })
 
     it('marks a language failed when exitCode is 0 but stdout lacks expected output', async () => {
-      execute.mockImplementation(({ language }: { language: string }) => {
-        if (language === 'go') {
+      execute.mockImplementation((params: ExecuteParams) => {
+        if (params.language === 'go') {
           return Promise.resolve(ok('something-else'))
         }
-        return Promise.resolve(ok(language === 'sql' ? '1' : 'ok'))
+        return Promise.resolve(ok(healthyStdout(params)))
       })
 
       const res = await makeApp().request('/cron/piston-smoke', {
@@ -248,8 +257,8 @@ describe('POST /cron/piston-smoke', () => {
     })
 
     it('substring match counts as a pass (expected stdout embedded in noise)', async () => {
-      execute.mockImplementation(({ language }: { language: string }) =>
-        Promise.resolve(ok(language === 'sql' ? 'result: 1 row' : 'value=ok\n')),
+      execute.mockImplementation((params: ExecuteParams) =>
+        Promise.resolve(ok(`result: ${healthyStdout(params)} row\n`)),
       )
 
       const res = await makeApp().request('/cron/piston-smoke', {
@@ -260,6 +269,28 @@ describe('POST /cron/piston-smoke', () => {
       expect(res.status).toBe(200)
       const body = (await res.json()) as { allPassed: boolean }
       expect(body.allPassed).toBe(true)
+    })
+
+    it('returns 503 when learner code reaches the network', async () => {
+      execute.mockImplementation((params: ExecuteParams) =>
+        Promise.resolve(
+          ok(params.testCode.includes('socket') ? 'networked' : healthyStdout(params)),
+        ),
+      )
+
+      const res = await makeApp().request('/cron/piston-smoke', {
+        method: 'POST',
+        ...bearer('test-cron-secret'),
+      })
+
+      expect(res.status).toBe(503)
+      const body = (await res.json()) as {
+        results: Array<{ check: string; passed: boolean }>
+      }
+      expect(body.results.find((r) => r.check === 'sandbox-network')!.passed).toBe(false)
+      expect(body.results.filter((r) => r.check !== 'sandbox-network').every((r) => r.passed)).toBe(
+        true,
+      )
     })
   })
 })
