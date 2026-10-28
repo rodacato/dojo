@@ -7,9 +7,11 @@
     "test:ui": "playwright test --ui",
     "test:smoke": "playwright test --grep @smoke",
     "test:deployed": "playwright test --config=playwright.deployed.config.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "conformance": "pnpm --filter=@dojo/scroll-conformance... build && node fixtures/reference-scroll/conformance.mjs"
   },
   "devDependencies": {
+    "@dojo/scroll-conformance": "workspace:*",
     "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5"
   }
