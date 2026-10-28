@@ -10,7 +10,7 @@ The package is `packages/scroll-conformance` in the Dojo repository. It is priva
 
 ```bash
 pnpm install
-pnpm --filter=@dojo/scroll-conformance build
+pnpm --filter=@dojo/scroll-conformance... build   # builds @dojo/shared first
 pnpm exec playwright install chromium   # once, if Playwright has no browser yet
 
 node packages/scroll-conformance/dist/bin.js --url https://my-scroll.example/index.html
@@ -62,7 +62,7 @@ export default async function drive(page) {
 - A thrown error stops that scenario and the run exits with `2`.
 - Drive the paths you want checked: finish a unit, report progress, resize, and press whatever runs code. A `run` the scroll sends is checked against the manifest and the granted capabilities.
 
-A working example is `packages/scroll-conformance/fixtures/drive-e2e-fixture.mjs`, for the fixture scroll in `apps/e2e/fixtures/scroll`.
+A working example is [`apps/e2e/fixtures/reference-scroll/drive.mjs`](../../apps/e2e/fixtures/reference-scroll/drive.mjs), for the reference scroll next to it; `pnpm --filter=@dojo/e2e conformance` runs the two together.
 
 ## Rules
 
