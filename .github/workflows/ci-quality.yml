@@ -56,6 +56,70 @@ jobs:
           ignore-unfixed: true
           exit-code: "1"
 
+  trivy-image:
+    # The fs scan never sees OS packages in the base images; this scans what ships.
+    name: trivy image (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [api, web]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Build image
+        run: >-
+          docker build -t "dojo-${{ matrix.app }}:ci" -f "apps/${{ matrix.app }}/Dockerfile"
+          --build-arg VITE_API_URL=http://localhost:3001 --build-arg VITE_APP_HOST=localhost .
+
+      - name: Smoke the non-root web server
+        if: ${{ matrix.app == 'web' }}
+        run: |
+          docker run -d --name web -p 8080:8080 -e API_HOST=localhost:3001 dojo-web:ci
+          for _ in $(seq 1 10); do curl -fsS http://localhost:8080/health && break; sleep 1; done
+          curl -fsS http://localhost:8080/health
+          test "$(docker exec web id -u)" != "0"
+
+      - name: Scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
+        with:
+          scan-type: image
+          image-ref: dojo-${{ matrix.app }}:ci
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+      # Fork PRs get a read-only token, so only master feeds code scanning.
+      - name: Scan to SARIF
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: dojo-${{ matrix.app }}:ci
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: sarif
+          limit-severities-for-sarif: true
+          output: trivy-${{ matrix.app }}.sarif
+          skip-setup-trivy: true
+
+      - name: Upload to code scanning
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+        with:
+          sarif_file: trivy-${{ matrix.app }}.sarif
+          category: trivy-image-${{ matrix.app }}
+
   gitleaks:
     name: gitleaks (secret scan)
     runs-on: ubuntu-latest
