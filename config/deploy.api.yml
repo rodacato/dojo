@@ -120,7 +120,8 @@ accessories:
     #      container; the image's bare `mkdir isolate/` then fails EEXIST and
     #      Docker restart-loops. Removing the leftover with rmdir is not enough:
     #      it fails EBUSY whenever the old container's cgroup is still busy.
-    cmd: '-c "cd /sys/fs/cgroup && mkdir -p isolate/init && echo 1 > isolate/init/cgroup.procs && echo ''+cpuset +cpu +io +memory +pids'' > cgroup.subtree_control && echo ''+cpuset +memory'' > isolate/cgroup.subtree_control && chown -R piston:piston /piston && exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 PISTON_OUTPUT_MAX_SIZE=65536 su -- piston -c ''ulimit -n 65536 && node /piston_api/src''"'
+    # Caps on isolate/ bound Piston and every job on the shared host; Docker's own limits would not, since everything runs outside the container cgroup.
+    cmd: '-c "cd /sys/fs/cgroup && mkdir -p isolate/init && echo 1 > isolate/init/cgroup.procs && echo ''+cpuset +cpu +io +memory +pids'' > cgroup.subtree_control && echo ''+cpuset +memory'' > isolate/cgroup.subtree_control && echo 2G > isolate/memory.max && echo 512 > isolate/pids.max && echo ''200000 100000'' > isolate/cpu.max && chown -R piston:piston /piston && exec env PISTON_RUN_TIMEOUT=8000 PISTON_COMPILE_TIMEOUT=30000 PISTON_OUTPUT_MAX_SIZE=65536 su -- piston -c ''ulimit -n 65536 && node /piston_api/src''"'
     volumes:
       # Persist installed runtimes so a container recreate doesn't wipe them.
       - dojo-piston-packages:/piston/packages
