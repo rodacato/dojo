@@ -12,7 +12,7 @@ import { FakeDriver, type FakeHostPage } from './testing/fake-driver.js'
 import { htmlScroll } from './testing/html-scroll.js'
 
 const fixtures = new URL('../fixtures/', import.meta.url)
-const e2eFixture = new URL('../../../apps/e2e/fixtures/scroll/', import.meta.url)
+const referenceScroll = new URL('../../../apps/e2e/fixtures/reference-scroll/', import.meta.url)
 
 const readManifest = (dir: URL) => scrollManifestSchema.parse(JSON.parse(readFileSync(new URL('scroll.json', dir), 'utf8')))
 
@@ -72,35 +72,35 @@ describe('the HTML extraction', () => {
   })
 })
 
-describe('the good fixture of the e2e suite', () => {
+describe('the reference scroll', () => {
   const drive = async (hostPage: unknown) => {
     const page = hostPage as FakeHostPage
     const frame = {
       frameLocator: () => ({
-        locator: (selector: string) => ({ click: async () => page.interact(selector.slice(1)) }),
+        locator: (selector: string) => ({
+          click: async () => page.interact(selector.slice(1)),
+          waitFor: async () => undefined,
+        }),
       }),
     }
-    const { default: driveFixture } = (await import(new URL('drive-e2e-fixture.mjs', fixtures).href)) as {
+    const { default: driveFixture } = (await import(new URL('drive.mjs', referenceScroll).href)) as {
       default: (page: typeof frame) => Promise<void>
     }
     await driveFixture(frame)
   }
 
   it('passes, running the real shim and the real page', async () => {
-    const report = await audit(e2eFixture, 'http://localhost:4010/index.html', drive)
+    const report = await audit(referenceScroll, 'http://localhost:4010/index.html', drive)
     expect(failing(report)).toEqual([])
-    expect(report.rules.filter((rule) => rule.status === 'skipped').map((rule) => rule.id)).toEqual([
-      'run-granted',
-      'run-language',
-    ])
+    expect(report.rules.filter((rule) => rule.status === 'skipped').map((rule) => rule.id)).toEqual([])
     expect(report.passed).toBe(true)
     expect(exitCodeFor(report)).toBe(0)
   })
 
   it('also passes without a drive module, with fewer rules exercised', async () => {
-    const report = await audit(e2eFixture, 'http://localhost:4010/index.html')
+    const report = await audit(referenceScroll, 'http://localhost:4010/index.html')
     expect(failing(report)).toEqual([])
-    expect(report.rules.find((rule) => rule.id === 'session-after-init')?.status).toBe('skipped')
+    expect(report.rules.find((rule) => rule.id === 'run-granted')?.status).toBe('skipped')
   })
 })
 

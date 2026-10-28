@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reference scroll</title>
+  </head>
+  <body>
+    <h1>Reference scroll</h1>
+    <p>Uses every message of scroll protocol v0. Open it on its own and it still works, without a host.</p>
+
+    <dl>
+      <dt>Mode</dt>
+      <dd id="mode">waiting</dd>
+      <dt>Locale</dt>
+      <dd id="locale">-</dd>
+      <dt>Capabilities</dt>
+      <dd id="capabilities">-</dd>
+    </dl>
+
+    <h2>Unit 1: take steps</h2>
+    <p>Steps taken: <span id="steps">0</span></p>
+    <button id="progress" type="button">Take a step</button>
+    <button id="complete" type="button">Complete unit 1</button>
+
+    <h2>Unit 2: run code</h2>
+    <button id="run" type="button" disabled>Run code</button>
+    <p id="run-note"></p>
+    <pre id="output"></pre>
+
+    <script
+      src="scroll-kit/v0.js"
+      data-scroll-id="reference-scroll"
+      data-scroll-version="0.1.0"
+      data-capabilities="progress,run"></script>
+    <script>
+      var PROGRAM = { name: 'main.js', content: 'console.log("hello from the reference scroll")' }
+      var steps = 0
+
+      function show(id, text) {
+        document.getElementById(id).textContent = text
+      }
+
+      DojoScroll.onInit(function (init) {
+        show('mode', init.standalone ? 'standalone' : 'embedded')
+        show('locale', init.locale)
+        show('capabilities', init.capabilities.join(', ') || 'none')
+
+        var saved = init.progress['unit-1']
+        steps = (saved && saved.state && saved.state.steps) || 0
+        show('steps', String(steps))
+
+        var canRun = init.capabilities.indexOf('run') !== -1
+        document.getElementById('run').disabled = !canRun
+        show('run-note', canRun ? '' : 'Sign in to Dojo to run code here.')
+
+        DojoScroll.resize(document.documentElement.scrollHeight)
+      })
+
+      DojoScroll.onLocale(function (locale) {
+        show('locale', locale)
+      })
+
+      document.getElementById('progress').onclick = function () {
+        steps += 1
+        show('steps', String(steps))
+        DojoScroll.progress('unit-1', { steps: steps })
+      }
+
+      document.getElementById('complete').onclick = function () {
+        DojoScroll.complete('unit-1')
+      }
+
+      document.getElementById('run').onclick = function () {
+        show('output', 'running...')
+        DojoScroll.run({ language: 'javascript', files: [PROGRAM] }).then(
+          function (result) {
+            show('output', result.kind + ': ' + result.stdout.trim())
+            if (result.kind === 'ok') DojoScroll.complete('unit-2')
+          },
+          function (error) {
+            show('output', 'error: ' + error.message)
+          },
+        )
+      }
+    </script>
+  </body>
+</html>

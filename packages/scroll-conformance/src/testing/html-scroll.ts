@@ -10,8 +10,16 @@ interface Element {
   onclick: (() => void) | null
 }
 
-function inlineScripts(html: string): string[] {
-  return [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script[^>]*>/gi)].map((match) => match[1] ?? '')
+interface Script {
+  attributes: Record<string, string>
+  body: string
+}
+
+function scriptsOf(html: string): Script[] {
+  return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script[^>]*>/gi)].map((match) => ({
+    attributes: attributesOf(match[1] ?? ''),
+    body: match[2] ?? '',
+  }))
 }
 
 function attributesOf(tag: string): Record<string, string> {
@@ -31,12 +39,10 @@ class HtmlScroll implements SimulatedScroll {
   ) {}
 
   start(env: SimulatedEnv): void {
-    const written: string[] = []
     const storage = new Map<string, string>()
     const document = {
       currentScript: null as unknown,
       documentElement: { scrollHeight: 100 },
-      write: (markup: string) => written.push(markup),
       getElementById: (id: string) => this.element(id),
     }
     const sandbox: Record<string, unknown> = {
@@ -72,10 +78,13 @@ class HtmlScroll implements SimulatedScroll {
     sandbox['parent'] = this.parentWindow
     const context = vm.createContext(sandbox)
 
-    for (const script of inlineScripts(this.html)) {
+    for (const script of scriptsOf(this.html)) {
+      if (script.attributes['src']) {
+        if (script.attributes['src'].endsWith('scroll-kit/v0.js')) this.runShim(script.attributes, context, document)
+        continue
+      }
       // eslint-disable-next-line sonarjs/code-eval -- runs the repo's own fixture page
-      vm.runInContext(script, context)
-      while (written.length > 0) this.runWrittenShim(written.shift() ?? '', context, document)
+      vm.runInContext(script.body, context)
     }
   }
 
@@ -104,9 +113,7 @@ class HtmlScroll implements SimulatedScroll {
     return created
   }
 
-  private runWrittenShim(markup: string, context: vm.Context, document: { currentScript: unknown }): void {
-    const tag = markup.match(/<script\b([^>]*)>/i)?.[1] ?? ''
-    const attributes = attributesOf(tag)
+  private runShim(attributes: Record<string, string>, context: vm.Context, document: { currentScript: unknown }): void {
     document.currentScript = { getAttribute: (name: string) => attributes[name] ?? null }
     // eslint-disable-next-line sonarjs/code-eval -- runs the repo's own shim
     vm.runInContext(this.shim, context)
@@ -114,7 +121,7 @@ class HtmlScroll implements SimulatedScroll {
   }
 }
 
-/** A scroll made of an HTML file; the scroll-kit shim is run when the page writes its script tag. */
+/** A scroll made of an HTML file; a script tag whose src is the scroll-kit runs the repo's shim. */
 export function htmlScroll(htmlPath: string, shimPath: URL | string = SHIM_PATH): ScrollFactory {
   const html = readFileSync(htmlPath, 'utf8')
   const shim = readFileSync(shimPath, 'utf8')
