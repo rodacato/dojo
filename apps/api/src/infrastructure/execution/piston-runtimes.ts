@@ -6,8 +6,7 @@
 //
 // Runtime version status: blocked upstream. The pinned engineer-man/piston
 // image ships go=1.16.2, ruby up to 3.0.1, rust up to 1.68.2. Bumping
-// requires either a maintained fork or a custom image layer (tracked in
-// docs/sprints/backlog.md).
+// requires a maintained fork or our own package index (Piston's repo_url).
 //
 // Multi-version note: Python 3.10 sits alongside 3.12 because `match`
 // pedagogy wants 3.10+ and the course framework targets 3.11+.
