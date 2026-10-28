@@ -1,0 +1,15 @@
+{
+  "id": "reference-scroll",
+  "version": "0.1.0",
+  "protocol": 0,
+  "entry": "http://localhost:4010/index.html",
+  "locales": ["en"],
+  "title": { "en": "Reference scroll" },
+  "description": { "en": "Uses every message of scroll protocol v0; the starting point for a new scroll." },
+  "programmingLanguages": ["javascript"],
+  "units": [
+    { "id": "unit-1", "title": { "en": "Take steps" } },
+    { "id": "unit-2", "title": { "en": "Run code" } }
+  ],
+  "capabilities": ["progress", "run"]
+}

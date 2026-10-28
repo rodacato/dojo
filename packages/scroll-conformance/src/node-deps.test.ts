@@ -25,7 +25,7 @@ describe('nodeDeps', () => {
   })
 
   it('loads the default export of a drive module', async () => {
-    const drive = await deps.loadDrive(fixture('drive-e2e-fixture.mjs'))
+    const drive = await deps.loadDrive(fileURLToPath(new URL('../../../apps/e2e/fixtures/reference-scroll/drive.mjs', import.meta.url)))
     expect(typeof drive).toBe('function')
   })
 
