@@ -130,6 +130,10 @@ jobs:
         env:
           CI: 'true'
 
+      - name: Scroll conformance
+        # Audits the reference scroll (apps/e2e/fixtures/reference-scroll) in a real browser.
+        run: pnpm --filter=@dojo/e2e conformance
+
       - name: Upload traces
         if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
