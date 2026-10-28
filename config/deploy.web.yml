@@ -21,7 +21,7 @@ servers:
 proxy:
   ssl: false
   host: "<%= app_host %>"
-  app_port: 80
+  app_port: 8080
   healthcheck:
     interval: 10
     path: /health

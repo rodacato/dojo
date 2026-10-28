@@ -53,4 +53,11 @@ COPY --chmod=755 apps/web/require-api-host.sh /docker-entrypoint.d/10-require-ap
 # Kamal passes an empty SCROLL_FRAME_ORIGINS as a bare --env, which unsets it, and nginx
 # fails on an undefined variable in the CSP. Sourced before the envsubst step.
 COPY --chmod=755 apps/web/scroll-frame-origins.envsh /docker-entrypoint.d/05-scroll-frame-origins.envsh
-EXPOSE 80
+# Run as the image's nginx user, mirroring nginxinc/nginx-unprivileged (which lags nginx releases).
+RUN sed -i '/user  nginx;/d' /etc/nginx/nginx.conf \
+    && sed -i 's,\(/var\)\{0\,1\}/run/nginx.pid,/tmp/nginx.pid,' /etc/nginx/nginx.conf \
+    && sed -i "/^http {/a \    proxy_temp_path /tmp/proxy_temp;\n    client_body_temp_path /tmp/client_temp;\n    fastcgi_temp_path /tmp/fastcgi_temp;\n    uwsgi_temp_path /tmp/uwsgi_temp;\n    scgi_temp_path /tmp/scgi_temp;\n" /etc/nginx/nginx.conf \
+    && chown -R nginx:0 /var/cache/nginx /etc/nginx \
+    && chmod -R g+w /var/cache/nginx /etc/nginx
+USER nginx
+EXPOSE 8080
