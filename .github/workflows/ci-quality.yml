@@ -58,7 +58,7 @@ jobs:
 
   trivy-image:
     # The fs scan never sees OS packages in the base images; this scans what ships.
-    name: trivy image (${{ matrix.app }})
+    name: trivy image (${{ matrix.image }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [api, web]
+        image: [api, web, piston]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -75,12 +75,27 @@ jobs:
           persist-credentials: false
 
       - name: Build image
+        if: ${{ matrix.image != 'piston' }}
         run: >-
-          docker build -t "dojo-${{ matrix.app }}:ci" -f "apps/${{ matrix.app }}/Dockerfile"
+          docker build -t "dojo-${{ matrix.image }}:ci" -f "apps/${{ matrix.image }}/Dockerfile"
           --build-arg VITE_API_URL=http://localhost:3001 --build-arg VITE_APP_HOST=localhost .
 
+      # Piston is pulled, not built: scan the digest the deploy config pins.
+      - name: Resolve image ref
+        id: ref
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: |
+          if [ "$IMAGE" = piston ]; then
+            ref=$(grep -oE 'ghcr\.io/engineer-man/piston@sha256:[0-9a-f]{64}' config/deploy.api.yml)
+            test -n "$ref"
+          else
+            ref="dojo-$IMAGE:ci"
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
       - name: Smoke the non-root web server
-        if: ${{ matrix.app == 'web' }}
+        if: ${{ matrix.image == 'web' }}
         run: |
           docker run -d --name web -p 8080:8080 -e API_HOST=localhost:3001 dojo-web:ci
           for _ in $(seq 1 10); do curl -fsS http://localhost:8080/health && break; sleep 1; done
@@ -92,7 +107,7 @@ jobs:
         continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
         with:
           scan-type: image
-          image-ref: dojo-${{ matrix.app }}:ci
+          image-ref: ${{ steps.ref.outputs.ref }}
           scanners: vuln
           severity: HIGH,CRITICAL
           ignore-unfixed: true
@@ -104,21 +119,21 @@ jobs:
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: image
-          image-ref: dojo-${{ matrix.app }}:ci
+          image-ref: ${{ steps.ref.outputs.ref }}
           scanners: vuln
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           format: sarif
           limit-severities-for-sarif: true
-          output: trivy-${{ matrix.app }}.sarif
+          output: trivy-${{ matrix.image }}.sarif
           skip-setup-trivy: true
 
       - name: Upload to code scanning
         if: ${{ github.event_name != 'pull_request' }}
         uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
-          sarif_file: trivy-${{ matrix.app }}.sarif
-          category: trivy-image-${{ matrix.app }}
+          sarif_file: trivy-${{ matrix.image }}.sarif
+          category: trivy-image-${{ matrix.image }}
 
   gitleaks:
     name: gitleaks (secret scan)
