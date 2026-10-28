@@ -19,6 +19,8 @@ if (process.env['REQUIRE_DB_TESTS'] && !url) {
 
 const { attempts, katas, practitionerLooks, sessions, userPieces, userSessions, users, variations } = schema
 const evaluation = (verdict: string) => JSON.stringify({ verdict, analysis: '', topicsToReview: [] })
+// Outside every season window, so seasonal pieces never join the awards whatever day the suite runs.
+const OUT_OF_SEASON = new Date('2026-06-15T12:00:00Z')
 
 describe.skipIf(!url)('practitioner pieces against Postgres', () => {
   const client = postgres(url ?? '', { max: 2 })
@@ -50,8 +52,8 @@ describe.skipIf(!url)('practitioner pieces against Postgres', () => {
     })
     await db.insert(variations).values({ id: variationId, kataId, ownerRole: 'role', ownerContext: 'context' })
     await db.insert(sessions).values([
-      { id: needsWork, userId: learner, kataId, variationId, body: '', status: 'failed' },
-      { id: timedOut, userId: idle, kataId, variationId, body: '', status: 'failed' },
+      { id: needsWork, userId: learner, kataId, variationId, body: '', status: 'failed', startedAt: OUT_OF_SEASON },
+      { id: timedOut, userId: idle, kataId, variationId, body: '', status: 'failed', startedAt: OUT_OF_SEASON },
     ])
     await db.insert(attempts).values({
       id: randomUUID(), sessionId: needsWork, userResponse: 'r', llmResponse: evaluation('needs_work'), isFinalEvaluation: true,
