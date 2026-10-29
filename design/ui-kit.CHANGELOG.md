@@ -13,6 +13,14 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.6.0 — Paper Gate logo, Washi and Sumi only
+
+**Tokens:** the `slate` theme is gone. Every themed variable keeps its `sumi` and `washi` values, and the Foundations panel for Slate is deleted. The app dropped Slate in the same change, so the kit no longer describes a theme nobody can pick.
+
+**Components:** `LogoMark` draws the Paper Gate from `apps/web/src/brand/logo.json`: one filled path made of the four pieces (lintel, crossbar, two posts), replacing the stroked Open Gate. Inside `LogoWordmark` the mark is `accent`, as `Logo.tsx` renders it; the kit had it in `primary` since 0.2.0.
+
+**Vendored by:** `public.pen` (kit-version-source `0.6.0`). The other flows stay behind until they are reworked: a flow on an older kit shows the old mark.
+
 ## 0.5.0 — CodeLine for the point kata
 
 **Components:** `CodeLine/Default`, `CodeLine/Selected` and `CodeLine/Focus`, mirrored from `apps/web/src/components/ui/CodeLine.tsx`. Each is a 44px tappable row: 36px gutter with a 12px number, 13px mono code, 3px left border that turns primary with an elevated fill when selected, and a 1px accent ring on focus. The playground's proposed copy had a 37px gutter, an 11px number and a bottom rule; the code has neither, so the kit follows the code.

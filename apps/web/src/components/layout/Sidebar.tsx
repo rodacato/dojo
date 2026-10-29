@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../hooks/useTheme'
 import type { ThemeChoice } from '../../lib/theme'
 
-const THEME_CYCLE: ThemeChoice[] = ['sumi', 'washi', 'slate']
+const THEME_CYCLE: ThemeChoice[] = ['sumi', 'washi']
 function nextInCycle(current: ThemeChoice): ThemeChoice {
   const idx = THEME_CYCLE.indexOf(current)
   if (idx === -1) return THEME_CYCLE[0]! // from 'auto', start the cycle

@@ -42,11 +42,8 @@ describe('text colour tokens keep WCAG AA contrast (4.5:1)', () => {
         })
       }
     }
-    // Slate is skipped on purpose: its on-accent text measures 4.47:1 (D47), accepted for 14px+ labels.
-    if (theme !== '@theme {') {
-      it(`${theme} on-accent on accent (filled buttons)`, () => {
-        expect(contrast(t['on-accent']!, t['accent']!)).toBeGreaterThanOrEqual(4.5)
-      })
-    }
+    it(`${theme} on-accent on accent (filled buttons)`, () => {
+      expect(contrast(t['on-accent']!, t['accent']!)).toBeGreaterThanOrEqual(4.5)
+    })
   }
 })

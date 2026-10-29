@@ -35,7 +35,7 @@ Edit when reality changes. Always reflects current behavior.
 | [`WORKFLOW.md`](WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [`design/brand/README.md`](../design/brand/README.md) | Brand guide — voice, vocabulary, IA, UX principles, microcopy, logo and brand assets |
-| [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Sumi + Washi themes, hanko vermillion accent, Slate Indigo as an explicit option), motifs, components, motion |
+| [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Sumi + Washi themes, hanko vermillion accent), motifs, components, motion |
 | [`scrolls/`](scrolls/) | Scroll protocol, authoring guide and conformance suite for external scroll apps |
 
 ### Live — active work

@@ -116,7 +116,7 @@ Sumi-e ink, two themes under one token system, picked by the OS by default:
 - **Washi** (warm paper) — for reading: long sensei analysis. The light variant does real work, it is not light mode for completeness.
 - **Sumi** (deep ink) — for long sessions: the kata flow, results, share cards.
 
-A single accent: **hanko vermillion** (the red of a Japanese name seal). If it is interactive, it is vermillion. If not, it is not. **Slate Indigo**, the original dark theme, remains as an explicit choice in the theme toggle.
+A single accent: **hanko vermillion** (the red of a Japanese name seal). If it is interactive, it is vermillion. If not, it is not.
 
 **Why:** catalogs need calm to study; neon cyberpunk would fight the content. Sumi-e is distinctive (not the purple-gradient AI slop of 2026), ownable (consistent with the dojo's Japanese vocabulary) and borrowed on purpose — 1,500 years of graphic tradition is the opposite of inventing fake originality.
 

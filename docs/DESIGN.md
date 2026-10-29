@@ -6,10 +6,9 @@
 
 ## Themes
 
-Three palettes share one set of token names; only the values differ.
+Two palettes share one set of token names; only the values differ.
 
 - **Sumi** (ink, dark) and **Washi** (paper, light) are the brand. The default `auto` resolves to one or the other from the OS preference (`apps/web/src/lib/theme.ts`). The kata flow stays dark by default.
-- **Slate Indigo** is the `@theme` default in `main.css`, rendered only when picked in the toggle. It is the escape hatch, not the brand.
 - The choice is persisted in `localStorage` (`dojo-theme`), with no DB column: anonymous learners pick a theme before they have an account.
 
 Both brand themes use a single accent, the **hanko vermillion**.

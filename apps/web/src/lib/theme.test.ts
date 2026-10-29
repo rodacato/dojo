@@ -22,7 +22,7 @@ describe('getStoredTheme', () => {
     expect(getStoredTheme()).toBe('auto')
   })
 
-  it.each(['auto', 'sumi', 'washi', 'slate'] as const)(
+  it.each(['auto', 'sumi', 'washi'] as const)(
     'reads back the valid stored value "%s"',
     (value) => {
       window.localStorage.setItem(STORAGE_KEY, value)
@@ -34,6 +34,7 @@ describe('getStoredTheme', () => {
     ['an unrecognized stored value', 'midnight'],
     ['an empty-string stored value', ''],
     ['a wrong-case value ("Sumi" is not valid)', 'Sumi'],
+    ['the retired "slate" theme', 'slate'],
   ])('falls back to "auto" for %s', (_label, stored) => {
     window.localStorage.setItem(STORAGE_KEY, stored)
     expect(getStoredTheme()).toBe('auto')
@@ -41,7 +42,7 @@ describe('getStoredTheme', () => {
 })
 
 describe('setStoredTheme', () => {
-  it.each(['auto', 'sumi', 'washi', 'slate'] as const)(
+  it.each(['auto', 'sumi', 'washi'] as const)(
     'persists "%s" under the dojo-theme key',
     (value) => {
       setStoredTheme(value)
@@ -56,8 +57,8 @@ describe('setStoredTheme', () => {
   })
 
   it('round-trips through getStoredTheme', () => {
-    setStoredTheme('slate')
-    expect(getStoredTheme()).toBe('slate')
+    setStoredTheme('washi')
+    expect(getStoredTheme()).toBe('washi')
   })
 })
 
@@ -70,7 +71,7 @@ describe('resolveTheme', () => {
     expect(resolveTheme('auto', false)).toBe('washi')
   })
 
-  it.each(['sumi', 'washi', 'slate'] as const)(
+  it.each(['sumi', 'washi'] as const)(
     'passes the explicit choice "%s" through regardless of prefersDark',
     (choice) => {
       expect(resolveTheme(choice, true)).toBe(choice)
@@ -79,11 +80,11 @@ describe('resolveTheme', () => {
   )
 
   it('never returns "auto" — it always resolves to a concrete palette', () => {
-    const choices: ThemeChoice[] = ['auto', 'sumi', 'washi', 'slate']
+    const choices: ThemeChoice[] = ['auto', 'sumi', 'washi']
     for (const choice of choices) {
       for (const prefersDark of [true, false]) {
         const resolved = resolveTheme(choice, prefersDark)
-        expect(['sumi', 'washi', 'slate']).toContain(resolved)
+        expect(['sumi', 'washi']).toContain(resolved)
       }
     }
   })
@@ -98,18 +99,6 @@ describe('applyTheme', () => {
   it('sets data-theme="washi" on the document element', () => {
     applyTheme('washi')
     expect(document.documentElement.getAttribute('data-theme')).toBe('washi')
-  })
-
-  it('removes the data-theme attribute for "slate" (the default palette)', () => {
-    document.documentElement.setAttribute('data-theme', 'sumi')
-    applyTheme('slate')
-    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
-  })
-
-  it('is a no-op-safe remove when no attribute is present', () => {
-    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
-    applyTheme('slate')
-    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
   })
 
   it('collapses the media-scoped theme-color tags into one matching the theme', () => {
@@ -177,12 +166,11 @@ describe('initTheme', () => {
     },
   )
 
-  it('removes the data-theme attribute when the stored choice is "slate"', () => {
+  it('moves a stored "slate" choice to the OS preference instead of leaving the page unthemed', () => {
     window.localStorage.setItem(STORAGE_KEY, 'slate')
-    document.documentElement.setAttribute('data-theme', 'sumi')
-    stubMatchMedia(true)
+    stubMatchMedia(false)
     initTheme()
-    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
+    expect(document.documentElement.getAttribute('data-theme')).toBe('washi')
   })
 
   it('treats an invalid stored value as "auto" and resolves via the OS preference', () => {
