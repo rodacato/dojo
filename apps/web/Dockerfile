@@ -1,6 +1,6 @@
 # Stage 1: build
 FROM node:24.22.1-alpine AS builder
-RUN npm install -g pnpm@9.15.4
+RUN npm install -g pnpm@10.34.9
 WORKDIR /app
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc ./
 COPY apps/web/package.json ./apps/web/
