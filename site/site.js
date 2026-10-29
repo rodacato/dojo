@@ -4,7 +4,7 @@ const themeButton = document.querySelector('[data-toggle-theme]')
 function updateTheme(theme) {
   root.dataset.theme = theme
   if (themeButton) {
-    themeButton.textContent = theme === 'sumi' ? 'View Washi' : 'View Sumi'
+    themeButton.textContent = theme === 'sumi' ? 'Light' : 'Dark'
     themeButton.setAttribute(
       'aria-label',
       `Switch to ${theme === 'sumi' ? 'Washi light' : 'Sumi dark'} theme`,
