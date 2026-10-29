@@ -18,12 +18,22 @@ COPY packages/shared/ ./packages/shared/
 RUN pnpm --filter=@dojo/shared build
 RUN pnpm --filter=@dojo/api build
 
-# Stage 4: production runtime (no source, no dev tools)
-FROM base AS runner
+# Stage 4: production dependencies only
+FROM base AS prod-deps
+COPY .npmrc pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+COPY apps/api/package.json ./apps/api/
+COPY packages/shared/package.json ./packages/shared/
+RUN pnpm install --frozen-lockfile --prod
+
+# Stage 5: production runtime (no source, no dev tools, no package managers)
+FROM node:24.22.1-alpine AS runner
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/src/infrastructure/persistence/drizzle/migrations ./dist/infrastructure/persistence/drizzle/migrations
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=prod-deps /app/node_modules ./node_modules
 # Replace the pnpm symlink with the built shared package so `require('@dojo/shared')`
 # resolves at runtime (runner stage does not preserve the monorepo layout).
 RUN rm -rf ./node_modules/@dojo/shared
