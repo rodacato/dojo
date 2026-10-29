@@ -16,7 +16,6 @@ const THEME_CHOICES: Array<{ value: ThemeChoice; label: string }> = [
   { value: 'auto', label: 'Auto' },
   { value: 'sumi', label: 'Sumi (dark)' },
   { value: 'washi', label: 'Washi (light)' },
-  { value: 'slate', label: 'Slate Indigo' },
 ]
 
 type Level = 'junior' | 'mid' | 'senior'

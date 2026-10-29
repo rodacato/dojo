@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-10-29',
+    phase: 'Identity',
+    title: 'A paper gate, two themes',
+    description:
+      'The logo is now the Paper Gate, cut from four pieces of paper, on the app icon, the favicon and the share cards. Dojo comes in Washi and Sumi only: the Slate Indigo theme is gone, and if you had picked it, Dojo follows your system setting again.',
+  },
+  {
     date: '2026-10-20',
     phase: 'Recognition',
     title: 'Your practitioner on your profile',

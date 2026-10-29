@@ -126,19 +126,6 @@ describe('useTheme', () => {
     expect(document.documentElement.getAttribute('data-theme')).toBe('washi')
   })
 
-  it('applies "slate" by removing the data-theme attribute', () => {
-    document.documentElement.setAttribute('data-theme', 'washi')
-    const { result } = renderHook(() => useTheme())
-
-    act(() => {
-      result.current.setTheme('slate')
-    })
-
-    expect(result.current.theme).toBe('slate')
-    expect(window.localStorage.getItem(STORAGE_KEY)).toBe('slate')
-    expect(document.documentElement.hasAttribute('data-theme')).toBe(false)
-  })
-
   it('resolves "auto" to the dark palette (sumi) when the OS prefers dark', () => {
     installMatchMedia(true)
     const { result } = renderHook(() => useTheme())

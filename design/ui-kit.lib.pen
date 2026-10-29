@@ -42,1611 +42,6 @@
           "children": [
             {
               "type": "frame",
-              "id": "AYLDr",
-              "name": "Panel slate",
-              "theme": {
-                "theme": "slate"
-              },
-              "width": "fill_container",
-              "fill": "$color-page",
-              "stroke": "$color-border",
-              "strokeWidth": 1,
-              "layout": "vertical",
-              "gap": 20,
-              "padding": 32,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Y7iatK",
-                  "name": "Theme name",
-                  "fill": "$color-primary",
-                  "content": "SLATE",
-                  "fontFamily": "JetBrains Mono",
-                  "fontSize": 15,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "FebP2",
-                  "name": "Swatches",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "zPCBs",
-                      "name": "Swatch page",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "tMcmj",
-                          "name": "Chip",
-                          "fill": "$color-page",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "T8IiRk",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-page",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "bUf4A",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#0F172A",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "H2UX62",
-                      "name": "Swatch surface",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "d6xUQX",
-                          "name": "Chip",
-                          "fill": "$color-surface",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "zGRJq",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "rGhcZ",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#1E293B",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "ETO28",
-                      "name": "Swatch elevated",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "RmKXi",
-                          "name": "Chip",
-                          "fill": "$color-elevated",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "a76gAR",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-elevated",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "NJWLo",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#253347",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "dpXpQ",
-                      "name": "Swatch border",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "fhv0W",
-                          "name": "Chip",
-                          "fill": "$color-border",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "NC3bM",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-border",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "W9eX8",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#334155",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "owcup",
-                      "name": "Swatch accent",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "YzCYw",
-                          "name": "Chip",
-                          "fill": "$color-accent",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "o73KW6",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-accent",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ANrOz",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#6366F1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "y2q9cl",
-                      "name": "Swatch on-accent",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "iSW15",
-                          "name": "Chip",
-                          "fill": "$color-on-accent",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "O8Bp5c",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-on-accent",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "WqD72",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#FFFFFF",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "a2XoEi",
-                      "name": "Swatch success",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "zP1du",
-                          "name": "Chip",
-                          "fill": "$color-success",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "k9guoM",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-success",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "mFf8r",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#10B981",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "MLj05",
-                      "name": "Swatch danger",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "f313B",
-                          "name": "Chip",
-                          "fill": "$color-danger",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "l9OyNz",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-danger",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "sW1wM",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#EF4444",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "iKq9a",
-                      "name": "Swatch warning",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "c7Z6vV",
-                          "name": "Chip",
-                          "fill": "$color-warning",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "bIkcw",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-warning",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "T4WhNY",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#F59E0B",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "SVOyG",
-                      "name": "Swatch primary",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "rxzJ7",
-                          "name": "Chip",
-                          "fill": "$color-primary",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "AWxc7",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-primary",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "zP5sm",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#F8FAFC",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "sQpEi",
-                      "name": "Swatch secondary",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "STru0",
-                          "name": "Chip",
-                          "fill": "$color-secondary",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "us6UY",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-secondary",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "Wdm5a",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#94A3B8",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "CJJ8M",
-                      "name": "Swatch muted",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "dAITH",
-                          "name": "Chip",
-                          "fill": "$color-muted",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "L9lPgX",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-muted",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "aNZ6g",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#475569",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "r7hau",
-                      "name": "Swatch type-code",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "mT5fM",
-                          "name": "Chip",
-                          "fill": "$color-type-code",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "kFRzr",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-type-code",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "gg6DT",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#64748B",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "T9FPs",
-                      "name": "Swatch type-chat",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "SDwbI",
-                          "name": "Chip",
-                          "fill": "$color-type-chat",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "zZwr7",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-type-chat",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "H1y1MC",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#7C3AED",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "i3fGA1",
-                      "name": "Swatch type-whiteboard",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "dm4iY",
-                          "name": "Chip",
-                          "fill": "$color-type-whiteboard",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "OOnmE",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-type-whiteboard",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "Af175",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#0D9488",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "Sdm0M",
-                      "name": "Swatch type-review",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "U2lBee",
-                          "name": "Chip",
-                          "fill": "$color-type-review",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "bWyQI",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-type-review",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "rDQYR",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#0EA5E9",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "dyfHT",
-                      "name": "Swatch accent-text",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "XeuNP",
-                          "name": "Chip",
-                          "fill": "$color-accent-text",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "jPcJ3",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-accent-text",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "dj3vh",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#818CF8",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "A0OBaW",
-                      "name": "Swatch danger-text",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "I1mWOz",
-                          "name": "Chip",
-                          "fill": "$color-danger-text",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "I81IxK",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-danger-text",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "RRyuI",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#F87171",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "kNzvq",
-                      "name": "Swatch success-text",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "CNhQS",
-                          "name": "Chip",
-                          "fill": "$color-success-text",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "m5hguz",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-success-text",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "KntPc",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#10B981",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "YOzdK",
-                      "name": "Swatch warning-text",
-                      "width": "fill_container",
-                      "gap": 12,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 4,
-                          "id": "Ty2YB",
-                          "name": "Chip",
-                          "fill": "$color-warning-text",
-                          "width": 36,
-                          "height": 24,
-                          "stroke": "$color-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "text",
-                          "id": "w4DIs",
-                          "name": "Token",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "color-warning-text",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "aO42d",
-                          "name": "Hex",
-                          "fill": "$color-secondary",
-                          "content": "#F59E0B",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "text",
-                  "id": "i2PWV",
-                  "name": "Contrast title",
-                  "fill": "$color-primary",
-                  "content": "Contrast (WCAG, computed from the values above)",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "frame",
-                  "id": "bJ55r",
-                  "name": "Contrast table",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 4,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "vE6TB",
-                      "name": "Pair primary/page",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "CPpUE",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "primary on page",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "hXmFl",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "17.06:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "WGTrG",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AAA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "W1g10I",
-                      "name": "Pair primary/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "yRFqG",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "primary on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "DTP8W",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "13.98:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "w5l9D",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AAA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "JIiRz",
-                      "name": "Pair secondary/page",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "vKkwh",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "secondary on page",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "bOXer",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "6.96:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "SLaQN",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "ZJvbx",
-                      "name": "Pair secondary/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "Aa0Jk",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "secondary on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "wxbkI",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "5.71:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "Y2C4TV",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "P5vkC",
-                      "name": "Pair muted/page",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "r4Evv",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "muted on page",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "A9OCAB",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "2.36:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "obhWy",
-                          "name": "Use",
-                          "fill": "$color-danger",
-                          "content": "decoration only",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "cp6Pc",
-                      "name": "Pair muted/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "nSX4l",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "muted on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "XUSzI",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "1.93:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "G2Kyz0",
-                          "name": "Use",
-                          "fill": "$color-danger",
-                          "content": "decoration only",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "nvBmc",
-                      "name": "Pair on-accent/accent",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "zpSZv",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "on-accent on accent",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "tej9z",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "4.47:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "vmRCw",
-                          "name": "Use",
-                          "fill": "$color-warning",
-                          "content": "large text only",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "rILCH",
-                      "name": "Pair accent/page",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "VDyTz",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "accent on page",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "sBKjg",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "4.00:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "o0ISC",
-                          "name": "Use",
-                          "fill": "$color-warning",
-                          "content": "large text only",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "Oj8WW",
-                      "name": "Pair accent/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "t0oYF",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "accent on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "f33Yl",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "3.27:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ZDb4K",
-                          "name": "Use",
-                          "fill": "$color-warning",
-                          "content": "large text only",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "N7awWZ",
-                      "name": "Pair success/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "bjfkX",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "success on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "v4H87",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "5.77:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "cgaT1",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "zIqFB",
-                      "name": "Pair danger/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "mXKx5",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "danger on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "Tb6LF",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "3.89:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "UcMVu",
-                          "name": "Use",
-                          "fill": "$color-warning",
-                          "content": "large text only",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "MVmPT",
-                      "name": "Pair warning/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "D7iQvw",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "warning on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "dQhrd",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "6.81:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "roCzs",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "psm1b",
-                      "name": "Pair accent-text/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "ZZ9br",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "accent-text on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "Jnyuy",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "4.90:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "fQJIu",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "aeGL0",
-                      "name": "Pair danger-text/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "lJihO",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "danger-text on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "QOCxO",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "5.29:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "B7WYt2",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "IB5uL",
-                      "name": "Pair success-text/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "RIVsq",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "success-text on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ETWen",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "5.77:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "wBCsf",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "hNEGu",
-                      "name": "Pair warning-text/surface",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "QX9TV",
-                          "name": "Pair",
-                          "fill": "$color-secondary",
-                          "textGrowth": "fixed-width",
-                          "width": 170,
-                          "content": "warning-text on surface",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "kcoHB",
-                          "name": "Ratio",
-                          "fill": "$color-primary",
-                          "textGrowth": "fixed-width",
-                          "width": 56,
-                          "content": "6.81:1",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "y8yHS5",
-                          "name": "Use",
-                          "fill": "$color-success",
-                          "content": "body (AA)",
-                          "fontFamily": "JetBrains Mono",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "lkWn3",
               "name": "Panel sumi",
               "theme": {
@@ -8374,21 +6769,18 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "vyjXt",
-                      "name": "Open Gate",
-                      "geometry": "M15 25q35 7 70 0m-60 20h50m-45-15v52m40-52v52",
+                      "id": "mkV0N",
+                      "name": "Paper Gate",
+                      "geometry": "M10 20q40 8 80 0l-5 11q-35 7-70 0z m12 22h56l-3 8h-50z m4-13h9l-2 55h-8z m39 0h9l1 55h-8z",
                       "viewBox": [
                         0,
                         0,
                         100,
                         100
                       ],
+                      "fill": "$color-primary",
                       "width": "fill_container",
-                      "height": "fill_container",
-                      "stroke": "$color-primary",
-                      "strokeWidth": 3.2,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
+                      "height": "fill_container"
                     }
                   ]
                 },
@@ -8406,7 +6798,12 @@
                       "ref": "FvtBN",
                       "name": "Mark",
                       "width": 20,
-                      "height": 20
+                      "height": 20,
+                      "descendants": {
+                        "mkV0N": {
+                          "fill": "$color-accent"
+                        }
+                      }
                     },
                     {
                       "type": "frame",
@@ -13646,7 +12043,6 @@
   ],
   "themes": {
     "theme": [
-      "slate",
       "sumi",
       "washi"
     ]
@@ -13655,12 +12051,6 @@
     "color-page": {
       "type": "color",
       "value": [
-        {
-          "value": "#0F172A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#0A0908",
           "theme": {
@@ -13679,12 +12069,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#1E293B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#13110F",
           "theme": {
             "theme": "sumi"
@@ -13701,12 +12085,6 @@
     "color-elevated": {
       "type": "color",
       "value": [
-        {
-          "value": "#253347",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#1B1815",
           "theme": {
@@ -13725,12 +12103,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#334155",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#2A2520",
           "theme": {
             "theme": "sumi"
@@ -13747,12 +12119,6 @@
     "color-accent": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F1",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F",
           "theme": {
@@ -13771,12 +12137,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#FFFFFF",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#F2EDE3",
           "theme": {
             "theme": "sumi"
@@ -13793,12 +12153,6 @@
     "color-success": {
       "type": "color",
       "value": [
-        {
-          "value": "#10B981",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#7D9B6A",
           "theme": {
@@ -13817,12 +12171,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#EF4444",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#9C2D24",
           "theme": {
             "theme": "sumi"
@@ -13839,12 +12187,6 @@
     "color-warning": {
       "type": "color",
       "value": [
-        {
-          "value": "#F59E0B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#D4A547",
           "theme": {
@@ -13863,12 +12205,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#F8FAFC",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#F2EDE3",
           "theme": {
             "theme": "sumi"
@@ -13885,12 +12221,6 @@
     "color-secondary": {
       "type": "color",
       "value": [
-        {
-          "value": "#94A3B8",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#A39A8C",
           "theme": {
@@ -13909,12 +12239,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#475569",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5C544A",
           "theme": {
             "theme": "sumi"
@@ -13931,12 +12255,6 @@
     "color-type-code": {
       "type": "color",
       "value": [
-        {
-          "value": "#64748B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#6B5E51",
           "theme": {
@@ -13955,12 +12273,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#7C3AED",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5A4275",
           "theme": {
             "theme": "sumi"
@@ -13978,12 +12290,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#0D9488",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#3F6B68",
           "theme": {
             "theme": "sumi"
@@ -14000,12 +12306,6 @@
     "color-type-review": {
       "type": "color",
       "value": [
-        {
-          "value": "#0EA5E9",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#3F6AA8",
           "theme": {
@@ -14058,17 +12358,11 @@
     },
     "kit-version": {
       "type": "string",
-      "value": "0.5.0"
+      "value": "0.6.0"
     },
     "tint-accent-5": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F10D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F0D",
           "theme": {
@@ -14087,12 +12381,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F11A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B73A2F1A",
           "theme": {
             "theme": "sumi"
@@ -14109,12 +12397,6 @@
     "tint-accent-20": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F133",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F33",
           "theme": {
@@ -14133,12 +12415,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F14D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B73A2F4D",
           "theme": {
             "theme": "sumi"
@@ -14155,12 +12431,6 @@
     "tint-accent-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F166",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F66",
           "theme": {
@@ -14179,12 +12449,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F1E5",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B73A2FE5",
           "theme": {
             "theme": "sumi"
@@ -14201,12 +12465,6 @@
     "tint-success-10": {
       "type": "color",
       "value": [
-        {
-          "value": "#10B9811A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#7D9B6A1A",
           "theme": {
@@ -14225,12 +12483,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#10B9814D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#7D9B6A4D",
           "theme": {
             "theme": "sumi"
@@ -14247,12 +12499,6 @@
     "tint-success-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#10B98166",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#7D9B6A66",
           "theme": {
@@ -14271,12 +12517,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#EF44441A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#9C2D241A",
           "theme": {
             "theme": "sumi"
@@ -14293,12 +12533,6 @@
     "tint-danger-30": {
       "type": "color",
       "value": [
-        {
-          "value": "#EF44444D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#9C2D244D",
           "theme": {
@@ -14317,12 +12551,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#EF444466",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#9C2D2466",
           "theme": {
             "theme": "sumi"
@@ -14339,12 +12567,6 @@
     "tint-danger-80": {
       "type": "color",
       "value": [
-        {
-          "value": "#EF4444CC",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#9C2D24CC",
           "theme": {
@@ -14363,12 +12585,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#F59E0B1A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#D4A5471A",
           "theme": {
             "theme": "sumi"
@@ -14385,12 +12601,6 @@
     "tint-warning-30": {
       "type": "color",
       "value": [
-        {
-          "value": "#F59E0B4D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#D4A5474D",
           "theme": {
@@ -14409,12 +12619,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#33415533",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#2A252033",
           "theme": {
             "theme": "sumi"
@@ -14431,12 +12635,6 @@
     "tint-border-30": {
       "type": "color",
       "value": [
-        {
-          "value": "#3341554D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#2A25204D",
           "theme": {
@@ -14455,12 +12653,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#33415566",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#2A252066",
           "theme": {
             "theme": "sumi"
@@ -14477,12 +12669,6 @@
     "tint-page-60": {
       "type": "color",
       "value": [
-        {
-          "value": "#0F172A99",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#0A090899",
           "theme": {
@@ -14501,12 +12687,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#4755694D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5C544A4D",
           "theme": {
             "theme": "sumi"
@@ -14524,12 +12704,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#47556966",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5C544A66",
           "theme": {
             "theme": "sumi"
@@ -14546,12 +12720,6 @@
     "tint-surface-50": {
       "type": "color",
       "value": [
-        {
-          "value": "#1E293B7F",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#13110F7F",
           "theme": {
@@ -14574,12 +12742,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#1E293B4D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#13110F4D",
           "theme": {
             "theme": "sumi"
@@ -14596,12 +12758,6 @@
     "tint-surface-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#1E293B66",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#13110F66",
           "theme": {
@@ -14620,12 +12776,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#F87171",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B6675D",
           "theme": {
             "theme": "sumi"
@@ -14642,12 +12792,6 @@
     "color-accent-text": {
       "type": "color",
       "value": [
-        {
-          "value": "#818CF8",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#C35E53",
           "theme": {
@@ -14666,12 +12810,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#0EA5E933",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#3F6AA833",
           "theme": {
             "theme": "sumi"
@@ -14688,12 +12826,6 @@
     "tint-type-review-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#0EA5E966",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#3F6AA866",
           "theme": {
@@ -14712,12 +12844,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#F8FAFC4D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#F2EDE34D",
           "theme": {
             "theme": "sumi"
@@ -14735,12 +12861,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#10B981",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#7D9B6A",
           "theme": {
             "theme": "sumi"
@@ -14757,12 +12877,6 @@
     "color-warning-text": {
       "type": "color",
       "value": [
-        {
-          "value": "#F59E0B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#D4A547",
           "theme": {

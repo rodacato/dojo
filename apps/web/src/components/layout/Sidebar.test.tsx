@@ -101,7 +101,7 @@ describe('Sidebar — account section', () => {
 describe('Sidebar — theme + collapse', () => {
   it.each([
     ['sumi', 'washi'],
-    ['slate', 'sumi'],
+    ['washi', 'sumi'],
     ['auto', 'sumi'],
   ] as const)('cycles the theme %s → %s on click', async (current, next) => {
     mockedUseTheme.mockReturnValue({ theme: current, setTheme })
