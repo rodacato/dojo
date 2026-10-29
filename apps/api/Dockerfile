@@ -1,6 +1,6 @@
 # Stage 1: base with pnpm
 FROM node:24.22.1-alpine AS base
-RUN npm install -g pnpm@9.15.4
+RUN npm install -g pnpm@10.34.9
 WORKDIR /app
 
 # Stage 2: install all dependencies (including dev — needed for build)
