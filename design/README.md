@@ -34,6 +34,7 @@ as context for AI agents.
 | `kata.pen` | 27 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results, new-piece receipt; proposed comeback (#224) |
 | `learn.pen` | 13 | 0.4.0 | Scrolls catalog and player, Engawa playground (mobile too) |
 | `admin.pen` | 16 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health — mobile too |
+| `site.pen` | 2 | 0.4.0 | The GitHub Pages site (`site/`), not the app: home, mobile and desktop — proposed until the Paper site ships |
 
 **This table is present tense — it never carries history.** "Migrated on <date>, six
 components consolidated" belongs in that flow's `Log` frame, not here.
