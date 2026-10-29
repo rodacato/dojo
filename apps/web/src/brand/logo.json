@@ -1,6 +1,10 @@
 {
-  "name": "Open Gate",
+  "name": "Paper Gate",
   "viewBox": "0 0 100 100",
-  "path": "M15 25Q50 32 85 25M25 45H75M30 30V82M70 30V82",
-  "strokeWidth": 8
+  "paths": [
+    "M10 20Q50 28 90 20L85 31Q50 38 15 31Z",
+    "M22 42H78L75 50H25Z",
+    "M26 29H35L33 84H25Z",
+    "M65 29H74L75 84H67Z"
+  ]
 }
