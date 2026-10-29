@@ -44,6 +44,7 @@
         : 'washi'
     </script>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="home.css" />
     <script src="site.js" defer></script>
   </head>
   <body>
@@ -57,247 +58,254 @@
             alt="Dojo"
         /></a>
         <nav aria-label="Main navigation">
-          <a class="wide-link" href="#loop">How it works</a
+          <a class="wide-link" href="#practice">The practice</a
           ><a class="wide-link" href="#run">Run your own</a
-          ><a href="https://github.com/rodacato/dojo">GitHub</a>
+          ><a href="https://github.com/rodacato/dojo">GitHub ↗</a
+          ><button type="button" class="theme" data-toggle-theme>View Sumi</button>
         </nav>
       </div>
     </header>
-    <main id="main" class="wrap">
-      <section class="hero">
+    <main id="main">
+      <section class="wrap home-hero">
         <div>
           <p class="eyebrow">Open source · Self-hosted · MIT</p>
           <h1>Practice thinking for yourself.</h1>
-          <p class="lede">
-            Vibe coding is making developers faster and their instincts weaker. Dojo is the
-            counter-practice: one surprise kata a day, about five minutes, no AI. Then a sensei
-            reviews your reasoning after you submit.
+        </div>
+        <div class="home-hero-copy">
+          <p class="home-lead">
+            One surprise kata a day, about five minutes, no AI. Then the sensei reviews your
+            reasoning.
           </p>
+          <p>For yourself, your friends or your team. You run it, and you decide who gets in.</p>
           <div class="actions">
-            <a class="btn btn-primary" href="#run">Run your own</a
+            <a class="btn btn-primary" href="https://github.com/rodacato/dojo/blob/master/GETTING_STARTED.md"
+              >Run your own dojo ↗</a
             ><a class="btn" href="https://dojo.notdefined.dev/engawa">Try the playground</a>
           </div>
-          <p class="caption">
-            No account needed for the playground. Running an instance needs Docker and a GitHub
-            OAuth app.
+          <p class="home-note">
+            Running an instance needs Docker and a GitHub OAuth app. The playground needs no
+            account and runs no kata.
           </p>
         </div>
-        <figure class="example">
-          <p class="eyebrow">Illustrative evaluation — not a real session</p>
-          <p class="example-title">NEEDS WORK</p>
-          <blockquote>
-            “You fixed the symptom, but left the race condition. Explain what happens when both
-            requests arrive together.”
-          </blockquote>
-          <figcaption class="caption">
-            Direct feedback about the work. No score, no reassurance theatre.
-          </figcaption>
-          <div class="statuses" aria-label="Possible verdicts">
-            <span><i class="dot dot-pass" aria-hidden="true"></i>Passed</span
-            ><span><i class="dot dot-notes" aria-hidden="true"></i>Passed with notes</span
-            ><span><i class="dot dot-work" aria-hidden="true"></i>Needs work</span>
-          </div>
-        </figure>
       </section>
 
-      <section id="loop" class="section">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">The kata loop</p>
-            <h2>You do the thinking.<br />The sensei does the review.</h2>
+      <picture class="home-art">
+        <source
+          type="image/webp"
+          srcset="art/temple-800.webp 800w, art/temple-1600.webp 1600w"
+          sizes="100vw"
+        />
+        <img src="art/temple-1600.webp" alt="" width="1600" height="900" fetchpriority="high" />
+      </picture>
+
+      <section id="practice" class="home-section">
+        <div class="wrap">
+          <div class="home-head">
+            <p class="eyebrow">01 / The practice</p>
+            <h2>Make the attempt. Then examine it.</h2>
           </div>
-          <p>
-            AI belongs after the attempt, never during it. A kata is one problem and one timer. The
-            sensei may ask one follow-up question before it gives the verdict.
-          </p>
-        </div>
-        <div class="split">
-          <ol class="flow">
+          <ol class="home-steps">
             <li>
-              <div>
-                <strong>Open today's kata.</strong>One kata a day, about five minutes, and you see
-                the topic when it opens. Want something longer? Set the type, language and time,
-                and you get one kata inside them.
-              </div>
+              <p class="eyebrow">01 — Open</p>
+              <h3>Meet today's kata.</h3>
+              <p>
+                About five minutes, and you see the topic when it opens. Want longer? Advanced takes
+                the type, language and time, up to 45 minutes, and gives you one kata.
+              </p>
             </li>
             <li>
-              <div>
-                <strong>Work through it.</strong>No AI, no pause and no replacement picks. The timer
-                runs.
-              </div>
+              <p class="eyebrow">02 — Think</p>
+              <h3>Work with what you know.</h3>
+              <p>
+                Write code, find the bug, reason through a decision or sketch a system. Keep the
+                assistant closed. The timer keeps running.
+              </p>
             </li>
             <li>
-              <div>
-                <strong>Submit what you have.</strong>The sensei streams an evaluation of your work
-                and reasoning. Code katas can run your tests in a Piston sandbox, and the sensei
-                sees the results.
-              </div>
-            </li>
-            <li>
-              <div>
-                <strong>Read, reflect, return.</strong>Review the analysis and the topics to
-                revisit. Share the result if you want; a shared page is public.
-              </div>
+              <p class="eyebrow">03 — Return</p>
+              <h3>Submit. Read. Reflect.</h3>
+              <p>
+                The sensei reviews your work and your reasoning. Read what held up, what you
+                assumed and what to revisit.
+              </p>
             </li>
           </ol>
+          <p class="home-replaces">
+            What it replaces is not another product. It is reaching for the prompt first.
+          </p>
+        </div>
+      </section>
+
+      <section class="home-section home-tint">
+        <div class="wrap home-split">
           <div>
+            <p class="eyebrow">02 / Your reasoning matters</p>
+            <h2>An answer is only the beginning.</h2>
+            <p class="home-body">
+              A kata gives the attempt a boundary: one problem, a running timer and an explanation
+              that has to be your own. A verdict describes this attempt; it is not a score for you.
+            </p>
             <h3>The honor code</h3>
-            <p class="level-copy">
+            <p class="home-body">
               Nothing technical stops you from opening an assistant during a kata. Dojo trusts you,
               because the practice only works if you keep it.
             </p>
-            <ul class="checks">
+            <ul class="home-rules">
               <li>No AI during the kata. Debrief with AI after.</li>
               <li>No skipping katas you find uncomfortable.</li>
               <li>The timer runs. You submit what you have.</li>
             </ul>
-            <p class="note">If you cheat yourself here, you cheat yourself everywhere.</p>
           </div>
+          <figure class="home-example">
+            <figcaption class="eyebrow">Authored example · not a product capture</figcaption>
+            <pre><code>async function notifyAll(users) {
+  users.forEach(async (u) =&gt; {
+    await send(u)
+  })
+}</code></pre>
+            <p class="home-verdict">Needs work</p>
+            <blockquote>“What is the caller actually waiting for when this function returns?”</blockquote>
+          </figure>
         </div>
       </section>
 
-      <section id="inside" class="section">
-        <div class="section-head">
+      <section class="home-section">
+        <div class="wrap home-split">
           <div>
-            <p class="eyebrow">What is inside</p>
-            <h2>Practice, and a record<br />that you showed up.</h2>
+            <p class="eyebrow">03 / Inside the dojo</p>
+            <h2>Practice has a place. Progress has a record.</h2>
+            <picture class="home-interior">
+              <source
+                type="image/webp"
+                srcset="art/interior-800.webp 800w, art/interior-1600.webp 1600w"
+                sizes="(min-width: 960px) 520px, 100vw"
+              />
+              <img src="art/interior-1600.webp" alt="" width="1600" height="900" loading="lazy" />
+            </picture>
           </div>
-          <p>
-            An instance serves one group. Whoever runs it decides who is invited.
-          </p>
-        </div>
-        <div class="three">
-          <article class="feature">
-            <p class="eyebrow">Katas</p>
-            <h3>Code, chat or whiteboard.</h3>
-            <p>
-              Refactor code, discuss a technical decision or work through a system design. Junior,
-              mid or senior helps shape which katas you are offered, alongside the topics you
-              choose.
-            </p>
-          </article>
-          <article class="feature">
-            <p class="eyebrow">Belts</p>
-            <h3>Earned by showing up.</h3>
-            <p>
-              White to black, computed from completed katas, topic variety, active days and time at
-              your rank. The verdict never adds points, but a kata that ends in Needs work does
-              not count as completed. A belt is not a certificate.
-              <a href="https://github.com/rodacato/dojo/blob/master/docs/prd/031-belt-progression-rubric.md"
-                >Read the rules.</a
+          <div class="home-items">
+            <article>
+              <h3>Katas for different kinds of thinking.</h3>
+              <p>
+                Code, chat, whiteboard or review: find the bug in a few lines and say why. Today's
+                kata comes from the five-minute review katas. Junior, mid or senior, and the topics
+                you choose, shape what you get.
+              </p>
+            </article>
+            <article>
+              <h3>A belt reflects sustained practice.</h3>
+              <p>
+                White to black, from completed katas, topic variety, active days and time at your
+                rank. Every kata the sensei evaluates counts, whatever the verdict. A belt is not a
+                certificate.
+              </p>
+              <a
+                class="text-link"
+                href="https://github.com/rodacato/dojo/blob/master/docs/prd/031-belt-progression-rubric.md"
+                >Read the belt rules ↗</a
               >
-            </p>
-          </article>
-          <article class="feature">
-            <p class="eyebrow">Engawa</p>
-            <h3>Try an idea, no account.</h3>
-            <p>
-              An anonymous code playground: drop in a snippet and run it. No kata, no verdict.
-            </p>
-            <a class="text-link" href="https://dojo.notdefined.dev/engawa">Open the playground →</a>
-          </article>
+            </article>
+            <article>
+              <h3>Scrolls, when the host publishes them.</h3>
+              <p>
+                Learning apps that run inside Dojo, from any stack. The person who runs an instance
+                registers them; your progress is saved by the instance.
+              </p>
+              <a
+                class="text-link"
+                href="https://github.com/rodacato/dojo/blob/master/docs/scrolls/AUTHORING.md"
+                >How scrolls are authored ↗</a
+              >
+            </article>
+            <article>
+              <h3>Engawa, a playground with no account.</h3>
+              <p>
+                Drop in a snippet and run it. No kata, no verdict. Available when the operator turns
+                it on.
+              </p>
+              <a class="text-link" href="https://dojo.notdefined.dev/engawa">Open the playground ↗</a>
+            </article>
+          </div>
         </div>
-        <p class="note">
-          Scrolls are external learning apps that an operator registers and embeds in Dojo. What an
-          instance offers depends on what its operator publishes.
-          <a href="https://github.com/rodacato/dojo/blob/master/docs/scrolls/AUTHORING.md"
-            >How scrolls are authored.</a
-          >
-        </p>
       </section>
 
-      <section id="run" class="section">
-        <div class="split">
+      <section id="run" class="home-section home-tint">
+        <div class="wrap home-split">
           <div>
-            <p class="eyebrow">Run your own</p>
-            <h2>Self-hosted, not<br />signed up for.</h2>
-            <ul class="checks">
+            <p class="eyebrow">04 / Make room for practice</p>
+            <h2>Your server. Your small dojo.</h2>
+            <ul class="home-rules">
+              <li>One instance for the group you invite. There is no hosted account.</li>
+              <li>Practice history and verdicts stay in your database.</li>
               <li>
-                <strong>Your data, your server.</strong> Practice history and verdicts stay in your
-                database.
-              </li>
-              <li>
-                <strong>Your keys.</strong> Live evaluation uses the LLM provider you configure, so
-                its cost is yours, and it receives what you write in a kata. The sensei defaults to a
-                mock, so you can try the loop without a key.
-              </li>
-              <li>
-                <strong>Your guest list.</strong> Sign-up is by invitation, issued by you. There is
-                no hosted account.
+                Start with a mock sensei, or configure your own LLM provider. Its cost is yours, and
+                it receives what you write in a kata.
               </li>
             </ul>
+          </div>
+          <div class="home-card">
+            <p class="eyebrow">MIT · Self-hosted</p>
+            <h3>Follow the setup guide.</h3>
+            <p>
+              Configure the instance, start its services and load the katas. Needs Docker and a
+              GitHub OAuth app.
+            </p>
             <div class="actions">
               <a
                 class="btn btn-primary"
                 href="https://github.com/rodacato/dojo/blob/master/GETTING_STARTED.md"
-                >Read the setup guide</a
-              ><a class="btn" href="https://github.com/rodacato/dojo">View source</a>
+                >Open the setup guide ↗</a
+              >
             </div>
-          </div>
-          <div class="command">
-            <p class="command-label">An instance with Docker</p>
-            <pre><code>git clone https://github.com/rodacato/dojo
-cd dojo
-cp .env.example .env
-# set the GitHub OAuth values, CREATOR_GITHUB_ID (your numeric
-# GitHub id) and WEB_URL=http://localhost in .env
-docker compose up --build
-docker compose exec dojo-api \
-  node dist/infrastructure/persistence/seed.js</code></pre>
-            <p class="caption">
-              The last command loads the katas; a new instance starts with none. Code execution
-              needs the dev container or a Kamal deploy, and everything needs the running
-              instance, so nothing works offline.
+            <p class="home-note">
+              Want to try a snippet first?
+              <a href="https://dojo.notdefined.dev/engawa">Open the playground, without an account.</a>
             </p>
           </div>
         </div>
       </section>
 
-      <section id="contribute" class="section">
-        <div class="section-head">
+      <section class="home-section">
+        <div class="wrap home-split">
           <div>
             <p class="eyebrow">Contribute</p>
-            <h2>What is welcome,<br />and what is not.</h2>
-          </div>
-          <p>
-            Dojo has a point of view about practice, and the contributing guide protects it.
-          </p>
-        </div>
-        <div class="split">
-          <div>
-            <h3>Welcome</h3>
-            <ul class="checks">
-              <li>New kata variations</li>
-              <li>Prompt improvements</li>
-              <li>Bug fixes with reproductions</li>
-              <li>Accessibility fixes</li>
-            </ul>
-          </div>
-          <div>
-            <h3>Not welcome</h3>
-            <ul class="checks">
-              <li>Gamification features</li>
-              <li>Softening the sensei’s tone</li>
-              <li>AI assistance during a kata</li>
-              <li>Scoring leaderboards</li>
-            </ul>
-            <a
-              class="text-link"
-              href="https://github.com/rodacato/dojo/blob/master/CONTRIBUTING.md"
-              >Read the contributing guide →</a
+            <h2>What is welcome, and what is not.</h2>
+            <p class="home-body">
+              Dojo has a point of view about practice, and the contributing guide protects it.
+            </p>
+            <a class="text-link" href="https://github.com/rodacato/dojo/blob/master/CONTRIBUTING.md"
+              >Read the contributing guide ↗</a
             >
+          </div>
+          <div class="home-lists">
+            <div>
+              <h3>Welcome</h3>
+              <ul class="home-rules">
+                <li>New kata variations</li>
+                <li>Prompt improvements</li>
+                <li>Bug fixes with reproductions</li>
+                <li>Accessibility fixes</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Not welcome</h3>
+              <ul class="home-rules">
+                <li>Softening the sensei's tone</li>
+                <li>AI assistance during a kata</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
     </main>
     <footer class="foot">
       <div class="wrap foot-inner">
-        <span>Dojo · MIT</span>
+        <span>dojo_ · Practice, with intention. · MIT</span>
         <nav aria-label="Footer">
-          <a href="https://github.com/rodacato/dojo/blob/master/CONTRIBUTING.md">Contribute</a
+          <a href="https://github.com/rodacato/dojo">Source</a
           ><a href="https://github.com/rodacato/dojo/blob/master/SECURITY.md">Security</a
           ><a href="https://dojo.notdefined.dev">Reference instance</a
-          ><a href="brand.html">Brand assets</a>
+          ><a href="brand.html">Brand &amp; palette</a>
         </nav>
       </div>
     </footer>

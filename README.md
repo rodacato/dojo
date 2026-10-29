@@ -19,7 +19,7 @@
 
 A self-hosted, open-source practice space for developers: one surprise kata a day, about five minutes. Vibe coding is making developers faster and their instincts weaker. Dojo is the counter-practice: a place where you think for yourself, work through discomfort, and submit something imperfect. No AI during the kata. The timer runs. The sensei tells you the truth.
 
-It is not a certification platform, and it is not a leaderboard. It is a daily practice for developers who want to stay technically alive — and, through scrolls (external learning apps the operator registers), a place to learn as much as a place to be tested.
+It is not a certification platform. It is a daily practice for developers who want to stay technically alive — and, through scrolls (external learning apps the operator registers), a place to learn as much as a place to be tested.
 
 **There is no hosted service to sign up for — you run your own**, for yourself, your friends, or your team.
 
