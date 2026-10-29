@@ -23,7 +23,6 @@ import { scrollProgressRoutes } from './routes/scroll-progress'
 import { adminScrollsRoutes } from './routes/admin-scrolls'
 import { scrollExecuteRoutes } from './routes/scroll-execute'
 import { errorRoutes } from './routes/errors'
-import { landingRoutes } from './routes/landing'
 import { authLimiter, globalLimiter } from './middleware/rateLimiter'
 import { requestIdMiddleware } from './middleware/requestId'
 import { requestLoggerMiddleware } from './middleware/requestLogger'
@@ -67,7 +66,6 @@ export function createRouter() {
   app.route('/', playgroundRoutes)
   app.route('/', ogRoutes)
   app.route('/', errorRoutes)
-  app.route('/', landingRoutes)
   app.route('/', scrollsRoutes)
   app.route('/', scrollProgressRoutes)
   app.route('/', scrollExecuteRoutes)

@@ -8593,7 +8593,7 @@
       "y": 0,
       "name": "Landing / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -8616,55 +8616,6 @@
               "id": "oorRH",
               "type": "ref",
               "ref": "AbS82"
-            },
-            {
-              "type": "frame",
-              "id": "U4KUxK",
-              "name": "Links",
-              "gap": 24,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "a9m0U1",
-                  "name": "Link",
-                  "fill": "$color-secondary",
-                  "content": "Open Source",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "nJ5hn",
-                  "name": "Link",
-                  "fill": "$color-secondary",
-                  "content": "Changelog",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "e3vuSE",
-                  "name": "Link",
-                  "fill": "$color-secondary",
-                  "content": "Why",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
-                  "id": "L4B7qv",
-                  "type": "ref",
-                  "ref": "lqgHU",
-                  "descendants": {
-                    "Pax83": {
-                      "content": "SIGN IN"
-                    }
-                  }
-                }
-              ]
             }
           ]
         },
@@ -8697,7 +8648,7 @@
                   "fill": "$color-primary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "The dojo for developers who still have something to prove.",
+                  "content": "Practice thinking for yourself.",
                   "lineHeight": 1.17,
                   "fontFamily": "$font-mono",
                   "fontSize": 48,
@@ -8708,10 +8659,12 @@
                   "id": "gKtuL",
                   "name": "H1 second line",
                   "fill": "$color-secondary",
-                  "content": "To themselves.",
-                  "lineHeight": 1.17,
+                  "textGrowth": "fixed-width",
+                  "width": 440,
+                  "content": "The dojo for developers who still have something to prove. To themselves.",
+                  "lineHeight": 1.4,
                   "fontFamily": "$font-mono",
-                  "fontSize": 48,
+                  "fontSize": 18,
                   "fontWeight": "normal"
                 },
                 {
@@ -8721,7 +8674,7 @@
                   "fill": "$color-secondary",
                   "textGrowth": "fixed-width",
                   "width": 440,
-                  "content": "You've been delegating the thinking. The muscle is atrophying. Dojo is the deliberate resistance.",
+                  "content": "One surprise kata a day, about five minutes, no AI. Then the sensei reviews your reasoning.",
                   "lineHeight": 1.6,
                   "fontFamily": "$font-sans",
                   "fontSize": 15,
@@ -8733,9 +8686,22 @@
                   "ref": "WDpQp",
                   "descendants": {
                     "NnDrs": {
-                      "content": "ENTER DOJO →"
+                      "content": "SIGN IN WITH GITHUB"
                     }
                   }
+                },
+                {
+                  "type": "text",
+                  "id": "DG303",
+                  "name": "Invite note",
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 440,
+                  "content": "Invite-only. Ask the person who runs this instance for an invitation, or request one here.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -8766,41 +8732,25 @@
                     10,
                     16
                   ],
+                  "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
-                    {
-                      "type": "ellipse",
-                      "id": "FOrPs",
-                      "name": "Dot",
-                      "opacity": 0.6,
-                      "fill": "$color-danger",
-                      "width": 8,
-                      "height": 8
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "ep4eB",
-                      "name": "Dot",
-                      "opacity": 0.6,
-                      "fill": "$color-warning",
-                      "width": 8,
-                      "height": 8
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "U4IlXV",
-                      "name": "Dot",
-                      "opacity": 0.6,
-                      "fill": "$color-success",
-                      "width": 8,
-                      "height": 8
-                    },
                     {
                       "type": "text",
                       "id": "J5k8g",
                       "name": "Title",
                       "fill": "$color-secondary",
-                      "content": "session_",
+                      "content": "today's kata",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Hh4QI",
+                      "name": "Timer",
+                      "fill": "$color-secondary",
+                      "content": "05:00",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -8821,7 +8771,7 @@
                       "id": "r3yfUz",
                       "name": "Line",
                       "fill": "$color-primary",
-                      "content": "$ dojo kata start --time 30 --mood focused",
+                      "content": "1  async function notifyAll(users) {",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -8831,7 +8781,7 @@
                       "id": "ObsOg",
                       "name": "Line",
                       "fill": "$color-secondary",
-                      "content": "fetching kata catalog... [OK]",
+                      "content": "2    users.forEach(async (u) => {",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -8841,7 +8791,7 @@
                       "id": "Ng3cC",
                       "name": "Line",
                       "fill": "$color-secondary",
-                      "content": "filtering by your weak areas... [OK]",
+                      "content": "3      await send(u)",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -8851,7 +8801,7 @@
                       "id": "j7nPNI",
                       "name": "Line",
                       "fill": "$color-secondary",
-                      "content": "3 candidates loaded:",
+                      "content": "4    })",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -8861,27 +8811,7 @@
                       "id": "zJQH7",
                       "name": "Line",
                       "fill": "$color-secondary",
-                      "content": "* CODE        Refactor a 200-line useEffect      28 min",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "b6Hj1X",
-                      "name": "Line",
-                      "fill": "$color-secondary",
-                      "content": "* CHAT        The angry CTO                      25 min",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "v1r1Jg",
-                      "name": "Line",
-                      "fill": "$color-secondary",
-                      "content": "* WHITEBOARD  Multi-tenant rate limiting         30 min",
+                      "content": "5  }",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -8902,7 +8832,7 @@
                           "id": "c4xoaN",
                           "name": "Prompt text",
                           "fill": "$color-primary",
-                          "content": "> choose one. no skip. no reroll.",
+                          "content": "> tap the line with the bug. say why.",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -8928,7 +8858,7 @@
         {
           "type": "frame",
           "id": "B0yDE",
-          "name": "Why it exists",
+          "name": "What is here",
           "width": "fill_container",
           "fill": "$tint-surface-30",
           "stroke": "$color-border",
@@ -8957,21 +8887,10 @@
                   "id": "o0tup",
                   "name": "H2",
                   "fill": "$color-primary",
-                  "content": "Why it exists",
+                  "content": "What is here",
                   "fontFamily": "$font-mono",
                   "fontSize": 24,
                   "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "d1VwV",
-                  "name": "Tag",
-                  "fill": "$color-secondary",
-                  "content": "[ SYS_RATIONALE ]",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal",
-                  "letterSpacing": 0.55
                 }
               ]
             },
@@ -8985,28 +8904,17 @@
                 {
                   "type": "frame",
                   "id": "kaWNo",
-                  "name": "Pillar 01 / RIGOR",
+                  "name": "Offer / Today's kata",
                   "width": "fill_container",
                   "layout": "vertical",
                   "gap": 10,
                   "children": [
                     {
                       "type": "text",
-                      "id": "mxbTT",
-                      "name": "Eyebrow",
-                      "fill": "$color-secondary",
-                      "content": "01 / RIGOR",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.55
-                    },
-                    {
-                      "type": "text",
                       "id": "YbmDS",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "No handholding.",
+                      "content": "Today's kata",
                       "fontFamily": "$font-mono",
                       "fontSize": 18,
                       "fontWeight": "normal"
@@ -9018,7 +8926,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "No AI inside the kata. No autocomplete. No skip. Just you, the problem, and a timer that does not pause.",
+                      "content": "One surprise kata a day, about five minutes. You see the topic when it opens. Done early? Ask for one more.",
                       "lineHeight": 1.6,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -9029,28 +8937,17 @@
                 {
                   "type": "frame",
                   "id": "n6gCz2",
-                  "name": "Pillar 02 / SIGNAL",
+                  "name": "Offer / Advanced",
                   "width": "fill_container",
                   "layout": "vertical",
                   "gap": 10,
                   "children": [
                     {
                       "type": "text",
-                      "id": "yjbvi",
-                      "name": "Eyebrow",
-                      "fill": "$color-secondary",
-                      "content": "02 / SIGNAL",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.55
-                    },
-                    {
-                      "type": "text",
                       "id": "Aw5fY",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "Honest feedback.",
+                      "content": "Advanced",
                       "fontFamily": "$font-mono",
                       "fontSize": 18,
                       "fontWeight": "normal"
@@ -9062,7 +8959,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "The sensei is an LLM playing a senior dev with 12 years in the domain. Brutally specific critique — what you missed, what you got right, what to read next.",
+                      "content": "Longer katas, up to 45 minutes. Set the type, language and time, and you get one.",
                       "lineHeight": 1.6,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -9073,28 +8970,17 @@
                 {
                   "type": "frame",
                   "id": "bBYk2",
-                  "name": "Pillar 03 / FLOW",
+                  "name": "Offer / Belts",
                   "width": "fill_container",
                   "layout": "vertical",
                   "gap": 10,
                   "children": [
                     {
                       "type": "text",
-                      "id": "uiYqY",
-                      "name": "Eyebrow",
-                      "fill": "$color-secondary",
-                      "content": "03 / FLOW",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal",
-                      "letterSpacing": 0.55
-                    },
-                    {
-                      "type": "text",
                       "id": "zGEEg",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "Deliberate practice.",
+                      "content": "Belts",
                       "fontFamily": "$font-mono",
                       "fontSize": 18,
                       "fontWeight": "normal"
@@ -9106,7 +8992,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "A minimalist interface designed to disappear. Pick mood. Pick time. Get 3 kata. Choose one. Work. The dojo does not beg you to come back.",
+                      "content": "Earned by showing up: completed katas, topic variety and active days. Every kata the sensei evaluates counts, whatever the verdict.",
                       "lineHeight": 1.6,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -9121,7 +9007,7 @@
         {
           "type": "frame",
           "id": "MIKPU",
-          "name": "Execution flow",
+          "name": "How a kata works",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 32,
@@ -9135,7 +9021,7 @@
               "id": "I8rHUq",
               "name": "H2",
               "fill": "$color-primary",
-              "content": "Execution flow",
+              "content": "How a kata works",
               "fontFamily": "$font-mono",
               "fontSize": 24,
               "fontWeight": "normal"
@@ -9150,7 +9036,7 @@
                 {
                   "type": "frame",
                   "id": "LoB6H",
-                  "name": "Step STEP_01",
+                  "name": "Step 01",
                   "width": "fill_container",
                   "fill": "$color-surface",
                   "cornerRadius": 6,
@@ -9165,7 +9051,7 @@
                       "id": "wd7By",
                       "name": "Eyebrow",
                       "fill": "$color-secondary",
-                      "content": "STEP_01",
+                      "content": "01",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -9176,7 +9062,7 @@
                       "id": "C4hQYZ",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "Enter the dojo",
+                      "content": "Open it",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -9188,7 +9074,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Pick your mood. Pick your time. The dojo serves you 3 kata.",
+                      "content": "The topic stays hidden until you open it. The timer starts and does not pause.",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -9199,7 +9085,7 @@
                 {
                   "type": "frame",
                   "id": "iAeD3",
-                  "name": "Step STEP_02",
+                  "name": "Step 02",
                   "width": "fill_container",
                   "fill": "$color-surface",
                   "cornerRadius": 6,
@@ -9214,7 +9100,7 @@
                       "id": "u1q1VG",
                       "name": "Eyebrow",
                       "fill": "$color-secondary",
-                      "content": "STEP_02",
+                      "content": "02",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -9225,7 +9111,7 @@
                       "id": "Y0OyU",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "Choose your kata",
+                      "content": "Work without AI",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -9237,7 +9123,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "3 options. No skip. No reroll. These are your kata.",
+                      "content": "Nothing technical stops you from opening an assistant. The practice only works if you do not.",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -9248,7 +9134,7 @@
                 {
                   "type": "frame",
                   "id": "zDHtK",
-                  "name": "Step STEP_03",
+                  "name": "Step 03",
                   "width": "fill_container",
                   "fill": "$color-surface",
                   "cornerRadius": 6,
@@ -9263,7 +9149,7 @@
                       "id": "VPxAN",
                       "name": "Eyebrow",
                       "fill": "$color-secondary",
-                      "content": "STEP_03",
+                      "content": "03",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -9274,7 +9160,7 @@
                       "id": "SndOI",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "Do the work",
+                      "content": "Submit what you have",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -9286,7 +9172,7 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Timer running. No AI inside. The sensei is watching. Write your answer.",
+                      "content": "The sensei reviews your work and your reasoning. Verdict: passed, passed with notes, or needs work.",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
@@ -9297,7 +9183,7 @@
                 {
                   "type": "frame",
                   "id": "IV5Qp",
-                  "name": "Step STEP_04",
+                  "name": "Step 04",
                   "width": "fill_container",
                   "fill": "$color-surface",
                   "cornerRadius": 6,
@@ -9312,7 +9198,7 @@
                       "id": "t29Qv",
                       "name": "Eyebrow",
                       "fill": "$color-secondary",
-                      "content": "STEP_04",
+                      "content": "04",
                       "fontFamily": "$font-mono",
                       "fontSize": 11,
                       "fontWeight": "normal",
@@ -9323,7 +9209,7 @@
                       "id": "luFas",
                       "name": "H3",
                       "fill": "$color-primary",
-                      "content": "Hear the truth",
+                      "content": "Read and return",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -9335,234 +9221,13 @@
                       "fill": "$color-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Submit. The sensei evaluates with honest, specific feedback. Verdict: passed, with notes, or needs work.",
+                      "content": "Read the analysis and what to revisit. Share the result if you want; a shared page is public.",
                       "lineHeight": 1.5,
                       "fontFamily": "$font-sans",
                       "fontSize": 13,
                       "fontWeight": "normal"
                     }
                   ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "FsN1I",
-          "name": "Open source strip",
-          "width": "fill_container",
-          "fill": "$tint-surface-40",
-          "stroke": "$color-border",
-          "strokeWidth": {
-            "top": 1,
-            "bottom": 1
-          },
-          "strokeAlignment": "inner",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": [
-            64,
-            160
-          ],
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "text",
-              "id": "jmNoT",
-              "name": "Eyebrow",
-              "fill": "$color-secondary",
-              "content": "Open source — run your own dojo",
-              "fontFamily": "$font-mono",
-              "fontSize": 11,
-              "fontWeight": "normal",
-              "letterSpacing": 0.55
-            },
-            {
-              "type": "text",
-              "id": "cYJOK",
-              "name": "Body",
-              "fill": "$color-secondary",
-              "content": "For yourself, your friends, or your team. Your keys, your access, your data.",
-              "fontFamily": "$font-sans",
-              "fontSize": 15,
-              "fontWeight": "normal"
-            },
-            {
-              "type": "frame",
-              "id": "ANDwo",
-              "name": "Clone row",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "ifrtG",
-                  "name": "Code box",
-                  "fill": "$color-page",
-                  "cornerRadius": "$radius-sm",
-                  "stroke": "$color-border",
-                  "strokeWidth": 1,
-                  "padding": [
-                    12,
-                    16
-                  ],
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "UHRVe",
-                      "name": "Command",
-                      "fill": "$color-secondary",
-                      "content": "git clone https://github.com/rodacato/dojo.git",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 13,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "AQdXh",
-                  "name": "Copy button",
-                  "width": 44,
-                  "height": 44,
-                  "cornerRadius": "$radius-sm",
-                  "stroke": "$color-border",
-                  "strokeWidth": 1,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "oQ4pP",
-                      "name": "Icon",
-                      "width": 18,
-                      "height": 18,
-                      "icon": "content_copy",
-                      "library": "Material Symbols Outlined",
-                      "fill": "$color-secondary"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "gdv7M",
-              "name": "Repo stats",
-              "gap": 24,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "JuhRS",
-                  "name": "Stat stars",
-                  "gap": 6,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "vX0gk",
-                      "name": "Key",
-                      "fill": "$color-secondary",
-                      "content": "stars",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "eAsqw",
-                      "name": "Value",
-                      "fill": "$color-primary",
-                      "content": "0",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "horWE",
-                  "name": "Stat forks",
-                  "gap": 6,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "X6p1u",
-                      "name": "Key",
-                      "fill": "$color-secondary",
-                      "content": "forks",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "Q21bD",
-                      "name": "Value",
-                      "fill": "$color-primary",
-                      "content": "0",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "H9yret",
-                  "name": "Stat lang",
-                  "gap": 6,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "c6Ygi8",
-                      "name": "Key",
-                      "fill": "$color-secondary",
-                      "content": "lang",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "NyU2O",
-                      "name": "Value",
-                      "fill": "$color-primary",
-                      "content": "TypeScript",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "U1O7wC",
-              "name": "Links",
-              "gap": 24,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "J5PqGo",
-                  "name": "Link",
-                  "fill": "$color-secondary",
-                  "content": "architecture →",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                },
-                {
-                  "type": "text",
-                  "id": "wUfqp",
-                  "name": "Link",
-                  "fill": "$color-secondary",
-                  "content": "github",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
                 }
               ]
             }
@@ -9617,7 +9282,7 @@
                   "fill": "$color-secondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Whoever runs this instance issues the invitations. Tell them why you want in.",
+                  "content": "The person who runs this instance issues the invitations. Ask them, or tell them here why you want in.",
                   "lineHeight": 1.5,
                   "fontFamily": "$font-sans",
                   "fontSize": 15,
@@ -9768,16 +9433,6 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "YS7n7",
-                      "name": "Link",
-                      "fill": "$color-secondary",
-                      "content": "Open Source",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
                       "id": "ZaUfK",
                       "name": "Link",
                       "fill": "$color-secondary",
@@ -9811,9 +9466,9 @@
                 {
                   "type": "text",
                   "id": "xMWT4",
-                  "name": "GitHub",
+                  "name": "Project site",
                   "fill": "$color-secondary",
-                  "content": "github",
+                  "content": "Runs on Dojo, open source →",
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal"
@@ -9842,7 +9497,7 @@
       "y": 0,
       "name": "Invite / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10049,7 +9704,7 @@
       "y": 0,
       "name": "AuthCallback / Pending",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10168,7 +9823,7 @@
       "y": 0,
       "name": "AuthCallback / Failed",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10276,7 +9931,7 @@
       "y": 2712,
       "name": "Error / 5xx",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10484,7 +10139,7 @@
       "y": 2712,
       "name": "NotFound / 404",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10682,7 +10337,7 @@
       "y": 2712,
       "name": "Profile / 404",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10723,7 +10378,7 @@
       "y": 2712,
       "name": "Share / Not found",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -10764,7 +10419,7 @@
       "y": 3872,
       "name": "Terms / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -11580,7 +11235,7 @@
       "y": 3872,
       "name": "Changelog / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -11839,7 +11494,7 @@
       "y": 3872,
       "name": "OpenSource / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -13001,7 +12656,7 @@
       "y": 6150,
       "name": "Profile / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14426,7 +14081,7 @@
       "y": 6150,
       "name": "Share / Default",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14626,7 +14281,7 @@
       "y": 0,
       "name": "BRIEF — Public · entry & sign-in",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -14711,7 +14366,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- / (LandingPage.tsx) public; logged-in user is sent to /dashboard (LandingPage.tsx:31)\n- /invite/:token (InviteRedeemPage.tsx), admin copies the link (AdminInvitationsPage.tsx:217)\n- /auth/callback?token= after GitHub (AuthCallbackPage.tsx:12)\n- /login only redirects to / (App.tsx:61)",
+          "content": "- / (LandingPage.tsx) public; logged-in user is sent to /dashboard (LandingPage.tsx:30)\n- /invite/:token (InviteRedeemPage.tsx), admin copies the link (AdminInvitationsPage.tsx:217)\n- /auth/callback?token= after GitHub (AuthCallbackPage.tsx:12)\n- /login only redirects to / (App.tsx:61)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14738,7 +14393,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Landing — Default · RequestAccessForm drawn Default only\n- Invite — Default\n- AuthCallback — Pending, Failed",
+          "content": "- Landing — Default · the instance's front door, no project marketing · RequestAccessForm drawn Default only\n- Invite — Default\n- AuthCallback — Pending, Failed",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14765,7 +14420,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Only sign-in control is the nav 'Sign in' (href API_URL/auth/github); hero CTA scrolls to #access (LandingPage.tsx)\n- ?error=session_expired | invite_required | invite_invalid get their own banner text, any other value gets the generic GitHub sign-in text\n- AuthCallback failed stays on the page (no auto redirect) with 'Try again' to /?error=auth",
+          "content": "- Hero primary action and nav 'Sign in' both go to API_URL/auth/github; 'request one here' scrolls to #access (LandingPage.tsx)\n- 'What is here' lists published scrolls from GET /scrolls when there are any; nothing when there are none or the request fails\n- Request access 503 (no Resend keys) says to ask the person who runs the instance, not to try again\n- ?error=session_expired | invite_required | invite_invalid get their own banner text, any other value gets the generic GitHub sign-in text\n- AuthCallback failed stays on the page (no auto redirect) with 'Try again' to /?error=auth",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14792,7 +14447,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "apps/web/src/pages/LandingPage.tsx, InviteRedeemPage.tsx, AuthCallbackPage.tsx — all strings verbatim; CSS uppercase is written uppercase in the design (D28). Sample data: token, repo stats.",
+          "content": "apps/web/src/pages/LandingPage.tsx, InviteRedeemPage.tsx, AuthCallbackPage.tsx — all strings verbatim; CSS uppercase is written uppercase in the design (D28). Sample data: token, the example kata in the hero preview.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14819,7 +14474,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Landing error banner (4 messages) — pure string swap on one strip\n- RequestAccessForm submitting / error / success — owned by the form, copy in code\n- Landing loading ('_' blink) — root gate\n- Terminal demo sessions 2 and 3 — cross-fade of the same card",
+          "content": "- Landing with published scrolls — a list of scroll titles under 'What is here', titles come from each manifest\n- Landing error banner (4 messages) — pure string swap on one strip\n- RequestAccessForm submitting / error / 503 / success — owned by the form, copy in code\n- Landing loading ('_' blink) — root gate",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -14888,7 +14543,7 @@
       "y": 2712,
       "name": "BRIEF — Public · error paths",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -15150,7 +14805,7 @@
       "y": 3872,
       "name": "BRIEF — Public · content pages",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -15235,7 +14890,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Footer and nav of PublicPageLayout; Landing footer (LandingPage.tsx:712-721)\n- /terms, /privacy (LegalPage), /changelog, /open-source",
+          "content": "- Footer and nav of PublicPageLayout; Landing footer (LandingPage.tsx:514-547)\n- /terms, /privacy (LegalPage), /changelog, /open-source",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15412,7 +15067,7 @@
       "y": 6150,
       "name": "BRIEF — Public · profile & share",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -15674,7 +15329,7 @@
       "y": 7425,
       "name": "LOG — Public",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -15697,6 +15352,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "sDmlQ",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-29 · Landing / Default is the instance's front door: sign in or request an invitation, what is here (today's kata, Advanced, belts, published scrolls), how a kata works. Project marketing, the CLI demo and repo stats moved to the GitHub Pages site.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -15793,12 +15461,12 @@
     },
     {
       "type": "frame",
-      "id": "gcj81",
+      "id": "B9A0Ez",
       "x": 3880,
       "y": 6150,
       "name": "Share / Proposed · recognition card",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1200,
