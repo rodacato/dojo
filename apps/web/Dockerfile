@@ -46,7 +46,8 @@ RUN pnpm --filter=@dojo/shared build
 RUN pnpm --filter=@dojo/web build
 
 # Stage 2: serve with Nginx
-FROM nginx:1.31.8-alpine AS runner
+FROM nginx:1.31.8-alpine3.24 AS runner
+RUN apk upgrade --no-cache brotli-libs curl libcurl
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 COPY apps/web/nginx.conf.template /etc/nginx/templates/default.conf.template
 COPY --chmod=755 apps/web/require-api-host.sh /docker-entrypoint.d/10-require-api-host.sh
