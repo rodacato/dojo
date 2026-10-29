@@ -94,14 +94,4 @@ describe('profile api client', () => {
     expect(body).toEqual({ githubHandle: 'octocat' })
     expect('reason' in body).toBe(false)
   })
-
-  it('getRepoStats returns the stars/forks/language payload', async () => {
-    const stats = { stars: 42, forks: 7, language: 'TypeScript' }
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => jsonResponse(stats))
-
-    const out = await profile.getRepoStats()
-
-    expect(call(fetchSpy, 0)[0]).toBe(u('/landing/repo-stats'))
-    expect(out).toEqual(stats)
-  })
 })

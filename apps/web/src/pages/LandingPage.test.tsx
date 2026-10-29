@@ -3,10 +3,11 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import type { UserDTO } from '@dojo/shared'
+import type { ScrollEntryDTO, UserDTO } from '@dojo/shared'
 import { LandingPage } from './LandingPage'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
+import { ApiError } from '../lib/api/client'
 
 vi.mock('../context/AuthContext', () => ({
   useAuth: vi.fn(),
@@ -14,13 +15,13 @@ vi.mock('../context/AuthContext', () => ({
 
 vi.mock('../lib/api', () => ({
   api: {
-    getRepoStats: vi.fn(),
+    getScrolls: vi.fn(),
     requestAccess: vi.fn(),
   },
 }))
 
 const mockedUseAuth = vi.mocked(useAuth)
-const mockedGetRepoStats = vi.mocked(api.getRepoStats)
+const mockedGetScrolls = vi.mocked(api.getScrolls)
 const mockedRequestAccess = vi.mocked(api.requestAccess)
 
 const user: UserDTO = {
@@ -55,8 +56,7 @@ function renderAt(entry = '/') {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  // Default: repo-stats endpoint never settles unless a test overrides it.
-  mockedGetRepoStats.mockReturnValue(new Promise(() => {}))
+  mockedGetScrolls.mockResolvedValue([])
 })
 
 // LandingPage registers ScrollTrigger, whose sync interval outlives jsdom and calls requestAnimationFrame.
@@ -89,7 +89,7 @@ describe('LandingPage — auth gating', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('navigation')).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: 'Why it exists' }),
+      screen.getByRole('heading', { name: 'What is here' }),
     ).toBeInTheDocument()
     expect(screen.queryByText('dashboard route')).not.toBeInTheDocument()
   })
@@ -102,7 +102,7 @@ describe('LandingPage — auth gating', () => {
       expect(screen.getByText('dashboard route')).toBeInTheDocument()
     })
     expect(
-      screen.queryByRole('heading', { name: 'Why it exists' }),
+      screen.queryByRole('heading', { name: 'What is here' }),
     ).not.toBeInTheDocument()
   })
 })
@@ -122,7 +122,7 @@ describe('LandingPage — auth error banner', () => {
     renderAt('/?error=invite_required')
 
     expect(
-      screen.getByText(/Request access below or use an invitation link\./),
+      screen.getByText(/Ask the person who runs it for an invitation, or request one below\./),
     ).toBeInTheDocument()
   })
 
@@ -144,31 +144,33 @@ describe('LandingPage — auth error banner', () => {
   })
 })
 
-describe('LandingPage — GitHub repo stats', () => {
-  it('renders fetched stars/forks/lang once getRepoStats resolves', async () => {
+describe('LandingPage — what is here', () => {
+  const patternCircuit = {
+    id: '00000000-0000-4000-8000-000000000001',
+    slug: 'pattern-circuit',
+    manifest: { title: { en: 'Pattern Circuit' }, description: { en: 'Design patterns' }, locales: ['en'] },
+  } as unknown as ScrollEntryDTO
+
+  it('lists the scrolls this instance has published, linked to each one', async () => {
     asAnon()
-    mockedGetRepoStats.mockResolvedValue({
-      stars: 128,
-      forks: 9,
-      language: 'Rust',
-    })
+    mockedGetScrolls.mockResolvedValue([patternCircuit])
     renderAt()
 
-    expect(mockedGetRepoStats).toHaveBeenCalledTimes(1)
-    
-    expect(await screen.findByText('128')).toBeInTheDocument()
-    expect(screen.getByText('9')).toBeInTheDocument()
-    expect(screen.getByText('Rust')).toBeInTheDocument()
+    const scrolls = await screen.findByRole('list', { name: 'Scrolls' })
+    expect(within(scrolls).getByRole('link', { name: 'Pattern Circuit' })).toHaveAttribute(
+      'href',
+      '/scrolls/pattern-circuit',
+    )
   })
 
-  it('shows no stats row when getRepoStats rejects, instead of publishing zeros', async () => {
+  it('shows no scrolls block when the instance has none or the request fails', async () => {
     asAnon()
-    mockedGetRepoStats.mockRejectedValue(new Error('network'))
+    mockedGetScrolls.mockRejectedValue(new Error('network'))
     renderAt()
 
-    await waitFor(() => expect(mockedGetRepoStats).toHaveBeenCalled())
-    expect(screen.queryByText('stars')).not.toBeInTheDocument()
-    expect(screen.queryByText('TypeScript')).not.toBeInTheDocument()
+    await waitFor(() => expect(mockedGetScrolls).toHaveBeenCalled())
+    expect(screen.queryByRole('list', { name: 'Scrolls' })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: "Today's kata" })).toBeInTheDocument()
   })
 })
 
@@ -216,39 +218,50 @@ describe('LandingPage — request access form', () => {
     expect(screen.getByPlaceholderText('@yourhandle')).toBeInTheDocument()
     expect(screen.queryByText('[ Received ]')).not.toBeInTheDocument()
   })
+
+  it('tells the visitor to ask in person when the instance takes no requests (503)', async () => {
+    asAnon()
+    mockedRequestAccess.mockRejectedValue(new ApiError(503, 'Access request channel not available'))
+    const ue = userEvent.setup()
+    renderAt()
+
+    await ue.type(screen.getByPlaceholderText('@yourhandle'), 'octocat')
+    await ue.click(screen.getByRole('button', { name: 'Submit_request' }))
+
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent('Ask the person who runs it.')
+    expect(alert).not.toHaveTextContent(/Try again/)
+  })
 })
 
-describe('LandingPage — open source strip', () => {
-  it('copies the clone command and flips the button label on click', async () => {
+describe('LandingPage — an instance, not the project', () => {
+  it('leads with signing in to this instance', () => {
     asAnon()
-    const writeText = vi.fn().mockResolvedValue(undefined)
-    const ue = userEvent.setup()
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText },
-    })
     renderAt()
 
-    const copyBtn = screen.getByRole('button', { name: 'Copy clone command' })
-    await ue.click(copyBtn)
-
-    expect(writeText).toHaveBeenCalledWith(
-      'git clone https://github.com/rodacato/dojo.git',
+    expect(screen.getByRole('link', { name: 'Sign in with GitHub' }).getAttribute('href')).toMatch(
+      /\/auth\/github$/,
     )
-    // aria-label flips to "Copied" after the click.
-    expect(
-      await screen.findByRole('button', { name: 'Copied' }),
-    ).toBeInTheDocument()
   })
 
-  it('links the GitHub strip out to the public repo', () => {
+  it('carries no project marketing and does not claim to be the author instance', () => {
     asAnon()
     renderAt()
 
-    const repoLinks = screen
-      .getAllByRole('link', { name: /github/i })
-      .filter((el) => el.getAttribute('href') === 'https://github.com/rodacato/dojo')
-    expect(repoLinks.length).toBeGreaterThan(0)
+    expect(screen.queryByText(/git clone/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/reference instance/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/dojo kata today/)).not.toBeInTheDocument()
+  })
+
+  it('points to the project site from the footer', () => {
+    asAnon()
+    renderAt()
+
+    const footer = screen.getByRole('contentinfo')
+    expect(within(footer).getByRole('link', { name: /Runs on Dojo/ })).toHaveAttribute(
+      'href',
+      'https://rodacato.github.io/dojo/',
+    )
   })
 })
 

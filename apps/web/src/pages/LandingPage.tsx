@@ -3,21 +3,19 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from '@gsap/react'
+import type { ScrollEntryDTO } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
-import { GitHubIcon } from '../components/GitHubIcon'
 import { LogoWordmark, LogoMark } from '../components/Logo'
 import { DotGridBackground } from '../components/ui/DotGridBackground'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { api } from '../lib/api'
+import { ApiError } from '../lib/api/client'
 import { API_URL } from '../lib/config'
+import { pickLocalized, preferredLocale } from '../lib/scrollLocale'
 
 gsap.registerPlugin(ScrollTrigger)
 
-interface GitHubStats {
-  stars: number
-  forks: number
-  language: string
-}
+const PROJECT_SITE_URL = 'https://rodacato.github.io/dojo/'
 
 const HERO_LINE_1 = 'Practice thinking for yourself.'
 
@@ -77,9 +75,8 @@ export function LandingPage() {
       {errorParam && <AuthErrorBanner errorParam={errorParam} />}
       <StickyNav />
       <Hero />
-      <WhyItExists />
-      <ExecutionFlow />
-      <OpenSourceStrip />
+      <WhatIsHere />
+      <HowAKataWorks />
       <AccessSection />
       <Footer />
     </div>
@@ -92,7 +89,7 @@ export function LandingPage() {
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
   session_expired: 'Your session expired. Sign in again to continue.',
-  invite_required: 'This instance is invite-only. Request access below or use an invitation link.',
+  invite_required: 'This instance is invite-only. Ask the person who runs it for an invitation, or request one below.',
   invite_invalid: 'This invitation is invalid or has already been used.',
 }
 
@@ -124,17 +121,6 @@ function StickyNav() {
     >
       <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-5xl mx-auto">
         <LogoWordmark />
-        <div className="hidden md:flex items-center gap-7">
-          <Link to="/open-source" className="text-sm font-mono text-secondary hover:text-primary transition-colors">
-            Open Source
-          </Link>
-          <Link to="/changelog" className="text-sm font-mono text-secondary hover:text-primary transition-colors">
-            Changelog
-          </Link>
-          <a href="#problem" className="text-sm font-mono text-secondary hover:text-primary transition-colors">
-            Why
-          </a>
-        </div>
         <div className="flex items-center gap-3">
           <a href={`${API_URL}/auth/github`} className={buttonClasses({ variant: 'subtle', size: 'sm' })}>
             Sign in
@@ -151,7 +137,7 @@ function Hero() {
   const cursorRef = useRef<HTMLSpanElement>(null)
   const line2Ref = useRef<HTMLSpanElement>(null)
   const paragraphRef = useRef<HTMLParagraphElement>(null)
-  const ctaRef = useRef<HTMLAnchorElement>(null)
+  const ctaRef = useRef<HTMLDivElement>(null)
   const terminalRef = useRef<HTMLDivElement>(null)
 
   // Brushstroke removed for now — the placeholder SVG path was a wavy line
@@ -245,352 +231,162 @@ function Hero() {
             ref={paragraphRef}
             className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
           >
-            Vibe coding is making developers faster and their instincts weaker. Dojo is the
-            counter-practice: one surprise kata a day, about five minutes, no AI. Then a sensei
-            reviews your reasoning after you submit.
+            One surprise kata a day, about five minutes, no AI. Then the sensei reviews your
+            reasoning.
           </p>
-          <a
-            ref={ctaRef}
-            href="#access"
-            className={buttonClasses({ variant: 'primary', size: 'lg' })}
-          >
-            Enter dojo →
-          </a>
-          <p className="mt-4 text-sm text-secondary max-w-md">
-            This is the author's reference instance, not a hosted service.{' '}
-            <Link to="/open-source" className="underline underline-offset-4 hover:text-primary">
-              Run your own
-            </Link>
-            .
-          </p>
+          <div ref={ctaRef}>
+            <a href={`${API_URL}/auth/github`} className={buttonClasses({ variant: 'primary', size: 'lg' })}>
+              Sign in with GitHub
+            </a>
+            <p className="mt-4 text-sm text-secondary max-w-md">
+              Invite-only. Ask the person who runs this instance for an invitation, or{' '}
+              <a href="#access" className="underline underline-offset-4 hover:text-primary">
+                request one here
+              </a>
+              .
+            </p>
+          </div>
         </div>
-        <div ref={terminalRef}>
-          <TerminalDemo />
-          <p className="mt-3 text-center font-mono text-sm text-secondary">
-            Illustrative session, not real data.
-          </p>
+        <div ref={terminalRef} className="hidden md:block">
+          <KataPreview />
         </div>
       </div>
     </section>
   )
 }
 
-interface TerminalSession {
-  id: string
-  command: string
-  args: string
-  lines: Array<{ tone: 'muted' | 'secondary'; content: React.ReactNode }>
-  prompt: string
-}
-
-const TERMINAL_SESSIONS: TerminalSession[] = [
-  {
-    id: 'session_a3f8c2d',
-    command: 'dojo kata today',
-    args: '',
-    lines: [
-      { tone: 'muted', content: <>today's kata ... ~5 min <span className="text-success-text">[OK]</span></> },
-      { tone: 'secondary', content: <>1  async function notifyAll(users) {'{'}</> },
-      { tone: 'secondary', content: <>2    users.forEach(async (u) =&gt; {'{'}</> },
-      { tone: 'secondary', content: <>3      await send(u)</> },
-      { tone: 'secondary', content: <>4    {'})'}</> },
-    ],
-    prompt: 'tap the line with the bug. say why.',
-  },
-  {
-    id: 'session_7d2e4b1',
-    command: 'dojo sensei eval',
-    args: '--kata 0421 --strict',
-    lines: [
-      { tone: 'muted', content: <>analyzing submission... <span className="text-success-text">[OK]</span></> },
-      { tone: 'secondary', content: <><span className="text-accent">verdict</span> = PASSED_WITH_NOTES</> },
-      { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "O(n^2) where O(n log n) was on the table"</> },
-      { tone: 'secondary', content: <><span className="text-accent">notes</span>  = "naming: `data` and `result` say nothing"</> },
-      { tone: 'muted', content: <>logged to history. belt unchanged.</> },
-    ],
-    prompt: 'open the analysis or close the session.',
-  },
-  {
-    id: 'session_c91a5e8',
-    command: 'dojo belt status',
-    args: '',
-    lines: [
-      { tone: 'muted', content: <>computing from session history...</> },
-      { tone: 'secondary', content: <><span className="text-accent">belt</span>     = yellow</> },
-      { tone: 'secondary', content: <><span className="text-accent">katas</span>    = 23 / 40</> },
-      { tone: 'secondary', content: <><span className="text-accent">clusters</span> = 3 / 4</> },
-      { tone: 'secondary', content: <><span className="text-accent">active</span>   = 8 / 10 days (last 30)</> },
-      { tone: 'muted', content: <>green belt needs 17 more katas, 1 more cluster and 2 more active days.</> },
-    ],
-    prompt: 'no progress bar. the dojo doesn\'t babysit.',
-  },
+const PREVIEW_LINES = [
+  'async function notifyAll(users) {',
+  '  users.forEach(async (u) => {',
+  '    await send(u)',
+  '  })',
+  '}',
 ]
 
-function TerminalDemo() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [currentIdx, setCurrentIdx] = useState(0)
-  const prevIdxRef = useRef<number | null>(null)
-
-  // Rotate every 4s after first display. setInterval so each tick is independent
-  // of GSAP timeline — no chance of timeline drift causing dead intervals.
-  useEffect(() => {
-    const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduced) return
-    const interval = setInterval(() => {
-      setCurrentIdx((i) => (i + 1) % TERMINAL_SESSIONS.length)
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // GSAP only animates the transition. State drives which session is current.
-  useGSAP(
-    () => {
-      const sessions = gsap.utils.toArray<HTMLElement>('.tdemo-session')
-      if (sessions.length === 0) return
-
-      const reduced = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
-      const prevIdx = prevIdxRef.current
-
-      if (prevIdx === null) {
-        // Initial mount — set state without animation
-        sessions.forEach((el, i) => {
-          gsap.set(el, { autoAlpha: i === currentIdx ? 1 : 0, x: 0 })
-        })
-      } else if (prevIdx !== currentIdx) {
-        if (reduced) {
-          gsap.set(sessions[prevIdx]!, { autoAlpha: 0 })
-          gsap.set(sessions[currentIdx]!, { autoAlpha: 1, x: 0 })
-        } else {
-          const tl = gsap.timeline()
-          tl.to(sessions[prevIdx]!, {
-            autoAlpha: 0,
-            x: -30,
-            duration: 0.5,
-            ease: 'power2.in',
-          }).fromTo(
-            sessions[currentIdx]!,
-            { autoAlpha: 0, x: 30 },
-            { autoAlpha: 1, x: 0, duration: 0.5, ease: 'power2.out' },
-            '<0.15',
-          )
-        }
-      }
-
-      prevIdxRef.current = currentIdx
-    },
-    { scope: containerRef, dependencies: [currentIdx] },
-  )
-
+function KataPreview() {
   return (
-    <div ref={containerRef} className="hidden md:block">
-      <div className="bg-surface border border-border/60 rounded-md overflow-hidden">
-        <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border/40">
-          <div className="w-2.5 h-2.5 rounded-full bg-danger/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-warning/60" />
-          <div className="w-2.5 h-2.5 rounded-full bg-success/60" />
-          <span className="ml-2 text-secondary text-xs font-mono">session_</span>
-        </div>
-        <div className="relative">
-          {TERMINAL_SESSIONS.map((s, i) => (
-            <div
-              key={s.id}
-              className={`tdemo-session p-5 font-mono text-xs leading-relaxed space-y-2 ${
-                i > 0 ? 'absolute inset-0' : ''
-              }`}
-              // Initial CSS state matches first useGSAP run — prevents FOUC
-              // where all 3 sessions render visible on first paint before
-              // GSAP's gsap.set fires.
-              style={{ opacity: i === 0 ? 1 : 0 }}
-            >
-              <p className="text-secondary">
-                <span className="text-secondary">$</span> {s.command}{' '}
-                {s.args && <span className="text-accent">{s.args}</span>}
-              </p>
-              {s.lines.map((line, i) => (
-                <p
-                  key={i}
-                  className={line.tone === 'muted' ? 'text-secondary' : 'text-primary'}
-                >
-                  {line.content}
-                </p>
-              ))}
-              <p className="text-secondary pt-2">
-                <span className="text-secondary">{'>'}</span> {s.prompt}
-                <span className="text-accent animate-cursor ml-0.5">_</span>
-              </p>
-            </div>
-          ))}
-        </div>
+    <div className="bg-surface border border-border/60 rounded-md overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40">
+        <span className="text-secondary text-xs font-mono">today's kata</span>
+        <span className="text-secondary text-xs font-mono tabular-nums">05:00</span>
+      </div>
+      <div className="p-5 font-mono text-xs leading-relaxed space-y-2">
+        {PREVIEW_LINES.map((line, i) => (
+          <p key={line} className="text-primary">
+            <span className="text-secondary mr-3 tabular-nums">{i + 1}</span>
+            <span className="whitespace-pre">{line}</span>
+          </p>
+        ))}
+        <p className="text-secondary pt-2">
+          <span>{'>'}</span> tap the line with the bug. say why.
+          <span className="text-accent animate-cursor ml-0.5">_</span>
+        </p>
       </div>
     </div>
   )
 }
 
-function WhyItExists() {
-  const reasons = [
-    {
-      n: '01',
-      tag: 'RIGOR',
-      title: 'No handholding.',
-      body: 'No AI inside the kata. No autocomplete. No skip. Just you, the problem, and a timer that does not pause.',
-    },
-    {
-      n: '02',
-      tag: 'SIGNAL',
-      title: 'Honest feedback.',
-      body: 'The sensei is an LLM playing a senior dev with 12 years in the domain. Brutally specific critique — what you missed, what you got right, what to read next.',
-    },
-    {
-      n: '03',
-      tag: 'FLOW',
-      title: 'Deliberate practice.',
-      body: 'A minimalist interface designed to disappear. One kata a day, about five minutes, a surprise until it opens. Want more? Set the constraints and get one kata. The dojo does not beg you to come back.',
-    },
-  ]
-  return (
-    <section
-      id="problem"
-      data-anim="reveal"
-      className="bg-surface/30 border-y border-border/20"
-    >
-      <div className="max-w-5xl mx-auto px-4 md:px-8 py-20">
-        <div className="flex items-end justify-between mb-12 gap-4">
-          <h2 className="font-mono text-xl md:text-2xl text-primary">Why it exists</h2>
-          <p className="text-secondary text-xs font-mono uppercase tracking-wider">[ SYS_RATIONALE ]</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-10">
-          {reasons.map(({ n, tag, title, body }) => (
-            <div key={n}>
-              <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">
-                {n} / {tag}
-              </p>
-              <h3 className="font-mono text-lg text-primary mb-3">{title}</h3>
-              <p className="text-secondary text-sm leading-relaxed">{body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
+const OFFERINGS = [
+  {
+    title: "Today's kata",
+    body: 'One surprise kata a day, about five minutes. You see the topic when it opens. Done early? Ask for one more.',
+  },
+  {
+    title: 'Advanced',
+    body: 'Longer katas, up to 45 minutes. Set the type, language and time, and you get one.',
+  },
+  {
+    title: 'Belts',
+    body: 'Earned by showing up: completed katas, topic variety and active days. Every kata the sensei evaluates counts, whatever the verdict.',
+  },
+]
 
-function ExecutionFlow() {
-  const steps = [
-    {
-      n: '01',
-      title: 'Open today\'s kata',
-      body: 'One kata a day, about five minutes. You see the topic when it opens.',
-    },
-    {
-      n: '02',
-      title: 'Or go Advanced',
-      body: 'Set type, language and time. You get one kata. Do the one you get.',
-    },
-    {
-      n: '03',
-      title: 'Do the work',
-      body: 'Timer running. No AI inside. The sensei is watching. Write your answer.',
-    },
-    {
-      n: '04',
-      title: 'Hear the truth',
-      body: 'Submit. The sensei evaluates with honest, specific feedback. Verdict: passed, with notes, or needs work.',
-    },
-  ]
-  return (
-    <section data-anim="reveal" className="max-w-5xl mx-auto px-4 md:px-8 py-20">
-      <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">Execution flow</h2>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {steps.map(({ n, title, body }) => (
-          <div key={n} className="bg-surface border border-border/60 rounded-md p-5">
-            <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">
-              STEP_{n}
-            </p>
-            <h3 className="font-mono text-sm text-primary mb-2 font-bold">{title}</h3>
-            <p className="text-secondary text-sm leading-relaxed">{body}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function OpenSourceStrip() {
-  const [copied, setCopied] = useState(false)
-  function copyClone() {
-    void navigator.clipboard.writeText('git clone https://github.com/rodacato/dojo.git')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-  return (
-    <section data-anim="reveal" className="bg-surface/40 border-y border-border/20 py-16">
-      <div className="max-w-3xl mx-auto px-4 md:px-8 text-center">
-          <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">
-            Open source — run your own dojo
-          </p>
-          <p className="text-secondary text-sm leading-relaxed max-w-lg mx-auto mb-6">
-            For yourself, your friends, or your team. Your keys, your access, your data.
-          </p>
-          <div className="flex items-center justify-center gap-2 max-w-xl mx-auto">
-            <code className="flex-1 bg-page border border-border/60 rounded-sm px-4 py-3 font-mono text-sm text-secondary text-left overflow-hidden whitespace-nowrap">
-              git clone https://github.com/rodacato/dojo.git
-            </code>
-            <button
-              type="button"
-              onClick={copyClone}
-              aria-label={copied ? 'Copied' : 'Copy clone command'}
-              className="shrink-0 w-11 h-11 flex items-center justify-center border border-border/60 rounded-sm text-secondary hover:text-primary hover:border-accent/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-page focus-visible:ring-accent"
-            >
-              {copied ? <CheckIcon className="w-4 h-4 text-success-text" /> : <ClipboardIcon className="w-4 h-4" />}
-            </button>
-          </div>
-          <GitHubStatsRow />
-          <div className="flex items-center justify-center gap-6 mt-6">
-            <Link to="/open-source" className="text-secondary text-xs font-mono hover:text-secondary transition-colors">
-              architecture →
-            </Link>
-            <a
-              href="https://github.com/rodacato/dojo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-secondary text-xs font-mono hover:text-secondary transition-colors flex items-center gap-1.5"
-            >
-              <GitHubIcon className="w-3.5 h-3.5" />
-              github
-            </a>
-          </div>
-        </div>
-    </section>
-  )
-}
-
-function GitHubStatsRow() {
-  const [stats, setStats] = useState<GitHubStats | null>(null)
+function WhatIsHere() {
+  const [scrolls, setScrolls] = useState<ScrollEntryDTO[]>([])
   useEffect(() => {
     let cancelled = false
     api
-      .getRepoStats()
-      .then((data) => {
-        if (!cancelled) setStats(data)
+      .getScrolls()
+      .then((entries) => {
+        if (!cancelled) setScrolls(entries)
       })
       .catch(() => {})
     return () => {
       cancelled = true
     }
   }, [])
-  if (!stats) return null
+  const locale = preferredLocale()
+
   return (
-    <div className="flex items-center justify-center gap-8 text-xs font-mono mt-6">
-      <span className="text-secondary">
-        <span className="text-secondary">stars</span> {stats.stars}
-      </span>
-      <span className="text-secondary">
-        <span className="text-secondary">forks</span> {stats.forks}
-      </span>
-      <span className="text-secondary">
-        <span className="text-secondary">lang</span> {stats.language}
-      </span>
-    </div>
+    <section data-anim="reveal" className="bg-surface/30 border-y border-border/20">
+      <div className="max-w-5xl mx-auto px-4 md:px-8 py-20">
+        <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">What is here</h2>
+        <div className="grid md:grid-cols-3 gap-10">
+          {OFFERINGS.map(({ title, body }) => (
+            <div key={title}>
+              <h3 className="font-mono text-lg text-primary mb-3">{title}</h3>
+              <p className="text-secondary text-sm leading-relaxed">{body}</p>
+            </div>
+          ))}
+        </div>
+        {scrolls.length > 0 && (
+          <div className="mt-12">
+            <h3 className="font-mono text-lg text-primary mb-3">Scrolls</h3>
+            <p className="text-secondary text-sm leading-relaxed mb-4">
+              Learning apps the person who runs this instance has published.
+            </p>
+            <ul aria-label="Scrolls" className="flex flex-wrap gap-x-6 gap-y-2">
+              {scrolls.map(({ id, slug, manifest }) => (
+                <li key={id}>
+                  <Link to={`/scrolls/${slug}`} className="text-sm text-primary underline underline-offset-4 hover:text-accent">
+                    {pickLocalized(manifest.title, manifest.locales, locale)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function HowAKataWorks() {
+  const steps = [
+    {
+      n: '01',
+      title: 'Open it',
+      body: 'The topic stays hidden until you open it. The timer starts and does not pause.',
+    },
+    {
+      n: '02',
+      title: 'Work without AI',
+      body: 'Nothing technical stops you from opening an assistant. The practice only works if you do not.',
+    },
+    {
+      n: '03',
+      title: 'Submit what you have',
+      body: 'The sensei reviews your work and your reasoning. Verdict: passed, passed with notes, or needs work.',
+    },
+    {
+      n: '04',
+      title: 'Read and return',
+      body: 'Read the analysis and what to revisit. Share the result if you want; a shared page is public.',
+    },
+  ]
+  return (
+    <section data-anim="reveal" className="max-w-5xl mx-auto px-4 md:px-8 py-20">
+      <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">How a kata works</h2>
+      <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {steps.map(({ n, title, body }) => (
+          <li key={n} className="bg-surface border border-border/60 rounded-md p-5">
+            <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">{n}</p>
+            <h3 className="font-mono text-sm text-primary mb-2 font-bold">{title}</h3>
+            <p className="text-secondary text-sm leading-relaxed">{body}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
   )
 }
 
@@ -610,7 +406,8 @@ function AccessSection() {
             This is a practice, not a platform.
           </p>
           <p className="text-secondary text-base leading-relaxed">
-            Whoever runs this instance issues the invitations. Tell them why you want in.
+            The person who runs this instance issues the invitations. Ask them, or tell them here
+            why you want in.
           </p>
         </div>
         <RequestAccessForm />
@@ -645,8 +442,13 @@ function RequestAccessForm() {
     try {
       await api.requestAccess(githubHandle.trim(), reason.trim() || undefined)
       setSubmitted(true)
-    } catch {
-      setError("Didn't go through. Try again in a moment.")
+    } catch (err) {
+      const channelOff = err instanceof ApiError && err.status === 503
+      setError(
+        channelOff
+          ? 'This instance does not take requests here. Ask the person who runs it.'
+          : "Didn't go through. Try again in a moment.",
+      )
       setSubmitting(false)
     }
   }
@@ -719,9 +521,6 @@ function Footer() {
             <span className="text-secondary text-xs font-mono">{globalThis.location.host}</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/open-source" className="text-secondary text-xs hover:text-secondary transition-colors">
-              Open Source
-            </Link>
             <Link to="/changelog" className="text-secondary text-xs hover:text-secondary transition-colors">
               Changelog
             </Link>
@@ -733,39 +532,16 @@ function Footer() {
             </Link>
           </div>
           <a
-            href="https://github.com/rodacato/dojo"
+            href={PROJECT_SITE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-secondary text-xs hover:text-secondary transition-colors"
+            className="text-secondary text-xs font-mono hover:text-primary transition-colors"
           >
-            <GitHubIcon className="w-3.5 h-3.5" />
-            <span className="font-mono">github</span>
+            Runs on Dojo, open source →
           </a>
         </div>
         <p className="text-center text-secondary text-xs italic">Not for everyone. Exactly as intended.</p>
       </div>
     </footer>
-  )
-}
-
-/* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
-
-function ClipboardIcon({ className = 'w-4 h-4' }: Readonly<{ className?: string }>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className={className} aria-hidden>
-      <rect x="8" y="4" width="12" height="16" rx="2" />
-      <path d="M16 4v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V4" />
-      <path strokeLinecap="round" d="M5 8v11a2 2 0 0 0 2 2h7" />
-    </svg>
-  )
-}
-
-function CheckIcon({ className = 'w-4 h-4' }: Readonly<{ className?: string }>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className={className} aria-hidden>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-    </svg>
   )
 }

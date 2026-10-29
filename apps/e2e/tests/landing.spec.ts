@@ -9,10 +9,7 @@ test.describe('Landing page', () => {
       page.getByRole('heading', { level: 1 }),
     ).toBeVisible()
 
-    // Hero CTA "Enter dojo →" — the single conversion link to #access form
-    await expect(
-      page.getByRole('link', { name: /enter dojo/i }).first(),
-    ).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Sign in with GitHub' })).toBeVisible()
 
     // Footer brand line
     await expect(

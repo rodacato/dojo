@@ -47,7 +47,4 @@ export const profile = {
       method: 'POST',
       body: JSON.stringify({ githubHandle, reason }),
     }),
-
-  getRepoStats: () =>
-    request<{ stars: number; forks: number; language: string }>('/landing/repo-stats'),
 }
