@@ -250,13 +250,13 @@ Milestones have no points or XP. They are collections — you have them or you d
 
 ## Logo
 
-**Open Gate** is the approved mark: a restrained evolution of the earlier torii, with a curved lintel, a crossbar and two open posts. It sits next to the `dojo_` wordmark (JetBrains Mono, lowercase, blinking cursor `_`). The cursor says "still writing, still learning" and does not change with the theme.
+**Paper Gate** is the approved mark: the Open Gate threshold cut from four filled pieces of paper, with a curved lintel, a crossbar and two open posts. It is drawn flat at every size; the textured version in [`proposals/paper/`](proposals/paper/) is for large art only. It sits next to the `dojo_` wordmark (JetBrains Mono, lowercase, blinking cursor `_`). The cursor says "still writing, still learning" and does not change with the theme.
 
 - **Canonical geometry:** `apps/web/src/brand/logo.json` (consumed by `LogoMark`). The outlined wordmark and the social composition are [`wordmark.svg`](wordmark.svg) and [`social-template.svg`](social-template.svg) in this folder. Colors always come from the app's theme tokens in `apps/web/src/styles/main.css`.
 - **Generated, never hand-edited:** everything listed under [Assets → What is generated](#what-is-generated). Regenerate with `pnpm brand:assets`; `pnpm brand:check` fails when a checked-in asset is stale or a site link is broken.
 - **Published guide:** `site/brand.html` (Pages) explains each asset, its use and the integration steps. Project social cards belong to project marketing and metadata, not to a person's shared session.
 - **Uploading the repository preview:** GitHub has no API for it. In the repository's Settings → General → Social preview, upload `site/brand/social-sumi.png` (1280×640 is recommended; the card is 1200×630).
-- **Earlier directions:** the explorations that led to Open Gate are kept in [`proposals/`](proposals/) for reference. They are not approved marks.
+- **Earlier directions:** the explorations that led to Open Gate and then Paper Gate are kept in [`proposals/`](proposals/) for reference. Only Paper Gate is approved.
 
 **Share cards and OG images:** the instance host in full monospace (`dojo.notdefined.dev` on the reference instance). The dot between `dojo` and `notdefined` acts as a natural visual separator.
 
@@ -306,7 +306,7 @@ The outputs sit under `site/brand/` because GitHub Pages serves that folder and 
 
 | Path | What it is |
 | --- | --- |
-| [`proposals/`](proposals/) | The three logo directions explored before Open Gate (A · Open Gate, B · Practice Loop, C · Hanko D), with a comparison page and contact sheet. Only A is approved |
+| [`proposals/`](proposals/) | The logo directions explored: A · Open Gate (superseded by Paper Gate), B · Practice Loop, C · Hanko D, and `paper/`, the Paper Edition assets (flat mark, lockups, textured mark) |
 
 ### Fonts
 

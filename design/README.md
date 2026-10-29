@@ -57,7 +57,7 @@ dated line per change, newest first.
 A fact written in two of them belongs in one; the others cite it.
 
 **Kit scope.** The kit mirrors `apps/web/src/components/ui` plus the layout pieces; routes are
-in `apps/web/src/App.tsx`. The logo is the Open Gate mark from `apps/web/src/brand/logo.json` (PR #151, D2).
+in `apps/web/src/App.tsx`. The logo is the Paper Gate mark from `apps/web/src/brand/logo.json` (PR #151, D2; Paper Gate since 2026-10-29).
 Local-only captures go in `references/`.
 
 ## Source of truth

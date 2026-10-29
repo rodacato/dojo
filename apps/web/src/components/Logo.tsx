@@ -13,16 +13,12 @@ export function LogoMark({ size = 24, className = '' }: Readonly<LogoMarkProps>)
       viewBox={logo.viewBox}
       aria-hidden="true"
       focusable="false"
-      fill="none"
+      fill="currentColor"
       className={className}
     >
-      <path
-        d={logo.path}
-        stroke="currentColor"
-        strokeWidth={logo.strokeWidth}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {logo.paths.map((d) => (
+        <path key={d} d={d} />
+      ))}
     </svg>
   )
 }

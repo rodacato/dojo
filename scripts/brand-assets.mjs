@@ -47,7 +47,7 @@ export async function buildAssets(root = repo) {
   const wordmark = await readFile(path.join(root, 'design/brand/wordmark.svg'), 'utf8')
   const social = await readFile(path.join(root, 'design/brand/social-template.svg'), 'utf8')
   const { Resvg } = createRequire(path.join(root, 'apps/api/package.json'))('@resvg/resvg-js')
-  const mark = `<path d="${logo.path}" fill="none" stroke="currentColor" stroke-width="${logo.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>`
+  const mark = logo.paths.map((d) => `<path d="${d}" fill="currentColor"/>`).join('')
   const words = wordmark.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '')
   const themes = Object.fromEntries(['washi', 'sumi'].map((name) => [name, themeTokens(css, name)]))
   const declarations = (tokens) =>
