@@ -6,7 +6,7 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -5267,
-      "name": "VENDORED KIT 0.7.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.8.0 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "sumi"
       },
@@ -3516,7 +3516,7 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "uH1V8",
+                      "id": "mkV0N",
                       "name": "Paper Gate",
                       "geometry": "M10 20q40 8 80 0l-5 11q-35 7-70 0z m12 22h56l-3 8h-50z m4-13h9l-2 55h-8z m39 0h9l1 55h-8z",
                       "viewBox": [
@@ -3547,7 +3547,7 @@
                       "width": 20,
                       "height": 20,
                       "descendants": {
-                        "uH1V8": {
+                        "mkV0N": {
                           "fill": "$color-accent"
                         }
                       }
@@ -3621,8 +3621,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -3634,55 +3634,24 @@
                       "id": "T5ciA",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "zxMMx",
+                          "id": "LaMlS",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "HrDua",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Ju73R",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "YALf5",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -3703,8 +3672,8 @@
                           "id": "fwfFe",
                           "name": "NavItem dashboard",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -3877,7 +3846,7 @@
                               "id": "Y0i7px",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -3940,7 +3909,7 @@
                       "id": "j0Dyo",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -4054,7 +4023,7 @@
                           "id": "Db0Mn",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -4087,8 +4056,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -4100,55 +4069,24 @@
                       "id": "M3BUkx",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "A9DOsN",
+                          "id": "U7Cw6B",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "iGJVH",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "WrMbl",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "DiYvg",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -4203,8 +4141,8 @@
                           "id": "f6z04",
                           "name": "NavItem katas",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -4343,7 +4281,7 @@
                               "id": "itsAK",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -4406,7 +4344,7 @@
                       "id": "Z7fRC",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -4520,7 +4458,7 @@
                           "id": "Q7EZZy",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -4553,8 +4491,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -4566,55 +4504,24 @@
                       "id": "V3Ye6",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "d27nk",
+                          "id": "kmYDt",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "hKszJ",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "eZRpD",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "uM8Z7",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -4703,8 +4610,8 @@
                           "id": "mToMU",
                           "name": "NavItem scrolls",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -4809,7 +4716,7 @@
                               "id": "T47WKJ",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -4872,7 +4779,7 @@
                       "id": "PpGYz",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -4986,7 +4893,7 @@
                           "id": "X4oQH",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -5019,8 +4926,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -5032,55 +4939,24 @@
                       "id": "ZrqfS",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "Mv34Z",
+                          "id": "oL2V3",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "WxM4Q",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Japz6",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "c5UlB2",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -5203,8 +5079,8 @@
                           "id": "ONJW2",
                           "name": "NavItem engawa",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -5275,7 +5151,7 @@
                               "id": "Q5k4SV",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -5338,7 +5214,7 @@
                       "id": "rHyl8",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -5452,7 +5328,7 @@
                           "id": "WuvH1",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -5485,8 +5361,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -5498,55 +5374,24 @@
                       "id": "KvCdt",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "sIV3v",
+                          "id": "vrJUm",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "flOx2",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "jJzUj",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "JaARC",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -5703,8 +5548,8 @@
                           "id": "zRCTo",
                           "name": "NavItem kumite",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -5741,7 +5586,7 @@
                               "id": "r8tgG",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -5804,7 +5649,7 @@
                       "id": "D3dye7",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -5918,7 +5763,7 @@
                           "id": "bvREy",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -5951,8 +5796,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -5964,55 +5809,24 @@
                       "id": "ooLSt",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "xYnl4",
+                          "id": "v1dBDo",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "KyIeK",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "bQ3n0",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "bRezu",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -6201,7 +6015,7 @@
                               "id": "PHVfu",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -6228,8 +6042,8 @@
                           "id": "o5vn2I",
                           "name": "NavItem belts",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -6270,7 +6084,7 @@
                       "id": "VhqXK",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -6384,7 +6198,7 @@
                           "id": "Wcboi",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -6417,8 +6231,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -6430,55 +6244,24 @@
                       "id": "rixdK",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "Z072l",
+                          "id": "FIJ0V",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "K5Lif4",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "SElD4",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "asSwH",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -6667,7 +6450,7 @@
                               "id": "lOgE7",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -6730,7 +6513,7 @@
                       "id": "dX6hf",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -6742,8 +6525,8 @@
                           "id": "IxNaq",
                           "name": "NavItem username",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -6850,7 +6633,7 @@
                           "id": "KViCE",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -6893,7 +6676,7 @@
               "id": "F3LUU",
               "name": "Section label",
               "fill": "$color-muted",
-              "content": "BOTTOMNAV (MOBILE) — ONE COMPONENT PER ACTIVE ITEM",
+              "content": "BOTTOMNAV · APPHEADER (mobile) — one BottomNav per active item; AppHeader carries the Paper Gate on phones",
               "fontFamily": "$font-mono",
               "fontSize": 11,
               "fontWeight": "normal",
@@ -6912,8 +6695,8 @@
                   "name": "BottomNav/Dashboard",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -6942,7 +6725,7 @@
                           "height": 20,
                           "icon": "dashboard",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -6952,7 +6735,7 @@
                           "content": "dash",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7108,8 +6891,8 @@
                   "name": "BottomNav/Katas",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7174,7 +6957,7 @@
                           "height": 20,
                           "icon": "code",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7184,7 +6967,7 @@
                           "content": "katas",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7304,8 +7087,8 @@
                   "name": "BottomNav/Scrolls",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7406,7 +7189,7 @@
                           "height": 20,
                           "icon": "school",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7416,7 +7199,7 @@
                           "content": "scrolls",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7500,8 +7283,8 @@
                   "name": "BottomNav/Belts",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7638,7 +7421,7 @@
                           "height": 20,
                           "icon": "badge",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7648,7 +7431,7 @@
                           "content": "belts",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7696,8 +7479,8 @@
                   "name": "BottomNav/Settings",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7870,7 +7653,7 @@
                           "height": 20,
                           "icon": "settings",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7880,9 +7663,36 @@
                           "content": "settings",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vb9xy",
+                  "name": "AppHeader/Mobile",
+                  "reusable": true,
+                  "width": 375,
+                  "height": 56,
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "APChk",
+                      "type": "ref",
+                      "ref": "AbS82",
+                      "name": "Wordmark"
                     }
                   ]
                 }
@@ -7936,21 +7746,21 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "G3CcQr",
+                      "id": "gi4rW",
                       "type": "ref",
                       "ref": "AbS82",
                       "name": "Wordmark"
                     },
                     {
                       "type": "frame",
-                      "id": "gZauh",
+                      "id": "M3lYfg",
                       "name": "Right",
                       "gap": 20,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "EBCnq",
+                          "id": "uZpaw",
                           "name": "Link Open source",
                           "fill": "$color-secondary",
                           "content": "Open source",
@@ -7961,7 +7771,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "B8Em28",
+                          "id": "B3Nv8H",
                           "name": "Link Changelog",
                           "fill": "$color-secondary",
                           "content": "Changelog",
@@ -7972,7 +7782,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "h7BlN",
+                          "id": "d91UH",
                           "x": 0,
                           "y": 0,
                           "name": "Sign in",
@@ -7985,7 +7795,7 @@
                           "fontWeight": "normal"
                         },
                         {
-                          "id": "W4LLj",
+                          "id": "KoUa6",
                           "type": "ref",
                           "ref": "tNtFP",
                           "name": "CTA",
@@ -8019,21 +7829,21 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "N6uqw",
+                      "id": "AFMdN",
                       "type": "ref",
                       "ref": "AbS82",
                       "name": "Wordmark"
                     },
                     {
                       "type": "frame",
-                      "id": "ioeUm",
+                      "id": "t7Ygy",
                       "name": "Right",
                       "gap": 20,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "ejjjd",
+                          "id": "TkuVZ",
                           "x": 0,
                           "y": 0,
                           "name": "Sign in",
@@ -8046,7 +7856,7 @@
                           "fontWeight": "normal"
                         },
                         {
-                          "id": "EDAsG",
+                          "id": "GKUVQ",
                           "type": "ref",
                           "ref": "tNtFP",
                           "name": "CTA",
@@ -8080,7 +7890,7 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "JGY1m",
+                      "id": "qEcdj",
                       "name": "Row",
                       "width": "fill_container",
                       "gap": 24,
@@ -8089,27 +7899,27 @@
                       "children": [
                         {
                           "type": "frame",
-                          "id": "XomWo",
+                          "id": "y57DNr",
                           "name": "Left",
                           "gap": 8,
                           "alignItems": "center",
                           "children": [
                             {
-                              "id": "GzNoe",
+                              "id": "sa6U3",
                               "type": "ref",
                               "ref": "FvtBN",
                               "name": "Mark",
                               "width": 16,
                               "height": 16,
                               "descendants": {
-                                "uH1V8": {
+                                "mkV0N": {
                                   "fill": "$color-secondary"
                                 }
                               }
                             },
                             {
                               "type": "text",
-                              "id": "lSZzm",
+                              "id": "CjVF6",
                               "name": "Host",
                               "fill": "$color-secondary",
                               "content": "host",
@@ -8122,13 +7932,13 @@
                         },
                         {
                           "type": "frame",
-                          "id": "Qjj9B",
+                          "id": "euLcI",
                           "name": "Links",
                           "gap": 20,
                           "children": [
                             {
                               "type": "text",
-                              "id": "NILAH",
+                              "id": "h7eRC7",
                               "name": "Link Open source",
                               "fill": "$color-secondary",
                               "content": "Open source",
@@ -8139,7 +7949,7 @@
                             },
                             {
                               "type": "text",
-                              "id": "JAQDI",
+                              "id": "s0oPC",
                               "name": "Link Changelog",
                               "fill": "$color-secondary",
                               "content": "Changelog",
@@ -8150,7 +7960,7 @@
                             },
                             {
                               "type": "text",
-                              "id": "TKE0Q",
+                              "id": "Vecgf",
                               "name": "Link Terms",
                               "fill": "$color-secondary",
                               "content": "Terms",
@@ -8161,7 +7971,7 @@
                             },
                             {
                               "type": "text",
-                              "id": "GjAvk",
+                              "id": "TV31C",
                               "name": "Link Privacy",
                               "fill": "$color-secondary",
                               "content": "Privacy",
@@ -8174,7 +7984,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "DY6XS",
+                          "id": "Q9vo8r",
                           "x": 0,
                           "y": 0,
                           "name": "Project site",
@@ -8190,7 +8000,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "Y7Ly9",
+                      "id": "HIBFQ",
                       "x": 0,
                       "y": 0,
                       "name": "Tagline",
@@ -8209,7 +8019,7 @@
             },
             {
               "type": "frame",
-              "id": "u97uag",
+              "id": "LzGuv",
               "name": "PublicFooter/Mobile",
               "reusable": true,
               "width": 375,
@@ -8227,7 +8037,7 @@
               "children": [
                 {
                   "type": "frame",
-                  "id": "e8RRdD",
+                  "id": "oy5vl",
                   "name": "Row",
                   "width": "fill_container",
                   "layout": "vertical",
@@ -8235,27 +8045,27 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "fUgH9",
+                      "id": "FXetn",
                       "name": "Left",
                       "gap": 8,
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "pPAhY",
+                          "id": "xRCiR",
                           "type": "ref",
                           "ref": "FvtBN",
                           "name": "Mark",
                           "width": 16,
                           "height": 16,
                           "descendants": {
-                            "uH1V8": {
+                            "mkV0N": {
                               "fill": "$color-secondary"
                             }
                           }
                         },
                         {
                           "type": "text",
-                          "id": "nGbv9",
+                          "id": "b1Zqks",
                           "name": "Host",
                           "fill": "$color-secondary",
                           "content": "host",
@@ -8268,13 +8078,13 @@
                     },
                     {
                       "type": "frame",
-                      "id": "MRWd1",
+                      "id": "Xsk2X",
                       "name": "Links",
                       "gap": 20,
                       "children": [
                         {
                           "type": "text",
-                          "id": "c1NPv1",
+                          "id": "Y9OjL",
                           "name": "Link Open source",
                           "fill": "$color-secondary",
                           "content": "Open source",
@@ -8285,7 +8095,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "u60gU",
+                          "id": "SZydk",
                           "name": "Link Changelog",
                           "fill": "$color-secondary",
                           "content": "Changelog",
@@ -8296,7 +8106,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "Fh7IK",
+                          "id": "bpmUa",
                           "name": "Link Terms",
                           "fill": "$color-secondary",
                           "content": "Terms",
@@ -8307,7 +8117,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "ENWhl",
+                          "id": "WgeGf",
                           "name": "Link Privacy",
                           "fill": "$color-secondary",
                           "content": "Privacy",
@@ -8320,7 +8130,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "YS6sS",
+                      "id": "d3Fp5",
                       "x": 0,
                       "y": 0,
                       "name": "Project site",
@@ -8336,7 +8146,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "Fl5IX",
+                  "id": "RnHLY",
                   "x": 0,
                   "y": 0,
                   "name": "Tagline",
@@ -8833,14 +8643,213 @@
         },
         {
           "type": "frame",
-          "id": "S3O6s",
+          "id": "EFTcs",
+          "name": "Group CodeLine",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "tgU00",
+              "name": "Section label",
+              "fill": "$color-muted",
+              "content": "CODELINE — tappable code line (point kata)",
+              "fontFamily": "$font-mono",
+              "fontSize": 11,
+              "fontWeight": "normal",
+              "letterSpacing": 0.55
+            },
+            {
+              "type": "frame",
+              "id": "jMVxK",
+              "name": "Row CodeLine",
+              "width": "fill_container",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mli02",
+                  "name": "CodeLine/Default",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-page",
+                  "stroke": "$color-page",
+                  "strokeWidth": {
+                    "left": 3
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "SWHu8",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iK2iU",
+                          "name": "Number",
+                          "fill": "$color-secondary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "TByeG",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "HX4Zc",
+                  "name": "CodeLine/Selected",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-elevated",
+                  "stroke": "$color-primary",
+                  "strokeWidth": {
+                    "left": 3
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KFgMy",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sede2",
+                          "name": "Number",
+                          "fill": "$color-primary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "a2gwPB",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xlF8u",
+                  "name": "CodeLine/Focus",
+                  "reusable": true,
+                  "width": 390,
+                  "height": 44,
+                  "fill": "$color-page",
+                  "stroke": "$color-accent",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "gap": 4,
+                  "padding": [
+                    0,
+                    16,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KkTW2",
+                      "name": "Gutter",
+                      "width": 36,
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "feBCq",
+                          "name": "Number",
+                          "fill": "$color-secondary",
+                          "content": "3",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "s8Tlf",
+                      "name": "Code",
+                      "fill": "$color-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  const start = page * limit",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "t0XyWu",
           "name": "Group Paper — type · error panel",
           "width": "fill_container",
           "gap": 48,
           "children": [
             {
               "type": "frame",
-              "id": "jlKhq",
+              "id": "h86ym1",
               "name": "Type",
               "width": 720,
               "layout": "vertical",
@@ -8848,7 +8857,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "UdVKK",
+                  "id": "Nh8ik",
                   "name": "Text/Display/Mobile",
                   "reusable": true,
                   "fill": "$color-primary",
@@ -8863,7 +8872,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "JYCdw",
+                  "id": "AAeZc",
                   "name": "Text/Display/Desktop",
                   "reusable": true,
                   "fill": "$color-primary",
@@ -8878,7 +8887,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "KhgFC",
+                  "id": "gmzoO",
                   "name": "Text/H2/Mobile",
                   "reusable": true,
                   "fill": "$color-primary",
@@ -8893,7 +8902,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "RQ12f",
+                  "id": "feGox",
                   "name": "Text/H2/Desktop",
                   "reusable": true,
                   "fill": "$color-primary",
@@ -8908,7 +8917,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "SgcdY",
+                  "id": "n5Xpd",
                   "name": "Text/H3",
                   "reusable": true,
                   "fill": "$color-primary",
@@ -8922,7 +8931,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "Fbyq0",
+                  "id": "GA0AX",
                   "name": "Text/Eyebrow",
                   "reusable": true,
                   "fill": "$color-secondary",
@@ -8937,7 +8946,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "d19US",
+                  "id": "yZyh1",
                   "name": "Text/Body/Mobile",
                   "reusable": true,
                   "fill": "$color-secondary",
@@ -8951,7 +8960,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "lGMHb",
+                  "id": "q9jOs",
                   "name": "Text/Body/Desktop",
                   "reusable": true,
                   "fill": "$color-secondary",
@@ -8965,7 +8974,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "iOScA",
+                  "id": "V4mhDl",
                   "name": "Text/Note",
                   "reusable": true,
                   "fill": "$color-secondary",
@@ -8981,7 +8990,7 @@
             },
             {
               "type": "frame",
-              "id": "T3TGE",
+              "id": "Ojm80",
               "name": "ErrorPanel/Mobile",
               "reusable": true,
               "width": 343,
@@ -8994,7 +9003,7 @@
               "alignItems": "center",
               "children": [
                 {
-                  "id": "Dy7N5",
+                  "id": "Rs69Y",
                   "type": "ref",
                   "ref": "FvtBN",
                   "name": "Watermark",
@@ -9005,14 +9014,14 @@
                   "x": 31.5,
                   "y": 86,
                   "descendants": {
-                    "uH1V8": {
+                    "mkV0N": {
                       "fill": "$color-border"
                     }
                   }
                 },
                 {
                   "type": "frame",
-                  "id": "FrEbi",
+                  "id": "i4rVz",
                   "name": "Pill",
                   "cornerRadius": "$radius-sm",
                   "stroke": "$color-border",
@@ -9026,7 +9035,7 @@
                   "children": [
                     {
                       "type": "ellipse",
-                      "id": "v7jSO9",
+                      "id": "rgur1",
                       "name": "Dot",
                       "fill": "$color-danger",
                       "width": 6,
@@ -9034,7 +9043,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "Y8Erqj",
+                      "id": "Q2UDIa",
                       "name": "Label",
                       "fill": "$color-secondary",
                       "content": "ERR · 404",
@@ -9047,9 +9056,9 @@
                   ]
                 },
                 {
-                  "id": "sOdrZ",
+                  "id": "q7xeyH",
                   "type": "ref",
-                  "ref": "KhgFC",
+                  "ref": "gmzoO",
                   "name": "Title",
                   "content": "Page not defined. Yet._",
                   "width": "fill_container",
@@ -9057,7 +9066,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "jmiF7",
+                  "id": "otK8z",
                   "x": 0,
                   "y": 0,
                   "name": "Sub",
@@ -9073,9 +9082,9 @@
                   "fontWeight": "normal"
                 },
                 {
-                  "id": "Sohwv",
+                  "id": "pQI2L",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Body",
                   "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here.",
                   "width": "fill_container",
@@ -9083,7 +9092,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "MdcaQ",
+                  "id": "jkrAj",
                   "name": "Actions",
                   "width": "fill_container",
                   "layout": "vertical",
@@ -9097,7 +9106,7 @@
                   "justifyContent": "center",
                   "children": [
                     {
-                      "id": "gcmCW",
+                      "id": "YVxDR",
                       "type": "ref",
                       "ref": "WDpQp",
                       "name": "Primary",
@@ -9109,7 +9118,7 @@
                       }
                     },
                     {
-                      "id": "jJ3ct",
+                      "id": "Br3Lh",
                       "type": "ref",
                       "ref": "oI7dz",
                       "name": "Secondary",
@@ -9124,7 +9133,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "bzdNq",
+                  "id": "t6pPo",
                   "name": "Strip",
                   "width": "fill_container",
                   "layout": "vertical",
@@ -9140,7 +9149,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "Tp7w6",
+                      "id": "M9uQiA",
                       "name": "Text",
                       "fill": "$color-secondary",
                       "content": "IF THIS IS A MISTAKE —",
@@ -9152,7 +9161,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "c30bH",
+                      "id": "usX1b",
                       "name": "Link",
                       "fill": "$color-accent-text",
                       "content": "report this URL →",
@@ -9167,7 +9176,7 @@
             },
             {
               "type": "frame",
-              "id": "W8cbN2",
+              "id": "WRP2U",
               "name": "ErrorPanel/Desktop",
               "reusable": true,
               "width": 640,
@@ -9180,7 +9189,7 @@
               "alignItems": "center",
               "children": [
                 {
-                  "id": "CU6aM",
+                  "id": "D4ASno",
                   "type": "ref",
                   "ref": "FvtBN",
                   "name": "Watermark",
@@ -9191,14 +9200,14 @@
                   "x": 110,
                   "y": 11,
                   "descendants": {
-                    "uH1V8": {
+                    "mkV0N": {
                       "fill": "$color-border"
                     }
                   }
                 },
                 {
                   "type": "frame",
-                  "id": "yYDD4",
+                  "id": "McooK",
                   "name": "Pill",
                   "cornerRadius": "$radius-sm",
                   "stroke": "$color-border",
@@ -9212,7 +9221,7 @@
                   "children": [
                     {
                       "type": "ellipse",
-                      "id": "yfEVE",
+                      "id": "IN8NH",
                       "name": "Dot",
                       "fill": "$color-danger",
                       "width": 6,
@@ -9220,7 +9229,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "ZF4xM",
+                      "id": "rkUHB",
                       "name": "Label",
                       "fill": "$color-secondary",
                       "content": "ERR · 404",
@@ -9233,9 +9242,9 @@
                   ]
                 },
                 {
-                  "id": "AFgFT",
+                  "id": "KEL8E",
                   "type": "ref",
-                  "ref": "RQ12f",
+                  "ref": "feGox",
                   "name": "Title",
                   "content": "Page not defined. Yet._",
                   "width": "fill_container",
@@ -9243,7 +9252,7 @@
                 },
                 {
                   "type": "text",
-                  "id": "qT8iA",
+                  "id": "KrtkX",
                   "x": 0,
                   "y": 0,
                   "name": "Sub",
@@ -9259,9 +9268,9 @@
                   "fontWeight": "normal"
                 },
                 {
-                  "id": "aAAl8",
+                  "id": "e50o9s",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Body",
                   "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here.",
                   "width": "fill_container",
@@ -9269,7 +9278,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "bOrzW",
+                  "id": "Mnji3",
                   "name": "Actions",
                   "gap": 12,
                   "padding": [
@@ -9281,7 +9290,7 @@
                   "justifyContent": "center",
                   "children": [
                     {
-                      "id": "iNwr5",
+                      "id": "jtSzE",
                       "type": "ref",
                       "ref": "WDpQp",
                       "name": "Primary",
@@ -9292,7 +9301,7 @@
                       }
                     },
                     {
-                      "id": "a1qLMj",
+                      "id": "osG2z",
                       "type": "ref",
                       "ref": "oI7dz",
                       "name": "Secondary",
@@ -9306,7 +9315,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "fbbvl",
+                  "id": "Z2ih0",
                   "name": "Strip",
                   "width": "fill_container",
                   "gap": 6,
@@ -9321,7 +9330,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "S28dgk",
+                      "id": "DM4NS",
                       "name": "Text",
                       "fill": "$color-secondary",
                       "content": "IF THIS IS A MISTAKE —",
@@ -9333,7 +9342,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "L9BS4",
+                      "id": "B6li3M",
                       "name": "Link",
                       "fill": "$color-accent-text",
                       "content": "report this URL →",
@@ -10640,7 +10649,7 @@
                 {
                   "id": "AEarx",
                   "type": "ref",
-                  "ref": "UdVKK",
+                  "ref": "Nh8ik",
                   "name": "H1",
                   "content": "Practice thinking for yourself.",
                   "width": "fill_container"
@@ -10661,7 +10670,7 @@
                 {
                   "id": "MgzRS",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Body",
                   "content": "One surprise kata a day, about five minutes, no AI. Then the sensei reviews your reasoning.",
                   "width": "fill_container"
@@ -10695,7 +10704,7 @@
                     {
                       "id": "bBDBq",
                       "type": "ref",
-                      "ref": "iOScA",
+                      "ref": "V4mhDl",
                       "name": "Invite note",
                       "content": "Invite-only. Ask the person who runs this instance for an invitation, or request one here.",
                       "width": "fill_container"
@@ -10743,7 +10752,7 @@
                     {
                       "id": "gQ06e",
                       "type": "ref",
-                      "ref": "KhgFC",
+                      "ref": "gmzoO",
                       "name": "H2",
                       "content": "This instance is invite-only.",
                       "width": "fill_container"
@@ -10751,7 +10760,7 @@
                     {
                       "id": "cBCsN",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "P1",
                       "content": "This is a practice, not a platform.",
                       "width": "fill_container",
@@ -10760,7 +10769,7 @@
                     {
                       "id": "KlIbx",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "P2",
                       "content": "The person who runs this instance issues the invitations. Ask them, or tell them here why you want in.",
                       "width": "fill_container"
@@ -10871,7 +10880,7 @@
             {
               "id": "kOfBY",
               "type": "ref",
-              "ref": "KhgFC",
+              "ref": "gmzoO",
               "name": "H2",
               "content": "What is here",
               "width": "fill_container"
@@ -10903,7 +10912,7 @@
                     {
                       "id": "XhJ44",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Today's kata",
                       "width": "fill_container"
@@ -10911,7 +10920,7 @@
                     {
                       "id": "QGyRm",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "One surprise kata a day, about five minutes. You see the topic when it opens. Done early? Ask for one more.",
                       "width": "fill_container"
@@ -10938,7 +10947,7 @@
                     {
                       "id": "lRaTN",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Advanced",
                       "width": "fill_container"
@@ -10946,7 +10955,7 @@
                     {
                       "id": "sMEqk",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Longer katas, up to 45 minutes. Set the type, language and time, and you get one.",
                       "width": "fill_container"
@@ -10973,7 +10982,7 @@
                     {
                       "id": "QR7y4",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Belts",
                       "width": "fill_container"
@@ -10981,7 +10990,7 @@
                     {
                       "id": "WefPl",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Earned by showing up: completed katas, topic variety and active days. Every kata the sensei evaluates counts, whatever the verdict.",
                       "width": "fill_container"
@@ -11012,7 +11021,7 @@
             {
               "id": "Qj2Aq",
               "type": "ref",
-              "ref": "KhgFC",
+              "ref": "gmzoO",
               "name": "H2",
               "content": "How a kata works",
               "width": "fill_container"
@@ -11047,7 +11056,7 @@
                     {
                       "id": "cj74G",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "01",
                       "width": "fill_container"
@@ -11055,7 +11064,7 @@
                     {
                       "id": "vbRUE",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Open it",
                       "width": "fill_container"
@@ -11063,7 +11072,7 @@
                     {
                       "id": "dznCs",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "The topic stays hidden until you open it. The timer starts and does not pause.",
                       "width": "fill_container"
@@ -11092,7 +11101,7 @@
                     {
                       "id": "iMJmp",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "02",
                       "width": "fill_container"
@@ -11100,7 +11109,7 @@
                     {
                       "id": "HTYtP",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Work without AI",
                       "width": "fill_container"
@@ -11108,7 +11117,7 @@
                     {
                       "id": "vp9e1",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Nothing technical stops you from opening an assistant. The practice only works if you do not.",
                       "width": "fill_container"
@@ -11137,7 +11146,7 @@
                     {
                       "id": "q6CvR0",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "03",
                       "width": "fill_container"
@@ -11145,7 +11154,7 @@
                     {
                       "id": "FvxVU",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Submit what you have",
                       "width": "fill_container"
@@ -11153,7 +11162,7 @@
                     {
                       "id": "WqW40",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "The sensei reviews your work and your reasoning. Verdict: passed, passed with notes, or needs work.",
                       "width": "fill_container"
@@ -11182,7 +11191,7 @@
                     {
                       "id": "V3hLVz",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "04",
                       "width": "fill_container"
@@ -11190,7 +11199,7 @@
                     {
                       "id": "w56DG",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Read and return",
                       "width": "fill_container"
@@ -11198,7 +11207,7 @@
                     {
                       "id": "T3eXTR",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Read the analysis and what to revisit. Share the result if you want; a shared page is public.",
                       "width": "fill_container"
@@ -11212,17 +11221,17 @@
         {
           "id": "A38zcz",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container",
           "descendants": {
-            "c1NPv1": {
+            "Y9OjL": {
               "enabled": false
             },
-            "YS6sS": {
+            "d3Fp5": {
               "enabled": true
             },
-            "Fl5IX": {
+            "RnHLY": {
               "enabled": true
             }
           }
@@ -11300,7 +11309,7 @@
                 {
                   "id": "LrLFO",
                   "type": "ref",
-                  "ref": "JYCdw",
+                  "ref": "AAeZc",
                   "name": "H1",
                   "content": "Practice thinking for yourself.",
                   "width": "fill_container"
@@ -11321,7 +11330,7 @@
                 {
                   "id": "wVSD5",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Body",
                   "content": "One surprise kata a day, about five minutes, no AI. Then the sensei reviews your reasoning.",
                   "width": "fill_container"
@@ -11354,7 +11363,7 @@
                     {
                       "id": "Y4hvq8",
                       "type": "ref",
-                      "ref": "iOScA",
+                      "ref": "V4mhDl",
                       "name": "Invite note",
                       "content": "Invite-only. Ask the person who runs this instance for an invitation, or request one here.",
                       "width": "fill_container"
@@ -11414,7 +11423,7 @@
                     {
                       "id": "YRaB3",
                       "type": "ref",
-                      "ref": "RQ12f",
+                      "ref": "feGox",
                       "name": "H2",
                       "content": "This instance is invite-only.",
                       "width": "fill_container"
@@ -11422,7 +11431,7 @@
                     {
                       "id": "m71FZ",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "P1",
                       "content": "This is a practice, not a platform.",
                       "width": "fill_container",
@@ -11431,7 +11440,7 @@
                     {
                       "id": "AoErI",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "P2",
                       "content": "The person who runs this instance issues the invitations. Ask them, or tell them here why you want in.",
                       "width": "fill_container"
@@ -11542,7 +11551,7 @@
             {
               "id": "v9vZV",
               "type": "ref",
-              "ref": "RQ12f",
+              "ref": "feGox",
               "name": "H2",
               "content": "What is here",
               "width": "fill_container"
@@ -11576,7 +11585,7 @@
                     {
                       "id": "BoVOG",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Today's kata",
                       "width": "fill_container"
@@ -11584,7 +11593,7 @@
                     {
                       "id": "vDQTT",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "One surprise kata a day, about five minutes. You see the topic when it opens. Done early? Ask for one more.",
                       "width": "fill_container"
@@ -11613,7 +11622,7 @@
                     {
                       "id": "SqLOC",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Advanced",
                       "width": "fill_container"
@@ -11621,7 +11630,7 @@
                     {
                       "id": "ruKbb",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Longer katas, up to 45 minutes. Set the type, language and time, and you get one.",
                       "width": "fill_container"
@@ -11650,7 +11659,7 @@
                     {
                       "id": "fV1Wb",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Belts",
                       "width": "fill_container"
@@ -11658,7 +11667,7 @@
                     {
                       "id": "R5YEW",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Earned by showing up: completed katas, topic variety and active days. Every kata the sensei evaluates counts, whatever the verdict.",
                       "width": "fill_container"
@@ -11689,7 +11698,7 @@
             {
               "id": "BR9jk",
               "type": "ref",
-              "ref": "RQ12f",
+              "ref": "feGox",
               "name": "H2",
               "content": "How a kata works",
               "width": "fill_container"
@@ -11723,7 +11732,7 @@
                     {
                       "id": "IpnUl",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "01",
                       "width": "fill_container"
@@ -11731,7 +11740,7 @@
                     {
                       "id": "bk2V3",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Open it",
                       "width": "fill_container"
@@ -11739,7 +11748,7 @@
                     {
                       "id": "SQTd0",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "The topic stays hidden until you open it. The timer starts and does not pause.",
                       "width": "fill_container"
@@ -11768,7 +11777,7 @@
                     {
                       "id": "cNFnT",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "02",
                       "width": "fill_container"
@@ -11776,7 +11785,7 @@
                     {
                       "id": "Gtzey",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Work without AI",
                       "width": "fill_container"
@@ -11784,7 +11793,7 @@
                     {
                       "id": "Mv4Lg",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Nothing technical stops you from opening an assistant. The practice only works if you do not.",
                       "width": "fill_container"
@@ -11813,7 +11822,7 @@
                     {
                       "id": "c5NJXu",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "03",
                       "width": "fill_container"
@@ -11821,7 +11830,7 @@
                     {
                       "id": "enQvv",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Submit what you have",
                       "width": "fill_container"
@@ -11829,7 +11838,7 @@
                     {
                       "id": "s8U741",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "The sensei reviews your work and your reasoning. Verdict: passed, passed with notes, or needs work.",
                       "width": "fill_container"
@@ -11858,7 +11867,7 @@
                     {
                       "id": "KfQj9",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "04",
                       "width": "fill_container"
@@ -11866,7 +11875,7 @@
                     {
                       "id": "ZyyNZ",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Read and return",
                       "width": "fill_container"
@@ -11874,7 +11883,7 @@
                     {
                       "id": "yUhC6",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Read the analysis and what to revisit. Share the result if you want; a shared page is public.",
                       "width": "fill_container"
@@ -12015,7 +12024,7 @@
                 {
                   "id": "gkqRi",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "INVITATION",
                   "width": "fill_container"
@@ -12023,7 +12032,7 @@
                 {
                   "id": "CQVQ4",
                   "type": "ref",
-                  "ref": "KhgFC",
+                  "ref": "gmzoO",
                   "name": "H2",
                   "content": "You've been invited to the dojo.",
                   "width": "fill_container"
@@ -12031,7 +12040,7 @@
                 {
                   "id": "qlywf",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Body",
                   "content": "Daily practice for developers who still have something to prove. To themselves. The dojo runs on your reasoning, not your tools — no AI inside the kata, no skip, no reroll.",
                   "width": "fill_container"
@@ -12100,7 +12109,7 @@
                     {
                       "id": "X5AFpX",
                       "type": "ref",
-                      "ref": "iOScA",
+                      "ref": "V4mhDl",
                       "name": "Token",
                       "content": "Token: a1b2…y9z0 (expires in 7 days)",
                       "width": "fill_container"
@@ -12249,7 +12258,7 @@
                 {
                   "id": "zI2Ix",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "INVITATION",
                   "width": "fill_container"
@@ -12257,7 +12266,7 @@
                 {
                   "id": "dYqCh",
                   "type": "ref",
-                  "ref": "RQ12f",
+                  "ref": "feGox",
                   "name": "H2",
                   "content": "You've been invited to the dojo.",
                   "width": "fill_container"
@@ -12265,7 +12274,7 @@
                 {
                   "id": "t7WIN",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Body",
                   "content": "Daily practice for developers who still have something to prove. To themselves. The dojo runs on your reasoning, not your tools — no AI inside the kata, no skip, no reroll.",
                   "width": "fill_container"
@@ -12334,7 +12343,7 @@
                     {
                       "id": "kOJqi",
                       "type": "ref",
-                      "ref": "iOScA",
+                      "ref": "V4mhDl",
                       "name": "Token",
                       "content": "Token: a1b2…y9z0 (expires in 7 days)",
                       "width": "fill_container"
@@ -12520,7 +12529,7 @@
         {
           "id": "x4hHM",
           "type": "ref",
-          "ref": "Fbyq0",
+          "ref": "GA0AX",
           "name": "Eyebrow",
           "content": "GITHUB OAUTH",
           "width": "fill_container",
@@ -12675,7 +12684,7 @@
         {
           "id": "kvd80",
           "type": "ref",
-          "ref": "Fbyq0",
+          "ref": "GA0AX",
           "name": "Eyebrow",
           "content": "GITHUB OAUTH",
           "width": "fill_container",
@@ -12817,7 +12826,7 @@
         {
           "id": "Z7O7IZ",
           "type": "ref",
-          "ref": "Fbyq0",
+          "ref": "GA0AX",
           "name": "Eyebrow",
           "content": "CONNECTION TERMINATED",
           "width": "fill_container",
@@ -12959,7 +12968,7 @@
         {
           "id": "KFjbR",
           "type": "ref",
-          "ref": "Fbyq0",
+          "ref": "GA0AX",
           "name": "Eyebrow",
           "content": "CONNECTION TERMINATED",
           "width": "fill_container",
@@ -13011,33 +13020,33 @@
             {
               "id": "HwNrJ",
               "type": "ref",
-              "ref": "T3TGE",
+              "ref": "Ojm80",
               "name": "ErrorPanel",
               "width": "fill_container",
               "descendants": {
-                "Y8Erqj": {
+                "Q2UDIa": {
                   "content": "ERR · 5XX"
                 },
-                "sOdrZ": {
+                "q7xeyH": {
                   "content": "Something broke."
                 },
-                "jmiF7": {
+                "otK8z": {
                   "enabled": true,
                   "content": "The dojo is still here._"
                 },
-                "Sohwv": {
+                "pQI2L": {
                   "content": "An unexpected error occurred while loading this page. We've recorded it. The kata loop is unaffected if you're already in a session — refresh and continue."
                 },
-                "gcmCW/NnDrs": {
+                "YVxDR/NnDrs": {
                   "content": "↻ RETRY"
                 },
-                "jJ3ct/Wuiek": {
+                "Br3Lh/Wuiek": {
                   "content": "GO TO DASHBOARD"
                 },
-                "Tp7w6": {
+                "M9uQiA": {
                   "content": "IF THE ERROR PERSISTS — REPORT IT VIA"
                 },
-                "c30bH": {
+                "usX1b": {
                   "content": "/open-source"
                 }
               }
@@ -13047,7 +13056,7 @@
         {
           "id": "eQYyp",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -13097,32 +13106,32 @@
             {
               "id": "N02ZfK",
               "type": "ref",
-              "ref": "W8cbN2",
+              "ref": "WRP2U",
               "name": "ErrorPanel",
               "descendants": {
-                "ZF4xM": {
+                "rkUHB": {
                   "content": "ERR · 5XX"
                 },
-                "AFgFT": {
+                "KEL8E": {
                   "content": "Something broke."
                 },
-                "qT8iA": {
+                "KrtkX": {
                   "enabled": true,
                   "content": "The dojo is still here._"
                 },
-                "aAAl8": {
+                "e50o9s": {
                   "content": "An unexpected error occurred while loading this page. We've recorded it. The kata loop is unaffected if you're already in a session — refresh and continue."
                 },
-                "iNwr5/NnDrs": {
+                "jtSzE/NnDrs": {
                   "content": "↻ RETRY"
                 },
-                "a1qLMj/Wuiek": {
+                "osG2z/Wuiek": {
                   "content": "GO TO DASHBOARD"
                 },
-                "S28dgk": {
+                "DM4NS": {
                   "content": "IF THE ERROR PERSISTS — REPORT IT VIA"
                 },
-                "L9BS4": {
+                "B6li3M": {
                   "content": "/open-source"
                 }
               }
@@ -13182,32 +13191,32 @@
             {
               "id": "SATvu",
               "type": "ref",
-              "ref": "T3TGE",
+              "ref": "Ojm80",
               "name": "ErrorPanel",
               "width": "fill_container",
               "descendants": {
-                "Y8Erqj": {
+                "Q2UDIa": {
                   "content": "ERR · 404"
                 },
-                "sOdrZ": {
+                "q7xeyH": {
                   "content": "Page not defined. Yet._"
                 },
-                "jmiF7": {
+                "otK8z": {
                   "enabled": false
                 },
-                "Sohwv": {
+                "pQI2L": {
                   "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here."
                 },
-                "gcmCW/NnDrs": {
+                "YVxDR/NnDrs": {
                   "content": "ENTER THE DOJO →"
                 },
-                "jJ3ct/Wuiek": {
+                "Br3Lh/Wuiek": {
                   "content": "← GO TO LANDING"
                 },
-                "Tp7w6": {
+                "M9uQiA": {
                   "content": "IF THIS IS A MISTAKE —"
                 },
-                "c30bH": {
+                "usX1b": {
                   "content": "report this URL →"
                 }
               }
@@ -13217,7 +13226,7 @@
         {
           "id": "u6peNz",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -13267,31 +13276,31 @@
             {
               "id": "E8ImF",
               "type": "ref",
-              "ref": "W8cbN2",
+              "ref": "WRP2U",
               "name": "ErrorPanel",
               "descendants": {
-                "ZF4xM": {
+                "rkUHB": {
                   "content": "ERR · 404"
                 },
-                "AFgFT": {
+                "KEL8E": {
                   "content": "Page not defined. Yet._"
                 },
-                "qT8iA": {
+                "KrtkX": {
                   "enabled": false
                 },
-                "aAAl8": {
+                "e50o9s": {
                   "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here."
                 },
-                "iNwr5/NnDrs": {
+                "jtSzE/NnDrs": {
                   "content": "ENTER THE DOJO →"
                 },
-                "a1qLMj/Wuiek": {
+                "osG2z/Wuiek": {
                   "content": "← GO TO LANDING"
                 },
-                "S28dgk": {
+                "DM4NS": {
                   "content": "IF THIS IS A MISTAKE —"
                 },
-                "L9BS4": {
+                "B6li3M": {
                   "content": "report this URL →"
                 }
               }
@@ -13345,7 +13354,7 @@
             {
               "id": "R4kxv",
               "type": "ref",
-              "ref": "Fbyq0",
+              "ref": "GA0AX",
               "name": "Eyebrow",
               "content": "LEGAL",
               "width": "fill_container"
@@ -13353,7 +13362,7 @@
             {
               "id": "n9wbJd",
               "type": "ref",
-              "ref": "UdVKK",
+              "ref": "Nh8ik",
               "name": "H1",
               "content": "Terms of Service",
               "width": "fill_container"
@@ -13415,7 +13424,7 @@
                     {
                       "id": "Z8C71",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§01",
                       "width": "fill_container"
@@ -13437,7 +13446,7 @@
                     {
                       "id": "hcZWi",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Dojo is a daily practice tool for software engineers. It assigns you a timed kata, evaluates your response with an AI sensei, and gives you a verdict.",
                       "width": "fill_container"
@@ -13445,7 +13454,7 @@
                     {
                       "id": "lx4vN",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Dojo is open-source software that anyone can run. This instance is run by its operator, not by the dojo project, and these terms describe how it works. Access is by invitation: the operator issues the invitation links.",
                       "width": "fill_container"
@@ -13474,7 +13483,7 @@
                     {
                       "id": "FuDC2",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§02",
                       "width": "fill_container"
@@ -13496,7 +13505,7 @@
                     {
                       "id": "T6HvKQ",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "By using dojo, you agree to:",
                       "width": "fill_container"
@@ -13504,7 +13513,7 @@
                     {
                       "id": "EDnzt",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "· Use a real GitHub account that represents you.\n· Complete kata honestly — the practice only works if it's real.\n· Not abuse the API, attempt to extract evaluation logic, or interfere with other practitioners' sessions.\n· Accept that the sensei's evaluation is generated by an LLM and may occasionally be imperfect.",
                       "width": "fill_container"
@@ -13533,7 +13542,7 @@
                     {
                       "id": "kKphT",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§03",
                       "width": "fill_container"
@@ -13587,7 +13596,7 @@
                     {
                       "id": "luuie",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "These are not enforced technically — they're trusted. The dojo works because practitioners choose to practice honestly. If that changes, the practice becomes meaningless regardless of the verdict.",
                       "width": "fill_container"
@@ -13616,7 +13625,7 @@
                     {
                       "id": "PTTAJ",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§04",
                       "width": "fill_container"
@@ -13638,7 +13647,7 @@
                     {
                       "id": "B4LLKc",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "The operator of this instance can close your account if you violate these terms. You can leave at any time.",
                       "width": "fill_container"
@@ -13667,7 +13676,7 @@
                     {
                       "id": "F9ZbSz",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§05",
                       "width": "fill_container"
@@ -13689,7 +13698,7 @@
                     {
                       "id": "V8KoRG",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Dojo is open source under the MIT License. The source code is available on GitHub. The kata content and sensei prompts are part of the codebase — they are not secret.",
                       "width": "fill_container"
@@ -13697,7 +13706,7 @@
                     {
                       "id": "j9lBAP",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "You can read, fork, and run your own instance, kata catalog included. The license asks only that its copyright notice travels with the code.",
                       "width": "fill_container"
@@ -13726,7 +13735,7 @@
                     {
                       "id": "I8553v",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§06",
                       "width": "fill_container"
@@ -13748,7 +13757,7 @@
                     {
                       "id": "ksm33",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "The operator may update these terms. Changes will be reflected on this page with an updated effective date.",
                       "width": "fill_container"
@@ -13777,7 +13786,7 @@
                     {
                       "id": "KssdU",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§07",
                       "width": "fill_container"
@@ -13799,7 +13808,7 @@
                     {
                       "id": "tgL1F",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Questions about this instance go to its operator. Questions about the dojo software itself: open an issue on GitHub.",
                       "width": "fill_container"
@@ -13828,7 +13837,7 @@
                     {
                       "id": "Nv37T",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Questions?",
                       "width": "fill_container"
@@ -13836,7 +13845,7 @@
                     {
                       "id": "ICHzk",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "We don't have a legal team. Open an issue at /open-source if something is unclear.",
                       "width": "fill_container"
@@ -13850,7 +13859,7 @@
         {
           "id": "J6Aw0",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -13894,7 +13903,7 @@
             {
               "id": "QoTFG",
               "type": "ref",
-              "ref": "Fbyq0",
+              "ref": "GA0AX",
               "name": "Eyebrow",
               "content": "LEGAL",
               "width": "fill_container"
@@ -13902,7 +13911,7 @@
             {
               "id": "v5WpMP",
               "type": "ref",
-              "ref": "JYCdw",
+              "ref": "AAeZc",
               "name": "H1",
               "content": "Terms of Service",
               "width": "fill_container"
@@ -13957,7 +13966,7 @@
                 {
                   "id": "GUL1l",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "ON THIS PAGE",
                   "width": "fill_container"
@@ -14210,7 +14219,7 @@
                     {
                       "id": "GMw1K",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§01",
                       "width": "fill_container"
@@ -14232,7 +14241,7 @@
                     {
                       "id": "CoWvM",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Dojo is a daily practice tool for software engineers. It assigns you a timed kata, evaluates your response with an AI sensei, and gives you a verdict.",
                       "width": "fill_container"
@@ -14240,7 +14249,7 @@
                     {
                       "id": "V5mlg",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Dojo is open-source software that anyone can run. This instance is run by its operator, not by the dojo project, and these terms describe how it works. Access is by invitation: the operator issues the invitation links.",
                       "width": "fill_container"
@@ -14269,7 +14278,7 @@
                     {
                       "id": "lEf1D",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§02",
                       "width": "fill_container"
@@ -14291,7 +14300,7 @@
                     {
                       "id": "iRSMd",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "By using dojo, you agree to:",
                       "width": "fill_container"
@@ -14299,7 +14308,7 @@
                     {
                       "id": "io1VB",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "· Use a real GitHub account that represents you.\n· Complete kata honestly — the practice only works if it's real.\n· Not abuse the API, attempt to extract evaluation logic, or interfere with other practitioners' sessions.\n· Accept that the sensei's evaluation is generated by an LLM and may occasionally be imperfect.",
                       "width": "fill_container"
@@ -14328,7 +14337,7 @@
                     {
                       "id": "m7cyw",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§03",
                       "width": "fill_container"
@@ -14382,7 +14391,7 @@
                     {
                       "id": "HMmaj",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "These are not enforced technically — they're trusted. The dojo works because practitioners choose to practice honestly. If that changes, the practice becomes meaningless regardless of the verdict.",
                       "width": "fill_container"
@@ -14411,7 +14420,7 @@
                     {
                       "id": "DsEFn",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§04",
                       "width": "fill_container"
@@ -14433,7 +14442,7 @@
                     {
                       "id": "FPqkh",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "The operator of this instance can close your account if you violate these terms. You can leave at any time.",
                       "width": "fill_container"
@@ -14462,7 +14471,7 @@
                     {
                       "id": "gsuiC",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§05",
                       "width": "fill_container"
@@ -14484,7 +14493,7 @@
                     {
                       "id": "JWOgA",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Dojo is open source under the MIT License. The source code is available on GitHub. The kata content and sensei prompts are part of the codebase — they are not secret.",
                       "width": "fill_container"
@@ -14492,7 +14501,7 @@
                     {
                       "id": "KSZ4c",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "You can read, fork, and run your own instance, kata catalog included. The license asks only that its copyright notice travels with the code.",
                       "width": "fill_container"
@@ -14521,7 +14530,7 @@
                     {
                       "id": "yw7Ma",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§06",
                       "width": "fill_container"
@@ -14543,7 +14552,7 @@
                     {
                       "id": "wJbqz",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "The operator may update these terms. Changes will be reflected on this page with an updated effective date.",
                       "width": "fill_container"
@@ -14572,7 +14581,7 @@
                     {
                       "id": "BeC16",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "§07",
                       "width": "fill_container"
@@ -14594,7 +14603,7 @@
                     {
                       "id": "G6XVHl",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Questions about this instance go to its operator. Questions about the dojo software itself: open an issue on GitHub.",
                       "width": "fill_container"
@@ -14623,7 +14632,7 @@
                     {
                       "id": "S5Qe7r",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "Questions?",
                       "width": "fill_container"
@@ -14631,7 +14640,7 @@
                     {
                       "id": "qhkpM",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "We don't have a legal team. Open an issue at /open-source if something is unclear.",
                       "width": "fill_container"
@@ -14700,7 +14709,7 @@
                 {
                   "id": "hW0bQ",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "CHANGELOG",
                   "width": "fill_container"
@@ -14708,7 +14717,7 @@
                 {
                   "id": "M68QD",
                   "type": "ref",
-                  "ref": "UdVKK",
+                  "ref": "Nh8ik",
                   "name": "H1",
                   "content": "What we shipped.",
                   "width": "fill_container"
@@ -14716,7 +14725,7 @@
                 {
                   "id": "UQDn4",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Lead",
                   "content": "Sprint by sprint. No marketing. Just done.",
                   "width": "fill_container",
@@ -14805,7 +14814,7 @@
                 {
                   "id": "tsNEl",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Description",
                   "content": "The logo is now the Paper Gate, cut from four pieces of paper, on the app icon, the favicon and the share cards. Dojo comes in Washi and Sumi only: the Slate Indigo theme is gone, and if you had picked it, Dojo follows your system setting again.",
                   "width": "fill_container"
@@ -14880,7 +14889,7 @@
                 {
                   "id": "SRfIW",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Description",
                   "content": "There is no hosted service. You run an instance for yourself, your friends or your team, and whoever runs it owns its invitations, its data and its LLM bill. This release makes that path real: a fresh install now loads the katas, there is an operator runbook for upgrades, backups and secrets, the security page describes what the code does, and mail never goes out from an address the operator does not own.",
                   "width": "fill_container"
@@ -14969,7 +14978,7 @@
                 {
                   "id": "izYqf",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Description",
                   "content": "The full kata cycle works end to end: day start ritual, kata selection, timed code/chat/whiteboard kata, sensei evaluation with streaming, verdict, and results. 16 hand-crafted katas seeded. Dashboard with streak tracking and activity heatmap.",
                   "width": "fill_container"
@@ -14994,7 +15003,7 @@
         {
           "id": "EKBAD",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -15051,7 +15060,7 @@
                 {
                   "id": "I6sUEt",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "CHANGELOG",
                   "width": "fill_container"
@@ -15059,7 +15068,7 @@
                 {
                   "id": "D9PQu",
                   "type": "ref",
-                  "ref": "JYCdw",
+                  "ref": "AAeZc",
                   "name": "H1",
                   "content": "What we shipped.",
                   "width": "fill_container"
@@ -15067,7 +15076,7 @@
                 {
                   "id": "Wd707",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Lead",
                   "content": "Sprint by sprint. No marketing. Just done.",
                   "width": "fill_container",
@@ -15156,7 +15165,7 @@
                 {
                   "id": "tvDoN",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Description",
                   "content": "The logo is now the Paper Gate, cut from four pieces of paper, on the app icon, the favicon and the share cards. Dojo comes in Washi and Sumi only: the Slate Indigo theme is gone, and if you had picked it, Dojo follows your system setting again.",
                   "width": "fill_container"
@@ -15231,7 +15240,7 @@
                 {
                   "id": "v5vz8",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Description",
                   "content": "There is no hosted service. You run an instance for yourself, your friends or your team, and whoever runs it owns its invitations, its data and its LLM bill. This release makes that path real: a fresh install now loads the katas, there is an operator runbook for upgrades, backups and secrets, the security page describes what the code does, and mail never goes out from an address the operator does not own.",
                   "width": "fill_container"
@@ -15320,7 +15329,7 @@
                 {
                   "id": "U75gLU",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Description",
                   "content": "The full kata cycle works end to end: day start ritual, kata selection, timed code/chat/whiteboard kata, sensei evaluation with streaming, verdict, and results. 16 hand-crafted katas seeded. Dashboard with streak tracking and activity heatmap.",
                   "width": "fill_container"
@@ -15387,7 +15396,7 @@
             {
               "id": "LCY5m",
               "type": "ref",
-              "ref": "Fbyq0",
+              "ref": "GA0AX",
               "name": "Eyebrow",
               "content": "TRANSPARENCY",
               "width": "fill_container"
@@ -15395,7 +15404,7 @@
             {
               "id": "jSBa1",
               "type": "ref",
-              "ref": "UdVKK",
+              "ref": "Nh8ik",
               "name": "H1",
               "content": "Read the code that grades you.",
               "width": "fill_container"
@@ -15403,7 +15412,7 @@
             {
               "id": "h0zhw",
               "type": "ref",
-              "ref": "d19US",
+              "ref": "yZyh1",
               "name": "Body",
               "content": "Self-host, fork, contribute. The dojo runs on your reasoning AND your server.",
               "width": "fill_container"
@@ -15448,7 +15457,7 @@
                     {
                       "id": "JgCuy",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "LICENSE",
                       "textGrowth": "auto"
@@ -15476,7 +15485,7 @@
                     {
                       "id": "w454BR",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "STACK",
                       "textGrowth": "auto"
@@ -15504,7 +15513,7 @@
                     {
                       "id": "QQkzq",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "ARCHITECTURE",
                       "textGrowth": "auto"
@@ -15556,7 +15565,7 @@
                 {
                   "id": "ygmpo",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "REPO",
                   "width": "fill_container"
@@ -15564,7 +15573,7 @@
                 {
                   "id": "iEY5r",
                   "type": "ref",
-                  "ref": "KhgFC",
+                  "ref": "gmzoO",
                   "name": "H2",
                   "content": "Repository structure",
                   "width": "fill_container"
@@ -15842,7 +15851,7 @@
                 {
                   "id": "pPN7E",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "LOGIC",
                   "width": "fill_container"
@@ -15850,7 +15859,7 @@
                 {
                   "id": "nXdKB",
                   "type": "ref",
-                  "ref": "KhgFC",
+                  "ref": "gmzoO",
                   "name": "H2",
                   "content": "How the sensei works",
                   "width": "fill_container"
@@ -15876,7 +15885,7 @@
                     {
                       "id": "Q5xRMA",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "The sensei is not a chatbot. It's a structured evaluation system with a persona, a rubric, and a tight feedback loop. The prompt template is in the repo — not hidden, not proprietary.",
                       "width": "fill_container"
@@ -15884,7 +15893,7 @@
                     {
                       "id": "kEJMW",
                       "type": "ref",
-                      "ref": "d19US",
+                      "ref": "yZyh1",
                       "name": "Body",
                       "content": "Every kata carries an owner_role (who the sensei pretends to be) and an owner_context (what they know). The verdict is one of three values. There is no score.",
                       "width": "fill_container"
@@ -15912,7 +15921,7 @@
                     {
                       "id": "T5iToA",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "SENSEI_SYSTEM_PROMPT.JSON",
                       "width": "fill_container"
@@ -15965,7 +15974,7 @@
                 {
                   "id": "qYCnC",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "CONTRIBUTE",
                   "width": "fill_container"
@@ -15973,7 +15982,7 @@
                 {
                   "id": "SqU0s",
                   "type": "ref",
-                  "ref": "KhgFC",
+                  "ref": "gmzoO",
                   "name": "H2",
                   "content": "What's welcome — and what's not",
                   "width": "fill_container"
@@ -16004,7 +16013,7 @@
                     {
                       "id": "VHAec",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "What's welcome.",
                       "width": "fill_container"
@@ -16192,7 +16201,7 @@
                     {
                       "id": "Hvdw4",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "What's not.",
                       "width": "fill_container"
@@ -16363,7 +16372,7 @@
                 {
                   "id": "SnkRG",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "ARCHITECTURE",
                   "width": "fill_container"
@@ -16371,7 +16380,7 @@
                 {
                   "id": "P95ZzS",
                   "type": "ref",
-                  "ref": "KhgFC",
+                  "ref": "gmzoO",
                   "name": "H2",
                   "content": "Boring on purpose.",
                   "width": "fill_container"
@@ -16389,7 +16398,7 @@
                 {
                   "id": "yqMR9",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Body",
                   "content": "Turborepo monorepo. Hexagonal architecture with DDD on the API. Domain events for decoupling bounded contexts. PostgreSQL. Runs anywhere Docker does, with Kamal config included for a single VPS. Boring is a feature.",
                   "width": "fill_container"
@@ -16397,7 +16406,7 @@
                 {
                   "id": "OlyAm",
                   "type": "ref",
-                  "ref": "d19US",
+                  "ref": "yZyh1",
                   "name": "Body",
                   "content": "Decisions are written down as ADRs in docs/adr/. Browse the decision records →",
                   "width": "fill_container"
@@ -16409,7 +16418,7 @@
         {
           "id": "lWkDd",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -16453,7 +16462,7 @@
             {
               "id": "cplap",
               "type": "ref",
-              "ref": "Fbyq0",
+              "ref": "GA0AX",
               "name": "Eyebrow",
               "content": "TRANSPARENCY",
               "width": "fill_container"
@@ -16461,7 +16470,7 @@
             {
               "id": "ph6wx",
               "type": "ref",
-              "ref": "JYCdw",
+              "ref": "AAeZc",
               "name": "H1",
               "content": "Read the code that grades you.",
               "width": 900
@@ -16469,7 +16478,7 @@
             {
               "id": "W1g2oC",
               "type": "ref",
-              "ref": "lGMHb",
+              "ref": "q9jOs",
               "name": "Body",
               "content": "Self-host, fork, contribute. The dojo runs on your reasoning AND your server.",
               "width": 640
@@ -16514,7 +16523,7 @@
                     {
                       "id": "OcfNw",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "LICENSE",
                       "textGrowth": "auto"
@@ -16542,7 +16551,7 @@
                     {
                       "id": "YVg86",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "STACK",
                       "textGrowth": "auto"
@@ -16570,7 +16579,7 @@
                     {
                       "id": "B2vWL",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "ARCHITECTURE",
                       "textGrowth": "auto"
@@ -16621,7 +16630,7 @@
                 {
                   "id": "q6wLj",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "REPO",
                   "width": "fill_container"
@@ -16629,7 +16638,7 @@
                 {
                   "id": "KpUiD",
                   "type": "ref",
-                  "ref": "RQ12f",
+                  "ref": "feGox",
                   "name": "H2",
                   "content": "Repository structure",
                   "width": "fill_container"
@@ -16915,7 +16924,7 @@
                 {
                   "id": "i6q46M",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "LOGIC",
                   "width": "fill_container"
@@ -16923,7 +16932,7 @@
                 {
                   "id": "QNHSF",
                   "type": "ref",
-                  "ref": "RQ12f",
+                  "ref": "feGox",
                   "name": "H2",
                   "content": "How the sensei works",
                   "width": "fill_container"
@@ -16948,7 +16957,7 @@
                     {
                       "id": "hUu8b",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "The sensei is not a chatbot. It's a structured evaluation system with a persona, a rubric, and a tight feedback loop. The prompt template is in the repo — not hidden, not proprietary.",
                       "width": "fill_container"
@@ -16956,7 +16965,7 @@
                     {
                       "id": "JejYe",
                       "type": "ref",
-                      "ref": "lGMHb",
+                      "ref": "q9jOs",
                       "name": "Body",
                       "content": "Every kata carries an owner_role (who the sensei pretends to be) and an owner_context (what they know). The verdict is one of three values. There is no score.",
                       "width": "fill_container"
@@ -16984,7 +16993,7 @@
                     {
                       "id": "D71Ju",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "SENSEI_SYSTEM_PROMPT.JSON",
                       "width": "fill_container"
@@ -17037,7 +17046,7 @@
                 {
                   "id": "rJUFB",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "CONTRIBUTE",
                   "width": "fill_container"
@@ -17045,7 +17054,7 @@
                 {
                   "id": "Q3YaC",
                   "type": "ref",
-                  "ref": "RQ12f",
+                  "ref": "feGox",
                   "name": "H2",
                   "content": "What's welcome — and what's not",
                   "width": "fill_container"
@@ -17075,7 +17084,7 @@
                     {
                       "id": "aeVRM",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "What's welcome.",
                       "width": "fill_container"
@@ -17263,7 +17272,7 @@
                     {
                       "id": "d0pddj",
                       "type": "ref",
-                      "ref": "SgcdY",
+                      "ref": "n5Xpd",
                       "name": "H3",
                       "content": "What's not.",
                       "width": "fill_container"
@@ -17434,7 +17443,7 @@
                 {
                   "id": "qYw2I",
                   "type": "ref",
-                  "ref": "Fbyq0",
+                  "ref": "GA0AX",
                   "name": "Eyebrow",
                   "content": "ARCHITECTURE",
                   "width": "fill_container"
@@ -17442,7 +17451,7 @@
                 {
                   "id": "ZWoLz",
                   "type": "ref",
-                  "ref": "RQ12f",
+                  "ref": "feGox",
                   "name": "H2",
                   "content": "Boring on purpose.",
                   "width": "fill_container"
@@ -17460,7 +17469,7 @@
                 {
                   "id": "HPyb9",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Body",
                   "content": "Turborepo monorepo. Hexagonal architecture with DDD on the API. Domain events for decoupling bounded contexts. PostgreSQL. Runs anywhere Docker does, with Kamal config included for a single VPS. Boring is a feature.",
                   "width": "fill_container"
@@ -17468,7 +17477,7 @@
                 {
                   "id": "I1Up2X",
                   "type": "ref",
-                  "ref": "lGMHb",
+                  "ref": "q9jOs",
                   "name": "Body",
                   "content": "Decisions are written down as ADRs in docs/adr/. Browse the decision records →",
                   "width": "fill_container"
@@ -17662,7 +17671,7 @@
                                 {
                                   "id": "l75TV",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "KATA",
                                   "width": "fill_container"
@@ -17693,7 +17702,7 @@
                                 {
                                   "id": "Ejis1",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "PASS RATE",
                                   "width": "fill_container"
@@ -17733,7 +17742,7 @@
                                 {
                                   "id": "sSK7l",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "AVG TIME",
                                   "width": "fill_container"
@@ -17764,7 +17773,7 @@
                                 {
                                   "id": "d9gxr",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "LANGUAGES",
                                   "width": "fill_container"
@@ -17798,7 +17807,7 @@
                     {
                       "id": "ksNvN",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "PRACTITIONER",
                       "width": "fill_container"
@@ -17991,7 +18000,7 @@
                     {
                       "id": "AjXVK",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "ACTIVITY",
                       "width": "fill_container"
@@ -18952,7 +18961,7 @@
                     {
                       "id": "MUbQL",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "EARNED BADGES",
                       "width": "fill_container"
@@ -19098,7 +19107,7 @@
                     {
                       "id": "hVCaU",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "RECENT KATA",
                       "width": "fill_container"
@@ -19435,7 +19444,7 @@
         {
           "id": "uchjS",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -19620,7 +19629,7 @@
                                 {
                                   "id": "Fcrm0",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "KATA",
                                   "width": "fill_container"
@@ -19660,7 +19669,7 @@
                                 {
                                   "id": "mGWiV",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "PASS RATE",
                                   "width": "fill_container"
@@ -19700,7 +19709,7 @@
                                 {
                                   "id": "cxqXp",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "AVG TIME",
                                   "width": "fill_container"
@@ -19740,7 +19749,7 @@
                                 {
                                   "id": "TYZly",
                                   "type": "ref",
-                                  "ref": "Fbyq0",
+                                  "ref": "GA0AX",
                                   "name": "Eyebrow",
                                   "content": "LANGUAGES",
                                   "width": "fill_container"
@@ -19774,7 +19783,7 @@
                     {
                       "id": "NdxIO",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "PRACTITIONER",
                       "width": "fill_container"
@@ -19966,7 +19975,7 @@
                     {
                       "id": "Wqect",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "ACTIVITY",
                       "width": "fill_container"
@@ -20892,7 +20901,7 @@
                     {
                       "id": "u6Kmq",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "EARNED BADGES",
                       "width": "fill_container"
@@ -21038,7 +21047,7 @@
                     {
                       "id": "NNDIW",
                       "type": "ref",
-                      "ref": "Fbyq0",
+                      "ref": "GA0AX",
                       "name": "Eyebrow",
                       "content": "RECENT KATA",
                       "width": "fill_container"
@@ -21143,7 +21152,7 @@
             {
               "id": "LnnL0",
               "type": "ref",
-              "ref": "Fbyq0",
+              "ref": "GA0AX",
               "name": "Eyebrow",
               "content": "SHARED KATA",
               "width": "fill_container"
@@ -21307,7 +21316,7 @@
         {
           "id": "yPKEc",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -21357,7 +21366,7 @@
             {
               "id": "g3WQM2",
               "type": "ref",
-              "ref": "Fbyq0",
+              "ref": "GA0AX",
               "name": "Eyebrow",
               "content": "SHARED KATA",
               "width": "fill_container"
@@ -21598,29 +21607,29 @@
             {
               "id": "pStLS",
               "type": "ref",
-              "ref": "T3TGE",
+              "ref": "Ojm80",
               "name": "ErrorPanel",
               "width": "fill_container",
               "descendants": {
-                "Y8Erqj": {
+                "Q2UDIa": {
                   "content": "ERR · 404 · NOT FOUND"
                 },
-                "sOdrZ": {
+                "q7xeyH": {
                   "content": "Practitioner not found."
                 },
-                "jmiF7": {
+                "otK8z": {
                   "enabled": false
                 },
-                "Sohwv": {
+                "pQI2L": {
                   "content": "No one practices under that handle. Maybe they never did."
                 },
-                "gcmCW/NnDrs": {
+                "YVxDR/NnDrs": {
                   "content": "GO HOME"
                 },
-                "jJ3ct": {
+                "Br3Lh": {
                   "enabled": false
                 },
-                "bzdNq": {
+                "t6pPo": {
                   "enabled": false
                 }
               }
@@ -21630,7 +21639,7 @@
         {
           "id": "v2tR2Q",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -21680,28 +21689,28 @@
             {
               "id": "LajR4",
               "type": "ref",
-              "ref": "W8cbN2",
+              "ref": "WRP2U",
               "name": "ErrorPanel",
               "descendants": {
-                "ZF4xM": {
+                "rkUHB": {
                   "content": "ERR · 404 · NOT FOUND"
                 },
-                "AFgFT": {
+                "KEL8E": {
                   "content": "Practitioner not found."
                 },
-                "qT8iA": {
+                "KrtkX": {
                   "enabled": false
                 },
-                "aAAl8": {
+                "e50o9s": {
                   "content": "No one practices under that handle. Maybe they never did."
                 },
-                "iNwr5/NnDrs": {
+                "jtSzE/NnDrs": {
                   "content": "GO HOME"
                 },
-                "a1qLMj": {
+                "osG2z": {
                   "enabled": false
                 },
-                "fbbvl": {
+                "Z2ih0": {
                   "enabled": false
                 }
               }
@@ -21761,29 +21770,29 @@
             {
               "id": "F05FP",
               "type": "ref",
-              "ref": "T3TGE",
+              "ref": "Ojm80",
               "name": "ErrorPanel",
               "width": "fill_container",
               "descendants": {
-                "Y8Erqj": {
+                "Q2UDIa": {
                   "content": "ERR · 404 · NOT FOUND"
                 },
-                "sOdrZ": {
+                "q7xeyH": {
                   "content": "That isn't here."
                 },
-                "jmiF7": {
+                "otK8z": {
                   "enabled": false
                 },
-                "Sohwv": {
+                "pQI2L": {
                   "content": "This kata result doesn't exist or isn't public yet."
                 },
-                "gcmCW/NnDrs": {
+                "YVxDR/NnDrs": {
                   "content": "ENTER THE DOJO"
                 },
-                "jJ3ct": {
+                "Br3Lh": {
                   "enabled": false
                 },
-                "bzdNq": {
+                "t6pPo": {
                   "enabled": false
                 }
               }
@@ -21793,7 +21802,7 @@
         {
           "id": "u83Zgc",
           "type": "ref",
-          "ref": "u97uag",
+          "ref": "LzGuv",
           "name": "PublicFooter",
           "width": "fill_container"
         }
@@ -21843,28 +21852,28 @@
             {
               "id": "Z3K29D",
               "type": "ref",
-              "ref": "W8cbN2",
+              "ref": "WRP2U",
               "name": "ErrorPanel",
               "descendants": {
-                "ZF4xM": {
+                "rkUHB": {
                   "content": "ERR · 404 · NOT FOUND"
                 },
-                "AFgFT": {
+                "KEL8E": {
                   "content": "That isn't here."
                 },
-                "qT8iA": {
+                "KrtkX": {
                   "enabled": false
                 },
-                "aAAl8": {
+                "e50o9s": {
                   "content": "This kata result doesn't exist or isn't public yet."
                 },
-                "iNwr5/NnDrs": {
+                "jtSzE/NnDrs": {
                   "content": "ENTER THE DOJO"
                 },
-                "a1qLMj": {
+                "osG2z": {
                   "enabled": false
                 },
-                "fbbvl": {
+                "Z2ih0": {
                   "enabled": false
                 }
               }
@@ -22195,10 +22204,6 @@
     "radius-md": {
       "type": "number",
       "value": 6
-    },
-    "kit-version": {
-      "type": "string",
-      "value": "0.1.0"
     },
     "tint-accent-5": {
       "type": "color",
@@ -22578,30 +22583,6 @@
       "type": "color",
       "value": "#00000099"
     },
-    "kit-version-source": {
-      "type": "string",
-      "value": "0.7.0"
-    },
-    "grid-x0": {
-      "type": "number",
-      "value": 0
-    },
-    "grid-brief-w": {
-      "type": "number",
-      "value": 640
-    },
-    "grid-gutter": {
-      "type": "number",
-      "value": 120
-    },
-    "grid-y0": {
-      "type": "number",
-      "value": 0
-    },
-    "grid-row-gap": {
-      "type": "number",
-      "value": 260
-    },
     "tint-surface-30": {
       "type": "color",
       "value": [
@@ -22754,6 +22735,30 @@
           }
         }
       ]
+    },
+    "grid-x0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-brief-w": {
+      "type": "number",
+      "value": 640
+    },
+    "grid-gutter": {
+      "type": "number",
+      "value": 120
+    },
+    "grid-y0": {
+      "type": "number",
+      "value": 0
+    },
+    "grid-row-gap": {
+      "type": "number",
+      "value": 260
+    },
+    "kit-version-source": {
+      "type": "string",
+      "value": "0.8.0"
     }
   },
   "fileToken": "b89832e2-dbf3-4cfa-823a-16dad4512416"
