@@ -1,5 +1,4 @@
-import { afterAll, describe, expect, it } from 'vitest'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { describe, expect, it } from 'vitest'
 
 /**
  * Sprint 023 happy-path coverage for renamed and new pages.
@@ -28,9 +27,6 @@ const pages = [
   { name: 'LandingPage', loader: () => import('../LandingPage') },
   { name: 'DashboardPage', loader: () => import('../DashboardPage') },
 ] as const
-
-// LandingPage registers ScrollTrigger, whose sync interval outlives jsdom and calls requestAnimationFrame.
-afterAll(() => ScrollTrigger.disable())
 
 describe('Sprint 023 pages — import smoke', () => {
   for (const { name, loader } of pages) {
