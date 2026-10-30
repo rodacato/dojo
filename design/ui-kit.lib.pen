@@ -11225,28 +11225,6 @@
                         },
                         {
                           "type": "text",
-                          "id": "Vo8jt",
-                          "name": "Link Terms",
-                          "fill": "$color-secondary",
-                          "content": "Terms",
-                          "lineHeight": 1.5,
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "O3Ayf",
-                          "name": "Link Privacy",
-                          "fill": "$color-secondary",
-                          "content": "Privacy",
-                          "lineHeight": 1.5,
-                          "fontFamily": "$font-mono",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
                           "id": "d91UH",
                           "x": 0,
                           "y": 0,
