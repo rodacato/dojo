@@ -6874,8 +6874,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -6887,55 +6887,24 @@
                       "id": "T5ciA",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "zxMMx",
+                          "id": "LaMlS",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "HrDua",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Ju73R",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "YALf5",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -6956,8 +6925,8 @@
                           "id": "fwfFe",
                           "name": "NavItem dashboard",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -7130,7 +7099,7 @@
                               "id": "Y0i7px",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -7193,7 +7162,7 @@
                       "id": "j0Dyo",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -7307,7 +7276,7 @@
                           "id": "Db0Mn",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -7340,8 +7309,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -7353,55 +7322,24 @@
                       "id": "M3BUkx",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "A9DOsN",
+                          "id": "U7Cw6B",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "iGJVH",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "WrMbl",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "DiYvg",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -7456,8 +7394,8 @@
                           "id": "f6z04",
                           "name": "NavItem katas",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -7596,7 +7534,7 @@
                               "id": "itsAK",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -7659,7 +7597,7 @@
                       "id": "Z7fRC",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -7773,7 +7711,7 @@
                           "id": "Q7EZZy",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -7806,8 +7744,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -7819,55 +7757,24 @@
                       "id": "V3Ye6",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "d27nk",
+                          "id": "kmYDt",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "hKszJ",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "eZRpD",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "uM8Z7",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -7956,8 +7863,8 @@
                           "id": "mToMU",
                           "name": "NavItem scrolls",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -8062,7 +7969,7 @@
                               "id": "T47WKJ",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -8125,7 +8032,7 @@
                       "id": "PpGYz",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -8239,7 +8146,7 @@
                           "id": "X4oQH",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -8272,8 +8179,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -8285,55 +8192,24 @@
                       "id": "ZrqfS",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "Mv34Z",
+                          "id": "oL2V3",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "WxM4Q",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Japz6",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "c5UlB2",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -8456,8 +8332,8 @@
                           "id": "ONJW2",
                           "name": "NavItem engawa",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -8528,7 +8404,7 @@
                               "id": "Q5k4SV",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -8591,7 +8467,7 @@
                       "id": "rHyl8",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -8705,7 +8581,7 @@
                           "id": "WuvH1",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -8738,8 +8614,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -8751,55 +8627,24 @@
                       "id": "KvCdt",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "sIV3v",
+                          "id": "vrJUm",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "flOx2",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "jJzUj",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "JaARC",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -8956,8 +8801,8 @@
                           "id": "zRCTo",
                           "name": "NavItem kumite",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -8994,7 +8839,7 @@
                               "id": "r8tgG",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -9057,7 +8902,7 @@
                       "id": "D3dye7",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -9171,7 +9016,7 @@
                           "id": "bvREy",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -9204,8 +9049,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -9217,55 +9062,24 @@
                       "id": "ooLSt",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "xYnl4",
+                          "id": "v1dBDo",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "KyIeK",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "bQ3n0",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "bRezu",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -9454,7 +9268,7 @@
                               "id": "PHVfu",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -9481,8 +9295,8 @@
                           "id": "o5vn2I",
                           "name": "NavItem belts",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -9523,7 +9337,7 @@
                       "id": "VhqXK",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -9637,7 +9451,7 @@
                           "id": "Wcboi",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -9670,8 +9484,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -9683,55 +9497,24 @@
                       "id": "rixdK",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "Z072l",
+                          "id": "FIJ0V",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "K5Lif4",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "SElD4",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "asSwH",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -9920,7 +9703,7 @@
                               "id": "lOgE7",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -9983,7 +9766,7 @@
                       "id": "dX6hf",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -9995,8 +9778,8 @@
                           "id": "IxNaq",
                           "name": "NavItem username",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -10103,7 +9886,7 @@
                           "id": "KViCE",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -10146,7 +9929,7 @@
               "id": "F3LUU",
               "name": "Section label",
               "fill": "$color-muted",
-              "content": "BOTTOMNAV (MOBILE) — ONE COMPONENT PER ACTIVE ITEM",
+              "content": "BOTTOMNAV · APPHEADER (mobile) — one BottomNav per active item; AppHeader carries the Paper Gate on phones",
               "fontFamily": "$font-mono",
               "fontSize": 11,
               "fontWeight": "normal",
@@ -10165,8 +9948,8 @@
                   "name": "BottomNav/Dashboard",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -10195,7 +9978,7 @@
                           "height": 20,
                           "icon": "dashboard",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -10205,7 +9988,7 @@
                           "content": "dash",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -10361,8 +10144,8 @@
                   "name": "BottomNav/Katas",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -10427,7 +10210,7 @@
                           "height": 20,
                           "icon": "code",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -10437,7 +10220,7 @@
                           "content": "katas",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -10557,8 +10340,8 @@
                   "name": "BottomNav/Scrolls",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -10659,7 +10442,7 @@
                           "height": 20,
                           "icon": "school",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -10669,7 +10452,7 @@
                           "content": "scrolls",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -10753,8 +10536,8 @@
                   "name": "BottomNav/Belts",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -10891,7 +10674,7 @@
                           "height": 20,
                           "icon": "badge",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -10901,7 +10684,7 @@
                           "content": "belts",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -10949,8 +10732,8 @@
                   "name": "BottomNav/Settings",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -11123,7 +10906,7 @@
                           "height": 20,
                           "icon": "settings",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -11133,9 +10916,36 @@
                           "content": "settings",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vb9xy",
+                  "name": "AppHeader/Mobile",
+                  "reusable": true,
+                  "width": 375,
+                  "height": 56,
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "APChk",
+                      "type": "ref",
+                      "ref": "AbS82",
+                      "name": "Wordmark"
                     }
                   ]
                 }
@@ -13120,7 +12930,7 @@
     },
     "kit-version": {
       "type": "string",
-      "value": "0.7.0"
+      "value": "0.8.0"
     },
     "tint-accent-5": {
       "type": "color",

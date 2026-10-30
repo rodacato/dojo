@@ -13,6 +13,12 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.8.0 — the Paper app shell
+
+**Components:** the seven `Sidebar/*` and five `BottomNav/*` components go Paper (D71): page background instead of `surface`, full `border` rules instead of tinted ones, and no filled active item. The active sidebar item is marked by an `accent` rule on its left; the active bottom-nav item by an `accent-text` icon and a semibold label. The sidebar's logo row is now a `LogoWordmark` instance, 64 tall like the public nav. New: `AppHeader/Mobile`, a 56-tall bar with the wordmark, so phones carry the Paper Gate (until now only the desktop sidebar did).
+
+**Vendored by:** `app-core.pen` (kit-version-source `0.8.0`), re-vendored whole from 0.4.0, which also brings it the 0.5.0–0.7.0 pieces and drops the Slate theme. The other flows stay behind.
+
 ## 0.7.0 — the Paper public pieces
 
 **Components:** `PublicNav/Mobile` and `PublicNav/Desktop` are redrawn in Paper: wordmark, Open source and Changelog on desktop, `Sign in` (off by default, on for the landing) and the `Enter the dojo` CTA. `PublicFooter/Desktop` is redrawn and `PublicFooter/Mobile` is new: mark and host, the four links, `Runs on Dojo, open source →` and the tagline (both off by default, on for the landing). New: `Text/Display`, `Text/H2` and `Text/Body` (Mobile and Desktop), `Text/H3`, `Text/Eyebrow`, `Text/Note`, and `ErrorPanel/Mobile` and `ErrorPanel/Desktop` (Paper Gate watermark, pill, title, optional sub, body, two actions, optional strip). None of them is in `components/ui` yet; the code follows them.
