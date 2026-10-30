@@ -193,7 +193,7 @@ export function SettingsPage() {
 
         <Section title="Theme">
           <div>
-            <Field label="Visual theme" hint="Auto follows your OS color preference. Sumi-e is in calibration.">
+            <Field label="Visual theme" hint="Auto follows your OS color preference.">
               <div className="flex gap-2 flex-wrap">
                 {THEME_CHOICES.map((c) => (
                   <PillButton
