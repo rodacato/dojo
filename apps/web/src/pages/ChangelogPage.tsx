@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-10-30',
     phase: 'Identity',
+    title: 'The app, on paper',
+    description:
+      "The dashboard, history, belts, settings, the kata picker, evaluation and results, scrolls and the admin now share the look of the public pages: the Paper Gate in the sidebar and on a new header for phones, plain headlines, and sections divided by rules instead of cards. Nothing moved, and today's kata still comes first.",
+  },
+  {
+    date: '2026-10-30',
+    phase: 'Identity',
     title: 'The public pages, on paper',
     description:
       'The landing, the invitation, sign-in, the error pages, the legal pages, this changelog, open source, public profiles and shared results now share one look, laid out for a phone first: the Paper Gate, large plain headlines and sections divided by rules instead of cards. The landing leads with how to get in, sign in or ask for an invitation, before what the instance offers.',
