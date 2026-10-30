@@ -16164,7 +16164,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61; drawn ahead of the code, ships with it)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)\n- Post-kata / Mobile — Result · new piece: the practitioner receipt as shipped (#229), between the notes and the exits; renders captured from the app\n- Post-kata / Mobile — Proposed · comeback after NEEDS WORK: the Moon window path (#224, D65, D66; proposal PNG, not shipped — the receipt half shipped above)",
+          "content": "- Eval — Streaming (code kata, tests passed)\n- Eval — Follow-up\n- Eval — Error\n- Post-kata / Mobile — Streaming · Result (right line) · Result (wrong line) · Stream error (D60, D61)\n- Post-kata / Mobile — Feedback inline · More feedback (D62)\n- Post-kata / Mobile — Result · new piece: the practitioner receipt as shipped (#229), between the notes and the exits; renders captured from the app\n- Post-kata / Mobile — Proposed · comeback after NEEDS WORK: the Moon window path (#224, D65, D66; proposal PNG, not shipped — the receipt half shipped above)",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16218,7 +16218,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx. Sensei text is sample output, not product copy. Proposed copy for D60/D61, not in code yet: 'YOU POINTED AT LINE n · YOUR WHY', 'THE ANSWER · LINE n', 'Done', 'Share'. Answer text is seed kata-micro-001's rubric. Proposed for D62: 'How was the sensei\\'s review?', 'Somewhat unclear', 'Clear', 'Too generic', 'More feedback', 'Send note', 'Anything to add?', and the placeholder 'One thing you\\'d change, or something you noticed'. Receipt: components/recognition/PieceReceipt.tsx; piece names and sources from packages/shared/src/practitioner.ts.",
+          "content": "pages/SenseiEvalPage.tsx, components/eval/ExecutionResultCard.tsx, components/eval/PostKata.tsx (D60/D61), components/ui/FeedbackSection.tsx (D62). Sensei text is sample output, not product copy. Answer text is seed kata-micro-001's rubric. Receipt: components/recognition/PieceReceipt.tsx; piece names and sources from packages/shared/src/practitioner.ts.",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -16599,6 +16599,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "mObUI",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-30 · Post-kata / Mobile / Proposed · comeback after NEEDS WORK removed unbuilt (#224, D66); recognition will be redesigned. Evaluation brief: D60–D62 copy is shipped, source files named.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -22093,25 +22106,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "frame",
-      "id": "V2nlYd",
-      "x": 12130,
-      "y": 4387,
-      "name": "Post-kata / Mobile / Proposed · comeback after NEEDS WORK",
-      "theme": {
-        "theme": "washi"
-      },
-      "clip": true,
-      "width": 390,
-      "height": 1090,
-      "fill": {
-        "type": "image",
-        "enabled": true,
-        "url": "../exports/recognition/pixel-result-mobile.png",
-        "mode": "contain"
-      }
     },
     {
       "type": "frame",
