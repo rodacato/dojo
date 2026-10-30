@@ -93,13 +93,14 @@ export function BeltsPage() {
 
   if (error) {
     return (
-      <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+      <div className="paper-container py-8 md:py-12">
         <div className="flex items-end justify-between gap-4 mb-6">
-          <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
+          <h1 className="paper-heading">
             Belts
           </h1>
         </div>
         <EmptyState
+          variant="inline"
           eyebrow="Error · Belts"
           headline="We couldn't load your belt progress."
           action={
@@ -114,9 +115,9 @@ export function BeltsPage() {
 
   if (loading || !belt) {
     return (
-      <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+      <div className="paper-container py-8 md:py-12">
         <div className="flex items-end justify-between gap-4 mb-6">
-          <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
+          <h1 className="paper-heading">
             Belts
           </h1>
         </div>
@@ -132,9 +133,9 @@ export function BeltsPage() {
   const earnedCount = views.filter((m) => m.earned).length
 
   return (
-    <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
+    <div className="paper-container py-8 md:py-12">
       <header className="mb-10">
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-2">
+        <p className="paper-eyebrow mb-2">
           Your rank
         </p>
         <div className="flex items-center gap-4 mb-2">
@@ -143,12 +144,12 @@ export function BeltsPage() {
             className="inline-block w-12 h-12 rounded-full border border-border"
             style={{ backgroundColor: BELT_COLOR[belt.rank] }}
           />
-          <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-none tracking-tight uppercase font-mono">
+          <h1 className="paper-heading">
             {belt.rank} belt
           </h1>
         </div>
         <BrushstrokeUnderline seed={`belt-${belt.rank}`} className="w-48 h-2 mb-6" />
-        <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl">
+        <dl className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl border-y border-border py-5">
           <Factor label="Katas completed" value={belt.factors.completed} />
           <Factor label="Topic clusters" value={belt.factors.distinctClusters} />
           <Factor label="Active days (30)" value={belt.factors.activeDays30} />
@@ -158,11 +159,11 @@ export function BeltsPage() {
 
       <PractitionerSection />
 
-      <section>
+      <section className="border-t border-border pt-6 md:pt-8">
         <div className="flex items-end justify-between gap-4 mb-6">
-          <h2 className="text-primary text-xl font-semibold tracking-tight">Milestones</h2>
+          <h2 className="paper-eyebrow">Milestones</h2>
           <div className="text-right shrink-0">
-            <span className="block font-mono text-2xl text-primary tabular-nums leading-none">
+            <span className="block font-sans font-bold text-2xl text-primary tabular-nums leading-none">
               {earnedCount}
             </span>
             <span className="block text-secondary text-sm mt-1">of {views.length} earned</span>
@@ -170,7 +171,7 @@ export function BeltsPage() {
         </div>
 
         {views.length > 0 && earnedCount === 0 && (
-          <p className="text-secondary text-sm mb-6">
+          <p className="paper-body mb-6">
             Complete a kata to earn your first milestone. Your belt grows with the katas you
             finish, the topics you cover and the days you show up.
           </p>
@@ -178,6 +179,7 @@ export function BeltsPage() {
 
         {views.length === 0 && (
           <EmptyState
+            variant="inline"
             eyebrow="Empty"
             headline="No milestones defined yet. The dojo is patient."
           />
@@ -191,7 +193,7 @@ export function BeltsPage() {
           return (
             <section key={cat} className="mb-10">
               <div className="flex items-center gap-3 mb-4">
-                <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">{cat}</p>
+                <p className="paper-eyebrow">{cat}</p>
                 <span className="flex-1 h-px bg-border" />
               </div>
               {regular.length > 0 && (
@@ -212,7 +214,7 @@ export function BeltsPage() {
           )
         })}
 
-        <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12">
+        <p className="paper-note text-center mt-12">
           Belts are earned in the dojo. There are no shortcuts.
         </p>
       </section>
@@ -223,8 +225,8 @@ export function BeltsPage() {
 function Factor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
-      <dt className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-1">{label}</dt>
-      <dd className="font-mono text-2xl text-primary tabular-nums leading-none">{value}</dd>
+      <dt className="paper-eyebrow mb-1">{label}</dt>
+      <dd className="font-sans font-bold text-2xl text-primary tabular-nums leading-none">{value}</dd>
     </div>
   )
 }
@@ -246,13 +248,13 @@ function MilestoneCard({ milestone }: Readonly<{ milestone: MilestoneView }>) {
         <HankoBadge text={milestone.name} earned={milestone.earned} />
         <div className="flex-1 min-w-0">
           <h3
-            className={`font-mono text-lg font-bold tracking-[0.04em] uppercase mb-2 ${
+            className={`font-sans font-bold text-lg mb-2 ${
               milestone.earned ? 'text-primary' : 'text-secondary'
             }`}
           >
             {milestone.name}
           </h3>
-          <p className={`text-sm leading-relaxed text-secondary`}>
+          <p className="paper-body">
             {milestone.description}
           </p>
         </div>
@@ -280,13 +282,13 @@ function PrestigeMilestoneCard({ milestone }: Readonly<{ milestone: MilestoneVie
           <HankoBadge text={milestone.name} earned={milestone.earned} />
           <div className="flex-1 min-w-0">
             <h3
-              className={`font-mono text-2xl md:text-2xl font-bold tracking-[0.04em] uppercase leading-none mb-3 ${
+              className={`font-sans font-bold text-2xl leading-none mb-3 ${
                 milestone.earned ? 'text-primary' : 'text-secondary'
               }`}
             >
               {milestone.name}
             </h3>
-            <p className={`text-sm leading-relaxed text-secondary`}>
+            <p className="paper-body">
               {milestone.description}
             </p>
           </div>
