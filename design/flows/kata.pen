@@ -9366,7 +9366,7 @@
       "y": 1947,
       "name": "KataActive / Code",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -9581,7 +9581,7 @@
                       "lineHeight": 1.25,
                       "fontFamily": "$font-sans",
                       "fontSize": 30,
-                      "fontWeight": "600"
+                      "fontWeight": "700"
                     },
                     {
                       "type": "frame",
@@ -10861,7 +10861,7 @@
       "y": 1947,
       "name": "KataActive / Chat",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -11076,7 +11076,7 @@
                       "lineHeight": 1.25,
                       "fontFamily": "$font-sans",
                       "fontSize": 30,
-                      "fontWeight": "600"
+                      "fontWeight": "700"
                     },
                     {
                       "type": "frame",
@@ -11386,7 +11386,7 @@
       "y": 1947,
       "name": "KataActive / Whiteboard",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -11601,7 +11601,7 @@
                       "lineHeight": 1.25,
                       "fontFamily": "$font-sans",
                       "fontSize": 30,
-                      "fontWeight": "600"
+                      "fontWeight": "700"
                     },
                     {
                       "type": "frame",
@@ -11934,7 +11934,7 @@
       "y": 3227,
       "name": "KataActive / Preparing",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -11983,7 +11983,7 @@
       "y": 3227,
       "name": "KataActive / Prepare error",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -12024,7 +12024,7 @@
       "y": 3227,
       "name": "KataActive / Time expired",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -12249,7 +12249,7 @@
                       "lineHeight": 1.25,
                       "fontFamily": "$font-sans",
                       "fontSize": 30,
-                      "fontWeight": "600"
+                      "fontWeight": "700"
                     },
                     {
                       "type": "frame",
@@ -13529,7 +13529,7 @@
       "y": 3227,
       "name": "KataActive / Mobile",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -13676,7 +13676,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -13799,7 +13799,7 @@
       "y": 4387,
       "name": "Eval / Streaming",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14023,7 +14023,7 @@
       "y": 4387,
       "name": "Eval / Follow-up",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14279,7 +14279,7 @@
       "y": 4387,
       "name": "Eval / Error",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14543,7 +14543,7 @@
       "y": 5547,
       "name": "Results / Expired",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14589,8 +14589,8 @@
               "content": "Fix: Off-by-one in pagination",
               "textAlign": "center",
               "fontFamily": "$font-sans",
-              "fontSize": 24,
-              "fontWeight": "600"
+              "fontSize": 30,
+              "fontWeight": "700"
             },
             {
               "type": "text",
@@ -14608,13 +14608,19 @@
               "id": "zKTaN",
               "name": "Card",
               "width": "fill_container",
-              "fill": "$color-surface",
-              "cornerRadius": 6,
+              "fill": "#00000000",
               "stroke": "$color-border",
-              "strokeWidth": 1,
+              "strokeWidth": {
+                "top": 1,
+                "bottom": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 8,
-              "padding": 24,
+              "padding": [
+                20,
+                0
+              ],
               "alignItems": "center",
               "children": [
                 {
@@ -14688,7 +14694,7 @@
       "y": 5547,
       "name": "Results / No evaluation",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14704,13 +14710,19 @@
           "id": "BQDjg",
           "name": "NoEvaluationCard",
           "width": 560,
-          "fill": "$color-surface",
-          "cornerRadius": 6,
+          "fill": "#00000000",
           "stroke": "$color-border",
-          "strokeWidth": 1,
+          "strokeWidth": {
+            "top": 1,
+            "bottom": 1
+          },
+          "strokeAlignment": "inner",
           "layout": "vertical",
           "gap": 12,
-          "padding": 32,
+          "padding": [
+            20,
+            0
+          ],
           "alignItems": "center",
           "children": [
             {
@@ -14754,7 +14766,7 @@
       "y": 5547,
       "name": "Results / Load error",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -14796,7 +14808,7 @@
       "y": 5547,
       "name": "Results / Feedback open",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 1440,
@@ -15253,9 +15265,10 @@
       "y": 0,
       "name": "BRIEF — Kata · Advanced",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
+      "height": 866,
       "fill": "$color-surface",
       "cornerRadius": 6,
       "stroke": "$color-border",
@@ -15365,7 +15378,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "- Advanced / Mobile — Initial (no duration yet)\n- Advanced / Mobile — Filters set\n- Advanced / Mobile — No kata matches",
+          "content": "Each state Mobile beside Desktop:\n- Advanced — Initial (no duration yet)\n- Advanced — Filters set\n- Advanced — No kata matches",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -15515,7 +15528,7 @@
       "y": 1947,
       "name": "BRIEF — Kata · do the work",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -15777,7 +15790,7 @@
       "y": 3227,
       "name": "BRIEF — Kata · work edge states",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -16039,7 +16052,7 @@
       "y": 4387,
       "name": "BRIEF — Kata · evaluation",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -16301,7 +16314,7 @@
       "y": 5547,
       "name": "BRIEF — Kata · results",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -16563,7 +16576,7 @@
       "y": 7110,
       "name": "LOG — Kata",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 640,
       "fill": "$color-surface",
@@ -16586,6 +16599,19 @@
           "fontFamily": "$font-mono",
           "fontSize": 13,
           "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "yK2fY",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-30 · kit 0.8.0 · re-vendored from 0.5.0; every screen in Washi; Advanced gets the AppHeader and a Desktop beside each Mobile; kata titles in sans bold; Results expired and no-evaluation boxes become rules · D71",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
         },
         {
           "type": "text",
@@ -16765,7 +16791,7 @@
       "y": 1947,
       "name": "KataActive / Mobile / Point · nothing selected",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -16891,7 +16917,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -17157,7 +17183,7 @@
       "y": 1947,
       "name": "KataActive / Mobile / Point · line + why",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -17283,7 +17309,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -17558,7 +17584,7 @@
       "y": 0,
       "name": "Advanced / Mobile / Initial",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -17567,13 +17593,20 @@
       "layout": "vertical",
       "children": [
         {
+          "id": "Dz9I3",
+          "type": "ref",
+          "ref": "vb9xy",
+          "name": "AppHeader",
+          "width": "fill_container"
+        },
+        {
           "type": "frame",
           "id": "yX43J",
           "name": "Main",
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 22,
+          "gap": 32,
           "padding": [
             24,
             16
@@ -17604,9 +17637,11 @@
                   "name": "H1",
                   "fill": "$color-primary",
                   "content": "Ready for your kata",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 24,
-                  "fontWeight": "normal"
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 32,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.1
                 },
                 {
                   "type": "text",
@@ -17616,9 +17651,9 @@
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "Set the constraints. The kata inside them is a surprise.",
-                  "lineHeight": 1.5,
+                  "lineHeight": 1.6,
                   "fontFamily": "$font-sans",
-                  "fontSize": 14,
+                  "fontSize": 15,
                   "fontWeight": "normal"
                 }
               ]
@@ -17628,8 +17663,19 @@
               "id": "sgGpV",
               "name": "Section HOW LONG?",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -17640,7 +17686,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -17770,8 +17816,19 @@
               "id": "I4wVP",
               "name": "Section TYPE",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -17782,7 +17839,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -17949,8 +18006,19 @@
               "id": "BwsQF",
               "name": "Section LANGUAGE",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -17961,7 +18029,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -18228,11 +18296,11 @@
     {
       "type": "frame",
       "id": "N2L4s",
-      "x": 1270,
+      "x": 2830,
       "y": 0,
       "name": "Advanced / Mobile / Filters set",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -18241,13 +18309,20 @@
       "layout": "vertical",
       "children": [
         {
+          "id": "j1Upo",
+          "type": "ref",
+          "ref": "vb9xy",
+          "name": "AppHeader",
+          "width": "fill_container"
+        },
+        {
           "type": "frame",
           "id": "b4N8Tx",
           "name": "Main",
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 22,
+          "gap": 32,
           "padding": [
             24,
             16
@@ -18278,9 +18353,11 @@
                   "name": "H1",
                   "fill": "$color-primary",
                   "content": "Ready for your kata",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 24,
-                  "fontWeight": "normal"
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 32,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.1
                 },
                 {
                   "type": "text",
@@ -18290,9 +18367,9 @@
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "Set the constraints. The kata inside them is a surprise.",
-                  "lineHeight": 1.5,
+                  "lineHeight": 1.6,
                   "fontFamily": "$font-sans",
-                  "fontSize": 14,
+                  "fontSize": 15,
                   "fontWeight": "normal"
                 }
               ]
@@ -18302,8 +18379,19 @@
               "id": "Sbz1q",
               "name": "Section HOW LONG?",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -18314,7 +18402,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -18444,8 +18532,19 @@
               "id": "q4ZmSu",
               "name": "Section TYPE",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -18456,7 +18555,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -18623,8 +18722,19 @@
               "id": "kJk9Q",
               "name": "Section LANGUAGE",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -18635,7 +18745,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -18901,11 +19011,11 @@
     {
       "type": "frame",
       "id": "UIje2",
-      "x": 1780,
+      "x": 4900,
       "y": 0,
       "name": "Advanced / Mobile / No kata matches",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -18914,13 +19024,20 @@
       "layout": "vertical",
       "children": [
         {
+          "id": "W4T0Ut",
+          "type": "ref",
+          "ref": "vb9xy",
+          "name": "AppHeader",
+          "width": "fill_container"
+        },
+        {
           "type": "frame",
           "id": "R8GI6d",
           "name": "Main",
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 22,
+          "gap": 32,
           "padding": [
             24,
             16
@@ -18951,9 +19068,11 @@
                   "name": "H1",
                   "fill": "$color-primary",
                   "content": "Ready for your kata",
-                  "fontFamily": "$font-mono",
-                  "fontSize": 24,
-                  "fontWeight": "normal"
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 32,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.1
                 },
                 {
                   "type": "text",
@@ -18963,9 +19082,9 @@
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "Set the constraints. The kata inside them is a surprise.",
-                  "lineHeight": 1.5,
+                  "lineHeight": 1.6,
                   "fontFamily": "$font-sans",
-                  "fontSize": 14,
+                  "fontSize": 15,
                   "fontWeight": "normal"
                 }
               ]
@@ -18975,8 +19094,19 @@
               "id": "X0mId",
               "name": "Section HOW LONG?",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -18987,7 +19117,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -19117,8 +19247,19 @@
               "id": "z9f3Nu",
               "name": "Section TYPE",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -19129,7 +19270,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -19296,8 +19437,19 @@
               "id": "IgqM6",
               "name": "Section LANGUAGE",
               "width": "fill_container",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
               "layout": "vertical",
               "gap": 10,
+              "padding": [
+                24,
+                0,
+                0,
+                0
+              ],
               "children": [
                 {
                   "type": "text",
@@ -19308,7 +19460,7 @@
                   "fontFamily": "$font-mono",
                   "fontSize": 11,
                   "fontWeight": "normal",
-                  "letterSpacing": 0.88
+                  "letterSpacing": 1.3
                 },
                 {
                   "type": "frame",
@@ -19615,7 +19767,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Streaming",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -19706,7 +19858,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -19861,7 +20013,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Result · right line",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -19952,7 +20104,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -20359,7 +20511,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Result · wrong line",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -20450,7 +20602,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -20800,7 +20952,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Stream error",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -20891,7 +21043,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -21080,7 +21232,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Feedback inline",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -21430,7 +21582,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / More feedback",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -21949,7 +22101,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Proposed · comeback after NEEDS WORK",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -21968,7 +22120,7 @@
       "y": 4387,
       "name": "Post-kata / Mobile / Result · new piece",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "clip": true,
       "width": 390,
@@ -22059,7 +22211,7 @@
               "lineHeight": 1.25,
               "fontFamily": "$font-sans",
               "fontSize": 24,
-              "fontWeight": "600"
+              "fontWeight": "700"
             },
             {
               "type": "frame",
@@ -22567,6 +22719,2195 @@
                       "content": "Share"
                     }
                   }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "efTsh",
+      "x": 1270,
+      "y": 0,
+      "name": "Advanced / Desktop / Initial",
+      "theme": {
+        "theme": "washi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color-page",
+      "children": [
+        {
+          "id": "FEHtB",
+          "type": "ref",
+          "ref": "LPfNQ",
+          "name": "Sidebar",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "YnDBn",
+          "name": "Main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            48,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "WWCEe",
+              "name": "Main",
+              "width": 576,
+              "layout": "vertical",
+              "gap": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ab6cO",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "isSV3",
+                      "name": "Date (sample)",
+                      "fill": "$color-secondary",
+                      "content": "MONDAY, OCTOBER 19, 2026",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "text",
+                      "id": "k383C",
+                      "name": "H1",
+                      "fill": "$color-primary",
+                      "content": "Ready for your kata",
+                      "lineHeight": 1.04,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 52,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.8
+                    },
+                    {
+                      "type": "text",
+                      "id": "FBXeK",
+                      "name": "Sub",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Set the constraints. The kata inside them is a surprise.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y7rps",
+                  "name": "Section HOW LONG?",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wXJwT",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "HOW LONG?",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "p16M5",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "h996Y8",
+                          "name": "Chip 10m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "IqUvi",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "10m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Cryb5",
+                          "name": "Chip 20m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "a6NMym",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "20m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "c18StZ",
+                          "name": "Chip 30m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "jIvQ0",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "30m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TKMXY",
+                          "name": "Chip 45m+",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "snv2Q",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "45m+",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "snZHT",
+                  "name": "Section TYPE",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "e5tuZ",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "TYPE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ovrqP",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "v8kML",
+                          "name": "Chip Any (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "MOIYR",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Any",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "i0LLS6",
+                          "name": "Chip Code",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "n3Xj39",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Code",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "IV283",
+                          "name": "Chip Review",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "S5sdU",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Review",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "F95Sk",
+                          "name": "Chip Chat",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "o16g19",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Chat",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "SHz76",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "fQZNe",
+                          "name": "Chip Whiteboard",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wgj2w",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Whiteboard",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uVJ0c",
+                  "name": "Section LANGUAGE",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vjYBh",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "LANGUAGE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q4iQr",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "bukOA",
+                          "name": "Chip Any (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "l7rEC5",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Any",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XLuGl",
+                          "name": "Chip TypeScript",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "VgBKK",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "TypeScript",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "nUzEv",
+                          "name": "Chip Python",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "K0E3J",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Python",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "CgEdr",
+                          "name": "Chip SQL",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "k0nVq",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "SQL",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "rulFM",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "c0KYr",
+                          "name": "Chip Go",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "z1HjGy",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Go",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "crjw8",
+                          "name": "Chip Ruby",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h5Yvd",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Ruby",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KDvGt",
+                          "name": "Chip JS",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "c3Qf8o",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "JS",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vkPvs",
+                  "name": "Action",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "id": "fNvgt",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Start (disabled)",
+                      "width": "fill_container",
+                      "opacity": 0.5,
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "Start →"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "Z4frB",
+                      "name": "Rule",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Pick how long you have to continue.",
+                      "textAlign": "center",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "WNaWY",
+      "x": 3340,
+      "y": 0,
+      "name": "Advanced / Desktop / Filters set",
+      "theme": {
+        "theme": "washi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color-page",
+      "children": [
+        {
+          "id": "o9cYF",
+          "type": "ref",
+          "ref": "LPfNQ",
+          "name": "Sidebar",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "ynRz3",
+          "name": "Main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            48,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "v5cy7T",
+              "name": "Main",
+              "width": 576,
+              "layout": "vertical",
+              "gap": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "CyhCA",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nOQ7R",
+                      "name": "Date (sample)",
+                      "fill": "$color-secondary",
+                      "content": "MONDAY, OCTOBER 19, 2026",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "text",
+                      "id": "b862q",
+                      "name": "H1",
+                      "fill": "$color-primary",
+                      "content": "Ready for your kata",
+                      "lineHeight": 1.04,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 52,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.8
+                    },
+                    {
+                      "type": "text",
+                      "id": "HuPVN",
+                      "name": "Sub",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Set the constraints. The kata inside them is a surprise.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "t3DJZ",
+                  "name": "Section HOW LONG?",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SCieP",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "HOW LONG?",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "N5Gezi",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "r13T9d",
+                          "name": "Chip 10m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "zbLfW",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "10m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "wAP8Z",
+                          "name": "Chip 20m (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "J1NBy1",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "20m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qG0IG",
+                          "name": "Chip 30m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "m1Q8b3",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "30m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "CUJGO",
+                          "name": "Chip 45m+",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "d8pDH",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "45m+",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZheWX",
+                  "name": "Section TYPE",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "c5HOR",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "TYPE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C0NfRs",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "T9xa5I",
+                          "name": "Chip Any (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vQgVZ",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Any",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QzW90",
+                          "name": "Chip Code",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LHm3x",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Code",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ipaqh",
+                          "name": "Chip Review",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h9Rvw",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Review",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qVReo",
+                          "name": "Chip Chat",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "bDAje",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Chat",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vjfjj",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "CkZlD",
+                          "name": "Chip Whiteboard",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dhUn4",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Whiteboard",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "S8v9kZ",
+                  "name": "Section LANGUAGE",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SZZ95",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "LANGUAGE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "clF74",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "yBAWl",
+                          "name": "Chip Any",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "aceOm",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Any",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "CuTzQ",
+                          "name": "Chip TypeScript (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "TUcTT",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "TypeScript",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Q6NTM1",
+                          "name": "Chip Python",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "MO2Ex",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Python",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ld61Y",
+                          "name": "Chip SQL",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "u6hIi1",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "SQL",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Wsd43",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "YGgNd",
+                          "name": "Chip Go",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "r3Ke5l",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Go",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "v5rlc",
+                          "name": "Chip Ruby",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "X6GUh6",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Ruby",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "BlPSH",
+                          "name": "Chip JS",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Ets8n",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "JS",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "cyR2W",
+                  "name": "Action",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "id": "G3I7V",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Start",
+                      "width": "fill_container",
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "Start →"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "J0oS0",
+                      "name": "Rule",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "You get one kata. Do the one you get.",
+                      "textAlign": "center",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "RsgDm",
+      "x": 5410,
+      "y": 0,
+      "name": "Advanced / Desktop / No kata matches",
+      "theme": {
+        "theme": "washi"
+      },
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$color-page",
+      "children": [
+        {
+          "id": "l5WmE",
+          "type": "ref",
+          "ref": "LPfNQ",
+          "name": "Sidebar",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "V4qH8S",
+          "name": "Main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            48,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "FQyxz",
+              "name": "Main",
+              "width": 576,
+              "layout": "vertical",
+              "gap": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Y52Gj",
+                  "name": "Header",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XDDpu",
+                      "name": "Date (sample)",
+                      "fill": "$color-secondary",
+                      "content": "MONDAY, OCTOBER 19, 2026",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 0.88
+                    },
+                    {
+                      "type": "text",
+                      "id": "UP2k5",
+                      "name": "H1",
+                      "fill": "$color-primary",
+                      "content": "Ready for your kata",
+                      "lineHeight": 1.04,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 52,
+                      "fontWeight": "700",
+                      "letterSpacing": -1.8
+                    },
+                    {
+                      "type": "text",
+                      "id": "pLNC0",
+                      "name": "Sub",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Set the constraints. The kata inside them is a surprise.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "J8zQr",
+                  "name": "Section HOW LONG?",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Uss7V",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "HOW LONG?",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HJD05",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "u0nV3",
+                          "name": "Chip 10m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "e4dR64",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "10m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pWdgW",
+                          "name": "Chip 20m (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "BSsII",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "20m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HJ9cO",
+                          "name": "Chip 30m",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "TY3vt",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "30m",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "YZsIW",
+                          "name": "Chip 45m+",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YjNzW",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "45m+",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "W4KkGf",
+                  "name": "Section TYPE",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vqhhJ",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "TYPE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "AAX7O",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "hokec",
+                          "name": "Chip Any",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "XeqsZ",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Any",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "awbb7",
+                          "name": "Chip Code",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "hV0bS",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Code",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qEQGe",
+                          "name": "Chip Review",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "cpZLK",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Review",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "VsTcx",
+                          "name": "Chip Chat (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZkdOq",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "Chat",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "efZAU",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "zRRm5",
+                          "name": "Chip Whiteboard",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "xHW4W",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Whiteboard",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "V6OGbR",
+                  "name": "Section LANGUAGE",
+                  "width": "fill_container",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "top": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UMrUO",
+                      "name": "Eyebrow",
+                      "fill": "$color-secondary",
+                      "content": "LANGUAGE",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bhOYf",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "rQx1V",
+                          "name": "Chip Any",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "e3OhB",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Any",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "xn0TA",
+                          "name": "Chip TypeScript (selected)",
+                          "height": 44,
+                          "fill": "$color-elevated",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-primary",
+                          "strokeWidth": 2,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "BoVFq",
+                              "name": "Label",
+                              "fill": "$color-primary",
+                              "content": "TypeScript",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Bus7B",
+                          "name": "Chip Python",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dJARP",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Python",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hfXjh",
+                          "name": "Chip SQL",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "xnwlS",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "SQL",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q7JoI",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Wkikl",
+                          "name": "Chip Go",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "K07Gi",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Go",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "NdvgX",
+                          "name": "Chip Ruby",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "HKo9j",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "Ruby",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "gyYCT",
+                          "name": "Chip JS",
+                          "height": 44,
+                          "fill": "$color-surface",
+                          "cornerRadius": "$radius-sm",
+                          "stroke": "$color-border",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "EnnDr",
+                              "name": "Label",
+                              "fill": "$color-secondary",
+                              "content": "JS",
+                              "fontFamily": "$font-mono",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UL6Oy",
+                  "name": "Action",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "NlPQV",
+                      "name": "No match",
+                      "width": "fill_container",
+                      "fill": "$tint-warning-10",
+                      "cornerRadius": "$radius-sm",
+                      "stroke": "$tint-warning-30",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YitNg",
+                          "name": "Title",
+                          "fill": "$color-warning-text",
+                          "content": "No kata fits these filters.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PBFWq",
+                          "name": "Body",
+                          "fill": "$color-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Widen one: set Type or Language to Any.",
+                          "fontFamily": "$font-sans",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "R92sFF",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Start",
+                      "width": "fill_container",
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "Start →"
+                        }
+                      }
+                    },
+                    {
+                      "type": "text",
+                      "id": "M85NJ",
+                      "name": "Rule",
+                      "fill": "$color-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "You get one kata. Do the one you get.",
+                      "textAlign": "center",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 }
               ]
             }
