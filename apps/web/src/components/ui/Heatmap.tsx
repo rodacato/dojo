@@ -10,7 +10,7 @@ interface HeatmapProps {
 }
 
 // Activity heatmap. Uses --color-accent at varying opacity — re-themes
-// automatically (vermillion in Sumi/Washi, indigo in Slate).
+// automatically in Sumi and Washi.
 // DESIGN.md §Component vocabulary §Streak heatmap describes the Sumi-e
 // ramp as "ink wash": neutral steps building to an accent pop. The
 // opacity ramp here achieves the same effect against either palette
