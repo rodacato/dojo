@@ -1,4 +1,4 @@
-# Design decisions — open questions & findings (D1–D59)
+# Design decisions — open questions & findings (D1–D70)
 
 > **This is the registry the `.pen` files point at.** Briefs in `flows/*.pen` and warning
 > notes in `ui-kit.lib.pen` cite these by number. Keep entries after resolution — record the
@@ -129,6 +129,14 @@ Direction change: one surprise kata a day of about 5 minutes, the picker moved t
 | **D64** | What rank and Paths mean | **Rank records sustained practice; Paths record topic exposure.** No verdict or topic breadth gate for rank; no competence or contribution-permission claim. Requirements use credited practice days, with at most one credit per calendar date. **Rejected: rank as editorial trust** — practice count does not establish review quality; contribution roles belong to the operator. Numeric progression and rest allowance remain implementation decisions. |
 | **D65** | Where recognition appears after a kata | **One compact receipt after the reasoning and solution**, including after NEEDS WORK; optional promotion sharing, Done stays primary. Preserve D62's instrument during #193. **Rejected: promotion modal or permanent share preview** — interrupts the evaluation and repeats the result; reconsider only with observed demand. D16 remains a shipped-code finding until implementation; this proposal does not close it. |
 | **D66** | Recognition visual mode after reviewing D63: the Preserve ledger was correct and did not motivate | **Direction: pixel practitioner + personal dojo** (2026-10-20), pending review of the prototype in `brand/proposals/practitioner/`. Supersedes D63's visual mode; its voice rules (factual, no "unlocked!", no competence claims) stay. Two tracks with opposite difficulty: the **practitioner** is dressed with pieces earned by showing up (practice days, a return, a share, seasons, invites), easy and allowed to carry promotion; the **dojo** is furnished with pieces earned by verdicts on hard kata, each naming its kata, verdict and date, never promotional. The belt mirrors rank and is never a piece. **Rejected: one track** — a single avatar mixes "I showed up" with "I passed this" and either cheapens the hard pieces or gates the easy ones. Conflicts with DESIGN.md "What we don't do" (illustration, achievement-style badges); that list is amended when the direction ships, not before. Dojo pieces read the verdict, so the sensei's evaluation must stay blind to recognition (D64). |
+
+## Public flow, Paper edition (2026-10-29)
+
+| # | Finding | Code does | Recommendation |
+|---|---|---|---|
+| **D68** | Open source page lists "Gamification features" as not welcome | `OpenSourcePage.tsx` says so while belts and the practitioner pieces ship | **Decided by Adrian (2026-10-29):** dojo supports gamification at some level, so the line goes. Removed from `public.pen`; the code follows when the page is implemented |
+| **D69** | 🐞 Recent kata rows had no room for the title on a phone | `DenseSessionRow` kept type, difficulty and verdict fixed below md; at 375 the truncated title got about 7px | ✅ Resolved: below `sm` the title takes its own line above the badges; `sm` and up are unchanged |
+| **D70** | Profile and Share 404 look different from the other error pages | `PublicProfilePage.tsx` and `SharePage.tsx` render a bare `ErrorState` with no nav or footer; `ErrorPage` and `NotFoundPage` use `PublicPageLayout` with the watermark | **Decided by Adrian (2026-10-29):** one pattern for every public error — layout with hideCta, the Paper Gate watermark, pill, title, body, actions. The drawn copy stays the `ErrorState` copy |
 
 ## Out of scope (confirmed)
 
