@@ -19,7 +19,7 @@ diverging is not. A changed token VALUE forces every consumer.
 
 **Components:** `LogoMark` draws the Paper Gate from `apps/web/src/brand/logo.json`: one filled path made of the four pieces (lintel, crossbar, two posts), replacing the stroked Open Gate. Inside `LogoWordmark` the mark is `accent`, as `Logo.tsx` renders it; the kit had it in `primary` since 0.2.0.
 
-**Vendored by:** `public.pen` (kit-version-source `0.6.0`). The other flows stay behind until they are reworked: a flow on an older kit shows the old mark.
+**Vendored by:** `public.pen` (kit-version-source `0.6.0`), patched in place with this entry's diff; it does not carry `CodeLine`, which no public screen draws. The other flows stay behind until they are reworked: a flow on an older kit shows the old mark.
 
 ## 0.5.0 — CodeLine for the point kata
 
