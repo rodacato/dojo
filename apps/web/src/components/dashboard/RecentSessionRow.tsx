@@ -11,18 +11,15 @@ const VERDICT_PILL: Record<string, { label: string; classes: string }> = {
 interface RecentSessionRowProps {
   session: DashboardData['recentSessions'][number]
   onClick: () => void
-  isLast?: boolean
 }
 
-export function RecentSessionRow({ session, onClick, isLast }: Readonly<RecentSessionRowProps>) {
+export function RecentSessionRow({ session, onClick }: Readonly<RecentSessionRowProps>) {
   const verdict = session.verdict ? VERDICT_PILL[session.verdict] : null
   const relativeDate = formatRelativeDate(new Date(session.startedAt))
   return (
     <button
       onClick={onClick}
-      className={`group w-full flex items-center gap-3 px-4 h-12 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated ${
-        isLast ? '' : 'border-b border-border/30'
-      }`}
+      className="group w-full flex items-center gap-3 px-2 h-12 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated"
     >
       <span className="shrink-0">
         <TypeBadge type={session.kataType as KataType} />
