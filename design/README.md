@@ -33,7 +33,7 @@ as context for AI agents.
 | `app-core.pen` | 20 + 6 | 0.8.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite — each Mobile beside Desktop, Paper edition (D71); proposed recognition (#224) |
 | `kata.pen` | 30 | 0.8.0 | Advanced picker (Mobile beside Desktop), active kata (code, chat, whiteboard, point on mobile), evaluation, results, new-piece receipt; proposed comeback (#224) |
 | `learn.pen` | 15 | 0.8.0 | Scrolls catalog and player (Mobile beside Desktop for the main state), Engawa playground (mobile too) |
-| `admin.pen` | 16 | 0.4.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health — mobile too |
+| `admin.pen` | 16 | 0.8.0 | `/admin/*`: katas catalog and authoring, scrolls, invitations, errors, health — mobile too |
 | `site.pen` | 2 | — (tokens only) | The GitHub Pages site (`site/`), not the app: home, mobile and desktop |
 
 **This table is present tense — it never carries history.** "Migrated on <date>, six
