@@ -39,7 +39,7 @@ export function AdminLayout() {
       {isMobile && !onForm && (
         <nav
           aria-label="Admin sections"
-          className="fixed bottom-0 inset-x-0 z-40 bg-surface border-t border-border/40 pb-[env(safe-area-inset-bottom)]"
+          className="fixed bottom-0 inset-x-0 z-40 bg-page border-t border-border pb-[env(safe-area-inset-bottom)]"
         >
           <div className="flex">
             {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
@@ -48,7 +48,7 @@ export function AdminLayout() {
                 to={to}
                 className={({ isActive }) =>
                   `flex-1 min-h-14 flex flex-col items-center justify-center gap-0.5 font-mono text-xs transition-colors ${
-                    isActive ? 'text-primary font-semibold' : 'text-secondary'
+                    isActive ? 'text-primary font-semibold [&>svg]:text-accent-text' : 'text-secondary'
                   }`
                 }
               >
@@ -65,7 +65,7 @@ export function AdminLayout() {
 
 function MobileHeader() {
   return (
-    <header className="sticky top-0 z-30 h-14 flex items-center justify-between gap-4 px-4 border-b border-border bg-surface/50 backdrop-blur">
+    <header className="sticky top-0 z-30 h-14 flex items-center justify-between gap-4 px-4 border-b border-border bg-page">
       <Link to="/admin/katas" className="flex items-center gap-2">
         <LogoMark size={20} className="text-accent shrink-0" />
         <span className="font-mono text-sm text-primary tracking-wider">
@@ -87,8 +87,8 @@ function AdminSidebar() {
   const { user } = useAuth()
 
   return (
-    <aside className="w-48 shrink-0 border-r border-border/40 bg-surface flex flex-col h-dvh sticky top-0">
-      <div className="px-4 py-5 border-b border-border/20">
+    <aside className="w-48 shrink-0 border-r border-border bg-page flex flex-col h-dvh sticky top-0">
+      <div className="px-4 py-5 border-b border-border">
         <Link to="/admin/katas" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <LogoMark size={20} className="text-accent shrink-0" />
           <span className="font-mono text-sm text-primary tracking-wider">
@@ -108,7 +108,7 @@ function AdminSidebar() {
             className={({ isActive }) =>
               `flex items-center gap-2 px-3 h-8 text-sm transition-colors border-l-2 ${
                 isActive
-                  ? 'bg-elevated text-primary border-primary'
+                  ? 'text-primary border-accent'
                   : 'text-secondary border-transparent hover:text-primary'
               }`
             }
@@ -129,7 +129,7 @@ function AdminSidebar() {
         </div>
       </nav>
 
-      <div className="border-t border-border/20 px-3 py-3">
+      <div className="border-t border-border px-3 py-3">
         {user && (
           <div className="flex items-center gap-2 mb-2">
             <img

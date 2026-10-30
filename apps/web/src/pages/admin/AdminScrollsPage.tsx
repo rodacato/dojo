@@ -93,7 +93,7 @@ export function AdminScrollsPage() {
       <AdminBreadcrumb trail={['ADMIN', 'SCROLLS']} />
 
       <div className="mb-8">
-        <h1 className="text-xl font-semibold text-primary leading-tight">Scrolls</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-primary leading-tight">Scrolls</h1>
         <div className="mt-1 text-sm text-secondary">
           Register external scrolls by their manifest. The entry origin must be allowed by the instance.
           {scrolls && (

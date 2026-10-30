@@ -233,7 +233,7 @@ export function AdminEditKataPage() {
           >
             ← Back to katas
           </button>
-          <h1 className="text-xl font-semibold text-primary leading-tight">
+          <h1 className="text-2xl font-bold tracking-tight text-primary leading-tight">
             {form.title || 'Untitled kata'}
           </h1>
         </div>
