@@ -25,36 +25,37 @@ export function ScrollsPage() {
   const locale = preferredLocale()
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12">
-      <header className="mb-8">
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">Scrolls</p>
-        <h1 className="text-primary text-2xl md:text-3xl font-semibold leading-tight">
+    <div className="paper-container py-8 md:py-12">
+      <header className="mb-10">
+        <p className="paper-eyebrow mb-3">Scrolls</p>
+        <h1 className="paper-heading">
           Small apps that teach one thing well.
         </h1>
       </header>
 
       {scrolls.length === 0 ? (
         <EmptyState
+          variant="inline"
           eyebrow="Empty · Scrolls"
           headline="No scrolls are published yet."
           microcopy="Scrolls are small apps the operator of this instance adds."
         />
       ) : (
-        <ul aria-label="Scrolls" className="grid gap-4 sm:grid-cols-2">
+        <ul aria-label="Scrolls" className="border-y border-border divide-y divide-border">
           {scrolls.map(({ id, slug, manifest }) => (
             <li key={id}>
               <Link
                 to={`/scrolls/${slug}`}
-                className="block h-full rounded-md border border-border border-l-[3px] border-l-secondary bg-surface p-5 transition-colors hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="group block py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               >
-                <h2 className="text-primary text-lg font-semibold leading-snug">
+                <h2 className="text-primary text-xl font-bold leading-snug group-hover:text-accent-text transition-colors">
                   {pickLocalized(manifest.title, manifest.locales, locale)}
                 </h2>
-                <p className="mt-2 text-sm text-secondary leading-relaxed">
+                <p className="paper-body mt-2 max-w-2xl">
                   {pickLocalized(manifest.description, manifest.locales, locale)}
                 </p>
                 {manifest.programmingLanguages.length > 0 && (
-                  <p className="mt-4 font-mono text-xs uppercase tracking-wider text-secondary">
+                  <p className="paper-eyebrow mt-4">
                     {manifest.programmingLanguages.join(' · ')}
                   </p>
                 )}
