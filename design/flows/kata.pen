@@ -4,8 +4,8 @@
     {
       "type": "frame",
       "id": "Ks6Rd",
-      "x": 0,
-      "y": -4200,
+      "x": 760,
+      "y": -5199,
       "name": "VENDORED KIT 0.8.0 — edit in ui-kit.lib.pen only",
       "theme": {
         "theme": "washi"
