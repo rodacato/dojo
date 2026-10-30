@@ -67,15 +67,16 @@ describe('Sidebar — navigation', () => {
     expect(katas).not.toHaveTextContent(/soon/i)
   })
 
-  it('highlights the active route with the primary classes and a left border cue', () => {
+  it('marks only the active route as the current page', () => {
     renderSidebar({ route: '/katas' })
 
-    const active = screen.getByRole('link', { name: /^katas$/ })
-    expect(active.className).toContain('text-primary')
-    expect(active.className).toContain('border-primary')
+    expect(screen.getByRole('link', { name: /^katas$/ })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: /^belts$/ })).not.toHaveAttribute('aria-current')
+  })
 
-    const inactive = screen.getByRole('link', { name: /^belts$/ })
-    expect(inactive.className).not.toContain('border-primary')
+  it.each([false, true])('links the logo to the dashboard (collapsed: %s)', (collapsed) => {
+    renderSidebar({ collapsed, route: '/katas' })
+    expect(screen.getByRole('link', { name: 'Dojo home' })).toHaveAttribute('href', '/dashboard')
   })
 })
 

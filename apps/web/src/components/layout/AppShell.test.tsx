@@ -63,6 +63,16 @@ describe('AppShell — focused-route chrome', () => {
     expect(screen.getByText('kata selection outlet')).toBeInTheDocument()
   })
 
+  it('renders a header linking home on a normal route', () => {
+    renderShell('/katas')
+    expect(screen.getByRole('link', { name: 'Dojo home' })).toHaveAttribute('href', '/dashboard')
+  })
+
+  it('renders no header on a focused route', () => {
+    renderShell('/katas/closures')
+    expect(screen.queryByRole('link', { name: 'Dojo home' })).not.toBeInTheDocument()
+  })
+
   it('always shows the offline banner, even on focused routes', () => {
     renderShell('/katas/closures')
     expect(screen.getByTestId('offline-banner')).toBeInTheDocument()

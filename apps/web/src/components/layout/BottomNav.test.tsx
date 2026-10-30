@@ -51,15 +51,15 @@ describe('BottomNav', () => {
     expect(screen.queryByRole('link', { name: /settings/ })).not.toBeInTheDocument()
   })
 
-  it('highlights scrolls on a scroll page', () => {
+  it('marks scrolls as current on a scroll page', () => {
     renderNav('/scrolls/pattern-circuit')
-    expect(screen.getByRole('link', { name: /scrolls/ }).className).toContain('text-primary')
-    expect(screen.getByRole('link', { name: /katas/ }).className).not.toContain('text-primary')
+    expect(screen.getByRole('link', { name: /scrolls/ })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: /katas/ })).not.toHaveAttribute('aria-current')
   })
 
-  it('highlights the active route with the accent color', () => {
+  it('marks only the active route as the current page', () => {
     renderNav('/katas')
-    expect(screen.getByRole('link', { name: /katas/ }).className).toContain('text-primary')
-    expect(screen.getByRole('link', { name: /belts/ }).className).not.toContain('text-primary')
+    expect(screen.getByRole('link', { name: /katas/ })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: /belts/ })).not.toHaveAttribute('aria-current')
   })
 })

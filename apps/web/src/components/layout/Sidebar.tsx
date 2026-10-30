@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LogoMark } from '../Logo'
+import { LogoMark, LogoWordmark } from '../Logo'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../hooks/useTheme'
 import type { ThemeChoice } from '../../lib/theme'
@@ -31,18 +31,18 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
 
   return (
     <aside
-      className={`hidden md:flex flex-col h-dvh sticky top-0 bg-surface border-r border-border/40 transition-[width] duration-200 ${
+      className={`hidden md:flex flex-col h-dvh sticky top-0 bg-page border-r border-border transition-[width] duration-200 ${
         collapsed ? 'w-12' : 'w-48'
       }`}
     >
-      {/* Logo */}
-      <NavLink to="/dashboard" className="flex items-center gap-2 px-4 py-5 border-b border-border/20 hover:opacity-80 transition-opacity overflow-hidden">
-        <LogoMark size={20} className="text-accent shrink-0" />
-        {!collapsed && (
-          <span className="font-mono text-sm text-primary tracking-wider whitespace-nowrap">
-            dojo<span className="animate-cursor">_</span>
-          </span>
-        )}
+      <NavLink
+        to="/dashboard"
+        aria-label="Dojo home"
+        className={`flex items-center h-16 shrink-0 border-b border-border hover:opacity-80 transition-opacity overflow-hidden ${
+          collapsed ? 'justify-center' : 'px-4'
+        }`}
+      >
+        {collapsed ? <LogoMark size={20} className="text-accent" /> : <LogoWordmark className="whitespace-nowrap" />}
       </NavLink>
 
       {/* Nav */}
@@ -54,7 +54,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
                 isActive
-                  ? 'text-primary border-l-2 border-primary bg-elevated'
+                  ? 'text-primary border-l-2 border-accent'
                   : 'text-secondary hover:text-primary border-l-2 border-transparent'
               } ${collapsed ? 'justify-center px-2' : ''}`
             }
@@ -64,7 +64,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
               <span className="flex items-center gap-2">
                 {item.label}
                 {item.soon && (
-                  <span className="font-mono text-[9px] tracking-[0.08em] uppercase text-secondary border border-border/40 rounded-sm px-1 py-0.5">
+                  <span className="font-mono text-[9px] tracking-[0.08em] uppercase text-secondary border border-border rounded-sm px-1 py-0.5">
                     soon
                   </span>
                 )}
@@ -75,14 +75,14 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
       </nav>
 
       {/* Account — settings + logout */}
-      <div className="border-t border-border/20">
+      <div className="border-t border-border">
         <NavLink
           to="/settings"
           title="settings"
           className={({ isActive }) =>
             `flex items-center gap-3 px-4 py-2.5 text-sm font-mono transition-colors ${
               isActive
-                ? 'text-primary border-l-2 border-primary bg-elevated'
+                ? 'text-primary border-l-2 border-accent'
                 : 'text-secondary hover:text-primary border-l-2 border-transparent'
             } ${collapsed ? 'justify-center px-2' : ''}`
           }
@@ -115,7 +115,7 @@ export function Sidebar({ collapsed, onToggle }: Readonly<SidebarProps>) {
       {/* Collapse toggle */}
       <button
         onClick={onToggle}
-        className="px-4 py-3 text-secondary text-xs font-mono hover:text-primary transition-colors border-t border-border/20"
+        className="px-4 py-3 text-secondary text-xs font-mono hover:text-primary transition-colors border-t border-border"
       >
         {collapsed ? '→' : '← collapse'}
       </button>
