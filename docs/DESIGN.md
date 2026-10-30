@@ -76,7 +76,7 @@ Scrolls are external apps embedded by iframe (ADR 025), so their interior motion
 ## What we don't do
 
 - No glassmorphism, no neumorphism, no corners larger than 6px on cards.
-- No emoji as UI iconography, no stock photography or illustration. One exception: recognition's pixel practitioner and dojo, code-drawn on a logical pixel grid (D66).
+- No emoji as UI iconography, no stock photography. Illustration only from the brand's own paper-diorama scenes, chosen per surface, never as filler (D72), plus recognition's pixel practitioner and dojo, code-drawn on a logical pixel grid (D66).
 - No "Premium" anything, no achievement-style badges (Discord, Steam, Duolingo); badges are typographic or hanko-stamped.
 - No watercolor fills, no cherry blossoms, no mascot (the sensei is a voice, never an avatar).
 - No "ceremony" framing in microcopy: the dojo is a workspace, not a temple.

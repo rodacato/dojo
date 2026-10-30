@@ -302,6 +302,10 @@ Edit these, never the generated files.
 The outputs sit under `site/brand/` because GitHub Pages serves that folder and the
 [published brand guide](../../site/brand.html) links to them as downloads.
 
+### Illustration
+
+The paper-diorama scenes are the only illustration the brand uses; each slot is decided per surface ([D72](../DECISIONS.md)). Sources live in [`art/`](art/) as 1600 px PNGs. The app serves WebP copies at `apps/web/public/art/*-{800,1600}.webp`, exported by hand: `pnpm brand:assets` does not produce them, so re-export both sizes when a source changes.
+
 ### Reference material
 
 | Path | What it is |
