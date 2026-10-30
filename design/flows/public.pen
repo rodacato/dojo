@@ -10264,7 +10264,7 @@
           "fill": "$color-secondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Each as Mobile (375) then Desktop (1440):\n- Profile — header with belt band, stats 2×2 on mobile and 4 across on desktop, Practitioner (was missing from the old board), Activity (90 days, 15 per row on mobile), Earned badges (scrolls sideways), Recent kata\n- Share — the card with the seal on top\n- Share — Proposed · recognition card: practitioner in their dojo, belt and piece counts (#224, D66; proposal PNG, not shipped)",
+          "content": "Each as Mobile (375) then Desktop (1440):\n- Profile — header with belt band, stats 2×2 on mobile and 4 across on desktop, Practitioner (was missing from the old board), Activity (90 days, 15 per row on mobile), Earned badges (scrolls sideways), Recent kata\n- Share — the card with the seal on top",
           "lineHeight": 1.5,
           "fontFamily": "$font-mono",
           "fontSize": 11,
@@ -10440,6 +10440,19 @@
         },
         {
           "type": "text",
+          "id": "z3id5T",
+          "name": "Entry",
+          "fill": "$color-secondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "2026-10-30 · Share / Proposed · recognition card removed unbuilt (#224, D66); recognition will be redesigned from scratch.",
+          "lineHeight": 1.5,
+          "fontFamily": "$font-mono",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
           "id": "oqgh4",
           "name": "Entry",
           "fill": "$color-secondary",
@@ -10589,15 +10602,7 @@
           "type": "ref",
           "ref": "jcmnH",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "ejjjd": {
-              "enabled": true
-            },
-            "EDAsG": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -10639,12 +10644,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 44,
-                  "height": 44,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 44
                 },
                 {
                   "id": "AEarx",
@@ -11257,21 +11257,7 @@
           "type": "ref",
           "ref": "y4mdT9",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "EBCnq": {
-              "enabled": false
-            },
-            "B8Em28": {
-              "enabled": false
-            },
-            "h7BlN": {
-              "enabled": true
-            },
-            "W4LLj": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -11299,12 +11285,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 64,
-                  "height": 64,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 64
                 },
                 {
                   "id": "LrLFO",
@@ -11899,18 +11880,7 @@
           "type": "ref",
           "ref": "c8EE5",
           "name": "PublicFooter",
-          "width": "fill_container",
-          "descendants": {
-            "NILAH": {
-              "enabled": false
-            },
-            "DY6XS": {
-              "enabled": true
-            },
-            "Y7Ly9": {
-              "enabled": true
-            }
-          }
+          "width": "fill_container"
         }
       ]
     },
@@ -11983,12 +11953,7 @@
                       "ref": "FvtBN",
                       "name": "Seal",
                       "width": 28,
-                      "height": 28,
-                      "descendants": {
-                        "uH1V8": {
-                          "fill": "$color-accent"
-                        }
-                      }
+                      "height": 28
                     },
                     {
                       "type": "frame",
@@ -12217,12 +12182,7 @@
                       "ref": "FvtBN",
                       "name": "Seal",
                       "width": 28,
-                      "height": 28,
-                      "descendants": {
-                        "uH1V8": {
-                          "fill": "$color-accent"
-                        }
-                      }
+                      "height": 28
                     },
                     {
                       "type": "frame",
@@ -12434,12 +12394,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 72,
-                  "height": 72,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 72
                 },
                 {
                   "type": "frame",
@@ -12589,12 +12544,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 96,
-                  "height": 96,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 96
                 },
                 {
                   "type": "frame",
@@ -12744,12 +12694,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 72,
-                  "height": 72,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 72
                 },
                 {
                   "type": "frame",
@@ -12886,12 +12831,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 96,
-                  "height": 96,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 96
                 },
                 {
                   "type": "frame",
@@ -12996,12 +12936,7 @@
           "type": "ref",
           "ref": "jcmnH",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "EDAsG": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -13082,12 +13017,7 @@
           "type": "ref",
           "ref": "y4mdT9",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "W4LLj": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -13167,12 +13097,7 @@
           "type": "ref",
           "ref": "jcmnH",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "EDAsG": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -13252,12 +13177,7 @@
           "type": "ref",
           "ref": "y4mdT9",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "W4LLj": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -21127,12 +21047,7 @@
           "type": "ref",
           "ref": "jcmnH",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "EDAsG": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -21180,12 +21095,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 40,
-                  "height": 40,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 40
                 },
                 {
                   "type": "text",
@@ -21341,12 +21251,7 @@
           "type": "ref",
           "ref": "y4mdT9",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "W4LLj": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -21391,12 +21296,7 @@
                   "ref": "FvtBN",
                   "name": "Seal",
                   "width": 40,
-                  "height": 40,
-                  "descendants": {
-                    "uH1V8": {
-                      "fill": "$color-accent"
-                    }
-                  }
+                  "height": 40
                 },
                 {
                   "type": "text",
@@ -21535,36 +21435,6 @@
     },
     {
       "type": "frame",
-      "id": "cLygh",
-      "x": 4870,
-      "y": 7617,
-      "name": "Share / Proposed · recognition card",
-      "theme": {
-        "theme": "sumi"
-      },
-      "clip": true,
-      "width": 1200,
-      "height": 630,
-      "fill": "$color-page",
-      "layout": "vertical",
-      "children": [
-        {
-          "type": "rectangle",
-          "id": "bHCg1",
-          "name": "Proposal PNG",
-          "fill": {
-            "type": "image",
-            "enabled": true,
-            "url": "../exports/recognition/pixel-share-card.png",
-            "mode": "contain"
-          },
-          "width": "fill_container",
-          "height": "fill_container"
-        }
-      ]
-    },
-    {
-      "type": "frame",
       "id": "Zvmqi",
       "x": 4870,
       "y": 3130,
@@ -21583,12 +21453,7 @@
           "type": "ref",
           "ref": "jcmnH",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "EDAsG": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -21665,12 +21530,7 @@
           "type": "ref",
           "ref": "y4mdT9",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "W4LLj": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -21746,12 +21606,7 @@
           "type": "ref",
           "ref": "jcmnH",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "EDAsG": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
@@ -21828,12 +21683,7 @@
           "type": "ref",
           "ref": "y4mdT9",
           "name": "PublicNav",
-          "width": "fill_container",
-          "descendants": {
-            "W4LLj": {
-              "enabled": false
-            }
-          }
+          "width": "fill_container"
         },
         {
           "type": "frame",
