@@ -6,9 +6,9 @@
       "id": "Ks6Rd",
       "x": 0,
       "y": -4200,
-      "name": "VENDORED KIT 0.5.0 — edit in ui-kit.lib.pen only",
+      "name": "VENDORED KIT 0.8.0 — edit in ui-kit.lib.pen only",
       "theme": {
-        "theme": "sumi"
+        "theme": "washi"
       },
       "width": 2800,
       "fill": "$color-page",
@@ -3516,21 +3516,18 @@
                   "children": [
                     {
                       "type": "path",
-                      "id": "vyjXt",
-                      "name": "Open Gate",
-                      "geometry": "M15 25q35 7 70 0m-60 20h50m-45-15v52m40-52v52",
+                      "id": "mkV0N",
+                      "name": "Paper Gate",
+                      "geometry": "M10 20q40 8 80 0l-5 11q-35 7-70 0z m12 22h56l-3 8h-50z m4-13h9l-2 55h-8z m39 0h9l1 55h-8z",
                       "viewBox": [
                         0,
                         0,
                         100,
                         100
                       ],
+                      "fill": "$color-primary",
                       "width": "fill_container",
-                      "height": "fill_container",
-                      "stroke": "$color-primary",
-                      "strokeWidth": 3.2,
-                      "strokeLinejoin": "round",
-                      "strokeLinecap": "round"
+                      "height": "fill_container"
                     }
                   ]
                 },
@@ -3548,7 +3545,12 @@
                       "ref": "FvtBN",
                       "name": "Mark",
                       "width": 20,
-                      "height": 20
+                      "height": 20,
+                      "descendants": {
+                        "mkV0N": {
+                          "fill": "$color-accent"
+                        }
+                      }
                     },
                     {
                       "type": "frame",
@@ -3619,8 +3621,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -3632,55 +3634,24 @@
                       "id": "T5ciA",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "zxMMx",
+                          "id": "LaMlS",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "HrDua",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Ju73R",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "YALf5",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -3701,8 +3672,8 @@
                           "id": "fwfFe",
                           "name": "NavItem dashboard",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -3875,7 +3846,7 @@
                               "id": "Y0i7px",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -3938,7 +3909,7 @@
                       "id": "j0Dyo",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -4052,7 +4023,7 @@
                           "id": "Db0Mn",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -4085,8 +4056,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -4098,55 +4069,24 @@
                       "id": "M3BUkx",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "A9DOsN",
+                          "id": "U7Cw6B",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "iGJVH",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "WrMbl",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "DiYvg",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -4201,8 +4141,8 @@
                           "id": "f6z04",
                           "name": "NavItem katas",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -4341,7 +4281,7 @@
                               "id": "itsAK",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -4404,7 +4344,7 @@
                       "id": "Z7fRC",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -4518,7 +4458,7 @@
                           "id": "Q7EZZy",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -4551,8 +4491,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -4564,55 +4504,24 @@
                       "id": "V3Ye6",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "d27nk",
+                          "id": "kmYDt",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "hKszJ",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "eZRpD",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "uM8Z7",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -4701,8 +4610,8 @@
                           "id": "mToMU",
                           "name": "NavItem scrolls",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -4807,7 +4716,7 @@
                               "id": "T47WKJ",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -4870,7 +4779,7 @@
                       "id": "PpGYz",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -4984,7 +4893,7 @@
                           "id": "X4oQH",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -5017,8 +4926,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -5030,55 +4939,24 @@
                       "id": "ZrqfS",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "Mv34Z",
+                          "id": "oL2V3",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "WxM4Q",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "Japz6",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "c5UlB2",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -5201,8 +5079,8 @@
                           "id": "ONJW2",
                           "name": "NavItem engawa",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -5273,7 +5151,7 @@
                               "id": "Q5k4SV",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -5336,7 +5214,7 @@
                       "id": "rHyl8",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -5450,7 +5328,7 @@
                           "id": "WuvH1",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -5483,8 +5361,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -5496,55 +5374,24 @@
                       "id": "KvCdt",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "sIV3v",
+                          "id": "vrJUm",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "flOx2",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "jJzUj",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "JaARC",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -5701,8 +5548,8 @@
                           "id": "zRCTo",
                           "name": "NavItem kumite",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -5739,7 +5586,7 @@
                               "id": "r8tgG",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -5802,7 +5649,7 @@
                       "id": "D3dye7",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -5916,7 +5763,7 @@
                           "id": "bvREy",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -5949,8 +5796,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -5962,55 +5809,24 @@
                       "id": "ooLSt",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "xYnl4",
+                          "id": "v1dBDo",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "KyIeK",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "bQ3n0",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "bRezu",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -6199,7 +6015,7 @@
                               "id": "PHVfu",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -6226,8 +6042,8 @@
                           "id": "o5vn2I",
                           "name": "NavItem belts",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -6268,7 +6084,7 @@
                       "id": "VhqXK",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -6382,7 +6198,7 @@
                           "id": "Wcboi",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -6415,8 +6231,8 @@
                   "reusable": true,
                   "width": 192,
                   "height": 720,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "right": 1
                   },
@@ -6428,55 +6244,24 @@
                       "id": "rixdK",
                       "name": "Logo row",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "height": 64,
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "bottom": 1
                       },
                       "strokeAlignment": "inner",
                       "gap": 8,
                       "padding": [
-                        20,
+                        0,
                         16
                       ],
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "Z072l",
+                          "id": "FIJ0V",
                           "type": "ref",
-                          "ref": "FvtBN",
-                          "name": "Mark",
-                          "width": 20,
-                          "height": 20
-                        },
-                        {
-                          "type": "frame",
-                          "id": "K5Lif4",
-                          "name": "Word",
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "SElD4",
-                              "name": "dojo",
-                              "fill": "$color-primary",
-                              "content": "dojo",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            },
-                            {
-                              "type": "text",
-                              "id": "asSwH",
-                              "name": "cursor",
-                              "fill": "$color-accent",
-                              "content": "_",
-                              "fontFamily": "$font-mono",
-                              "fontSize": 13,
-                              "fontWeight": "normal",
-                              "letterSpacing": 0.65
-                            }
-                          ]
+                          "ref": "AbS82",
+                          "name": "Wordmark"
                         }
                       ]
                     },
@@ -6665,7 +6450,7 @@
                               "id": "lOgE7",
                               "name": "Soon chip",
                               "cornerRadius": "$radius-sm",
-                              "stroke": "$tint-border-40",
+                              "stroke": "$color-border",
                               "strokeWidth": 1,
                               "padding": [
                                 2,
@@ -6728,7 +6513,7 @@
                       "id": "dX6hf",
                       "name": "Bottom",
                       "width": "fill_container",
-                      "stroke": "$tint-border-20",
+                      "stroke": "$color-border",
                       "strokeWidth": {
                         "top": 1
                       },
@@ -6740,8 +6525,8 @@
                           "id": "IxNaq",
                           "name": "NavItem username",
                           "width": "fill_container",
-                          "fill": "$color-elevated",
-                          "stroke": "$color-primary",
+                          "fill": "#00000000",
+                          "stroke": "$color-accent",
                           "strokeWidth": {
                             "left": 2
                           },
@@ -6848,7 +6633,7 @@
                           "id": "KViCE",
                           "name": "Collapse",
                           "width": "fill_container",
-                          "stroke": "$tint-border-20",
+                          "stroke": "$color-border",
                           "strokeWidth": {
                             "top": 1
                           },
@@ -6891,7 +6676,7 @@
               "id": "F3LUU",
               "name": "Section label",
               "fill": "$color-muted",
-              "content": "BOTTOMNAV (MOBILE) — ONE COMPONENT PER ACTIVE ITEM",
+              "content": "BOTTOMNAV · APPHEADER (mobile) — one BottomNav per active item; AppHeader carries the Paper Gate on phones",
               "fontFamily": "$font-mono",
               "fontSize": 11,
               "fontWeight": "normal",
@@ -6910,8 +6695,8 @@
                   "name": "BottomNav/Dashboard",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -6940,7 +6725,7 @@
                           "height": 20,
                           "icon": "dashboard",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -6950,7 +6735,7 @@
                           "content": "dash",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7106,8 +6891,8 @@
                   "name": "BottomNav/Katas",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7172,7 +6957,7 @@
                           "height": 20,
                           "icon": "code",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7182,7 +6967,7 @@
                           "content": "katas",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7302,8 +7087,8 @@
                   "name": "BottomNav/Scrolls",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7404,7 +7189,7 @@
                           "height": 20,
                           "icon": "school",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7414,7 +7199,7 @@
                           "content": "scrolls",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7498,8 +7283,8 @@
                   "name": "BottomNav/Belts",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7636,7 +7421,7 @@
                           "height": 20,
                           "icon": "badge",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7646,7 +7431,7 @@
                           "content": "belts",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
                     },
@@ -7694,8 +7479,8 @@
                   "name": "BottomNav/Settings",
                   "reusable": true,
                   "width": 390,
-                  "fill": "$color-surface",
-                  "stroke": "$tint-border-40",
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
@@ -7868,7 +7653,7 @@
                           "height": 20,
                           "icon": "settings",
                           "library": "Material Symbols Outlined",
-                          "fill": "$color-primary"
+                          "fill": "$color-accent-text"
                         },
                         {
                           "type": "text",
@@ -7878,9 +7663,36 @@
                           "content": "settings",
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
-                          "fontWeight": "normal"
+                          "fontWeight": "600"
                         }
                       ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "vb9xy",
+                  "name": "AppHeader/Mobile",
+                  "reusable": true,
+                  "width": 375,
+                  "height": 56,
+                  "fill": "$color-page",
+                  "stroke": "$color-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "APChk",
+                      "type": "ref",
+                      "ref": "AbS82",
+                      "name": "Wordmark"
                     }
                   ]
                 }
@@ -7894,7 +7706,7 @@
           "name": "Group Public nav · footer · offline banner",
           "width": "fill_container",
           "layout": "vertical",
-          "gap": 16,
+          "gap": 24,
           "children": [
             {
               "type": "text",
@@ -7919,58 +7731,79 @@
                   "id": "y4mdT9",
                   "name": "PublicNav/Desktop",
                   "reusable": true,
-                  "width": 900,
+                  "width": 1440,
                   "height": 64,
-                  "stroke": "$tint-border-40",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "bottom": 1
                   },
                   "strokeAlignment": "inner",
                   "padding": [
                     0,
-                    32
+                    40
                   ],
                   "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "BZ6Xv",
+                      "id": "gi4rW",
                       "type": "ref",
                       "ref": "AbS82",
                       "name": "Wordmark"
                     },
                     {
                       "type": "frame",
-                      "id": "kqfHW",
+                      "id": "M3lYfg",
                       "name": "Right",
                       "gap": 20,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "HArmn",
-                          "name": "Link",
+                          "id": "uZpaw",
+                          "name": "Link Open source",
                           "fill": "$color-secondary",
                           "content": "Open source",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
-                          "fontSize": 11,
+                          "fontSize": 12,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "e9lc3T",
-                          "name": "Link",
+                          "id": "B3Nv8H",
+                          "name": "Link Changelog",
                           "fill": "$color-secondary",
                           "content": "Changelog",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
-                          "fontSize": 11,
+                          "fontSize": 12,
                           "fontWeight": "normal"
                         },
                         {
-                          "id": "fOEM4",
+                          "type": "text",
+                          "id": "d91UH",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Sign in",
+                          "enabled": false,
+                          "fill": "$color-accent-text",
+                          "content": "Sign in",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "KoUa6",
                           "type": "ref",
                           "ref": "tNtFP",
-                          "name": "CTA"
+                          "name": "CTA",
+                          "descendants": {
+                            "Oa0VU": {
+                              "content": "ENTER THE DOJO"
+                            }
+                          }
                         }
                       ]
                     }
@@ -7981,9 +7814,9 @@
                   "id": "jcmnH",
                   "name": "PublicNav/Mobile",
                   "reusable": true,
-                  "width": 390,
-                  "height": 64,
-                  "stroke": "$tint-border-40",
+                  "width": 375,
+                  "height": 56,
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "bottom": 1
                   },
@@ -7996,16 +7829,44 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "zWcJR",
+                      "id": "AFMdN",
                       "type": "ref",
                       "ref": "AbS82",
                       "name": "Wordmark"
                     },
                     {
-                      "id": "jcPNv",
-                      "type": "ref",
-                      "ref": "tNtFP",
-                      "name": "CTA"
+                      "type": "frame",
+                      "id": "t7Ygy",
+                      "name": "Right",
+                      "gap": 20,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TkuVZ",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Sign in",
+                          "enabled": false,
+                          "fill": "$color-accent-text",
+                          "content": "Sign in",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "GKUVQ",
+                          "type": "ref",
+                          "ref": "tNtFP",
+                          "name": "CTA",
+                          "descendants": {
+                            "Oa0VU": {
+                              "content": "ENTER THE DOJO"
+                            }
+                          }
+                        }
+                      ]
                     }
                   ]
                 },
@@ -8014,38 +7875,201 @@
                   "id": "c8EE5",
                   "name": "PublicFooter/Desktop",
                   "reusable": true,
-                  "width": 900,
-                  "stroke": "$tint-border-40",
+                  "width": 1440,
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
                   "strokeAlignment": "inner",
-                  "padding": 32,
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    48,
+                    160
+                  ],
                   "children": [
                     {
                       "type": "frame",
-                      "id": "QcQhZ",
+                      "id": "qEcdj",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 24,
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "y57DNr",
+                          "name": "Left",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "sa6U3",
+                              "type": "ref",
+                              "ref": "FvtBN",
+                              "name": "Mark",
+                              "width": 16,
+                              "height": 16,
+                              "descendants": {
+                                "mkV0N": {
+                                  "fill": "$color-secondary"
+                                }
+                              }
+                            },
+                            {
+                              "type": "text",
+                              "id": "CjVF6",
+                              "name": "Host",
+                              "fill": "$color-secondary",
+                              "content": "host",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "euLcI",
+                          "name": "Links",
+                          "gap": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h7eRC7",
+                              "name": "Link Open source",
+                              "fill": "$color-secondary",
+                              "content": "Open source",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "s0oPC",
+                              "name": "Link Changelog",
+                              "fill": "$color-secondary",
+                              "content": "Changelog",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Vecgf",
+                              "name": "Link Terms",
+                              "fill": "$color-secondary",
+                              "content": "Terms",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "TV31C",
+                              "name": "Link Privacy",
+                              "fill": "$color-secondary",
+                              "content": "Privacy",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q9vo8r",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Project site",
+                          "enabled": false,
+                          "fill": "$color-accent-text",
+                          "content": "Runs on Dojo, open source →",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "HIBFQ",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Tagline",
+                      "enabled": false,
+                      "fill": "$color-secondary",
+                      "content": "Not for everyone. Exactly as intended.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "fontStyle": "italic"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LzGuv",
+              "name": "PublicFooter/Mobile",
+              "reusable": true,
+              "width": 375,
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                32,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oy5vl",
+                  "name": "Row",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FXetn",
                       "name": "Left",
                       "gap": 8,
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "bfIXZ",
+                          "id": "xRCiR",
                           "type": "ref",
                           "ref": "FvtBN",
                           "name": "Mark",
-                          "width": 14,
-                          "height": 14,
-                          "opacity": 0.6
+                          "width": 16,
+                          "height": 16,
+                          "descendants": {
+                            "mkV0N": {
+                              "fill": "$color-secondary"
+                            }
+                          }
                         },
                         {
                           "type": "text",
-                          "id": "qumcq",
+                          "id": "b1Zqks",
                           "name": "Host",
                           "fill": "$color-secondary",
                           "content": "host",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -8054,53 +8078,86 @@
                     },
                     {
                       "type": "frame",
-                      "id": "b9SP0",
+                      "id": "Xsk2X",
                       "name": "Links",
                       "gap": 20,
                       "children": [
                         {
                           "type": "text",
-                          "id": "k5nQZ",
-                          "name": "Link",
+                          "id": "Y9OjL",
+                          "name": "Link Open source",
                           "fill": "$color-secondary",
                           "content": "Open source",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "wB5DH",
-                          "name": "Link",
+                          "id": "SZydk",
+                          "name": "Link Changelog",
                           "fill": "$color-secondary",
                           "content": "Changelog",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "mOZQL",
-                          "name": "Link",
+                          "id": "bpmUa",
+                          "name": "Link Terms",
                           "fill": "$color-secondary",
                           "content": "Terms",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "rTi00",
-                          "name": "Link",
+                          "id": "WgeGf",
+                          "name": "Link Privacy",
                           "fill": "$color-secondary",
                           "content": "Privacy",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
                       ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "d3Fp5",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Project site",
+                      "enabled": false,
+                      "fill": "$color-accent-text",
+                      "content": "Runs on Dojo, open source →",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
+                },
+                {
+                  "type": "text",
+                  "id": "RnHLY",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Tagline",
+                  "enabled": false,
+                  "fill": "$color-secondary",
+                  "content": "Not for everyone. Exactly as intended.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "fontStyle": "italic"
                 }
               ]
             }
@@ -8586,15 +8643,15 @@
         },
         {
           "type": "frame",
-          "id": "Hx3fA",
-          "name": "Group CodeLine (kit 0.5.0)",
+          "id": "EFTcs",
+          "name": "Group CodeLine",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 16,
           "children": [
             {
               "type": "text",
-              "id": "XEtBg",
+              "id": "tgU00",
               "name": "Section label",
               "fill": "$color-muted",
               "content": "CODELINE — tappable code line (point kata)",
@@ -8605,14 +8662,14 @@
             },
             {
               "type": "frame",
-              "id": "p32VpP",
+              "id": "jMVxK",
               "name": "Row CodeLine",
               "width": "fill_container",
               "gap": 24,
               "children": [
                 {
                   "type": "frame",
-                  "id": "NPKC6",
+                  "id": "mli02",
                   "name": "CodeLine/Default",
                   "reusable": true,
                   "width": 390,
@@ -8634,7 +8691,7 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "YORwg",
+                      "id": "SWHu8",
                       "name": "Gutter",
                       "width": 36,
                       "height": "fill_container",
@@ -8643,7 +8700,7 @@
                       "children": [
                         {
                           "type": "text",
-                          "id": "O0BUdS",
+                          "id": "iK2iU",
                           "name": "Number",
                           "fill": "$color-secondary",
                           "content": "3",
@@ -8655,7 +8712,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "w1iat6",
+                      "id": "TByeG",
                       "name": "Code",
                       "fill": "$color-primary",
                       "textGrowth": "fixed-width",
@@ -8669,7 +8726,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "DxrQk",
+                  "id": "HX4Zc",
                   "name": "CodeLine/Selected",
                   "reusable": true,
                   "width": 390,
@@ -8691,7 +8748,7 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "Q0Wj0",
+                      "id": "KFgMy",
                       "name": "Gutter",
                       "width": 36,
                       "height": "fill_container",
@@ -8700,7 +8757,7 @@
                       "children": [
                         {
                           "type": "text",
-                          "id": "ai3rk",
+                          "id": "sede2",
                           "name": "Number",
                           "fill": "$color-primary",
                           "content": "3",
@@ -8712,7 +8769,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "jTq5I",
+                      "id": "a2gwPB",
                       "name": "Code",
                       "fill": "$color-primary",
                       "textGrowth": "fixed-width",
@@ -8726,7 +8783,7 @@
                 },
                 {
                   "type": "frame",
-                  "id": "X3Ndv",
+                  "id": "xlF8u",
                   "name": "CodeLine/Focus",
                   "reusable": true,
                   "width": 390,
@@ -8746,7 +8803,7 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "z3jtQ",
+                      "id": "KkTW2",
                       "name": "Gutter",
                       "width": 36,
                       "height": "fill_container",
@@ -8755,7 +8812,7 @@
                       "children": [
                         {
                           "type": "text",
-                          "id": "tlHyt",
+                          "id": "feBCq",
                           "name": "Number",
                           "fill": "$color-secondary",
                           "content": "3",
@@ -8767,7 +8824,7 @@
                     },
                     {
                       "type": "text",
-                      "id": "h7DFx",
+                      "id": "s8Tlf",
                       "name": "Code",
                       "fill": "$color-primary",
                       "textGrowth": "fixed-width",
@@ -8775,6 +8832,523 @@
                       "content": "  const start = page * limit",
                       "fontFamily": "$font-mono",
                       "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "t0XyWu",
+          "name": "Group Paper — type · error panel",
+          "width": "fill_container",
+          "gap": 48,
+          "children": [
+            {
+              "type": "frame",
+              "id": "h86ym1",
+              "name": "Type",
+              "width": 720,
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Nh8ik",
+                  "name": "Text/Display/Mobile",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "Practice thinking for yourself.",
+                  "lineHeight": 0.98,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 44,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.8
+                },
+                {
+                  "type": "text",
+                  "id": "AAeZc",
+                  "name": "Text/Display/Desktop",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "Practice thinking for yourself.",
+                  "lineHeight": 0.98,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 84,
+                  "fontWeight": "700",
+                  "letterSpacing": -3.4
+                },
+                {
+                  "type": "text",
+                  "id": "gmzoO",
+                  "name": "Text/H2/Mobile",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "What is here",
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 32,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.1
+                },
+                {
+                  "type": "text",
+                  "id": "feGox",
+                  "name": "Text/H2/Desktop",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "What is here",
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 52,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.8
+                },
+                {
+                  "type": "text",
+                  "id": "n5Xpd",
+                  "name": "Text/H3",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "Today's kata",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "GA0AX",
+                  "name": "Text/Eyebrow",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "EYEBROW",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "yZyh1",
+                  "name": "Text/Body/Mobile",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "One surprise kata a day, about five minutes, no AI.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "q9jOs",
+                  "name": "Text/Body/Desktop",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "One surprise kata a day, about five minutes, no AI.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "V4mhDl",
+                  "name": "Text/Note",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "Invite-only. Ask the person who runs this instance.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ojm80",
+              "name": "ErrorPanel/Mobile",
+              "reusable": true,
+              "width": 343,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                40,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Rs69Y",
+                  "type": "ref",
+                  "ref": "FvtBN",
+                  "name": "Watermark",
+                  "width": 280,
+                  "height": 280,
+                  "opacity": 0.35,
+                  "layoutPosition": "absolute",
+                  "x": 31.5,
+                  "y": 86,
+                  "descendants": {
+                    "mkV0N": {
+                      "fill": "$color-border"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "i4rVz",
+                  "name": "Pill",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "rgur1",
+                      "name": "Dot",
+                      "fill": "$color-danger",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "Q2UDIa",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "ERR · 404",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    }
+                  ]
+                },
+                {
+                  "id": "q7xeyH",
+                  "type": "ref",
+                  "ref": "gmzoO",
+                  "name": "Title",
+                  "content": "Page not defined. Yet._",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "otK8z",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Sub",
+                  "enabled": false,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container(0)",
+                  "content": "The dojo is still here._",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "id": "pQI2L",
+                  "type": "ref",
+                  "ref": "yZyh1",
+                  "name": "Body",
+                  "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here.",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "jkrAj",
+                  "name": "Actions",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "id": "YVxDR",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Primary",
+                      "width": "fill_container",
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "ENTER THE DOJO →"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Br3Lh",
+                      "type": "ref",
+                      "ref": "oI7dz",
+                      "name": "Secondary",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Wuiek": {
+                          "content": "← GO TO LANDING"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "t6pPo",
+                  "name": "Strip",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "M9uQiA",
+                      "name": "Text",
+                      "fill": "$color-secondary",
+                      "content": "IF THIS IS A MISTAKE —",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.1
+                    },
+                    {
+                      "type": "text",
+                      "id": "usX1b",
+                      "name": "Link",
+                      "fill": "$color-accent-text",
+                      "content": "report this URL →",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WRP2U",
+              "name": "ErrorPanel/Desktop",
+              "reusable": true,
+              "width": 640,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                72,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "D4ASno",
+                  "type": "ref",
+                  "ref": "FvtBN",
+                  "name": "Watermark",
+                  "width": 420,
+                  "height": 420,
+                  "opacity": 0.35,
+                  "layoutPosition": "absolute",
+                  "x": 110,
+                  "y": 11,
+                  "descendants": {
+                    "mkV0N": {
+                      "fill": "$color-border"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "McooK",
+                  "name": "Pill",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "IN8NH",
+                      "name": "Dot",
+                      "fill": "$color-danger",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "rkUHB",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "ERR · 404",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    }
+                  ]
+                },
+                {
+                  "id": "KEL8E",
+                  "type": "ref",
+                  "ref": "feGox",
+                  "name": "Title",
+                  "content": "Page not defined. Yet._",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "KrtkX",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Sub",
+                  "enabled": false,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container(0)",
+                  "content": "The dojo is still here._",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "id": "e50o9s",
+                  "type": "ref",
+                  "ref": "q9jOs",
+                  "name": "Body",
+                  "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here.",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "Mnji3",
+                  "name": "Actions",
+                  "gap": 12,
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "id": "jtSzE",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Primary",
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "ENTER THE DOJO →"
+                        }
+                      }
+                    },
+                    {
+                      "id": "osG2z",
+                      "type": "ref",
+                      "ref": "oI7dz",
+                      "name": "Secondary",
+                      "descendants": {
+                        "Wuiek": {
+                          "content": "← GO TO LANDING"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Z2ih0",
+                  "name": "Strip",
+                  "width": "fill_container",
+                  "gap": 6,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DM4NS",
+                      "name": "Text",
+                      "fill": "$color-secondary",
+                      "content": "IF THIS IS A MISTAKE —",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.1
+                    },
+                    {
+                      "type": "text",
+                      "id": "B6li3M",
+                      "name": "Link",
+                      "fill": "$color-accent-text",
+                      "content": "report this URL →",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
                       "fontWeight": "normal"
                     }
                   ]
@@ -16426,14 +17000,14 @@
             {
               "id": "Ilc5e",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 1",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "1"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "function paginate<T>(items: T[], page: number, limit: number): T[] {"
                 }
               }
@@ -16441,14 +17015,14 @@
             {
               "id": "u4UFi",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 2",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "2"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  if (page < 1 || limit < 1) return []"
                 }
               }
@@ -16456,14 +17030,14 @@
             {
               "id": "eSuTO",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 3",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "3"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  const start = page * limit"
                 }
               }
@@ -16471,14 +17045,14 @@
             {
               "id": "eJsuT",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 4",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "4"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  const end = start + limit"
                 }
               }
@@ -16486,14 +17060,14 @@
             {
               "id": "ZjO5L",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 5",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "5"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  return items.slice(start, end)"
                 }
               }
@@ -16501,14 +17075,14 @@
             {
               "id": "x95STw",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 6",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "6"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "}"
                 }
               }
@@ -16818,14 +17392,14 @@
             {
               "id": "Pxz0A",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 1",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "1"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "function paginate<T>(items: T[], page: number, limit: number): T[] {"
                 }
               }
@@ -16833,14 +17407,14 @@
             {
               "id": "nG51O",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 2",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "2"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  if (page < 1 || limit < 1) return []"
                 }
               }
@@ -16848,14 +17422,14 @@
             {
               "id": "Icu3S",
               "type": "ref",
-              "ref": "DxrQk",
+              "ref": "HX4Zc",
               "name": "Line 3",
               "width": "fill_container",
               "descendants": {
-                "ai3rk": {
+                "sede2": {
                   "content": "3"
                 },
-                "jTq5I": {
+                "a2gwPB": {
                   "content": "  const start = page * limit"
                 }
               }
@@ -16863,14 +17437,14 @@
             {
               "id": "pRsab",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 4",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "4"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  const end = start + limit"
                 }
               }
@@ -16878,14 +17452,14 @@
             {
               "id": "MandE",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 5",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "5"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "  return items.slice(start, end)"
                 }
               }
@@ -16893,14 +17467,14 @@
             {
               "id": "wnar9",
               "type": "ref",
-              "ref": "NPKC6",
+              "ref": "mli02",
               "name": "Line 6",
               "width": "fill_container",
               "descendants": {
-                "O0BUdS": {
+                "iK2iU": {
                   "content": "6"
                 },
-                "w1iat6": {
+                "TByeG": {
                   "content": "}"
                 }
               }
@@ -19222,13 +19796,13 @@
                 {
                   "id": "Fj2NP",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -19236,13 +19810,13 @@
                 {
                   "id": "ON7dG",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "3"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -19250,13 +19824,13 @@
                 {
                   "id": "U2jMa",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "4"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -19508,13 +20082,13 @@
                 {
                   "id": "oWRPY",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -19522,13 +20096,13 @@
                 {
                   "id": "aMlza",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "3"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -19536,13 +20110,13 @@
                 {
                   "id": "JRsu0",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "4"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -19599,13 +20173,13 @@
                 {
                   "id": "E7tey",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -19613,13 +20187,13 @@
                 {
                   "id": "rD0ok",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "3"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -19627,13 +20201,13 @@
                 {
                   "id": "g0DgMy",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "4"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -20006,13 +20580,13 @@
                 {
                   "id": "TxoW0",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -20020,13 +20594,13 @@
                 {
                   "id": "g3K4ul",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "3"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -20034,13 +20608,13 @@
                 {
                   "id": "ocLun",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "4"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -20097,13 +20671,13 @@
                 {
                   "id": "O3h12o",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -20111,13 +20685,13 @@
                 {
                   "id": "CXzQD",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "3"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -20125,13 +20699,13 @@
                 {
                   "id": "YW4m9",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "4"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -20441,13 +21015,13 @@
                 {
                   "id": "ise9Y",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -20455,13 +21029,13 @@
                 {
                   "id": "gNete",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "3"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -20469,13 +21043,13 @@
                 {
                   "id": "YNRhW",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "4"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -21615,13 +22189,13 @@
                 {
                   "id": "pZXz4",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -21629,13 +22203,13 @@
                 {
                   "id": "EpktO",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "3"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -21643,13 +22217,13 @@
                 {
                   "id": "naw4F",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "4"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -21706,13 +22280,13 @@
                 {
                   "id": "MTYqH",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "2"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  if (page < 1 || limit < 1) return []"
                     }
                   }
@@ -21720,13 +22294,13 @@
                 {
                   "id": "FaICc",
                   "type": "ref",
-                  "ref": "DxrQk",
+                  "ref": "HX4Zc",
                   "width": "fill_container",
                   "descendants": {
-                    "ai3rk": {
+                    "sede2": {
                       "content": "3"
                     },
-                    "jTq5I": {
+                    "a2gwPB": {
                       "content": "  const start = page * limit"
                     }
                   }
@@ -21734,13 +22308,13 @@
                 {
                   "id": "PosVw",
                   "type": "ref",
-                  "ref": "NPKC6",
+                  "ref": "mli02",
                   "width": "fill_container",
                   "descendants": {
-                    "O0BUdS": {
+                    "iK2iU": {
                       "content": "4"
                     },
-                    "w1iat6": {
+                    "TByeG": {
                       "content": "  const end = start + limit"
                     }
                   }
@@ -22003,7 +22577,6 @@
   ],
   "themes": {
     "theme": [
-      "slate",
       "sumi",
       "washi"
     ]
@@ -22012,12 +22585,6 @@
     "color-page": {
       "type": "color",
       "value": [
-        {
-          "value": "#0F172A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#0A0908",
           "theme": {
@@ -22036,12 +22603,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#1E293B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#13110F",
           "theme": {
             "theme": "sumi"
@@ -22058,12 +22619,6 @@
     "color-elevated": {
       "type": "color",
       "value": [
-        {
-          "value": "#253347",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#1B1815",
           "theme": {
@@ -22082,12 +22637,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#334155",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#2A2520",
           "theme": {
             "theme": "sumi"
@@ -22104,12 +22653,6 @@
     "color-accent": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F1",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F",
           "theme": {
@@ -22128,12 +22671,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#FFFFFF",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#F2EDE3",
           "theme": {
             "theme": "sumi"
@@ -22150,12 +22687,6 @@
     "color-success": {
       "type": "color",
       "value": [
-        {
-          "value": "#10B981",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#7D9B6A",
           "theme": {
@@ -22174,12 +22705,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#EF4444",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#9C2D24",
           "theme": {
             "theme": "sumi"
@@ -22196,12 +22721,6 @@
     "color-warning": {
       "type": "color",
       "value": [
-        {
-          "value": "#F59E0B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#D4A547",
           "theme": {
@@ -22220,12 +22739,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#F8FAFC",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#F2EDE3",
           "theme": {
             "theme": "sumi"
@@ -22242,12 +22755,6 @@
     "color-secondary": {
       "type": "color",
       "value": [
-        {
-          "value": "#94A3B8",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#A39A8C",
           "theme": {
@@ -22266,12 +22773,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#475569",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5C544A",
           "theme": {
             "theme": "sumi"
@@ -22288,12 +22789,6 @@
     "color-type-code": {
       "type": "color",
       "value": [
-        {
-          "value": "#64748B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#6B5E51",
           "theme": {
@@ -22312,12 +22807,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#7C3AED",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5A4275",
           "theme": {
             "theme": "sumi"
@@ -22335,12 +22824,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#0D9488",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#3F6B68",
           "theme": {
             "theme": "sumi"
@@ -22357,12 +22840,6 @@
     "color-type-review": {
       "type": "color",
       "value": [
-        {
-          "value": "#0EA5E9",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#3F6AA8",
           "theme": {
@@ -22413,19 +22890,9 @@
       "type": "number",
       "value": 6
     },
-    "kit-version": {
-      "type": "string",
-      "value": "0.1.0"
-    },
     "tint-accent-5": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F10D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F0D",
           "theme": {
@@ -22444,12 +22911,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F11A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B73A2F1A",
           "theme": {
             "theme": "sumi"
@@ -22466,12 +22927,6 @@
     "tint-accent-20": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F133",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F33",
           "theme": {
@@ -22490,12 +22945,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F14D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B73A2F4D",
           "theme": {
             "theme": "sumi"
@@ -22512,12 +22961,6 @@
     "tint-accent-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#6366F166",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#B73A2F66",
           "theme": {
@@ -22536,12 +22979,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#6366F1E5",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#B73A2FE5",
           "theme": {
             "theme": "sumi"
@@ -22558,12 +22995,6 @@
     "tint-success-10": {
       "type": "color",
       "value": [
-        {
-          "value": "#10B9811A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#7D9B6A1A",
           "theme": {
@@ -22582,12 +23013,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#10B9814D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#7D9B6A4D",
           "theme": {
             "theme": "sumi"
@@ -22604,12 +23029,6 @@
     "tint-success-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#10B98166",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#7D9B6A66",
           "theme": {
@@ -22628,12 +23047,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#EF44441A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#9C2D241A",
           "theme": {
             "theme": "sumi"
@@ -22650,12 +23063,6 @@
     "tint-danger-30": {
       "type": "color",
       "value": [
-        {
-          "value": "#EF44444D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#9C2D244D",
           "theme": {
@@ -22674,12 +23081,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#EF444466",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#9C2D2466",
           "theme": {
             "theme": "sumi"
@@ -22696,12 +23097,6 @@
     "tint-danger-80": {
       "type": "color",
       "value": [
-        {
-          "value": "#EF4444CC",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#9C2D24CC",
           "theme": {
@@ -22720,12 +23115,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#F59E0B1A",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#D4A5471A",
           "theme": {
             "theme": "sumi"
@@ -22742,12 +23131,6 @@
     "tint-warning-30": {
       "type": "color",
       "value": [
-        {
-          "value": "#F59E0B4D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#D4A5474D",
           "theme": {
@@ -22766,12 +23149,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#33415533",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#2A252033",
           "theme": {
             "theme": "sumi"
@@ -22788,12 +23165,6 @@
     "tint-border-30": {
       "type": "color",
       "value": [
-        {
-          "value": "#3341554D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#2A25204D",
           "theme": {
@@ -22812,12 +23183,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#33415566",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#2A252066",
           "theme": {
             "theme": "sumi"
@@ -22834,12 +23199,6 @@
     "tint-page-60": {
       "type": "color",
       "value": [
-        {
-          "value": "#0F172A99",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#0A090899",
           "theme": {
@@ -22858,12 +23217,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#4755694D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#5C544A4D",
           "theme": {
             "theme": "sumi"
@@ -22880,12 +23233,6 @@
     "tint-muted-40": {
       "type": "color",
       "value": [
-        {
-          "value": "#47556966",
-          "theme": {
-            "theme": "slate"
-          }
-        },
         {
           "value": "#5C544A66",
           "theme": {
@@ -22904,12 +23251,6 @@
       "type": "color",
       "value": [
         {
-          "value": "#1E293B7F",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
           "value": "#13110F7F",
           "theme": {
             "theme": "sumi"
@@ -22927,9 +23268,158 @@
       "type": "color",
       "value": "#00000099"
     },
-    "kit-version-source": {
-      "type": "string",
-      "value": "0.5.0"
+    "tint-surface-30": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#13110F4D",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#EDE7D94D",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "tint-surface-40": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#13110F66",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#EDE7D966",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-danger-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B6675D",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#9C2D24",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-accent-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#C35E53",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#B73A2F",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "tint-type-review-20": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#3F6AA833",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#3F6AA833",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "tint-type-review-40": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#3F6AA866",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#3F6AA866",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "tint-primary-30": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2EDE34D",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#1F1B164D",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-success-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#7D9B6A",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#4A6640",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
+    },
+    "color-warning-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#D4A547",
+          "theme": {
+            "theme": "sumi"
+          }
+        },
+        {
+          "value": "#7A5A12",
+          "theme": {
+            "theme": "washi"
+          }
+        }
+      ]
     },
     "grid-x0": {
       "type": "number",
@@ -22951,212 +23441,9 @@
       "type": "number",
       "value": 260
     },
-    "tint-surface-30": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#1E293B4D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#13110F4D",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#EDE7D94D",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "tint-surface-40": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#1E293B66",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#13110F66",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#EDE7D966",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "color-danger-text": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#F87171",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#B6675D",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#9C2D24",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "color-accent-text": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#818CF8",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#C35E53",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#B73A2F",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "tint-type-review-20": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0EA5E933",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#3F6AA833",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#3F6AA833",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "tint-type-review-40": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0EA5E966",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#3F6AA866",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#3F6AA866",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "tint-primary-30": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#F8FAFC4D",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#F2EDE34D",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#1F1B164D",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "color-success-text": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#10B981",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#7D9B6A",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#4A6640",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
-    },
-    "color-warning-text": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#F59E0B",
-          "theme": {
-            "theme": "slate"
-          }
-        },
-        {
-          "value": "#D4A547",
-          "theme": {
-            "theme": "sumi"
-          }
-        },
-        {
-          "value": "#7A5A12",
-          "theme": {
-            "theme": "washi"
-          }
-        }
-      ]
+    "kit-version-source": {
+      "type": "string",
+      "value": "0.8.0"
     }
   },
   "fileToken": "b89832e2-dbf3-4cfa-823a-16dad4512416"
