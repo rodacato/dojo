@@ -1,66 +1,30 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useGSAP } from '@gsap/react'
 import type { ScrollEntryDTO } from '@dojo/shared'
 import { useAuth } from '../context/AuthContext'
-import { LogoWordmark, LogoMark } from '../components/Logo'
-import { DotGridBackground } from '../components/ui/DotGridBackground'
+import { LogoMark } from '../components/Logo'
+import { PublicNav } from '../components/PublicNav'
+import { PublicFooter } from '../components/PublicFooter'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { api } from '../lib/api'
 import { ApiError } from '../lib/api/client'
 import { API_URL } from '../lib/config'
 import { pickLocalized, preferredLocale } from '../lib/scrollLocale'
 
-gsap.registerPlugin(ScrollTrigger)
-
-const PROJECT_SITE_URL = 'https://rodacato.github.io/dojo/'
-
 const HERO_LINE_1 = 'Practice thinking for yourself.'
+
+const SECTION = 'border-t border-border'
+const SECTION_INNER = 'paper-container py-12 md:py-28'
 
 export function LandingPage() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const errorParam = searchParams.get('error')
-  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!loading && user) navigate('/dashboard', { replace: true })
   }, [user, loading, navigate])
-
-  useGSAP(
-    () => {
-      const reveals = gsap.utils.toArray<HTMLElement>('[data-anim="reveal"]')
-      if (reveals.length === 0) return
-
-      const mm = gsap.matchMedia()
-
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.set(reveals, { autoAlpha: 0, y: 40, scale: 0.97 })
-        ScrollTrigger.batch(reveals, {
-          start: 'top 85%',
-          once: true,
-          onEnter: (els) =>
-            gsap.to(els, {
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.8,
-              ease: 'power3.out',
-              stagger: 0.18,
-              overwrite: true,
-            }),
-        })
-      })
-
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(reveals, { autoAlpha: 1, y: 0, scale: 1 })
-      })
-    },
-    { scope: rootRef, dependencies: [loading] },
-  )
 
   if (loading) {
     return (
@@ -71,14 +35,14 @@ export function LandingPage() {
   }
 
   return (
-    <div ref={rootRef} className="min-h-screen bg-page text-primary">
+    <div className="min-h-screen bg-page text-primary">
       {errorParam && <AuthErrorBanner errorParam={errorParam} />}
-      <StickyNav />
+      <PublicNav showLinks={false} action="sign-in" />
       <Hero />
+      <AccessSection />
       <WhatIsHere />
       <HowAKataWorks />
-      <AccessSection />
-      <Footer />
+      <PublicFooter showOpenSource={false} showProjectSite showTagline />
     </div>
   )
 }
@@ -104,185 +68,46 @@ function AuthErrorBanner({ errorParam }: Readonly<{ errorParam: string }>) {
   )
 }
 
-function StickyNav() {
-  const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-  return (
-    <nav
-      className={`sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
-        scrolled ? 'bg-page/95 backdrop-blur-md border-b border-border/30' : 'border-b border-transparent'
-      }`}
-    >
-      <div className="flex items-center justify-between px-4 md:px-8 py-4 max-w-5xl mx-auto">
-        <LogoWordmark />
-        <div className="flex items-center gap-3">
-          <a href={`${API_URL}/auth/github`} className={buttonClasses({ variant: 'subtle', size: 'sm' })}>
-            Sign in
-          </a>
-        </div>
-      </div>
-    </nav>
-  )
-}
-
 function Hero() {
-  const heroRef = useRef<HTMLDivElement>(null)
-  const line1Ref = useRef<HTMLSpanElement>(null)
-  const cursorRef = useRef<HTMLSpanElement>(null)
-  const line2Ref = useRef<HTMLSpanElement>(null)
-  const paragraphRef = useRef<HTMLParagraphElement>(null)
-  const ctaRef = useRef<HTMLDivElement>(null)
-  const terminalRef = useRef<HTMLDivElement>(null)
-
-  // Brushstroke removed for now — the placeholder SVG path was a wavy line
-  // that read as distracting doodle rather than a confident sumi-e stroke.
-  // Reintroduce in the sumi-e migration sprint once a real CC0 ink stroke
-  // path is sourced. See docs/DESIGN.md §Brand motifs.
-
-  useGSAP(
-    () => {
-      const mm = gsap.matchMedia()
-
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], { autoAlpha: 0, y: 16 })
-        // Terminal is NOT hidden during fade — only slides up. Hiding it with
-        // autoAlpha caused the visible-chrome / empty-content "dead time" gap
-        // because the inner session's autoAlpha:1 was masked by the parent's
-        // autoAlpha:0. Slide-only keeps session 0 visible from t=0.
-        gsap.set(terminalRef.current, { y: 24 })
-        if (line1Ref.current) line1Ref.current.textContent = ''
-
-        const obj = { n: 0 }
-        // delay 0.15s — small suspense beat before the typewriter starts.
-        const tl = gsap.timeline({ delay: 0.15 })
-
-        tl.to(terminalRef.current, { y: 0, duration: 0.9, ease: 'expo.out' }, 0)
-          .to(
-            obj,
-            {
-              n: HERO_LINE_1.length,
-              duration: HERO_LINE_1.length * 0.035,
-              ease: 'none',
-              onUpdate: () => {
-                if (line1Ref.current) {
-                  line1Ref.current.textContent = HERO_LINE_1.slice(0, Math.round(obj.n))
-                }
-              },
-            },
-            0.1,
-          )
-          .to(cursorRef.current, { autoAlpha: 0, duration: 0.25 }, '>0.15')
-          .to(line2Ref.current, { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '<')
-          .to(
-            [paragraphRef.current, ctaRef.current],
-            { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power2.out', stagger: 0.12 },
-            '-=0.15',
-          )
-      })
-
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        if (line1Ref.current) line1Ref.current.textContent = HERO_LINE_1
-        gsap.set(cursorRef.current, { autoAlpha: 0 })
-        gsap.set([line2Ref.current, paragraphRef.current, ctaRef.current], {
-          autoAlpha: 1,
-          y: 0,
-        })
-        gsap.set(terminalRef.current, { y: 0 })
-      })
-    },
-    { scope: heroRef },
-  )
-
   return (
-    <section ref={heroRef} className="relative max-w-5xl mx-auto px-4 md:px-8 pt-20 pb-24">
-      <DotGridBackground className="z-0" />
-      <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h1 className="font-mono text-3xl md:text-4xl lg:text-5xl text-primary leading-tight mb-2 relative">
-            {/* Ghost text reserves the final layout — keeps the container from
-                growing as the typewriter types. opacity-0 stays in layout AND
-                is announced by screen readers (vs. `invisible` which would not). */}
-            <span className="opacity-0 select-none">
-              {HERO_LINE_1}
-              <span aria-hidden>_</span>
-            </span>
-            {/* Visual typewriter overlays the ghost. aria-hidden so screen
-                readers only announce the ghost (the full headline). */}
-            <span aria-hidden className="absolute inset-0">
-              <span ref={line1Ref} />
-              <span ref={cursorRef} className="text-accent animate-cursor">
-                _
-              </span>
-            </span>
-          </h1>
-          <span
-            ref={line2Ref}
-            className="block font-mono text-lg md:text-xl text-secondary leading-snug mt-4"
-          >
+    <section className="paper-container max-md:px-0 md:py-24">
+      <div className="grid md:grid-cols-2 md:gap-16 md:items-end">
+        <picture className="md:order-last">
+          <source srcSet="/art/temple-800.webp 800w, /art/temple-1600.webp 1600w" sizes="(min-width: 768px) 50vw, 100vw" type="image/webp" />
+          <img
+            src="/art/temple-800.webp"
+            alt=""
+            width={800}
+            height={343}
+            className="block w-full h-60 md:h-[35rem] object-cover"
+          />
+        </picture>
+        <div className="px-4 pt-10 pb-12 md:p-0">
+          <LogoMark size={64} className="text-accent size-11 md:size-16" />
+          <h1 className="paper-display mt-6 md:mt-8">{HERO_LINE_1}</h1>
+          <p className="mt-4 font-sans text-lg md:text-xl font-medium leading-snug text-primary">
             The dojo for developers who still have something to prove. To themselves.
-          </span>
-          <p
-            ref={paragraphRef}
-            className="text-secondary text-base leading-relaxed mt-6 mb-8 max-w-md"
-          >
+          </p>
+          <p className="paper-body mt-4 max-w-md">
             One surprise kata a day, about five minutes, no AI. Then the sensei reviews your
             reasoning.
           </p>
-          <div ref={ctaRef}>
-            <a href={`${API_URL}/auth/github`} className={buttonClasses({ variant: 'primary', size: 'lg' })}>
-              Sign in with GitHub
+          <a
+            href={`${API_URL}/auth/github`}
+            className={`${buttonClasses({ variant: 'primary', size: 'lg' })} mt-8 w-full md:w-auto`}
+          >
+            Sign in with GitHub
+          </a>
+          <p className="paper-note mt-4 max-w-md">
+            Invite-only. Ask the person who runs this instance for an invitation, or{' '}
+            <a href="#access" className="underline underline-offset-4 hover:text-primary">
+              request one here
             </a>
-            <p className="mt-4 text-sm text-secondary max-w-md">
-              Invite-only. Ask the person who runs this instance for an invitation, or{' '}
-              <a href="#access" className="underline underline-offset-4 hover:text-primary">
-                request one here
-              </a>
-              .
-            </p>
-          </div>
-        </div>
-        <div ref={terminalRef} className="hidden md:block">
-          <KataPreview />
+            .
+          </p>
         </div>
       </div>
     </section>
-  )
-}
-
-const PREVIEW_LINES = [
-  'async function notifyAll(users) {',
-  '  users.forEach(async (u) => {',
-  '    await send(u)',
-  '  })',
-  '}',
-]
-
-function KataPreview() {
-  return (
-    <div className="bg-surface border border-border/60 rounded-md overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40">
-        <span className="text-secondary text-xs font-mono">today's kata</span>
-        <span className="text-secondary text-xs font-mono tabular-nums">05:00</span>
-      </div>
-      <div className="p-5 font-mono text-xs leading-relaxed space-y-2">
-        {PREVIEW_LINES.map((line, i) => (
-          <p key={line} className="text-primary">
-            <span className="text-secondary mr-3 tabular-nums">{i + 1}</span>
-            <span className="whitespace-pre">{line}</span>
-          </p>
-        ))}
-        <p className="text-secondary pt-2">
-          <span>{'>'}</span> tap the line with the bug. say why.
-          <span className="text-accent animate-cursor ml-0.5">_</span>
-        </p>
-      </div>
-    </div>
   )
 }
 
@@ -318,27 +143,27 @@ function WhatIsHere() {
   const locale = preferredLocale()
 
   return (
-    <section data-anim="reveal" className="bg-surface/30 border-y border-border/20">
-      <div className="max-w-5xl mx-auto px-4 md:px-8 py-20">
-        <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">What is here</h2>
-        <div className="grid md:grid-cols-3 gap-10">
+    <section className={SECTION}>
+      <div className={SECTION_INNER}>
+        <h2 className="paper-heading">What is here</h2>
+        <div className="grid md:grid-cols-3 md:gap-12 mt-8 md:mt-10">
           {OFFERINGS.map(({ title, body }) => (
-            <div key={title}>
-              <h3 className="font-mono text-lg text-primary mb-3">{title}</h3>
-              <p className="text-secondary text-sm leading-relaxed">{body}</p>
+            <div key={title} className="border-t border-border pt-5 pb-8 md:pb-0">
+              <h3 className="font-sans text-lg font-semibold text-primary">{title}</h3>
+              <p className="paper-body mt-2">{body}</p>
             </div>
           ))}
         </div>
         {scrolls.length > 0 && (
-          <div className="mt-12">
-            <h3 className="font-mono text-lg text-primary mb-3">Scrolls</h3>
-            <p className="text-secondary text-sm leading-relaxed mb-4">
+          <div className="border-t border-border pt-5 mt-4 md:mt-12">
+            <h3 className="font-sans text-lg font-semibold text-primary">Scrolls</h3>
+            <p className="paper-body mt-2 mb-4">
               Learning apps the person who runs this instance has published.
             </p>
             <ul aria-label="Scrolls" className="flex flex-wrap gap-x-6 gap-y-2">
               {scrolls.map(({ id, slug, manifest }) => (
                 <li key={id}>
-                  <Link to={`/scrolls/${slug}`} className="text-sm text-primary underline underline-offset-4 hover:text-accent">
+                  <Link to={`/scrolls/${slug}`} className="paper-body text-primary underline underline-offset-4 hover:text-accent-text">
                     {pickLocalized(manifest.title, manifest.locales, locale)}
                   </Link>
                 </li>
@@ -375,37 +200,31 @@ function HowAKataWorks() {
     },
   ]
   return (
-    <section data-anim="reveal" className="max-w-5xl mx-auto px-4 md:px-8 py-20">
-      <h2 className="font-mono text-xl md:text-2xl text-primary mb-12">How a kata works</h2>
-      <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {steps.map(({ n, title, body }) => (
-          <li key={n} className="bg-surface border border-border/60 rounded-md p-5">
-            <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-3">{n}</p>
-            <h3 className="font-mono text-sm text-primary mb-2 font-bold">{title}</h3>
-            <p className="text-secondary text-sm leading-relaxed">{body}</p>
-          </li>
-        ))}
-      </ol>
+    <section className={SECTION}>
+      <div className={SECTION_INNER}>
+        <h2 className="paper-heading">How a kata works</h2>
+        <ol className="grid md:grid-cols-4 md:gap-12 mt-8 md:mt-10">
+          {steps.map(({ n, title, body }) => (
+            <li key={n} className="border-t border-border pt-5 pb-8 md:pb-0">
+              <p className="paper-eyebrow">{n}</p>
+              <h3 className="font-sans text-lg font-semibold text-primary mt-2">{title}</h3>
+              <p className="paper-body mt-2">{body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   )
 }
 
 function AccessSection() {
   return (
-    <section
-      id="access"
-      data-anim="reveal"
-      className="max-w-3xl mx-auto px-4 md:px-8 py-20"
-    >
-      <div className="grid md:grid-cols-2 gap-12 items-start">
+    <section id="access" className={`${SECTION} bg-surface`}>
+      <div className={`${SECTION_INNER} grid md:grid-cols-2 gap-8 md:gap-16 items-start`}>
         <div>
-          <h2 className="font-mono text-xl md:text-2xl text-primary mb-6">
-            This instance is invite-only.
-          </h2>
-          <p className="text-secondary text-base leading-relaxed mb-4">
-            This is a practice, not a platform.
-          </p>
-          <p className="text-secondary text-base leading-relaxed">
+          <h2 className="paper-heading">This instance is invite-only.</h2>
+          <p className="mt-4 font-sans text-base text-primary">This is a practice, not a platform.</p>
+          <p className="paper-body mt-4 max-w-md">
             The person who runs this instance issues the invitations. Ask them, or tell them here
             why you want in.
           </p>
@@ -425,7 +244,7 @@ function RequestAccessForm() {
 
   if (submitted) {
     return (
-      <div className="bg-surface border border-border rounded-md p-6">
+      <div className="bg-page border border-border rounded-sm p-6">
         <p className="font-mono text-secondary text-xs uppercase tracking-wider mb-2">[ Received ]</p>
         <p className="text-secondary text-sm leading-relaxed">
           No newsletter. No notifications. The operator of this instance will reach out directly.
@@ -454,9 +273,9 @@ function RequestAccessForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-surface border border-border/60 rounded-md p-6 space-y-5">
+    <form onSubmit={handleSubmit} className="bg-page border border-border rounded-sm p-6 space-y-5">
       <div>
-        <p className="text-secondary text-xs font-mono uppercase tracking-wider">
+        <p className="text-primary text-sm font-mono">
           Request an invitation
         </p>
         <p className="text-secondary text-xs font-mono mt-1">
@@ -508,40 +327,5 @@ function RequestAccessForm() {
         </p>
       )}
     </form>
-  )
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-border/20 px-4 md:px-8 py-10 mt-12">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <LogoMark size={16} className="text-secondary" />
-            <span className="text-secondary text-xs font-mono">{globalThis.location.host}</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/changelog" className="text-secondary text-xs hover:text-secondary transition-colors">
-              Changelog
-            </Link>
-            <Link to="/terms" className="text-secondary text-xs hover:text-secondary transition-colors">
-              Terms
-            </Link>
-            <Link to="/privacy" className="text-secondary text-xs hover:text-secondary transition-colors">
-              Privacy
-            </Link>
-          </div>
-          <a
-            href={PROJECT_SITE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-secondary text-xs font-mono hover:text-primary transition-colors"
-          >
-            Runs on Dojo, open source →
-          </a>
-        </div>
-        <p className="text-center text-secondary text-xs italic">Not for everyone. Exactly as intended.</p>
-      </div>
-    </footer>
   )
 }

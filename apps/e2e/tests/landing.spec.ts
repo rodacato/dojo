@@ -4,7 +4,6 @@ test.describe('Landing page', () => {
   test('shows hero headline, primary CTA, and footer', { tag: '@smoke' }, async ({ page }) => {
     await page.goto('/')
 
-    // Hero headline (GSAP timeline draws the typewriter — wait for it to appear)
     await expect(
       page.getByRole('heading', { level: 1 }),
     ).toBeVisible()

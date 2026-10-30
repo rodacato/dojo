@@ -1,8 +1,7 @@
-import { afterAll, describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import type { ScrollEntryDTO, UserDTO } from '@dojo/shared'
 import { LandingPage } from './LandingPage'
 import { useAuth } from '../context/AuthContext'
@@ -59,15 +58,11 @@ beforeEach(() => {
   mockedGetScrolls.mockResolvedValue([])
 })
 
-// LandingPage registers ScrollTrigger, whose sync interval outlives jsdom and calls requestAnimationFrame.
-afterAll(() => ScrollTrigger.disable())
-
 describe('LandingPage — auth gating', () => {
   it('shows only the loading cursor while auth resolves, not the hero', () => {
     asLoading()
     renderAt()
 
-    // The hero headline (ghost copy) must NOT be present during loading.
     expect(
       screen.queryByText(
         'Practice thinking for yourself.',
