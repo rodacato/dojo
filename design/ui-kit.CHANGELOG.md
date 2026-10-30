@@ -17,7 +17,7 @@ diverging is not. A changed token VALUE forces every consumer.
 
 **Components:** the seven `Sidebar/*` and five `BottomNav/*` components go Paper (D71): page background instead of `surface`, full `border` rules instead of tinted ones, and no filled active item. The active sidebar item is marked by an `accent` rule on its left; the active bottom-nav item by an `accent-text` icon and a semibold label. The sidebar's logo row is now a `LogoWordmark` instance, 64 tall like the public nav. New: `AppHeader/Mobile`, a 56-tall bar with the wordmark, so phones carry the Paper Gate (until now only the desktop sidebar did).
 
-**Vendored by:** `app-core.pen` (re-vendored whole from 0.4.0) and `kata.pen` (from 0.5.0), both at kit-version-source `0.8.0`; that also brings them the missing earlier pieces and drops the Slate theme. The other flows stay behind.
+**Vendored by:** `app-core.pen` (re-vendored whole from 0.4.0), `kata.pen` (from 0.5.0) and `learn.pen` (from 0.4.0), all at kit-version-source `0.8.0`; that also brings them the missing earlier pieces and drops the Slate theme. The other flows stay behind.
 
 ## 0.7.0 — the Paper public pieces
 
