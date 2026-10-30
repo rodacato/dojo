@@ -36,7 +36,6 @@ const WELCOME = [
 ] as const
 
 const NOT_WELCOME = [
-  'Gamification features',
   'Tone-softening on the sensei',
   'AI assistance during the kata',
   'Scoring leaderboards',
@@ -57,173 +56,154 @@ const SAMPLE_PROMPT = `{
 export function OpenSourcePage() {
   return (
     <PublicPageLayout>
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 md:py-20 flex flex-col gap-16">
-        {/* Hero */}
-        <section>
-          <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-4">
-            Transparency
-          </p>
-          <h1 className="text-primary text-3xl md:text-5xl font-semibold leading-tight tracking-tight max-w-2xl">
-            Read the code that grades you.
-          </h1>
-          <p className="text-secondary text-base md:text-lg leading-relaxed mt-4 max-w-2xl">
-            Self-host, fork, contribute. The dojo runs on your reasoning AND your server.
-          </p>
-        </section>
+      <section className="paper-container pt-12 pb-14 md:pt-20 md:pb-20">
+        <p className="paper-eyebrow mb-4">Transparency</p>
+        <h1 className="paper-display max-w-[16ch]">Read the code that grades you.</h1>
+        <p className="paper-body mt-5 max-w-2xl">
+          Self-host, fork, contribute. The dojo runs on your reasoning AND your server.
+        </p>
 
-        {/* Repo summary bar */}
-        <section className="bg-surface border border-border rounded-md flex flex-col md:flex-row md:items-center md:divide-x md:divide-border">
+        <div className="mt-6 border-t border-border pt-6 flex flex-col gap-4 md:flex-row md:items-center md:gap-12">
           <RepoStat label="License" value="MIT" />
           <RepoStat label="Stack" value="TS / Node" />
           <RepoStat label="Architecture" value="Hexagonal" />
-          <div className="px-4 md:px-6 py-3 md:py-0 md:ml-auto">
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${buttonClasses({ variant: 'ghost', size: 'md' })} max-md:w-full max-md:mt-2`}
+          >
+            <GitHubIcon className="w-4 h-4" />
+            View on GitHub
+          </a>
+        </div>
+      </section>
+
+      <TintedBand>
+        <SectionHeader eyebrow="Repo" title="Repository structure" />
+        <div className="grid md:grid-cols-4 md:gap-8">
+          {REPO_CARDS.map((card) => (
             <a
-              href={REPO_URL}
+              key={card.name}
+              href={card.href}
               target="_blank"
               rel="noopener noreferrer"
-              className={buttonClasses({ variant: 'ghost', size: 'md' })}
+              className="group border-t border-border py-5 flex flex-col gap-2"
             >
-              <GitHubIcon className="w-4 h-4" />
-              View on GitHub
+              <p className="font-mono text-sm font-bold text-primary">
+                {card.name} <span aria-hidden>↗</span>
+              </p>
+              <p className="text-secondary text-sm leading-relaxed">{card.body}</p>
+              <span className="font-mono text-xs text-accent-text group-hover:underline">
+                Open in github →
+              </span>
             </a>
-          </div>
-        </section>
+          ))}
+        </div>
+      </TintedBand>
 
-        {/* Repository structure */}
-        <section>
-          <SectionHeader eyebrow="Repo" title="Repository structure" />
-          <div className="grid sm:grid-cols-2 gap-4">
-            {REPO_CARDS.map((card) => (
-              <a
-                key={card.name}
-                href={card.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-surface border border-border rounded-md p-6 flex flex-col gap-3 hover:border-accent transition-colors"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-mono text-lg font-bold text-primary">{card.name}</p>
-                  <span aria-hidden className="text-secondary text-lg leading-none">↗</span>
-                </div>
-                <p className="text-secondary text-sm leading-relaxed">{card.body}</p>
-                <span className="font-mono text-xs tracking-[0.08em] uppercase text-accent-text mt-auto">
-                  Open in github →
-                </span>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        {/* How the sensei works */}
-        <section>
-          <SectionHeader eyebrow="Logic" title="How the sensei works" />
-          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-            <div className="text-secondary text-base leading-relaxed space-y-3">
-              <p>
-                The sensei is not a chatbot. It&apos;s a structured evaluation system with a
-                persona, a rubric, and a tight feedback loop. The prompt template is in the
-                repo — not hidden, not proprietary.
-              </p>
-              <p>
-                Every kata carries an{' '}
-                <code className="text-primary font-mono text-sm">owner_role</code> (who the
-                sensei pretends to be) and an{' '}
-                <code className="text-primary font-mono text-sm">owner_context</code> (what
-                they know). The verdict is one of three values. There is no score.
-              </p>
-            </div>
-            <div className="bg-page border border-border rounded-md overflow-hidden">
-              <div className="h-9 px-4 border-b border-border bg-surface flex items-center">
-                <span className="font-mono text-xs tracking-[0.04em] text-secondary">
-                  sensei_system_prompt.json
-                </span>
-              </div>
-              <pre className="p-4 font-mono text-xs text-primary leading-relaxed overflow-x-auto">
-                {SAMPLE_PROMPT}
-              </pre>
-            </div>
-          </div>
-        </section>
-
-        {/* Contributions */}
-        <section>
-          <SectionHeader eyebrow="Contribute" title="What's welcome — and what's not" />
-          <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
-            <BulletList title="What's welcome." tone="success" items={WELCOME} />
-            <BulletList title="What's not." tone="danger" items={NOT_WELCOME} />
-          </div>
-        </section>
-
-        {/* Architecture */}
-        <section>
-          <SectionHeader eyebrow="Architecture" title="Boring on purpose." />
-          <div className="text-secondary text-base leading-relaxed space-y-3 max-w-3xl">
+      <section className="paper-container py-16 md:py-24">
+        <SectionHeader eyebrow="Logic" title="How the sensei works" />
+        <div className="grid md:grid-cols-2 gap-8 md:gap-24 md:items-center">
+          <div className="paper-body space-y-4">
             <p>
-              Turborepo monorepo. Hexagonal architecture with DDD on the API. Domain events
-              for decoupling bounded contexts. PostgreSQL. Runs anywhere Docker does, with Kamal
-              config included for a single VPS. Boring is a feature.
+              The sensei is not a chatbot. It&apos;s a structured evaluation system with a
+              persona, a rubric, and a tight feedback loop. The prompt template is in the
+              repo — not hidden, not proprietary.
             </p>
             <p>
-              Decisions are written down as ADRs in{' '}
-              <code className="text-primary font-mono text-sm">docs/adr/</code>.{' '}
-              <a
-                href={`${REPO_URL}/tree/master/docs/adr`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent-text underline"
-              >
-                Browse the decision records →
-              </a>
+              Every kata carries an{' '}
+              <code className="text-primary font-mono text-sm">owner_role</code> (who the
+              sensei pretends to be) and an{' '}
+              <code className="text-primary font-mono text-sm">owner_context</code> (what
+              they know). The verdict is one of three values. There is no score.
             </p>
           </div>
-        </section>
-      </div>
+          <div className="border-y border-border py-5">
+            <p className="paper-eyebrow mb-3">sensei_system_prompt.json</p>
+            <pre className="font-mono text-xs text-primary leading-relaxed whitespace-pre-wrap">
+              {SAMPLE_PROMPT}
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      <TintedBand>
+        <SectionHeader eyebrow="Contribute" title="What's welcome — and what's not" />
+        <div className="grid md:grid-cols-2 gap-4 md:gap-8 md:items-start">
+          <BulletList title="What's welcome." glyph="+" items={WELCOME} />
+          <BulletList title="What's not." glyph="−" items={NOT_WELCOME} />
+        </div>
+      </TintedBand>
+
+      <section className="paper-container pt-16 pb-20 md:pt-24 md:pb-28">
+        <SectionHeader eyebrow="Architecture" title="Boring on purpose." />
+        <div className="paper-body space-y-4 max-w-180">
+          <p>
+            Turborepo monorepo. Hexagonal architecture with DDD on the API. Domain events
+            for decoupling bounded contexts. PostgreSQL. Runs anywhere Docker does, with Kamal
+            config included for a single VPS. Boring is a feature.
+          </p>
+          <p>
+            Decisions are written down as ADRs in{' '}
+            <code className="text-primary font-mono text-sm">docs/adr/</code>.{' '}
+            <a
+              href={`${REPO_URL}/tree/master/docs/adr`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent-text underline"
+            >
+              Browse the decision records →
+            </a>
+          </p>
+        </div>
+      </section>
     </PublicPageLayout>
+  )
+}
+
+function TintedBand({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <section className="bg-surface border-y border-border">
+      <div className="paper-container py-16 md:py-24">{children}</div>
+    </section>
   )
 }
 
 function SectionHeader({ eyebrow, title }: Readonly<{ eyebrow: string; title: string }>) {
   return (
-    <div className="mb-6">
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-2">
-        {eyebrow}
-      </p>
-      <h2 className="text-primary text-2xl md:text-3xl font-semibold leading-tight tracking-tight">
-        {title}
-      </h2>
+    <div className="mb-8 md:mb-10">
+      <p className="paper-eyebrow mb-3">{eyebrow}</p>
+      <h2 className="paper-heading">{title}</h2>
     </div>
   )
 }
 
 function RepoStat({ label, value }: Readonly<{ label: string; value: string }>) {
   return (
-    <div className="px-4 md:px-6 py-3 md:py-4 flex-1 first:md:pl-6 flex items-baseline gap-2">
+    <div className="flex items-baseline gap-2">
       <span className="font-mono text-lg md:text-xl text-primary">{value}</span>
-      <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
-        {label}
-      </span>
+      <span className="paper-eyebrow">{label}</span>
     </div>
   )
 }
 
 function BulletList({
   title,
-  tone,
+  glyph,
   items,
 }: Readonly<{
   title: string
-  tone: 'success' | 'danger'
+  glyph: string
   items: readonly string[]
 }>) {
-  const glyph = tone === 'success' ? '+' : '−'
-  const color = tone === 'success' ? 'text-success-text' : 'text-danger-text'
   return (
-    <div className="bg-surface border border-border rounded-md p-6">
-      <h3 className="text-primary text-base font-semibold mb-4">{title}</h3>
-      <ul className="flex flex-col gap-2.5">
+    <div className="bg-page border border-border rounded-sm p-5 md:p-6">
+      <h3 className="text-primary text-base md:text-lg font-semibold mb-4">{title}</h3>
+      <ul className="flex flex-col gap-3">
         {items.map((item) => (
-          <li key={item} className="flex items-start gap-3 text-secondary text-sm">
-            <span className={`font-mono leading-none mt-1 shrink-0 ${color}`} aria-hidden>
+          <li key={item} className="flex items-baseline gap-3 text-primary text-sm">
+            <span className="font-mono text-secondary shrink-0" aria-hidden>
               {glyph}
             </span>
             <span>{item}</span>

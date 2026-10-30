@@ -99,6 +99,7 @@ describe('OpenSourcePage', () => {
 
     expect(within(rejectedList).getByText('Scoring leaderboards')).toBeInTheDocument()
     expect(within(rejectedList).queryByText('Accessibility fixes')).not.toBeInTheDocument()
+    expect(within(main).queryByText('Gamification features')).not.toBeInTheDocument()
   })
 
   it('links the architecture section to the decision records', () => {
