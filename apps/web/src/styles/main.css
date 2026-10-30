@@ -101,6 +101,39 @@
   }
 }
 
+/* Paper type scale for the public pages — kit 0.7.0 Text/* in design/ui-kit.lib.pen. */
+@layer components {
+  .paper-container {
+    @apply mx-auto w-full max-w-[70rem] px-4 md:px-8;
+  }
+  .paper-display {
+    @apply font-sans font-bold text-primary;
+    font-size: clamp(2.75rem, 7vw, 5.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+  .paper-heading {
+    @apply font-sans font-bold text-primary;
+    font-size: clamp(2rem, 3.6vw, 3.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+  .paper-eyebrow {
+    @apply font-mono text-[11px] uppercase text-secondary;
+    letter-spacing: 0.12em;
+    line-height: 1.5;
+  }
+  .paper-body {
+    @apply font-sans text-secondary;
+    font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+    line-height: 1.6;
+  }
+  .paper-note {
+    @apply font-mono text-[11px] text-secondary;
+    line-height: 1.6;
+  }
+}
+
 /* Base — sets the page bg + foreground via the @theme tokens so theme
    overrides (data-theme="sumi"/"washi") propagate to the document root. */
 html {
