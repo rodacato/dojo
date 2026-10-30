@@ -65,7 +65,7 @@ export function DenseSessionRow({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full h-12 flex items-center gap-3 px-4 border-b border-border hover:bg-surface transition-colors text-left ${
+      className={`w-full min-h-12 py-2 sm:h-12 sm:py-0 flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1.5 px-4 border-b border-border hover:bg-surface transition-colors text-left ${
         highlightUser ? 'bg-elevated' : ''
       }`}
     >
@@ -75,8 +75,11 @@ export function DenseSessionRow({
       <div className="w-17 shrink-0">
         <DifficultyBadge difficulty={difficulty} />
       </div>
-      <span className="flex-1 min-w-0 text-primary text-base truncate">{title}</span>
-      <div className="w-35 shrink-0 flex justify-end">
+      {/* Below sm the fixed slots leave the title no width, so it takes a line of its own. */}
+      <span className="order-first basis-full sm:order-none sm:basis-auto flex-1 min-w-0 text-primary text-base truncate">
+        {title}
+      </span>
+      <div className="ml-auto sm:ml-0 sm:w-35 shrink-0 flex justify-end">
         {verdictBadge}
       </div>
       <span className="w-15 shrink-0 text-right font-mono text-sm text-secondary tabular-nums hidden md:block">
