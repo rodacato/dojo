@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { BottomNav } from './BottomNav'
+import { AppHeader } from './AppHeader'
 import { OfflineBanner } from './OfflineBanner'
 
 /** Active-kata work screens (/katas/:id and /katas/:id/eval) hide the nav; the /katas list keeps it */
@@ -40,6 +41,7 @@ export function AppShell() {
     <div className="flex min-h-screen bg-page">
       <Sidebar collapsed={collapsed} onToggle={toggleCollapsed} />
       <div className="flex-1 min-w-0 flex flex-col">
+        <AppHeader />
         <OfflineBanner />
         <main className="flex-1 min-w-0 pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
           <Outlet />

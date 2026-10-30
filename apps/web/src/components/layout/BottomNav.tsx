@@ -21,7 +21,7 @@ export function BottomNav() {
   ]
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-border/40 z-40">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-page border-t border-border z-40">
       <div className="flex items-center justify-around py-1 pb-[env(safe-area-inset-bottom)]">
         {items.map((item) => (
           <NavLink
@@ -33,8 +33,12 @@ export function BottomNav() {
               }`
             }
           >
-            <item.icon className="w-5 h-5" />
-            <span>{item.label}</span>
+            {({ isActive }) => (
+              <>
+                <item.icon className={`w-5 h-5 ${isActive ? 'text-accent-text' : ''}`} />
+                <span>{item.label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </div>
