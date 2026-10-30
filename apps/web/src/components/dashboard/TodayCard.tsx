@@ -15,7 +15,7 @@ interface TodayCardProps {
 }
 
 /**
- * Hero band on Dashboard — 2-col layout: status copy left, CTA right.
+ * Lead section of the Dashboard — 2-col layout: status copy left, CTA right.
  * Three states: active session in progress / today complete / empty.
  */
 export function TodayCard({
@@ -108,13 +108,11 @@ function HeroLayout({
   error?: string | null
 }>) {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-12">
       <div className="flex-1 min-w-0">
-        <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-2">{eyebrow}</p>
-        <h2 className="font-mono text-2xl md:text-3xl text-primary leading-tight mb-3">
-          {headline}
-        </h2>
-        <p className="text-secondary text-sm leading-relaxed max-w-md">{body}</p>
+        <p className="paper-eyebrow mb-3">{eyebrow}</p>
+        <h2 className="paper-heading mb-4">{headline}</h2>
+        <p className="paper-body max-w-xl">{body}</p>
         {error && (
           <p role="alert" className="text-danger-text text-sm font-mono mt-3">
             {error}

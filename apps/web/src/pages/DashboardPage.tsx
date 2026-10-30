@@ -11,6 +11,8 @@ import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
 import { useFirstVisit } from '../hooks/useFirstVisit'
 import { BELT_COLOR } from '../lib/belt-colors'
 
+const SECTION_RULE = 'mt-10 md:mt-12 border-t border-border pt-6 md:pt-8'
+
 const START_ERROR = "Couldn't start that kata. Try again."
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
@@ -57,13 +59,13 @@ export function DashboardPage() {
   const startKata = daily ? startDailyKata : () => navigate('/katas')
 
   return (
-    <div className="px-4 md:px-6 py-6 md:py-10 max-w-6xl mx-auto flex flex-col gap-8">
+    <div className="paper-container py-8 md:py-12">
       {onboarding.isFirstVisit && (
         <OnboardingOverlay daily={daily} onStart={startKata} onDismiss={onboarding.dismiss} />
       )}
       <DateStrip />
 
-      <section className="bg-surface border border-border/40 rounded-md p-6 md:p-8">
+      <section className="mt-5">
         <TodayCard
           todayComplete={dashboard.todayComplete}
           todaySession={dashboard.todaySession}
@@ -80,7 +82,7 @@ export function DashboardPage() {
 
       <BeltStrip belt={dashboard.belt} />
 
-      <div className="grid md:grid-cols-12 gap-4 md:gap-6">
+      <div className={`${SECTION_RULE} grid md:grid-cols-12 gap-x-12`}>
         <StreakCard
           streak={dashboard.streak}
           heatmapData={dashboard.heatmapData}
@@ -110,22 +112,20 @@ export function DashboardPage() {
 function DateStrip() {
   const today = useMemo(() => DATE_FORMATTER.format(new Date()), [])
   return (
-    <div className="flex items-center -mb-2">
-      <p className="text-secondary text-xs font-mono uppercase tracking-wider">{today}</p>
-    </div>
+    <p className="paper-eyebrow">{today}</p>
   )
 }
 
 function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
   return (
-    <section className="bg-surface border border-border/40 rounded-md p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+    <section className={`${SECTION_RULE} flex flex-col md:flex-row md:items-center gap-5 md:gap-8`}>
       <div className="flex items-center gap-3 shrink-0">
         <span
           aria-hidden
           className="inline-block w-7 h-7 rounded-full border border-border"
           style={{ backgroundColor: BELT_COLOR[belt.rank] }}
         />
-        <h2 className="font-mono uppercase text-base md:text-lg text-primary tracking-tight">
+        <h2 className="font-sans font-bold text-xl text-primary tracking-tight">
           {belt.rank} belt
         </h2>
       </div>
@@ -137,7 +137,7 @@ function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
       </dl>
       <Link
         to="/belts"
-        className="text-secondary text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors shrink-0 self-start md:self-auto"
+        className="paper-eyebrow hover:text-primary transition-colors shrink-0 self-start md:self-auto"
       >
         View →
       </Link>
@@ -148,7 +148,7 @@ function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
 function BeltFactor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
-      <dt className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-1">{label}</dt>
+      <dt className="paper-eyebrow mb-1">{label}</dt>
       <dd className="font-mono text-xl text-primary tabular-nums leading-none">{value}</dd>
     </div>
   )
@@ -168,18 +168,18 @@ function StreakCard({
   const week = useMemo(() => weekActivity(heatmapData), [heatmapData])
   return (
     <section
-      className={`${spanWhenAlone ? 'md:col-span-12' : 'md:col-span-7'} bg-surface border border-border/40 rounded-md p-6`}
+      className={spanWhenAlone ? 'md:col-span-12' : 'md:col-span-7'}
     >
       <div className="flex items-center justify-between mb-4">
-        <p className="text-secondary text-xs font-mono uppercase tracking-wider">Current streak</p>
+        <p className="paper-eyebrow">Current streak</p>
         {weeklyGoal.target !== null && weeklyGoal.target > 0 && (
-          <p className="text-secondary text-xs font-mono">
+          <p className="paper-note tabular-nums">
             {weeklyGoal.completed}/{weeklyGoal.target} this week
           </p>
         )}
       </div>
       <div className="flex items-baseline gap-2 mb-6">
-        <span className="font-mono text-5xl text-primary leading-none tracking-tight">{streak}</span>
+        <span className="font-mono text-5xl text-primary leading-none tracking-tight tabular-nums">{streak}</span>
         <span className="font-mono text-secondary text-sm">days</span>
       </div>
       <div className="flex gap-1.5">
@@ -213,7 +213,7 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
     {
       label: 'Avg time',
       value: (
-        <span className="font-mono text-primary text-base">
+        <span className="font-mono text-primary text-base tabular-nums">
           {formatAvgTime(practicePatterns.avgTimeMinutes)}
         </span>
       ),
@@ -233,7 +233,7 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
     label: 'Sessions timed out',
     value: (
       <span
-        className={`font-mono text-base ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success-text'}`}
+        className={`font-mono text-base tabular-nums ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success-text'}`}
       >
         {practicePatterns.sessionsTimedOut}
       </span>
@@ -241,17 +241,12 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
   })
 
   return (
-    <section className="md:col-span-5 bg-surface border border-border/40 rounded-md p-6">
-      <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-5">Practice patterns</p>
-      <div className="flex flex-col">
-        {rows.map(({ label, value }, i) => (
-          <div
-            key={label}
-            className={`flex items-center justify-between py-3 ${
-              i < rows.length - 1 ? 'border-b border-border/30' : ''
-            }`}
-          >
-            <span className="text-secondary text-sm">{label}</span>
+    <section className="md:col-span-5 max-md:mt-10 max-md:border-t max-md:border-border max-md:pt-6">
+      <p className="paper-eyebrow mb-4">Practice patterns</p>
+      <div className="flex flex-col border-y border-border divide-y divide-border">
+        {rows.map(({ label, value }) => (
+          <div key={label} className="flex items-center justify-between py-3">
+            <span className="paper-body">{label}</span>
             {value}
           </div>
         ))}
@@ -270,24 +265,19 @@ function RecentActivity({
   onAll: () => void
 }>) {
   return (
-    <section>
-      <div className="flex items-baseline justify-between mb-3 px-1">
-        <h3 className="text-secondary text-xs font-mono uppercase tracking-wider">Recent kata</h3>
+    <section className={SECTION_RULE}>
+      <div className="flex items-baseline justify-between mb-3">
+        <h3 className="paper-eyebrow">Recent kata</h3>
         <button
           onClick={onAll}
-          className="text-secondary text-xs font-mono uppercase tracking-wider hover:text-secondary transition-colors"
+          className="paper-eyebrow hover:text-primary transition-colors"
         >
           Full history →
         </button>
       </div>
-      <div className="bg-surface border border-border/40 rounded-md overflow-hidden">
-        {sessions.map((s, i) => (
-          <RecentSessionRow
-            key={s.id}
-            session={s}
-            onClick={() => onView(s.id)}
-            isLast={i === sessions.length - 1}
-          />
+      <div className="border-y border-border divide-y divide-border">
+        {sessions.map((s) => (
+          <RecentSessionRow key={s.id} session={s} onClick={() => onView(s.id)} />
         ))}
       </div>
     </section>
@@ -297,8 +287,8 @@ function RecentActivity({
 function WeakAreasCard({ weakAreas }: Readonly<{ weakAreas: DashboardData['weakAreas'] }>) {
   if (weakAreas.length === 0) return null
   return (
-    <section className="bg-surface border border-border/40 rounded-md p-6">
-      <p className="text-secondary text-xs font-mono uppercase tracking-wider mb-4">Weak areas</p>
+    <section className={SECTION_RULE}>
+      <p className="paper-eyebrow mb-4">Weak areas</p>
       <div className="flex flex-wrap gap-2">
         {weakAreas.map((a) => (
           <span

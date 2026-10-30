@@ -55,31 +55,26 @@ export function OnboardingOverlay({ daily, onStart, onDismiss }: Readonly<Onboar
           </span>
         </div>
 
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">
+        <p className="paper-eyebrow mb-3">
           Invited by the dojo
         </p>
-        <h2 id="onboarding-headline" className="text-primary text-2xl font-semibold leading-tight tracking-tight mb-3">
+        <h2 id="onboarding-headline" className="font-sans font-bold text-primary text-3xl leading-tight tracking-tight mb-3">
           Welcome to the dojo.
         </h2>
-        <p className="text-secondary text-sm leading-relaxed mb-6">
+        <p className="paper-body mb-6">
           You&apos;ve been invited to a daily practice. There&apos;s no tour. There&apos;s no
           tutorial. You&apos;ll start with one kata. The sensei will evaluate it. Then
           you&apos;ll know if this is for you or not.
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+        <ol className="border-y border-border divide-y divide-border mb-6">
           {stages.map((stage) => (
-            <div
-              key={stage.n}
-              className="border border-border bg-page rounded-sm px-2.5 py-2 flex flex-col gap-0.5"
-            >
-              <span className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
-                {stage.n}
-              </span>
-              <span className="text-primary text-xs leading-tight">{stage.label}</span>
-            </div>
+            <li key={stage.n} className="flex items-baseline gap-4 py-2.5">
+              <span className="paper-note tabular-nums">{stage.n}</span>
+              <span className="text-primary text-sm">{stage.label}</span>
+            </li>
           ))}
-        </div>
+        </ol>
 
         <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-between sm:items-center">
           <Button variant="ghost" size="md" onClick={onDismiss}>
@@ -90,7 +85,7 @@ export function OnboardingOverlay({ daily, onStart, onDismiss }: Readonly<Onboar
           </Button>
         </div>
 
-        <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-4 text-center">
+        <p className="paper-note mt-4 text-center">
           This message appears once. It won&apos;t be back tomorrow.
         </p>
       </div>
