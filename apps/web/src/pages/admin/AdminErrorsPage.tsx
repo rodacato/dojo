@@ -155,7 +155,7 @@ export function AdminErrorsPage() {
 
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 md:gap-6 mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary leading-tight">Error log</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-primary leading-tight">Error log</h1>
           <div className="mt-1 text-sm text-secondary">
             Errors logged across api and web. Retention: 30 days.
           </div>

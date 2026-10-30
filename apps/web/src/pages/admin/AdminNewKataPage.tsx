@@ -129,7 +129,7 @@ export function AdminNewKataPage() {
           >
             ← Back to katas
           </button>
-          <h1 className="text-2xl font-bold tracking-tight text-primary leading-tight">New kata</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-primary leading-tight">New kata</h1>
         </div>
         <div className="max-md:hidden flex items-center gap-3 mt-7">
           <Button variant="ghost" size="sm" onClick={() => guard.leave('/admin/katas')}>

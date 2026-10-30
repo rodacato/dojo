@@ -96,7 +96,7 @@ export function AdminKatasPage() {
 
       <div className="flex items-start justify-between gap-4 md:gap-6 mb-6 md:mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary leading-tight">Katas</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-primary leading-tight">Katas</h1>
           <div className="mt-1 text-sm text-secondary">
             <span className="text-success-text">{counts.published} published</span>
             <span className="mx-2">·</span>
