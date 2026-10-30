@@ -1,9 +1,9 @@
 name: CI · Test
 
+# Pull requests only: the master ruleset requires a branch up to date with master, so the commit a
+# merge lands has already passed here and a push run would repeat it.
 on:
   pull_request:
-    branches: [master]
-  push:
     branches: [master]
 
 permissions:

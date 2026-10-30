@@ -9,7 +9,7 @@
 
 > The dojo for developers who still have something to prove. To themselves.
 
-[![CI](https://github.com/rodacato/dojo/actions/workflows/ci.yml/badge.svg)](https://github.com/rodacato/dojo/actions/workflows/ci.yml)
+[![Quality](https://github.com/rodacato/dojo/actions/workflows/ci-quality.yml/badge.svg)](https://github.com/rodacato/dojo/actions/workflows/ci-quality.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Hono](https://img.shields.io/badge/Hono-4-E36002?logo=hono&logoColor=white)](https://hono.dev/)
@@ -201,9 +201,9 @@ pnpm --filter=@dojo/e2e test          # Full E2E suite
 pnpm brand:check                      # Fail if generated brand assets are stale
 ```
 
-**What runs where.** Every pull request and push to `master` runs lint, typecheck and unit tests plus the
-`@smoke` E2E subset (`ci.yml`). The full E2E suite runs nightly and on demand (`ci-e2e-nightly.yml`), and
-before each release ([RELEASING.md](RELEASING.md)). Checks against a deployed environment run nightly
+**What runs where.** Every pull request runs lint, typecheck and unit tests plus the `@smoke` E2E subset
+(`ci.yml`). The full E2E suite runs nightly when `master` changed, every Monday regardless, on demand
+(`ci-e2e-nightly.yml`), and before each release ([RELEASING.md](RELEASING.md)). Checks against a deployed environment run nightly
 against production and on demand (`cd-smoke.yml`, `pnpm --filter=@dojo/e2e test:deployed`).
 
 Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it says what fits the dojo and what does not.
