@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-10-30',
+    phase: 'Identity',
+    title: 'The public pages, on paper',
+    description:
+      'The landing, the invitation, sign-in, the error pages, the legal pages, this changelog, open source, public profiles and shared results now share one look, laid out for a phone first: the Paper Gate, large plain headlines and sections divided by rules instead of cards. The landing leads with how to get in, sign in or ask for an invitation, before what the instance offers.',
+  },
+  {
     date: '2026-10-29',
     phase: 'Identity',
     title: 'A paper gate, two themes',
