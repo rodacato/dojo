@@ -11149,7 +11149,7 @@
           "name": "Group Public nav · footer · offline banner",
           "width": "fill_container",
           "layout": "vertical",
-          "gap": 16,
+          "gap": 24,
           "children": [
             {
               "type": "text",
@@ -11174,58 +11174,101 @@
                   "id": "y4mdT9",
                   "name": "PublicNav/Desktop",
                   "reusable": true,
-                  "width": 900,
+                  "width": 1440,
                   "height": 64,
-                  "stroke": "$tint-border-40",
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "bottom": 1
                   },
                   "strokeAlignment": "inner",
                   "padding": [
                     0,
-                    32
+                    40
                   ],
                   "justifyContent": "space_between",
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "BZ6Xv",
+                      "id": "gi4rW",
                       "type": "ref",
                       "ref": "AbS82",
                       "name": "Wordmark"
                     },
                     {
                       "type": "frame",
-                      "id": "kqfHW",
+                      "id": "M3lYfg",
                       "name": "Right",
                       "gap": 20,
                       "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "HArmn",
-                          "name": "Link",
+                          "id": "uZpaw",
+                          "name": "Link Open source",
                           "fill": "$color-secondary",
                           "content": "Open source",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
-                          "fontSize": 11,
+                          "fontSize": 12,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "e9lc3T",
-                          "name": "Link",
+                          "id": "B3Nv8H",
+                          "name": "Link Changelog",
                           "fill": "$color-secondary",
                           "content": "Changelog",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
-                          "fontSize": 11,
+                          "fontSize": 12,
                           "fontWeight": "normal"
                         },
                         {
-                          "id": "fOEM4",
+                          "type": "text",
+                          "id": "Vo8jt",
+                          "name": "Link Terms",
+                          "fill": "$color-secondary",
+                          "content": "Terms",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "O3Ayf",
+                          "name": "Link Privacy",
+                          "fill": "$color-secondary",
+                          "content": "Privacy",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "d91UH",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Sign in",
+                          "enabled": false,
+                          "fill": "$color-accent-text",
+                          "content": "Sign in",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "KoUa6",
                           "type": "ref",
                           "ref": "tNtFP",
-                          "name": "CTA"
+                          "name": "CTA",
+                          "descendants": {
+                            "Oa0VU": {
+                              "content": "ENTER THE DOJO"
+                            }
+                          }
                         }
                       ]
                     }
@@ -11236,9 +11279,9 @@
                   "id": "jcmnH",
                   "name": "PublicNav/Mobile",
                   "reusable": true,
-                  "width": 390,
-                  "height": 64,
-                  "stroke": "$tint-border-40",
+                  "width": 375,
+                  "height": 56,
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "bottom": 1
                   },
@@ -11251,16 +11294,44 @@
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "zWcJR",
+                      "id": "AFMdN",
                       "type": "ref",
                       "ref": "AbS82",
                       "name": "Wordmark"
                     },
                     {
-                      "id": "jcPNv",
-                      "type": "ref",
-                      "ref": "tNtFP",
-                      "name": "CTA"
+                      "type": "frame",
+                      "id": "t7Ygy",
+                      "name": "Right",
+                      "gap": 20,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "TkuVZ",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Sign in",
+                          "enabled": false,
+                          "fill": "$color-accent-text",
+                          "content": "Sign in",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "id": "GKUVQ",
+                          "type": "ref",
+                          "ref": "tNtFP",
+                          "name": "CTA",
+                          "descendants": {
+                            "Oa0VU": {
+                              "content": "ENTER THE DOJO"
+                            }
+                          }
+                        }
+                      ]
                     }
                   ]
                 },
@@ -11269,38 +11340,201 @@
                   "id": "c8EE5",
                   "name": "PublicFooter/Desktop",
                   "reusable": true,
-                  "width": 900,
-                  "stroke": "$tint-border-40",
+                  "width": 1440,
+                  "stroke": "$color-border",
                   "strokeWidth": {
                     "top": 1
                   },
                   "strokeAlignment": "inner",
-                  "padding": 32,
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "padding": [
+                    48,
+                    160
+                  ],
                   "children": [
                     {
                       "type": "frame",
-                      "id": "QcQhZ",
+                      "id": "qEcdj",
+                      "name": "Row",
+                      "width": "fill_container",
+                      "gap": 24,
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "y57DNr",
+                          "name": "Left",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "sa6U3",
+                              "type": "ref",
+                              "ref": "FvtBN",
+                              "name": "Mark",
+                              "width": 16,
+                              "height": 16,
+                              "descendants": {
+                                "mkV0N": {
+                                  "fill": "$color-secondary"
+                                }
+                              }
+                            },
+                            {
+                              "type": "text",
+                              "id": "CjVF6",
+                              "name": "Host",
+                              "fill": "$color-secondary",
+                              "content": "host",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "euLcI",
+                          "name": "Links",
+                          "gap": 20,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h7eRC7",
+                              "name": "Link Open source",
+                              "fill": "$color-secondary",
+                              "content": "Open source",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "s0oPC",
+                              "name": "Link Changelog",
+                              "fill": "$color-secondary",
+                              "content": "Changelog",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Vecgf",
+                              "name": "Link Terms",
+                              "fill": "$color-secondary",
+                              "content": "Terms",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "TV31C",
+                              "name": "Link Privacy",
+                              "fill": "$color-secondary",
+                              "content": "Privacy",
+                              "lineHeight": 1.5,
+                              "fontFamily": "$font-mono",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q9vo8r",
+                          "x": 0,
+                          "y": 0,
+                          "name": "Project site",
+                          "enabled": false,
+                          "fill": "$color-accent-text",
+                          "content": "Runs on Dojo, open source →",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-mono",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "HIBFQ",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Tagline",
+                      "enabled": false,
+                      "fill": "$color-secondary",
+                      "content": "Not for everyone. Exactly as intended.",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-sans",
+                      "fontSize": 12,
+                      "fontWeight": "normal",
+                      "fontStyle": "italic"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LzGuv",
+              "name": "PublicFooter/Mobile",
+              "reusable": true,
+              "width": 375,
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                32,
+                16
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oy5vl",
+                  "name": "Row",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FXetn",
                       "name": "Left",
                       "gap": 8,
                       "alignItems": "center",
                       "children": [
                         {
-                          "id": "bfIXZ",
+                          "id": "xRCiR",
                           "type": "ref",
                           "ref": "FvtBN",
                           "name": "Mark",
-                          "width": 14,
-                          "height": 14,
-                          "opacity": 0.6
+                          "width": 16,
+                          "height": 16,
+                          "descendants": {
+                            "mkV0N": {
+                              "fill": "$color-secondary"
+                            }
+                          }
                         },
                         {
                           "type": "text",
-                          "id": "qumcq",
+                          "id": "b1Zqks",
                           "name": "Host",
                           "fill": "$color-secondary",
                           "content": "host",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
@@ -11309,53 +11543,86 @@
                     },
                     {
                       "type": "frame",
-                      "id": "b9SP0",
+                      "id": "Xsk2X",
                       "name": "Links",
                       "gap": 20,
                       "children": [
                         {
                           "type": "text",
-                          "id": "k5nQZ",
-                          "name": "Link",
+                          "id": "Y9OjL",
+                          "name": "Link Open source",
                           "fill": "$color-secondary",
                           "content": "Open source",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "wB5DH",
-                          "name": "Link",
+                          "id": "SZydk",
+                          "name": "Link Changelog",
                           "fill": "$color-secondary",
                           "content": "Changelog",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "mOZQL",
-                          "name": "Link",
+                          "id": "bpmUa",
+                          "name": "Link Terms",
                           "fill": "$color-secondary",
                           "content": "Terms",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "rTi00",
-                          "name": "Link",
+                          "id": "WgeGf",
+                          "name": "Link Privacy",
                           "fill": "$color-secondary",
                           "content": "Privacy",
+                          "lineHeight": 1.5,
                           "fontFamily": "$font-mono",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
                       ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "d3Fp5",
+                      "x": 0,
+                      "y": 0,
+                      "name": "Project site",
+                      "enabled": false,
+                      "fill": "$color-accent-text",
+                      "content": "Runs on Dojo, open source →",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
+                },
+                {
+                  "type": "text",
+                  "id": "RnHLY",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Tagline",
+                  "enabled": false,
+                  "fill": "$color-secondary",
+                  "content": "Not for everyone. Exactly as intended.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 12,
+                  "fontWeight": "normal",
+                  "fontStyle": "italic"
                 }
               ]
             }
@@ -12037,6 +12304,523 @@
               ]
             }
           ]
+        },
+        {
+          "type": "frame",
+          "id": "t0XyWu",
+          "name": "Group Paper — type · error panel",
+          "width": "fill_container",
+          "gap": 48,
+          "children": [
+            {
+              "type": "frame",
+              "id": "h86ym1",
+              "name": "Type",
+              "width": 720,
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Nh8ik",
+                  "name": "Text/Display/Mobile",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "Practice thinking for yourself.",
+                  "lineHeight": 0.98,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 44,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.8
+                },
+                {
+                  "type": "text",
+                  "id": "AAeZc",
+                  "name": "Text/Display/Desktop",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "Practice thinking for yourself.",
+                  "lineHeight": 0.98,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 84,
+                  "fontWeight": "700",
+                  "letterSpacing": -3.4
+                },
+                {
+                  "type": "text",
+                  "id": "gmzoO",
+                  "name": "Text/H2/Mobile",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "What is here",
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 32,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.1
+                },
+                {
+                  "type": "text",
+                  "id": "feGox",
+                  "name": "Text/H2/Desktop",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "What is here",
+                  "lineHeight": 1.04,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 52,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.8
+                },
+                {
+                  "type": "text",
+                  "id": "n5Xpd",
+                  "name": "Text/H3",
+                  "reusable": true,
+                  "fill": "$color-primary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "Today's kata",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "GA0AX",
+                  "name": "Text/Eyebrow",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "EYEBROW",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "yZyh1",
+                  "name": "Text/Body/Mobile",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "One surprise kata a day, about five minutes, no AI.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "q9jOs",
+                  "name": "Text/Body/Desktop",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "One surprise kata a day, about five minutes, no AI.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-sans",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "V4mhDl",
+                  "name": "Text/Note",
+                  "reusable": true,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": 343,
+                  "content": "Invite-only. Ask the person who runs this instance.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-mono",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Ojm80",
+              "name": "ErrorPanel/Mobile",
+              "reusable": true,
+              "width": 343,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                40,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Rs69Y",
+                  "type": "ref",
+                  "ref": "FvtBN",
+                  "name": "Watermark",
+                  "width": 280,
+                  "height": 280,
+                  "opacity": 0.35,
+                  "layoutPosition": "absolute",
+                  "x": 31.5,
+                  "y": 86,
+                  "descendants": {
+                    "mkV0N": {
+                      "fill": "$color-border"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "i4rVz",
+                  "name": "Pill",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "rgur1",
+                      "name": "Dot",
+                      "fill": "$color-danger",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "Q2UDIa",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "ERR · 404",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    }
+                  ]
+                },
+                {
+                  "id": "q7xeyH",
+                  "type": "ref",
+                  "ref": "gmzoO",
+                  "name": "Title",
+                  "content": "Page not defined. Yet._",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "otK8z",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Sub",
+                  "enabled": false,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container(0)",
+                  "content": "The dojo is still here._",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "id": "pQI2L",
+                  "type": "ref",
+                  "ref": "yZyh1",
+                  "name": "Body",
+                  "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here.",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "jkrAj",
+                  "name": "Actions",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "id": "YVxDR",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Primary",
+                      "width": "fill_container",
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "ENTER THE DOJO →"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Br3Lh",
+                      "type": "ref",
+                      "ref": "oI7dz",
+                      "name": "Secondary",
+                      "width": "fill_container",
+                      "descendants": {
+                        "Wuiek": {
+                          "content": "← GO TO LANDING"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "t6pPo",
+                  "name": "Strip",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "M9uQiA",
+                      "name": "Text",
+                      "fill": "$color-secondary",
+                      "content": "IF THIS IS A MISTAKE —",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.1
+                    },
+                    {
+                      "type": "text",
+                      "id": "usX1b",
+                      "name": "Link",
+                      "fill": "$color-accent-text",
+                      "content": "report this URL →",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WRP2U",
+              "name": "ErrorPanel/Desktop",
+              "reusable": true,
+              "width": 640,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                72,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "D4ASno",
+                  "type": "ref",
+                  "ref": "FvtBN",
+                  "name": "Watermark",
+                  "width": 420,
+                  "height": 420,
+                  "opacity": 0.35,
+                  "layoutPosition": "absolute",
+                  "x": 110,
+                  "y": 11,
+                  "descendants": {
+                    "mkV0N": {
+                      "fill": "$color-border"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "McooK",
+                  "name": "Pill",
+                  "cornerRadius": "$radius-sm",
+                  "stroke": "$color-border",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    4,
+                    10
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "IN8NH",
+                      "name": "Dot",
+                      "fill": "$color-danger",
+                      "width": 6,
+                      "height": 6
+                    },
+                    {
+                      "type": "text",
+                      "id": "rkUHB",
+                      "name": "Label",
+                      "fill": "$color-secondary",
+                      "content": "ERR · 404",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.3
+                    }
+                  ]
+                },
+                {
+                  "id": "KEL8E",
+                  "type": "ref",
+                  "ref": "feGox",
+                  "name": "Title",
+                  "content": "Page not defined. Yet._",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "KrtkX",
+                  "x": 0,
+                  "y": 0,
+                  "name": "Sub",
+                  "enabled": false,
+                  "fill": "$color-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container(0)",
+                  "content": "The dojo is still here._",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-mono",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "id": "e50o9s",
+                  "type": "ref",
+                  "ref": "q9jOs",
+                  "name": "Body",
+                  "content": "The URL you tried doesn't exist. Maybe it's coming. Maybe it never was. The dojo is still here.",
+                  "width": "fill_container",
+                  "textAlign": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "Mnji3",
+                  "name": "Actions",
+                  "gap": 12,
+                  "padding": [
+                    16,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "id": "jtSzE",
+                      "type": "ref",
+                      "ref": "WDpQp",
+                      "name": "Primary",
+                      "descendants": {
+                        "NnDrs": {
+                          "content": "ENTER THE DOJO →"
+                        }
+                      }
+                    },
+                    {
+                      "id": "osG2z",
+                      "type": "ref",
+                      "ref": "oI7dz",
+                      "name": "Secondary",
+                      "descendants": {
+                        "Wuiek": {
+                          "content": "← GO TO LANDING"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Z2ih0",
+                  "name": "Strip",
+                  "width": "fill_container",
+                  "gap": 6,
+                  "padding": [
+                    24,
+                    0,
+                    0,
+                    0
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DM4NS",
+                      "name": "Text",
+                      "fill": "$color-secondary",
+                      "content": "IF THIS IS A MISTAKE —",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal",
+                      "letterSpacing": 1.1
+                    },
+                    {
+                      "type": "text",
+                      "id": "B6li3M",
+                      "name": "Link",
+                      "fill": "$color-accent-text",
+                      "content": "report this URL →",
+                      "lineHeight": 1.5,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -12358,7 +13142,7 @@
     },
     "kit-version": {
       "type": "string",
-      "value": "0.6.0"
+      "value": "0.7.0"
     },
     "tint-accent-5": {
       "type": "color",

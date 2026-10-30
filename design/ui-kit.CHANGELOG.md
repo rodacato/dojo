@@ -13,6 +13,12 @@ diverging is not. A changed token VALUE forces every consumer.
 
 ---
 
+## 0.7.0 — the Paper public pieces
+
+**Components:** `PublicNav/Mobile` and `PublicNav/Desktop` are redrawn in Paper: wordmark, the four links on desktop, `Sign in` (off by default, on for the landing) and the `Enter the dojo` CTA. `PublicFooter/Desktop` is redrawn and `PublicFooter/Mobile` is new: mark and host, the four links, `Runs on Dojo, open source →` and the tagline (both off by default, on for the landing). New: `Text/Display`, `Text/H2` and `Text/Body` (Mobile and Desktop), `Text/H3`, `Text/Eyebrow`, `Text/Note`, and `ErrorPanel/Mobile` and `ErrorPanel/Desktop` (Paper Gate watermark, pill, title, optional sub, body, two actions, optional strip). None of them is in `components/ui` yet; the code follows them.
+
+**Vendored by:** `public.pen` (kit-version-source `0.7.0`), where every screen uses them. The other flows stay behind; their old nav and footer copies still draw the previous design.
+
 ## 0.6.0 — Paper Gate logo, Washi and Sumi only
 
 **Tokens:** the `slate` theme is gone. Every themed variable keeps its `sumi` and `washi` values, and the Foundations panel for Slate is deleted. The app dropped Slate in the same change, so the kit no longer describes a theme nobody can pick.
