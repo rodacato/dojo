@@ -10,7 +10,7 @@
 
 ---
 
-**Recognition exploration:** [art direction and voice](recognition.md) accompanies PRD-035. Its Pencil artboards and PNG asset map are a proposal, separate from the shipped behavior described below.
+**Recognition:** [art direction and voice](recognition.md) accompanies PRD-035. The practitioner shipped (#229); the rest of the proposal was removed unbuilt and will be redesigned.
 
 ## The name
 
