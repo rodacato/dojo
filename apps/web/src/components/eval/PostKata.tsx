@@ -5,7 +5,7 @@ import { parseInsight } from '../../lib/parse-insight'
 import { Button } from '../ui/Button'
 import { CodeLine } from '../ui/CodeLine'
 
-const LABEL = 'text-secondary text-xs font-mono uppercase tracking-[0.08em]'
+const LABEL = 'paper-eyebrow'
 const POINT_RESPONSE = /^Line (\d+): [^\n]*\n\n([\s\S]+)$/
 
 export function parsePointResponse(response: string | undefined): { line: number; why: string } | null {

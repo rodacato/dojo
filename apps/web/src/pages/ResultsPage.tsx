@@ -56,17 +56,17 @@ export function ResultsPage() {
           <TypeBadge type={session.kata.type} />
           <DifficultyBadge difficulty={session.kata.difficulty} />
         </div>
-        <h1 className="text-primary text-3xl font-semibold leading-tight tracking-tight mb-2">
+        <h1 className="text-primary text-3xl font-bold leading-tight tracking-tight mb-2">
           {session.kata.title}
         </h1>
-        <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mb-8">
+        <p className="paper-eyebrow mb-8">
           {session.status === 'failed' ? 'Incomplete' : 'Pending'} · started{' '}
           {new Date(session.startedAt).toLocaleDateString()}
         </p>
 
-        <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
-          <p className="text-secondary text-sm mb-1">This kata expired without a submission.</p>
-          <p className="text-secondary text-xs">Start a new one to keep practicing.</p>
+        <div className="border-y border-border py-5 mb-6 text-center">
+          <p className="paper-body mb-1">This kata expired without a submission.</p>
+          <p className="paper-note">Start a new one to keep practicing.</p>
         </div>
 
         <div className="flex gap-3">
@@ -78,7 +78,7 @@ export function ResultsPage() {
           </Button>
         </div>
 
-        <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-8">
+        <p className="paper-eyebrow text-center mt-8">
           Consistency compounds.
         </p>
       </div>
@@ -92,7 +92,7 @@ export function ResultsPage() {
     <div className="px-4 py-6 md:py-10 max-w-xl mx-auto flex flex-col gap-6">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex flex-col gap-3">
-          <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight">{session.kata.title}</h1>
+          <h1 className="text-primary text-2xl md:text-3xl font-bold leading-tight tracking-tight">{session.kata.title}</h1>
           <div className="flex items-center gap-1.5">
             <TypeBadge type={session.kata.type} />
             <DifficultyBadge difficulty={session.kata.difficulty} />
@@ -100,7 +100,7 @@ export function ResultsPage() {
         </div>
         {completionTime && (
           <div className="shrink-0 text-right">
-            <span className="block font-mono text-xs tracking-[0.08em] uppercase text-secondary">Completed in</span>
+            <span className="block paper-eyebrow">Completed in</span>
             <span className="block font-mono text-base text-primary tabular-nums">{completionTime}</span>
           </div>
         )}
@@ -139,7 +139,7 @@ export function ResultsPage() {
       )}
       {verdict && sessionId && <PostKataActions sessionId={sessionId} />}
 
-      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase">
+      <p className="paper-eyebrow text-center">
         Consistency compounds.
       </p>
     </div>
@@ -159,14 +159,14 @@ function AnalysisProse({ analysis }: Readonly<{ analysis: string }>) {
 
 function CollapsibleRow({ title, children }: Readonly<{ title: string; children: React.ReactNode }>) {
   return (
-    <details className="group bg-surface border border-border rounded-md">
-      <summary className="px-4 py-3 cursor-pointer select-none flex items-center justify-between">
+    <details className="group border-y border-border">
+      <summary className="py-3 cursor-pointer select-none flex items-center justify-between">
         <span className="text-primary text-sm">{title}</span>
         <span className="text-secondary text-sm transition-transform group-open:rotate-90" aria-hidden>
           ›
         </span>
       </summary>
-      <div className="px-4 pb-4 pt-2 border-t border-border">
+      <div className="pb-4 pt-2 border-t border-border">
         {children}
       </div>
     </details>
@@ -189,9 +189,9 @@ function NoEvaluationCard({ sessionId }: Readonly<{ sessionId: string }>) {
   }
 
   return (
-    <div className="p-5 bg-surface border border-border rounded-md mb-6 text-center">
-      <p className="text-secondary text-sm mb-1">The sensei couldn't finish evaluating this kata.</p>
-      <p className="text-secondary text-xs mb-4">This usually means the LLM timed out or hit a rate limit.</p>
+    <div className="border-y border-border py-5 mb-6 text-center">
+      <p className="paper-body mb-1">The sensei couldn't finish evaluating this kata.</p>
+      <p className="paper-note mb-4">This usually means the LLM timed out or hit a rate limit.</p>
       <Button variant="primary" size="md" onClick={handleRetry} disabled={retrying} loading={retrying}>
         Request re-evaluation
       </Button>
