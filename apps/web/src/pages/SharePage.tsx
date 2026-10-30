@@ -5,9 +5,10 @@ import { api, ApiError } from '../lib/api'
 import type { ShareData } from '../lib/api'
 import { PublicPageLayout } from '../components/PublicPageLayout'
 import { PageLoader } from '../components/PageLoader'
-import { ErrorState } from '../components/ui/ErrorState'
+import { ErrorPanel } from '../components/ui/ErrorPanel'
+import { LogoMark } from '../components/Logo'
 import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
-import { buttonClasses } from '../components/ui/Button'
+import { Button, buttonClasses } from '../components/ui/Button'
 
 const VERDICT_LABELS: Record<string, string> = {
   passed: 'PASSED',
@@ -43,21 +44,34 @@ export function SharePage() {
 
   if (error === 'notfound') {
     return (
-      <ErrorState
-        kind="not-found"
-        message="This kata result doesn't exist or isn't public yet."
-        primaryAction={{ label: 'Enter the dojo', to: '/' }}
-      />
+      <PublicPageLayout hideCta>
+        <ErrorPanel
+          code="ERR · 404 · NOT FOUND"
+          title="That isn't here."
+          actions={<Link to="/" className={buttonClasses({ size: 'lg' })}>Enter the dojo</Link>}
+        >
+          <p className="paper-body max-w-xl">This kata result doesn't exist or isn't public yet.</p>
+        </ErrorPanel>
+      </PublicPageLayout>
     )
   }
 
   if (error === 'network') {
     return (
-      <ErrorState
-        message="We couldn't load this share card."
-        primaryAction={{ label: 'Try again', onClick: () => setRetryTick((n) => n + 1) }}
-        secondaryAction={{ label: 'Go home', to: '/' }}
-      />
+      <PublicPageLayout hideCta>
+        <ErrorPanel
+          code="ERROR"
+          title="Something went wrong."
+          actions={
+            <>
+              <Button size="lg" onClick={() => setRetryTick((n) => n + 1)}>Try again</Button>
+              <Link to="/" className={buttonClasses({ variant: 'ghost', size: 'lg' })}>Go home</Link>
+            </>
+          }
+        >
+          <p className="paper-body max-w-xl">We couldn't load this share card.</p>
+        </ErrorPanel>
+      </PublicPageLayout>
     )
   }
 
@@ -80,21 +94,18 @@ export function SharePage() {
       <meta name="twitter:image" content={ogImageUrl} />
 
       <PublicPageLayout hideCta>
-        <div className="max-w-180 mx-auto px-4 md:px-6 pt-12 md:pt-20 pb-16">
-          <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center mb-6">
-            Shared kata
-          </p>
+        <div className="w-full max-w-180 mx-auto px-4 md:px-0 pt-12 md:pt-20 pb-16">
+          <p className="paper-eyebrow mb-4">Shared kata</p>
 
-          <article className="bg-surface border border-border rounded-md p-6 md:p-12 text-center flex flex-col items-center">
-            {/* Verdict */}
+          <article className="bg-surface border border-border rounded-sm px-5 py-12 md:p-12 text-center flex flex-col items-center">
+            <LogoMark size={40} className="text-accent mb-6" />
             <h1
               className={`font-mono text-4xl md:text-5xl font-bold tracking-tight uppercase leading-none ${verdictColor}`}
             >
               {verdictLabel}
             </h1>
 
-            {/* Title + badges */}
-            <h2 className="text-primary text-2xl font-semibold leading-tight tracking-tight mt-4 md:mt-6">
+            <h2 className="text-primary text-2xl leading-tight mt-4 md:mt-6">
               {data.kataTitle}
             </h2>
             <div className="mt-2 flex items-center gap-3 font-mono text-xs tracking-[0.08em] uppercase text-secondary">
@@ -109,33 +120,20 @@ export function SharePage() {
               )}
             </div>
 
-            {/* Pull quote */}
             {data.pullQuote && (
-              <blockquote className="relative mt-8 md:mt-10 max-w-lg">
-                <span
-                  className="absolute -top-4 -left-2 font-mono text-5xl text-secondary leading-none select-none"
-                  aria-hidden
-                >
-                  &ldquo;
-                </span>
-                <p className="text-primary text-lg md:text-xl italic leading-relaxed">
-                  {data.pullQuote}
+              <blockquote className="mt-6 md:mt-8 max-w-lg">
+                <p className="text-secondary text-lg md:text-xl italic leading-relaxed">
+                  <span aria-hidden>&ldquo;</span>
+                  <span>{data.pullQuote}</span>
+                  <span aria-hidden>&rdquo;</span>
                 </p>
-                <span
-                  className="absolute -bottom-6 -right-2 font-mono text-5xl text-secondary leading-none select-none"
-                  aria-hidden
-                >
-                  &rdquo;
-                </span>
               </blockquote>
             )}
 
-            {/* Persona */}
             {data.ownerRole && (
-              <PersonaEyebrow role={data.ownerRole} className="mt-8 md:mt-10 block" />
+              <PersonaEyebrow role={data.ownerRole} className="mt-6 md:mt-8 block" />
             )}
 
-            {/* User identity */}
             <div className="flex items-center gap-2 mt-3">
               <img
                 src={data.avatarUrl}
@@ -146,10 +144,9 @@ export function SharePage() {
               <span className="text-secondary text-base">@{data.username}</span>
             </div>
 
-            {/* CTA */}
             <Link
               to="/"
-              className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full mt-8 md:mt-10`}
+              className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full mt-6 md:mt-8`}
             >
               Find yours. Enter the dojo →
             </Link>
@@ -158,7 +155,7 @@ export function SharePage() {
             </p>
           </article>
 
-          <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase text-center mt-10">
+          <p className="paper-eyebrow text-center mt-6">
             kata_id: {sessionId?.slice(0, 6) ?? ''}
           </p>
         </div>

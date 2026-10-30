@@ -1,8 +1,9 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { api, ApiError } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { PublicPageLayout } from '../components/PublicPageLayout'
-import { ErrorState } from '../components/ui/ErrorState'
+import { ErrorPanel } from '../components/ui/ErrorPanel'
+import { Button, buttonClasses } from '../components/ui/Button'
 import { DenseSessionRow } from '../components/ui/DenseSessionRow'
 import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
 import { Heatmap, heatmapIntensity } from '../components/ui/Heatmap'
@@ -47,23 +48,34 @@ export function PublicProfilePage() {
   const isNotFound = error instanceof ApiError && error.status === 404
   if (isNotFound) {
     return (
-      <ErrorState
-        kind="not-found"
-        title="Practitioner not found."
-        message="No one practices under that handle. Maybe they never did."
-        primaryAction={{ label: 'Go home', to: '/' }}
-      />
+      <PublicPageLayout hideCta>
+        <ErrorPanel
+          code="ERR · 404 · NOT FOUND"
+          title="Practitioner not found."
+          actions={<Link to="/" className={buttonClasses({ size: 'lg' })}>Go home</Link>}
+        >
+          <p className="paper-body max-w-xl">No one practices under that handle. Maybe they never did.</p>
+        </ErrorPanel>
+      </PublicPageLayout>
     )
   }
 
   if (error || !profile) {
     return (
-      <ErrorState
-        kind="internal"
-        message="We couldn't load this profile."
-        primaryAction={{ label: 'Try again', onClick: reload }}
-        secondaryAction={{ label: 'Go home', to: '/' }}
-      />
+      <PublicPageLayout hideCta>
+        <ErrorPanel
+          code="ERR · 500 · INTERNAL"
+          title="Something broke. The dojo is still here."
+          actions={
+            <>
+              <Button size="lg" onClick={reload}>Try again</Button>
+              <Link to="/" className={buttonClasses({ variant: 'ghost', size: 'lg' })}>Go home</Link>
+            </>
+          }
+        >
+          <p className="paper-body max-w-xl">We couldn't load this profile.</p>
+        </ErrorPanel>
+      </PublicPageLayout>
     )
   }
 
@@ -76,64 +88,49 @@ export function PublicProfilePage() {
 
   return (
     <PublicPageLayout>
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 flex flex-col gap-6">
-        {/* Header band */}
-        <section className="relative bg-surface border border-border rounded-md p-6 md:p-8 overflow-hidden">
-          {/* Belt-color band — 4px full-width at top per DESIGN.md §Belt colors */}
-          <div
-            aria-hidden
-            className="absolute top-0 inset-x-0 h-1"
-            style={{ backgroundColor: BELT_COLOR[profile.belt.rank] }}
-          />
-          {profile.streak > 0 && (
-            <span className="absolute top-4 right-4 font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm">
-              {profile.streak} day streak
-            </span>
-          )}
-          <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
-            <div className="flex items-center gap-4 md:w-[40%] min-w-0">
-              <BeltRingAvatar
-                src={profile.avatarUrl}
-                rank={profile.belt.rank}
-                size={96}
-                alt=""
-              />
+      <div className="paper-container py-8 md:py-16 flex flex-col gap-8 md:gap-12">
+        <header className="border-b border-border">
+          <div aria-hidden className="h-1" style={{ backgroundColor: BELT_COLOR[profile.belt.rank] }} />
+          <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-8 pt-6 md:pt-8 pb-6 md:pb-8">
+            <div className="flex items-start gap-6 md:gap-15 md:w-[42%] min-w-0">
+              <BeltRingAvatar src={profile.avatarUrl} rank={profile.belt.rank} size={56} alt="" />
               <div className="min-w-0">
-                <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight truncate">
+                <h1 className="text-primary text-2xl md:text-[2rem] font-bold leading-tight tracking-tight truncate">
                   {profile.username}
                 </h1>
-                <p className="text-secondary text-xs font-mono tracking-[0.04em] mt-1">
+                <p className="paper-note tracking-[0.04em] mt-2">
                   Member since {memberSince} · {profile.belt.rank} belt
                 </p>
+                {profile.streak > 0 && (
+                  <p className="paper-eyebrow mt-2">{profile.streak} day streak</p>
+                )}
               </div>
             </div>
-            <div className="md:flex-1 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-4 md:divide-x md:divide-border">
+            <div className="md:flex-1 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-6 md:gap-y-0 md:pt-2 md:divide-x md:divide-border">
               <StatCell label="Kata" value={String(profile.stats.totalKata)} />
               <StatCell label="Pass rate" value={`${profile.stats.passRate}%`} colorClass={passColor} />
               <StatCell label="Avg time" value={avgTime} />
               <StatCell label="Languages" value={String(profile.stats.languages.length)} />
             </div>
           </div>
-        </section>
+        </header>
 
-        <section className="bg-surface border border-border rounded-md p-6 md:p-8">
+        <section>
           <SectionEyebrow title="Practitioner" />
           <PublicPractitioner username={profile.username} practitioner={profile.practitioner} />
         </section>
 
-        {/* Activity */}
-        <section className="bg-surface border border-border rounded-md p-6 md:p-8">
+        <section>
           <SectionEyebrow title="Activity" />
           <Heatmap data={profile.heatmapData} days={90} />
-          <div className="flex items-center justify-between mt-3 font-mono text-xs text-secondary">
+          <div className="flex items-center justify-between gap-4 mt-3 font-mono text-xs text-secondary">
             <span>Each square is one day. Brighter = more kata.</span>
             <HeatmapLegend />
           </div>
         </section>
 
-        {/* Earned badges */}
         {profile.milestones.length > 0 && (
-          <section className="bg-surface border border-border rounded-md p-6 md:p-8">
+          <section>
             <SectionEyebrow title="Earned badges" />
             <div className="flex gap-3 overflow-x-auto pb-2">
               {profile.milestones.map((badge) => (
@@ -147,12 +144,9 @@ export function PublicProfilePage() {
           </section>
         )}
 
-        {/* Recent kata */}
         {profile.recentSessions.length > 0 && (
-          <section className="bg-surface border border-border rounded-md overflow-hidden">
-            <div className="px-6 md:px-8 pt-6 md:pt-8">
-              <SectionEyebrow title="Recent kata" />
-            </div>
+          <section>
+            <SectionEyebrow title="Recent kata" />
             <div>
               {profile.recentSessions.map((s) => (
                 <DenseSessionRow
@@ -177,22 +171,20 @@ export function PublicProfilePage() {
 
 function StatCell({ label, value, colorClass }: Readonly<{ label: string; value: string; colorClass?: string }>) {
   return (
-    <div className="md:px-6 first:md:pl-0 last:md:pr-0">
-      <p className={`font-mono text-2xl md:text-2xl tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
+    <div className="md:px-6 first:md:pl-0">
+      <p className={`font-mono text-2xl tabular-nums leading-none ${colorClass ?? 'text-primary'}`}>
         {value}
       </p>
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mt-2">
-        {label}
-      </p>
+      <p className="paper-eyebrow mt-3">{label}</p>
     </div>
   )
 }
 
 function SectionEyebrow({ title }: Readonly<{ title: string }>) {
   return (
-    <div className="flex items-center gap-3 mb-4">
-      <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">{title}</p>
-      <span className="flex-1 h-px bg-border" />
+    <div className="flex items-center gap-4 mb-4">
+      <h2 className="paper-eyebrow">{title}</h2>
+      <span aria-hidden className="flex-1 h-px bg-border" />
     </div>
   )
 }
