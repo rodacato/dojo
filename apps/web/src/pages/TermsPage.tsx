@@ -47,7 +47,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <LegalCallout>
-          <p className="text-base font-medium leading-relaxed">
+          <p className="text-base md:text-lg font-semibold leading-snug">
             The timer doesn't pause. The kata is yours. No AI during the kata.
           </p>
         </LegalCallout>

@@ -197,27 +197,23 @@ const ENTRIES: ChangelogEntry[] = [
 export function ChangelogPage() {
   return (
     <PublicPageLayout>
-      <div className="max-w-180 mx-auto px-4 md:px-6 py-12 md:py-20">
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">
-          Changelog
-        </p>
-        <h1 className="text-primary text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
-          What we shipped.
-        </h1>
-        <p className="text-secondary text-base mt-2">
+      <div className="max-w-180 mx-auto px-4 md:px-0 pt-12 pb-20 md:pt-24 md:pb-28">
+        <p className="paper-eyebrow mb-4">Changelog</p>
+        <h1 className="paper-display">What we shipped.</h1>
+        <p className="font-sans text-primary text-base md:text-lg mt-5">
           Sprint by sprint. No marketing. Just done.
         </p>
-        <p className="text-secondary text-sm mt-2 mb-12">
+        <p className="paper-body text-sm md:text-[15px] mt-3 mb-10">
           This is the dojo project&apos;s own history. Which release an instance runs is up to its operator.
         </p>
 
         <div className="flex flex-col">
-          {ENTRIES.map((entry, i) => (
-            <Entry key={entry.title} entry={entry} divider={i < ENTRIES.length - 1} />
+          {ENTRIES.map((entry) => (
+            <Entry key={entry.title} entry={entry} />
           ))}
         </div>
 
-        <p className="font-mono text-xs text-secondary mt-12 inline-flex items-center">
+        <p className="paper-note mt-4 inline-flex items-center">
           More history coming.
           <span className="animate-cursor text-accent ml-0.5" aria-hidden>_</span>
         </p>
@@ -226,26 +222,24 @@ export function ChangelogPage() {
   )
 }
 
-function Entry({ entry, divider }: Readonly<{ entry: ChangelogEntry; divider: boolean }>) {
+function Entry({ entry }: Readonly<{ entry: ChangelogEntry }>) {
   const phaseColor = phaseColorClass(entry.phase)
   return (
-    <article className={`py-8 ${divider ? 'border-b border-border/40' : ''}`}>
-      <div className="flex items-center gap-3 mb-3">
-        <time className="font-mono text-sm text-secondary tabular-nums">{entry.date}</time>
-        <span className={`font-mono text-xs tracking-[0.08em] uppercase ${phaseColor}`}>
-          {entry.phase}
-        </span>
+    <article className="border-t border-border pt-8 pb-8 md:pb-9">
+      <div className="flex items-baseline gap-3 mb-3">
+        <time className="font-mono text-[13px] text-secondary tabular-nums">{entry.date}</time>
+        <span className={`paper-eyebrow ${phaseColor}`}>{entry.phase}</span>
       </div>
-      <h2 className="text-primary text-lg font-semibold leading-tight tracking-tight mb-2">
+      <h2 className="font-sans font-bold text-primary text-xl md:text-2xl leading-tight tracking-tight mb-3">
         {entry.title}
       </h2>
-      <p className="text-secondary text-base leading-relaxed">{entry.description}</p>
+      <p className="paper-body">{entry.description}</p>
       {entry.commitUrl && entry.commitHash && (
         <a
           href={entry.commitUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block mt-3 font-mono text-xs tracking-[0.08em] uppercase text-accent-text hover:underline transition-colors"
+          className="paper-eyebrow inline-block mt-3 text-accent-text hover:underline"
         >
           → view commit {entry.commitHash.slice(0, 7)}
         </a>
@@ -255,6 +249,6 @@ function Entry({ entry, divider }: Readonly<{ entry: ChangelogEntry; divider: bo
 }
 
 function phaseColorClass(phase: string): string {
-  if (phase.includes('Phase 1') || phase.includes('Phase 2') || phase === 'Self-hosted') return 'text-accent'
+  if (phase.includes('Phase 1') || phase.includes('Phase 2') || phase === 'Self-hosted') return 'text-accent-text'
   return 'text-secondary'
 }

@@ -103,7 +103,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <LegalCallout>
-          <p className="text-base font-medium leading-relaxed">
+          <p className="text-base md:text-lg font-semibold leading-snug">
             Sessions are yours. Dojo doesn&apos;t sell them, share them, or train models on them.
           </p>
         </LegalCallout>

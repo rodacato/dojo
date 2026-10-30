@@ -39,89 +39,83 @@ export function LegalPage({ title, lastUpdated, sections }: Readonly<LegalPagePr
 
   return (
     <PublicPageLayout>
-      <article className="max-w-[720px] mx-auto px-4 md:px-6 pt-16 pb-24">
-        <header className="mb-8">
-          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-3">
-            Legal
-          </div>
-          <h1 className="text-primary text-3xl sm:text-2xl font-semibold leading-tight">
-            {title}
-          </h1>
-          <p className="font-mono text-sm text-secondary mt-2">
-            Last updated {lastUpdated}
-          </p>
+      <article className="paper-container pt-12 pb-20 md:pt-20 md:pb-28">
+        <header className="mb-10 md:mb-12">
+          <div className="paper-eyebrow mb-4">Legal</div>
+          <h1 className="paper-display">{title}</h1>
+          <p className="paper-note mt-4">Last updated {lastUpdated}</p>
         </header>
 
-        <nav
-          aria-label="On this page"
-          className="rounded-md border border-border bg-surface px-4 py-4 mb-12"
-        >
-          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-3">
-            On this page
-          </div>
-          <ol className="space-y-1.5">
+        <div className="lg:grid lg:grid-cols-[240px_minmax(0,720px)] lg:gap-x-24 lg:items-start">
+          <nav
+            aria-label="On this page"
+            className="hidden lg:block lg:sticky lg:top-24 border-t border-border pt-4"
+          >
+            <div className="paper-eyebrow mb-3">On this page</div>
+            <ol className="space-y-2">
+              {sections.map((section, i) => {
+                const num = String(i + 1).padStart(2, '0')
+                const isActive = activeSection === section.id
+                return (
+                  <li key={section.id}>
+                    <a
+                      href={`#${section.id}`}
+                      className={`paper-eyebrow block transition-colors ${
+                        isActive ? 'text-primary' : 'hover:text-primary'
+                      }`}
+                    >
+                      <span className="mr-2">§{num}</span>
+                      {section.label}
+                    </a>
+                  </li>
+                )
+              })}
+            </ol>
+          </nav>
+
+          <div>
             {sections.map((section, i) => {
               const num = String(i + 1).padStart(2, '0')
-              const isActive = activeSection === section.id
               return (
-                <li key={section.id}>
-                  <a
-                    href={`#${section.id}`}
-                    className={`block font-mono text-sm uppercase tracking-wider transition-colors ${
-                      isActive ? 'text-primary font-semibold' : 'text-secondary hover:text-primary'
-                    }`}
-                  >
-                    <span className="text-secondary mr-2">§{num}</span>
-                    {section.label}
-                  </a>
-                </li>
+                <section
+                  key={section.id}
+                  id={section.id}
+                  className="scroll-mt-20 border-t border-border pt-6 pb-8 md:pb-10"
+                >
+                  <h2 className="font-sans font-bold text-primary text-[22px] md:text-[26px] leading-tight tracking-tight mb-3">
+                    <span className="paper-eyebrow block mb-3">§{num}</span>
+                    <span>{section.label}</span>
+                  </h2>
+                  <div className="legal-prose paper-body space-y-4">{section.body}</div>
+                </section>
               )
             })}
-          </ol>
-        </nav>
 
-        <div className="space-y-12">
-          {sections.map((section, i) => {
-            const num = String(i + 1).padStart(2, '0')
-            return (
-              <section key={section.id} id={section.id} className="scroll-mt-20">
-                <h2 className="text-primary text-lg font-semibold leading-snug mb-4 flex items-baseline gap-3">
-                  <span className="font-mono text-secondary">§{num}</span>
-                  <span>{section.label}</span>
-                </h2>
-                <div className="legal-prose text-secondary text-base leading-relaxed space-y-4">
-                  {section.body}
-                </div>
-              </section>
-            )
-          })}
-        </div>
-
-        <aside className="mt-16 rounded-md border border-border bg-surface p-4">
-          <div className="font-mono text-xs uppercase tracking-wider text-secondary mb-2">
-            Questions?
+            <aside className="border-t border-border pt-6">
+              <p className="font-sans font-bold text-primary text-lg mb-2">Questions?</p>
+              <p className="paper-body">
+                We don't have a legal team. Open an issue at{' '}
+                <Link to="/open-source" className="text-accent-text hover:underline">
+                  /open-source
+                </Link>{' '}
+                if something is unclear.
+              </p>
+            </aside>
           </div>
-          <p className="text-secondary text-sm leading-relaxed">
-            We don't have a legal team. Open an issue at{' '}
-            <Link to="/open-source" className="text-accent-text hover:underline">
-              /open-source
-            </Link>{' '}
-            if something is unclear.
-          </p>
-        </aside>
+        </div>
       </article>
     </PublicPageLayout>
   )
 }
 
 export function LegalList({ children }: Readonly<{ children: ReactNode }>) {
-  return <ul className="space-y-2 pl-0">{children}</ul>
+  return <ul className="space-y-1 pl-0">{children}</ul>
 }
 
 export function LegalListItem({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <li className="flex gap-3 items-baseline">
-      <span aria-hidden className="text-muted shrink-0 select-none leading-none">·</span>
+    <li className="flex gap-1.5 items-baseline">
+      <span aria-hidden className="shrink-0 select-none">·</span>
       <span>{children}</span>
     </li>
   )
@@ -129,7 +123,7 @@ export function LegalListItem({ children }: Readonly<{ children: ReactNode }>) {
 
 export function LegalCallout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <div className="rounded-md border border-border border-l-2 border-l-secondary bg-page px-4 py-3 text-primary">
+    <div className="border-l-[3px] border-l-border bg-surface px-4 py-3 md:py-4 text-primary">
       {children}
     </div>
   )

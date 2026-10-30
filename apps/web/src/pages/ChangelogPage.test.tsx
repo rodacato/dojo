@@ -69,7 +69,7 @@ describe('ChangelogPage', () => {
       .getByRole('heading', { level: 2, name: 'Dojo is self-hosted open source' })
       .closest('article') as HTMLElement
 
-    expect(within(entry).getByText('Self-hosted')).toHaveClass('text-accent')
+    expect(within(entry).getByText('Self-hosted')).toHaveClass('text-accent-text')
   })
 
   it('accents Phase 1 entries and mutes Phase 0 entries', () => {
@@ -82,20 +82,9 @@ describe('ChangelogPage', () => {
       .getByRole('heading', { level: 2, name: 'Core loop complete' })
       .closest('article') as HTMLElement
 
-    expect(within(phase1).getByText('Phase 1')).toHaveClass('text-accent')
+    expect(within(phase1).getByText('Phase 1')).toHaveClass('text-accent-text')
     expect(within(phase0).getByText('Phase 0')).toHaveClass('text-secondary')
-    expect(within(phase0).getByText('Phase 0')).not.toHaveClass('text-accent')
-  })
-
-  it('puts a divider between consecutive entries but not after the last', () => {
-    renderPage()
-
-    const articles = screen.getAllByRole('article')
-    const first = articles.at(0) as HTMLElement
-    const last = articles.at(-1) as HTMLElement
-
-    expect(first.className).toContain('border-b')
-    expect(last.className).not.toContain('border-b')
+    expect(within(phase0).getByText('Phase 0')).not.toHaveClass('text-accent-text')
   })
 
   it('renders the trailing "More history coming." footer note', () => {
