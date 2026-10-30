@@ -29,7 +29,7 @@ as context for AI agents.
 
 | File | Screens | Kit | Domain entry point |
 |---|---|---|---|
-| `public.pen` | 26 + 1 | 0.6.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error — each Mobile beside Desktop, Paper edition; proposed recognition card (#224) |
+| `public.pen` | 26 + 1 | 0.7.0 | Landing, invite, auth callback, legal, changelog, open source, public profile and share, 404 and error — each Mobile beside Desktop, Paper edition; proposed recognition card (#224) |
 | `app-core.pen` | 18 | 0.4.0 | Signed-in shell: Dashboard, History, Belts, Settings, Kumite; proposed recognition (#224) |
 | `kata.pen` | 27 | 0.5.0 | Advanced picker (mobile), active kata (code, chat, whiteboard, point on mobile), evaluation, results, new-piece receipt; proposed comeback (#224) |
 | `learn.pen` | 13 | 0.4.0 | Scrolls catalog and player, Engawa playground (mobile too) |
@@ -56,8 +56,8 @@ dated line per change, newest first.
 
 A fact written in two of them belongs in one; the others cite it.
 
-**Kit scope.** The kit mirrors `apps/web/src/components/ui` plus the layout pieces; routes are
-in `apps/web/src/App.tsx`. The logo is the Paper Gate mark from `apps/web/src/brand/logo.json` (PR #151, D2; Paper Gate since 2026-10-29).
+**Kit scope.** The kit holds `apps/web/src/components/ui` plus the layout pieces; routes are
+in `apps/web/src/App.tsx`. Like the flows, the kit can lead the code: a component drawn here first is created in `components/ui` by the PR that implements it. The logo is the Paper Gate mark from `apps/web/src/brand/logo.json` (PR #151, D2; Paper Gate since 2026-10-29).
 Local-only captures go in `references/`.
 
 ## Source of truth
