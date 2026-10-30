@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { LogoMark } from '../components/Logo'
 import { GitHubIcon } from '../components/GitHubIcon'
+import { buttonClasses } from '../components/ui/Button'
 import { API_URL } from '../lib/config'
 
 export function InviteRedeemPage() {
@@ -8,72 +9,77 @@ export function InviteRedeemPage() {
   const truncated = truncateToken(token)
 
   return (
-    <div className="min-h-screen bg-page flex flex-col items-center justify-center px-4 py-12">
-      <div className="w-full max-w-130 bg-surface border border-border rounded-md p-6 md:p-12">
-        {/* Lockup */}
-        <div className="flex items-center gap-2 mb-8">
-          <LogoMark size={24} className="text-accent" />
-          <span className="font-mono font-bold text-primary text-lg inline-flex items-center select-none">
-            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
-          </span>
-        </div>
+    <div className="min-h-screen bg-page flex flex-col md:flex-row">
+      <img
+        src="/art/interior-800.webp"
+        srcSet="/art/interior-800.webp 800w, /art/interior-1600.webp 1600w"
+        sizes="(min-width: 768px) 43vw, 100vw"
+        width={800}
+        height={343}
+        alt=""
+        className="w-full h-50 object-cover md:w-[43%] md:max-w-155 md:h-auto md:min-h-screen md:shrink-0"
+      />
 
-        {/* Eyebrow + headline + body */}
-        <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary mb-3">
-          Invitation
-        </p>
-        <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight mb-6">
-          You&apos;ve been invited to the dojo.
-        </h1>
-        <p className="text-secondary text-base leading-relaxed mb-6">
-          Daily practice for developers who still have something to prove. To themselves. The
-          dojo runs on your reasoning, not your tools — no AI inside the kata, no skip, no
-          reroll.
-        </p>
+      <main className="flex-1 flex md:items-center px-4 py-8 md:px-16 lg:px-30 md:py-16">
+        <div className="w-full max-w-130">
+          <div className="flex items-center gap-2 mb-10">
+            <LogoMark size={28} className="text-accent" />
+            <span className="font-mono font-bold text-primary text-lg inline-flex items-center select-none">
+              dojo<span className="animate-cursor ml-0.5 text-accent" aria-hidden>_</span>
+            </span>
+          </div>
 
-        {/* CTA */}
-        <a
-          href={`${API_URL}/auth/invite/${token ?? ''}`}
-          className="inline-flex items-center justify-center gap-2 w-full h-11 bg-accent text-on-accent font-mono text-sm tracking-[0.04em] rounded-sm hover:bg-accent/90 transition-colors"
-        >
-          <GitHubIcon className="w-4 h-4" />
-          Enter the dojo. →
-        </a>
-
-        {/* Microcopy */}
-        <p className="text-secondary text-xs text-center mt-4">
-          Sign in with GitHub. We don&apos;t email you. We don&apos;t track you.
-        </p>
-
-        {/* Divider + fine print */}
-        <div className="border-t border-border mt-6 pt-3 flex flex-col gap-2 text-xs">
-          <p className="text-secondary font-mono">
-            Token: <span className="text-secondary">{truncated}</span> (expires in 7 days)
+          <p className="paper-eyebrow mb-4">Invitation</p>
+          <h1 className="paper-heading mb-4">You&apos;ve been invited to the dojo.</h1>
+          <p className="paper-body mb-8">
+            Daily practice for developers who still have something to prove. To themselves. The
+            dojo runs on your reasoning, not your tools — no AI inside the kata, no skip, no
+            reroll.
           </p>
-          <p className="text-secondary">
-            By continuing you accept the{' '}
-            <Link to="/terms" className="text-accent-text underline hover:text-accent-text">
-              Terms
-            </Link>{' '}
-            and{' '}
-            <Link to="/privacy" className="text-accent-text underline hover:text-accent-text">
-              Privacy policy
+
+          <a
+            href={`${API_URL}/auth/invite/${token ?? ''}`}
+            className={`${buttonClasses({ variant: 'primary', size: 'lg' })} w-full`}
+          >
+            <GitHubIcon className="w-4 h-4" />
+            Enter the dojo. →
+          </a>
+
+          <p className="text-secondary text-xs text-center mt-3">
+            Sign in with GitHub. We don&apos;t email you. We don&apos;t track you.
+          </p>
+
+          <div className="border-t border-border mt-5 pt-4 flex flex-col gap-2">
+            <p className="paper-note">
+              Token: <span>{truncated}</span> (expires in 7 days)
+            </p>
+            <p className="text-secondary text-xs">
+              By continuing you accept the{' '}
+              <Link to="/terms" className={fineLinkClass}>
+                Terms
+              </Link>{' '}
+              and{' '}
+              <Link to="/privacy" className={fineLinkClass}>
+                Privacy policy
+              </Link>
+              .
+            </p>
+          </div>
+
+          <p className="text-secondary text-xs mt-8 max-md:text-center">
+            Not invited?{' '}
+            <Link to="/" className={fineLinkClass}>
+              Read what dojo is.
             </Link>
-            .
           </p>
         </div>
-      </div>
-
-      {/* Outside card */}
-      <p className="text-secondary text-xs mt-8 text-center px-4">
-        Not invited?{' '}
-        <Link to="/" className="text-accent-text underline hover:text-accent-text">
-          Read what dojo is.
-        </Link>
-      </p>
+      </main>
     </div>
   )
 }
+
+const fineLinkClass =
+  'underline decoration-border underline-offset-2 hover:text-primary hover:decoration-primary transition-colors'
 
 function truncateToken(token?: string): string {
   if (!token) return '—'

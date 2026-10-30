@@ -21,11 +21,11 @@ export function AuthCallbackPage() {
 
   return (
     <div className="relative min-h-screen bg-page flex flex-col items-center justify-center px-6 py-12">
-      <div className="w-full max-w-120 flex flex-col items-center text-center gap-10">
-        <div className="flex flex-col items-center gap-4">
-          <LogoMark size={32} className="text-accent" />
-          <span className="font-mono font-bold text-primary text-3xl inline-flex items-center select-none">
-            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
+      <div className="w-full max-w-120 flex flex-col items-center text-center gap-10 md:gap-12">
+        <div className="flex flex-col items-center gap-6 md:gap-8">
+          <LogoMark size={96} className="text-accent size-18 md:size-24" />
+          <span className="font-mono font-bold text-primary text-[30px] leading-none inline-flex items-center select-none">
+            dojo<span className="animate-cursor ml-0.5 text-accent" aria-hidden>_</span>
           </span>
         </div>
 
