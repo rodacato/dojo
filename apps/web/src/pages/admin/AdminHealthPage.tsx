@@ -62,7 +62,7 @@ export function AdminHealthPage() {
 
       <div className="flex items-start justify-between gap-6 mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary leading-tight">Health</h1>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-primary leading-tight">Health</h1>
           <div className="mt-1 text-sm text-secondary">
             Subsystem liveness — API, database, Piston runtimes, LLM adapter.
           </div>
