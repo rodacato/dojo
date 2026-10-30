@@ -130,7 +130,7 @@ export function SenseiEvalPage() {
         <div className="max-w-xl mx-auto flex flex-col gap-6">
           {session && (
             <div className="flex flex-col gap-3">
-              <h1 className="text-primary text-2xl font-semibold leading-tight tracking-tight">{session.kata.title}</h1>
+              <h1 className="text-primary text-2xl md:text-3xl font-bold leading-tight tracking-tight">{session.kata.title}</h1>
               <div className="flex items-center gap-1.5">
                 <TypeBadge type={session.kata.type} />
                 <DifficultyBadge difficulty={session.kata.difficulty} />

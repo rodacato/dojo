@@ -401,7 +401,7 @@ function ProblemContent({ session, compact = false }: Readonly<{ session: Sessio
           </span>
         )}
         <h1
-          className={`text-primary font-semibold leading-tight tracking-tight mb-3 ${
+          className={`text-primary font-bold leading-tight tracking-tight mb-3 ${
             compact ? 'text-2xl' : 'text-3xl md:text-4xl'
           }`}
         >

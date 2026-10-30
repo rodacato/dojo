@@ -86,12 +86,12 @@ export function KatasPage() {
   }
 
   return (
-    <div className="min-h-screen bg-page px-4 py-6 md:py-16">
-      <div className="w-full max-w-xl mx-auto flex flex-col gap-6">
+    <div className="paper-container py-8 md:py-12">
+      <div className="w-full max-w-xl flex flex-col gap-8">
         <header className="flex flex-col gap-2">
-          <p className="text-secondary text-xs font-mono uppercase tracking-wider">{DATE_FORMATTER.format(new Date())}</p>
-          <h1 className="font-mono text-2xl md:text-3xl text-primary">Ready for your kata</h1>
-          <p className="text-secondary text-sm">Set the constraints. The kata inside them is a surprise.</p>
+          <p className="paper-eyebrow">{DATE_FORMATTER.format(new Date())}</p>
+          <h1 className="paper-heading">Ready for your kata</h1>
+          <p className="paper-body">Set the constraints. The kata inside them is a surprise.</p>
         </header>
 
         <FilterGroup label="How long?" options={DURATIONS} value={duration} onChange={pick(setDuration)} />
@@ -113,7 +113,7 @@ export function KatasPage() {
           <Button variant="primary" size="lg" className="w-full" onClick={handleStart} loading={starting} disabled={!duration || starting}>
             Start →
           </Button>
-          <p className="text-secondary text-xs font-mono text-center">
+          <p className="paper-note text-center">
             {duration ? 'You get one kata. Do the one you get.' : 'Pick how long you have to continue.'}
           </p>
         </div>
@@ -134,8 +134,8 @@ function FilterGroup<T>({
   onChange: (v: T) => void
 }>) {
   return (
-    <section className="flex flex-col gap-2.5">
-      <h2 className="text-secondary text-xs font-mono uppercase tracking-wider">{label}</h2>
+    <section className="flex flex-col gap-3 border-t border-border pt-6">
+      <h2 className="paper-eyebrow">{label}</h2>
       <div role="group" aria-label={label} className="flex flex-wrap gap-2">
         {options.map((option) => {
           const selected = option.value === value

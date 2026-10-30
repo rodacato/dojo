@@ -66,7 +66,7 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
 
   return (
     <section className="flex flex-col gap-5">
-      <h2 className="text-secondary text-xs font-mono uppercase tracking-[0.08em]">Quick feedback</h2>
+      <h2 className="paper-eyebrow">Quick feedback</h2>
       <Question label="Was the time limit right?" options={TIMING} value={current('timing')} onChange={vote('timing')} />
       <Question label="How was the sensei's review?" options={EVALUATION} value={current('evaluation')} onChange={vote('evaluation')} />
 
@@ -87,7 +87,7 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
             />
           </div>
           {noteSent ? (
-            <p className="text-secondary text-xs font-mono text-center">feedback received — thank you.</p>
+            <p className="paper-note text-center">feedback received — thank you.</p>
           ) : (
             <Button variant="ghost" size="lg" className="w-full" onClick={sendNote} disabled={!note.trim()}>
               Send note
