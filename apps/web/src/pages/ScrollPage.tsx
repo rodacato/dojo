@@ -87,15 +87,15 @@ export function ScrollPage() {
   const description = pickLocalized(manifest.description, manifest.locales, locale)
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12">
-      <Link to="/scrolls" className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors">
+    <div className="paper-container py-8 md:py-12">
+      <Link to="/scrolls" className="paper-eyebrow hover:text-primary transition-colors">
         ← Scrolls
       </Link>
       <header className="mt-4 mb-6">
-        <h1 ref={headingRef} tabIndex={-1} className="text-primary text-2xl md:text-3xl font-semibold leading-tight outline-none">
+        <h1 ref={headingRef} tabIndex={-1} className="paper-heading outline-none">
           {title}
         </h1>
-        <p className="text-secondary text-base leading-relaxed mt-2 max-w-2xl">{description}</p>
+        <p className="paper-body mt-2 max-w-2xl">{description}</p>
       </header>
       <ScrollFrame
         title={title}
