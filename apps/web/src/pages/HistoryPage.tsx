@@ -44,6 +44,7 @@ export function HistoryPage() {
   } else if (sessions.length === 0) {
     sessionList = (
       <EmptyState
+        variant="inline"
         eyebrow="Empty · Kata history"
         headline="No sessions yet. The dojo is patient."
         microcopy="Your first kata is also the hardest one."
@@ -56,7 +57,7 @@ export function HistoryPage() {
     )
   } else {
     sessionList = (
-      <div className="bg-surface border border-border rounded-md overflow-hidden">
+      <div className="border-t border-border">
         {sessions.map((s) => (
           <DenseSessionRow
             key={s.id}
@@ -75,13 +76,13 @@ export function HistoryPage() {
   }
 
   return (
-    <div className="px-4 md:px-6 py-8 max-w-7xl mx-auto">
-      <p className="text-secondary text-xs font-mono tracking-[0.08em] uppercase mb-6">
+    <div className="paper-container py-8 md:py-12">
+      <p className="paper-eyebrow mb-6">
         Dashboard / Kata history
       </p>
 
       <div className="flex items-end justify-between gap-4 mb-8">
-        <h1 className="text-primary text-2xl md:text-2xl font-semibold leading-tight tracking-tight">
+        <h1 className="paper-heading">
           Kata history
         </h1>
         {total > 0 && (
@@ -107,7 +108,7 @@ export function HistoryPage() {
         </div>
       )}
 
-      <p className="text-center text-secondary text-xs font-mono tracking-[0.08em] uppercase mt-12">
+      <p className="paper-note text-center uppercase mt-12">
         Every session is a receipt.
       </p>
     </div>
