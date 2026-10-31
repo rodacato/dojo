@@ -42,6 +42,7 @@ export function SenseiEvalPage() {
   const { data: session, reload: reloadSession } = useAsync(() => api.getSession(sessionId!), [sessionId])
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
+  const [followUpFailed, setFollowUpFailed] = useState(false)
   const [history, setHistory] = useState<Exchange[]>([])
   const { state, connect, submit, reconnect } = useEvaluationStream(sessionId!)
   const submittedAttemptRef = useRef<string | null>(null)
@@ -112,15 +113,18 @@ export function SenseiEvalPage() {
     if (!sessionId || !followUpText.trim() || followUpSubmitting) return
     const answer = followUpText.trim()
     setFollowUpSubmitting(true)
-    if (result) {
-      setHistory((prev) => [...prev, { tokens, result, userAnswer: answer }])
-    }
+    setFollowUpFailed(false)
     try {
       const { attemptId } = await api.submitAttempt(sessionId, answer)
+      if (result) {
+        setHistory((prev) => [...prev, { tokens, result, userAnswer: answer }])
+      }
       setFollowUpText('')
       submittedAttemptRef.current = attemptId
       sessionStorage.setItem(inFlightKey(sessionId), attemptId)
       submit(attemptId)
+    } catch {
+      setFollowUpFailed(true)
     } finally {
       setFollowUpSubmitting(false)
     }
@@ -215,6 +219,11 @@ export function SenseiEvalPage() {
 
       {awaitingFollowUp && (
         <div className="shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3">
+          {followUpFailed && (
+            <p role="alert" className="max-w-xl mx-auto w-full mb-2 text-danger-text text-sm">
+              Your answer didn't go through. It's still here. Try again.
+            </p>
+          )}
           <div className="max-w-xl mx-auto w-full flex gap-2">
             <textarea
               value={followUpText}
