@@ -7,6 +7,13 @@ const TYPE_STYLES: Record<KataType, string> = {
   review: 'bg-type-review/20 text-primary border border-type-review/40',
 }
 
+const TYPE_RULES: Record<KataType, string> = {
+  code: 'border-l-type-code',
+  chat: 'border-l-type-chat',
+  whiteboard: 'border-l-type-whiteboard',
+  review: 'border-l-type-review',
+}
+
 const DIFFICULTY_STYLES: Record<Difficulty, string> = {
   easy: 'text-success-text border border-success',
   medium: 'text-warning-text border border-warning',
@@ -17,6 +24,17 @@ export function TypeBadge({ type }: Readonly<{ type: KataType }>) {
   return (
     <span className={`font-mono text-xs font-medium px-2 py-0.5 rounded-sm ${TYPE_STYLES[type]}`}>
       {type.toUpperCase()}
+    </span>
+  )
+}
+
+/** For session rows: type colours fail contrast as text fills, so the colour moves to a rule. */
+export function TypeRuleBadge({ type }: Readonly<{ type: KataType }>) {
+  return (
+    <span
+      className={`font-mono text-xs uppercase text-primary border border-border border-l-3 px-1.5 py-0.5 rounded-sm ${TYPE_RULES[type]}`}
+    >
+      {type}
     </span>
   )
 }
