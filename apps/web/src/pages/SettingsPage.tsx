@@ -394,7 +394,7 @@ export function SettingsPage() {
               aria-valuetext={randomnessText(prefs.randomness)}
               className="block w-full h-11 mt-2.5 accent-primary"
             />
-            <div className="flex justify-between gap-3 font-mono text-[10px] text-secondary" aria-hidden>
+            <div className="flex justify-between gap-3 font-mono text-xs text-secondary" aria-hidden>
               {RANDOMNESS_STOPS.map((s) => (
                 <span key={s.label}>{s.label}</span>
               ))}
