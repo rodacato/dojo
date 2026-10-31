@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 import { TypeBadge, DifficultyBadge } from './Badge'
+import { VERDICT_LABELS, VERDICT_PILL } from '../../lib/verdict'
 
 interface DenseSessionRowProps {
   type: KataType
@@ -12,18 +13,6 @@ interface DenseSessionRowProps {
   completedAt: string | null
   onClick: () => void
   highlightUser?: boolean
-}
-
-const VERDICT_LABEL: Record<Verdict, string> = {
-  passed: 'PASSED',
-  passed_with_notes: 'PASSED W/N',
-  needs_work: 'NEEDS WORK',
-}
-
-const VERDICT_TONE: Record<Verdict, string> = {
-  passed: 'text-success-text border-success/40 bg-success/10',
-  passed_with_notes: 'text-warning-text border-warning/40 bg-warning/10',
-  needs_work: 'text-danger-text border-danger/40 bg-danger/10',
 }
 
 // 48px dense session row used on History and on profile recent-kata lists.
@@ -48,9 +37,9 @@ export function DenseSessionRow({
   if (verdict) {
     verdictBadge = (
       <span
-        className={`font-mono text-xs tracking-[0.08em] uppercase border px-2 py-0.5 rounded-sm ${VERDICT_TONE[verdict]}`}
+        className={`font-mono text-xs tracking-[0.08em] uppercase border px-2 py-0.5 rounded-sm ${VERDICT_PILL[verdict]}`}
       >
-        {VERDICT_LABEL[verdict]}
+        {VERDICT_LABELS[verdict]}
       </span>
     )
   } else if (expired) {
@@ -79,7 +68,7 @@ export function DenseSessionRow({
       <span className="order-first basis-full sm:order-none sm:basis-auto flex-1 min-w-0 text-primary text-base truncate">
         {title}
       </span>
-      <div className="ml-auto sm:ml-0 sm:w-35 shrink-0 flex justify-end">
+      <div className="ml-auto sm:ml-0 sm:w-40 shrink-0 flex justify-end">
         {verdictBadge}
       </div>
       <span className="w-15 shrink-0 text-right font-mono text-sm text-secondary tabular-nums hidden md:block">

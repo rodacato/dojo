@@ -1,12 +1,7 @@
 import { TypeBadge, DifficultyBadge } from '../ui/Badge'
 import type { DashboardData } from '../../lib/api'
 import type { KataType, Difficulty } from '@dojo/shared'
-
-const VERDICT_PILL: Record<string, { label: string; classes: string }> = {
-  passed: { label: 'Passed', classes: 'text-success-text bg-success/10 border border-success/30' },
-  passed_with_notes: { label: 'Passed w/n', classes: 'text-warning-text bg-warning/10 border border-warning/30' },
-  needs_work: { label: 'Needs work', classes: 'text-danger-text bg-danger/10 border border-danger/30' },
-}
+import { isVerdict, VERDICT_LABELS, VERDICT_PILL } from '../../lib/verdict'
 
 interface RecentSessionRowProps {
   session: DashboardData['recentSessions'][number]
@@ -14,12 +9,12 @@ interface RecentSessionRowProps {
 }
 
 export function RecentSessionRow({ session, onClick }: Readonly<RecentSessionRowProps>) {
-  const verdict = session.verdict ? VERDICT_PILL[session.verdict] : null
+  const { verdict } = session
   const relativeDate = formatRelativeDate(new Date(session.startedAt))
   return (
     <button
       onClick={onClick}
-      className="group w-full flex items-center gap-3 px-2 h-12 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated"
+      className="group w-full flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1.5 px-2 min-h-12 py-2 sm:py-0 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated"
     >
       <span className="shrink-0">
         <TypeBadge type={session.kataType as KataType} />
@@ -27,17 +22,18 @@ export function RecentSessionRow({ session, onClick }: Readonly<RecentSessionRow
       <span className="shrink-0 hidden sm:inline-flex">
         <DifficultyBadge difficulty={session.difficulty as Difficulty} />
       </span>
-      <span className="flex-1 min-w-0 text-primary text-sm font-medium truncate">
+      {/* The full verdict leaves the title no width on a phone, so it takes a line of its own. */}
+      <span className="order-first basis-full sm:order-none sm:basis-auto flex-1 min-w-0 text-primary text-sm font-medium truncate">
         {session.kataTitle}
       </span>
-      {verdict && (
+      {isVerdict(verdict) && (
         <span
-          className={`shrink-0 font-mono text-xs uppercase tracking-wider px-2 py-0.5 rounded-sm ${verdict.classes}`}
+          className={`shrink-0 font-mono text-xs uppercase tracking-wider border px-2 py-0.5 rounded-sm ${VERDICT_PILL[verdict]}`}
         >
-          {verdict.label}
+          {VERDICT_LABELS[verdict]}
         </span>
       )}
-      <span className="shrink-0 text-secondary text-xs font-mono w-14 text-right">
+      <span className="ml-auto sm:ml-0 shrink-0 text-secondary text-xs font-mono w-14 text-right">
         {relativeDate}
       </span>
     </button>

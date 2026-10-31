@@ -9,18 +9,7 @@ import { ErrorPanel } from '../components/ui/ErrorPanel'
 import { LogoMark } from '../components/Logo'
 import { PersonaEyebrow } from '../components/ui/PersonaEyebrow'
 import { Button, buttonClasses } from '../components/ui/Button'
-
-const VERDICT_LABELS: Record<string, string> = {
-  passed: 'PASSED',
-  passed_with_notes: 'PASSED WITH NOTES',
-  needs_work: 'NEEDS WORK',
-}
-
-const VERDICT_COLORS: Record<string, string> = {
-  passed: 'text-success-text',
-  passed_with_notes: 'text-warning-text',
-  needs_work: 'text-danger-text',
-}
+import { isVerdict, VERDICT_LABELS, VERDICT_TEXT } from '../lib/verdict'
 
 export function SharePage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -77,8 +66,9 @@ export function SharePage() {
 
   if (!data) return <PageLoader />
 
-  const verdictLabel = VERDICT_LABELS[data.verdict] ?? data.verdict.replaceAll('_', ' ').toUpperCase()
-  const verdictColor = VERDICT_COLORS[data.verdict] ?? 'text-warning-text'
+  const { verdict } = data
+  const verdictLabel = isVerdict(verdict) ? VERDICT_LABELS[verdict] : verdict.replaceAll('_', ' ').toUpperCase()
+  const verdictColor = isVerdict(verdict) ? VERDICT_TEXT[verdict] : 'text-warning-text'
   const ogImageUrl = `${API_URL}/share/${sessionId}.png`
 
   return (

@@ -1,24 +1,7 @@
 import type { ReactNode } from 'react'
 import type { Verdict } from '@dojo/shared'
 import { PersonaEyebrow } from './PersonaEyebrow'
-
-const VERDICT_LABELS: Record<Verdict, string> = {
-  passed: 'PASSED',
-  passed_with_notes: 'PASSED WITH NOTES',
-  needs_work: 'NEEDS WORK',
-}
-
-const VERDICT_COLORS: Record<Verdict, string> = {
-  passed: 'text-success-text',
-  passed_with_notes: 'text-warning-text',
-  needs_work: 'text-danger-text',
-}
-
-const STROKE_COLORS: Record<Verdict, string> = {
-  passed: 'text-success',
-  passed_with_notes: 'text-warning',
-  needs_work: 'text-danger',
-}
+import { VERDICT_LABELS, VERDICT_STROKE, VERDICT_TEXT } from '../../lib/verdict'
 
 interface VerdictBlockProps {
   verdict?: Verdict
@@ -54,7 +37,7 @@ export function VerdictBlock({
     >
       <svg
         aria-hidden
-        className={`absolute left-1.5 top-3 bottom-3 w-3 ${verdict ? STROKE_COLORS[verdict] : 'text-border'}`}
+        className={`absolute left-1.5 top-3 bottom-3 w-3 ${verdict ? VERDICT_STROKE[verdict] : 'text-border'}`}
         viewBox="0 0 12 200"
         preserveAspectRatio="none"
       >
@@ -70,7 +53,7 @@ export function VerdictBlock({
       {role && <PersonaEyebrow role={role} className="mb-3 block" />}
       {verdict && (
         <h2
-          className={`font-mono ${verdictSize} font-bold uppercase tracking-tight ${VERDICT_COLORS[verdict]} leading-none mb-4`}
+          className={`font-mono ${verdictSize} font-bold uppercase tracking-tight ${VERDICT_TEXT[verdict]} leading-none mb-4`}
         >
           {VERDICT_LABELS[verdict]}
         </h2>
