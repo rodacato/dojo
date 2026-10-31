@@ -712,7 +712,7 @@ const LANGUAGES = {
 type Language = keyof typeof LANGUAGES
 
 function isLanguage(lang: string): lang is Language {
-  return lang in LANGUAGES
+  return Object.keys(LANGUAGES).includes(lang)
 }
 
 // The first listed language is the one the sandbox runs (ws-handlers runTestCode).

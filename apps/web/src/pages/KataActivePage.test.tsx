@@ -337,6 +337,7 @@ describe('KataActivePage', () => {
     [['ruby', 'python', 'typescript'], 'solution.rb', 'Ruby'],
     [['typescript', 'python'], 'solution.ts', 'TypeScript'],
     [['cobol'], 'solution.js', 'JavaScript'],
+    [['constructor'], 'solution.js', 'JavaScript'],
   ])('labels a %j code kata as %s', async (language, filename, label) => {
     const session = makeSession()
     getSession.mockResolvedValue({
