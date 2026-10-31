@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { KataType, Difficulty, Verdict } from '@dojo/shared'
 
+import { MemoryRouter } from 'react-router-dom'
+
 import { DenseSessionRow } from './DenseSessionRow'
 
 const NOW = new Date('2026-06-21T12:00:00.000Z').getTime()
@@ -56,7 +58,7 @@ describe('DenseSessionRow', () => {
 
     const row = screen.getByRole('button')
     expect(row).toHaveTextContent('Design a URL shortener')
-    expect(row).toHaveTextContent('WHITEBOARD')
+    expect(row).toHaveTextContent('whiteboard')
     expect(row).toHaveTextContent('HARD')
   })
 
@@ -87,6 +89,42 @@ describe('DenseSessionRow', () => {
 
       expect(screen.getByText('PASSED')).toBeInTheDocument()
       expect(screen.queryByText('Expired')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('history row', () => {
+    const history = {
+      type: 'code',
+      difficulty: 'easy',
+      title: 'Two Sum',
+      verdict: null,
+      status: 'failed',
+      startedAt: '2026-06-21T09:05:00',
+      completedAt: null,
+    } as const
+
+    it('is a link when given a destination', () => {
+      render(
+        <MemoryRouter>
+          <DenseSessionRow {...history} to="/katas/s1/result" />
+        </MemoryRouter>,
+      )
+
+      expect(screen.getByRole('link', { name: /Two Sum/ })).toHaveAttribute('href', '/katas/s1/result')
+    })
+
+    it('trusts the outcome over the status when a failed session was answered', () => {
+      render(<DenseSessionRow {...history} outcome="no_evaluation" onClick={vi.fn()} />)
+
+      expect(screen.getByText('No evaluation')).toBeInTheDocument()
+      expect(screen.queryByText('Expired')).not.toBeInTheDocument()
+    })
+
+    it('shows the start time in place of elapsed and relative time', () => {
+      render(<DenseSessionRow {...history} showClock onClick={vi.fn()} />)
+
+      expect(screen.getByText('09:05')).toBeInTheDocument()
+      expect(screen.queryByText('--:--')).not.toBeInTheDocument()
     })
   })
 
