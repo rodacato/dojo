@@ -61,8 +61,8 @@ describe('AppShell — focused-route chrome', () => {
     expect(screen.queryByRole('link', { name: 'Dojo home' })).not.toBeInTheDocument()
   })
 
-  it('always shows the offline banner, even on focused routes', () => {
+  it('leaves the offline notice to focused routes, which carry their own', () => {
     renderShell('/katas/closures')
-    expect(screen.getByTestId('offline-banner')).toBeInTheDocument()
+    expect(screen.queryByTestId('offline-banner')).not.toBeInTheDocument()
   })
 })
