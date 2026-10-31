@@ -1,5 +1,6 @@
 import type { Context } from 'hono'
 import { rateLimiter } from 'hono-rate-limiter'
+import { config } from '../../../config'
 
 // Key extractor: uses Cloudflare real IP when behind Cloudflare Tunnel,
 // falls back to X-Forwarded-For, then the direct connection IP.
@@ -16,10 +17,10 @@ export const globalLimiter = rateLimiter({
   message: { error: 'Too many requests. Try again later.' },
 })
 
-// 10 requests per 15 minutes per IP — applied to /auth/* routes
+// Applied to /auth/* routes. GET /auth/me runs on every page load, and a 429 there reads as signed out.
 export const authLimiter = rateLimiter({
   windowMs: 15 * 60 * 1000,
-  limit: 10,
+  limit: config.AUTH_RATE_LIMIT_MAX,
   keyGenerator,
   message: { error: 'Too many authentication attempts. Try again later.' },
 })
