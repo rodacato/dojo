@@ -73,8 +73,10 @@ export function App() {
           <Route element={<OptionalSidebarLayout />}>
             <Route path="/engawa" element={<LazyRoute><EngawaPage /></LazyRoute>} />
             <Route path="/engawa/:language" element={<LazyRoute><EngawaPage /></LazyRoute>} />
-            <Route path="/scrolls" element={<LazyRoute><ScrollsPage /></LazyRoute>} />
             <Route path="/scrolls/:slug" element={<LazyRoute><ScrollPage /></LazyRoute>} />
+          </Route>
+          <Route element={<OptionalSidebarLayout publicHeader />}>
+            <Route path="/scrolls" element={<LazyRoute><ScrollsPage /></LazyRoute>} />
           </Route>
 
           {/* Protected — AppShell wraps all auth routes */}

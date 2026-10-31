@@ -259,7 +259,7 @@ export function EngawaPage() {
 
   return (
     <div
-      className={`${user ? 'h-[calc(100dvh-4rem-env(safe-area-inset-bottom))] md:h-dvh' : 'h-dvh'} bg-page text-primary flex flex-col overflow-hidden`}
+      className={`${user ? 'h-[calc(100dvh-8rem-env(safe-area-inset-bottom))] md:h-dvh' : 'h-dvh'} bg-page text-primary flex flex-col overflow-hidden`}
     >
       {/* Header. Authed users get chrome from the sidebar, so the logo
           + Dashboard chip collapse into a single inline CTA line. */}

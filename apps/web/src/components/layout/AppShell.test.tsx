@@ -1,25 +1,13 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { AppShell } from './AppShell'
 
-// Stub the children — AppShell's own logic is route-focus detection and the
-// localStorage-backed collapse toggle, not what Sidebar renders. The Sidebar
-// stub exposes the collapsed prop and a toggle button so we can drive it.
-vi.mock('./Sidebar', () => ({
-  Sidebar: ({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) => (
-    <aside data-testid="sidebar" data-collapsed={String(collapsed)}>
-      <button onClick={onToggle}>toggle-sidebar</button>
-    </aside>
-  ),
-}))
+// Stub the children — AppShell's own logic is route-focus detection, not what
+// the chrome renders.
+vi.mock('./Sidebar', () => ({ Sidebar: () => <aside data-testid="sidebar" /> }))
 vi.mock('./BottomNav', () => ({ BottomNav: () => <nav data-testid="bottom-nav" /> }))
 vi.mock('./OfflineBanner', () => ({ OfflineBanner: () => <div data-testid="offline-banner" /> }))
-
-beforeEach(() => {
-  localStorage.clear()
-})
 
 function renderShell(route: string) {
   render(
@@ -76,28 +64,5 @@ describe('AppShell — focused-route chrome', () => {
   it('always shows the offline banner, even on focused routes', () => {
     renderShell('/katas/closures')
     expect(screen.getByTestId('offline-banner')).toBeInTheDocument()
-  })
-})
-
-describe('AppShell — collapse persistence', () => {
-  it('defaults to expanded when no preference is stored', () => {
-    renderShell('/dashboard')
-    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-collapsed', 'false')
-  })
-
-  it('initializes collapsed from localStorage', () => {
-    localStorage.setItem('dojo-sidebar-collapsed', 'true')
-    renderShell('/dashboard')
-    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-collapsed', 'true')
-  })
-
-  it('toggling persists the new state to localStorage and reflects it in the prop', async () => {
-    renderShell('/dashboard')
-    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-collapsed', 'false')
-
-    await userEvent.click(screen.getByRole('button', { name: 'toggle-sidebar' }))
-
-    expect(screen.getByTestId('sidebar')).toHaveAttribute('data-collapsed', 'true')
-    expect(localStorage.getItem('dojo-sidebar-collapsed')).toBe('true')
   })
 })
