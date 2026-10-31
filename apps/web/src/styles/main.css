@@ -134,6 +134,49 @@
   }
 }
 
+/* Paper shell pieces shared by screens. Anything else stays Tailwind in the screen. */
+@layer components {
+  .ruled-row {
+    @apply flex items-center justify-between gap-4 min-h-11 border-b border-border;
+  }
+  .date-strip {
+    @apply flex items-center gap-3 md:gap-6;
+  }
+  .date-strip::after {
+    content: '';
+    @apply h-px flex-1 bg-border;
+  }
+  .section-heading {
+    @apply flex items-center justify-between gap-4 mb-1;
+  }
+  .nav-item {
+    @apply flex items-center min-h-11 font-mono text-xs text-secondary transition-colors duration-150;
+  }
+  .nav-item:hover,
+  .nav-item[aria-current='page'] {
+    @apply text-primary;
+  }
+  .nav-item-rail {
+    @apply flex-col justify-center gap-1 min-h-15.5 px-0.5 py-2 rounded-sm border-l-2 border-transparent;
+  }
+  .nav-item-rail:hover {
+    @apply bg-elevated;
+  }
+  .nav-item-rail[aria-current='page'] {
+    @apply border-primary bg-page;
+  }
+  .nav-item-tab {
+    @apply relative flex-col justify-center gap-1 min-h-14;
+  }
+  .nav-item-tab[aria-current='page'] {
+    @apply font-medium;
+  }
+  .nav-item-tab[aria-current='page']::before {
+    content: '';
+    @apply absolute -top-1 h-0.5 w-5 bg-primary;
+  }
+}
+
 /* Base — sets the page bg + foreground via the @theme tokens so theme
    overrides (data-theme="sumi"/"washi") propagate to the document root. */
 html {
@@ -290,6 +333,15 @@ body {
 
 .animate-auth-progress {
   animation: auth-progress 1.5s ease-in-out infinite;
+}
+
+/* Data replacing a neutral placeholder. */
+@keyframes state-reveal {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+.state-reveal {
+  animation: state-reveal 150ms ease-out;
 }
 
 /* Respect reduced motion preference */
