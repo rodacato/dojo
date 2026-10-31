@@ -45,10 +45,11 @@ vi.mock('../lib/api', async (importOriginal) => {
 // connect/submit calls.
 const connect = vi.fn()
 const submit = vi.fn()
+const reconnect = vi.fn()
 let streamState: EvalStreamState = { status: 'idle' }
 
 vi.mock('../hooks/useEvaluationStream', () => ({
-  useEvaluationStream: () => ({ state: streamState, connect, submit, reconnect: vi.fn() }),
+  useEvaluationStream: () => ({ state: streamState, connect, submit, reconnect }),
 }))
 
 function makeSession(overrides: Partial<SessionWithKata> = {}): SessionWithKata {
@@ -101,6 +102,7 @@ function renderPage(sessionId = 'sess-1') {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  sessionStorage.clear()
   streamState = { status: 'idle' }
   getSession.mockResolvedValue(makeSession())
   getFeedback.mockResolvedValue({ submitted: false })
@@ -299,6 +301,64 @@ describe('SenseiEvalPage', () => {
     await user.click(await screen.findByRole('button', { name: 'Dashboard' }))
 
     expect(navigate).toHaveBeenCalledWith('/dashboard')
+  })
+
+  describe('recovering across a reload', () => {
+    it('reconnects to the attempt still in flight', async () => {
+      sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-1')
+      streamState = { status: 'ready' }
+
+      renderPage()
+
+      await waitFor(() => expect(reconnect).toHaveBeenCalledWith('att-1'))
+      expect(submit).not.toHaveBeenCalled()
+      expect(navigate).not.toHaveBeenCalled()
+    })
+
+    it('submits a new attempt rather than reconnecting to a stale one', async () => {
+      sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-old')
+      sessionStorage.setItem('dojo-attempt-sess-1', 'att-new')
+      streamState = { status: 'ready' }
+
+      renderPage()
+
+      await waitFor(() => expect(submit).toHaveBeenCalledWith('att-new'))
+      expect(reconnect).not.toHaveBeenCalled()
+      expect(sessionStorage.getItem('dojo-attempt-in-flight-sess-1')).toBe('att-new')
+    })
+
+    it('goes to the result when there is no attempt to wait for', async () => {
+      streamState = { status: 'ready' }
+
+      renderPage()
+
+      await waitFor(() =>
+        expect(navigate).toHaveBeenCalledWith('/katas/sess-1/result', { replace: true }),
+      )
+    })
+
+    it('goes to the result when the server no longer holds the attempt', async () => {
+      sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-1')
+      streamState = { status: 'error', code: 'ATTEMPT_NOT_FOUND', message: 'ATTEMPT_NOT_FOUND' }
+
+      renderPage()
+
+      await waitFor(() =>
+        expect(navigate).toHaveBeenCalledWith('/katas/sess-1/result', { replace: true }),
+      )
+      expect(sessionStorage.getItem('dojo-attempt-in-flight-sess-1')).toBeNull()
+    })
+
+    it('forgets the attempt once the verdict is final', async () => {
+      sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-1')
+      streamState = { status: 'complete', result: makeResult(), tokens: 'Done.' }
+
+      renderPage()
+
+      await waitFor(() =>
+        expect(sessionStorage.getItem('dojo-attempt-in-flight-sess-1')).toBeNull(),
+      )
+    })
   })
 
   it('does not offer the dashboard exit while the evaluation is healthy', async () => {
