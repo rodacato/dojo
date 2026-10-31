@@ -72,7 +72,7 @@ export function KataActivePage() {
           <Button
             variant="subtle"
             size="lg"
-            className="px-2 md:px-3"
+            className="px-0 min-w-11 md:min-w-13 md:justify-start text-[10px]! md:text-[11px]! text-accent-text!"
             disabled={submitting}
             onClick={timedOut ? () => navigate('/dashboard') : () => setLeaving(true)}
           >
@@ -81,7 +81,7 @@ export function KataActivePage() {
         }
         center={
           <ClockSlot>
-            <Timer durationMinutes={kata.duration} startedAt={session.startedAt} onExpired={expire} size="sm" />
+            <Timer durationMinutes={kata.duration} startedAt={session.startedAt} onExpired={expire} size="clock" />
           </ClockSlot>
         }
       />
@@ -99,7 +99,7 @@ export function KataActivePage() {
 
       {isPoint && isMobile ? (
         <div className="flex-1 min-h-0 overflow-y-auto">
-          <section className="bg-surface border-b border-border p-4">
+          <section className="bg-page border-b border-border px-5 py-6">
             <PointProblem session={session} />
           </section>
           <PointAnswer
@@ -116,17 +116,26 @@ export function KataActivePage() {
       ) : (
         <PanelGroup orientation={orientation} className="flex-1 min-h-0 overflow-hidden">
           {/* Problem panel */}
-          <Panel defaultSize={isCode || isPoint ? 40 : 50} minSize={25}>
-            <div className="h-full flex flex-col bg-surface">
-              <div className="flex-1 overflow-y-auto px-6 py-6">
-                {isPoint ? <PointProblem session={session} /> : <ProblemContent session={session} />}
-              </div>
-              <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
-                <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center">
+          <Panel defaultSize={problemPanelSize(isPoint, isCode)} minSize={25}>
+            {isPoint ? (
+              <div className="h-full overflow-y-auto bg-page px-8 py-9">
+                <PointProblem session={session} />
+                <p className="paper-note border-t border-border pt-6 mt-9 max-w-[40ch]">
                   Enter the dojo. Leave the AI outside.
                 </p>
               </div>
-            </div>
+            ) : (
+              <div className="h-full flex flex-col bg-surface">
+                <div className="flex-1 overflow-y-auto px-6 py-6">
+                  <ProblemContent session={session} />
+                </div>
+                <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
+                  <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center">
+                    Enter the dojo. Leave the AI outside.
+                  </p>
+                </div>
+              </div>
+            )}
           </Panel>
 
           <PanelResizeHandle className={`
@@ -135,7 +144,7 @@ export function KataActivePage() {
           `} />
 
           {isPoint ? (
-            <Panel defaultSize={60} minSize={20}>
+            <Panel defaultSize={62} minSize={20}>
               <PointAnswer
                 kata={kata}
                 pointedLine={pointedLine}
@@ -202,6 +211,11 @@ export function KataActivePage() {
   )
 }
 
+function problemPanelSize(isPoint: boolean, isCode: boolean): number {
+  if (isPoint) return 38
+  return isCode ? 40 : 50
+}
+
 function actionLabel(submitting: boolean, expired: boolean, expiredEmpty: boolean): string {
   if (submitting) return 'Submitting…'
   if (expiredEmpty) return 'View result'
@@ -249,7 +263,7 @@ function answerHint({
 function ClockSlot({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <div className="flex flex-col items-center gap-1">
-      <span className="paper-eyebrow leading-none">Time left</span>
+      <span className="font-mono uppercase text-[8px] md:text-[9px] tracking-[0.06em] leading-none text-secondary">Time left</span>
       {children}
     </div>
   )
@@ -355,11 +369,15 @@ function PointProblem({ session }: Readonly<{ session: SessionWithKata }>) {
   return (
     <>
       <p className="paper-eyebrow">Active kata · {kata.duration} min</p>
-      <h1 className="text-primary text-2xl font-bold tracking-tight mt-3 mb-3">{kata.title}</h1>
-      <p className="font-mono text-xs text-secondary mb-4 md:mb-6">
-        {kata.type} · {kata.difficulty} · {languageLabel(resolveLanguage(kata.language))}
+      <h1 className="text-primary text-[28px] md:text-[clamp(28px,3vw,42px)] leading-[1.12] font-bold tracking-[-0.035em] my-3 md:my-4">
+        {kata.title}
+      </h1>
+      <p className="paper-note max-md:text-[10px] mb-4 md:mb-7">
+        {kata.type} · {kata.difficulty} · {resolveLanguage(kata.language)}
       </p>
-      <KataBody body={session.body} />
+      <div className="max-w-[44ch] [&_p]:text-primary [&_p]:text-[15px] [&_p]:leading-[1.6] md:[&_p]:text-[17px] md:[&_p]:leading-[1.7] [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-[0.9em]">
+        <KataBody body={session.body} />
+      </div>
     </>
   )
 }
@@ -398,11 +416,11 @@ function PointAnswer({
 
   return (
     <div className="flex flex-col bg-page md:h-full md:overflow-y-auto">
-      <div className="min-h-11 shrink-0 border-b border-border bg-surface flex items-center justify-between gap-4 px-4 md:px-6 font-mono text-xs text-secondary">
+      <div className="min-h-11 md:min-h-12 shrink-0 border-b border-border bg-surface flex items-center justify-between gap-4 px-4 md:px-6 font-mono text-xs text-secondary">
         <span>solution.{fileExtension(language)}</span>
         <span>Read only</span>
       </div>
-      <div role="group" aria-label="Code lines">
+      <div role="group" aria-label="Code lines" className="py-1 md:py-3">
         {toCodeLines(kata.starterCode ?? '').map((code, i) => (
           <CodeLine
             key={i}
@@ -414,7 +432,7 @@ function PointAnswer({
           />
         ))}
       </div>
-      <div className="flex-1 flex flex-col gap-2 p-4 md:p-6 bg-surface border-t border-border">
+      <div className="flex flex-col gap-3 px-4 py-5 md:p-6 bg-surface border-t border-border">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4">
           <label htmlFor="point-why" className="font-mono text-xs tracking-[0.08em] uppercase text-primary">
             Why is it wrong?
@@ -431,7 +449,7 @@ function PointAnswer({
           disabled={submitting}
           readOnly={expired}
           aria-describedby={ANSWER_HINT_ID}
-          className="flex-1 min-h-36 bg-page text-primary font-sans text-[16px] leading-relaxed border border-border rounded-sm px-3 py-2.5 resize-y placeholder:text-muted disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="min-h-36 bg-page text-primary font-sans text-[16px] leading-relaxed border border-border rounded-sm px-3 py-2.5 resize-y placeholder:text-muted disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         />
         <p className="paper-note">Two or three sentences. Explain your reasoning.</p>
       </div>

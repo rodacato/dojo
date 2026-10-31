@@ -45,6 +45,7 @@ export function ActiveKataActions({
         disabled={disabled}
       >
         {label}
+        {!loading && <span aria-hidden> →</span>}
       </Button>
     </footer>
   )

@@ -58,7 +58,7 @@ export function ReturnLink() {
   return (
     <Link
       to={returnState?.from ?? '/dashboard'}
-      className={`${buttonClasses({ variant: 'subtle', size: 'lg' })} !px-2 !text-xs`}
+      className={`${buttonClasses({ variant: 'subtle', size: 'lg' })} !px-2 !text-[11px] !text-accent-text`}
     >
       {returnState ? 'Kata history' : 'Dashboard'}
     </Link>
