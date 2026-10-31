@@ -16,6 +16,7 @@ import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { PieceReceipt } from '../components/recognition/PieceReceipt'
 import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
 import { hideInsightTags } from '../lib/parse-insight'
+import { FocusedHeader } from '../components/layout/FocusedHeader'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -138,14 +139,7 @@ export function SenseiEvalPage() {
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
-      <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md flex items-center px-4 md:px-6 gap-3">
-        <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
-          dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
-        </span>
-        <div className="ml-auto">
-          <StatusChip kind={status} />
-        </div>
-      </header>
+      <FocusedHeader trailing={<StatusChip kind={status} />} />
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:py-8">
         <div className="max-w-xl mx-auto flex flex-col gap-6">
