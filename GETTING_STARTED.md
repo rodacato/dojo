@@ -74,6 +74,17 @@ pnpm dev
 
 Web → `http://localhost:5173` · API → `http://localhost:3001`.
 
+To see the screens with real-looking data, load the demo accounts. It only runs on a local
+`dojo_dev`, and prints one sign-in link per persona, from a first visit to a black belt:
+
+```bash
+pnpm --filter=@dojo/shared build
+pnpm --filter=@dojo/api db:seed:demo
+```
+
+Rerun it to refresh the data: links change on every run, and the running kata of `demo-active`
+expires in minutes. The sensei keeps using whichever LLM you configured.
+
 > The default `DATABASE_URL` points to `db:5432` — a hostname that only resolves inside the
 > Docker network. On bare metal you must override it to `localhost`.
 
