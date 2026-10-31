@@ -28,40 +28,9 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   weekStart.setDate(weekStart.getDate() - weekStart.getDay())
   weekStart.setHours(0, 0, 0, 0)
 
-  // Phase 1: active session check. May UPDATE session status, which changes
-  // the state every subsequent query reads — must finish before Phase 2.
-  const [activeRow] = await db
-    .select({
-      sessionId: sessions.id,
-      kataDuration: katas.duration,
-      startedAt: sessions.startedAt,
-      hasFinalEval: sql<boolean>`EXISTS(
-        SELECT 1 FROM ${attempts}
-        WHERE ${attempts.sessionId} = ${sessions.id}
-          AND ${attempts.isFinalEvaluation} = true
-          AND ${attempts.llmResponse} != ''
-      )`,
-    })
-    .from(sessions)
-    .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, userId), eq(sessions.status, 'active')))
-    .limit(1)
+  // Expiring a session changes what every read below sees, so it finishes first.
+  const activeSessionId = await useCases.resolveActiveSession.execute(UserId(userId))
 
-  let activeSessionId: string | null = null
-  if (activeRow) {
-    const limitMs = activeRow.kataDuration * 60 * 1000 * 1.1
-    const elapsedMs = Date.now() - activeRow.startedAt.getTime()
-    if (elapsedMs > limitMs) {
-      await db
-        .update(sessions)
-        .set({ status: activeRow.hasFinalEval ? 'completed' : 'failed', completedAt: new Date() })
-        .where(eq(sessions.id, activeRow.sessionId))
-    } else {
-      activeSessionId = activeRow.sessionId
-    }
-  }
-
-  // Phase 2: every other read is independent of the others, fan out.
   const [
     heatmapRows,
     recentRows,

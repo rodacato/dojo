@@ -7,6 +7,7 @@ import { PostgresPractitionerRepository } from './persistence/PostgresPractition
 import { PostgresMilestoneRepository } from './persistence/PostgresMilestoneRepository'
 import { GetKataOptions } from '../application/practice/GetKataOptions'
 import { PickDailyKata } from '../application/practice/PickDailyKata'
+import { ResolveActiveSession } from '../application/practice/ResolveActiveSession'
 import { GetSession } from '../application/practice/GetSession'
 import { GenerateSessionBody } from '../application/practice/GenerateSessionBody'
 import { StartSession } from '../application/practice/StartSession'
@@ -136,6 +137,7 @@ export const useCases = {
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
   getKataOptions: new GetKataOptions({ kataRepo, preferencesRepo }),
   pickDailyKata: new PickDailyKata({ dailyKatas: kataRepo, preferencesRepo }),
+  resolveActiveSession: new ResolveActiveSession({ kataRepo, sessionRepo }),
   getKataById: new GetKataById({ kataRepo }),
   createKata: new CreateKata({ kataRepo }),
   getSession: new GetSession({ sessionRepo }),

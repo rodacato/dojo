@@ -3,7 +3,7 @@ import type { Belt } from '../../../domain/recognition/belt'
 
 // vi.hoisted runs at the very top so the mock factories below can close over
 // these bindings without hitting "Cannot access X before initialization".
-const { db, selectQueue, calculateBelt, pickDailyKata } = vi.hoisted(() => {
+const { db, selectQueue, calculateBelt, pickDailyKata, resolveActiveSession } = vi.hoisted(() => {
   const selectQueue: unknown[][] = []
 
   function chainable(rows: unknown[] = []) {
@@ -29,9 +29,6 @@ const { db, selectQueue, calculateBelt, pickDailyKata } = vi.hoisted(() => {
     selectQueue,
     db: {
       select: vi.fn(() => chainable(selectQueue.shift() ?? [])),
-      update: vi.fn(() => ({
-        set: vi.fn(() => ({ where: vi.fn().mockResolvedValue(undefined) })),
-      })),
       query: {
         userPreferences: {
           findFirst: vi.fn().mockResolvedValue(undefined),
@@ -40,6 +37,7 @@ const { db, selectQueue, calculateBelt, pickDailyKata } = vi.hoisted(() => {
     },
     calculateBelt: vi.fn(),
     pickDailyKata: vi.fn(),
+    resolveActiveSession: vi.fn(),
   }
 })
 
@@ -53,7 +51,11 @@ vi.mock('../../persistence/drizzle/schema', () => ({
 }))
 
 vi.mock('../../container', () => ({
-  useCases: { calculateBelt: { execute: calculateBelt }, pickDailyKata: { execute: pickDailyKata } },
+  useCases: {
+    calculateBelt: { execute: calculateBelt },
+    pickDailyKata: { execute: pickDailyKata },
+    resolveActiveSession: { execute: resolveActiveSession },
+  },
 }))
 
 vi.mock('../middleware/auth', () => ({
@@ -76,11 +78,9 @@ const WHITE_BELT: Belt = {
 }
 
 function seedEmpty() {
-  // 10 chained selects fire in the handler — activeRow (Phase 1) + the
-  // 9-element Promise.all in Phase 2. Seed [] for every one so the handler
-  // walks the no-data path end-to-end.
+  // Seed [] for all 9 chained selects so the handler walks the no-data path.
   selectQueue.length = 0
-  selectQueue.push([], [], [], [], [], [], [], [], [], [])
+  selectQueue.push([], [], [], [], [], [], [], [], [])
 }
 
 function makeApp() {
@@ -95,6 +95,7 @@ describe('GET /dashboard', () => {
     db.query.userPreferences.findFirst.mockResolvedValue(undefined)
     calculateBelt.mockResolvedValue(WHITE_BELT)
     pickDailyKata.mockResolvedValue(null)
+    resolveActiveSession.mockResolvedValue(null)
     seedEmpty()
   })
 
@@ -152,8 +153,8 @@ describe('GET /dashboard', () => {
 
   it('picks the least-practiced kata type, matching the lowercase types stored on katas', async () => {
     selectQueue.length = 0
-    // activeRow, heatmap, recent, total, today, topics, avgTime, then the per-type counts.
-    selectQueue.push([], [], [], [], [], [], [], [{ type: 'code', count: 6 }, { type: 'whiteboard', count: 3 }], [], [])
+    // heatmap, recent, total, today, topics, avgTime, then the per-type counts.
+    selectQueue.push([], [], [], [], [], [], [{ type: 'code', count: 6 }, { type: 'whiteboard', count: 3 }], [], [])
 
     const res = await makeApp().request('/dashboard')
     const body = (await res.json()) as { practicePatterns: { mostAvoidedType: string } }
