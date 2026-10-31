@@ -216,6 +216,7 @@ describe('useEvaluationStream', () => {
       status: 'error',
       code: 'RATE_LIMIT',
       message: 'Too many submissions',
+      tokens: '',
     })
   })
 
@@ -229,6 +230,7 @@ describe('useEvaluationStream', () => {
       status: 'error',
       code: 'WS_ERROR',
       message: 'Connection error',
+      tokens: '',
     })
   })
 
@@ -243,7 +245,28 @@ describe('useEvaluationStream', () => {
       status: 'error',
       code: 'WS_CLOSED_1006',
       message: 'Connection lost before the evaluation finished. You can reconnect.',
+      tokens: '',
     })
+  })
+
+  it('keeps what the sensei had written when the stream fails', () => {
+    const { result } = setup()
+    act(() => result.current.connect())
+    act(() => FakeWebSocket.last().emit({ type: 'token', content: 'Half a thou' }))
+
+    act(() => FakeWebSocket.last().emit({ type: 'error', code: 'LLM_STREAM_ERROR' }))
+
+    expect(result.current.state).toMatchObject({ status: 'error', tokens: 'Half a thou' })
+  })
+
+  it('keeps what the sensei had written when the connection drops', () => {
+    const { result } = setup()
+    act(() => result.current.connect())
+    act(() => FakeWebSocket.last().emit({ type: 'token', content: 'Half a thou' }))
+
+    act(() => FakeWebSocket.last().onclose?.({ code: 1006 }))
+
+    expect(result.current.state).toMatchObject({ status: 'error', tokens: 'Half a thou' })
   })
 
   it('leaves a completed state untouched on a clean close', () => {

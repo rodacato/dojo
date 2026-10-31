@@ -168,6 +168,7 @@ export function SenseiEvalPage() {
 
           {state.status === 'error' ? (
             <div role="alert" className="flex flex-col gap-3">
+              {tokens && <StreamingText text={hideInsightTags(tokens)} done className="text-secondary" />}
               <p className="text-primary">The sensei couldn't evaluate your response.</p>
               <p className="text-secondary text-sm">{state.message}</p>
               <Button variant="primary" size="lg" className="w-full" onClick={() => connect()}>
