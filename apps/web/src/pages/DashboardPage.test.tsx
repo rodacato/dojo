@@ -432,6 +432,55 @@ describe('DashboardPage', () => {
       ).toBeInTheDocument()
     })
 
+    it('sits in the page, with the first kata section back once dismissed for good', async () => {
+      const user = userEvent.setup()
+      mockedGetDashboard.mockResolvedValue(freshUser())
+
+      renderDashboard()
+
+      await screen.findByRole('heading', { name: 'Welcome to the dojo.' })
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /enter the dojo/i })).not.toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /skip/i }))
+
+      expect(screen.getByRole('heading', { name: /first kata/i })).toBeInTheDocument()
+      expect(window.localStorage.getItem('dojo-onboarding-seen')).toBe('true')
+    })
+
+    it('leads straight into the daily kata and does not come back', async () => {
+      const user = userEvent.setup()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ streak: 0, totalCompleted: 0, dailyKataMinutes: 5 }))
+      mockedStartDailyKata.mockResolvedValue({ sessionId: 'sess-first' })
+
+      renderDashboard()
+
+      await user.click(await screen.findByRole('button', { name: /show me the first kata/i }))
+
+      expect(screen.getByText('resume kata page')).toBeInTheDocument()
+      expect(window.localStorage.getItem('dojo-onboarding-seen')).toBe('true')
+    })
+
+    it('keeps the non-daily stages when the instance has no daily kata', async () => {
+      mockedGetDashboard.mockResolvedValue(freshUser())
+
+      renderDashboard()
+
+      expect(await screen.findByText('Set the constraints')).toBeInTheDocument()
+    })
+
+    it('holds the first daily kata offline but can still be dismissed', async () => {
+      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ streak: 0, totalCompleted: 0, dailyKataMinutes: 5 }))
+
+      renderDashboard()
+
+      expect(await screen.findByRole('button', { name: /show me the first kata/i })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /skip/i })).toBeEnabled()
+      vi.restoreAllMocks()
+    })
+
     it('does not show the overlay for a returning user with a streak', async () => {
       mockedGetDashboard.mockResolvedValue(baseDashboard({ streak: 5 }))
 

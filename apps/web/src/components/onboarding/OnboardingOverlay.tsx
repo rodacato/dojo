@@ -1,8 +1,8 @@
-import { LogoMark } from '../Logo'
 import { Button } from '../ui/Button'
 
 interface OnboardingOverlayProps {
   daily: boolean
+  startDisabled: boolean
   onStart: () => void
   onDismiss: () => void
 }
@@ -21,10 +21,8 @@ const ADVANCED_STAGES = [
   { n: '04', label: 'Sensei evaluates' },
 ] as const
 
-// First-visit welcome card. Non-modal — clicking the backdrop does NOT
-// dismiss; user must use Skip, X, or the primary CTA. The backdrop is a
-// flat 60% page color (no blur) so the underlying dashboard stays visible.
-export function OnboardingOverlay({ daily, onStart, onDismiss }: Readonly<OnboardingOverlayProps>) {
+/** First-visit welcome, in the page and in place of today's section. Only Skip, × or the start action end it. */
+export function OnboardingOverlay({ daily, startDisabled, onStart, onDismiss }: Readonly<OnboardingOverlayProps>) {
   const stages = daily ? DAILY_STAGES : ADVANCED_STAGES
 
   function handleStart() {
@@ -33,62 +31,50 @@ export function OnboardingOverlay({ daily, onStart, onDismiss }: Readonly<Onboar
   }
 
   return (
-    <dialog
-      open
-      className="fixed inset-0 z-50 m-0 flex h-full max-h-none w-full max-w-none items-center justify-center bg-page/60 px-4 py-8"
-      aria-labelledby="onboarding-headline"
-    >
-      <div className="relative w-full max-w-120 bg-surface border border-border rounded-md p-6 md:p-8">
+    <section aria-labelledby="onboarding-headline" className="mt-6.5 md:mt-7 pb-6 md:pb-7.5">
+      <div className="flex items-start justify-between gap-3 md:gap-6">
+        <div>
+          <p className="paper-eyebrow">Invited by the dojo</p>
+          <h1
+            id="onboarding-headline"
+            className="my-3 font-sans font-bold text-2xl md:text-[2.25rem] leading-[1.1] tracking-tight text-primary"
+          >
+            Welcome to the dojo.
+          </h1>
+        </div>
         <button
           type="button"
           onClick={onDismiss}
           aria-label="Dismiss welcome"
-          className="absolute top-3 right-3 w-8 h-8 inline-flex items-center justify-center text-secondary hover:text-primary transition-colors text-lg leading-none"
+          className="size-11 shrink-0 inline-flex items-center justify-center border border-border rounded-sm text-xl text-primary hover:border-primary transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           ×
         </button>
-
-        <div className="flex items-center gap-2 mb-6">
-          <LogoMark size={20} className="text-accent" />
-          <span className="font-mono font-bold text-primary text-base inline-flex items-center select-none">
-            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
-          </span>
-        </div>
-
-        <p className="paper-eyebrow mb-3">
-          Invited by the dojo
-        </p>
-        <h2 id="onboarding-headline" className="font-sans font-bold text-primary text-3xl leading-tight tracking-tight mb-3">
-          Welcome to the dojo.
-        </h2>
-        <p className="paper-body mb-6">
-          You&apos;ve been invited to a daily practice. There&apos;s no tour. There&apos;s no
-          tutorial. You&apos;ll start with one kata. The sensei will evaluate it. Then
-          you&apos;ll know if this is for you or not.
-        </p>
-
-        <ol className="border-y border-border divide-y divide-border mb-6">
-          {stages.map((stage) => (
-            <li key={stage.n} className="flex items-baseline gap-4 py-2.5">
-              <span className="paper-note tabular-nums">{stage.n}</span>
-              <span className="text-primary text-sm">{stage.label}</span>
-            </li>
-          ))}
-        </ol>
-
-        <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-between sm:items-center">
-          <Button variant="ghost" size="md" onClick={onDismiss}>
-            Skip — I get it
-          </Button>
-          <Button variant="primary" size="md" onClick={handleStart}>
-            Show me the first kata →
-          </Button>
-        </div>
-
-        <p className="paper-note mt-4 text-center">
-          This message appears once. It won&apos;t be back tomorrow.
-        </p>
       </div>
-    </dialog>
+      <p className="paper-body max-w-165">
+        You&apos;ve been invited to a daily practice. There&apos;s no tour. There&apos;s no tutorial. You&apos;ll
+        start with one kata. The sensei will evaluate it. Then you&apos;ll know if this is for you or not.
+      </p>
+
+      <ol className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-4 md:gap-6 py-4.5 my-5 border-y border-border">
+        {stages.map((stage) => (
+          <li key={stage.n} className="flex items-baseline gap-2 md:gap-2.5 text-sm text-primary">
+            <span className="paper-note tabular-nums">{stage.n}</span>
+            {stage.label}
+          </li>
+        ))}
+      </ol>
+
+      <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-5">
+        <Button size="xl" disabled={startDisabled} onClick={handleStart}>
+          Show me the first kata →
+        </Button>
+        <Button variant="link" size="xl" onClick={onDismiss}>
+          Skip — I get it
+        </Button>
+      </div>
+
+      <p className="paper-note mt-4">This message appears once. It won&apos;t be back tomorrow.</p>
+    </section>
   )
 }
