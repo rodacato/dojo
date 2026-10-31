@@ -217,6 +217,8 @@ export function KataActivePage() {
 
   const isPoint = session?.kata.answerShape === 'point'
   const answerReady = userResponse.trim().length > 0 && (!isPoint || pointedLine !== null)
+  const expiredEmpty = timedOut && !answerReady
+  const submitLabel = timedOut ? 'Submit now' : 'Submit'
 
   async function handleSubmit() {
     if (!session || !sessionId || !answerReady || submitting) return
@@ -305,11 +307,11 @@ export function KataActivePage() {
             variant="primary"
             size="sm"
             className="max-md:h-11"
-            onClick={handleSubmit}
+            onClick={expiredEmpty ? () => navigate(`/katas/${sessionId}/result`) : handleSubmit}
             loading={submitting}
             disabled={submitting || (!answerReady && !timedOut)}
           >
-            {timedOut ? 'Submit now' : 'Submit'}
+            {expiredEmpty ? 'View result' : submitLabel}
           </Button>
         </div>
       </header>
