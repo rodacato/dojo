@@ -289,7 +289,7 @@ function Preparation({
                   Back to dashboard
                 </Button>
                 <Link to="/katas" className={`${buttonClasses({ variant: 'link', size: 'lg' })} max-md:w-full`}>
-                  Choose a kata →
+                  Start a new kata
                 </Link>
               </div>
             </>
@@ -329,7 +329,7 @@ function ProblemContent({ session }: Readonly<{ session: SessionWithKata }>) {
         <span className="inline-block font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm mb-3">
           [{session.ownerRole.toUpperCase()}]
         </span>
-        <h1 className="text-primary font-bold leading-tight tracking-tight mb-3 text-3xl md:text-4xl">
+        <h1 className="text-primary font-bold leading-tight tracking-tight mb-3 text-2xl">
           {kata.title}
         </h1>
         <div className="flex items-center gap-2 flex-wrap">

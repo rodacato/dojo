@@ -154,7 +154,7 @@ describe('KataActivePage', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Back to dashboard' }))
     expect(navigate).toHaveBeenCalledWith('/dashboard')
-    expect(screen.getByRole('link', { name: 'Choose a kata →' })).toHaveAttribute('href', '/katas')
+    expect(screen.getByRole('link', { name: 'Start a new kata' })).toHaveAttribute('href', '/katas')
     expect(screen.queryByRole('button', { name: 'Submit' })).not.toBeInTheDocument()
   })
 
