@@ -7,6 +7,8 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     setupFiles: ['./src/test/setup.ts'],
     pool: 'forks',
+    // Integration tests share one database, so concurrent files race on migrations and catalog rows.
+    fileParallelism: !process.env.TEST_DATABASE_URL,
     passWithNoTests: true,
     coverage: {
       provider: 'istanbul',
