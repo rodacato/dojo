@@ -18,7 +18,7 @@ describe('Banner', () => {
     render(<Banner eyebrow="api down">body</Banner>)
 
     const eyebrow = screen.getByText('api down')
-    expect(eyebrow).toHaveClass('font-mono', 'uppercase', 'tracking-wider')
+    expect(eyebrow).toHaveClass('paper-eyebrow')
   })
 
   it('renders rich-node children, not just strings', () => {
@@ -38,7 +38,7 @@ describe('Banner', () => {
 
       expect(screen.getByText('Info')).toHaveClass('text-secondary')
       const region = screen.getByRole('status')
-      expect(region).toHaveClass('border-l-4', 'border-l-secondary')
+      expect(region).toHaveClass('border-l-2', 'border-l-secondary')
       expect(region).not.toHaveClass('text-warning-text', 'text-danger-text')
     })
 
@@ -66,15 +66,15 @@ describe('Banner', () => {
   })
 
   describe('border variant', () => {
-    it('uses a left border + rounded card chrome by default', () => {
+    it('uses a left rule, not a card, by default', () => {
       render(<Banner eyebrow="Default">body</Banner>)
 
       const region = screen.getByRole('status')
-      expect(region).toHaveClass('border-l-4', 'rounded-md', 'border', 'border-border')
-      expect(region).not.toHaveClass('border-b-4')
+      expect(region).toHaveClass('border-l-2')
+      expect(region).not.toHaveClass('rounded-md', 'border-b')
     })
 
-    it('switches to a bottom border and drops the card chrome when bottomBorder is set', () => {
+    it('switches to a bottom rule when bottomBorder is set', () => {
       render(
         <Banner eyebrow="Bottom" bottomBorder>
           body
@@ -82,8 +82,8 @@ describe('Banner', () => {
       )
 
       const region = screen.getByRole('status')
-      expect(region).toHaveClass('border-b-4', 'border-b-secondary')
-      expect(region).not.toHaveClass('border-l-4', 'rounded-md')
+      expect(region).toHaveClass('border-b', 'border-b-secondary')
+      expect(region).not.toHaveClass('border-l-2')
     })
 
     it('combines bottomBorder with tone to pick the matching bottom color', () => {
@@ -174,6 +174,6 @@ describe('Banner', () => {
 
     const region = screen.getByRole('status')
     expect(region).toHaveClass('mt-8')
-    expect(region).toHaveClass('flex', 'items-start', 'justify-between')
+    expect(region).toHaveClass('flex', 'justify-between')
   })
 })

@@ -36,6 +36,14 @@ describe('OfflineBanner', () => {
     expect(screen.getByRole('button', { name: /retry now/i })).toBeInTheDocument()
   })
 
+  it('never claims a kata pauses, because the timer keeps running', () => {
+    mockUseOnline.mockReturnValue({ online: false, offlineSince: NOW - 5_000 })
+    render(<OfflineBanner />)
+
+    expect(screen.getByText(/Reconnect to start a kata\./)).toBeInTheDocument()
+    expect(screen.queryByText(/paused/i)).not.toBeInTheDocument()
+  })
+
   it('formats the age in minutes past 60s and hours past 60m', () => {
     mockUseOnline.mockReturnValue({ online: false, offlineSince: NOW - 120_000 })
     const { rerender } = render(<OfflineBanner />)

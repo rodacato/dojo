@@ -12,7 +12,7 @@ interface BannerProps {
   action?: ReactNode
   /** Optional × dismiss handler. Banners default to non-dismissable for cross-route persistence. */
   onDismiss?: () => void
-  /** Render the banner with a 4px BOTTOM border in tone color (vs the default left border). */
+  /** Render a full-width strip with a bottom rule in tone color (vs the default left rule). */
   bottomBorder?: boolean
   className?: string
 }
@@ -44,29 +44,26 @@ export function Banner({
   bottomBorder = false,
   className = '',
 }: Readonly<BannerProps>) {
-  const accentClass = bottomBorder
-    ? `border-b-4 ${TONE_BORDER_BOTTOM[tone]}`
-    : `border-l-4 ${TONE_BORDER_LEFT[tone]}`
   const wrapperClass = bottomBorder
-    ? `bg-surface ${accentClass} px-6 py-3`
-    : `rounded-md border border-border bg-surface ${accentClass} px-4 py-3`
+    ? `bg-surface border-b ${TONE_BORDER_BOTTOM[tone]} px-4 md:px-8 py-3`
+    : `border-l-2 ${TONE_BORDER_LEFT[tone]} pl-4 py-0.5`
 
   return (
-    <output className={`${wrapperClass} flex items-start justify-between gap-4 ${className}`}>
+    <output className={`${wrapperClass} flex max-md:flex-col md:items-center justify-between gap-x-5 gap-y-1 ${className}`}>
       <div className="min-w-0">
-        <div className={`font-mono text-xs uppercase tracking-wider mb-1 ${TONE_TEXT[tone]}`}>
+        <div className={`paper-eyebrow mb-1 ${TONE_TEXT[tone]}`}>
           {eyebrow}
         </div>
         <div className="text-sm text-secondary leading-relaxed">{children}</div>
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-3 shrink-0 empty:hidden">
         {action}
         {onDismiss && (
           <button
             type="button"
             onClick={onDismiss}
             aria-label="Dismiss"
-            className="text-secondary hover:text-primary transition-colors text-lg leading-none"
+            className="min-w-11 min-h-11 text-secondary hover:text-primary transition-colors text-lg leading-none"
           >
             ×
           </button>

@@ -31,13 +31,13 @@ export function OfflineBanner() {
           <button
             type="button"
             onClick={() => globalThis.location.reload()}
-            className="font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+            className="min-h-11 font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
           >
             Retry now
           </button>
         }
       >
-        We'll reconnect when your network returns. Active kata are paused at the last sync.
+        We'll reconnect when your network returns. Reconnect to start a kata.
       </Banner>
     </div>
   )
