@@ -12,7 +12,7 @@ import { KataId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
 import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
-import { attempts, errors, playgroundRuns, sessions, users } from '../../persistence/drizzle/schema'
+import { attempts, errors, playgroundRuns, sessions, userPreferences, users } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
 import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
@@ -479,6 +479,14 @@ practiceRoutes.post('/sessions/:id/retry-evaluation', requireAuth, uuidParam('id
 // POST /cron/reminders — Send daily kata reminders (called by cron)
 // ---------------------------------------------------------------------------
 
+const DEFAULT_WEEKLY_GOAL = 3
+const WEEKEND_REMINDER_MIN_GOAL = 5
+
+function isRestDay(now: Date, goalWeeklyTarget: number | null): boolean {
+  const isWeekend = now.getUTCDay() === 0 || now.getUTCDay() === 6
+  return isWeekend && (goalWeeklyTarget ?? DEFAULT_WEEKLY_GOAL) < WEEKEND_REMINDER_MIN_GOAL
+}
+
 practiceRoutes.post('/cron/reminders', async (c) => {
   const authHeader = c.req.header('Authorization')
   if (!config.CRON_SECRET || authHeader !== `Bearer ${config.CRON_SECRET}`) {
@@ -496,8 +504,10 @@ practiceRoutes.post('/cron/reminders', async (c) => {
       id: users.id,
       username: users.username,
       email: users.email,
+      goalWeeklyTarget: userPreferences.goalWeeklyTarget,
     })
     .from(users)
+    .leftJoin(userPreferences, eq(userPreferences.userId, users.id))
     .where(
       and(
         eq(users.reminderEnabled, true),
@@ -510,7 +520,9 @@ practiceRoutes.post('/cron/reminders', async (c) => {
       ),
     )
 
-  if (!config.RESEND_API_KEY || !config.RESEND_FROM_EMAIL || eligibleUsers.length === 0) {
+  const recipients = eligibleUsers.filter((user) => !isRestDay(new Date(), user.goalWeeklyTarget))
+
+  if (!config.RESEND_API_KEY || !config.RESEND_FROM_EMAIL || recipients.length === 0) {
     return c.json({ sent: 0 })
   }
 
@@ -518,7 +530,7 @@ practiceRoutes.post('/cron/reminders', async (c) => {
   const resend = new Resend(config.RESEND_API_KEY)
   let sent = 0
 
-  for (const user of eligibleUsers) {
+  for (const user of recipients) {
     if (!user.email) continue
     try {
       await resend.emails.send({
