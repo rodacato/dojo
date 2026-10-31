@@ -192,6 +192,42 @@ describe('KataActivePage', () => {
     expect(navigate).toHaveBeenCalledWith('/katas/sess-1/eval')
   })
 
+  it('says so when a submit fails, keeps the answer and lets the learner retry', async () => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+    submitAttempt.mockRejectedValueOnce(new ApiError(500, 'internal'))
+    submitAttempt.mockResolvedValueOnce({ attemptId: 'att-99' })
+
+    renderPage('sess-1')
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Token bucket.' } })
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent("Your answer didn't go through.")
+    expect(screen.getByRole('textbox')).toHaveValue('Token bucket.')
+    expect(navigate).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/katas/sess-1/eval'))
+  })
+
+  it.each([408, 409])('routes to the result when the server answers %i', async (status) => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+    submitAttempt.mockRejectedValue(new ApiError(status, 'closed'))
+
+    renderPage('sess-1')
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Too late.' } })
+
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+    await waitFor(() => expect(navigate).toHaveBeenCalledWith('/katas/sess-1/result'))
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('restores the unsent answer when the learner comes back to the kata', async () => {
     sessionStorage.setItem('dojo-draft-sess-1', 'half-written token bucket')
     getSession.mockResolvedValue(makeSession())
