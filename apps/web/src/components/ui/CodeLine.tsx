@@ -22,7 +22,7 @@ export function CodeLine({
       >
         {number}
       </span>
-      <code className="flex-1 min-w-0 font-mono text-sm leading-6 text-primary whitespace-pre-wrap [overflow-wrap:anywhere] [tab-size:2]">
+      <code className="flex-1 min-w-0 font-mono text-xs md:text-sm leading-[22px] md:leading-6 text-primary whitespace-pre-wrap [overflow-wrap:anywhere] [tab-size:2]">
         {code || ' '}
       </code>
     </>

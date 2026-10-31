@@ -7,12 +7,13 @@ interface TimerProps {
   size?: TimerSize
 }
 
-export type TimerSize = 'sm' | 'md' | 'lg'
+export type TimerSize = 'sm' | 'md' | 'lg' | 'clock'
 
 const SIZE_CLASSES: Record<TimerSize, string> = {
-  sm: 'text-lg',
-  md: 'text-2xl',
-  lg: 'text-5xl',
+  sm: 'text-lg font-bold',
+  md: 'text-2xl font-bold',
+  lg: 'text-5xl font-bold',
+  clock: 'text-[22px] md:text-[25px] font-medium',
 }
 
 function timerColorClass(expired: boolean, isDanger: boolean, isWarning: boolean): string {
@@ -52,7 +53,7 @@ export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: Re
 
   return (
     <span
-      className={`font-mono font-bold tabular-nums leading-none inline-flex items-center ${SIZE_CLASSES[size]} ${colorClass}`}
+      className={`font-mono tabular-nums leading-none inline-flex items-center ${SIZE_CLASSES[size]} ${colorClass}`}
       aria-live={isDanger ? 'polite' : 'off'}
     >
       {formatTime(Math.max(0, remaining))}

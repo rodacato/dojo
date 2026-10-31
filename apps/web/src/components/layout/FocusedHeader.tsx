@@ -16,7 +16,7 @@ export function FocusedHeader({ leading, center, trailing }: Readonly<FocusedHea
         <span className="inline-flex items-center gap-2 select-none">
           <LogoMark size={26} className="text-accent md:hidden" />
           <LogoMark size={32} className="text-accent max-md:hidden" />
-          <span className="font-mono text-lg text-primary tracking-wider max-md:hidden">
+          <span className="font-mono font-medium text-[23px] leading-none tracking-[-1.2px] text-primary max-md:hidden">
             dojo<span className="animate-cursor" aria-hidden>_</span>
           </span>
         </span>
@@ -25,7 +25,7 @@ export function FocusedHeader({ leading, center, trailing }: Readonly<FocusedHea
       {center && <div className="md:absolute md:left-1/2 md:-translate-x-1/2">{center}</div>}
       <div className="flex items-center gap-2 md:gap-4">
         {trailing}
-        <ThemeToggle />
+        <ThemeToggle className="text-accent-text!" />
       </div>
     </header>
   )
