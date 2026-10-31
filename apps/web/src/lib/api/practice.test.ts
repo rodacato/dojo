@@ -157,6 +157,12 @@ describe('practice api client', () => {
 
     await practice.getHistory(4)
     expect(call(fetchSpy, 1)[0]).toBe(u('/history?page=4'))
+
+    await practice.getHistory(2, { outcome: 'needs_work', q: '100% cache' })
+    expect(call(fetchSpy, 2)[0]).toBe(u('/history?page=2&outcome=needs_work&q=100%25+cache'))
+
+    await practice.getHistory(1, { outcome: 'all', q: '' })
+    expect(call(fetchSpy, 3)[0]).toBe(u('/history?page=1'))
   })
 
   describe('streamSessionBody (SSE)', () => {

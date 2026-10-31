@@ -1,4 +1,4 @@
-import type { KataDTO } from '@dojo/shared'
+import type { HistoryOutcomeFilter, HistoryPageDTO, KataDTO } from '@dojo/shared'
 import { API_URL } from '../config'
 import { getToken } from '../auth-token'
 import { request, ApiError } from './client'
@@ -74,20 +74,10 @@ export const practice = {
   getFeedback: (sessionId: string) =>
     request<{ submitted: boolean } & Partial<KataFeedback>>(`/sessions/${sessionId}/feedback`),
 
-  getHistory: (page = 1) =>
-    request<{
-      sessions: Array<{
-        id: string
-        status: string
-        kataTitle: string
-        kataType: string
-        difficulty: string
-        verdict: string | null
-        startedAt: string
-        completedAt: string | null
-      }>
-      total: number
-      page: number
-      totalPages: number
-    }>(`/history?page=${page}`),
+  getHistory: (page = 1, filters: { outcome?: HistoryOutcomeFilter; q?: string } = {}) => {
+    const qs = new URLSearchParams({ page: String(page) })
+    if (filters.outcome && filters.outcome !== 'all') qs.set('outcome', filters.outcome)
+    if (filters.q) qs.set('q', filters.q)
+    return request<HistoryPageDTO>(`/history?${qs}`)
+  },
 }
