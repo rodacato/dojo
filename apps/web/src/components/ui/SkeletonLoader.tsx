@@ -1,26 +1,9 @@
-import type { CSSProperties } from 'react'
-
-const SHIMMER_STYLE: CSSProperties = {
-  background:
-    'linear-gradient(90deg, var(--color-elevated) 0%, color-mix(in oklab, var(--color-accent) 8%, var(--color-elevated)) 50%, var(--color-elevated) 100%)',
-  backgroundSize: '200% 100%',
-  animation: 'var(--animate-skeleton)',
-}
-
 interface SkeletonProps {
   className?: string
-  /** Disable the shimmer (e.g. inside a parent that already shimmers). */
-  flat?: boolean
 }
 
-export function Skeleton({ className = '', flat = false }: Readonly<SkeletonProps>) {
-  return (
-    <div
-      aria-hidden
-      className={`bg-elevated rounded-sm ${className}`}
-      style={flat ? undefined : SHIMMER_STYLE}
-    />
-  )
+export function Skeleton({ className = '' }: Readonly<SkeletonProps>) {
+  return <div aria-hidden className={`bg-elevated rounded-sm ${className}`} />
 }
 
 export function SkeletonText({
@@ -51,7 +34,7 @@ export function SkeletonText({
 /** A dense list/table row skeleton — 48px tall, mirrors the History/Invitations row shape. */
 export function SkeletonListRow() {
   return (
-    <div className="h-12 px-4 flex items-center gap-3 border-b border-border last:border-b-0">
+    <div className="h-12 flex items-center gap-3 border-b border-border">
       <Skeleton className="h-4 w-12 shrink-0" />
       <Skeleton className="h-4 w-16 shrink-0" />
       <Skeleton className="h-3 flex-1" />
@@ -60,10 +43,10 @@ export function SkeletonListRow() {
   )
 }
 
-/** Wraps N list rows in the standard bordered card. */
+/** Stacks N list rows under a rule. */
 export function SkeletonList({ rows = 6 }: Readonly<{ rows?: number }>) {
   return (
-    <div className="rounded-md border border-border bg-surface overflow-hidden">
+    <div className="border-t border-border">
       {Array.from({ length: rows }).map((_, i) => (
         <SkeletonListRow key={i} />
       ))}
@@ -71,10 +54,10 @@ export function SkeletonList({ rows = 6 }: Readonly<{ rows?: number }>) {
   )
 }
 
-/** A card-shaped skeleton matching the Basics / SectionCard shape. */
+/** A ruled section skeleton. */
 export function SkeletonCard() {
   return (
-    <div className="rounded-md border border-border bg-surface p-6 space-y-4">
+    <div className="border-t border-border py-6 space-y-4">
       <Skeleton className="h-3 w-1/4" />
       <SkeletonText size="lg" width="2/3" />
       <SkeletonText size="md" width="full" />
@@ -86,7 +69,7 @@ export function SkeletonCard() {
 /** A hero band skeleton (eyebrow + headline + CTA) for Dashboard / Today's Kata. */
 export function SkeletonHero() {
   return (
-    <div className="rounded-md border border-border bg-surface p-6 flex items-center justify-between gap-6">
+    <div className="border-y border-border py-6 flex items-center justify-between gap-6">
       <div className="space-y-3 flex-1">
         <Skeleton className="h-3 w-24" />
         <Skeleton className="h-6 w-2/3" />

@@ -13,7 +13,7 @@ import {
 
 // Skeletons are decorative placeholders: every primitive must be aria-hidden so
 // screen readers skip the loading scaffold. We assert that contract plus the
-// structural wiring (shimmer on/off, size/width mapping, row counts) that a
+// structural wiring (size/width mapping, row counts) that a
 // realistic regression would break.
 
 function bone(container: HTMLElement): HTMLElement {
@@ -28,15 +28,8 @@ describe('Skeleton', () => {
     expect(bone(container)).toHaveAttribute('aria-hidden')
   })
 
-  it('applies the shimmer animation by default', () => {
+  it('stays flat, with no animation', () => {
     const { container } = render(<Skeleton />)
-    const el = bone(container)
-    expect(el.style.animation).toBe('var(--animate-skeleton)')
-    expect(el.style.backgroundSize).toBe('200% 100%')
-  })
-
-  it('drops the shimmer when flat (parent already shimmers)', () => {
-    const { container } = render(<Skeleton flat />)
     const el = bone(container)
     expect(el.style.animation).toBe('')
     expect(el.style.background).toBe('')
