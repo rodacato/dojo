@@ -28,6 +28,7 @@ export type ServerMessage =
 
 // ── Reconnect cache ───────────────────────────────────────────────────────────
 export interface StreamCache {
+  ws: WSInstance
   tokens: string[]
   result: EvaluationResult | null
   complete: boolean
@@ -69,7 +70,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
   const variation = kata?.variations.find((v) => v.id === currentSession.variationId)
 
   // Initialize stream cache for reconnect support (ADR-009)
-  const cache: StreamCache = { tokens: [], result: null, complete: false, isFinal: false }
+  const cache: StreamCache = { ws, tokens: [], result: null, complete: false, isFinal: false }
   streamCache.set(attemptId, cache)
 
   pendingAttempts.delete(attemptId)
@@ -88,7 +89,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
       point: kata?.type === 'review' ? pointContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
     })) {
-      streamToken(ws, cache, token)
+      streamToken(cache, token)
     }
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : 'Unknown LLM error'
@@ -99,7 +100,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       userResponse: pending.userResponse,
       llmResponse: cache.tokens.join('') || JSON.stringify({ error: errorMsg }),
     })
-    send(ws, { type: 'error', code: 'LLM_STREAM_ERROR' })
+    send(cache.ws, { type: 'error', code: 'LLM_STREAM_ERROR' })
     cache.complete = true
   } finally {
     setTimeout(() => streamCache.delete(attemptId), 60_000)
@@ -114,15 +115,22 @@ export function handleReconnect(ws: WSInstance, attemptId: string) {
     return
   }
 
+  cache.ws = ws
+
   for (const token of cache.tokens) {
     send(ws, { type: 'token', content: token })
   }
 
-  if (cache.complete && cache.result) {
-    send(ws, { type: 'evaluation', result: cache.result })
-    send(ws, { type: 'complete', isFinal: cache.isFinal })
-    if (cache.isFinal) ws.close(1000, 'Evaluation complete')
+  if (!cache.complete) return
+
+  if (!cache.result) {
+    send(ws, { type: 'error', code: 'LLM_STREAM_ERROR' })
+    return
   }
+
+  send(ws, { type: 'evaluation', result: cache.result })
+  send(ws, { type: 'complete', isFinal: cache.isFinal })
+  if (cache.isFinal) ws.close(1000, 'Evaluation complete')
 }
 
 // Runs the kata's testCode (if any) through the execution queue, emitting
@@ -164,9 +172,9 @@ function buildExecutionContext(r: ExecutionResult): string {
   return `## Test Results\nSome tests failed.\nstdout: ${r.stdout.slice(0, 500)}\nstderr: ${r.stderr.slice(0, 300)}\nExit code: ${r.exitCode} | Execution time: ${r.executionTimeMs}ms\n\nFocus on WHY the failing tests fail.`
 }
 
-function streamToken(ws: WSInstance, cache: StreamCache, token: EvaluationToken): void {
+function streamToken(cache: StreamCache, token: EvaluationToken): void {
   if (token.chunk) {
-    send(ws, { type: 'token', content: token.chunk })
+    send(cache.ws, { type: 'token', content: token.chunk })
     cache.tokens.push(token.chunk)
   }
 
@@ -176,10 +184,10 @@ function streamToken(ws: WSInstance, cache: StreamCache, token: EvaluationToken)
     cache.isFinal = token.result.isFinalEvaluation
     recordSenseiEvaluation(token.result.verdict)
 
-    send(ws, { type: 'evaluation', result: token.result })
-    send(ws, { type: 'complete', isFinal: cache.isFinal })
+    send(cache.ws, { type: 'evaluation', result: token.result })
+    send(cache.ws, { type: 'complete', isFinal: cache.isFinal })
 
-    if (cache.isFinal) ws.close(1000, 'Evaluation complete')
+    if (cache.isFinal) cache.ws.close(1000, 'Evaluation complete')
   }
 }
 
