@@ -91,15 +91,15 @@ export function ConfirmModal(props: ConfirmModalProps) {
 
   return (
     <Modal open onClose={() => !busy && onCancel()} flow={busy} label={title}>
-      <div className="p-8">
+      <div className="p-7">
         <div
-          className={`font-mono text-xs uppercase tracking-wider mb-2 ${TONE_TEXT[tone]}`}
+          className={`paper-eyebrow mb-3 ${TONE_TEXT[tone]}`}
         >
           {eyebrow}
         </div>
-        <h2 className="text-lg font-semibold text-primary leading-snug">{title}</h2>
+        <h2 className="text-xl font-bold tracking-tight text-primary">{title}</h2>
         {children && (
-          <div className="mt-3 text-sm text-secondary leading-relaxed space-y-3">
+          <div className="mt-3 text-base text-secondary leading-relaxed space-y-3">
             {children}
           </div>
         )}
@@ -129,8 +129,8 @@ export function ConfirmModal(props: ConfirmModalProps) {
           </div>
         )}
 
-        <div className="mt-6 flex items-center justify-end gap-3">
-          <Button variant="ghost" size="md" onClick={onCancel} disabled={busy}>
+        <div className="mt-6 flex max-md:flex-col-reverse md:items-center justify-end gap-3">
+          <Button variant="ghost" size="lg" onClick={onCancel} disabled={busy}>
             {cancelLabel}
           </Button>
           {primaryVariant === 'danger' ? (
@@ -138,14 +138,14 @@ export function ConfirmModal(props: ConfirmModalProps) {
               type="button"
               onClick={() => !primaryDisabled && onConfirm()}
               disabled={primaryDisabled}
-              className="inline-flex items-center justify-center gap-2 h-9 px-4 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-danger text-primary border border-danger text-sm transition-colors hover:bg-danger/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-danger/40 disabled:border-danger/40"
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 font-mono uppercase tracking-wider whitespace-nowrap rounded-sm bg-danger text-primary border border-danger text-sm transition-colors hover:bg-danger/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-danger/40 disabled:border-danger/40"
             >
               {busy ? `${primaryLabel}…` : primaryLabel}
             </button>
           ) : (
             <Button
               variant={primaryVariant}
-              size="md"
+              size="lg"
               onClick={onConfirm}
               loading={busy}
               disabled={primaryDisabled}

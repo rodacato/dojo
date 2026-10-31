@@ -48,7 +48,7 @@ export function Modal({ open, onClose, flow = false, label, children }: Readonly
         if (!flow && onClose && e.target === dialogRef.current) onClose()
       }}
     >
-      <div className="bg-surface border border-border rounded-md max-w-lg w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-page border border-border rounded-md w-[min(30rem,calc(100%-2rem))] max-h-[calc(100dvh-3rem)] overflow-y-auto">
         {children}
       </div>
     </dialog>
