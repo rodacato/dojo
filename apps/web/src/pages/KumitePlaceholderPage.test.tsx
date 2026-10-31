@@ -28,6 +28,19 @@ describe('KumitePlaceholderPage', () => {
     expect(screen.getByText(/Until then — practice solo\./)).toBeInTheDocument()
   })
 
+  it('sends the learner back to solo practice', () => {
+    renderPage()
+
+    expect(screen.getByRole('link', { name: /practice solo/i })).toHaveAttribute('href', '/dashboard')
+  })
+
+  it('offers no way to join a kumite that does not exist', () => {
+    renderPage()
+
+    expect(screen.getAllByRole('link')).toHaveLength(1)
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
   it('explains what kumite is so the route stays honest', () => {
     renderPage()
 
