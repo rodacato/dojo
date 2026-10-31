@@ -34,6 +34,7 @@ export function KataActivePage() {
     pointAtLine,
     submitting,
     submitFailed,
+    online,
     draftKept,
     lastSeconds,
     timedOut,
@@ -81,7 +82,7 @@ export function KataActivePage() {
   // All formats land side-by-side on desktop — the chat panel mirrors the
   // code/whiteboard shell so the redesign reads as one product.
   const orientation = isMobile ? 'vertical' : 'horizontal'
-  const showFailure = submitFailed && !submitting
+  const showFailure = submitFailed && online && !submitting
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
@@ -104,6 +105,13 @@ export function KataActivePage() {
         }
       />
 
+      <div role="status">
+        {!online && (
+          <p className="border-b border-border bg-surface px-4 md:px-8 py-2 text-sm text-primary">
+            Offline. Keep writing. The timer keeps running.
+          </p>
+        )}
+      </div>
       <p className="sr-only" aria-live="polite">
         {lastSeconds && !timedOut ? 'Less than thirty seconds remain.' : ''}
       </p>
@@ -176,6 +184,7 @@ export function KataActivePage() {
           submitting,
           expired: timedOut,
           expiredEmpty,
+          online,
           failed: showFailure,
           hasDraft,
           isPoint,
@@ -186,7 +195,7 @@ export function KataActivePage() {
         note={draftNote(draftKept, isPoint)}
         label={actionLabel(submitting, timedOut, expiredEmpty)}
         loading={submitting}
-        disabled={submitting || (!answerReady && !timedOut)}
+        disabled={submitting || (!answerReady && !timedOut) || (!online && !expiredEmpty)}
         onAction={expiredEmpty ? () => navigate(`/katas/${sessionId}/result`) : handleSubmit}
       />
 
@@ -227,6 +236,7 @@ function answerHint({
   submitting,
   expired,
   expiredEmpty,
+  online,
   failed,
   hasDraft,
   isPoint,
@@ -236,6 +246,7 @@ function answerHint({
   submitting: boolean
   expired: boolean
   expiredEmpty: boolean
+  online: boolean
   failed: boolean
   hasDraft: boolean
   isPoint: boolean
@@ -244,6 +255,7 @@ function answerHint({
 }>): string {
   if (submitting) return 'Submitting…'
   if (expiredEmpty) return hasDraft ? 'Time expired. Your draft is here.' : 'Time expired. No answer was sent.'
+  if (!online) return hasDraft ? 'Reconnect to submit. Your answer is still here.' : 'Reconnect to submit.'
   if (failed) return "Your answer didn't go through. It's still here. Try again."
   if (expired) return 'Time expired. Your draft is here.'
   if (!isPoint) return ''

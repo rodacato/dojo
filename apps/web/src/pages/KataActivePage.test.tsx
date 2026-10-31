@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -308,6 +308,47 @@ describe('KataActivePage', () => {
     expect(screen.getByText(/could not keep the draft/)).toBeInTheDocument()
     expect(screen.queryByText(/is kept in this browser tab/)).not.toBeInTheDocument()
     setItem.mockRestore()
+  })
+
+  describe('offline', () => {
+    beforeEach(() => {
+      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+    })
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('keeps writing, disables sending and says the timer keeps running', async () => {
+      getSession.mockResolvedValue(makeSession())
+      sessionStorage.setItem('dojo-draft-sess-1', 'my draft')
+
+      renderPage('sess-1')
+
+      expect(await screen.findByText('Offline. Keep writing. The timer keeps running.')).toBeInTheDocument()
+      expect(screen.getByText('Reconnect to submit. Your answer is still here.')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
+      expect(screen.getByRole('textbox')).toBeEnabled()
+    })
+
+    it('does not send at the deadline, and lets the learner send on reconnect', async () => {
+      const user = userEvent.setup()
+      const startedAt = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+      sessionStorage.setItem('dojo-draft-sess-1', 'finished offline')
+      getSession.mockResolvedValue(makeSession({ startedAt }))
+      submitAttempt.mockResolvedValue({ attemptId: 'att-1' })
+
+      renderPage('sess-1')
+      const submitNow = await screen.findByRole('button', { name: 'Submit now' }, { timeout: 2000 })
+      expect(submitNow).toBeDisabled()
+      expect(submitAttempt).not.toHaveBeenCalled()
+
+      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
+      fireEvent(globalThis as unknown as Window, new Event('online'))
+
+      await waitFor(() => expect(submitNow).toBeEnabled())
+      await user.click(submitNow)
+      expect(submitAttempt).toHaveBeenCalledWith('sess-1', 'finished offline')
+    })
   })
 
   it('restores the unsent answer when the learner comes back to the kata', async () => {

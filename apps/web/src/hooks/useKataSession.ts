@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api, ApiError, type SessionWithKata } from '../lib/api'
+import { useOnline } from './useOnline'
 
 const PREPARING_MESSAGES = [
   'The sensei is reading your brief...',
@@ -41,6 +42,7 @@ function writeStored(key: string, value: string): boolean {
 
 export function useKataSession(sessionId: string | undefined) {
   const navigate = useNavigate()
+  const { online } = useOnline()
   const [session, setSession] = useState<SessionWithKata | null>(null)
   const [preparing, setPreparing] = useState(false)
   const [preparingMsg, setPreparingMsg] = useState(PREPARING_MESSAGES[0]!)
@@ -215,7 +217,7 @@ export function useKataSession(sessionId: string | undefined) {
   const hasDraft = userResponse.trim().length > 0 || pointedLine !== null
 
   async function handleSubmit() {
-    if (!session || !sessionId || !answerReady || submitting) return
+    if (!session || !sessionId || !answerReady || submitting || !online) return
     setSubmitting(true)
     setSubmitFailed(false)
     try {
@@ -261,6 +263,7 @@ export function useKataSession(sessionId: string | undefined) {
     pointAtLine,
     submitting,
     submitFailed,
+    online,
     draftKept,
     lastSeconds,
     timedOut,
