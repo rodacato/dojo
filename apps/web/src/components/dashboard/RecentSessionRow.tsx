@@ -1,42 +1,45 @@
-import { TypeBadge, DifficultyBadge } from '../ui/Badge'
+import { Link } from 'react-router-dom'
 import type { DashboardData } from '../../lib/api'
-import type { KataType, Difficulty } from '@dojo/shared'
-import { isVerdict, VERDICT_LABELS, VERDICT_PILL } from '../../lib/verdict'
+import type { KataType, Verdict } from '@dojo/shared'
+import { TypeRuleBadge } from '../ui/Badge'
+import { isVerdict, VERDICT_LABELS, VERDICT_TEXT } from '../../lib/verdict'
 
 interface RecentSessionRowProps {
   session: DashboardData['recentSessions'][number]
-  onClick: () => void
+  to: string
 }
 
-export function RecentSessionRow({ session, onClick }: Readonly<RecentSessionRowProps>) {
+export function RecentSessionRow({ session, to }: Readonly<RecentSessionRowProps>) {
   const { verdict } = session
-  const relativeDate = formatRelativeDate(new Date(session.startedAt))
   return (
-    <button
-      onClick={onClick}
-      className="group w-full flex flex-wrap sm:flex-nowrap items-center gap-x-3 gap-y-1.5 px-2 min-h-12 py-2 sm:py-0 text-left hover:bg-elevated transition-colors focus-visible:outline-none focus-visible:bg-elevated"
+    <Link
+      to={to}
+      className="grid grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_auto_auto_auto] items-center gap-x-3 gap-y-2 md:gap-x-4.5 min-h-14.5 py-3.5 md:py-3 border-b border-border text-primary hover:bg-surface transition-colors duration-150 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
     >
-      <span className="shrink-0">
-        <TypeBadge type={session.kataType as KataType} />
+      <span className="min-w-0 wrap-anywhere text-sm font-medium">{session.kataTitle}</span>
+      <span className="max-md:row-start-2 flex items-center gap-2">
+        <TypeRuleBadge type={session.kataType as KataType} />
+        <span className="font-mono text-xs uppercase text-secondary">{session.difficulty}</span>
       </span>
-      <span className="shrink-0 hidden sm:inline-flex">
-        <DifficultyBadge difficulty={session.difficulty as Difficulty} />
-      </span>
-      {/* The full verdict leaves the title no width on a phone, so it takes a line of its own. */}
-      <span className="order-first basis-full sm:order-none sm:basis-auto flex-1 min-w-0 text-primary text-sm font-medium truncate">
-        {session.kataTitle}
-      </span>
-      {isVerdict(verdict) && (
-        <span
-          className={`shrink-0 font-mono text-xs uppercase tracking-wider border px-2 py-0.5 rounded-sm ${VERDICT_PILL[verdict]}`}
-        >
-          {VERDICT_LABELS[verdict]}
-        </span>
+      {isVerdict(verdict) ? (
+        <VerdictLabel verdict={verdict} className="max-md:row-start-2 max-md:col-start-2 md:min-w-31.5 text-right" />
+      ) : (
+        <span className="max-md:hidden" />
       )}
-      <span className="ml-auto sm:ml-0 shrink-0 text-secondary text-xs font-mono w-14 text-right">
-        {relativeDate}
+      <span className="max-md:row-start-1 max-md:col-start-2 self-start md:self-auto justify-self-end min-w-7 text-right font-mono text-xs text-secondary">
+        {formatRelativeDate(new Date(session.startedAt))}
       </span>
-    </button>
+    </Link>
+  )
+}
+
+export function VerdictLabel({ verdict, className = '' }: Readonly<{ verdict: Verdict; className?: string }>) {
+  return (
+    <span
+      className={`font-mono text-xs uppercase tracking-[0.02em] before:content-[''] before:inline-block before:size-1 before:bg-current before:mr-1.5 before:align-middle ${VERDICT_TEXT[verdict]} ${className}`}
+    >
+      {VERDICT_LABELS[verdict]}
+    </span>
   )
 }
 
