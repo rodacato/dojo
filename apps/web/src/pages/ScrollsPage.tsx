@@ -22,7 +22,7 @@ function ScrollRow({ entry, locale }: Readonly<{ entry: ScrollEntryDTO; locale: 
       className="group ruled-row items-baseline gap-6 py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
     >
       <div className="min-w-0">
-        <h2 className="text-primary text-[1.3125rem] md:text-2xl font-bold leading-[1.4] tracking-[-0.02em] wrap-anywhere group-hover:text-accent-text transition-colors">
+        <h2 className="text-primary text-xl font-bold leading-[1.4] tracking-[-0.02em] wrap-anywhere group-hover:text-accent-text transition-colors">
           {pickLocalized(manifest.title, manifest.locales, locale)}
         </h2>
         <p className="paper-body mt-2.5 max-w-[41.25rem] wrap-anywhere">
