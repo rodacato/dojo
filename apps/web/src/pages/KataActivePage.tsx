@@ -173,7 +173,7 @@ export function KataActivePage() {
           why: userResponse,
         })}
         failed={showFailure}
-        note={draftNote(draftKept, isPoint)}
+        note={draftNote(draftKept, isPoint && online && !timedOut)}
         label={actionLabel(submitting, timedOut, expiredEmpty)}
         loading={submitting}
         disabled={submitting || (!answerReady && !timedOut) || (!online && !expiredEmpty)}
@@ -208,9 +208,9 @@ function actionLabel(submitting: boolean, expired: boolean, expiredEmpty: boolea
   return expired ? 'Submit now' : 'Submit'
 }
 
-function draftNote(draftKept: boolean, isPoint: boolean): string {
+function draftNote(draftKept: boolean, shortcutWorks: boolean): string {
   if (!draftKept) return 'Keep this tab open · local storage unavailable'
-  return isPoint ? 'Draft kept in this tab · Ctrl/⌘ + Enter to submit' : 'Draft kept in this tab'
+  return shortcutWorks ? 'Draft kept in this tab · Ctrl/⌘ + Enter to submit' : 'Draft kept in this tab'
 }
 
 function answerHint({
