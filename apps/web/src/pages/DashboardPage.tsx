@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import type { BeltDTO } from '@dojo/shared'
+import type { BeltDTO, KataType } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { PageLoader } from '../components/PageLoader'
 import { ErrorState } from '../components/ui/ErrorState'
+import { TypeRuleBadge } from '../components/ui/Badge'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
@@ -12,14 +13,12 @@ import { useFirstVisit } from '../hooks/useFirstVisit'
 import { useOnline } from '../hooks/useOnline'
 import { BELT_COLOR } from '../lib/belt-colors'
 
-const SECTION_RULE = 'mt-10 md:mt-12 border-t border-border pt-6 md:pt-8'
-
 const TEXT_LINK =
   'inline-flex items-center min-h-11 font-mono text-xs uppercase tracking-[0.08em] text-accent-text hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
 
 const START_ERROR = "Couldn't start that kata. Try again."
 
-const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
+const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
 const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
   weekday: 'long',
   month: 'long',
@@ -63,6 +62,7 @@ export function DashboardPage() {
   const daily = dashboard.dailyKataMinutes !== null
   const startKata = daily ? startDailyKata : () => navigate('/katas')
   const startDisabled = daily && !online
+  const showPatterns = dashboard.totalCompleted >= 3
 
   return (
     <div className="paper-container py-8 md:py-12">
@@ -85,27 +85,18 @@ export function DashboardPage() {
         onViewResults={(id) => navigate(`/katas/${id}/result`)}
       />
 
-      <BeltStrip belt={dashboard.belt} />
-
-      <div className={`${SECTION_RULE} grid md:grid-cols-12 gap-x-12`}>
-        <StreakCard
-          streak={dashboard.streak}
-          heatmapData={dashboard.heatmapData}
-          weeklyGoal={dashboard.weeklyGoal}
-          spanWhenAlone={dashboard.totalCompleted < 3}
-        />
-        {dashboard.totalCompleted >= 3 && (
-          <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />
-        )}
+      <div
+        className={`grid gap-7 md:gap-8 lg:gap-14 border-t border-border py-6 md:py-6.5 ${showPatterns ? 'md:grid-cols-2' : ''}`}
+      >
+        <StreakCard streak={dashboard.streak} heatmapData={dashboard.heatmapData} weeklyGoal={dashboard.weeklyGoal} />
+        {showPatterns && <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />}
       </div>
 
-      {dashboard.recentSessions.length > 0 && (
-        <RecentActivity sessions={dashboard.recentSessions} />
-      )}
+      <BeltStrip belt={dashboard.belt} />
 
-      {dashboard.totalCompleted >= 3 && dashboard.weakAreas.length > 0 && (
-        <WeakAreasCard weakAreas={dashboard.weakAreas} />
-      )}
+      {dashboard.recentSessions.length > 0 && <RecentActivity sessions={dashboard.recentSessions} />}
+
+      {showPatterns && dashboard.weakAreas.length > 0 && <WeakAreasCard weakAreas={dashboard.weakAreas} />}
     </div>
   )
 }
@@ -123,27 +114,27 @@ function DateStrip() {
 
 function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
   return (
-    <section className={`${SECTION_RULE} flex flex-col md:flex-row md:items-center gap-5 md:gap-8`}>
-      <div className="flex items-center gap-3 shrink-0">
+    <section
+      aria-labelledby="belt-heading"
+      className="grid grid-cols-[1fr_auto] lg:grid-cols-[1.15fr_2.5fr_auto] items-center gap-5 lg:gap-6 py-5.5 md:py-6 border-y border-border"
+    >
+      <div className="flex items-center gap-3">
         <span
           aria-hidden
-          className="inline-block w-7 h-7 rounded-full border border-border"
+          className="size-6 shrink-0 rounded-full border border-border"
           style={{ backgroundColor: BELT_COLOR[belt.rank] }}
         />
-        <h2 className="font-sans font-bold text-xl text-primary tracking-tight">
+        <h2 id="belt-heading" className="font-sans font-bold text-lg text-primary tracking-tight whitespace-nowrap">
           {belt.rank} belt
         </h2>
       </div>
-      <dl className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 flex-1">
+      <dl className="max-lg:row-start-2 max-lg:col-span-2 grid grid-cols-2 min-[360px]:grid-cols-4 gap-2.5 lg:gap-4.5">
         <BeltFactor label="katas" value={belt.factors.completed} />
         <BeltFactor label="clusters" value={belt.factors.distinctClusters} />
         <BeltFactor label="active (30)" value={belt.factors.activeDays30} />
         <BeltFactor label="at rank" value={belt.factors.daysAtRank} />
       </dl>
-      <Link
-        to="/belts"
-        className="paper-eyebrow hover:text-primary transition-colors shrink-0 self-start md:self-auto"
-      >
+      <Link to="/belts" className={TEXT_LINK} aria-label="View belt progress">
         View →
       </Link>
     </section>
@@ -153,8 +144,8 @@ function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
 function BeltFactor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
-      <dt className="paper-eyebrow mb-1">{label}</dt>
-      <dd className="font-mono text-xl text-primary tabular-nums leading-none">{value}</dd>
+      <dt className="paper-eyebrow max-md:tracking-[0.02em]">{label}</dt>
+      <dd className="mt-1 font-mono text-xl text-primary tabular-nums">{value}</dd>
     </div>
   )
 }
@@ -163,38 +154,34 @@ function StreakCard({
   streak,
   heatmapData,
   weeklyGoal,
-  spanWhenAlone = false,
 }: Readonly<{
   streak: number
   heatmapData: DashboardData['heatmapData']
   weeklyGoal: DashboardData['weeklyGoal']
-  spanWhenAlone?: boolean
 }>) {
   const week = useMemo(() => weekActivity(heatmapData), [heatmapData])
   return (
-    <section
-      className={spanWhenAlone ? 'md:col-span-12' : 'md:col-span-7'}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <p className="paper-eyebrow">Current streak</p>
+    <section aria-labelledby="streak-heading">
+      <div className="flex items-baseline justify-between gap-4">
+        <h2 className="paper-eyebrow" id="streak-heading">Current streak</h2>
         {weeklyGoal.target !== null && weeklyGoal.target > 0 && (
           <p className="paper-note tabular-nums">
             {weeklyGoal.completed}/{weeklyGoal.target} this week
           </p>
         )}
       </div>
-      <div className="flex items-baseline gap-2 mb-6">
-        <span className="font-mono text-5xl text-primary leading-none tracking-tight tabular-nums">{streak}</span>
+      <p className="flex items-baseline gap-2.5 mt-2">
+        <span className="font-mono text-4xl md:text-5xl text-primary tracking-tight tabular-nums">{streak}</span>
         <span className="font-mono text-secondary text-sm">days</span>
-      </div>
-      <div className="flex gap-1.5">
+      </p>
+      <div className="grid grid-cols-7 gap-2 mt-3.5 md:mt-4.5">
         {week.map((active, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+          <div key={WEEKDAY_LABELS[i]} className="flex flex-col gap-1.5 text-center">
             <div
-              className={`h-2 w-full rounded-sm ${active ? 'bg-success' : 'bg-page border border-border/40'}`}
+              className={`h-2 rounded-sm border ${active ? 'bg-success border-success' : 'border-border'}`}
               aria-hidden
             />
-            <span className="text-secondary text-xs font-mono uppercase">
+            <span className="text-secondary text-xs font-mono">
               {WEEKDAY_LABELS[i]}
               <span className="sr-only">{active ? ': kata done' : ': no kata'}</span>
             </span>
@@ -214,49 +201,31 @@ function formatAvgTime(minutes: number): string {
 }
 
 function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns: DashboardData['practicePatterns'] }>) {
-  const rows: Array<{ label: string; value: React.ReactNode }> = [
-    {
-      label: 'Avg time',
-      value: (
-        <span className="font-mono text-primary text-base tabular-nums">
-          {formatAvgTime(practicePatterns.avgTimeMinutes)}
-        </span>
-      ),
-    },
-  ]
-  if (practicePatterns.mostAvoidedType) {
-    rows.push({
-      label: 'Most avoided',
-      value: (
-        <span className="font-mono text-primary text-xs uppercase tracking-wider bg-elevated px-2 py-0.5 rounded-sm">
-          {practicePatterns.mostAvoidedType}
-        </span>
-      ),
-    })
-  }
-  rows.push({
-    label: 'Sessions timed out',
-    value: (
-      <span
-        className={`font-mono text-base tabular-nums ${practicePatterns.sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success-text'}`}
-      >
-        {practicePatterns.sessionsTimedOut}
-      </span>
-    ),
-  })
-
+  const { avgTimeMinutes, mostAvoidedType, sessionsTimedOut } = practicePatterns
   return (
-    <section className="md:col-span-5 max-md:mt-10 max-md:border-t max-md:border-border max-md:pt-6">
-      <p className="paper-eyebrow mb-4">Practice patterns</p>
-      <div className="flex flex-col border-y border-border divide-y divide-border">
-        {rows.map(({ label, value }) => (
-          <div key={label} className="flex items-center justify-between py-3">
-            <span className="paper-body">{label}</span>
-            {value}
-          </div>
-        ))}
-      </div>
+    <section aria-labelledby="patterns-heading" className="max-md:border-t max-md:border-border max-md:pt-6">
+      <h2 className="paper-eyebrow mb-2.5" id="patterns-heading">Practice patterns</h2>
+      <dl>
+        <PatternRow label="Avg time">{formatAvgTime(avgTimeMinutes)}</PatternRow>
+        {mostAvoidedType && (
+          <PatternRow label="Most avoided">
+            <TypeRuleBadge type={mostAvoidedType as KataType} />
+          </PatternRow>
+        )}
+        <PatternRow label="Sessions timed out">
+          <span className={sessionsTimedOut > 0 ? 'text-danger-text' : 'text-success-text'}>{sessionsTimedOut}</span>
+        </PatternRow>
+      </dl>
     </section>
+  )
+}
+
+function PatternRow({ label, children }: Readonly<{ label: string; children: ReactNode }>) {
+  return (
+    <div className="flex items-center justify-between gap-4 min-h-10 md:min-h-9.25 border-b border-border last:border-b-0">
+      <dt className="text-sm text-secondary">{label}</dt>
+      <dd className="font-mono text-base text-primary tabular-nums">{children}</dd>
+    </div>
   )
 }
 
@@ -277,18 +246,13 @@ function RecentActivity({ sessions }: Readonly<{ sessions: DashboardData['recent
 }
 
 function WeakAreasCard({ weakAreas }: Readonly<{ weakAreas: DashboardData['weakAreas'] }>) {
-  if (weakAreas.length === 0) return null
   return (
-    <section className={SECTION_RULE}>
-      <p className="paper-eyebrow mb-4">Weak areas</p>
-      <div className="flex flex-wrap gap-2">
+    <section aria-labelledby="weak-heading" className="flex flex-wrap items-baseline gap-3 md:gap-6 pt-6">
+      <h2 className="paper-eyebrow" id="weak-heading">Weak areas</h2>
+      <div className="flex flex-wrap gap-3 md:gap-4.5">
         {weakAreas.map((a) => (
-          <span
-            key={a.topic}
-            className="font-mono text-xs text-warning-text bg-warning/10 border border-warning/30 rounded-sm px-2.5 py-1 inline-flex items-center gap-1.5"
-          >
-            <span className="text-primary lowercase">{a.topic}</span>
-            <span className="text-warning-text/70">({a.frequency})</span>
+          <span key={a.topic} className="font-mono text-xs text-secondary">
+            {a.topic} <span className="text-warning-text">({a.frequency})</span>
           </span>
         ))}
       </div>

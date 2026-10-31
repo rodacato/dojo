@@ -99,6 +99,28 @@ describe('DashboardPage', () => {
       expect(screen.getByText('25m')).toBeInTheDocument()
     })
 
+    it('puts practice before rank', async () => {
+      mockedGetDashboard.mockResolvedValue(baseDashboard())
+
+      renderDashboard()
+
+      const streak = await screen.findByRole('heading', { name: 'Current streak' })
+      const belt = screen.getByRole('heading', { name: 'green belt' })
+      expect(streak.compareDocumentPosition(belt) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    })
+
+    it('spells out which days of this week have a kata', async () => {
+      const iso = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ heatmapData: [{ date: iso(new Date()), count: 1 }] }))
+
+      renderDashboard()
+
+      await screen.findByText('Mon', { exact: false })
+      expect(screen.getByText(': kata done')).toBeInTheDocument()
+      expect(screen.getAllByText(': no kata')).toHaveLength(6)
+    })
+
     it('hides practice patterns and weak areas while under the 3-kata threshold', async () => {
       mockedGetDashboard.mockResolvedValue(
         baseDashboard({
