@@ -162,6 +162,20 @@ describe('GET /dashboard', () => {
     expect(body.practicePatterns.mostAvoidedType).toBe('CHAT')
   })
 
+  it('can suggest review once every other type has been practiced', async () => {
+    selectQueue.length = 0
+    selectQueue.push([], [], [], [], [], [], [], [
+      { type: 'code', count: 6 },
+      { type: 'chat', count: 2 },
+      { type: 'whiteboard', count: 3 },
+    ], [], [])
+
+    const res = await makeApp().request('/dashboard')
+    const body = (await res.json()) as { practicePatterns: { mostAvoidedType: string } }
+
+    expect(body.practicePatterns.mostAvoidedType).toBe('REVIEW')
+  })
+
   it('reports a user-set weekly goal target', async () => {
     db.query.userPreferences.findFirst.mockResolvedValue({ goalWeeklyTarget: 5 })
 

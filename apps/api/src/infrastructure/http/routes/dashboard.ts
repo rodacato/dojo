@@ -121,7 +121,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     .slice(0, 8)
     .map(([topic, frequency]) => ({ topic, frequency }))
 
-  const allTypes = ['CODE', 'CHAT', 'WHITEBOARD']
+  const allTypes = ['CODE', 'CHAT', 'WHITEBOARD', 'REVIEW']
   const typeCounts = new Map(metrics.typeCounts.map((r) => [r.type.toUpperCase(), r.count]))
   const mostAvoided = allTypes
     .map((t) => ({ type: t, count: typeCounts.get(t) ?? 0 }))
