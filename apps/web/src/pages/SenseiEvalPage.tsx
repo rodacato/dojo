@@ -6,17 +6,18 @@ import { useEvaluationStream, type EvaluationResult } from '../hooks/useEvaluati
 import { useTypingReveal } from '../hooks/useTypingReveal'
 import { useRotatingMessage } from '../hooks/useRotatingMessage'
 import { Button } from '../components/ui/Button'
-import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { StreamingText } from '../components/ui/StreamingText'
 import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
-import { EnsoLoader } from '../components/ui/EnsoLoader'
+import { SkeletonText } from '../components/ui/SkeletonLoader'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { PieceReceipt } from '../components/recognition/PieceReceipt'
-import { KataNotes, PostKataActions, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
+import { KataContext, KataNotes, PostKataActions, ReviewVerdict, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
+import { ReturnLink, ReviewGrid, ReviewShell, ReviewTitle, kataMeta, useReturnState, type ReviewStatus } from '../components/eval/ReviewShell'
 import { hideInsightTags } from '../lib/parse-insight'
-import { FocusedHeader } from '../components/layout/FocusedHeader'
+import { useOnline } from '../hooks/useOnline'
+import { VERDICT_LABELS } from '../lib/verdict'
 
 const EVAL_MESSAGES = [
   'The sensei is reviewing your work...',
@@ -35,11 +36,11 @@ interface Exchange {
 
 const inFlightKey = (sessionId: string) => `dojo-attempt-in-flight-${sessionId}`
 
-type StatusChipKind = 'connecting' | 'executing' | 'streaming' | 'follow-up' | 'complete' | 'error'
-
 export function SenseiEvalPage() {
   const { id: sessionId } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const returnState = useReturnState()
+  const { online } = useOnline()
   const { data: session, reload: reloadSession } = useAsync(() => api.getSession(sessionId!), [sessionId])
   const [followUpText, setFollowUpText] = useState('')
   const [followUpSubmitting, setFollowUpSubmitting] = useState(false)
@@ -47,7 +48,7 @@ export function SenseiEvalPage() {
   const [history, setHistory] = useState<Exchange[]>([])
   const { state, connect, submit, reconnect } = useEvaluationStream(sessionId!)
   const submittedAttemptRef = useRef<string | null>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLElement>(null)
   const evalMessage = useRotatingMessage(EVAL_MESSAGES)
 
   useEffect(() => {
@@ -71,19 +72,15 @@ export function SenseiEvalPage() {
       reconnect(inFlight)
       return
     }
-    navigate(`/katas/${sessionId}/result`, { replace: true })
-  }, [state.status, sessionId, submit, reconnect, navigate])
+    navigate(`/katas/${sessionId}/result`, { replace: true, state: returnState })
+  }, [state.status, sessionId, submit, reconnect, navigate, returnState])
 
   const attemptGone = state.status === 'error' && state.code === 'ATTEMPT_NOT_FOUND'
   useEffect(() => {
     if (!attemptGone || !sessionId) return
     sessionStorage.removeItem(inFlightKey(sessionId))
-    navigate(`/katas/${sessionId}/result`, { replace: true })
-  }, [attemptGone, sessionId, navigate])
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
-  }, [state])
+    navigate(`/katas/${sessionId}/result`, { replace: true, state: returnState })
+  }, [attemptGone, sessionId, navigate, returnState])
 
   const isStreaming = state.status === 'streaming'
   const hasResult = state.status === 'evaluation' || state.status === 'complete'
@@ -102,8 +99,17 @@ export function SenseiEvalPage() {
   )
   const revealedTokens = useTypingReveal(tokens, !isStreaming)
 
+  const awaitingFollowUp = !!result && !result.isFinalEvaluation && !!result.followUpQuestion
+  // Only a conversation follows its newest line. The result reads from the verdict down.
+  const inConversation = !isFinal && (awaitingFollowUp || history.length > 0)
+  useEffect(() => {
+    if (!inConversation) return
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
+  }, [state, inConversation])
+
   const status = deriveStatus({
     state: state.status,
+    online,
     isStreaming,
     hasResult,
     isFinal: result?.isFinalEvaluation,
@@ -135,24 +141,57 @@ export function SenseiEvalPage() {
   const prose = hideInsightTags(revealedTokens)
   const code = session?.kata.starterCode ?? null
   const pointed = code ? parsePointResponse(session?.finalAttempt?.userResponse) : null
-  const awaitingFollowUp = !!result && !result.isFinalEvaluation && !!result.followUpQuestion
+
+  const followUpBox = awaitingFollowUp && (
+    <div className="shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3">
+      {followUpFailed && (
+        <p role="alert" className="max-w-xl mx-auto w-full mb-2 text-danger-text text-sm">
+          Your answer didn't go through. It's still here. Try again.
+        </p>
+      )}
+      <div className="max-w-xl mx-auto w-full flex gap-2">
+        <textarea
+          value={followUpText}
+          onChange={(e) => setFollowUpText(e.target.value)}
+          placeholder="Your answer..."
+          rows={2}
+          className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
+        />
+        <Button
+          variant="primary"
+          size="md"
+          onClick={handleFollowUp}
+          disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
+          loading={followUpSubmitting}
+        >
+          Send →
+        </Button>
+      </div>
+    </div>
+  )
 
   return (
-    <div className="h-dvh bg-page flex flex-col overflow-hidden">
-      <FocusedHeader trailing={<StatusChip kind={status} />} />
+    <ReviewShell status={status} leading={final && <ReturnLink />} scrollRef={scrollRef} footer={followUpBox}>
+      {session && <ReviewTitle title={session.kata.title} meta={kataMeta(session.kata)} />}
+      <p role="status" className="sr-only">{final ? `Review complete. ${VERDICT_LABELS[final.verdict]}` : ''}</p>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 md:py-8">
-        <div className="max-w-xl mx-auto flex flex-col gap-6">
-          {session && (
-            <div className="flex flex-col gap-3">
-              <h1 className="text-primary text-2xl md:text-3xl font-bold leading-tight tracking-tight">{session.kata.title}</h1>
-              <div className="flex items-center gap-1.5">
-                <TypeBadge type={session.kata.type} />
-                <DifficultyBadge difficulty={session.kata.difficulty} />
-              </div>
-            </div>
-          )}
-
+      <ReviewGrid
+        aside={code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} final={!!final} />}
+        followthrough={
+          final && (
+            <>
+              {session && session.earnedPieces.length > 0 && (
+                <div className="mt-7 md:mt-8">
+                  <PieceReceipt pieceIds={session.earnedPieces} needsWork={final.verdict === 'needs_work'} />
+                </div>
+              )}
+              {sessionId && <FeedbackSection sessionId={sessionId} />}
+              {sessionId && <PostKataActions sessionId={sessionId} />}
+            </>
+          )
+        }
+      >
+        <div className="flex flex-col gap-6 empty:hidden">
           {executionResult && <ExecutionResultCard result={executionResult} />}
 
           {history.map((exchange, i) => (
@@ -163,82 +202,100 @@ export function SenseiEvalPage() {
               <UserBubble>{exchange.userAnswer}</UserBubble>
             </div>
           ))}
+        </div>
 
-          {state.status === 'error' ? (
-            <div role="alert" className="flex flex-col gap-3">
-              {tokens && <StreamingText text={hideInsightTags(tokens)} done className="text-secondary" />}
-              <p className="text-primary">The sensei couldn't evaluate your response.</p>
-              <p className="text-secondary text-sm">{state.message}</p>
-              <Button variant="primary" size="lg" className="w-full" onClick={() => connect()}>
-                Try again
-              </Button>
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="ghost" size="lg" onClick={() => navigate(`/katas/${sessionId}`)}>
-                  Back to kata
-                </Button>
-                <Button variant="ghost" size="lg" onClick={() => navigate('/dashboard')}>
-                  Dashboard
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <VerdictBlock verdict={final?.verdict} topics={final?.topicsToReview}>
-              {prose ? (
-                <StreamingText text={prose} done={!isStreaming && revealedTokens === tokens} className="text-primary" />
-              ) : (
-                <span className="inline-flex items-center gap-3 text-secondary text-sm">
-                  <EnsoLoader size={28} label="The sensei is evaluating" />
-                  {evalMessage}
-                </span>
-              )}
+        <div className={executionResult || history.length > 0 ? 'mt-6' : undefined}>
+          {state.status === 'error' && (
+            <ReviewInterrupted
+              partial={hideInsightTags(tokens)}
+              message={online ? state.message : 'Offline. Reconnect to receive the rest of the review.'}
+              retryLabel={!online || state.code.startsWith('WS_') ? 'Reconnect' : 'Try again'}
+              onRetry={connect}
+              onBackToKata={() => navigate(`/katas/${sessionId}`)}
+              onDashboard={() => navigate('/dashboard')}
+            />
+          )}
+          {final && (
+            <ReviewVerdict verdict={final.verdict}>
+              <StreamingText text={prose} done={revealedTokens === tokens} className="text-primary" />
+            </ReviewVerdict>
+          )}
+          {result && !final && prose && (
+            <VerdictBlock>
+              <StreamingText text={prose} done={revealedTokens === tokens} className="text-primary" />
             </VerdictBlock>
           )}
+          {!result && state.status !== 'error' && (
+            <ReviewProgress message={prose ? EVAL_MESSAGES[0]! : evalMessage} prose={prose} done={!isStreaming && revealedTokens === tokens} />
+          )}
+        </div>
 
-          {awaitingFollowUp && (
+        {awaitingFollowUp && (
+          <div className="mt-6">
             <SenseiBubble initials={senseiInitials} role={session?.ownerRole}>
               <p className="text-primary">{result.followUpQuestion}</p>
             </SenseiBubble>
-          )}
-
-          {code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} />}
-          {final && code && session?.answer && <TheAnswer code={code} answer={session.answer} />}
-          {final && <KataNotes analysis={tokens} />}
-          {final && session && session.earnedPieces.length > 0 && (
-            <PieceReceipt pieceIds={session.earnedPieces} needsWork={final.verdict === 'needs_work'} />
-          )}
-          {final && sessionId && <FeedbackSection sessionId={sessionId} />}
-          {final && sessionId && <PostKataActions sessionId={sessionId} />}
-        </div>
-      </div>
-
-      {awaitingFollowUp && (
-        <div className="shrink-0 border-t border-border bg-surface/40 px-4 md:px-6 py-3">
-          {followUpFailed && (
-            <p role="alert" className="max-w-xl mx-auto w-full mb-2 text-danger-text text-sm">
-              Your answer didn't go through. It's still here. Try again.
-            </p>
-          )}
-          <div className="max-w-xl mx-auto w-full flex gap-2">
-            <textarea
-              value={followUpText}
-              onChange={(e) => setFollowUpText(e.target.value)}
-              placeholder="Your answer..."
-              rows={2}
-              className="flex-1 bg-page border border-border rounded-sm px-3 py-2 text-primary text-sm font-sans resize-none focus:outline-none focus:border-accent transition-colors"
-            />
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleFollowUp}
-              disabled={!followUpText.trim() || followUpSubmitting || isStreaming}
-              loading={followUpSubmitting}
-            >
-              Send →
-            </Button>
           </div>
+        )}
+
+        {final && code && session?.answer && <TheAnswer code={code} answer={session.answer} />}
+        {final && <KataNotes analysis={tokens} topics={final.topicsToReview} />}
+        {final && session && <KataContext session={session} pointed={!!pointed} />}
+      </ReviewGrid>
+    </ReviewShell>
+  )
+}
+
+function ReviewProgress({ message, prose, done }: Readonly<{ message: string; prose: string; done: boolean }>) {
+  return (
+    <section className="border-t border-border pt-6">
+      <h2 className="text-primary text-xl font-semibold tracking-tight">{message}</h2>
+      {prose ? (
+        <StreamingText text={prose} done={done} className="mt-5 text-secondary text-base leading-relaxed" />
+      ) : (
+        <div aria-hidden className="mt-7 mb-7 grid gap-4 max-w-120">
+          <SkeletonText />
+          <SkeletonText width="2/3" />
         </div>
       )}
-    </div>
+    </section>
+  )
+}
+
+function ReviewInterrupted({
+  partial,
+  message,
+  retryLabel,
+  onRetry,
+  onBackToKata,
+  onDashboard,
+}: Readonly<{
+  partial: string
+  message: string
+  retryLabel: string
+  onRetry: () => void
+  onBackToKata: () => void
+  onDashboard: () => void
+}>) {
+  return (
+    <section role="alert" className="border-t border-border pt-6">
+      <h2 className="text-primary text-xl font-semibold tracking-tight">The sensei couldn't evaluate your response.</h2>
+      {partial && <StreamingText text={partial} done className="mt-5 text-secondary text-base leading-relaxed" />}
+      <div className="mt-6 pt-5 border-t border-border flex flex-col gap-3">
+        <p className="text-danger-text text-sm">{message}</p>
+        <Button variant="primary" size="xl" className="mt-3 w-full" onClick={onRetry}>
+          {retryLabel}
+        </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="ghost" size="xl" className="!px-2" onClick={onBackToKata}>
+            Back to kata
+          </Button>
+          <Button variant="ghost" size="xl" className="!px-2" onClick={onDashboard}>
+            Dashboard
+          </Button>
+        </div>
+      </div>
+    </section>
   )
 }
 
@@ -250,42 +307,24 @@ function deriveInitials(role?: string): string {
 
 function deriveStatus({
   state,
+  online,
   isStreaming,
   hasResult,
   isFinal,
   hasFollowUp,
 }: {
   state: string
+  online: boolean
   isStreaming: boolean
   hasResult: boolean
   isFinal?: boolean
   hasFollowUp?: boolean
-}): StatusChipKind {
-  if (state === 'error') return 'error'
+}): ReviewStatus {
+  if (state === 'error') return online ? 'error' : 'offline'
   if (state === 'connecting' || state === 'idle' || state === 'ready') return 'connecting'
   if (state === 'executing') return 'executing'
   if (isStreaming) return 'streaming'
   if (hasResult && isFinal) return 'complete'
   if (hasResult && hasFollowUp) return 'follow-up'
   return 'streaming'
-}
-
-function StatusChip({ kind }: Readonly<{ kind: StatusChipKind }>) {
-  const styles: Record<StatusChipKind, { label: string; color: string; cursor: boolean }> = {
-    connecting: { label: 'CONNECTING', color: 'text-secondary border-border bg-elevated', cursor: true },
-    executing: { label: 'EXECUTING', color: 'text-warning-text border-warning/40 bg-warning/10', cursor: true },
-    streaming: { label: 'STREAMING', color: 'text-secondary border-border bg-elevated', cursor: true },
-    'follow-up': { label: 'FOLLOW-UP', color: 'text-secondary border-border bg-elevated', cursor: false },
-    complete: { label: 'COMPLETE', color: 'text-success-text border-success/40 bg-success/10', cursor: false },
-    error: { label: 'ERROR', color: 'text-danger-text border-danger/40 bg-danger/10', cursor: false },
-  }
-  const s = styles[kind]
-  return (
-    <span
-      className={`inline-flex items-center font-mono text-xs tracking-[0.08em] uppercase border px-2 py-1 rounded-sm ${s.color}`}
-    >
-      {s.label}
-      {s.cursor && <span className="animate-cursor ml-0.5" aria-hidden>_</span>}
-    </span>
-  )
 }

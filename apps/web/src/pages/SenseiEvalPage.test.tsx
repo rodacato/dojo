@@ -90,9 +90,9 @@ function makeResult(overrides: Partial<EvaluationResult> = {}): EvaluationResult
   }
 }
 
-function renderPage(sessionId = 'sess-1') {
+function renderPage(sessionId = 'sess-1', state?: unknown) {
   return render(
-    <MemoryRouter initialEntries={[`/katas/${sessionId}/eval`]}>
+    <MemoryRouter initialEntries={[{ pathname: `/katas/${sessionId}/eval`, state }]}>
       <Routes>
         <Route path="/katas/:id/eval" element={<SenseiEvalPage />} />
       </Routes>
@@ -133,8 +133,7 @@ describe('SenseiEvalPage', () => {
     renderPage()
 
     expect(await screen.findByText('Rate Limiter Design')).toBeInTheDocument()
-    expect(screen.getByText('CHAT')).toBeInTheDocument()
-    expect(screen.getByText('MEDIUM')).toBeInTheDocument()
+    expect(screen.getByText('chat · medium · 30 min')).toBeInTheDocument()
   })
 
   it('renders streamed sensei tokens and flags STREAMING status', async () => {
@@ -157,8 +156,35 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByText('idempotency')).toBeInTheDocument()
     expect(screen.getByText('named the bucket refill')).toBeInTheDocument()
     expect(screen.getByText('COMPLETE')).toBeInTheDocument()
+    expect(screen.getByText('Review complete. PASSED WITH NOTES')).toHaveAttribute('role', 'status')
     expect(screen.queryByPlaceholderText('Your answer...')).not.toBeInTheDocument()
     expect(navigate).not.toHaveBeenCalled()
+  })
+
+  it('stays on the verdict when the result arrives, instead of scrolling to the exits', async () => {
+    streamState = { status: 'complete', tokens: 'Close.', result: makeResult({ verdict: 'needs_work' }) }
+    renderPage()
+
+    await screen.findByRole('heading', { name: 'NEEDS WORK' })
+    expect(Element.prototype.scrollTo).not.toHaveBeenCalled()
+  })
+
+  it('offers the way back only once the review is final', async () => {
+    streamState = { status: 'complete', tokens: 't', result: makeResult() }
+    renderPage('sess-1', { from: '/history?page=2' })
+
+    expect(await screen.findByRole('link', { name: 'Kata history' })).toHaveAttribute('href', '/history?page=2')
+  })
+
+  it('never shows a verdict or an answer in partial text, whatever it says', async () => {
+    streamState = { status: 'streaming', tokens: 'PASSED so far' }
+    getSession.mockResolvedValue(makeSession({ answer: { line: 1, title: 'The cause', why: 'because' } }))
+    renderPage()
+
+    await screen.findByText('PASSED so far')
+    expect(screen.queryByRole('heading', { name: 'PASSED' })).not.toBeInTheDocument()
+    expect(screen.queryByText('The cause')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Review complete/)).not.toBeInTheDocument()
   })
 
   it('never shows the insight tags while the sensei is still writing them', async () => {
@@ -272,7 +298,7 @@ describe('SenseiEvalPage', () => {
     await waitFor(() => expect(submit).toHaveBeenCalledWith('att-7'))
   })
 
-  it('shows the error state and reconnects via Try again', async () => {
+  it('shows the error state and reconnects', async () => {
     streamState = { status: 'error', code: 'WS_ERROR', message: 'Connection error', tokens: '' }
     const user = userEvent.setup()
     renderPage('sess-5')
@@ -284,9 +310,9 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByText('ERROR')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'PASSED' })).not.toBeInTheDocument()
 
-    // connect ran once on mount; Try again fires it again.
+    // connect ran once on mount; Reconnect fires it again.
     const connectCallsBefore = connect.mock.calls.length
-    await user.click(screen.getByRole('button', { name: 'Try again' }))
+    await user.click(screen.getByRole('button', { name: 'Reconnect' }))
     expect(connect.mock.calls).toHaveLength(connectCallsBefore + 1)
 
     await user.click(screen.getByRole('button', { name: 'Back to kata' }))
@@ -337,6 +363,19 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
   })
 
+  it('says it is offline and keeps the partial review, with no grade', async () => {
+    streamState = { status: 'error', code: 'WS_CLOSED_1006', message: 'Connection lost.', tokens: 'Half a thought.' }
+    const onLine = vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+    renderPage()
+
+    expect(await screen.findByText('Half a thought.')).toBeInTheDocument()
+    expect(screen.getByText('Offline. Reconnect to receive the rest of the review.')).toBeInTheDocument()
+    expect(screen.getByText('OFFLINE')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Reconnect' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: /PASSED|NEEDS WORK/ })).not.toBeInTheDocument()
+    onLine.mockRestore()
+  })
+
   describe('recovering across a reload', () => {
     it('reconnects to the attempt still in flight', async () => {
       sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-1')
@@ -371,6 +410,16 @@ describe('SenseiEvalPage', () => {
       )
     })
 
+    it('keeps the way back when it goes to the result', async () => {
+      streamState = { status: 'ready' }
+
+      renderPage('sess-1', { from: '/history?page=2' })
+
+      await waitFor(() =>
+        expect(navigate).toHaveBeenCalledWith('/katas/sess-1/result', { replace: true, state: { from: '/history?page=2' } }),
+      )
+    })
+
     it('goes to the result when the server no longer holds the attempt', async () => {
       sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-1')
       streamState = { status: 'error', code: 'ATTEMPT_NOT_FOUND', message: 'ATTEMPT_NOT_FOUND', tokens: '' }
@@ -401,5 +450,6 @@ describe('SenseiEvalPage', () => {
 
     await screen.findByText('The sensei is reviewing your work...')
     expect(screen.queryByRole('button', { name: 'Dashboard' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Dashboard' })).not.toBeInTheDocument()
   })
 })
