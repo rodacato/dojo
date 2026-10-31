@@ -5,6 +5,7 @@ import { api, ApiError, type SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
+import { FocusedHeader } from '../components/layout/FocusedHeader'
 import { EnsoLoader } from '../components/ui/EnsoLoader'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
@@ -277,44 +278,33 @@ export function KataActivePage() {
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
-      {/* Top bar */}
-      <header className="h-14 shrink-0 border-b border-border bg-surface/90 backdrop-blur-md grid grid-cols-3 items-center px-4">
-        <div className="flex items-center gap-3 max-md:gap-2 min-w-0">
-          <span className="font-mono font-bold text-accent text-base inline-flex items-center select-none">
-            dojo<span className="animate-cursor ml-0.5" aria-hidden>_</span>
-          </span>
-          <Button variant="subtle" size="sm" className="max-md:h-11" onClick={() => setLeaving(true)}>
+      <FocusedHeader
+        leading={
+          <Button variant="subtle" size="lg" className="px-2 md:px-3" onClick={() => setLeaving(true)}>
             Leave
           </Button>
-          <span className="h-4 w-px bg-border hidden sm:block" />
-          <span className="font-mono text-sm font-medium tracking-wider text-success-text border border-success/40 bg-success/10 px-1.5 py-0.5 rounded-sm hidden sm:inline">
-            READY
-          </span>
-          <span className="font-mono text-sm text-secondary truncate hidden md:inline">
-            Active Task
-          </span>
-        </div>
-        <div className="flex justify-center">
+        }
+        center={
           <Timer
             durationMinutes={kata.duration}
             startedAt={session.startedAt}
             onExpired={() => { setTimedOut(true); handleSubmit() }}
             size="sm"
           />
-        </div>
-        <div className="flex justify-end">
+        }
+        trailing={
           <Button
             variant="primary"
-            size="sm"
-            className="max-md:h-11"
+            size="lg"
+            className="max-md:px-3"
             onClick={expiredEmpty ? () => navigate(`/katas/${sessionId}/result`) : handleSubmit}
             loading={submitting}
             disabled={submitting || (!answerReady && !timedOut)}
           >
             {expiredEmpty ? 'View result' : submitLabel}
           </Button>
-        </div>
-      </header>
+        }
+      />
 
       {submitFailed && (
         <p role="alert" className="shrink-0 border-b border-border bg-surface px-4 py-2 text-danger-text text-sm text-center">
