@@ -1092,6 +1092,20 @@ describe('POST /cron/reminders', () => {
     expect(eqSpy).toHaveBeenCalledWith('users.reminderHour', new Date().getUTCHours())
   })
 
+  it('links the reminder to routes that exist, in the brand colours', async () => {
+    mockConfig.RESEND_API_KEY = 'rk-live'
+    resendSend.mockResolvedValue({ id: 'em' })
+    selectResult.rows = [{ id: 'u1', username: 'a', email: 'a@x.com' }]
+
+    await post('/cron/reminders', {}, { Authorization: 'Bearer cron-secret' })
+
+    const { html } = resendSend.mock.calls[0]![0] as { html: string }
+    expect(html).toContain('/dashboard"')
+    expect(html).toContain('/settings"')
+    expect(html).not.toContain('/start')
+    expect(html).not.toContain('#6366F1')
+  })
+
   it('counts only successful sends when one delivery throws', async () => {
     mockConfig.RESEND_API_KEY = 'rk-live'
     resendSend.mockResolvedValueOnce({ id: 'em' }).mockRejectedValueOnce(new Error('bounce'))
