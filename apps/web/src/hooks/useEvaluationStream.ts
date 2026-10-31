@@ -27,7 +27,7 @@ export type EvalStreamState =
   | { status: 'streaming'; tokens: string; executionResult?: ExecutionResult }
   | { status: 'evaluation'; result: EvaluationResult; tokens: string; executionResult?: ExecutionResult }
   | { status: 'complete'; result: EvaluationResult; tokens: string; executionResult?: ExecutionResult }
-  | { status: 'error'; code: string; message: string }
+  | { status: 'error'; code: string; message: string; tokens: string }
 
 interface WsMessage {
   type: 'ready' | 'executing' | 'execution_result' | 'token' | 'evaluation' | 'complete' | 'error'
@@ -36,6 +36,10 @@ interface WsMessage {
   code?: string
   message?: string
   isFinal?: boolean
+}
+
+function partialTokens(state: EvalStreamState): string {
+  return 'tokens' in state ? state.tokens : ''
 }
 
 export function useEvaluationStream(sessionId: string) {
@@ -101,12 +105,23 @@ export function useEvaluationStream(sessionId: string) {
           break
 
         case 'error':
-          setState({ status: 'error', code: msg.code ?? 'UNKNOWN', message: msg.message ?? msg.code ?? 'Error' })
+          setState((prev) => ({
+            status: 'error',
+            code: msg.code ?? 'UNKNOWN',
+            message: msg.message ?? msg.code ?? 'Error',
+            tokens: partialTokens(prev),
+          }))
           break
       }
     }
 
-    ws.onerror = () => setState({ status: 'error', code: 'WS_ERROR', message: 'Connection error' })
+    ws.onerror = () =>
+      setState((prev) => ({
+        status: 'error',
+        code: 'WS_ERROR',
+        message: 'Connection error',
+        tokens: partialTokens(prev),
+      }))
     ws.onclose = (e) => {
       if (e.code === 4001) {
         clearToken()
@@ -122,6 +137,7 @@ export function useEvaluationStream(sessionId: string) {
           status: 'error',
           code: `WS_CLOSED_${e.code}`,
           message: 'Connection lost before the evaluation finished. You can reconnect.',
+          tokens: partialTokens(prev),
         }
       })
     }

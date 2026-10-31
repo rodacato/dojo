@@ -273,7 +273,7 @@ describe('SenseiEvalPage', () => {
   })
 
   it('shows the error state and reconnects via Try again', async () => {
-    streamState = { status: 'error', code: 'WS_ERROR', message: 'Connection error' }
+    streamState = { status: 'error', code: 'WS_ERROR', message: 'Connection error', tokens: '' }
     const user = userEvent.setup()
     renderPage('sess-5')
 
@@ -294,13 +294,22 @@ describe('SenseiEvalPage', () => {
   })
 
   it('offers a way out of the failed evaluation that does not depend on the kata', async () => {
-    streamState = { status: 'error', code: 'WS_ERROR', message: 'Connection error' }
+    streamState = { status: 'error', code: 'WS_ERROR', message: 'Connection error', tokens: '' }
     const user = userEvent.setup()
     renderPage('sess-6')
 
     await user.click(await screen.findByRole('button', { name: 'Dashboard' }))
 
     expect(navigate).toHaveBeenCalledWith('/dashboard')
+  })
+
+  it('keeps the partial review on screen when the stream fails', async () => {
+    streamState = { status: 'error', code: 'LLM_STREAM_ERROR', message: 'x', tokens: 'Half a thought.' }
+
+    renderPage()
+
+    expect(await screen.findByText('Half a thought.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
   })
 
   describe('recovering across a reload', () => {
@@ -339,7 +348,7 @@ describe('SenseiEvalPage', () => {
 
     it('goes to the result when the server no longer holds the attempt', async () => {
       sessionStorage.setItem('dojo-attempt-in-flight-sess-1', 'att-1')
-      streamState = { status: 'error', code: 'ATTEMPT_NOT_FOUND', message: 'ATTEMPT_NOT_FOUND' }
+      streamState = { status: 'error', code: 'ATTEMPT_NOT_FOUND', message: 'ATTEMPT_NOT_FOUND', tokens: '' }
 
       renderPage()
 
