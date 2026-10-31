@@ -1,3 +1,4 @@
+import type { EvaluationClientMessage, EvaluationServerMessage } from '@dojo/shared'
 import { useCases, executionQueue } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
@@ -15,16 +16,8 @@ export interface WSInstance {
 }
 
 // ── Message types ─────────────────────────────────────────────────────────────
-export type ClientMessage = { type: 'submit'; attemptId: string } | { type: 'reconnect'; attemptId: string }
-
-export type ServerMessage =
-  | { type: 'ready' }
-  | { type: 'executing' }
-  | { type: 'execution_result'; result: ExecutionResult }
-  | { type: 'token'; content: string }
-  | { type: 'evaluation'; result: EvaluationResult }
-  | { type: 'complete'; isFinal: boolean }
-  | { type: 'error'; code: string }
+export type ClientMessage = EvaluationClientMessage
+export type ServerMessage = EvaluationServerMessage
 
 // ── Reconnect cache ───────────────────────────────────────────────────────────
 export interface StreamCache {
