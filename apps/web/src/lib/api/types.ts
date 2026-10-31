@@ -2,33 +2,12 @@ import type {
   KataDTO,
   BeltDTO,
   HeatmapDayDTO,
-  SessionSummaryDTO,
   PublicSessionDTO,
   PieceId,
   PublicPractitionerDTO,
 } from '@dojo/shared'
 
-export { type AttemptDTO } from '@dojo/shared'
-
-export interface DashboardData {
-  streak: number
-  totalCompleted: number
-  todayComplete: boolean
-  todaySession: { id: string; kataTitle: string; verdict: string | null } | null
-  activeSessionId: string | null
-  dailyKataMinutes: number | null
-  heatmapData: HeatmapDayDTO[]
-  recentSessions: SessionSummaryDTO[]
-  // Extended dashboard (Phase 2)
-  weakAreas: Array<{ topic: string; frequency: number }>
-  practicePatterns: {
-    avgTimeMinutes: number
-    mostAvoidedType: string | null
-    sessionsTimedOut: number
-  }
-  weeklyGoal: { target: number | null; completed: number }
-  belt: BeltDTO
-}
+export { type AttemptDTO, type DashboardDTO as DashboardData } from '@dojo/shared'
 
 export interface SessionAttempt {
   id: string

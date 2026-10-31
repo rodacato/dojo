@@ -1,3 +1,4 @@
+import type { DashboardDTO } from '@dojo/shared'
 import { and, count, desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
@@ -157,7 +158,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       completed: metrics.weekly,
     },
     belt,
-  })
+  } satisfies DashboardDTO)
 })
 
 // ---------------------------------------------------------------------------
