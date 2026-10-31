@@ -90,7 +90,7 @@ export function HistoryPage() {
             <span className="block font-mono text-2xl text-primary tabular-nums leading-none">
               {total}
             </span>
-            <span className="block text-secondary text-sm mt-1">completed kata</span>
+            <span className="block text-secondary text-sm mt-1">{total === 1 ? 'session' : 'sessions'}</span>
           </div>
         )}
       </div>

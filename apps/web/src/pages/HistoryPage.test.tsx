@@ -73,7 +73,7 @@ describe('HistoryPage', () => {
     expect(
       screen.queryByText('No sessions yet. The dojo is patient.'),
     ).not.toBeInTheDocument()
-    expect(screen.queryByText('completed kata')).not.toBeInTheDocument()
+    expect(screen.queryByText('sessions')).not.toBeInTheDocument()
   })
 
   it('requests the first page on mount and renders a row per session plus the total', async () => {
@@ -87,7 +87,7 @@ describe('HistoryPage', () => {
     expect(screen.getByText('PASSED')).toBeInTheDocument()
     expect(screen.getByText('NEEDS WORK')).toBeInTheDocument()
     // Total summary appears once there is data.
-    expect(screen.getByText('completed kata')).toBeInTheDocument()
+    expect(screen.getByText('sessions')).toBeInTheDocument()
     expect(screen.getByText('2')).toBeInTheDocument()
 
     expect(mockedGetHistory).toHaveBeenCalledWith(1)
@@ -108,7 +108,7 @@ describe('HistoryPage', () => {
       await screen.findByText('No sessions yet. The dojo is patient.'),
     ).toBeInTheDocument()
     // No total count when nothing is completed.
-    expect(screen.queryByText('completed kata')).not.toBeInTheDocument()
+    expect(screen.queryByText('sessions')).not.toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: /Enter the dojo/ }))
 
