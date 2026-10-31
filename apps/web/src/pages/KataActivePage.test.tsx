@@ -129,9 +129,8 @@ describe('KataActivePage', () => {
     renderPage()
 
     expect(
-      await screen.findByRole('heading', { name: 'Something went wrong.' }),
+      await screen.findByRole('heading', { name: 'Something went wrong preparing your kata.' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Something went wrong preparing your kata.')).toBeInTheDocument()
     // The kata shell must NOT render in the error state.
     expect(screen.queryByRole('heading', { name: 'Rate Limiter Design' })).not.toBeInTheDocument()
   })
@@ -147,14 +146,27 @@ describe('KataActivePage', () => {
     expect(navigate).not.toHaveBeenCalled()
   })
 
-  it('routes the error CTA back to the katas picker', async () => {
+  it('offers the dashboard and the chooser when preparation fails', async () => {
     const user = userEvent.setup()
     getSession.mockRejectedValue(new ApiError(403, 'forbidden'))
 
     renderPage()
 
-    await user.click(await screen.findByRole('button', { name: 'Start a new kata' }))
-    expect(navigate).toHaveBeenCalledWith('/katas')
+    await user.click(await screen.findByRole('button', { name: 'Back to dashboard' }))
+    expect(navigate).toHaveBeenCalledWith('/dashboard')
+    expect(screen.getByRole('link', { name: 'Choose a kata →' })).toHaveAttribute('href', '/katas')
+    expect(screen.queryByRole('button', { name: 'Submit' })).not.toBeInTheDocument()
+  })
+
+  it('shows no clock and no answer controls while the kata is preparing', () => {
+    getSession.mockReturnValue(new Promise(() => {}))
+
+    renderPage()
+
+    expect(screen.getByRole('heading', { name: 'Preparing your kata' })).toBeInTheDocument()
+    expect(screen.getByText('—')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Submit' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Leave' })).not.toBeInTheDocument()
   })
 
   it('redirects a completed session to its result page', async () => {

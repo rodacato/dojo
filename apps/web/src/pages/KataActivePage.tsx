@@ -1,18 +1,17 @@
 import { Suspense, useState, type KeyboardEvent, type ReactNode } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import type { SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { ActiveKataActions, ANSWER_HINT_ID } from '../components/kata/ActiveKataActions'
-import { Button } from '../components/ui/Button'
+import { Button, buttonClasses } from '../components/ui/Button'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { FocusedHeader } from '../components/layout/FocusedHeader'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { CodeLine } from '../components/ui/CodeLine'
 import { KataBody } from '../components/ui/KataBody'
-import { EnsoLoader } from '../components/ui/EnsoLoader'
-import { ErrorState } from '../components/ui/ErrorState'
+import { Skeleton } from '../components/ui/SkeletonLoader'
 import { lazyWithRetry } from '../lib/lazyWithRetry'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { useKataSession } from '../hooks/useKataSession'
@@ -47,32 +46,14 @@ export function KataActivePage() {
   const [leaving, setLeaving] = useState(false)
   const [responseFont, setResponseFont] = useState<'mono' | 'sans'>('sans')
 
-  if (prepareError) {
+  if (prepareError || preparing || !session) {
     return (
-      <ErrorState
-        message="Something went wrong preparing your kata."
-        primaryAction={{ label: 'Start a new kata', onClick: () => navigate('/katas') }}
-        secondaryAction={{ label: 'Back to dashboard', onClick: () => navigate('/dashboard') }}
+      <Preparation
+        failed={prepareError}
+        message={preparingMsg}
+        slow={prepareSlow}
+        onBack={() => navigate('/dashboard')}
       />
-    )
-  }
-
-  if (preparing || !session) {
-    return (
-      <div className="h-dvh bg-page flex flex-col items-center justify-center gap-4 px-4">
-        <EnsoLoader size={32} label="Preparing your kata" />
-        <p className="font-mono text-secondary text-sm animate-pulse">{preparingMsg}</p>
-        {prepareSlow && (
-          <p className="font-mono text-secondary text-sm text-center max-w-sm">
-            This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can go back and retry.
-          </p>
-        )}
-        {prepareSlow && (
-          <Button variant="ghost" size="md" onClick={() => navigate('/katas')}>
-            Back to katas
-          </Button>
-        )}
-      </div>
     )
   }
 
@@ -270,6 +251,72 @@ function ClockSlot({ children }: Readonly<{ children: ReactNode }>) {
     <div className="flex flex-col items-center gap-1">
       <span className="paper-eyebrow leading-none">Time left</span>
       {children}
+    </div>
+  )
+}
+
+function Preparation({
+  failed,
+  message,
+  slow,
+  onBack,
+}: Readonly<{ failed: boolean; message: string; slow: boolean; onBack: () => void }>) {
+  return (
+    <div className="h-dvh bg-page flex flex-col overflow-hidden">
+      <FocusedHeader
+        leading={
+          <Button variant="subtle" size="lg" className="px-2 md:px-3" onClick={onBack}>
+            Back
+          </Button>
+        }
+        center={
+          <ClockSlot>
+            <span className="font-mono font-bold text-lg leading-none text-secondary">—</span>
+          </ClockSlot>
+        }
+      />
+      <main className="flex-1 min-h-0 overflow-y-auto flex items-center px-6 py-6 md:px-12 md:py-12">
+        <div className="w-full max-w-165 mx-auto">
+          <p className="paper-eyebrow">Dojo / kata</p>
+          {failed ? (
+            <>
+              <h1 className="text-2xl font-bold tracking-tight text-primary mt-4 mb-6">
+                Something went wrong preparing your kata.
+              </h1>
+              <p className="paper-body">Return to your daily practice, or choose an optional kata.</p>
+              <div className="flex max-md:flex-col md:items-center gap-2 md:gap-6 mt-6">
+                <Button variant="primary" size="lg" onClick={onBack}>
+                  Back to dashboard
+                </Button>
+                <Link to="/katas" className={`${buttonClasses({ variant: 'link', size: 'lg' })} max-md:w-full`}>
+                  Choose a kata →
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl font-bold tracking-tight text-primary mt-4 mb-6">Preparing your kata</h1>
+              <p className="paper-body" role="status">{message}</p>
+              <div className="grid gap-4 my-8 max-w-110" aria-hidden>
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-3/5" />
+                <Skeleton className="h-3 w-full" />
+              </div>
+              {slow && (
+                <>
+                  <p className="paper-body mt-6">
+                    This is taking a bit longer than usual. Hang on — if it doesn't resolve soon you can go back and retry.
+                  </p>
+                  <Button variant="ghost" size="lg" className="mt-6 max-md:w-full" onClick={onBack}>
+                    Back to dashboard
+                  </Button>
+                </>
+              )}
+              <p className="paper-note mt-6">The clock appears when the kata is ready.</p>
+            </>
+          )}
+        </div>
+      </main>
     </div>
   )
 }
