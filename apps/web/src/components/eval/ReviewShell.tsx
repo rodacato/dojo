@@ -34,6 +34,16 @@ const STATUS: Record<ReviewStatus, { label: string; color: string; cursor?: bool
   pending: { label: 'PENDING', color: NEUTRAL },
 }
 
+const EYEBROW: Partial<Record<ReviewStatus, string>> = {
+  connecting: 'Reviewing',
+  streaming: 'Reviewing',
+  complete: 'Review complete',
+}
+
+export function reviewEyebrow(status: ReviewStatus): string | undefined {
+  return EYEBROW[status]
+}
+
 function StatusChip({ status }: Readonly<{ status: ReviewStatus }>) {
   const { label, color, cursor } = STATUS[status]
   return (
@@ -77,7 +87,7 @@ interface ReviewShellProps {
 export function ReviewShell({ status, leading, scrollRef, footer, children }: Readonly<ReviewShellProps>) {
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
-      <FocusedHeader leading={leading} trailing={<StatusChip status={status} />} />
+      <FocusedHeader leading={leading} trailing={!EYEBROW[status] && <StatusChip status={status} />} />
       <main ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
         <div className="max-w-280 mx-auto px-4 md:px-8 py-7 md:py-10">{children}</div>
       </main>
@@ -86,9 +96,10 @@ export function ReviewShell({ status, leading, scrollRef, footer, children }: Re
   )
 }
 
-export function ReviewTitle({ title, meta }: Readonly<{ title: string; meta?: string }>) {
+export function ReviewTitle({ title, meta, eyebrow }: Readonly<{ title: string; meta?: string; eyebrow?: string }>) {
   return (
     <header className="mb-6 md:mb-8">
+      {eyebrow && <p className="paper-eyebrow mb-3">{eyebrow}</p>}
       <h1 className="font-sans font-bold text-primary text-2xl leading-tight tracking-tight wrap-anywhere">
         {title}
       </h1>

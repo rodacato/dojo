@@ -122,7 +122,7 @@ describe('SenseiEvalPage', () => {
     renderPage()
 
     expect(screen.getByText('The sensei is reviewing your work...')).toBeInTheDocument()
-    expect(screen.getByText('CONNECTING')).toBeInTheDocument()
+    expect(await screen.findByText('Reviewing')).toBeInTheDocument()
     // No verdict and no answer box until the stream resolves.
     expect(screen.queryByRole('heading', { name: 'PASSED' })).not.toBeInTheDocument()
     expect(screen.queryByPlaceholderText('Your answer...')).not.toBeInTheDocument()
@@ -136,12 +136,12 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByText('chat · medium · 30 min')).toBeInTheDocument()
   })
 
-  it('renders streamed sensei tokens and flags STREAMING status', async () => {
+  it('renders streamed sensei tokens under the reviewing eyebrow', async () => {
     streamState = { status: 'streaming', tokens: 'Walking through your approach' }
     renderPage()
 
     expect(await screen.findByText('Walking through your approach')).toBeInTheDocument()
-    expect(screen.getByText('STREAMING')).toBeInTheDocument()
+    expect(screen.getByText('Reviewing')).toBeInTheDocument()
   })
 
   it('turns into the result in place on a final evaluation, without leaving the screen (D60)', async () => {
@@ -155,7 +155,7 @@ describe('SenseiEvalPage', () => {
     expect(await screen.findByRole('heading', { name: 'PASSED WITH NOTES' })).toBeInTheDocument()
     expect(screen.getByText('idempotency')).toBeInTheDocument()
     expect(screen.getByText('named the bucket refill')).toBeInTheDocument()
-    expect(screen.getByText('COMPLETE')).toBeInTheDocument()
+    expect(screen.getByText('Review complete')).toBeInTheDocument()
     expect(screen.getByText('Review complete. PASSED WITH NOTES')).toHaveAttribute('role', 'status')
     expect(screen.queryByPlaceholderText('Your answer...')).not.toBeInTheDocument()
     expect(navigate).not.toHaveBeenCalled()
