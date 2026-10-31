@@ -699,19 +699,31 @@ function FontToggle({
   )
 }
 
-type Language = 'javascript' | 'typescript' | 'python' | 'sql'
+const LANGUAGES = {
+  javascript: { extension: 'js', label: 'JavaScript' },
+  typescript: { extension: 'ts', label: 'TypeScript' },
+  python: { extension: 'py', label: 'Python' },
+  sql: { extension: 'sql', label: 'SQL' },
+  ruby: { extension: 'rb', label: 'Ruby' },
+  go: { extension: 'go', label: 'Go' },
+  rust: { extension: 'rs', label: 'Rust' },
+}
 
+type Language = keyof typeof LANGUAGES
+
+function isLanguage(lang: string): lang is Language {
+  return lang in LANGUAGES
+}
+
+// The first listed language is the one the sandbox runs (ws-handlers runTestCode).
 function resolveLanguage(langs: string[]): Language {
-  if (langs.includes('typescript')) return 'typescript'
-  if (langs.includes('python')) return 'python'
-  if (langs.includes('sql')) return 'sql'
-  return 'javascript'
+  return langs.find(isLanguage) ?? 'javascript'
 }
 
 function fileExtension(lang: Language): string {
-  return { javascript: 'js', typescript: 'ts', python: 'py', sql: 'sql' }[lang]
+  return LANGUAGES[lang].extension
 }
 
 function languageLabel(lang: Language): string {
-  return { javascript: 'JavaScript', typescript: 'TypeScript', python: 'Python', sql: 'SQL' }[lang]
+  return LANGUAGES[lang].label
 }

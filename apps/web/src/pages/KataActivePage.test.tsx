@@ -331,6 +331,25 @@ describe('KataActivePage', () => {
     )
   })
 
+  it.each([
+    [['ruby'], 'solution.rb', 'Ruby'],
+    [['go'], 'solution.go', 'Go'],
+    [['ruby', 'python', 'typescript'], 'solution.rb', 'Ruby'],
+    [['typescript', 'python'], 'solution.ts', 'TypeScript'],
+    [['cobol'], 'solution.js', 'JavaScript'],
+  ])('labels a %j code kata as %s', async (language, filename, label) => {
+    const session = makeSession()
+    getSession.mockResolvedValue({
+      ...session,
+      kata: { ...session.kata, type: 'code', language },
+    })
+
+    renderPage()
+
+    expect(await screen.findByText(filename)).toBeInTheDocument()
+    expect(screen.getByText(label)).toBeInTheDocument()
+  })
+
   describe('point kata', () => {
     function pointSession(): SessionWithKata {
       const base = makeSession()
