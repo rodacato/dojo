@@ -242,6 +242,74 @@ describe('KataActivePage', () => {
     expect(submitAttempt).not.toHaveBeenCalled()
   })
 
+  it('stops asking to leave once time has run out', async () => {
+    const user = userEvent.setup()
+    const startedAt = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+    getSession.mockResolvedValue(makeSession({ startedAt }))
+
+    renderPage('sess-1')
+    await screen.findByRole('button', { name: 'View result' }, { timeout: 2000 })
+    expect(screen.getByText('Time expired. No answer was sent.')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Back' }))
+
+    expect(navigate).toHaveBeenCalledWith('/dashboard')
+    expect(screen.queryByText(/The timer keeps running/)).not.toBeInTheDocument()
+  })
+
+  it('submits the answer by itself when time runs out', async () => {
+    const startedAt = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+    sessionStorage.setItem('dojo-draft-sess-1', 'nearly done')
+    getSession.mockResolvedValue(makeSession({ startedAt }))
+    submitAttempt.mockResolvedValue({ attemptId: 'att-1' })
+
+    renderPage('sess-1')
+
+    await waitFor(() => expect(submitAttempt).toHaveBeenCalledWith('sess-1', 'nearly done'), { timeout: 2000 })
+  })
+
+  it('clears the failure once the learner changes the answer', async () => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+    submitAttempt.mockRejectedValue(new ApiError(500, 'internal'))
+
+    renderPage('sess-1')
+    await screen.findByRole('heading', { name: 'Rate Limiter Design' })
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Token bucket.' } })
+    await user.click(screen.getByRole('button', { name: 'Submit' }))
+    await screen.findByRole('alert')
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'Leaky bucket.' } })
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('announces the last thirty seconds without promising more time', async () => {
+    const startedAt = new Date(Date.now() - (30 * 60 - 20) * 1000).toISOString()
+    getSession.mockResolvedValue(makeSession({ startedAt }))
+
+    renderPage('sess-1')
+
+    expect(await screen.findByText('Less than thirty seconds remain.')).toBeInTheDocument()
+    expect(screen.queryByText(/pause|extend|extra time/i)).not.toBeInTheDocument()
+  })
+
+  it('warns that the draft is not kept when this browser cannot store it', async () => {
+    const user = userEvent.setup()
+    getSession.mockResolvedValue(makeSession())
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota')
+    })
+
+    renderPage('sess-1')
+    await screen.findByText('Keep this tab open · local storage unavailable')
+    await user.click(screen.getByRole('button', { name: 'Leave' }))
+
+    expect(screen.getByText(/could not keep the draft/)).toBeInTheDocument()
+    expect(screen.queryByText(/is kept in this browser tab/)).not.toBeInTheDocument()
+    setItem.mockRestore()
+  })
+
   it('restores the unsent answer when the learner comes back to the kata', async () => {
     sessionStorage.setItem('dojo-draft-sess-1', 'half-written token bucket')
     getSession.mockResolvedValue(makeSession())
@@ -398,6 +466,46 @@ describe('KataActivePage', () => {
 
       fireEvent.change(await screen.findByLabelText('Why is it wrong?'), { target: { value: 'something is off' } })
       expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
+    })
+
+    it('asks for the line when only the why is written', async () => {
+      getSession.mockResolvedValue(pointSession())
+
+      renderPage('sess-1')
+
+      fireEvent.change(await screen.findByLabelText('Why is it wrong?'), { target: { value: 'page 1 skips' } })
+      expect(screen.getByText('Choose a line to continue.')).toBeInTheDocument()
+      expect(screen.getByText('No line selected')).toBeInTheDocument()
+    })
+
+    it('locks the line and the why while submitting', async () => {
+      const user = userEvent.setup()
+      sessionStorage.setItem('dojo-point-sess-1', '2')
+      sessionStorage.setItem('dojo-draft-sess-1', 'page 1 skips a page.')
+      getSession.mockResolvedValue(pointSession())
+      submitPointAttempt.mockReturnValue(new Promise(() => {}))
+
+      renderPage('sess-1')
+      await user.click(await screen.findByRole('button', { name: 'Submit' }))
+
+      expect(screen.getByRole('button', { name: /const start/ })).toBeDisabled()
+      expect(screen.getByLabelText('Why is it wrong?')).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Leave' })).toBeDisabled()
+    })
+
+    it('keeps an unfinished draft readable and locked after the deadline', async () => {
+      const session = pointSession()
+      sessionStorage.setItem('dojo-draft-sess-1', 'half a thought')
+      getSession.mockResolvedValue({ ...session, startedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString() })
+
+      renderPage('sess-1')
+
+      expect(await screen.findByRole('button', { name: 'View result' }, { timeout: 2000 })).toBeEnabled()
+      expect(screen.getByText('Time expired. Your draft is here.')).toBeInTheDocument()
+      expect(screen.getByLabelText('Why is it wrong?')).toHaveValue('half a thought')
+      expect(screen.getByLabelText('Why is it wrong?')).toHaveAttribute('readonly')
+      expect(screen.getByRole('button', { name: /const start/ })).toBeDisabled()
+      expect(submitPointAttempt).not.toHaveBeenCalled()
     })
 
     it('starts the why empty instead of copying the code into it', async () => {

@@ -17,6 +17,7 @@ const PREPARING_MESSAGES = [
 const PREPARE_POLL_INTERVAL_MS = 2000
 const PREPARE_MAX_POLLS = 60
 const PREPARE_SLOW_NOTICE_AFTER = 8
+const LAST_SECONDS_MS = 30_000
 
 const draftKey = (sessionId: string) => `dojo-draft-${sessionId}`
 const pointKey = (sessionId: string) => `dojo-point-${sessionId}`
@@ -29,11 +30,12 @@ function readStored(key: string): string | null {
   }
 }
 
-function writeStored(key: string, value: string): void {
+function writeStored(key: string, value: string): boolean {
   try {
     sessionStorage.setItem(key, value)
+    return true
   } catch {
-    // storage unavailable (private mode, quota): the draft just isn't kept
+    return false
   }
 }
 
@@ -47,6 +49,8 @@ export function useKataSession(sessionId: string | undefined) {
   const [pointedLine, setPointedLine] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitFailed, setSubmitFailed] = useState(false)
+  const [draftKept, setDraftKept] = useState(true)
+  const [lastSeconds, setLastSeconds] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
   const [prepareError, setPrepareError] = useState(false)
   const msgIndex = useRef(0)
@@ -171,12 +175,12 @@ export function useKataSession(sessionId: string | undefined) {
 
   useEffect(() => {
     if (!session) return
-    writeStored(draftKey(session.id), userResponse)
+    setDraftKept(writeStored(draftKey(session.id), userResponse))
   }, [session, userResponse])
 
   useEffect(() => {
     if (!session || pointedLine === null) return
-    writeStored(pointKey(session.id), String(pointedLine))
+    setDraftKept(writeStored(pointKey(session.id), String(pointedLine)))
   }, [session, pointedLine])
 
   // Warn before closing tab during active kata
@@ -198,10 +202,17 @@ export function useKataSession(sessionId: string | undefined) {
     return () => clearInterval(interval)
   }, [preparing])
 
+  useEffect(() => {
+    if (!session) return
+    const deadline = new Date(session.startedAt).getTime() + session.kata.duration * 60_000
+    const timeout = setTimeout(() => setLastSeconds(true), deadline - LAST_SECONDS_MS - Date.now())
+    return () => clearTimeout(timeout)
+  }, [session])
+
   const isPoint = session?.kata.answerShape === 'point'
   const answerReady = userResponse.trim().length > 0 && (!isPoint || pointedLine !== null)
   const expiredEmpty = timedOut && !answerReady
-  const submitLabel = timedOut ? 'Submit now' : 'Submit'
+  const hasDraft = userResponse.trim().length > 0 || pointedLine !== null
 
   async function handleSubmit() {
     if (!session || !sessionId || !answerReady || submitting) return
@@ -223,6 +234,16 @@ export function useKataSession(sessionId: string | undefined) {
     }
   }
 
+  function changeResponse(value: string) {
+    setSubmitFailed(false)
+    setUserResponse(value)
+  }
+
+  function pointAtLine(line: number) {
+    setSubmitFailed(false)
+    setPointedLine(line)
+  }
+
   function expire() {
     setTimedOut(true)
     handleSubmit()
@@ -235,15 +256,17 @@ export function useKataSession(sessionId: string | undefined) {
     prepareSlow,
     prepareError,
     userResponse,
-    setUserResponse,
+    changeResponse,
     pointedLine,
-    setPointedLine,
+    pointAtLine,
     submitting,
     submitFailed,
+    draftKept,
+    lastSeconds,
     timedOut,
     answerReady,
     expiredEmpty,
-    submitLabel,
+    hasDraft,
     handleSubmit,
     expire,
   }
