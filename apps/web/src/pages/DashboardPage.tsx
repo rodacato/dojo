@@ -3,15 +3,16 @@ import { Link, useNavigate } from 'react-router-dom'
 import type { BeltDTO, KataType } from '@dojo/shared'
 import { api, type DashboardData } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
-import { PageLoader } from '../components/PageLoader'
-import { ErrorState } from '../components/ui/ErrorState'
 import { TypeRuleBadge } from '../components/ui/Badge'
+import { DashboardLoadState } from '../components/dashboard/DashboardLoadState'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
 import { useFirstVisit } from '../hooks/useFirstVisit'
 import { useOnline } from '../hooks/useOnline'
 import { BELT_COLOR } from '../lib/belt-colors'
+
+const PAGE = 'paper-container py-8 md:py-12'
 
 const TEXT_LINK =
   'inline-flex items-center min-h-11 font-mono text-xs uppercase tracking-[0.08em] text-accent-text hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
@@ -48,16 +49,19 @@ export function DashboardPage() {
     }
   }
 
-  if (error && !dashboard) {
+  function retry() {
+    reload()
+    focusMain()
+  }
+
+  if (!dashboard) {
     return (
-      <ErrorState
-        variant="inline"
-        message="We couldn't load your dashboard."
-        primaryAction={{ label: 'Try again', onClick: reload }}
-      />
+      <div className={PAGE}>
+        <DateStrip />
+        {error ? <DashboardLoadState status="error" onRetry={retry} /> : <DashboardLoadState status="loading" />}
+      </div>
     )
   }
-  if (!dashboard) return <PageLoader />
 
   const daily = dashboard.dailyKataMinutes !== null
   const startKata = daily ? startDailyKata : () => navigate('/katas')
@@ -65,7 +69,7 @@ export function DashboardPage() {
   const showPatterns = dashboard.totalCompleted >= 3
 
   return (
-    <div className="paper-container py-8 md:py-12">
+    <div className={`${PAGE} state-reveal`}>
       {onboarding.isFirstVisit && (
         <OnboardingOverlay daily={daily} onStart={startKata} onDismiss={onboarding.dismiss} />
       )}
@@ -190,6 +194,10 @@ function StreakCard({
       </div>
     </section>
   )
+}
+
+function focusMain() {
+  document.getElementById('main')?.focus({ preventScroll: true })
 }
 
 function formatAvgTime(minutes: number): string {
