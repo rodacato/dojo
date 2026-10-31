@@ -153,8 +153,8 @@ describe('GET /dashboard', () => {
 
   it('picks the least-practiced kata type, matching the lowercase types stored on katas', async () => {
     selectQueue.length = 0
-    // heatmap, recent, total, today, topics, avgTime, then the per-type counts.
-    selectQueue.push([], [], [], [], [], [], [{ type: 'code', count: 6 }, { type: 'whiteboard', count: 3 }], [], [])
+    // heatmap, recent, today, topics, total, weekly, avgTime, then the per-type counts.
+    selectQueue.push([], [], [], [], [], [], [], [{ type: 'code', count: 6 }, { type: 'whiteboard', count: 3 }], [])
 
     const res = await makeApp().request('/dashboard')
     const body = (await res.json()) as { practicePatterns: { mostAvoidedType: string } }
