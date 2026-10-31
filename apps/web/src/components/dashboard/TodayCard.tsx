@@ -1,4 +1,7 @@
+import type { ReactNode } from 'react'
 import { Button } from '../ui/Button'
+import { VerdictLabel } from './RecentSessionRow'
+import { isVerdict } from '../../lib/verdict'
 import type { DashboardData } from '../../lib/api'
 
 interface TodayCardProps {
@@ -8,16 +11,14 @@ interface TodayCardProps {
   dailyKataMinutes: number | null
   isFirstVisit: boolean
   starting: boolean
+  startDisabled: boolean
   startError: string | null
   onStart: () => void
   onResume: (id: string) => void
   onViewResults: (id: string) => void
 }
 
-/**
- * Lead section of the Dashboard — 2-col layout: status copy left, CTA right.
- * Three states: active session in progress / today complete / empty.
- */
+/** The dashboard's lead section. Three states: active session, today complete, waiting. */
 export function TodayCard({
   todayComplete,
   todaySession,
@@ -25,6 +26,7 @@ export function TodayCard({
   dailyKataMinutes,
   isFirstVisit,
   starting,
+  startDisabled,
   startError,
   onStart,
   onResume,
@@ -36,45 +38,41 @@ export function TodayCard({
         eyebrow="In progress"
         headline="You have an active kata."
         body="Pick up where you left off. The timer remembers."
-        cta={
-          <Button variant="primary" size="lg" className="max-md:w-full" onClick={() => onResume(activeSessionId)}>
-            Resume kata →
-          </Button>
-        }
-      />
+      >
+        <Button size="xl" onClick={() => onResume(activeSessionId)}>
+          Resume kata →
+        </Button>
+      </HeroLayout>
     )
   }
 
   if (todayComplete && todaySession) {
+    const { verdict } = todaySession
     return (
       <HeroLayout
         eyebrow="Done today"
         headline={todaySession.kataTitle}
+        verdict={isVerdict(verdict) ? <VerdictLabel verdict={verdict} className="block mb-3" /> : null}
         body="The dojo received your work. The verdict is on the page."
         error={startError}
-        cta={
-          <div className="flex flex-col md:flex-row gap-3">
-            <Button variant="ghost" size="lg" className="max-md:w-full" onClick={() => onViewResults(todaySession.id)}>
-              View results →
-            </Button>
-            {dailyKataMinutes !== null && (
-              <Button variant="subtle" size="lg" className="max-md:w-full" loading={starting} onClick={onStart}>
-                One more kata
-              </Button>
-            )}
-          </div>
-        }
-      />
+      >
+        <Button size="xl" onClick={() => onViewResults(todaySession.id)}>
+          View results →
+        </Button>
+        {dailyKataMinutes !== null && (
+          <Button variant="link" size="xl" loading={starting} disabled={startDisabled} onClick={onStart}>
+            One more kata
+          </Button>
+        )}
+      </HeroLayout>
     )
   }
 
   const blind = dailyKataMinutes !== null
   let body = 'Your streak resets at midnight. The dojo opens again whether you show up or not.'
-  if (isFirstVisit) {
-    body = blind
-      ? 'One kata, about five minutes. You see the topic when it opens.'
-      : 'Set the constraints. Get one kata. Work.'
-  }
+  if (blind) body = 'One kata, about five minutes. You see the topic when it opens.'
+  else if (isFirstVisit) body = 'Set the constraints. Get one kata. Work.'
+
   let headline = 'The dojo was empty today.'
   if (isFirstVisit) headline = 'First kata. The hardest one is always the first.'
   else if (blind) headline = "Today's kata is waiting."
@@ -85,41 +83,54 @@ export function TodayCard({
       headline={headline}
       body={body}
       error={startError}
-      cta={
-        <Button variant="primary" size="lg" className="max-md:w-full" loading={starting} onClick={onStart}>
-          Enter the dojo →
-        </Button>
-      }
-    />
+    >
+      <Button size="xl" loading={starting} disabled={startDisabled} onClick={onStart}>
+        Enter the dojo →
+      </Button>
+    </HeroLayout>
   )
 }
 
 function HeroLayout({
   eyebrow,
   headline,
+  verdict = null,
   body,
-  cta,
   error = null,
+  children,
 }: Readonly<{
   eyebrow: string
   headline: string
+  verdict?: ReactNode
   body: string
-  cta: React.ReactNode
   error?: string | null
+  children: ReactNode
 }>) {
   return (
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-12">
-      <div className="flex-1 min-w-0">
-        <p className="paper-eyebrow mb-3">{eyebrow}</p>
-        <h2 className="paper-heading mb-4">{headline}</h2>
-        <p className="paper-body max-w-xl">{body}</p>
+    <section
+      aria-labelledby="today-heading"
+      className="md:grid md:grid-cols-[minmax(0,1fr)_auto] items-center gap-6 lg:gap-10 pt-7 pb-7.5 md:pt-7.5 md:pb-8.5"
+    >
+      <div>
+        <p className="paper-eyebrow">{eyebrow}</p>
+        <h1 id="today-heading" className="paper-heading max-w-162.5 mt-3 mb-4 wrap-anywhere">
+          {headline}
+        </h1>
+        {verdict}
+        <p className="paper-body max-w-130">{body}</p>
         {error && (
-          <p role="alert" className="text-danger-text text-sm font-mono mt-3">
+          <p role="alert" className="mt-4 max-w-[48ch] text-sm text-danger-text">
+            <span
+              aria-hidden
+              className="inline-flex items-center justify-center size-4.5 mr-2 border border-current rounded-sm font-mono text-xs"
+            >
+              !
+            </span>
             {error}
           </p>
         )}
       </div>
-      <div className="shrink-0">{cta}</div>
-    </div>
+      <div className="mt-6 md:mt-0 md:min-w-45 lg:min-w-50 flex flex-col gap-1">{children}</div>
+    </section>
   )
 }

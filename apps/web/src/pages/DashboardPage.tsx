@@ -9,6 +9,7 @@ import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
 import { useFirstVisit } from '../hooks/useFirstVisit'
+import { useOnline } from '../hooks/useOnline'
 import { BELT_COLOR } from '../lib/belt-colors'
 
 const SECTION_RULE = 'mt-10 md:mt-12 border-t border-border pt-6 md:pt-8'
@@ -28,6 +29,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
 
 export function DashboardPage() {
   const navigate = useNavigate()
+  const { online } = useOnline()
   const { data: dashboard, error, reload } = useAsync(() => api.getDashboard(), [])
 
   const isFirstVisit = !!dashboard && dashboard.streak === 0 && dashboard.recentSessions.length === 0
@@ -60,6 +62,7 @@ export function DashboardPage() {
 
   const daily = dashboard.dailyKataMinutes !== null
   const startKata = daily ? startDailyKata : () => navigate('/katas')
+  const startDisabled = daily && !online
 
   return (
     <div className="paper-container py-8 md:py-12">
@@ -68,20 +71,19 @@ export function DashboardPage() {
       )}
       <DateStrip />
 
-      <section className="mt-5">
-        <TodayCard
-          todayComplete={dashboard.todayComplete}
-          todaySession={dashboard.todaySession}
-          activeSessionId={dashboard.activeSessionId}
-          dailyKataMinutes={dashboard.dailyKataMinutes}
-          isFirstVisit={isFirstVisit}
-          starting={starting}
-          startError={startError}
-          onStart={startKata}
-          onResume={(id) => navigate(`/katas/${id}`)}
-          onViewResults={(id) => navigate(`/katas/${id}/result`)}
-        />
-      </section>
+      <TodayCard
+        todayComplete={dashboard.todayComplete}
+        todaySession={dashboard.todaySession}
+        activeSessionId={dashboard.activeSessionId}
+        dailyKataMinutes={dashboard.dailyKataMinutes}
+        isFirstVisit={isFirstVisit}
+        starting={starting}
+        startDisabled={startDisabled}
+        startError={startError}
+        onStart={startKata}
+        onResume={(id) => navigate(`/katas/${id}`)}
+        onViewResults={(id) => navigate(`/katas/${id}/result`)}
+      />
 
       <BeltStrip belt={dashboard.belt} />
 
@@ -115,7 +117,7 @@ export function DashboardPage() {
 function DateStrip() {
   const today = useMemo(() => DATE_FORMATTER.format(new Date()), [])
   return (
-    <p className="paper-eyebrow">{today}</p>
+    <p className="paper-eyebrow date-strip">{today}</p>
   )
 }
 
