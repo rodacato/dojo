@@ -1,11 +1,15 @@
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import type { ScrollEntryDTO } from '@dojo/shared'
 import { api } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
-import { PageLoader } from '../components/PageLoader'
-import { EmptyState } from '../components/ui/EmptyState'
-import { ErrorState } from '../components/ui/ErrorState'
+import { useAuth } from '../context/AuthContext'
+import { Button } from '../components/ui/Button'
+import { LoadState } from '../components/ui/LoadState'
+import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { pickLocalized, preferredLocale } from '../lib/scrollLocale'
+
+const LOAD_ERROR = 'The scrolls could not be loaded.'
 
 function ScrollRow({ entry, locale }: Readonly<{ entry: ScrollEntryDTO; locale: string }>) {
   const { slug, visibility, manifest } = entry
@@ -42,54 +46,95 @@ function ScrollRow({ entry, locale }: Readonly<{ entry: ScrollEntryDTO; locale: 
   )
 }
 
-export function ScrollsPage() {
-  const { data: scrolls, loading, error, reload } = useAsync(() => api.getScrolls(), [])
+function AnonymousLoadError({ onRetry }: Readonly<{ onRetry: () => void }>) {
+  return (
+    <section role="alert" className="py-7 border-b border-border">
+      <p className="paper-eyebrow">Scrolls</p>
+      <h2 className="paper-heading mt-3 mb-5 wrap-anywhere">{LOAD_ERROR}</h2>
+      <Button variant="ghost" size="xl" className="max-md:w-full" onClick={onRetry}>
+        Try again
+      </Button>
+    </section>
+  )
+}
 
-  if (loading) return <PageLoader />
-
-  if (error || !scrolls) {
-    return (
-      <ErrorState
-        kind="generic"
-        variant="inline"
-        message="The scrolls could not be loaded."
-        primaryAction={{ label: 'Try again', onClick: reload }}
-      />
-    )
-  }
-
+function ScrollsList({ scrolls }: Readonly<{ scrolls: ScrollEntryDTO[] }>) {
   const locale = preferredLocale()
 
   return (
-    <div className="paper-container py-8 md:py-12">
-      <header className="max-w-[46.25rem] mb-7 md:mb-9">
-        <p className="paper-eyebrow mb-3">Scrolls</p>
-        <h1 className="paper-heading">
-          Small apps that teach one thing well.
-        </h1>
-      </header>
+    <>
+      <p className="paper-note pb-3.5">
+        {scrolls.length} {scrolls.length === 1 ? 'scroll' : 'scrolls'}
+      </p>
+      <ul aria-label="Scrolls" className="border-t border-border">
+        {scrolls.map((entry) => (
+          <li key={entry.id}>
+            <ScrollRow entry={entry} locale={locale} />
+          </li>
+        ))}
+      </ul>
+    </>
+  )
+}
 
-      {scrolls.length === 0 ? (
-        <EmptyState
-          variant="inline"
-          eyebrow="Empty · Scrolls"
-          headline="No scrolls are published yet."
-          microcopy="Scrolls are small apps the operator of this instance adds."
-        />
+export function ScrollsPage() {
+  const { data: scrolls, loading, error, reload } = useAsync(() => api.getScrolls(), [])
+  const { user, loading: authLoading } = useAuth()
+  const anonymous = !authLoading && !user
+  const headingRef = useRef<HTMLHeadingElement>(null)
+
+  function retry() {
+    headingRef.current?.focus()
+    reload()
+  }
+
+  function renderCatalog() {
+    if (loading || authLoading) {
+      return (
+        <LoadState status="loading" eyebrow="Loading scrolls">
+          <SkeletonCard />
+        </LoadState>
+      )
+    }
+    if (error || !scrolls) {
+      return anonymous ? (
+        <AnonymousLoadError onRetry={retry} />
       ) : (
-        <>
-          <p className="paper-note pb-3.5">
-            {scrolls.length} {scrolls.length === 1 ? 'scroll' : 'scrolls'}
+        <LoadState status="error" eyebrow="Scrolls" title={LOAD_ERROR} onRetry={retry} />
+      )
+    }
+    if (scrolls.length === 0) {
+      return (
+        <section className="border-t border-border pt-7">
+          <p className="paper-eyebrow">Empty · Scrolls</p>
+          <h2 className="text-primary text-2xl font-bold leading-[1.4] mt-3">
+            {anonymous ? 'No public scrolls are available here.' : 'No scrolls are published yet.'}
+          </h2>
+          <p className="paper-body mt-4 max-w-[35rem]">
+            Scrolls are small apps the operator of this instance adds.
           </p>
-          <ul aria-label="Scrolls" className="border-t border-border">
-            {scrolls.map((entry) => (
-              <li key={entry.id}>
-                <ScrollRow entry={entry} locale={locale} />
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+        </section>
+      )
+    }
+    return <ScrollsList scrolls={scrolls} />
+  }
+
+  return (
+    <div className="paper-container py-8 md:py-12">
+      <div className="max-w-[57.5rem]">
+        <header className="max-w-[46.25rem] mb-7 md:mb-9">
+          <p className="paper-eyebrow mb-3">Scrolls</p>
+          <h1 ref={headingRef} tabIndex={-1} className="paper-heading focus:outline-none">
+            Small apps that teach one thing well.
+          </h1>
+          {anonymous && (
+            <p className="paper-body mt-5 max-w-[35rem]">
+              Public scrolls are open without an account.
+            </p>
+          )}
+        </header>
+        {renderCatalog()}
+      </div>
     </div>
   )
 }

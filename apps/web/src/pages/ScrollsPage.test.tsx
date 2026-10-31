@@ -1,14 +1,26 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import type { ScrollEntryDTO } from '@dojo/shared'
 import { ScrollsPage } from './ScrollsPage'
 import { api } from '../lib/api'
+import { useAuth } from '../context/AuthContext'
 
 vi.mock('../lib/api', () => ({ api: { getScrolls: vi.fn() } }))
+vi.mock('../context/AuthContext', () => ({ useAuth: vi.fn() }))
 
 const mockedApi = vi.mocked(api)
+const mockedUseAuth = vi.mocked(useAuth)
+const member = { id: 'u1', username: 'morgan', avatarUrl: '', createdAt: '2026-01-01T00:00:00.000Z' }
+
+function signIn() {
+  mockedUseAuth.mockReturnValue({ user: member, loading: false, logout: vi.fn() })
+}
+
+function signOut() {
+  mockedUseAuth.mockReturnValue({ user: null, loading: false, logout: vi.fn() })
+}
 
 function scroll(
   slug: string,
@@ -49,6 +61,7 @@ function renderPage() {
 beforeEach(() => {
   vi.spyOn(globalThis.navigator, 'language', 'get').mockReturnValue('es-MX')
   mockedApi.getScrolls.mockResolvedValue([scroll('pattern-circuit'), scroll('domain-wall')])
+  signIn()
 })
 
 afterEach(() => {
@@ -110,26 +123,76 @@ describe('ScrollsPage', () => {
     expect(closed).toHaveTextContent('Instance access')
   })
 
-  it('shows an empty state when nothing is published', async () => {
+  it('says nothing is published to a signed-in learner with an empty list', async () => {
     mockedApi.getScrolls.mockResolvedValue([])
     renderPage()
     expect(await screen.findByText('No scrolls are published yet.')).toBeInTheDocument()
+    expect(screen.getByText(/small apps the operator of this instance adds/)).toBeInTheDocument()
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
   })
 
-  it('shows a loader while the request is pending', () => {
-    mockedApi.getScrolls.mockReturnValue(new Promise(() => {}))
+  it('does not tell an anonymous visitor that nothing is published', async () => {
+    signOut()
+    mockedApi.getScrolls.mockResolvedValue([])
     renderPage()
-    expect(screen.getByText(/loading/)).toBeInTheDocument()
+    expect(await screen.findByText('No public scrolls are available here.')).toBeInTheDocument()
+    expect(screen.queryByText('No scrolls are published yet.')).not.toBeInTheDocument()
   })
 
-  it('shows an error with a retry that reloads the list', async () => {
+  it('tells only anonymous visitors that public scrolls need no account', async () => {
+    signOut()
+    const { unmount } = renderPage()
+    expect(await screen.findByText('Public scrolls are open without an account.')).toBeInTheDocument()
+    unmount()
+
+    signIn()
+    renderPage()
+    await screen.findByRole('list', { name: 'Scrolls' })
+    expect(screen.queryByText('Public scrolls are open without an account.')).not.toBeInTheDocument()
+  })
+
+  it('keeps the page title and invents no content while loading', () => {
+    mockedApi.getScrolls.mockReturnValue(new Promise(() => {}))
+    renderPage()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Small apps that teach one thing well.')
+    expect(screen.getByRole('status')).toHaveTextContent('Loading scrolls')
+    expect(screen.queryByRole('list')).not.toBeInTheDocument()
+    expect(screen.queryByText(/\d+ scrolls?/)).not.toBeInTheDocument()
+  })
+
+  it('waits for the visitor to be known before calling the catalog empty', async () => {
+    mockedUseAuth.mockReturnValue({ user: null, loading: true, logout: vi.fn() })
+    mockedApi.getScrolls.mockResolvedValue([])
+    renderPage()
+    await act(async () => {})
+    expect(screen.getByRole('status')).toHaveTextContent('Loading scrolls')
+    expect(screen.queryByText(/No (public )?scrolls/)).not.toBeInTheDocument()
+    expect(screen.queryByText('Public scrolls are open without an account.')).not.toBeInTheDocument()
+  })
+
+  it('shows an error in place, with a filled retry that reloads the list', async () => {
     mockedApi.getScrolls.mockRejectedValueOnce(new Error('boom'))
     renderPage()
-    expect(await screen.findByText('The scrolls could not be loaded.')).toBeInTheDocument()
+    expect(await screen.findByRole('alert')).toHaveTextContent('The scrolls could not be loaded.')
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
 
-    await userEvent.click(screen.getByRole('button', { name: /try again/i }))
+    const retry = screen.getByRole('button', { name: /try again/i })
+    expect(retry).toHaveClass('bg-accent')
+    await userEvent.click(retry)
     expect(await screen.findByRole('list', { name: 'Scrolls' })).toBeInTheDocument()
     expect(mockedApi.getScrolls).toHaveBeenCalledTimes(2)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveFocus()
+  })
+
+  it('leaves the filled action to the public nav when a visitor retries', async () => {
+    signOut()
+    mockedApi.getScrolls.mockRejectedValueOnce(new Error('boom'))
+    renderPage()
+    expect(await screen.findByRole('alert')).toHaveTextContent('The scrolls could not be loaded.')
+
+    const retry = screen.getByRole('button', { name: /try again/i })
+    expect(retry).not.toHaveClass('bg-accent')
+    await userEvent.click(retry)
+    expect(await screen.findByRole('list', { name: 'Scrolls' })).toBeInTheDocument()
   })
 })
