@@ -240,3 +240,4 @@ Contributions are welcome — read [CONTRIBUTING.md](CONTRIBUTING.md) first; it 
 ## License
 
 [MIT](LICENSE.md)
+
