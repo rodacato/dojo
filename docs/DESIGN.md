@@ -52,6 +52,20 @@ White, yellow, green, brown and black. Same in every theme. They are used for th
 
 JetBrains Mono for the product's identity surfaces: eyebrows (small, uppercase, tracked) and verdicts (caps, never softened, never followed by encouraging copy). Error states show the actual error message verbatim. Voice rules are in `design/brand/README.md`.
 
+Sizes come from the scale in `main.css`. Off-scale prototype sizes map onto it, never onto new sizes:
+
+| Design size (px) | Tailwind |
+|---|---|
+| 8 to 12 | `text-xs` |
+| 13 | `text-sm` |
+| 14 to 16 | `text-base` |
+| 17 to 19 | `text-lg` |
+| 20 to 25 | `text-xl` |
+| 26 to 36 | `text-2xl` |
+| Page headings | `.paper-heading` |
+
+`text-3xl` is smaller than `text-2xl` in this scale, so never use it. Inputs stay at 16px so iOS does not zoom on focus.
+
 ## Motifs
 
 Brushstroke, enso (loader and section mark), hanko (square seal: milestone earned, verdict stamp) and belt colors. Implemented in `ui/`: `EnsoLoader`, `BrushstrokeUnderline`, `HankoBadge`, `BeltRingAvatar`.
