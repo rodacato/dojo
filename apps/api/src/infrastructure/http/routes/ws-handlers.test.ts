@@ -199,6 +199,37 @@ describe('handleSubmit — streaming happy path', () => {
     )
   })
 
+  it('keeps streaming to the socket that reconnected mid-evaluation', async () => {
+    const dropped = mockWs()
+    const reconnected = mockWs()
+    const result: EvaluationResult = {
+      verdict: 'passed',
+      analysis: 'Good job',
+      topicsToReview: [],
+      followUpQuestion: null,
+      isFinalEvaluation: true,
+    }
+    async function* streamAcrossReload() {
+      yield { chunk: 'one', isFinal: false }
+      handleReconnect(reconnected, 'attempt-1')
+      yield { chunk: ' two', isFinal: false }
+      yield { chunk: '', isFinal: true, result }
+    }
+    primeSubmit()
+    vi.mocked(useCases.submitAttempt.execute).mockReturnValue(streamAcrossReload() as never)
+
+    await handleSubmit(dropped, 'attempt-1', 'session-1', 'user-1')
+
+    expect(parsed(dropped)).toEqual([{ type: 'token', content: 'one' }])
+    expect(parsed(reconnected)).toEqual([
+      { type: 'token', content: 'one' },
+      { type: 'token', content: ' two' },
+      { type: 'evaluation', result },
+      { type: 'complete', isFinal: true },
+    ])
+    expect(reconnected.close).toHaveBeenCalledWith(1000, 'Evaluation complete')
+  })
+
   it('consumes the pending attempt so a duplicate submit is rejected as ATTEMPT_NOT_FOUND', async () => {
     const ws1 = mockWs()
     primeSubmit()
@@ -333,6 +364,7 @@ describe('handleReconnect', () => {
   it('replays cached tokens', () => {
     const ws = mockWs()
     streamCache.set('attempt-1', {
+      ws,
       tokens: ['hello', ' world'],
       result: null,
       complete: false,
@@ -347,6 +379,24 @@ describe('handleReconnect', () => {
     ])
   })
 
+  it('tells the client when the evaluation it reconnects to already failed', () => {
+    const ws = mockWs()
+    streamCache.set('attempt-1', {
+      ws,
+      tokens: ['partial'],
+      result: null,
+      complete: true,
+      isFinal: false,
+    })
+
+    handleReconnect(ws, 'attempt-1')
+
+    expect(parsed(ws)).toEqual([
+      { type: 'token', content: 'partial' },
+      { type: 'error', code: 'LLM_STREAM_ERROR' },
+    ])
+  })
+
   it('sends complete if cache is already complete', () => {
     const ws = mockWs()
     const result: EvaluationResult = {
@@ -357,6 +407,7 @@ describe('handleReconnect', () => {
       isFinalEvaluation: true,
     }
     streamCache.set('attempt-1', {
+      ws,
       tokens: ['token1'],
       result,
       complete: true,
