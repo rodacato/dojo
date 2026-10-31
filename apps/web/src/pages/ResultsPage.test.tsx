@@ -192,7 +192,7 @@ describe('ResultsPage', () => {
     expect(
       await screen.findByText('This kata expired without a submission.'),
     ).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Choose a kata →' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Keep Practicing' })).toBeInTheDocument()
   })
 
   it('sends an unanswered session with time left back to the kata', async () => {
@@ -219,7 +219,7 @@ describe('ResultsPage', () => {
     renderAt()
     await screen.findByText('This kata expired without a submission.')
 
-    await user.click(screen.getByRole('button', { name: 'Choose a kata →' }))
+    await user.click(screen.getByRole('button', { name: 'Keep Practicing' }))
 
     expect(await screen.findByText('katas screen')).toBeInTheDocument()
   })

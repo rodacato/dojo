@@ -81,7 +81,7 @@ export function ResultsPage() {
             <p className="mt-5 text-secondary text-base leading-relaxed">Start a new one to keep practicing.</p>
             <p className="paper-note mt-3">No answer was evaluated.</p>
             <Button variant="link" size="lg" className="mt-2" onClick={() => navigate('/katas', { replace: true })}>
-              Choose a kata →
+              Keep Practicing
             </Button>
           </section>
           <div className="mt-6 pt-6 border-t border-border">

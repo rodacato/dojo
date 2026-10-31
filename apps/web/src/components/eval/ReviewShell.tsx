@@ -89,7 +89,7 @@ export function ReviewShell({ status, leading, scrollRef, footer, children }: Re
 export function ReviewTitle({ title, meta }: Readonly<{ title: string; meta?: string }>) {
   return (
     <header className="mb-6 md:mb-8">
-      <h1 className="font-sans font-bold text-primary text-2xl max-md:text-[1.75rem] leading-tight tracking-tight wrap-anywhere">
+      <h1 className="font-sans font-bold text-primary text-2xl leading-tight tracking-tight wrap-anywhere">
         {title}
       </h1>
       {meta && <p className="paper-note mt-3">{meta}</p>}
