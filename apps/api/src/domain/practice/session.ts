@@ -64,6 +64,13 @@ export class Session {
     return elapsedMs > limitMs
   }
 
+  /** Close a session that ran out of time; a final evaluation means it was answered */
+  expire(): void {
+    const answered = this._attempts.some((a) => a.isFinalEvaluation && a.evaluationResult)
+    this._status = answered ? 'completed' : 'failed'
+    this._completedAt = new Date()
+  }
+
   static createPreparing(params: {
     userId: UserId
     kataId: KataId
