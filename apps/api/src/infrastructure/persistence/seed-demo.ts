@@ -215,12 +215,6 @@ const ANALYSIS: Record<Exclude<Outcome, 'expired' | 'no_evaluation'>, string[]> 
   ],
 }
 
-const POINT_WHY = [
-  'The check runs before the value is ready, so the first request can pass with stale data. Moving it after the await closes that window.',
-  'This line trusts input the caller controls. Everything after it assumes the value was validated, and nothing validated it.',
-  'The boundary is off by one here, so the last item never reaches the loop. It only shows on a full page.',
-]
-
 const FREE_ANSWER: Record<SeedKata['type'], string> = {
   code: 'function solve(input) {\n  const seen = new Set()\n  return input.filter((item) => !seen.has(item) && seen.add(item))\n}\n',
   chat: 'I would start from the failure mode, not the feature. The queue absorbs the spike, but only if consumers are idempotent, so that is the first thing I would verify.',
@@ -283,11 +277,10 @@ export function assertDemoDatabase(databaseUrl: string, nodeEnv: string | undefi
   }
 }
 
-function userResponseFor(kata: SeedKata, random: () => number): string {
+function userResponseFor(kata: SeedKata): string {
   const line = kata.rubric?.answer?.line
-  if (kata.type === 'review' && kata.starterCode && line) {
-    return composePointAnswer(kata.starterCode, line, pick(POINT_WHY, random))
-  }
+  const why = kata.rubric?.expectedIssues[0]?.why
+  if (kata.starterCode && line && why) return composePointAnswer(kata.starterCode, line, why)
   return FREE_ANSWER[kata.type]
 }
 
@@ -384,7 +377,7 @@ async function seedPersona(
     attemptRows.push({
       id: uuidv5(`demo-attempt-${id}`),
       sessionId: id,
-      userResponse: userResponseFor(kata, random),
+      userResponse: userResponseFor(kata),
       llmResponse: isFinalEvaluation ? evaluationFor(kata, outcome, random) : '',
       isFinalEvaluation,
       submittedAt: finished,
