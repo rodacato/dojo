@@ -61,13 +61,13 @@ beforeEach(() => {
 
 describe('DashboardPage', () => {
   describe('loading state', () => {
-    it('shows the page loader while the dashboard request is pending', () => {
+    it('keeps the dashboard shape while the request is pending', () => {
       // Never-resolving promise keeps the component in its loading branch.
       mockedGetDashboard.mockReturnValue(new Promise(() => {}))
 
       renderDashboard()
 
-      expect(screen.getByText('loading')).toBeInTheDocument()
+      expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Opening the dojo')
       expect(screen.queryByRole('heading', { name: /green belt/i })).not.toBeInTheDocument()
     })
 
@@ -78,6 +78,7 @@ describe('DashboardPage', () => {
       renderDashboard()
 
       expect(await screen.findByText("We couldn't load your dashboard.")).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /something broke/i })).toBeInTheDocument()
       await user.click(screen.getByRole('button', { name: /try again/i }))
 
       expect(await screen.findByRole('heading', { name: 'green belt' })).toBeInTheDocument()
@@ -90,7 +91,7 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByText('Current streak')).toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
       expect(screen.getByText('7')).toBeInTheDocument()
       expect(screen.getByText('2/5 this week')).toBeInTheDocument()
       expect(screen.getByRole('heading', { name: 'green belt' })).toBeInTheDocument()
@@ -131,7 +132,7 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByText('Current streak')).toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
       expect(screen.queryByText('Practice patterns')).not.toBeInTheDocument()
       expect(screen.queryByText('Weak areas')).not.toBeInTheDocument()
       expect(screen.queryByText('recursion')).not.toBeInTheDocument()
@@ -170,7 +171,7 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByText('Recent kata')).toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Recent kata' })).toBeInTheDocument()
       expect(screen.getByText('Reverse a linked list')).toBeInTheDocument()
       expect(screen.getByText('PASSED')).toBeInTheDocument()
       expect(screen.getByRole('link', { name: /reverse a linked list/i })).toHaveAttribute('href', '/katas/s1/result')
@@ -206,8 +207,8 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByText('Current streak')).toBeInTheDocument()
-      expect(screen.queryByText('Recent kata')).not.toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: 'Recent kata' })).not.toBeInTheDocument()
     })
   })
 
@@ -436,7 +437,7 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByText('Current streak')).toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
       expect(
         screen.queryByRole('heading', { name: 'Welcome to the dojo.' }),
       ).not.toBeInTheDocument()
@@ -448,7 +449,7 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByText('Current streak')).toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
       expect(
         screen.queryByRole('heading', { name: 'Welcome to the dojo.' }),
       ).not.toBeInTheDocument()
