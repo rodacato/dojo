@@ -1042,6 +1042,13 @@ describe('POST /cron/reminders', () => {
     expect(dbSelect).not.toHaveBeenCalled()
   })
 
+  it('returns 401 when CRON_SECRET is unset, even with an empty bearer', async () => {
+    mockConfig.CRON_SECRET = ''
+    const res = await post('/cron/reminders', {}, { Authorization: 'Bearer ' })
+    expect(res.status).toBe(401)
+    expect(dbSelect).not.toHaveBeenCalled()
+  })
+
   it('returns sent:0 when no users are eligible', async () => {
     selectResult.rows = []
     const res = await post('/cron/reminders', {}, { Authorization: 'Bearer cron-secret' })

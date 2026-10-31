@@ -480,7 +480,7 @@ practiceRoutes.post('/sessions/:id/retry-evaluation', requireAuth, uuidParam('id
 
 practiceRoutes.post('/cron/reminders', async (c) => {
   const authHeader = c.req.header('Authorization')
-  if (authHeader !== `Bearer ${config.CRON_SECRET}`) {
+  if (!config.CRON_SECRET || authHeader !== `Bearer ${config.CRON_SECRET}`) {
     return c.json({ error: 'Unauthorized' }, 401)
   }
 
