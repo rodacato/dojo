@@ -37,7 +37,7 @@ export function OnboardingOverlay({ daily, startDisabled, onStart, onDismiss }: 
           <p className="paper-eyebrow">Invited by the dojo</p>
           <h1
             id="onboarding-headline"
-            className="my-3 font-sans font-bold text-2xl md:text-[2.25rem] leading-[1.1] tracking-tight text-primary"
+            className="my-3 font-sans font-bold text-2xl leading-[1.1] tracking-tight text-primary"
           >
             Welcome to the dojo.
           </h1>
