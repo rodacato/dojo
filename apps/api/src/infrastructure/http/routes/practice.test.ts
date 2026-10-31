@@ -38,6 +38,7 @@ const {
   // db.select(cols?).from(t).where(c)[.orderBy(c)] — thenable at the end of
   // either the .where or .orderBy hop so both call sites resolve.
   const thenable = (): Record<string, unknown> => ({
+    leftJoin: vi.fn(thenable),
     where: vi.fn(() => ({
       orderBy: vi.fn(() => Promise.resolve(selectResult.rows)),
       then: (onF: (v: unknown[]) => unknown) => Promise.resolve(selectResult.rows).then(onF),
@@ -116,6 +117,7 @@ vi.mock('../../persistence/drizzle/schema', () => ({
     reminderEnabled: 'users.reminderEnabled',
     reminderHour: 'users.reminderHour',
   },
+  userPreferences: { userId: 'userPreferences.userId', goalWeeklyTarget: 'userPreferences.goalWeeklyTarget' },
   errors: { id: 'errors.id', createdAt: 'errors.createdAt' },
   playgroundRuns: { sessionHash: 'pr.sessionHash', createdAt: 'pr.createdAt' },
 }))
@@ -1035,6 +1037,17 @@ describe('POST /sessions/:id/retry-evaluation', () => {
 // POST /cron/reminders
 // ===========================================================================
 describe('POST /cron/reminders', () => {
+  const SATURDAY = new Date('2026-10-31T09:00:00.000Z')
+  const MONDAY = new Date('2026-11-02T09:00:00.000Z')
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'], now: MONDAY })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('returns 401 when the Authorization bearer does not match CRON_SECRET', async () => {
     const res = await post('/cron/reminders', {}, { Authorization: 'Bearer wrong' })
     expect(res.status).toBe(401)
@@ -1104,6 +1117,33 @@ describe('POST /cron/reminders', () => {
     expect(html).toContain('/settings"')
     expect(html).not.toContain('/start')
     expect(html).not.toContain('#6366F1')
+  })
+
+  describe('on a weekend', () => {
+    function remindAt(now: Date) {
+      vi.setSystemTime(now)
+      mockConfig.RESEND_API_KEY = 'rk-live'
+      resendSend.mockResolvedValue({ id: 'em' })
+      selectResult.rows = [
+        { id: 'u1', username: 'a', email: 'a@x.com', goalWeeklyTarget: 3 },
+        { id: 'u2', username: 'b', email: 'b@x.com', goalWeeklyTarget: null },
+        { id: 'u3', username: 'c', email: 'c@x.com', goalWeeklyTarget: 5 },
+      ]
+      return post('/cron/reminders', {}, { Authorization: 'Bearer cron-secret' })
+    }
+
+    it('reminds only learners whose weekly goal is five days or more', async () => {
+      const res = await remindAt(SATURDAY)
+
+      expect(await res.json()).toEqual({ sent: 1 })
+      expect(resendSend).toHaveBeenCalledWith(expect.objectContaining({ to: 'c@x.com' }))
+    })
+
+    it('reminds everyone on a weekday', async () => {
+      const res = await remindAt(MONDAY)
+
+      expect(await res.json()).toEqual({ sent: 3 })
+    })
   })
 
   it('counts only successful sends when one delivery throws', async () => {
