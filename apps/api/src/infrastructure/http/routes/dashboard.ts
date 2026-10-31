@@ -8,6 +8,7 @@ import { UserId } from '../../../domain/shared/types'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { isEligiblePractice } from '../../persistence/eligible-practice'
+import { loadPracticeMetrics } from '../../persistence/practice-metrics'
 import { verdictSubquery, calculateStreak } from './query-helpers'
 
 export const dashboardRoutes = new Hono<AppEnv>()
@@ -34,13 +35,9 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const [
     heatmapRows,
     recentRows,
-    totalRows,
     todayRows,
     topicRows,
-    avgTimeRows,
-    typeCountRows,
-    timedOutRows,
-    weeklyRows,
+    metrics,
     prefs,
     belt,
     dailyKata,
@@ -73,10 +70,6 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       .orderBy(desc(sessions.startedAt))
       .limit(5),
     db
-      .select({ count: count() })
-      .from(sessions)
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'))),
-    db
       .select({
         id: sessions.id,
         kataTitle: katas.title,
@@ -103,32 +96,12 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       .from(attempts)
       .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
       .where(and(eq(sessions.userId, userId), eq(attempts.isFinalEvaluation, true))),
-    db
-      .select({
-        avg: sql<number>`ROUND(AVG(EXTRACT(EPOCH FROM (${sessions.completedAt} - ${sessions.startedAt})) / 60))`,
-      })
-      .from(sessions)
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), sql`${sessions.completedAt} IS NOT NULL`)),
-    db
-      .select({ type: katas.type, count: count() })
-      .from(sessions)
-      .innerJoin(katas, eq(sessions.kataId, katas.id))
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed')))
-      .groupBy(katas.type),
-    db
-      .select({ count: count() })
-      .from(sessions)
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'failed'))),
-    db
-      .select({ count: count() })
-      .from(sessions)
-      .where(and(eq(sessions.userId, userId), eq(sessions.status, 'completed'), gte(sessions.startedAt, weekStart))),
+    loadPracticeMetrics(db, userId, weekStart),
     db.query.userPreferences.findFirst({ where: eq(userPreferences.userId, userId) }),
     useCases.calculateBelt.execute(UserId(userId)),
     useCases.pickDailyKata.execute(UserId(userId)),
   ])
 
-  const totalCompleted = Number(totalRows[0]?.count ?? 0)
   const streak = calculateStreak(heatmapRows.map((r) => r.date))
 
   const todayRow = todayRows[0]
@@ -146,21 +119,17 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     .slice(0, 8)
     .map(([topic, frequency]) => ({ topic, frequency }))
 
-  const avgTimeMinutes = Number(avgTimeRows[0]?.avg ?? 0)
-
   const allTypes = ['CODE', 'CHAT', 'WHITEBOARD']
-  const typeCounts = new Map(typeCountRows.map((r) => [r.type.toUpperCase(), Number(r.count)]))
+  const typeCounts = new Map(metrics.typeCounts.map((r) => [r.type.toUpperCase(), r.count]))
   const mostAvoided = allTypes
     .map((t) => ({ type: t, count: typeCounts.get(t) ?? 0 }))
     .sort((a, b) => a.count - b.count)[0]
 
-  const sessionsTimedOut = Number(timedOutRows[0]?.count ?? 0)
-  const weeklyCompleted = Number(weeklyRows[0]?.count ?? 0)
   const weeklyTarget = prefs?.goalWeeklyTarget ?? null
 
   return c.json({
     streak,
-    totalCompleted,
+    totalCompleted: metrics.total,
     todayComplete,
     todaySession,
     activeSessionId,
@@ -177,13 +146,13 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     // Extended
     weakAreas,
     practicePatterns: {
-      avgTimeMinutes,
+      avgTimeMinutes: metrics.avgTimeMinutes,
       mostAvoidedType: mostAvoided?.type ?? null,
-      sessionsTimedOut,
+      sessionsTimedOut: metrics.timedOut,
     },
     weeklyGoal: {
       target: weeklyTarget,
-      completed: weeklyCompleted,
+      completed: metrics.weekly,
     },
     belt,
   })
