@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type { DashboardData } from '../lib/api'
@@ -202,6 +202,22 @@ describe('DashboardPage', () => {
       expect(screen.getByText('katas page')).toBeInTheDocument()
     })
 
+    it('explains the blind kata beside the start action, not the streak warning', async () => {
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5 }))
+
+      renderDashboard()
+
+      expect(await screen.findByText('One kata, about five minutes. You see the topic when it opens.')).toBeInTheDocument()
+    })
+
+    it('keeps the streak line in non-daily mode', async () => {
+      mockedGetDashboard.mockResolvedValue(baseDashboard())
+
+      renderDashboard()
+
+      expect(await screen.findByText(/Your streak resets at midnight/)).toBeInTheDocument()
+    })
+
     it('resumes an active session, routing to /katas/:id', async () => {
       const user = userEvent.setup()
       mockedGetDashboard.mockResolvedValue(baseDashboard({ activeSessionId: 'sess-42' }))
@@ -229,6 +245,19 @@ describe('DashboardPage', () => {
       await user.click(screen.getByRole('button', { name: /view results/i }))
 
       expect(screen.getByText('kata result page')).toBeInTheDocument()
+    })
+
+    it('reads the verdict on the page when today is done', async () => {
+      mockedGetDashboard.mockResolvedValue(
+        baseDashboard({
+          todayComplete: true,
+          todaySession: { id: 'done-1', kataTitle: 'Binary search', verdict: 'needs_work' },
+        }),
+      )
+
+      renderDashboard()
+
+      expect(await screen.findByText('NEEDS WORK')).toBeInTheDocument()
     })
   })
 
@@ -289,6 +318,66 @@ describe('DashboardPage', () => {
 
       await screen.findByRole('heading', { name: 'Binary search' })
       expect(screen.queryByRole('button', { name: 'One more kata' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('offline', () => {
+    function goOffline() {
+      vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(false)
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('holds a new daily kata until the network returns', async () => {
+      goOffline()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5 }))
+
+      renderDashboard()
+
+      expect(await screen.findByRole('button', { name: /enter the dojo/i })).toBeDisabled()
+
+      act(() => {
+        vi.restoreAllMocks()
+        globalThis.dispatchEvent(new Event('online'))
+      })
+
+      expect(screen.getByRole('button', { name: /enter the dojo/i })).toBeEnabled()
+    })
+
+    it('holds one more kata but still opens the result', async () => {
+      goOffline()
+      mockedGetDashboard.mockResolvedValue(
+        baseDashboard({
+          dailyKataMinutes: 5,
+          todayComplete: true,
+          todaySession: { id: 'done-1', kataTitle: 'Binary search', verdict: 'passed' },
+        }),
+      )
+
+      renderDashboard()
+
+      expect(await screen.findByRole('button', { name: 'One more kata' })).toBeDisabled()
+      expect(screen.getByRole('button', { name: /view results/i })).toBeEnabled()
+    })
+
+    it('still resumes a kata that already started', async () => {
+      goOffline()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5, activeSessionId: 'sess-42' }))
+
+      renderDashboard()
+
+      expect(await screen.findByRole('button', { name: /resume kata/i })).toBeEnabled()
+    })
+
+    it('keeps the non-daily picker reachable, since it starts nothing', async () => {
+      goOffline()
+      mockedGetDashboard.mockResolvedValue(baseDashboard())
+
+      renderDashboard()
+
+      expect(await screen.findByRole('button', { name: /enter the dojo/i })).toBeEnabled()
     })
   })
 
