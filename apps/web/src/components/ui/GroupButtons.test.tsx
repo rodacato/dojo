@@ -72,22 +72,6 @@ describe('GroupButtons', () => {
     }
   })
 
-  it('applies the small size classes by default', () => {
-    render(<GroupButtons options={rangeOptions} value="day" onChange={vi.fn()} />)
-
-    const button = screen.getByRole('button', { name: 'Day' })
-    expect(button).toHaveClass('px-3', 'py-1', 'text-xs')
-    expect(button).not.toHaveClass('px-4', 'text-sm')
-  })
-
-  it('applies the medium size classes when size="md"', () => {
-    render(<GroupButtons options={rangeOptions} value="day" onChange={vi.fn()} size="md" />)
-
-    const button = screen.getByRole('button', { name: 'Day' })
-    expect(button).toHaveClass('px-4', 'py-1.5', 'text-sm')
-    expect(button).not.toHaveClass('px-3', 'text-xs')
-  })
-
   it('reflects a controlled value change on re-render', () => {
     const { rerender } = render(
       <GroupButtons options={rangeOptions} value="day" onChange={vi.fn()} />,
@@ -99,5 +83,13 @@ describe('GroupButtons', () => {
 
     expect(screen.getByRole('button', { name: 'Day' })).not.toHaveClass('bg-elevated')
     expect(screen.getByRole('button', { name: 'Month' })).toHaveClass('bg-elevated')
+  })
+
+  it('keeps every option at a 44px target', () => {
+    render(<GroupButtons options={rangeOptions} value="day" onChange={vi.fn()} />)
+
+    for (const button of screen.getAllByRole('button')) {
+      expect(button).toHaveClass('min-h-11', 'min-w-11')
+    }
   })
 })

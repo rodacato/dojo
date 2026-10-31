@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Input, Textarea } from './Input'
+import { Input, Select, Textarea } from './Input'
 
 describe('Input', () => {
   it('renders a textbox with the base classes', () => {
@@ -16,7 +16,8 @@ describe('Input', () => {
     render(<Input label="Email address" placeholder="email" />)
     const label = screen.getByText('Email address')
     expect(label.tagName).toBe('LABEL')
-    expect(label).toHaveClass('font-mono', 'text-secondary')
+    expect(screen.getByLabelText('Email address')).toBe(screen.getByPlaceholderText('email'))
+    expect(label).toHaveClass('text-primary')
   })
 
   it('omits the label element when no label prop is given', () => {
@@ -28,7 +29,7 @@ describe('Input', () => {
     render(<Input hint="We never share it" />)
     const hint = screen.getByText('We never share it')
     expect(hint.tagName).toBe('P')
-    expect(hint).toHaveClass('text-secondary', 'text-xs')
+    expect(hint).toHaveClass('paper-note')
   })
 
   it('omits the hint paragraph when no hint prop is given', () => {
@@ -175,5 +176,26 @@ describe('Textarea', () => {
     expect(textarea).toHaveAttribute('rows', '6')
     expect(textarea).toHaveAttribute('name', 'bio')
     expect(textarea).toHaveAttribute('maxLength', '200')
+  })
+})
+
+describe('Select', () => {
+  it('ties its label to a native select', async () => {
+    const onChange = vi.fn()
+    render(
+      <Select label="Result" onChange={(e) => onChange(e.target.value)}>
+        <option value="all">All</option>
+        <option value="passed">Passed</option>
+      </Select>,
+    )
+    await userEvent.selectOptions(screen.getByLabelText('Result'), 'passed')
+    expect(onChange).toHaveBeenCalledWith('passed')
+  })
+})
+
+describe('field text size', () => {
+  it('stays at 16px so iOS does not zoom on focus', () => {
+    render(<Input placeholder="email" />)
+    expect(screen.getByPlaceholderText('email')).toHaveClass('text-[16px]')
   })
 })
