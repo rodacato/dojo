@@ -228,6 +228,20 @@ describe('KataActivePage', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
+  it('offers a way out when time runs out with no answer', async () => {
+    const user = userEvent.setup()
+    const startedAt = new Date(Date.now() - 30 * 60 * 1000).toISOString()
+    getSession.mockResolvedValue(makeSession({ startedAt }))
+
+    renderPage('sess-1')
+
+    const viewResult = await screen.findByRole('button', { name: 'View result' }, { timeout: 2000 })
+    await user.click(viewResult)
+
+    expect(navigate).toHaveBeenCalledWith('/katas/sess-1/result')
+    expect(submitAttempt).not.toHaveBeenCalled()
+  })
+
   it('restores the unsent answer when the learner comes back to the kata', async () => {
     sessionStorage.setItem('dojo-draft-sess-1', 'half-written token bucket')
     getSession.mockResolvedValue(makeSession())
