@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { api, type SessionWithKata } from '../lib/api'
 import type { Verdict } from '@dojo/shared'
 import { PageLoader } from '../components/PageLoader'
@@ -46,10 +46,12 @@ export function ResultsPage() {
   const verdict = attempt?.verdict as Verdict | undefined
   const completionTime = formatCompletionTime(session.startedAt, session.completedAt)
 
-  // No attempt + not active = the learner let the kata expire. Render a
-  // compact layout — the wide grid is for verdict + insights, which don't
-  // exist here and leave the page visually broken.
-  if (!attempt && session.status !== 'active') {
+  const stillOpen = session.status === 'active' || session.status === 'preparing'
+  const timeIsUp = Date.now() >= new Date(session.startedAt).getTime() + session.kata.duration * 60_000
+  if (!attempt && stillOpen && !timeIsUp) return <Navigate to={`/katas/${sessionId}`} replace />
+
+  // The server may still call an expired session active until the next dashboard load.
+  if (!attempt) {
     return (
       <div className="px-4 py-12 max-w-md mx-auto">
         <div className="flex items-center gap-2 mb-2">
@@ -60,7 +62,7 @@ export function ResultsPage() {
           {session.kata.title}
         </h1>
         <p className="paper-eyebrow mb-8">
-          {session.status === 'failed' ? 'Incomplete' : 'Pending'} · started{' '}
+          {session.status === 'completed' ? 'Pending' : 'Incomplete'} · started{' '}
           {new Date(session.startedAt).toLocaleDateString()}
         </p>
 

@@ -88,6 +88,7 @@ function renderAt(path = '/results/s1') {
         <Route path="/results/:id" element={<ResultsPage />} />
         <Route path="/dashboard" element={<div>dashboard screen</div>} />
         <Route path="/katas" element={<div>katas screen</div>} />
+        <Route path="/katas/:id" element={<div>kata screen</div>} />
         <Route path="/katas/:id/eval" element={<div>eval screen</div>} />
       </Routes>
     </MemoryRouter>,
@@ -173,6 +174,34 @@ describe('ResultsPage', () => {
     expect(
       screen.queryByRole('button', { name: 'Copy share link' }),
     ).not.toBeInTheDocument()
+  })
+
+  it('shows the expired layout for a session the server still calls active', async () => {
+    mockedApi.getSession.mockResolvedValue(
+      makeSession({ status: 'active', completedAt: null, finalAttempt: null }),
+    )
+
+    renderAt()
+
+    expect(
+      await screen.findByText('This kata expired without a submission.'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Keep Practicing' })).toBeInTheDocument()
+  })
+
+  it('sends an unanswered session with time left back to the kata', async () => {
+    mockedApi.getSession.mockResolvedValue(
+      makeSession({
+        status: 'active',
+        startedAt: new Date().toISOString(),
+        completedAt: null,
+        finalAttempt: null,
+      }),
+    )
+
+    renderAt()
+
+    expect(await screen.findByText('kata screen')).toBeInTheDocument()
   })
 
   it('navigates to katas from the expired layout "Keep Practicing" button', async () => {
