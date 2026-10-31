@@ -16,6 +16,7 @@ import { attempts, errors, playgroundRuns, sessions, users } from '../../persist
 import { requireAuth } from '../middleware/auth'
 import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
+import { SUMI } from '../sumi'
 import { pendingAttempts } from './pending-attempts'
 import { log } from '../../observability/logger'
 
@@ -525,19 +526,19 @@ practiceRoutes.post('/cron/reminders', async (c) => {
         to: user.email,
         subject: 'The dojo is waiting.',
         html: `
-          <div style="font-family: 'JetBrains Mono', monospace; background: #0F172A; color: #F8FAFC; padding: 40px; max-width: 480px;">
-            <p style="color: #6366F1; font-size: 18px; margin-bottom: 24px;">dojo_</p>
-            <p style="color: #94A3B8; font-size: 14px; line-height: 1.6;">
+          <div style="font-family: 'JetBrains Mono', monospace; background: ${SUMI.page}; color: ${SUMI.primary}; padding: 40px; max-width: 480px;">
+            <p style="color: ${SUMI.primary}; font-size: 18px; margin-bottom: 24px;">dojo_</p>
+            <p style="color: ${SUMI.secondary}; font-size: 14px; line-height: 1.6;">
               Hey @${user.username}, you haven't done today's kata yet.
             </p>
-            <p style="color: #94A3B8; font-size: 14px; line-height: 1.6;">
+            <p style="color: ${SUMI.secondary}; font-size: 14px; line-height: 1.6;">
               The streak doesn't build itself.
             </p>
-            <a href="${config.WEB_URL}/start" style="display: inline-block; background: #6366F1; color: #F8FAFC; padding: 10px 24px; text-decoration: none; font-size: 14px; margin-top: 16px; border-radius: 2px;">
+            <a href="${config.WEB_URL}/dashboard" style="display: inline-block; background: ${SUMI.accent}; color: ${SUMI.primary}; padding: 10px 24px; text-decoration: none; font-size: 14px; margin-top: 16px; border-radius: 4px;">
               Enter the dojo →
             </a>
-            <p style="color: #64748B; font-size: 11px; margin-top: 32px;">
-              <a href="${config.WEB_URL}/dashboard" style="color: #64748B;">Unsubscribe from reminders</a>
+            <p style="color: ${SUMI.secondary}; font-size: 11px; margin-top: 32px;">
+              <a href="${config.WEB_URL}/settings" style="color: ${SUMI.secondary};">Turn off reminders</a>
             </p>
           </div>
         `,
