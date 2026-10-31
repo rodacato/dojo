@@ -215,3 +215,21 @@ export type EvaluationServerMessage =
   | { type: 'evaluation'; result: EvaluationResultDTO }
   | { type: 'complete'; isFinal: boolean }
   | { type: 'error'; code: EvaluationErrorCode }
+
+// ── Kata history ─────────────────────────────────────────────────────
+
+export type HistoryOutcome = 'passed' | 'passed_with_notes' | 'needs_work' | 'expired' | 'no_evaluation'
+export type HistoryOutcomeFilter = 'all' | HistoryOutcome
+
+export interface HistorySessionDTO extends PublicSessionDTO {
+  outcome: HistoryOutcome
+}
+
+/** GET /history. `total` counts the filtered sessions, `recordTotal` all of them. */
+export interface HistoryPageDTO {
+  sessions: HistorySessionDTO[]
+  total: number
+  recordTotal: number
+  page: number
+  totalPages: number
+}

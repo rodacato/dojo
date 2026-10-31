@@ -1,5 +1,5 @@
-import type { DashboardDTO } from '@dojo/shared'
-import { and, count, desc, eq, gte, sql } from 'drizzle-orm'
+import type { DashboardDTO, HistoryOutcome, HistoryPageDTO } from '@dojo/shared'
+import { and, count, desc, eq, gte, ilike, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
 import { db } from '../../persistence/drizzle/client'
@@ -168,22 +168,52 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
 const historySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().min(1).max(50).default(20),
+  outcome: z
+    .enum(['all', 'passed', 'passed_with_notes', 'needs_work', 'expired', 'no_evaluation'])
+    .default('all'),
+  q: z.string().trim().max(120).default(''),
 })
+
+// `failed` with no verdict is a timeout only if nothing was answered: a broken evaluation leaves an attempt.
+function historyOutcome() {
+  return sql<HistoryOutcome>`CASE
+    WHEN ${verdictSubquery()} IN ('passed', 'passed_with_notes', 'needs_work') THEN ${verdictSubquery()}
+    WHEN ${sessions.status} = 'failed' AND NOT EXISTS (
+      SELECT 1 FROM ${attempts} WHERE ${attempts.sessionId} = ${sessions.id}
+    ) THEN 'expired'
+    ELSE 'no_evaluation'
+  END`
+}
+
+function escapeLikePattern(text: string) {
+  return text.replace(/[\\%_]/g, String.raw`\$&`)
+}
 
 dashboardRoutes.get('/history', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
-  const query = c.req.query()
-  const { page, limit: pageSize } = historySchema.parse({
-    page: query['page'],
-    limit: query['limit'],
-  })
-  const offset = (page - 1) * pageSize
+  const parsed = historySchema.safeParse(c.req.query())
+  if (!parsed.success) return c.json({ error: 'Invalid history query' }, 400)
+  const { page, limit: pageSize, outcome, q } = parsed.data
 
-  const [totalRow] = await db
-    .select({ count: count() })
-    .from(sessions)
-    .where(and(eq(sessions.userId, user.id), sql`${sessions.status} != 'active'`))
-  const total = Number(totalRow?.count ?? 0)
+  const record = and(eq(sessions.userId, user.id), sql`${sessions.status} != 'active'`)
+  const matching = and(
+    record,
+    q ? ilike(katas.title, `%${escapeLikePattern(q)}%`) : undefined,
+    outcome === 'all' ? undefined : eq(historyOutcome(), outcome),
+  )
+
+  const [recordRows, matchingRows] = await Promise.all([
+    db.select({ count: count() }).from(sessions).where(record),
+    db
+      .select({ count: count() })
+      .from(sessions)
+      .innerJoin(katas, eq(sessions.kataId, katas.id))
+      .where(matching),
+  ])
+  const recordTotal = Number(recordRows[0]?.count ?? 0)
+  const total = Number(matchingRows[0]?.count ?? 0)
+  const totalPages = Math.ceil(total / pageSize)
+  const currentPage = Math.min(page, Math.max(totalPages, 1))
 
   const rows = await db
     .select({
@@ -195,13 +225,14 @@ dashboardRoutes.get('/history', requireAuth, async (c) => {
       kataType: katas.type,
       difficulty: katas.difficulty,
       verdict: verdictSubquery(),
+      outcome: historyOutcome(),
     })
     .from(sessions)
     .innerJoin(katas, eq(sessions.kataId, katas.id))
-    .where(and(eq(sessions.userId, user.id), sql`${sessions.status} != 'active'`))
-    .orderBy(desc(sessions.startedAt))
+    .where(matching)
+    .orderBy(desc(sessions.startedAt), desc(sessions.id))
     .limit(pageSize)
-    .offset(offset)
+    .offset((currentPage - 1) * pageSize)
 
   return c.json({
     sessions: rows.map((s) => ({
@@ -211,11 +242,13 @@ dashboardRoutes.get('/history', requireAuth, async (c) => {
       kataType: s.kataType,
       difficulty: s.difficulty,
       verdict: s.verdict ?? null,
+      outcome: s.outcome,
       startedAt: s.startedAt.toISOString(),
       completedAt: s.completedAt?.toISOString() ?? null,
     })),
     total,
-    page,
-    totalPages: Math.ceil(total / pageSize),
-  })
+    recordTotal,
+    page: currentPage,
+    totalPages,
+  } satisfies HistoryPageDTO)
 })
