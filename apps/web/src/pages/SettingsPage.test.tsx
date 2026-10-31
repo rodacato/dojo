@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type { BeltDTO, UserDTO } from '@dojo/shared'
@@ -63,6 +63,18 @@ function renderSettings() {
     </MemoryRouter>,
   )
 }
+
+function section(name: 'Practice' | 'Reminders') {
+  return within(screen.getByRole('region', { name }))
+}
+
+function goOffline() {
+  return vi.spyOn(globalThis.navigator, 'onLine', 'get').mockReturnValue(false)
+}
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 beforeEach(() => {
   mockedGetPreferences.mockReset()
@@ -234,6 +246,58 @@ describe('SettingsPage', () => {
       expect(mockedUpdatePreferences).not.toHaveBeenCalled()
     })
 
+    it('flags an address the API would reject', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.type(email, 'new@host')
+      await u.tab()
+
+      expect(screen.getByText("That doesn't look like an email.")).toBeInTheDocument()
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+    })
+
+    it('says invalid details are not saved, and undo brings the saved ones back', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.type(email, 'new@')
+      await u.tab()
+
+      expect(screen.getByText('These details are not saved yet.')).toBeInTheDocument()
+      expect(screen.getByText('Check reminder details')).toBeInTheDocument()
+
+      await u.click(section('Reminders').getByRole('button', { name: 'Undo changes' }))
+
+      expect(screen.getByLabelText('Email')).toHaveValue('you@test.dev')
+      expect(screen.queryByText('These details are not saved yet.')).not.toBeInTheDocument()
+    })
+
+    it('turns reminders off without sending an invalid draft', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.type(email, 'new@')
+      await u.tab()
+      await u.click(screen.getByRole('switch', { name: 'Daily reminder' }))
+
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith({
+        reminderEnabled: false,
+        reminderHour: 7,
+        email: 'you@test.dev',
+      })
+      expect(screen.queryByText('Check reminder details')).not.toBeInTheDocument()
+    })
+
+    it('keeps the weekend promise and says the days are UTC', async () => {
+      await renderReminders()
+
+      expect(screen.getByText(/Never on a UTC weekend if your goal is under 5 days a week/)).toBeInTheDocument()
+    })
+
     it('rejects an hour outside the day', async () => {
       const u = userEvent.setup()
       const { hour } = await renderReminders()
@@ -301,7 +365,7 @@ describe('SettingsPage', () => {
       // Optimistic UI: the new pill is active immediately.
       expect(screen.getByRole('button', { name: 'Senior' })).toHaveAttribute('aria-pressed', 'true')
       // Save lifecycle resolves to "Saved".
-      expect(await screen.findByText('Saved')).toBeInTheDocument()
+      expect(await section('Practice').findByText('Saved')).toBeInTheDocument()
     })
 
     it('toggles an interest off and persists the pruned array', async () => {
@@ -342,7 +406,8 @@ describe('SettingsPage', () => {
       expect(mockedUpdatePreferences).toHaveBeenCalledWith(
         expect.objectContaining({ goalWeeklyTarget: 5 }),
       )
-      expect(await screen.findByText('Error')).toBeInTheDocument()
+      expect(await screen.findByRole('alert')).toHaveTextContent("We couldn't save practice.")
+      expect(screen.getByText('Some changes are not saved')).toBeInTheDocument()
     })
   })
 
@@ -360,7 +425,7 @@ describe('SettingsPage', () => {
       await u.click(screen.getByRole('button', { name: '6' }))
 
       await waitFor(() => expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1))
-      expect(screen.queryByText('Saved')).not.toBeInTheDocument()
+      expect(section('Practice').queryByText('Saved')).not.toBeInTheDocument()
 
       finishFirst()
 
@@ -368,7 +433,7 @@ describe('SettingsPage', () => {
       expect(mockedUpdatePreferences).toHaveBeenLastCalledWith(
         expect.objectContaining({ goalWeeklyTarget: 6 }),
       )
-      expect(await screen.findByText('Saved')).toBeInTheDocument()
+      expect(await section('Practice').findByText('Saved')).toBeInTheDocument()
     })
 
     it('retries the latest values after a failed save', async () => {
@@ -378,13 +443,154 @@ describe('SettingsPage', () => {
 
       renderSettings()
       await u.click(await screen.findByRole('button', { name: '5' }))
-      await u.click(await screen.findByRole('button', { name: 'Retry' }))
+      await u.click(await screen.findByRole('button', { name: 'Retry practice' }))
 
-      expect(await screen.findByText('Saved')).toBeInTheDocument()
+      expect(await section('Practice').findByText('Saved')).toBeInTheDocument()
       expect(mockedUpdatePreferences).toHaveBeenCalledTimes(2)
       expect(mockedUpdatePreferences).toHaveBeenLastCalledWith(
         expect.objectContaining({ goalWeeklyTarget: 5 }),
       )
+    })
+
+    it('sends only the fields of the section that changed', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ reminderEnabled: true, email: 'you@test.dev' }))
+
+      renderSettings()
+      await u.click(await screen.findByRole('button', { name: 'Senior' }))
+
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith({
+        level: 'senior',
+        interests: ['backend'],
+        randomness: 0.5,
+        goalWeeklyTarget: 3,
+      })
+
+      await u.click(screen.getByRole('switch', { name: 'Daily reminder' }))
+
+      expect(mockedUpdatePreferences).toHaveBeenLastCalledWith({
+        reminderEnabled: false,
+        reminderHour: 9,
+        email: 'you@test.dev',
+      })
+    })
+
+    it('keeps a failed practice draft out of a reminder save, and its error on screen', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ level: 'mid' }))
+      mockedUpdatePreferences.mockRejectedValueOnce(new Error('save 500'))
+
+      renderSettings()
+      await u.click(await screen.findByRole('button', { name: 'Senior' }))
+      await section('Practice').findByRole('button', { name: 'Retry practice' })
+
+      await u.click(screen.getByRole('switch', { name: 'Daily reminder' }))
+
+      await section('Reminders').findByText('Saved')
+      expect(mockedUpdatePreferences.mock.lastCall?.[0]).not.toHaveProperty('level')
+      expect(section('Practice').getByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Senior' })).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    it('says reminders are off once that is saved', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ reminderEnabled: true, email: 'you@test.dev' }))
+
+      renderSettings()
+      await u.click(await screen.findByRole('switch', { name: 'Daily reminder' }))
+
+      expect(await screen.findByText('Reminders off · saved')).toBeInTheDocument()
+    })
+
+    it('undoes a failed draft back to what was last saved', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ level: 'mid' }))
+      mockedUpdatePreferences.mockRejectedValueOnce(new Error('save 500'))
+
+      renderSettings()
+      await u.click(await screen.findByRole('button', { name: 'Senior' }))
+      await u.click(await section('Practice').findByRole('button', { name: 'Undo changes' }))
+
+      expect(screen.getByRole('button', { name: 'Mid' })).toHaveAttribute('aria-pressed', 'true')
+      expect(section('Practice').queryByRole('alert')).not.toBeInTheDocument()
+      expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1)
+    })
+
+    it('never offers undo once a change is saved', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ level: 'mid' }))
+
+      renderSettings()
+      await u.click(await screen.findByRole('button', { name: 'Senior' }))
+      await section('Practice').findByText('Saved')
+
+      expect(screen.queryByRole('button', { name: 'Undo changes' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('randomness slider', () => {
+    function slide(value: number) {
+      fireEvent.change(screen.getByRole('slider', { name: /Randomness/ }), { target: { value } })
+    }
+
+    it('saves once, with the last value, after the slider settles', async () => {
+      mockedGetPreferences.mockResolvedValue(basePrefs({ randomness: 0.5 }))
+
+      renderSettings()
+      await screen.findByRole('heading', { name: 'Settings' })
+      slide(0.6)
+      slide(0.7)
+      slide(0.8)
+
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+      await waitFor(() => expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1))
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(expect.objectContaining({ randomness: 0.8 }))
+    })
+
+    it('saves right away when the slider loses focus', async () => {
+      mockedGetPreferences.mockResolvedValue(basePrefs({ randomness: 0.5 }))
+
+      renderSettings()
+      await screen.findByRole('heading', { name: 'Settings' })
+      slide(0.6)
+      fireEvent.blur(screen.getByRole('slider', { name: /Randomness/ }))
+
+      await section('Practice').findByText('Saved')
+      expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not lose a pending value when the learner leaves the page', async () => {
+      mockedGetPreferences.mockResolvedValue(basePrefs({ randomness: 0.5 }))
+
+      const { unmount } = renderSettings()
+      await screen.findByRole('heading', { name: 'Settings' })
+      slide(0.9)
+      unmount()
+
+      await waitFor(() => expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1))
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(expect.objectContaining({ randomness: 0.9 }))
+    })
+  })
+
+  describe('offline', () => {
+    it('keeps the draft without calling the API, then saves on reconnect', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ level: 'mid' }))
+
+      renderSettings()
+      const senior = await screen.findByRole('button', { name: 'Senior' })
+      const onLine = goOffline()
+      await u.click(senior)
+
+      expect(screen.getByText('Draft kept on this page. Reconnect to save.')).toBeInTheDocument()
+      expect(screen.getByText('Draft kept on this page')).toBeInTheDocument()
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+
+      onLine.mockReturnValue(true)
+      fireEvent(globalThis.window, new Event('online'))
+
+      await section('Practice').findByText('Saved')
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(expect.objectContaining({ level: 'senior' }))
     })
   })
 
