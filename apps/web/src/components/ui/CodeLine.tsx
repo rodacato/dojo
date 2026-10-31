@@ -11,7 +11,8 @@ export function CodeLine({
   onSelect?: () => void
   disabled?: boolean
 }>) {
-  const tone = selected ? 'bg-elevated border-primary' : 'bg-page border-transparent'
+  const restingBackground = onSelect ? 'bg-page' : 'bg-transparent'
+  const tone = selected ? 'bg-elevated border-primary' : `${restingBackground} border-transparent`
   const content = (
     <>
       <span

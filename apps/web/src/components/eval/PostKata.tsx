@@ -28,7 +28,7 @@ function CodeExcerpt({ code, line }: Readonly<{ code: string; line: number }>) {
   const first = Math.max(1, line - 1)
   const last = Math.min(lines.length, line + 1)
   return (
-    <div className="border-y border-border">
+    <div className="rounded-sm bg-surface overflow-hidden">
       {lines.slice(first - 1, last).map((text, i) => (
         <CodeLine key={first + i} number={first + i} code={text} selected={first + i === line} />
       ))}

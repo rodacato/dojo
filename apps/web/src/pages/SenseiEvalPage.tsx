@@ -14,7 +14,7 @@ import { SkeletonText } from '../components/ui/SkeletonLoader'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { PieceReceipt } from '../components/recognition/PieceReceipt'
 import { KataContext, KataNotes, PostKataActions, ReviewVerdict, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
-import { ReturnLink, ReviewGrid, ReviewShell, ReviewTitle, kataMeta, useReturnState, type ReviewStatus } from '../components/eval/ReviewShell'
+import { ReturnLink, ReviewGrid, ReviewShell, ReviewTitle, kataMeta, reviewEyebrow, useReturnState, type ReviewStatus } from '../components/eval/ReviewShell'
 import { hideInsightTags } from '../lib/parse-insight'
 import { useOnline } from '../hooks/useOnline'
 import { VERDICT_LABELS } from '../lib/verdict'
@@ -172,7 +172,7 @@ export function SenseiEvalPage() {
 
   return (
     <ReviewShell status={status} leading={final && <ReturnLink />} scrollRef={scrollRef} footer={followUpBox}>
-      {session && <ReviewTitle title={session.kata.title} meta={kataMeta(session.kata)} />}
+      {session && <ReviewTitle eyebrow={reviewEyebrow(status)} title={session.kata.title} meta={kataMeta(session.kata)} />}
       <p role="status" className="sr-only">{final ? `Review complete. ${VERDICT_LABELS[final.verdict]}` : ''}</p>
 
       <ReviewGrid

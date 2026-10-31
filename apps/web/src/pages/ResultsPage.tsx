@@ -9,7 +9,7 @@ import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { PieceReceipt } from '../components/recognition/PieceReceipt'
 import { stripInsightTags } from '../lib/parse-insight'
 import { KataContext, KataNotes, PostKataActions, ReviewVerdict, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
-import { ReturnLink, ReviewGrid, ReviewShell, ReviewTitle, kataMeta, useReturnState } from '../components/eval/ReviewShell'
+import { ReturnLink, ReviewGrid, ReviewShell, ReviewTitle, kataMeta, reviewEyebrow, useReturnState } from '../components/eval/ReviewShell'
 
 export function ResultsPage() {
   const { id: sessionId } = useParams<{ id: string }>()
@@ -100,7 +100,7 @@ export function ResultsPage() {
 
   return (
     <ReviewShell status={verdict ? 'complete' : 'unavailable'} leading={<ReturnLink />}>
-      <ReviewTitle title={session.kata.title} meta={meta} />
+      <ReviewTitle eyebrow={verdict ? reviewEyebrow('complete') : undefined} title={session.kata.title} meta={meta} />
       <ReviewGrid
         aside={code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} final={!!verdict} />}
         followthrough={
