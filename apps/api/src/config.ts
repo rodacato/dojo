@@ -44,6 +44,7 @@ export const envSchema = z.object({
   RESEND_FROM_EMAIL: z.string().default(''),
   CRON_SECRET: z.string().default(''),
   CREATOR_GITHUB_ID: z.string().default(''),
+  AUTH_RATE_LIMIT_MAX: z.coerce.number().int().min(1).default(1000),
   API_PORT: z.coerce.number().default(3001),
   WEB_URL: z.url(),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
