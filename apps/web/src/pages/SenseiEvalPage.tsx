@@ -32,6 +32,8 @@ interface Exchange {
   userAnswer: string
 }
 
+const inFlightKey = (sessionId: string) => `dojo-attempt-in-flight-${sessionId}`
+
 type StatusChipKind = 'connecting' | 'executing' | 'streaming' | 'follow-up' | 'complete' | 'error'
 
 export function SenseiEvalPage() {
@@ -52,18 +54,30 @@ export function SenseiEvalPage() {
   }, [connect, sessionId])
 
   useEffect(() => {
-    if (state.status !== 'ready') return
-    if (submittedAttemptRef.current) {
-      reconnect(submittedAttemptRef.current)
+    if (state.status !== 'ready' || !sessionId) return
+    const newAttempt = sessionStorage.getItem(`dojo-attempt-${sessionId}`)
+    if (newAttempt) {
+      submittedAttemptRef.current = newAttempt
+      sessionStorage.setItem(inFlightKey(sessionId), newAttempt)
+      submit(newAttempt)
+      sessionStorage.removeItem(`dojo-attempt-${sessionId}`)
       return
     }
-    const attemptId = sessionStorage.getItem(`dojo-attempt-${sessionId}`)
-    if (attemptId) {
-      submittedAttemptRef.current = attemptId
-      submit(attemptId)
-      sessionStorage.removeItem(`dojo-attempt-${sessionId}`)
+    const inFlight = submittedAttemptRef.current ?? sessionStorage.getItem(inFlightKey(sessionId))
+    if (inFlight) {
+      submittedAttemptRef.current = inFlight
+      reconnect(inFlight)
+      return
     }
-  }, [state.status, sessionId, submit, reconnect])
+    navigate(`/katas/${sessionId}/result`, { replace: true })
+  }, [state.status, sessionId, submit, reconnect, navigate])
+
+  const attemptGone = state.status === 'error' && state.code === 'ATTEMPT_NOT_FOUND'
+  useEffect(() => {
+    if (!attemptGone || !sessionId) return
+    sessionStorage.removeItem(inFlightKey(sessionId))
+    navigate(`/katas/${sessionId}/result`, { replace: true })
+  }, [attemptGone, sessionId, navigate])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -76,8 +90,10 @@ export function SenseiEvalPage() {
   const result = hasResult ? (state as { result: EvaluationResult }).result : null
   const isFinal = !!result?.isFinalEvaluation
   useEffect(() => {
-    if (isFinal) reloadSession()
-  }, [isFinal, reloadSession])
+    if (!isFinal) return
+    sessionStorage.removeItem(inFlightKey(sessionId!))
+    reloadSession()
+  }, [isFinal, reloadSession, sessionId])
   const senseiInitials = useMemo(
     () => deriveInitials(session?.ownerRole),
     [session?.ownerRole],
@@ -103,6 +119,7 @@ export function SenseiEvalPage() {
       const { attemptId } = await api.submitAttempt(sessionId, answer)
       setFollowUpText('')
       submittedAttemptRef.current = attemptId
+      sessionStorage.setItem(inFlightKey(sessionId), attemptId)
       submit(attemptId)
     } finally {
       setFollowUpSubmitting(false)
