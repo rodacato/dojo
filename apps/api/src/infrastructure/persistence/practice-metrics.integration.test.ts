@@ -5,7 +5,7 @@ import { eq, inArray } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
-import { loadPracticeMetrics } from './practice-metrics'
+import { loadPracticeDays, loadPracticeMetrics } from './practice-metrics'
 import * as schema from './drizzle/schema'
 import { attempts, katas, sessions, users, variations } from './drizzle/schema'
 
@@ -134,6 +134,13 @@ describe.skipIf(!url)('practice metrics against Postgres', () => {
     const metrics = await loadPracticeMetrics(db, userId, weekStart)
 
     expect(metrics.avgTimeMinutes).toBe(6)
+  })
+
+  it('lists every practiced day, however old, and only those', async () => {
+    const days = await loadPracticeDays(db, userId)
+
+    expect(new Set(days)).toEqual(new Set(['2026-01-01', '2026-01-21', '2026-01-22']))
+    expect(days).toHaveLength(3)
   })
 
   it('reports nothing for a learner with no sessions', async () => {
