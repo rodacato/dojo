@@ -156,7 +156,7 @@ function BeltStrip({ belt }: Readonly<{ belt: BeltDTO }>) {
 function BeltFactor({ label, value }: Readonly<{ label: string; value: number }>) {
   return (
     <div>
-      <dt className="paper-eyebrow max-md:tracking-[0.02em]">{label}</dt>
+      <dt className="paper-eyebrow whitespace-nowrap max-md:tracking-[0.02em]!">{label}</dt>
       <dd className="mt-1 font-mono text-xl text-primary tabular-nums">{value}</dd>
     </div>
   )
