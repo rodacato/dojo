@@ -10,12 +10,16 @@ vi.mock('../lib/api', () => ({ api: { getScrolls: vi.fn() } }))
 
 const mockedApi = vi.mocked(api)
 
-function scroll(slug: string, overrides: Partial<ScrollEntryDTO['manifest']> = {}): ScrollEntryDTO {
+function scroll(
+  slug: string,
+  overrides: Partial<ScrollEntryDTO['manifest']> = {},
+  visibility: ScrollEntryDTO['visibility'] = 'public',
+): ScrollEntryDTO {
   return {
     id: `3f0c6d0e-0d0e-4a1b-9c1e-0a5a1d2b3c${slug.length.toString().padStart(2, '0')}`,
     slug,
     status: 'published',
-    visibility: 'public',
+    visibility,
     createdAt: '2026-10-02T00:00:00.000Z',
     updatedAt: '2026-10-02T00:00:00.000Z',
     manifest: {
@@ -82,6 +86,28 @@ describe('ScrollsPage', () => {
     renderPage()
     await screen.findByRole('heading', { name: 'plain titulo' })
     expect(screen.queryByText(/·/)).not.toBeInTheDocument()
+  })
+
+  it('counts the scrolls it lists', async () => {
+    renderPage()
+    expect(await screen.findByText('2 scrolls')).toBeInTheDocument()
+  })
+
+  it('counts a single scroll in the singular', async () => {
+    mockedApi.getScrolls.mockResolvedValue([scroll('solo')])
+    renderPage()
+    expect(await screen.findByText('1 scroll')).toBeInTheDocument()
+  })
+
+  it('marks a private scroll as instance access and leaves public ones unmarked', async () => {
+    mockedApi.getScrolls.mockResolvedValue([
+      scroll('open'),
+      scroll('closed', { programmingLanguages: [] }, 'private'),
+    ])
+    renderPage()
+    const [open, closed] = within(await screen.findByRole('list', { name: 'Scrolls' })).getAllByRole('link')
+    expect(open).not.toHaveTextContent('Instance access')
+    expect(closed).toHaveTextContent('Instance access')
   })
 
   it('shows an empty state when nothing is published', async () => {
