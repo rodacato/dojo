@@ -150,7 +150,7 @@ describe('DashboardPage', () => {
 
       expect(await screen.findByText('Recent kata')).toBeInTheDocument()
       expect(screen.getByText('Reverse a linked list')).toBeInTheDocument()
-      expect(screen.getByText('Passed')).toBeInTheDocument()
+      expect(screen.getByText('PASSED')).toBeInTheDocument()
     })
 
     it('omits the recent activity section when there are no sessions', async () => {

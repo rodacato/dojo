@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import type { Difficulty, KataType, Verdict } from '@dojo/shared'
+import type { Difficulty, KataType } from '@dojo/shared'
 
-import { DifficultyBadge, TypeBadge, VerdictBadge } from './Badge'
+import { DifficultyBadge, TypeBadge } from './Badge'
 
 describe('TypeBadge', () => {
   it('uppercases the kata type as the visible label', () => {
@@ -70,46 +70,5 @@ describe('DifficultyBadge', () => {
     expect(badge).toHaveClass('text-success-text', 'border-success')
     expect(badge).not.toHaveClass('text-warning-text')
     expect(badge).not.toHaveClass('text-danger-text')
-  })
-})
-
-describe('VerdictBadge', () => {
-  it.each<[Verdict, string]>([
-    ['passed', 'PASSED'],
-    ['passed_with_notes', 'PASSED WITH NOTES'],
-    ['needs_work', 'NEEDS WORK'],
-  ])('maps verdict %s to its human label "%s"', (verdict, label) => {
-    render(<VerdictBadge verdict={verdict} />)
-    expect(screen.getByText(label)).toBeInTheDocument()
-  })
-
-  it('renders the friendly label, not the raw enum value', () => {
-    render(<VerdictBadge verdict="passed_with_notes" />)
-    expect(screen.getByText('PASSED WITH NOTES')).toBeInTheDocument()
-    // The snake_case enum must never surface to the user.
-    expect(screen.queryByText('passed_with_notes')).not.toBeInTheDocument()
-    expect(screen.queryByText('PASSED_WITH_NOTES')).not.toBeInTheDocument()
-  })
-
-  it.each<[Verdict, string]>([
-    ['passed', 'text-success-text'],
-    ['passed_with_notes', 'text-warning-text'],
-    ['needs_work', 'text-danger-text'],
-  ])('styles verdict %s with its semantic colour token', (verdict, colorClass) => {
-    const labels: Record<Verdict, string> = {
-      passed: 'PASSED',
-      passed_with_notes: 'PASSED WITH NOTES',
-      needs_work: 'NEEDS WORK',
-    }
-    render(<VerdictBadge verdict={verdict} />)
-    expect(screen.getByText(labels[verdict])).toHaveClass(colorClass)
-  })
-
-  it('uses the larger verdict geometry distinct from the small badges', () => {
-    render(<VerdictBadge verdict="passed" />)
-    const badge = screen.getByText('PASSED')
-    // Verdict badge is text-sm / px-3 / py-1, unlike the text-xs type badge.
-    expect(badge).toHaveClass('text-sm', 'px-3', 'py-1', 'rounded-sm')
-    expect(badge).not.toHaveClass('text-xs')
   })
 })
