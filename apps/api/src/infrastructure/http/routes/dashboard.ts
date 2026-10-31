@@ -8,7 +8,7 @@ import { UserId } from '../../../domain/shared/types'
 import { requireAuth } from '../middleware/auth'
 import type { AppEnv } from '../app-env'
 import { isEligiblePractice } from '../../persistence/eligible-practice'
-import { loadPracticeMetrics } from '../../persistence/practice-metrics'
+import { loadPracticeDays, loadPracticeMetrics } from '../../persistence/practice-metrics'
 import { verdictSubquery, calculateStreak } from './query-helpers'
 
 export const dashboardRoutes = new Hono<AppEnv>()
@@ -38,6 +38,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
     todayRows,
     topicRows,
     metrics,
+    practiceDays,
     prefs,
     belt,
     dailyKata,
@@ -97,12 +98,13 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       .innerJoin(sessions, eq(attempts.sessionId, sessions.id))
       .where(and(eq(sessions.userId, userId), eq(attempts.isFinalEvaluation, true))),
     loadPracticeMetrics(db, userId, weekStart),
+    loadPracticeDays(db, userId),
     db.query.userPreferences.findFirst({ where: eq(userPreferences.userId, userId) }),
     useCases.calculateBelt.execute(UserId(userId)),
     useCases.pickDailyKata.execute(UserId(userId)),
   ])
 
-  const streak = calculateStreak(heatmapRows.map((r) => r.date))
+  const streak = calculateStreak(practiceDays)
 
   const todayRow = todayRows[0]
   const todayComplete = !!todayRow

@@ -7,6 +7,7 @@ import { UserId } from '../../../domain/shared/types'
 import { toPublicPractitioner } from '@dojo/shared'
 import type { AppEnv } from '../app-env'
 import { isEligiblePractice } from '../../persistence/eligible-practice'
+import { loadPracticeDays } from '../../persistence/practice-metrics'
 import { verdictSubquery, calculateStreak } from './query-helpers'
 
 export const profileRoutes = new Hono<AppEnv>()
@@ -94,7 +95,7 @@ profileRoutes.get('/u/:username', async (c) => {
     .orderBy(desc(sessions.startedAt))
     .limit(10)
 
-  const streak = calculateStreak(heatmapRows.map((r) => r.date))
+  const streak = calculateStreak(await loadPracticeDays(db, userId))
 
   // Milestones
   const badgeRows = await db

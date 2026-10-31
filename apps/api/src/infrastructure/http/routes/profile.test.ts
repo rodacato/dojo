@@ -96,8 +96,8 @@ function makeApp() {
   return app
 }
 
-// The handler fires 7 db.select-family chains in this order:
-// 1 heatmap, 2 totalRow, 3 passedRow, 4 langRows, 5 avgRow, 6 recentRows, 7 badgeRows
+// The handler fires 8 db.select-family chains in this order:
+// 1 heatmap, 2 totalRow, 3 passedRow, 4 langRows, 5 avgRow, 6 recentRows, 7 practiceDays, 8 badgeRows
 function seedSelects(rows: {
   heatmap?: unknown[]
   total?: unknown[]
@@ -105,6 +105,7 @@ function seedSelects(rows: {
   langs?: unknown[]
   avg?: unknown[]
   recent?: unknown[]
+  practiceDays?: unknown[]
   badges?: unknown[]
 } = {}) {
   selectQueue.length = 0
@@ -115,6 +116,7 @@ function seedSelects(rows: {
     rows.langs ?? [],
     rows.avg ?? [],
     rows.recent ?? [],
+    rows.practiceDays ?? [],
     rows.badges ?? [],
   )
 }
@@ -343,6 +345,17 @@ describe('GET /u/:username', () => {
         completedAt: null,
       },
     ])
+  })
+
+  it('takes the streak from every practiced day, not the heatmap window', async () => {
+    seedUser()
+    const today = new Date().toISOString().slice(0, 10)
+    seedSelects({ heatmap: [], practiceDays: [{ date: today }] })
+
+    const res = await makeApp().request('/u/kenji')
+    const body = (await res.json()) as { streak: number }
+
+    expect(body.streak).toBe(1)
   })
 
   it('serializes milestones with ISO earnedAt timestamps', async () => {
