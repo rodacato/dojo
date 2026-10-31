@@ -1,41 +1,35 @@
-import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
-import { Sidebar } from './Sidebar'
-import { BottomNav } from './BottomNav'
+import { PublicNav } from '../PublicNav'
+import { AppChrome } from './AppChrome'
 
 // Shell for public pages that should pick up the authed chrome (sidebar
 // + bottom nav) when the user happens to be signed in. Anonymous
-// visitors get the bare page — the route's own component renders its
-// full-bleed layout. No RequireAuth wrapper: the route is public by
-// design, sidebar is opportunistic.
+// visitors get the bare page, or the public nav with `publicHeader` when
+// the page has no header of its own. No RequireAuth wrapper: the route is
+// public by design, the chrome is opportunistic.
 
-export function OptionalSidebarLayout() {
-  const { user } = useAuth()
+export function OptionalSidebarLayout({ publicHeader = false }: Readonly<{ publicHeader?: boolean }>) {
+  const { user, loading } = useAuth()
 
-  const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem('dojo-sidebar-collapsed') === 'true',
-  )
-
-  function toggleCollapsed() {
-    setCollapsed((prev) => {
-      const next = !prev
-      localStorage.setItem('dojo-sidebar-collapsed', String(next))
-      return next
-    })
-  }
-
-  if (!user) {
-    return <Outlet />
-  }
-
-  return (
-    <div className="flex min-h-screen bg-page">
-      <Sidebar collapsed={collapsed} onToggle={toggleCollapsed} />
-      <main className="flex-1 min-w-0 pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+  if (user) {
+    return (
+      <AppChrome>
         <Outlet />
-      </main>
-      <BottomNav />
-    </div>
-  )
+      </AppChrome>
+    )
+  }
+
+  if (publicHeader && !loading) {
+    return (
+      <>
+        <PublicNav themeToggle />
+        <main id="main" tabIndex={-1} className="focus:outline-none">
+          <Outlet />
+        </main>
+      </>
+    )
+  }
+
+  return <Outlet />
 }

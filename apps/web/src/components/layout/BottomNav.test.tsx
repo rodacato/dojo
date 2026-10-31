@@ -31,7 +31,7 @@ function renderNav(route = '/dashboard') {
 describe('BottomNav', () => {
   it('renders the four base nav links', () => {
     renderNav()
-    expect(screen.getByRole('link', { name: /dash/ })).toHaveAttribute('href', '/dashboard')
+    expect(screen.getByRole('link', { name: 'dashboard' })).toHaveAttribute('href', '/dashboard')
     expect(screen.getByRole('link', { name: /katas/ })).toHaveAttribute('href', '/katas')
     expect(screen.getByRole('link', { name: /scrolls/ })).toHaveAttribute('href', '/scrolls')
     expect(screen.getByRole('link', { name: /belts/ })).toHaveAttribute('href', '/belts')

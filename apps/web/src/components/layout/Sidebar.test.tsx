@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import type { UserDTO } from '@dojo/shared'
@@ -30,14 +30,12 @@ beforeEach(() => {
   mockedUseTheme.mockReturnValue({ theme: 'sumi', setTheme })
 })
 
-function renderSidebar(props?: { collapsed?: boolean; onToggle?: () => void; route?: string }) {
-  const onToggle = props?.onToggle ?? vi.fn()
+function renderSidebar(route = '/dashboard') {
   render(
-    <MemoryRouter initialEntries={[props?.route ?? '/dashboard']}>
-      <Sidebar collapsed={props?.collapsed ?? false} onToggle={onToggle} />
+    <MemoryRouter initialEntries={[route]}>
+      <Sidebar />
     </MemoryRouter>,
   )
-  return { onToggle }
 }
 
 describe('Sidebar — navigation', () => {
@@ -57,70 +55,69 @@ describe('Sidebar — navigation', () => {
     }
   })
 
+  it('names every link in the rail, since each sits under its icon', () => {
+    renderSidebar()
+    for (const link of screen.getAllByRole('link')) {
+      expect(link).toHaveAccessibleName()
+    }
+  })
+
   it('marks "soon" items with a soon badge and leaves shipped items unmarked', () => {
     renderSidebar()
 
-    const kumite = screen.getByRole('link', { name: /kumite/ })
-    expect(kumite).toHaveTextContent(/soon/i)
-
-    const katas = screen.getByRole('link', { name: /^katas$/ })
-    expect(katas).not.toHaveTextContent(/soon/i)
+    expect(screen.getByRole('link', { name: /kumite/ })).toHaveTextContent(/soon/i)
+    expect(screen.getByRole('link', { name: /^katas$/ })).not.toHaveTextContent(/soon/i)
   })
 
   it('marks only the active route as the current page', () => {
-    renderSidebar({ route: '/katas' })
+    renderSidebar('/katas')
 
     expect(screen.getByRole('link', { name: /^katas$/ })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByRole('link', { name: /^belts$/ })).not.toHaveAttribute('aria-current')
   })
 
-  it.each([false, true])('links the logo to the dashboard (collapsed: %s)', (collapsed) => {
-    renderSidebar({ collapsed, route: '/katas' })
+  it('links the logo to the dashboard', () => {
+    renderSidebar('/katas')
     expect(screen.getByRole('link', { name: 'Dojo home' })).toHaveAttribute('href', '/dashboard')
   })
 })
 
 describe('Sidebar — account section', () => {
-  it('shows the logged-in username on the settings link', () => {
+  it('shows the handle and links settings under the username', () => {
     renderSidebar()
-    expect(screen.getByRole('link', { name: 'sensei' })).toHaveAttribute('href', '/settings')
+    expect(screen.getByText('@sensei')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Settings for sensei' })).toHaveAttribute('href', '/settings')
   })
 
-  it('falls back to "settings" label when no username is present', () => {
+  it('leaves out the handle when there is no user', () => {
     mockedUseAuth.mockReturnValue({ user: null, loading: false, logout })
     renderSidebar()
-    expect(screen.getByRole('link', { name: 'settings' })).toHaveAttribute('href', '/settings')
+    expect(screen.queryByText(/^@/)).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/settings')
   })
 
-  it('invokes logout when the sign out button is clicked', async () => {
+  it('does not sign out until the dialog is confirmed', async () => {
     renderSidebar()
     await userEvent.click(screen.getByRole('button', { name: /sign out/i }))
+
+    expect(logout).not.toHaveBeenCalled()
+
+    const dialog = screen.getByRole('dialog', { name: 'See you tomorrow.' })
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Sign out' }))
     expect(logout).toHaveBeenCalledTimes(1)
   })
-})
 
-describe('Sidebar — theme + collapse', () => {
-  it.each([
-    ['sumi', 'washi'],
-    ['washi', 'sumi'],
-    ['auto', 'sumi'],
-  ] as const)('cycles the theme %s → %s on click', async (current, next) => {
-    mockedUseTheme.mockReturnValue({ theme: current, setTheme })
+  it('stays signed in when the dialog is dismissed', async () => {
     renderSidebar()
-    await userEvent.click(screen.getByTitle(`theme: ${current} (click to cycle)`))
-    expect(setTheme).toHaveBeenCalledWith(next)
+    await userEvent.click(screen.getByRole('button', { name: /sign out/i }))
+    await userEvent.click(screen.getByRole('button', { name: 'Stay' }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(logout).not.toHaveBeenCalled()
   })
 
-  it('calls onToggle when the collapse control is clicked', async () => {
-    const { onToggle } = renderSidebar()
-    await userEvent.click(screen.getByRole('button', { name: /collapse/i }))
-    expect(onToggle).toHaveBeenCalledTimes(1)
-  })
-
-  it('hides the collapsed-only labels when collapsed', () => {
-    renderSidebar({ collapsed: true })
-    // The "sign out" text label is hidden when collapsed (button still exists).
-    expect(screen.queryByText('sign out')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /sign out/i })).toBeInTheDocument()
+  it('offers no collapse control', () => {
+    renderSidebar()
+    expect(screen.queryByRole('button', { name: /collapse/i })).not.toBeInTheDocument()
   })
 })

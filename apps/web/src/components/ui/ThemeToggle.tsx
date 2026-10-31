@@ -22,7 +22,7 @@ export function ThemeToggle({ variant = 'text', className = '' }: Readonly<Theme
         type="button"
         onClick={() => setTheme(next)}
         aria-label={`Switch theme, currently ${theme}`}
-        className={`nav-item w-full gap-1 px-0.5 rounded-sm hover:bg-elevated ${className}`}
+        className={`nav-item w-full gap-1 px-0.5 rounded-sm whitespace-nowrap hover:bg-elevated ${className}`}
       >
         <Icon name="theme" size={16} />
         <span>{theme}</span>
