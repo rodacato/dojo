@@ -555,6 +555,7 @@ describe('KataActivePage', () => {
 
       expect(await screen.findByRole('button', { name: 'View result' }, { timeout: 2000 })).toBeEnabled()
       expect(screen.getByText('Time expired. Your draft is here.')).toBeInTheDocument()
+      expect(screen.getByText('Draft kept in this tab')).toBeInTheDocument()
       expect(screen.getByLabelText('Why is it wrong?')).toHaveValue('half a thought')
       expect(screen.getByLabelText('Why is it wrong?')).toHaveAttribute('readonly')
       expect(screen.getByRole('button', { name: /const start/ })).toBeDisabled()

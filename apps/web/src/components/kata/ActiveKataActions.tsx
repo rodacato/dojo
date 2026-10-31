@@ -30,7 +30,7 @@ export function ActiveKataActions({
             {hint}
           </p>
         ) : (
-          <p id={ANSWER_HINT_ID} aria-live="polite" className="text-sm text-primary min-h-5">
+          <p id={ANSWER_HINT_ID} aria-live="polite" className="text-sm text-primary empty:hidden">
             {hint}
           </p>
         )}
