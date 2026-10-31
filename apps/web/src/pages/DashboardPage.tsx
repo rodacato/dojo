@@ -13,6 +13,9 @@ import { BELT_COLOR } from '../lib/belt-colors'
 
 const SECTION_RULE = 'mt-10 md:mt-12 border-t border-border pt-6 md:pt-8'
 
+const TEXT_LINK =
+  'inline-flex items-center min-h-11 font-mono text-xs uppercase tracking-[0.08em] text-accent-text hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
+
 const START_ERROR = "Couldn't start that kata. Try again."
 
 const WEEKDAY_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const
@@ -95,7 +98,7 @@ export function DashboardPage() {
       </div>
 
       {dashboard.recentSessions.length > 0 && (
-        <RecentActivity sessions={dashboard.recentSessions} onView={(id) => navigate(`/katas/${id}/result`)} onAll={() => navigate('/history')} />
+        <RecentActivity sessions={dashboard.recentSessions} />
       )}
 
       {dashboard.totalCompleted >= 3 && dashboard.weakAreas.length > 0 && (
@@ -255,29 +258,16 @@ function PracticePatternsCard({ practicePatterns }: Readonly<{ practicePatterns:
   )
 }
 
-function RecentActivity({
-  sessions,
-  onView,
-  onAll,
-}: Readonly<{
-  sessions: DashboardData['recentSessions']
-  onView: (id: string) => void
-  onAll: () => void
-}>) {
+function RecentActivity({ sessions }: Readonly<{ sessions: DashboardData['recentSessions'] }>) {
   return (
-    <section className={SECTION_RULE}>
-      <div className="flex items-baseline justify-between mb-3">
-        <h3 className="paper-eyebrow">Recent kata</h3>
-        <button
-          onClick={onAll}
-          className="paper-eyebrow hover:text-primary transition-colors"
-        >
-          Full history →
-        </button>
+    <section className="mt-5.5 md:mt-6.5" aria-labelledby="recent-heading">
+      <div className="section-heading">
+        <h2 className="paper-eyebrow" id="recent-heading">Recent kata</h2>
+        <Link to="/history" className={TEXT_LINK}>Full history →</Link>
       </div>
-      <div className="border-y border-border divide-y divide-border">
+      <div className="border-t border-border">
         {sessions.map((s) => (
-          <RecentSessionRow key={s.id} session={s} onClick={() => onView(s.id)} />
+          <RecentSessionRow key={s.id} session={s} to={`/katas/${s.id}/result`} />
         ))}
       </div>
     </section>

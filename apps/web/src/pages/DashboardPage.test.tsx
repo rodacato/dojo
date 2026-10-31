@@ -151,6 +151,32 @@ describe('DashboardPage', () => {
       expect(await screen.findByText('Recent kata')).toBeInTheDocument()
       expect(screen.getByText('Reverse a linked list')).toBeInTheDocument()
       expect(screen.getByText('PASSED')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: /reverse a linked list/i })).toHaveAttribute('href', '/katas/s1/result')
+      expect(screen.getByRole('link', { name: /full history/i })).toHaveAttribute('href', '/history')
+    })
+
+    it('keeps the date, type and difficulty on a row with no verdict', async () => {
+      mockedGetDashboard.mockResolvedValue(
+        baseDashboard({
+          recentSessions: [
+            {
+              id: 's2',
+              kataTitle: 'Timed out kata',
+              kataType: 'chat',
+              difficulty: 'hard',
+              verdict: null,
+              startedAt: new Date(Date.now() - 2 * 3_600_000).toISOString(),
+            },
+          ],
+        }),
+      )
+
+      renderDashboard()
+
+      const row = await screen.findByRole('link', { name: /timed out kata/i })
+      expect(row).toHaveTextContent('chat')
+      expect(row).toHaveTextContent('hard')
+      expect(row).toHaveTextContent('2h')
     })
 
     it('omits the recent activity section when there are no sessions', async () => {
