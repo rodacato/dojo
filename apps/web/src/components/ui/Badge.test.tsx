@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type { Difficulty, KataType } from '@dojo/shared'
 
-import { DifficultyBadge, TypeBadge } from './Badge'
+import { DifficultyBadge, TypeBadge, TypeRuleBadge } from './Badge'
 
 describe('TypeBadge', () => {
   it('uppercases the kata type as the visible label', () => {
@@ -41,6 +41,20 @@ describe('TypeBadge', () => {
   it('uses the shared small badge geometry classes', () => {
     render(<TypeBadge type="chat" />)
     expect(screen.getByText('CHAT')).toHaveClass('font-mono', 'text-xs', 'px-2', 'py-0.5', 'rounded-sm')
+  })
+})
+
+describe('TypeRuleBadge', () => {
+  it.each<[KataType, string]>([
+    ['code', 'border-l-type-code'],
+    ['chat', 'border-l-type-chat'],
+    ['whiteboard', 'border-l-type-whiteboard'],
+    ['review', 'border-l-type-review'],
+  ])('carries %s on a rule with primary text and no fill', (type, ruleClass) => {
+    render(<TypeRuleBadge type={type} />)
+    const badge = screen.getByText(type)
+    expect(badge).toHaveClass(ruleClass, 'text-primary')
+    expect(badge.className).not.toMatch(/\bbg-/)
   })
 })
 
