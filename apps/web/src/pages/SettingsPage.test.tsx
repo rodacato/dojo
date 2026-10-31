@@ -89,23 +89,23 @@ beforeEach(() => {
 
 describe('SettingsPage', () => {
   describe('loading state', () => {
-    it('shows the page loader while preferences are pending', () => {
+    it('shows the loading state, not guessed defaults, while preferences are pending', () => {
       mockedGetPreferences.mockReturnValue(new Promise(() => {}))
 
       renderSettings()
 
-      expect(screen.getByText('loading')).toBeInTheDocument()
-      expect(screen.queryByRole('heading', { name: 'Settings' })).not.toBeInTheDocument()
+      expect(screen.getByRole('status')).toHaveTextContent('Loading your settings')
+      expect(screen.queryByRole('heading', { name: 'Practice' })).not.toBeInTheDocument()
     })
 
-    it('stays in the loader (no crash) when the auth user is absent', () => {
+    it('stays in the loading state (no crash) when the auth user is absent', () => {
       mockedUseAuth.mockReturnValue({ user: null, loading: false, logout })
       mockedGetPreferences.mockResolvedValue(basePrefs())
 
       renderSettings()
 
-      expect(screen.getByText('loading')).toBeInTheDocument()
-      expect(screen.queryByRole('heading', { name: 'Settings' })).not.toBeInTheDocument()
+      expect(screen.getByRole('status')).toHaveTextContent('Loading your settings')
+      expect(screen.queryByRole('heading', { name: 'Practice' })).not.toBeInTheDocument()
     })
   })
 
@@ -136,9 +136,9 @@ describe('SettingsPage', () => {
       const senior = await screen.findByRole('button', { name: 'Senior' })
       expect(senior).toHaveAttribute('aria-pressed', 'true')
       expect(screen.getByRole('button', { name: 'Junior' })).toHaveAttribute('aria-pressed', 'false')
-      // Interest button shows the ✓ marker only when active.
-      expect(screen.getByRole('button', { name: /^✓\s*security$/ })).toHaveAttribute('aria-pressed', 'true')
+      expect(screen.getByRole('button', { name: 'security' })).toHaveAttribute('aria-pressed', 'true')
       expect(screen.getByRole('button', { name: 'backend' })).toHaveAttribute('aria-pressed', 'false')
+      expect(screen.getByText('1 topic selected')).toBeInTheDocument()
     })
 
     it('renders the belt ring avatar and rank suffix once belts resolve', async () => {
@@ -147,7 +147,7 @@ describe('SettingsPage', () => {
       renderSettings()
 
       expect(await screen.findByLabelText('green belt')).toBeInTheDocument()
-      expect(screen.getByText(/· green belt/)).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: /green belt/ })).toHaveAttribute('href', '/belts')
     })
 
     it('falls back to a plain avatar and stays usable when belts fail', async () => {
@@ -161,7 +161,7 @@ describe('SettingsPage', () => {
       await waitFor(() => {
         expect(screen.queryByLabelText('green belt')).not.toBeInTheDocument()
       })
-      expect(screen.queryByText(/· green belt/)).not.toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: /green belt/ })).not.toBeInTheDocument()
     })
 
     it('hides reminder fields until the daily reminder toggle is on', async () => {
@@ -221,7 +221,7 @@ describe('SettingsPage', () => {
       await u.type(email, 'new@')
       await u.tab()
 
-      expect(screen.getByText("That doesn't look like an email.")).toBeInTheDocument()
+      expect(screen.getByText('Enter a complete email, like you@example.com.')).toBeInTheDocument()
       expect(mockedUpdatePreferences).not.toHaveBeenCalled()
     })
 
@@ -242,7 +242,7 @@ describe('SettingsPage', () => {
       await u.clear(hour)
       await u.tab()
 
-      expect(screen.getByText('Pick an hour from 0 to 23.')).toBeInTheDocument()
+      expect(screen.getByText('Choose a whole hour from 0 to 23 UTC.')).toBeInTheDocument()
       expect(mockedUpdatePreferences).not.toHaveBeenCalled()
     })
 
@@ -254,7 +254,7 @@ describe('SettingsPage', () => {
       await u.type(email, 'new@host')
       await u.tab()
 
-      expect(screen.getByText("That doesn't look like an email.")).toBeInTheDocument()
+      expect(screen.getByText('Enter a complete email, like you@example.com.')).toBeInTheDocument()
       expect(mockedUpdatePreferences).not.toHaveBeenCalled()
     })
 
@@ -296,6 +296,17 @@ describe('SettingsPage', () => {
       await renderReminders()
 
       expect(screen.getByText(/Never on a UTC weekend if your goal is under 5 days a week/)).toBeInTheDocument()
+    })
+
+    it('asks for an email while reminders are on without one, and still saves', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.tab()
+
+      expect(screen.getByText('Add an email to receive reminders.')).toBeInTheDocument()
+      expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1)
     })
 
     it('rejects an hour outside the day', async () => {
@@ -340,11 +351,11 @@ describe('SettingsPage', () => {
       renderSettings()
 
       expect(await screen.findByText("We couldn't load your settings.")).toBeInTheDocument()
-      expect(screen.queryByText('loading')).not.toBeInTheDocument()
+      expect(screen.queryByText('Loading your settings')).not.toBeInTheDocument()
 
       await u.click(screen.getByRole('button', { name: 'Try again' }))
 
-      expect(await screen.findByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+      expect(await screen.findByRole('heading', { name: 'Practice' })).toBeInTheDocument()
       expect(mockedGetPreferences).toHaveBeenCalledTimes(2)
     })
   })
@@ -374,7 +385,7 @@ describe('SettingsPage', () => {
 
       renderSettings()
 
-      await u.click(await screen.findByRole('button', { name: /^✓\s*backend$/ }))
+      await u.click(await screen.findByRole('button', { name: 'backend' }))
 
       expect(mockedUpdatePreferences).toHaveBeenCalledWith(
         expect.objectContaining({ interests: ['security'] }),
@@ -387,7 +398,7 @@ describe('SettingsPage', () => {
 
       renderSettings()
 
-      await u.click(await screen.findByRole('button', { name: /^debugging$/ }))
+      await u.click(await screen.findByRole('button', { name: 'debugging' }))
 
       expect(mockedUpdatePreferences).toHaveBeenCalledWith(
         expect.objectContaining({ interests: ['backend', 'debugging'] }),
@@ -401,7 +412,7 @@ describe('SettingsPage', () => {
 
       renderSettings()
 
-      await u.click(await screen.findByRole('button', { name: '5' }))
+      await u.click(await screen.findByRole('button', { name: '5 kata per week' }))
 
       expect(mockedUpdatePreferences).toHaveBeenCalledWith(
         expect.objectContaining({ goalWeeklyTarget: 5 }),
@@ -421,8 +432,8 @@ describe('SettingsPage', () => {
       )
 
       renderSettings()
-      await u.click(await screen.findByRole('button', { name: '5' }))
-      await u.click(screen.getByRole('button', { name: '6' }))
+      await u.click(await screen.findByRole('button', { name: '5 kata per week' }))
+      await u.click(screen.getByRole('button', { name: '6 kata per week' }))
 
       await waitFor(() => expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1))
       expect(section('Practice').queryByText('Saved')).not.toBeInTheDocument()
@@ -442,7 +453,7 @@ describe('SettingsPage', () => {
       mockedUpdatePreferences.mockRejectedValueOnce(new Error('save 500'))
 
       renderSettings()
-      await u.click(await screen.findByRole('button', { name: '5' }))
+      await u.click(await screen.findByRole('button', { name: '5 kata per week' }))
       await u.click(await screen.findByRole('button', { name: 'Retry practice' }))
 
       expect(await section('Practice').findByText('Saved')).toBeInTheDocument()
@@ -629,6 +640,17 @@ describe('SettingsPage', () => {
 
       expect(logout).not.toHaveBeenCalled()
       expect(screen.queryByRole('heading', { name: 'See you tomorrow.' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('privacy', () => {
+    it('stays unavailable and says so', async () => {
+      mockedGetPreferences.mockResolvedValue(basePrefs())
+
+      renderSettings()
+
+      expect(await screen.findByRole('switch', { name: 'Make profile private' })).toBeDisabled()
+      expect(screen.getByText('Profile privacy is not available yet.')).toBeInTheDocument()
     })
   })
 

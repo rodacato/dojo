@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
-import { PageLoader } from '../components/PageLoader'
-import { ErrorState } from '../components/ui/ErrorState'
+import { LoadState } from '../components/ui/LoadState'
+import { SkeletonList } from '../components/ui/SkeletonLoader'
 import { Button, buttonClasses } from '../components/ui/Button'
+import { Choice } from '../components/ui/Choice'
+import { Input } from '../components/ui/Input'
 import { Toggle } from '../components/ui/Toggle'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
@@ -20,10 +22,6 @@ const THEME_CHOICES: Array<{ value: ThemeChoice; label: string }> = [
 
 type Level = 'junior' | 'mid' | 'senior'
 
-// D42: selected reads by weight and a 2px-looking edge, the same as Advanced's chips.
-const SELECTED = 'border-primary ring-1 ring-inset ring-primary bg-elevated text-primary font-bold'
-const UNSELECTED = 'border-border text-secondary hover:border-primary'
-
 const LEVELS: Array<{ value: Level; label: string }> = [
   { value: 'junior', label: 'Junior' },
   { value: 'mid', label: 'Mid' },
@@ -35,6 +33,10 @@ const INTEREST_OPTIONS = [
   'devops', 'testing', 'process', 'reliability',
   'debugging', 'sql',
 ] as const
+
+const WEEKLY_GOALS = [1, 2, 3, 4, 5, 6, 7] as const
+
+const CHOICES = 'flex gap-2 flex-wrap mt-3.5'
 
 const RANDOMNESS_STOPS = [
   { value: 0, label: 'Predictable' },
@@ -218,14 +220,25 @@ export function SettingsPage() {
 
   if (prefsFailed && !prefs) {
     return (
-      <ErrorState
-        variant="inline"
-        message="We couldn't load your settings."
-        primaryAction={{ label: 'Try again', onClick: loadPrefs }}
-      />
+      <SettingsShell>
+        <LoadState
+          status="error"
+          eyebrow="Preferences"
+          title="We couldn't load your settings."
+          onRetry={loadPrefs}
+        />
+      </SettingsShell>
     )
   }
-  if (!user || !prefs || !accepted) return <PageLoader />
+  if (!user || !prefs || !accepted) {
+    return (
+      <SettingsShell>
+        <LoadState status="loading" eyebrow="Loading your settings">
+          <SkeletonList rows={4} />
+        </LoadState>
+      </SettingsShell>
+    )
+  }
 
   function sectionStatus(section: Section) {
     if (!prefs || !accepted) return null
@@ -248,202 +261,193 @@ export function SettingsPage() {
   })
 
   return (
-    <div className="paper-container py-8 md:py-12">
-      <div className="max-w-3xl">
-        <header className="flex items-end justify-between gap-4 mb-8">
-          <h1 className="paper-heading">
-            Settings
-          </h1>
-          <p className="paper-note md:text-right" role="status">
-            {saveSummary(statuses, reminderDetailsInvalid)}
-          </p>
-        </header>
-
-        <Section title="Account">
-          <div>
-            <div className="flex flex-col md:flex-row md:items-start gap-6">
-              <div className="flex items-center gap-4 md:flex-1 min-w-0">
-                {belt ? (
-                  <BeltRingAvatar src={user.avatarUrl} rank={belt.rank} size={64} alt="" />
-                ) : (
-                  <img
-                    src={user.avatarUrl}
-                    alt=""
-                    aria-hidden
-                    className="w-16 h-16 rounded-full bg-elevated shrink-0"
-                  />
-                )}
-                <div className="min-w-0">
-                  <p className="text-primary text-lg font-semibold truncate">{user.username}</p>
-                  <p className="text-secondary text-sm">@{user.username}</p>
-                  <p className="paper-note mt-1">
-                    Member since {memberSince}
-                    {belt && ` · ${belt.rank} belt`}
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 md:w-56">
-                <Link
-                  to={`/u/${user.username}`}
-                  className={`${buttonClasses({ variant: 'ghost', size: 'md' })} max-md:h-11`}
-                >
-                  View public profile →
-                </Link>
-                <Button variant="ghost" size="md" className="max-md:h-11" onClick={() => setShowLogoutModal(true)}>
-                  Sign out
-                </Button>
-              </div>
-            </div>
-            <p className="paper-note mt-4 truncate">
-              Your profile is public at{' '}
-              <Link to={`/u/${user.username}`} className="text-accent-text underline">
-                {globalThis.location.host}/u/{user.username}
-              </Link>
-            </p>
-            <div className="border-t border-border mt-4 pt-4 flex items-center justify-between">
-              <p className="paper-body">Make profile private</p>
-              <Toggle
-                checked={false}
-                onChange={() => {
-                  /* G-NNN — backend `is_public` flag not yet implemented. */
-                }}
-                ariaLabel="Make profile private"
-                disabled
-              />
-            </div>
-          </div>
-        </Section>
-
-        <Section title="Theme">
-          <div>
-            <Field label="Visual theme" hint="Auto follows your OS color preference.">
-              <div className="flex gap-2 flex-wrap">
-                {THEME_CHOICES.map((c) => (
-                  <PillButton
-                    key={c.value}
-                    active={theme === c.value}
-                    onClick={() => setTheme(c.value)}
-                  >
-                    {c.label}
-                  </PillButton>
-                ))}
-              </div>
-            </Field>
-          </div>
-        </Section>
-
-        <Section
-          title="Practice"
-          busy={statuses.practice === 'saving'}
-          headingRef={(el) => { headings.current.practice = el }}
-          footer={sectionStatus('practice')}
-        >
-          <div className="flex flex-col gap-6">
-            <Field label="Skill level" hint="Shapes kata difficulty and sensei tone.">
-              <div className="flex gap-2 flex-wrap">
-                {LEVELS.map((l) => (
-                  <PillButton
-                    key={l.value}
-                    active={prefs.level === l.value}
-                    onClick={() => edit('practice', { level: l.value })}
-                  >
-                    {l.label}
-                  </PillButton>
-                ))}
-              </div>
-            </Field>
-
-            <Field label="Interests" hint="Topics you'd like more of in the rotation.">
-              <div className="flex flex-wrap gap-2">
-                {INTEREST_OPTIONS.map((topic) => {
-                  const active = prefs.interests.includes(topic)
-                  return (
-                    <button
-                      key={topic}
-                      type="button"
-                      onClick={() => toggleInterest(topic)}
-                      aria-pressed={active}
-                      className={`font-mono text-xs px-3 py-1.5 max-md:min-h-11 max-md:px-3.5 rounded-sm border transition-colors ${
-                        active ? SELECTED : UNSELECTED
-                      }`}
-                    >
-                      {active && <span className="mr-1">✓</span>}
-                      {topic}
-                    </button>
-                  )
-                })}
-              </div>
-            </Field>
-
-            <Field label="Randomness" hint="How far the dojo strays from your interests.">
-              <div className="flex flex-col gap-2">
-                <input
-                  type="range"
-                  min={0}
-                  max={1}
-                  step={0.1}
-                  value={prefs.randomness}
-                  onChange={(e) => slideRandomness(Number(e.target.value))}
-                  onBlur={() => flushSliderSave.current()}
-                  className="w-full max-md:h-11 accent-accent"
-                  aria-label="Randomness"
-                />
-                <div className="flex justify-between font-mono text-xs tracking-[0.08em] uppercase text-secondary">
-                  {RANDOMNESS_STOPS.map((s) => (
-                    <span key={s.label}>{s.label}</span>
-                  ))}
-                </div>
-              </div>
-            </Field>
-
-            <Field label="Weekly goal" hint="How many kata you'd like to complete per week.">
-              <div className="grid grid-cols-7 gap-1.5 md:flex md:gap-2 md:flex-wrap">
-                {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    onClick={() => edit('practice', { goalWeeklyTarget: n })}
-                    aria-pressed={prefs.goalWeeklyTarget === n}
-                    className={`h-11 md:w-10 md:h-10 inline-flex items-center justify-center font-mono text-sm rounded-sm border transition-colors ${
-                      prefs.goalWeeklyTarget === n ? SELECTED : UNSELECTED
-                    }`}
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </Field>
-          </div>
-        </Section>
-
-        <Section
-          title="Reminders"
-          busy={statuses.reminders === 'saving'}
-          headingRef={(el) => { headings.current.reminders = el }}
-          footer={sectionStatus('reminders')}
-        >
-          <div className="flex flex-col gap-4">
-            <Toggle
-              label="Daily reminder"
-              checked={prefs.reminderEnabled}
-              onChange={(v) => edit('reminders', { reminderEnabled: v })}
+    <SettingsShell summary={saveSummary(statuses, reminderDetailsInvalid)}>
+      <Section title="Account">
+        <div className="flex items-start md:items-center gap-4 mb-5">
+          {belt ? (
+            <BeltRingAvatar src={user.avatarUrl} rank={belt.rank} size={64} alt="" />
+          ) : (
+            <img
+              src={user.avatarUrl}
+              alt=""
+              aria-hidden
+              className="w-16 h-16 rounded-full bg-elevated shrink-0"
             />
-            {prefs.reminderEnabled && (
-              <>
-                <ReminderFields
-                  key={reminderFieldsVersion}
-                  email={prefs.email}
-                  hour={prefs.reminderHour}
-                  onEmail={(email) => edit('reminders', { email })}
-                  onHour={(reminderHour) => edit('reminders', { reminderHour })}
-                  onInvalidChange={setReminderDetailsInvalid}
-                />
-              </>
-            )}
+          )}
+          <div className="min-w-0">
+            <p className="text-primary text-lg font-semibold wrap-anywhere">{user.username}</p>
+            <p className="paper-note wrap-anywhere">@{user.username}</p>
+            <p className="paper-note">
+              Member since {memberSince}
+              {belt && (
+                <>
+                  {' · '}
+                  <Link to="/belts" className="text-accent-text underline whitespace-nowrap">{belt.rank} belt ↗</Link>
+                </>
+              )}
+            </p>
           </div>
-        </Section>
+        </div>
+        <div className="flex gap-x-6 flex-wrap mb-3">
+          <Link to={`/u/${user.username}`} className={buttonClasses({ variant: 'link', size: 'lg' })}>
+            View public profile →
+          </Link>
+          <Button variant="link" size="lg" onClick={() => setShowLogoutModal(true)}>
+            Sign out
+          </Button>
+        </div>
+        <p className="paper-note wrap-anywhere">
+          Your profile is public at{' '}
+          <Link to={`/u/${user.username}`} className="text-accent-text underline">
+            {globalThis.location.host}/u/{user.username}
+          </Link>
+        </p>
+        <div className="border-t border-border mt-5 pt-4 flex items-center justify-between gap-6 min-h-11">
+          <div>
+            <p className="paper-body text-primary font-medium">Make profile private</p>
+            <p className="paper-note mt-1">Profile privacy is not available yet.</p>
+          </div>
+          <Toggle
+            checked={false}
+            onChange={() => {
+              /* G-NNN — backend `is_public` flag not yet implemented. */
+            }}
+            ariaLabel="Make profile private"
+            disabled
+          />
+        </div>
+      </Section>
 
-      </div>
+      <Section title="Theme">
+        <Field label="Visual theme" hint="Auto follows your OS color preference.">
+          <div className={CHOICES}>
+            {THEME_CHOICES.map((c) => (
+              <Choice key={c.value} selected={theme === c.value} onClick={() => setTheme(c.value)}>
+                {c.label}
+              </Choice>
+            ))}
+          </div>
+          <p className="paper-note mt-4">Theme stays on this device.</p>
+        </Field>
+      </Section>
+
+      <Section
+        title="Practice"
+        busy={statuses.practice === 'saving'}
+        headingRef={(el) => { headings.current.practice = el }}
+        footer={sectionStatus('practice')}
+      >
+        <div className="flex flex-col gap-7">
+          <p className="paper-note">Your standing preferences, across daily and optional practice.</p>
+
+          <Field label="Skill level" hint="Shapes kata difficulty and sensei tone.">
+            <div className={CHOICES}>
+              {LEVELS.map((l) => (
+                <Choice
+                  key={l.value}
+                  selected={prefs.level === l.value}
+                  onClick={() => edit('practice', { level: l.value })}
+                >
+                  {l.label}
+                </Choice>
+              ))}
+            </div>
+          </Field>
+
+          <Field label="Interests" hint="Topics you'd like more of in the rotation.">
+            <div className={CHOICES}>
+              {INTEREST_OPTIONS.map((topic) => {
+                const active = prefs.interests.includes(topic)
+                return (
+                  <Choice key={topic} selected={active} onClick={() => toggleInterest(topic)}>
+                    <span className="w-4.5 text-left" aria-hidden>{active ? '✓' : '+'}</span>
+                    {topic}
+                  </Choice>
+                )
+              })}
+            </div>
+            <p className="paper-note mt-3">
+              {prefs.interests.length} {prefs.interests.length === 1 ? 'topic' : 'topics'} selected
+            </p>
+          </Field>
+
+          <div>
+            <div className="flex items-baseline justify-between gap-4">
+              <label htmlFor="settings-randomness" className="paper-body text-primary font-medium">
+                Randomness
+              </label>
+              <output htmlFor="settings-randomness" className="font-mono text-xs tabular-nums text-secondary">
+                {Math.round(prefs.randomness * 100)}%
+              </output>
+            </div>
+            <p id="randomness-hint" className="paper-note mt-0.5">How far the dojo strays from your interests.</p>
+            <input
+              id="settings-randomness"
+              type="range"
+              min={0}
+              max={1}
+              step={0.1}
+              value={prefs.randomness}
+              onChange={(e) => slideRandomness(Number(e.target.value))}
+              onBlur={() => flushSliderSave.current()}
+              aria-describedby="randomness-hint"
+              aria-valuetext={randomnessText(prefs.randomness)}
+              className="block w-full h-11 mt-2.5 accent-primary"
+            />
+            <div className="flex justify-between gap-3 font-mono text-[10px] text-secondary" aria-hidden>
+              {RANDOMNESS_STOPS.map((s) => (
+                <span key={s.label}>{s.label}</span>
+              ))}
+            </div>
+          </div>
+
+          <Field label="Weekly goal" hint="How many kata you'd like to complete per week.">
+            <div className="grid grid-cols-4 md:grid-cols-7 gap-2 max-w-80 md:max-w-105 mt-3.5">
+              {WEEKLY_GOALS.map((n) => (
+                <Choice
+                  key={n}
+                  selected={prefs.goalWeeklyTarget === n}
+                  onClick={() => edit('practice', { goalWeeklyTarget: n })}
+                  aria-label={`${n} kata per week`}
+                  className="px-2"
+                >
+                  {n}
+                </Choice>
+              ))}
+            </div>
+            <p className="paper-note mt-3">{prefs.goalWeeklyTarget} kata per week</p>
+          </Field>
+        </div>
+      </Section>
+
+      <Section
+        title="Reminders"
+        busy={statuses.reminders === 'saving'}
+        headingRef={(el) => { headings.current.reminders = el }}
+        footer={sectionStatus('reminders')}
+      >
+        <div className="flex items-center justify-between gap-6 min-h-11">
+          <div>
+            <p className="paper-body text-primary font-medium">Daily reminder</p>
+            <p className="paper-note mt-1">A quiet nudge to come back to practice.</p>
+          </div>
+          <Toggle
+            ariaLabel="Daily reminder"
+            checked={prefs.reminderEnabled}
+            onChange={(v) => edit('reminders', { reminderEnabled: v })}
+          />
+        </div>
+        {prefs.reminderEnabled && (
+          <ReminderFields
+            key={reminderFieldsVersion}
+            email={prefs.email}
+            hour={prefs.reminderHour}
+            onEmail={(email) => edit('reminders', { email })}
+            onHour={(reminderHour) => edit('reminders', { reminderHour })}
+            onInvalidChange={setReminderDetailsInvalid}
+          />
+        )}
+      </Section>
 
       <ConfirmModal
         open={showLogoutModal}
@@ -458,6 +462,22 @@ export function SettingsPage() {
       >
         <p>You&apos;ll lose your session. Active kata in progress will be lost.</p>
       </ConfirmModal>
+    </SettingsShell>
+  )
+}
+
+function SettingsShell({ summary, children }: Readonly<{ summary?: string; children: React.ReactNode }>) {
+  return (
+    <div className="paper-container py-8 md:py-12 pb-24 md:pb-24">
+      <div className="max-w-240">
+        <header className="md:flex md:items-end md:justify-between gap-6 mb-7 md:mb-8">
+          <h1 className="paper-heading">Settings</h1>
+          {summary && (
+            <p className="paper-note max-md:mt-4 md:text-right md:max-w-55" role="status">{summary}</p>
+          )}
+        </header>
+        {children}
+      </div>
     </div>
   )
 }
@@ -476,10 +496,18 @@ function Section({
   children: React.ReactNode
 }>) {
   return (
-    <section aria-label={title} aria-busy={busy} className="mt-10 md:mt-12 border-t border-border pt-6 md:pt-8">
-      <h2 ref={headingRef} tabIndex={-1} className="paper-eyebrow mb-4 focus:outline-none">{title}</h2>
-      {children}
-      {footer}
+    <section
+      aria-label={title}
+      aria-busy={busy}
+      className="md:grid md:grid-cols-[144px_minmax(0,1fr)] md:gap-10 border-t border-border pt-6 pb-7 md:pt-7 md:pb-8"
+    >
+      <h2 ref={headingRef} tabIndex={-1} className="paper-eyebrow max-md:mb-5 md:pt-1 focus:outline-none">
+        {title}
+      </h2>
+      <div className="min-w-0">
+        {children}
+        {footer}
+      </div>
     </section>
   )
 }
@@ -490,41 +518,22 @@ function Field({
   children,
 }: Readonly<{
   label: string
-  hint?: string
+  hint: string
   children: React.ReactNode
 }>) {
   return (
-    <div className="flex flex-col gap-2">
-      <div>
-        <p className="paper-body text-primary font-medium">{label}</p>
-        {hint && <p className="paper-note mt-0.5">{hint}</p>}
-      </div>
+    <fieldset className="min-w-0">
+      <legend className="paper-body text-primary font-medium">{label}</legend>
+      <p className="paper-note mt-0.5">{hint}</p>
       {children}
-    </div>
+    </fieldset>
   )
 }
 
-function PillButton({
-  active,
-  onClick,
-  children,
-}: Readonly<{
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}>) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`font-mono text-xs tracking-[0.08em] uppercase px-3 py-1.5 max-md:min-h-11 max-md:px-3.5 rounded-sm border transition-colors ${
-        active ? SELECTED : UNSELECTED
-      }`}
-    >
-      {children}
-    </button>
-  )
+function randomnessText(value: number): string {
+  const stop = RANDOMNESS_STOPS.find((s) => s.value === value)
+  const percent = `${Math.round(value * 100)}%`
+  return stop ? `${percent} · ${stop.label}` : percent
 }
 
 function localHour(utcHour: number): string {
@@ -535,9 +544,6 @@ function localHour(utcHour: number): string {
 
 // Stricter than type="email", which accepts an address the API rejects.
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-const REMINDER_INPUT =
-  'w-full h-11 md:h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm focus:outline-none focus:border-accent transition-colors'
 
 function ReminderFields({
   email,
@@ -578,47 +584,55 @@ function ReminderFields({
   }
 
   return (
-    <>
-      <div className="grid md:grid-cols-2 gap-3">
+    <div className="mt-6">
+      <div className="grid md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] gap-6 md:gap-5">
         <div>
-          <label htmlFor="reminder-email" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
-            Email
-          </label>
-          <input
-            id="reminder-email"
+          <Input
+            label="Email"
             type="email"
+            inputMode="email"
+            autoComplete="email"
             value={emailDraft}
             onChange={(e) => setEmailDraft(e.target.value)}
             onBlur={(e) => commitEmail(e.target)}
             aria-invalid={emailInvalid}
+            aria-describedby={emailInvalid ? 'reminder-email-error' : undefined}
             placeholder="you@example.com"
-            className={REMINDER_INPUT}
+            hint={emailDraft.trim() ? "Where you'd like to receive the reminder." : 'Add an email to receive reminders.'}
           />
-          {emailInvalid && <p className="text-danger-text text-sm mt-1">That doesn't look like an email.</p>}
+          {emailInvalid && (
+            <p id="reminder-email-error" className="text-danger-text text-sm mt-2">
+              Enter a complete email, like you@example.com.
+            </p>
+          )}
         </div>
         <div>
-          <label htmlFor="reminder-hour" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
-            Hour (0–23 UTC)
-          </label>
-          <input
-            id="reminder-hour"
+          <Input
+            label="Hour (0–23 UTC)"
             type="number"
+            inputMode="numeric"
             min={0}
             max={23}
+            step={1}
             value={hourDraft}
             onChange={(e) => setHourDraft(e.target.value)}
             onBlur={commitHour}
             aria-invalid={hourInvalid}
-            className={`${REMINDER_INPUT} tabular-nums`}
+            aria-describedby={hourInvalid ? 'reminder-hour-error' : undefined}
+            className="tabular-nums"
           />
-          {hourInvalid && <p className="text-danger-text text-sm mt-1">Pick an hour from 0 to 23.</p>}
+          {hourInvalid && (
+            <p id="reminder-hour-error" className="text-danger-text text-sm mt-2">
+              Choose a whole hour from 0 to 23 UTC.
+            </p>
+          )}
         </div>
       </div>
-      <p className="paper-note">
+      <p className="paper-note mt-5">
         Sent at {hour}:00 UTC, {localHour(hour)} for you. Not before. Only if you haven&apos;t started
         today&apos;s practice. Never on a UTC weekend if your goal is under 5 days a week.
       </p>
-    </>
+    </div>
   )
 }
 
