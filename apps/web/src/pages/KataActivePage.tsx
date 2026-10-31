@@ -61,6 +61,7 @@ export function KataActivePage() {
   const [userResponse, setUserResponse] = useState('')
   const [pointedLine, setPointedLine] = useState<number | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [submitFailed, setSubmitFailed] = useState(false)
   const [timedOut, setTimedOut] = useState(false)
   const [prepareError, setPrepareError] = useState(false)
   const [leaving, setLeaving] = useState(false)
@@ -220,6 +221,7 @@ export function KataActivePage() {
   async function handleSubmit() {
     if (!session || !sessionId || !answerReady || submitting) return
     setSubmitting(true)
+    setSubmitFailed(false)
     try {
       const { attemptId } = isPoint && pointedLine !== null
         ? await api.submitPointAttempt(sessionId, pointedLine, userResponse)
@@ -227,10 +229,11 @@ export function KataActivePage() {
       sessionStorage.setItem(`dojo-attempt-${sessionId}`, attemptId)
       navigate(`/katas/${sessionId}/eval`)
     } catch (err) {
-      if (err instanceof ApiError && err.status === 408) {
+      if (err instanceof ApiError && (err.status === 408 || err.status === 409)) {
         navigate(`/katas/${sessionId}/result`)
       } else {
         setSubmitting(false)
+        setSubmitFailed(true)
       }
     }
   }
@@ -310,6 +313,12 @@ export function KataActivePage() {
           </Button>
         </div>
       </header>
+
+      {submitFailed && (
+        <p role="alert" className="shrink-0 border-b border-border bg-surface px-4 py-2 text-danger-text text-sm text-center">
+          Your answer didn't go through. It's still here. Try again.
+        </p>
+      )}
 
       {isPoint && isMobile ? (
         <div className="flex-1 overflow-y-auto">
