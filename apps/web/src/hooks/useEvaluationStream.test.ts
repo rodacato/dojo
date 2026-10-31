@@ -64,6 +64,8 @@ const execResult: ExecutionResult = {
   stderr: '',
   exitCode: 0,
   timedOut: false,
+      outputExceeded: false,
+      runTimeoutMs: 3000,
   executionTimeMs: 12,
 }
 
@@ -207,15 +209,14 @@ describe('useEvaluationStream', () => {
     act(() =>
       FakeWebSocket.last().emit({
         type: 'error',
-        code: 'RATE_LIMIT',
-        message: 'Too many submissions',
+        code: 'LLM_STREAM_ERROR',
       }),
     )
 
     expect(result.current.state).toEqual({
       status: 'error',
-      code: 'RATE_LIMIT',
-      message: 'Too many submissions',
+      code: 'LLM_STREAM_ERROR',
+      message: 'The model stopped before it finished. Your answer is saved.',
       tokens: '',
     })
   })

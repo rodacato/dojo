@@ -1,21 +1,24 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { WS_URL } from '../lib/config'
 import { getToken, clearToken } from '../lib/auth-token'
+import type {
+  EvaluationClientMessage,
+  EvaluationErrorCode,
+  EvaluationResultDTO,
+  EvaluationServerMessage,
+  ExecutionResultDTO,
+} from '@dojo/shared'
 
-export interface EvaluationResult {
-  verdict: 'passed' | 'passed_with_notes' | 'needs_work'
-  analysis: string
-  topicsToReview: string[]
-  followUpQuestion: string | null
-  isFinalEvaluation: boolean
-}
+export type EvaluationResult = EvaluationResultDTO
+export type ExecutionResult = ExecutionResultDTO
 
-export interface ExecutionResult {
-  stdout: string
-  stderr: string
-  exitCode: number
-  timedOut: boolean
-  executionTimeMs: number
+const ERROR_MESSAGES: Record<EvaluationErrorCode, string> = {
+  LLM_STREAM_ERROR: 'The model stopped before it finished. Your answer is saved.',
+  ATTEMPT_NOT_FOUND: 'This attempt is no longer available.',
+  SESSION_NOT_FOUND: 'This kata session no longer exists.',
+  ATTEMPT_LIMIT_REACHED: 'This kata has used all its attempts.',
+  INVALID_MESSAGE: 'Something broke on our side.',
+  INTERNAL_ERROR: 'Something broke on our side.',
 }
 
 export type EvalStreamState =
@@ -28,15 +31,6 @@ export type EvalStreamState =
   | { status: 'evaluation'; result: EvaluationResult; tokens: string; executionResult?: ExecutionResult }
   | { status: 'complete'; result: EvaluationResult; tokens: string; executionResult?: ExecutionResult }
   | { status: 'error'; code: string; message: string; tokens: string }
-
-interface WsMessage {
-  type: 'ready' | 'executing' | 'execution_result' | 'token' | 'evaluation' | 'complete' | 'error'
-  content?: string
-  result?: EvaluationResult | ExecutionResult
-  code?: string
-  message?: string
-  isFinal?: boolean
-}
 
 function partialTokens(state: EvalStreamState): string {
   return 'tokens' in state ? state.tokens : ''
@@ -56,7 +50,7 @@ export function useEvaluationStream(sessionId: string) {
     wsRef.current = ws
 
     ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data as string) as WsMessage
+      const msg = JSON.parse(event.data as string) as EvaluationServerMessage
 
       switch (msg.type) {
         case 'ready':
@@ -68,24 +62,24 @@ export function useEvaluationStream(sessionId: string) {
           break
 
         case 'execution_result':
-          latestExecResult.current = msg.result as ExecutionResult
-          setState({ status: 'execution_done', executionResult: msg.result as ExecutionResult })
+          latestExecResult.current = msg.result
+          setState({ status: 'execution_done', executionResult: msg.result })
           break
 
         case 'token':
           setState((prev) => ({
             status: 'streaming',
-            tokens: (prev.status === 'streaming' ? prev.tokens : '') + (msg.content ?? ''),
+            tokens: (prev.status === 'streaming' ? prev.tokens : '') + msg.content,
             executionResult: latestExecResult.current,
           }))
           break
 
         case 'evaluation':
           // Store result for complete handler — React may batch these updates
-          latestResult.current = msg.result as EvaluationResult
+          latestResult.current = msg.result
           setState((prev) => ({
             status: 'evaluation',
-            result: msg.result as EvaluationResult,
+            result: msg.result,
             tokens: 'tokens' in prev ? prev.tokens : '',
             executionResult: latestExecResult.current,
           }))
@@ -107,8 +101,8 @@ export function useEvaluationStream(sessionId: string) {
         case 'error':
           setState((prev) => ({
             status: 'error',
-            code: msg.code ?? 'UNKNOWN',
-            message: msg.message ?? msg.code ?? 'Error',
+            code: msg.code,
+            message: ERROR_MESSAGES[msg.code],
             tokens: partialTokens(prev),
           }))
           break
@@ -143,18 +137,22 @@ export function useEvaluationStream(sessionId: string) {
     }
   }, [sessionId])
 
+  const sendMessage = useCallback((message: EvaluationClientMessage) => {
+    wsRef.current?.send(JSON.stringify(message))
+  }, [])
+
   const submit = useCallback((attemptId: string) => {
-    wsRef.current?.send(JSON.stringify({ type: 'submit', attemptId }))
+    sendMessage({ type: 'submit', attemptId })
     latestExecResult.current = undefined
     setState({ status: 'streaming', tokens: '' })
-  }, [])
+  }, [sendMessage])
 
   const reconnect = useCallback(
     (attemptId: string) => {
-      wsRef.current?.send(JSON.stringify({ type: 'reconnect', attemptId }))
+      sendMessage({ type: 'reconnect', attemptId })
       setState({ status: 'streaming', tokens: '' })
     },
-    [],
+    [sendMessage],
   )
 
   useEffect(() => {

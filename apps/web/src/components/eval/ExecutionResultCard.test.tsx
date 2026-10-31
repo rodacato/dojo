@@ -10,6 +10,8 @@ function result(overrides: Partial<ExecutionResult> = {}): ExecutionResult {
     stderr: '',
     exitCode: 0,
     timedOut: false,
+  outputExceeded: false,
+  runTimeoutMs: 3000,
     executionTimeMs: 123,
     ...overrides,
   }

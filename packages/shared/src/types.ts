@@ -153,3 +153,45 @@ export interface PublicSessionDTO extends SessionSummaryDTO {
   status: string
   completedAt: string | null
 }
+
+// ── Evaluation WebSocket ────────────────────────────────────────────────────
+
+export interface EvaluationResultDTO {
+  verdict: Verdict
+  analysis: string
+  topicsToReview: string[]
+  followUpQuestion: string | null
+  isFinalEvaluation: boolean
+}
+
+export interface ExecutionResultDTO {
+  stdout: string
+  stderr: string
+  exitCode: number
+  timedOut: boolean
+  outputExceeded: boolean
+  runTimeoutMs: number
+  executionTimeMs: number
+  failure?: 'compile' | 'unavailable'
+}
+
+export type EvaluationErrorCode =
+  | 'ATTEMPT_NOT_FOUND'
+  | 'SESSION_NOT_FOUND'
+  | 'ATTEMPT_LIMIT_REACHED'
+  | 'LLM_STREAM_ERROR'
+  | 'INVALID_MESSAGE'
+  | 'INTERNAL_ERROR'
+
+export type EvaluationClientMessage =
+  | { type: 'submit'; attemptId: string }
+  | { type: 'reconnect'; attemptId: string }
+
+export type EvaluationServerMessage =
+  | { type: 'ready' }
+  | { type: 'executing' }
+  | { type: 'execution_result'; result: ExecutionResultDTO }
+  | { type: 'token'; content: string }
+  | { type: 'evaluation'; result: EvaluationResultDTO }
+  | { type: 'complete'; isFinal: boolean }
+  | { type: 'error'; code: EvaluationErrorCode }
