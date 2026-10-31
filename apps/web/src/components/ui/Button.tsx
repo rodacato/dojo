@@ -9,15 +9,16 @@ import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
  *   subtle      — text-only, for navigation-style links inside dense surfaces.
  *   destructive — text-only red, hover paints a faint red wash; never filled red
  *                 (filled red is reserved for verdict states).
+ *   link        — accent text, no chrome, underlines on hover.
  *
- * Sizes: sm / md / lg → 28 / 36 / 44 px tall.
+ * Sizes: sm / md / lg / xl → 28 / 36 / 44 / 48 px tall.
  *
  * For composing with react-router Link or anchor (no <button> render):
  *   <Link to="..." className={buttonClasses({ variant: 'ghost' })}>label</Link>
  */
 
-export type ButtonVariant = 'primary' | 'ghost' | 'subtle' | 'destructive'
-export type ButtonSize = 'sm' | 'md' | 'lg'
+export type ButtonVariant = 'primary' | 'ghost' | 'subtle' | 'destructive' | 'link'
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl'
 
 interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   variant?: ButtonVariant
@@ -31,12 +32,21 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost: 'bg-transparent text-primary border border-border hover:border-primary',
   subtle: 'bg-transparent text-secondary border border-transparent hover:text-primary',
   destructive: 'bg-transparent text-danger-text border border-transparent hover:bg-danger/10',
+  link: 'bg-transparent text-accent-text border border-transparent hover:underline underline-offset-4',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-7 px-3 text-xs',
-  md: 'h-9 px-4 text-sm',
-  lg: 'h-11 px-6 text-sm',
+  sm: 'h-7 text-xs',
+  md: 'h-9 text-sm',
+  lg: 'h-11 text-sm',
+  xl: 'h-12 text-sm',
+}
+
+const paddingClasses: Record<ButtonSize, string> = {
+  sm: 'px-3',
+  md: 'px-4',
+  lg: 'px-6',
+  xl: 'px-6',
 }
 
 const baseClasses = [
@@ -50,7 +60,8 @@ const baseClasses = [
 
 export function buttonClasses(opts: { variant?: ButtonVariant; size?: ButtonSize } = {}) {
   const { variant = 'primary', size = 'md' } = opts
-  return [baseClasses, variantClasses[variant], sizeClasses[size]].join(' ')
+  const padding = variant === 'link' ? '' : paddingClasses[size]
+  return [baseClasses, variantClasses[variant], sizeClasses[size], padding].join(' ')
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(

@@ -55,6 +55,13 @@ describe('Button', () => {
       expect(btn).toHaveClass('text-danger-text', 'bg-transparent')
       expect(btn).not.toHaveClass('bg-danger')
     })
+
+    it('renders the link variant as accent text with no fill', () => {
+      render(<Button variant="link" size="lg">View</Button>)
+      const btn = screen.getByRole('button')
+      expect(btn).toHaveClass('text-accent-text', 'bg-transparent', 'border-transparent')
+      expect(btn).not.toHaveClass('bg-accent', 'px-6')
+    })
   })
 
   describe('sizes', () => {
@@ -75,6 +82,11 @@ describe('Button', () => {
       const btn = screen.getByRole('button')
       expect(btn).toHaveClass('h-11')
       expect(btn).not.toHaveClass('h-9')
+    })
+
+    it('renders xl height (h-12)', () => {
+      render(<Button size="xl">Xl</Button>)
+      expect(screen.getByRole('button')).toHaveClass('h-12')
     })
   })
 
