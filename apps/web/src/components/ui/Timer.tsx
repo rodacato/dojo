@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface TimerProps {
   durationMinutes: number
@@ -24,6 +24,11 @@ function timerColorClass(expired: boolean, isDanger: boolean, isWarning: boolean
 
 export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: Readonly<TimerProps>) {
   const [remaining, setRemaining] = useState<number>(computeRemaining(durationMinutes, startedAt))
+  const onExpiredRef = useRef(onExpired)
+
+  useEffect(() => {
+    onExpiredRef.current = onExpired
+  })
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,11 +36,11 @@ export function Timer({ durationMinutes, startedAt, onExpired, size = 'md' }: Re
       setRemaining(r)
       if (r <= 0) {
         clearInterval(interval)
-        onExpired?.()
+        onExpiredRef.current?.()
       }
     }, 1000)
     return () => clearInterval(interval)
-  }, [durationMinutes, startedAt, onExpired])
+  }, [durationMinutes, startedAt])
 
   const total = durationMinutes * 60
   const pct = remaining / total
