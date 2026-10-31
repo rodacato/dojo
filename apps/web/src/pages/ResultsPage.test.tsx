@@ -121,7 +121,7 @@ describe('ResultsPage', () => {
       await screen.findByRole('heading', { name: 'Binary Search Boundaries' }),
     ).toBeInTheDocument()
     expect(mockedApi.getSession).toHaveBeenCalledWith('abc-123')
-    expect(mockedApi.getFeedback).toHaveBeenCalledWith('abc-123')
+    await waitFor(() => expect(mockedApi.getFeedback).toHaveBeenCalledWith('abc-123'))
 
     // Distinct loaded-state content: insights parsed from the analysis.
     expect(screen.getByText('Solid base case handling')).toBeInTheDocument()

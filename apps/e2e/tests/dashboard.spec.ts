@@ -56,9 +56,7 @@ test.describe('Dashboard', () => {
     // BeltStrip renders the rank text
     await expect(page.getByText(/yellow belt/i)).toBeVisible()
 
-    // TodayCard surfaces the brand microcopy for an existing user
-    await expect(
-      page.getByText(/the dojo opens again whether you show up or not/i),
-    ).toBeVisible()
+    // TodayCard explains the blind daily kata beside the start action
+    await expect(page.getByText(/one kata, about five minutes/i)).toBeVisible()
   })
 })
