@@ -97,6 +97,16 @@ export function HistoryPage() {
 
       {sessionList}
 
+      {!!error && sessions.length > 0 && (
+        <div className="mt-6">
+          <ErrorState
+            variant="inline"
+            message="We couldn't load that page."
+            primaryAction={{ label: 'Try again', onClick: reload }}
+          />
+        </div>
+      )}
+
       {totalPages > 1 && (
         <div className="flex justify-center mt-8">
           <Pagination

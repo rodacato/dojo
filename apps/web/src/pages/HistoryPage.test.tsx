@@ -115,6 +115,28 @@ describe('HistoryPage', () => {
     expect(screen.getByText('katas browser')).toBeInTheDocument()
   })
 
+  it('says so when the next page fails, keeps the rows and retries that page', async () => {
+    mockedGetHistory.mockReset()
+    mockedGetHistory.mockResolvedValueOnce(makeResponse({ total: 40, totalPages: 2 }))
+    mockedGetHistory.mockRejectedValueOnce(new Error('history 500'))
+    mockedGetHistory.mockResolvedValue(makeResponse({ total: 40, totalPages: 2 }))
+
+    renderHistory()
+    await screen.findByText('Reverse a Linked List')
+
+    await userEvent.click(screen.getByRole('button', { name: /Next/ }))
+
+    expect(await screen.findByText("We couldn't load that page.")).toBeInTheDocument()
+    expect(screen.getByText('Reverse a Linked List')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Try again' }))
+
+    await waitFor(() => expect(mockedGetHistory).toHaveBeenLastCalledWith(2))
+    await waitFor(() =>
+      expect(screen.queryByText("We couldn't load that page.")).not.toBeInTheDocument(),
+    )
+  })
+
   it('shows an error with a retry instead of the empty state when the request rejects', async () => {
     mockedGetHistory.mockRejectedValueOnce(new Error('history 500'))
     mockedGetHistory.mockResolvedValue(makeResponse())
