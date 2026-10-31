@@ -70,24 +70,32 @@ export function DashboardPage() {
 
   return (
     <div className={`${PAGE} state-reveal`}>
-      {onboarding.isFirstVisit && (
-        <OnboardingOverlay daily={daily} onStart={startKata} onDismiss={onboarding.dismiss} />
-      )}
       <DateStrip />
-
-      <TodayCard
-        todayComplete={dashboard.todayComplete}
-        todaySession={dashboard.todaySession}
-        activeSessionId={dashboard.activeSessionId}
-        dailyKataMinutes={dashboard.dailyKataMinutes}
-        isFirstVisit={isFirstVisit}
-        starting={starting}
-        startDisabled={startDisabled}
-        startError={startError}
-        onStart={startKata}
-        onResume={(id) => navigate(`/katas/${id}`)}
-        onViewResults={(id) => navigate(`/katas/${id}/result`)}
-      />
+      {onboarding.isFirstVisit ? (
+        <OnboardingOverlay
+          daily={daily}
+          startDisabled={startDisabled}
+          onStart={startKata}
+          onDismiss={() => {
+            onboarding.dismiss()
+            focusMain()
+          }}
+        />
+      ) : (
+        <TodayCard
+          todayComplete={dashboard.todayComplete}
+          todaySession={dashboard.todaySession}
+          activeSessionId={dashboard.activeSessionId}
+          dailyKataMinutes={dashboard.dailyKataMinutes}
+          isFirstVisit={isFirstVisit}
+          starting={starting}
+          startDisabled={startDisabled}
+          startError={startError}
+          onStart={startKata}
+          onResume={(id) => navigate(`/katas/${id}`)}
+          onViewResults={(id) => navigate(`/katas/${id}/result`)}
+        />
+      )}
 
       <div
         className={`grid gap-7 md:gap-8 lg:gap-14 border-t border-border py-6 md:py-6.5 ${showPatterns ? 'md:grid-cols-2' : ''}`}
