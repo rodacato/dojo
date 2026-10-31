@@ -296,39 +296,12 @@ export function SettingsPage() {
             />
             {prefs.reminderEnabled && (
               <>
-                <div className="grid md:grid-cols-2 gap-3">
-                  <div>
-                    <label htmlFor="reminder-email" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
-                      Email
-                    </label>
-                    <input
-                      id="reminder-email"
-                      type="email"
-                      value={prefs.email ?? ''}
-                      onChange={(e) => update({ email: e.target.value || null })}
-                      placeholder="you@example.com"
-                      className="w-full h-11 md:h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm focus:outline-none focus:border-accent transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="reminder-hour" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
-                      Hour (0–23 local)
-                    </label>
-                    <input
-                      id="reminder-hour"
-                      type="number"
-                      min={0}
-                      max={23}
-                      value={prefs.reminderHour}
-                      onChange={(e) => update({ reminderHour: Number(e.target.value) })}
-                      className="w-full h-11 md:h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm tabular-nums focus:outline-none focus:border-accent transition-colors"
-                    />
-                  </div>
-                </div>
-                <p className="paper-note">
-                  Sent at the time you pick. Not before. Never weekends if your goal is &lt; 5
-                  days/week.
-                </p>
+                <ReminderFields
+                  email={prefs.email}
+                  hour={prefs.reminderHour}
+                  onEmail={(email) => update({ email })}
+                  onHour={(reminderHour) => update({ reminderHour })}
+                />
               </>
             )}
           </div>
@@ -405,6 +378,90 @@ function PillButton({
     >
       {children}
     </button>
+  )
+}
+
+function localHour(utcHour: number): string {
+  const time = new Date()
+  time.setUTCHours(utcHour, 0, 0, 0)
+  return time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
+const REMINDER_INPUT =
+  'w-full h-11 md:h-9 px-3 bg-page border border-border rounded-sm text-primary text-sm focus:outline-none focus:border-accent transition-colors'
+
+function ReminderFields({
+  email,
+  hour,
+  onEmail,
+  onHour,
+}: Readonly<{
+  email: string | null
+  hour: number
+  onEmail: (email: string | null) => void
+  onHour: (hour: number) => void
+}>) {
+  const [emailDraft, setEmailDraft] = useState(email ?? '')
+  const [hourDraft, setHourDraft] = useState(String(hour))
+  const [emailInvalid, setEmailInvalid] = useState(false)
+  const [hourInvalid, setHourInvalid] = useState(false)
+
+  function commitEmail(input: HTMLInputElement) {
+    const valid = input.validity.valid
+    setEmailInvalid(!valid)
+    const next = emailDraft.trim() || null
+    if (valid && next !== email) onEmail(next)
+  }
+
+  function commitHour() {
+    const next = Number(hourDraft)
+    const valid = hourDraft.trim() !== '' && Number.isInteger(next) && next >= 0 && next <= 23
+    setHourInvalid(!valid)
+    if (valid && next !== hour) onHour(next)
+  }
+
+  return (
+    <>
+      <div className="grid md:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="reminder-email" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
+            Email
+          </label>
+          <input
+            id="reminder-email"
+            type="email"
+            value={emailDraft}
+            onChange={(e) => setEmailDraft(e.target.value)}
+            onBlur={(e) => commitEmail(e.target)}
+            aria-invalid={emailInvalid}
+            placeholder="you@example.com"
+            className={REMINDER_INPUT}
+          />
+          {emailInvalid && <p className="text-danger-text text-sm mt-1">That doesn't look like an email.</p>}
+        </div>
+        <div>
+          <label htmlFor="reminder-hour" className="block text-secondary text-xs font-mono tracking-[0.04em] mb-1">
+            Hour (0–23 UTC)
+          </label>
+          <input
+            id="reminder-hour"
+            type="number"
+            min={0}
+            max={23}
+            value={hourDraft}
+            onChange={(e) => setHourDraft(e.target.value)}
+            onBlur={commitHour}
+            aria-invalid={hourInvalid}
+            className={`${REMINDER_INPUT} tabular-nums`}
+          />
+          {hourInvalid && <p className="text-danger-text text-sm mt-1">Pick an hour from 0 to 23.</p>}
+        </div>
+      </div>
+      <p className="paper-note">
+        Sent at {hour}:00 UTC, {localHour(hour)} for you. Not before. Never weekends if your goal
+        is &lt; 5 days/week.
+      </p>
+    </>
   )
 }
 

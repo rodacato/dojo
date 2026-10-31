@@ -173,6 +173,100 @@ describe('SettingsPage', () => {
     })
   })
 
+  describe('reminder fields', () => {
+    async function renderReminders() {
+      mockedGetPreferences.mockResolvedValue(
+        basePrefs({ reminderEnabled: true, email: 'you@test.dev', reminderHour: 7 }),
+      )
+      renderSettings()
+      return {
+        email: await screen.findByLabelText('Email'),
+        hour: screen.getByLabelText('Hour (0–23 UTC)'),
+      }
+    }
+
+    it('saves an email once, when the learner leaves the field', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.type(email, 'new@test.dev')
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+
+      await u.tab()
+
+      expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1)
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(
+        expect.objectContaining({ email: 'new@test.dev' }),
+      )
+    })
+
+    it('flags a partial email instead of saving it', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.type(email, 'new@')
+      await u.tab()
+
+      expect(screen.getByText("That doesn't look like an email.")).toBeInTheDocument()
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+    })
+
+    it('clears the email when the field is emptied', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.clear(email)
+      await u.tab()
+
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(expect.objectContaining({ email: null }))
+    })
+
+    it('never turns an emptied hour into midnight', async () => {
+      const u = userEvent.setup()
+      const { hour } = await renderReminders()
+
+      await u.clear(hour)
+      await u.tab()
+
+      expect(screen.getByText('Pick an hour from 0 to 23.')).toBeInTheDocument()
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+    })
+
+    it('rejects an hour outside the day', async () => {
+      const u = userEvent.setup()
+      const { hour } = await renderReminders()
+
+      await u.clear(hour)
+      await u.type(hour, '24')
+      await u.tab()
+
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+    })
+
+    it('saves midnight when the learner asks for it', async () => {
+      const u = userEvent.setup()
+      const { hour } = await renderReminders()
+
+      await u.clear(hour)
+      await u.type(hour, '0')
+      await u.tab()
+
+      expect(mockedUpdatePreferences).toHaveBeenCalledWith(expect.objectContaining({ reminderHour: 0 }))
+    })
+
+    it('does not save when nothing changed', async () => {
+      const u = userEvent.setup()
+      const { email } = await renderReminders()
+
+      await u.click(email)
+      await u.tab()
+
+      expect(mockedUpdatePreferences).not.toHaveBeenCalled()
+    })
+  })
+
   describe('preferences error', () => {
     it('shows an error with a retry instead of loading forever when getPreferences rejects', async () => {
       mockedGetPreferences.mockRejectedValueOnce(new Error('prefs 500'))
