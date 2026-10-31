@@ -194,18 +194,6 @@ describe('PUT /preferences', () => {
     expect(await res.json()).toEqual({ error: 'Invalid preferences' })
   })
 
-  it('returns 400 when required fields are missing', async () => {
-    authUser()
-    const app = createRouter()
-    const res = await app.request('/preferences', {
-      method: 'PUT',
-      headers: { ...bearer(), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reminderHour: 8 }),
-    })
-
-    expect(res.status).toBe(400)
-  })
-
   it('returns 400 when level is not an allowed enum value', async () => {
     authUser()
     const app = createRouter()
@@ -250,7 +238,7 @@ describe('PUT /preferences', () => {
     expect(db.insert).not.toHaveBeenCalled()
   })
 
-  it('defaults email to null when omitted', async () => {
+  it('leaves the email alone when it is omitted', async () => {
     authUser()
     const app = createRouter()
     const res = await app.request('/preferences', {
@@ -260,8 +248,78 @@ describe('PUT /preferences', () => {
     })
 
     expect(res.status).toBe(200)
-    expect(state.updateSet).toHaveBeenCalledWith(expect.objectContaining({ email: null }))
+    expect(state.updateSet).toHaveBeenCalledWith({ reminderEnabled: false, reminderHour: 12 })
+  })
+
+  it('clears the email when it is sent as null', async () => {
+    authUser()
+    const app = createRouter()
+    const res = await app.request('/preferences', {
+      method: 'PUT',
+      headers: { ...bearer(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: null }),
+    })
+
+    expect(res.status).toBe(200)
+    expect(state.updateSet).toHaveBeenCalledWith({ email: null })
+  })
+
+  it('writes one reminder field without touching the others', async () => {
+    authUser()
+    const app = createRouter()
+    const res = await app.request('/preferences', {
+      method: 'PUT',
+      headers: { ...bearer(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reminderHour: 6 }),
+    })
+
+    expect(res.status).toBe(200)
+    expect(state.updateSet).toHaveBeenCalledWith({ reminderHour: 6 })
     expect(db.insert).not.toHaveBeenCalled()
+  })
+
+  it('leaves the user row alone when only practice fields are sent', async () => {
+    authUser()
+    const app = createRouter()
+    const res = await app.request('/preferences', {
+      method: 'PUT',
+      headers: { ...bearer(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ level: 'senior' }),
+    })
+
+    expect(res.status).toBe(200)
+    expect(db.update).not.toHaveBeenCalled()
+    expect(state.insertValues).toHaveBeenCalledWith({ userId: 'user-1', level: 'senior' })
+    const cfg = state.onConflictDoUpdate.mock.calls[0][0] as { set: Record<string, unknown> }
+    expect(cfg.set).toHaveProperty('level', 'senior')
+    expect(cfg.set).not.toHaveProperty('interests')
+  })
+
+  it('writes nothing for an empty body', async () => {
+    authUser()
+    const app = createRouter()
+    const res = await app.request('/preferences', {
+      method: 'PUT',
+      headers: { ...bearer(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    })
+
+    expect(res.status).toBe(200)
+    expect(db.update).not.toHaveBeenCalled()
+    expect(db.insert).not.toHaveBeenCalled()
+  })
+
+  it('returns 400 when a present reminder field has the wrong type', async () => {
+    authUser()
+    const app = createRouter()
+    const res = await app.request('/preferences', {
+      method: 'PUT',
+      headers: { ...bearer(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reminderEnabled: 'yes' }),
+    })
+
+    expect(res.status).toBe(400)
+    expect(db.update).not.toHaveBeenCalled()
   })
 
   it('passes a supplied email through to the user row unchanged', async () => {

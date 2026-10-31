@@ -29,8 +29,8 @@ export const profile = {
     }>('/preferences'),
 
   updatePreferences: (prefs: {
-    reminderEnabled: boolean
-    reminderHour: number
+    reminderEnabled?: boolean
+    reminderHour?: number
     email?: string | null
     level?: string
     interests?: string[]
