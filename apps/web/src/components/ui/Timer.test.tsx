@@ -218,6 +218,33 @@ describe('Timer', () => {
     expect(onExpired).toHaveBeenCalledTimes(1)
   })
 
+  it('still expires on time when the parent re-renders faster than the tick', () => {
+    const onExpired = vi.fn()
+    const startedAt = startedSecondsAgo(58)
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+    const root = createRoot(container)
+    mounted.push({ container, root })
+
+    // A parent re-render per keystroke hands Timer a new inline handler.
+    function typeOneKey() {
+      act(() => {
+        root.render(
+          <Timer durationMinutes={1} startedAt={startedAt} onExpired={() => onExpired()} />,
+        )
+      })
+    }
+
+    for (let elapsed = 0; elapsed < 4000; elapsed += 500) {
+      typeOneKey()
+      act(() => {
+        vi.advanceTimersByTime(500)
+      })
+    }
+
+    expect(onExpired).toHaveBeenCalledTimes(1)
+  })
+
   it('does not call onExpired while time still remains', () => {
     const onExpired = vi.fn()
     renderTimer(
