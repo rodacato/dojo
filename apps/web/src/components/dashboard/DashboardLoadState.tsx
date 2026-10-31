@@ -18,7 +18,7 @@ export function DashboardLoadState(props: Readonly<DashboardLoadStateProps>) {
   }
 
   return (
-    <div className="pt-7 md:pt-7.5 md:grid md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 lg:gap-14 items-start">
+    <div className="md:grid md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 lg:gap-14 items-start">
       <LoadState
         status="error"
         eyebrow="We couldn't load your dashboard."
@@ -26,7 +26,7 @@ export function DashboardLoadState(props: Readonly<DashboardLoadStateProps>) {
         aside="The dojo is still here."
         onRetry={props.onRetry}
       />
-      <aside aria-label="Unavailable dashboard data" className="mt-8 md:mt-0 border-y border-border py-4.5">
+      <aside aria-label="Unavailable dashboard data" className="mt-8 md:mt-7 border-y border-border py-4.5">
         <p className="paper-eyebrow">Dashboard</p>
         <dl className="my-3">
           {UNAVAILABLE.map((label) => (
