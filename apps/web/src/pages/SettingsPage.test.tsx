@@ -346,6 +346,48 @@ describe('SettingsPage', () => {
     })
   })
 
+  describe('saving', () => {
+    it('sends saves one at a time, so the newest choice lands last', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ goalWeeklyTarget: 3 }))
+      let finishFirst = (): void => undefined
+      mockedUpdatePreferences.mockReturnValueOnce(
+        new Promise((resolve) => { finishFirst = () => resolve({ ok: true }) }),
+      )
+
+      renderSettings()
+      await u.click(await screen.findByRole('button', { name: '5' }))
+      await u.click(screen.getByRole('button', { name: '6' }))
+
+      await waitFor(() => expect(mockedUpdatePreferences).toHaveBeenCalledTimes(1))
+      expect(screen.queryByText('Saved')).not.toBeInTheDocument()
+
+      finishFirst()
+
+      await waitFor(() => expect(mockedUpdatePreferences).toHaveBeenCalledTimes(2))
+      expect(mockedUpdatePreferences).toHaveBeenLastCalledWith(
+        expect.objectContaining({ goalWeeklyTarget: 6 }),
+      )
+      expect(await screen.findByText('Saved')).toBeInTheDocument()
+    })
+
+    it('retries the latest values after a failed save', async () => {
+      const u = userEvent.setup()
+      mockedGetPreferences.mockResolvedValue(basePrefs({ goalWeeklyTarget: 3 }))
+      mockedUpdatePreferences.mockRejectedValueOnce(new Error('save 500'))
+
+      renderSettings()
+      await u.click(await screen.findByRole('button', { name: '5' }))
+      await u.click(await screen.findByRole('button', { name: 'Retry' }))
+
+      expect(await screen.findByText('Saved')).toBeInTheDocument()
+      expect(mockedUpdatePreferences).toHaveBeenCalledTimes(2)
+      expect(mockedUpdatePreferences).toHaveBeenLastCalledWith(
+        expect.objectContaining({ goalWeeklyTarget: 5 }),
+      )
+    })
+  })
+
   describe('sign out', () => {
     it('confirms before logging out and only calls logout on confirm', async () => {
       const u = userEvent.setup()

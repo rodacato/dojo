@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
@@ -62,6 +62,7 @@ export function SettingsPage() {
   const [prefsFailed, setPrefsFailed] = useState(false)
   const [showLogoutModal, setShowLogoutModal] = useState(false)
   const { theme, setTheme } = useTheme()
+  const lastSave = useRef<Promise<unknown>>(Promise.resolve())
 
   function loadPrefs() {
     setPrefsFailed(false)
@@ -83,23 +84,33 @@ export function SettingsPage() {
     return () => clearTimeout(handle)
   }, [save])
 
+  // Each save carries the whole form, so an older one landing last would undo a newer one.
+  function persist(next: Preferences) {
+    setSave('saving')
+    const thisSave = lastSave.current
+      .catch(() => undefined)
+      .then(() =>
+        api.updatePreferences({
+          reminderEnabled: next.reminderEnabled,
+          reminderHour: next.reminderHour,
+          email: next.email,
+          level: next.level,
+          interests: next.interests,
+          randomness: next.randomness,
+          goalWeeklyTarget: next.goalWeeklyTarget,
+        }),
+      )
+    lastSave.current = thisSave
+    thisSave
+      .then(() => { if (lastSave.current === thisSave) setSave('saved') })
+      .catch(() => { if (lastSave.current === thisSave) setSave('error') })
+  }
+
   function update(patch: Partial<Preferences>) {
     if (!prefs) return
     const next = { ...prefs, ...patch }
     setPrefs(next)
-    setSave('saving')
-    api
-      .updatePreferences({
-        reminderEnabled: next.reminderEnabled,
-        reminderHour: next.reminderHour,
-        email: next.email,
-        level: next.level,
-        interests: next.interests,
-        randomness: next.randomness,
-        goalWeeklyTarget: next.goalWeeklyTarget,
-      })
-      .then(() => setSave('saved'))
-      .catch(() => setSave('error'))
+    persist(next)
   }
 
   function toggleInterest(topic: string) {
@@ -133,7 +144,7 @@ export function SettingsPage() {
           <h1 className="paper-heading">
             Settings
           </h1>
-          <SaveIndicator state={save} />
+          <SaveIndicator state={save} onRetry={() => persist(prefs)} />
         </header>
 
         <Section title="Account">
@@ -465,7 +476,7 @@ function ReminderFields({
   )
 }
 
-function SaveIndicator({ state }: Readonly<{ state: SaveState }>) {
+function SaveIndicator({ state, onRetry }: Readonly<{ state: SaveState; onRetry: () => void }>) {
   if (state === 'idle') return <div className="h-4" aria-hidden />
   return (
     <div className="font-mono text-xs tracking-[0.08em] uppercase">
@@ -475,7 +486,12 @@ function SaveIndicator({ state }: Readonly<{ state: SaveState }>) {
         </span>
       )}
       {state === 'saved' && <span className="text-success-text">Saved</span>}
-      {state === 'error' && <span className="text-danger-text">Error</span>}
+      {state === 'error' && (
+        <span className="inline-flex items-center gap-2">
+          <span className="text-danger-text">Error</span>
+          <Button variant="ghost" size="sm" onClick={onRetry}>Retry</Button>
+        </span>
+      )}
     </div>
   )
 }
