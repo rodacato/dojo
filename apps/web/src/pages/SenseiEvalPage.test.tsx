@@ -303,6 +303,31 @@ describe('SenseiEvalPage', () => {
     expect(navigate).toHaveBeenCalledWith('/dashboard')
   })
 
+  it('keeps the answer and adds no exchange when a follow-up fails to send', async () => {
+    streamState = {
+      status: 'evaluation',
+      tokens: 'Good start.',
+      result: makeResult({ isFinalEvaluation: false, followUpQuestion: 'And clock skew?' }),
+    }
+    submitAttempt.mockRejectedValueOnce(new Error('boom'))
+    submitAttempt.mockResolvedValueOnce({ attemptId: 'att-8' })
+    const user = userEvent.setup()
+    renderPage()
+
+    await user.type(await screen.findByPlaceholderText('Your answer...'), 'A logical clock.')
+    await user.click(screen.getByRole('button', { name: /Send/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent("Your answer didn't go through.")
+    expect(screen.getByPlaceholderText('Your answer...')).toHaveValue('A logical clock.')
+    expect(screen.queryByText('You')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /Send/i }))
+
+    await waitFor(() => expect(submit).toHaveBeenCalledWith('att-8'))
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getAllByText('You')).toHaveLength(1)
+  })
+
   it('keeps the partial review on screen when the stream fails', async () => {
     streamState = { status: 'error', code: 'LLM_STREAM_ERROR', message: 'x', tokens: 'Half a thought.' }
 
