@@ -1,16 +1,17 @@
-import { Suspense, useState, type KeyboardEvent } from 'react'
+import { Suspense, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import type { SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
+import { ActiveKataActions, ANSWER_HINT_ID } from '../components/kata/ActiveKataActions'
 import { Button } from '../components/ui/Button'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { FocusedHeader } from '../components/layout/FocusedHeader'
-import { EnsoLoader } from '../components/ui/EnsoLoader'
 import { Timer } from '../components/ui/Timer'
 import { CodeEditor } from '../components/ui/CodeEditor'
 import { CodeLine } from '../components/ui/CodeLine'
 import { KataBody } from '../components/ui/KataBody'
+import { EnsoLoader } from '../components/ui/EnsoLoader'
 import { ErrorState } from '../components/ui/ErrorState'
 import { lazyWithRetry } from '../lib/lazyWithRetry'
 import { useIsMobile } from '../hooks/useIsMobile'
@@ -28,15 +29,17 @@ export function KataActivePage() {
     prepareSlow,
     prepareError,
     userResponse,
-    setUserResponse,
+    changeResponse,
     pointedLine,
-    setPointedLine,
+    pointAtLine,
     submitting,
     submitFailed,
+    draftKept,
+    lastSeconds,
     timedOut,
     answerReady,
     expiredEmpty,
-    submitLabel,
+    hasDraft,
     handleSubmit,
     expire,
   } = useKataSession(sessionId)
@@ -78,66 +81,56 @@ export function KataActivePage() {
   // All formats land side-by-side on desktop — the chat panel mirrors the
   // code/whiteboard shell so the redesign reads as one product.
   const orientation = isMobile ? 'vertical' : 'horizontal'
+  const showFailure = submitFailed && !submitting
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
       <FocusedHeader
         leading={
-          <Button variant="subtle" size="lg" className="px-2 md:px-3" onClick={() => setLeaving(true)}>
-            Leave
+          <Button
+            variant="subtle"
+            size="lg"
+            className="px-2 md:px-3"
+            disabled={submitting}
+            onClick={timedOut ? () => navigate('/dashboard') : () => setLeaving(true)}
+          >
+            {timedOut ? 'Back' : 'Leave'}
           </Button>
         }
         center={
-          <Timer
-            durationMinutes={kata.duration}
-            startedAt={session.startedAt}
-            onExpired={expire}
-            size="sm"
-          />
-        }
-        trailing={
-          <Button
-            variant="primary"
-            size="lg"
-            className="max-md:px-3"
-            onClick={expiredEmpty ? () => navigate(`/katas/${sessionId}/result`) : handleSubmit}
-            loading={submitting}
-            disabled={submitting || (!answerReady && !timedOut)}
-          >
-            {expiredEmpty ? 'View result' : submitLabel}
-          </Button>
+          <ClockSlot>
+            <Timer durationMinutes={kata.duration} startedAt={session.startedAt} onExpired={expire} size="sm" />
+          </ClockSlot>
         }
       />
 
-      {submitFailed && (
-        <p role="alert" className="shrink-0 border-b border-border bg-surface px-4 py-2 text-danger-text text-sm text-center">
-          Your answer didn't go through. It's still here. Try again.
-        </p>
-      )}
+      <p className="sr-only" aria-live="polite">
+        {lastSeconds && !timedOut ? 'Less than thirty seconds remain.' : ''}
+      </p>
 
       {isPoint && isMobile ? (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           <section className="bg-surface border-b border-border p-4">
-            <ProblemContent session={session} compact />
-            <PointInstruction pointedLine={pointedLine} why={userResponse} />
+            <PointProblem session={session} />
           </section>
           <PointAnswer
             kata={kata}
             pointedLine={pointedLine}
-            onPoint={setPointedLine}
+            onPoint={pointAtLine}
             why={userResponse}
-            onWhy={setUserResponse}
+            onWhy={changeResponse}
             onSubmit={handleSubmit}
+            submitting={submitting}
+            expired={timedOut}
           />
         </div>
       ) : (
-        <PanelGroup orientation={orientation} className="flex-1 overflow-hidden">
+        <PanelGroup orientation={orientation} className="flex-1 min-h-0 overflow-hidden">
           {/* Problem panel */}
-          <Panel defaultSize={isCode ? 40 : 50} minSize={25}>
+          <Panel defaultSize={isCode || isPoint ? 40 : 50} minSize={25}>
             <div className="h-full flex flex-col bg-surface">
               <div className="flex-1 overflow-y-auto px-6 py-6">
-                <ProblemContent session={session} />
-                {isPoint && <PointInstruction pointedLine={pointedLine} why={userResponse} />}
+                {isPoint ? <PointProblem session={session} /> : <ProblemContent session={session} />}
               </div>
               <div className="px-6 py-3 border-t border-border bg-page/50 shrink-0">
                 <p className="font-mono text-xs tracking-[0.08em] uppercase text-secondary text-center">
@@ -153,21 +146,23 @@ export function KataActivePage() {
           `} />
 
           {isPoint ? (
-            <Panel defaultSize={50} minSize={20}>
+            <Panel defaultSize={60} minSize={20}>
               <PointAnswer
                 kata={kata}
                 pointedLine={pointedLine}
-                onPoint={setPointedLine}
+                onPoint={pointAtLine}
                 why={userResponse}
-                onWhy={setUserResponse}
+                onWhy={changeResponse}
                 onSubmit={handleSubmit}
+                submitting={submitting}
+                expired={timedOut}
               />
             </Panel>
           ) : (
             <ResponsePanel
               kata={kata}
               value={userResponse}
-              onChange={setUserResponse}
+              onChange={changeResponse}
               font={responseFont}
               onFontChange={setResponseFont}
               onSubmit={handleSubmit}
@@ -176,8 +171,27 @@ export function KataActivePage() {
         </PanelGroup>
       )}
 
+      <ActiveKataActions
+        hint={answerHint({
+          submitting,
+          expired: timedOut,
+          expiredEmpty,
+          failed: showFailure,
+          hasDraft,
+          isPoint,
+          pointedLine,
+          why: userResponse,
+        })}
+        failed={showFailure}
+        note={draftNote(draftKept, isPoint)}
+        label={actionLabel(submitting, timedOut, expiredEmpty)}
+        loading={submitting}
+        disabled={submitting || (!answerReady && !timedOut)}
+        onAction={expiredEmpty ? () => navigate(`/katas/${sessionId}/result`) : handleSubmit}
+      />
+
       <ConfirmModal
-        open={leaving}
+        open={leaving && !timedOut}
         onCancel={() => setLeaving(false)}
         eyebrow="Leave kata?"
         tone="amber"
@@ -188,27 +202,75 @@ export function KataActivePage() {
         onConfirm={() => navigate('/dashboard')}
       >
         <p>The timer keeps running. You can resume from the dashboard until time runs out.</p>
-        <p>Your unsent answer is kept in this browser tab.</p>
+        <p>
+          {draftKept
+            ? 'Your unsent answer is kept in this browser tab.'
+            : 'This browser could not keep the draft. Stay to copy your answer before leaving.'}
+        </p>
       </ConfirmModal>
     </div>
   )
 }
 
-function ProblemContent({ session, compact = false }: Readonly<{ session: SessionWithKata; compact?: boolean }>) {
+function actionLabel(submitting: boolean, expired: boolean, expiredEmpty: boolean): string {
+  if (submitting) return 'Submitting…'
+  if (expiredEmpty) return 'View result'
+  return expired ? 'Submit now' : 'Submit'
+}
+
+function draftNote(draftKept: boolean, isPoint: boolean): string {
+  if (!draftKept) return 'Keep this tab open · local storage unavailable'
+  return isPoint ? 'Draft kept in this tab · Ctrl/⌘ + Enter to submit' : 'Draft kept in this tab'
+}
+
+function answerHint({
+  submitting,
+  expired,
+  expiredEmpty,
+  failed,
+  hasDraft,
+  isPoint,
+  pointedLine,
+  why,
+}: Readonly<{
+  submitting: boolean
+  expired: boolean
+  expiredEmpty: boolean
+  failed: boolean
+  hasDraft: boolean
+  isPoint: boolean
+  pointedLine: number | null
+  why: string
+}>): string {
+  if (submitting) return 'Submitting…'
+  if (expiredEmpty) return hasDraft ? 'Time expired. Your draft is here.' : 'Time expired. No answer was sent.'
+  if (failed) return "Your answer didn't go through. It's still here. Try again."
+  if (expired) return 'Time expired. Your draft is here.'
+  if (!isPoint) return ''
+  if (pointedLine === null) return why.trim() ? 'Choose a line to continue.' : 'Tap the line with the bug.'
+  return why.trim()
+    ? `Line ${pointedLine} selected. Tap another line to change it.`
+    : `Line ${pointedLine} selected. Now say why it's wrong.`
+}
+
+function ClockSlot({ children }: Readonly<{ children: ReactNode }>) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <span className="paper-eyebrow leading-none">Time left</span>
+      {children}
+    </div>
+  )
+}
+
+function ProblemContent({ session }: Readonly<{ session: SessionWithKata }>) {
   const { kata } = session
   return (
     <>
       <div className="mb-4">
-        {!compact && (
-          <span className="inline-block font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm mb-3">
-            [{session.ownerRole.toUpperCase()}]
-          </span>
-        )}
-        <h1
-          className={`text-primary font-bold leading-tight tracking-tight mb-3 ${
-            compact ? 'text-2xl' : 'text-3xl md:text-4xl'
-          }`}
-        >
+        <span className="inline-block font-mono text-xs tracking-[0.08em] uppercase text-secondary border border-border bg-elevated px-2 py-1 rounded-sm mb-3">
+          [{session.ownerRole.toUpperCase()}]
+        </span>
+        <h1 className="text-primary font-bold leading-tight tracking-tight mb-3 text-3xl md:text-4xl">
           {kata.title}
         </h1>
         <div className="flex items-center gap-2 flex-wrap">
@@ -229,17 +291,17 @@ function ProblemContent({ session, compact = false }: Readonly<{ session: Sessio
   )
 }
 
-function PointInstruction({ pointedLine, why }: Readonly<{ pointedLine: number | null; why: string }>) {
-  let text = 'Tap the line with the bug.'
-  if (pointedLine !== null) {
-    text = why.trim()
-      ? `Line ${pointedLine} selected. Tap another line to change it.`
-      : `Line ${pointedLine} selected. Now say why it's wrong.`
-  }
+function PointProblem({ session }: Readonly<{ session: SessionWithKata }>) {
+  const { kata } = session
   return (
-    <p className="mt-4 font-sans text-sm font-medium text-primary" aria-live="polite">
-      {text}
-    </p>
+    <>
+      <p className="paper-eyebrow">Active kata · {kata.duration} min</p>
+      <h1 className="text-primary text-2xl font-bold tracking-tight mt-3 mb-3">{kata.title}</h1>
+      <p className="font-mono text-xs text-secondary mb-4 md:mb-6">
+        {kata.type} · {kata.difficulty} · {languageLabel(resolveLanguage(kata.language))}
+      </p>
+      <KataBody body={session.body} />
+    </>
   )
 }
 
@@ -254,6 +316,8 @@ function PointAnswer({
   why,
   onWhy,
   onSubmit,
+  submitting,
+  expired,
 }: Readonly<{
   kata: SessionWithKata['kata']
   pointedLine: number | null
@@ -261,6 +325,8 @@ function PointAnswer({
   why: string
   onWhy: (v: string) => void
   onSubmit: () => void
+  submitting: boolean
+  expired: boolean
 }>) {
   const language = resolveLanguage(kata.language)
 
@@ -273,10 +339,9 @@ function PointAnswer({
 
   return (
     <div className="flex flex-col bg-page md:h-full md:overflow-y-auto">
-      <div className="h-9 shrink-0 border-b border-border bg-surface flex items-center px-4 gap-3">
-        <span className="font-mono text-sm text-secondary">solution.{fileExtension(language)}</span>
-        <span className="h-3 w-px bg-border" />
-        <span className="font-mono text-sm text-secondary">{languageLabel(language)}</span>
+      <div className="min-h-11 shrink-0 border-b border-border bg-surface flex items-center justify-between gap-4 px-4 md:px-6 font-mono text-xs text-secondary">
+        <span>solution.{fileExtension(language)}</span>
+        <span>Read only</span>
       </div>
       <div role="group" aria-label="Code lines">
         {toCodeLines(kata.starterCode ?? '').map((code, i) => (
@@ -286,13 +351,17 @@ function PointAnswer({
             code={code}
             selected={pointedLine === i + 1}
             onSelect={() => onPoint(i + 1)}
+            disabled={submitting || expired}
           />
         ))}
       </div>
-      <div className="flex-1 flex flex-col gap-2 p-4 bg-surface border-t border-border">
-        <label htmlFor="point-why" className="font-mono text-xs tracking-[0.08em] uppercase text-secondary">
-          Why is it wrong?
-        </label>
+      <div className="flex-1 flex flex-col gap-2 p-4 md:p-6 bg-surface border-t border-border">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+          <label htmlFor="point-why" className="font-mono text-xs tracking-[0.08em] uppercase text-primary">
+            Why is it wrong?
+          </label>
+          <span className="paper-note">{pointedLine === null ? 'No line selected' : `Line ${pointedLine}`}</span>
+        </div>
         <textarea
           id="point-why"
           value={why}
@@ -300,8 +369,12 @@ function PointAnswer({
           onKeyDown={handleKeyDown}
           placeholder="Think out loud. The sensei reads everything."
           rows={4}
-          className="flex-1 min-h-28 bg-page text-primary font-sans text-base leading-relaxed border border-border rounded-sm px-3 py-2.5 resize-none placeholder:text-muted focus-visible:outline-none focus-visible:border-accent"
+          disabled={submitting}
+          readOnly={expired}
+          aria-describedby={ANSWER_HINT_ID}
+          className="flex-1 min-h-36 bg-page text-primary font-sans text-[16px] leading-relaxed border border-border rounded-sm px-3 py-2.5 resize-y placeholder:text-muted disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         />
+        <p className="paper-note">Two or three sentences. Explain your reasoning.</p>
       </div>
     </div>
   )
