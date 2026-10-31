@@ -154,6 +154,26 @@ export interface PublicSessionDTO extends SessionSummaryDTO {
   completedAt: string | null
 }
 
+/** GET /dashboard */
+export interface DashboardDTO {
+  streak: number
+  totalCompleted: number
+  todayComplete: boolean
+  todaySession: { id: string; kataTitle: string; verdict: string | null } | null
+  activeSessionId: string | null
+  dailyKataMinutes: number | null
+  heatmapData: HeatmapDayDTO[]
+  recentSessions: SessionSummaryDTO[]
+  weakAreas: Array<{ topic: string; frequency: number }>
+  practicePatterns: {
+    avgTimeMinutes: number
+    mostAvoidedType: string | null
+    sessionsTimedOut: number
+  }
+  weeklyGoal: { target: number | null; completed: number }
+  belt: BeltDTO
+}
+
 // ── Evaluation WebSocket ────────────────────────────────────────────────────
 
 export interface EvaluationResultDTO {
