@@ -33,12 +33,12 @@ preferencesRoutes.get('/preferences', requireAuth, async (c) => {
 })
 
 // ---------------------------------------------------------------------------
-// PUT /preferences — Update reminder preferences
+// PUT /preferences — Update only the fields present in the body
 // ---------------------------------------------------------------------------
 
 const preferencesSchema = z.object({
-  reminderEnabled: z.boolean(),
-  reminderHour: z.number().int().min(0).max(23),
+  reminderEnabled: z.boolean().optional(),
+  reminderHour: z.number().int().min(0).max(23).optional(),
   email: z.email().optional().nullable(),
   level: z.enum(['junior', 'mid', 'senior']).optional(),
   interests: z.array(z.string()).optional(),
@@ -46,41 +46,33 @@ const preferencesSchema = z.object({
   goalWeeklyTarget: z.number().int().min(1).max(7).optional(),
 })
 
+function presentFields<T extends object>(fields: T) {
+  return Object.fromEntries(
+    Object.entries(fields).filter(([, value]) => value !== undefined),
+  ) as { [K in keyof T]?: Exclude<T[K], undefined> }
+}
+
 preferencesRoutes.put('/preferences', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
   const body = await c.req.json()
   const parsed = preferencesSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid preferences' }, 400)
 
-  await db
-    .update(users)
-    .set({
-      reminderEnabled: parsed.data.reminderEnabled,
-      reminderHour: parsed.data.reminderHour,
-      email: parsed.data.email ?? null,
-    })
-    .where(eq(users.id, user.id))
+  const { reminderEnabled, reminderHour, email, level, interests, randomness, goalWeeklyTarget } = parsed.data
+  const userFields = presentFields({ reminderEnabled, reminderHour, email })
+  const practiceFields = presentFields({ level, interests, randomness, goalWeeklyTarget })
 
-  // Upsert user preferences (level, interests, randomness, goalWeeklyTarget)
-  if (parsed.data.level !== undefined || parsed.data.interests !== undefined || parsed.data.randomness !== undefined || parsed.data.goalWeeklyTarget !== undefined) {
-    const prefValues: Record<string, unknown> = { userId: user.id }
-    if (parsed.data.level !== undefined) prefValues.level = parsed.data.level
-    if (parsed.data.interests !== undefined) prefValues.interests = parsed.data.interests
-    if (parsed.data.randomness !== undefined) prefValues.randomness = parsed.data.randomness
-    if (parsed.data.goalWeeklyTarget !== undefined) prefValues.goalWeeklyTarget = parsed.data.goalWeeklyTarget
+  if (Object.keys(userFields).length > 0) {
+    await db.update(users).set(userFields).where(eq(users.id, user.id))
+  }
 
+  if (Object.keys(practiceFields).length > 0) {
     await db
       .insert(userPreferences)
-      .values({ userId: user.id, ...prefValues })
+      .values({ userId: user.id, ...practiceFields })
       .onConflictDoUpdate({
         target: userPreferences.userId,
-        set: {
-          ...(parsed.data.level !== undefined && { level: parsed.data.level }),
-          ...(parsed.data.interests !== undefined && { interests: parsed.data.interests }),
-          ...(parsed.data.randomness !== undefined && { randomness: parsed.data.randomness }),
-          ...(parsed.data.goalWeeklyTarget !== undefined && { goalWeeklyTarget: parsed.data.goalWeeklyTarget }),
-          updatedAt: sql`NOW()`,
-        },
+        set: { ...practiceFields, updatedAt: sql`NOW()` },
       })
   }
 
