@@ -31,6 +31,14 @@ function readStored(key: string): string | null {
   }
 }
 
+/** The point answer as last written here: the attempt only comes back once it is final. */
+export function storedPointAnswer(sessionId: string | undefined): { line: number; why: string } | null {
+  if (!sessionId) return null
+  const line = Number(readStored(pointKey(sessionId)))
+  const why = readStored(draftKey(sessionId))
+  return line > 0 && why ? { line, why } : null
+}
+
 function writeStored(key: string, value: string): boolean {
   try {
     sessionStorage.setItem(key, value)

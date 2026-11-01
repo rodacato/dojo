@@ -262,7 +262,7 @@ describe('ResultsPage', () => {
     renderAt()
 
     await screen.findByRole('button', { name: 'Request re-evaluation' })
-    expect(screen.getByText('UNAVAILABLE')).toBeInTheDocument()
+    expect(screen.getByText('Evaluation unavailable')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /PASSED|NEEDS WORK/ })).not.toBeInTheDocument()
     expect(screen.queryByRole('group', { name: "How was the sensei's review?" })).not.toBeInTheDocument()
     expect(mockedApi.getFeedback).not.toHaveBeenCalled()

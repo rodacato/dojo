@@ -279,7 +279,7 @@ function Preparation({
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
       <FocusedHeader
         leading={
-          <Button variant="subtle" size="lg" className="px-2 md:px-3" onClick={onBack}>
+          <Button variant="subtle" size="lg" className="px-0 min-w-11 md:min-w-13 md:justify-start text-[10px]! md:text-[11px]! text-accent-text!" onClick={onBack}>
             Back
           </Button>
         }
@@ -294,7 +294,7 @@ function Preparation({
           <p className="paper-eyebrow">Dojo / kata</p>
           {failed ? (
             <>
-              <h1 className="text-2xl font-bold tracking-tight text-primary mt-4 mb-6">
+              <h1 className="text-[28px] md:text-[36px] leading-[1.14] font-bold tracking-[-0.035em] text-primary mt-4 mb-6">
                 Something went wrong preparing your kata.
               </h1>
               <p className="paper-body">Return to your daily practice, or choose an optional kata.</p>
@@ -309,7 +309,7 @@ function Preparation({
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold tracking-tight text-primary mt-4 mb-6">Preparing your kata</h1>
+              <h1 className="text-[28px] md:text-[36px] leading-[1.14] font-bold tracking-[-0.035em] text-primary mt-4 mb-6">Preparing your kata</h1>
               <p className="paper-body" role="status">{message}</p>
               <div className="grid gap-4 my-8 max-w-110" aria-hidden>
                 <Skeleton className="h-3 w-full" />
