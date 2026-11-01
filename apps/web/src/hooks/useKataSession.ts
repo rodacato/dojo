@@ -248,7 +248,6 @@ export function useKataSession(sessionId: string | undefined) {
 
   function expire() {
     setTimedOut(true)
-    handleSubmit()
   }
 
   return {
