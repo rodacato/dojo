@@ -17,12 +17,13 @@ import { PractitionerCanvas } from './PractitionerCanvas'
 import { ProgressPips } from './ProgressPips'
 
 
-export function PractitionerSection() {
-  const [data, setData] = useState<PractitionerDTO | null>(null)
+export function PractitionerSection({ initial }: Readonly<{ initial?: PractitionerDTO }>) {
+  const [data, setData] = useState<PractitionerDTO | null>(initial ?? null)
   const [failed, setFailed] = useState(false)
   const [saveFailed, setSaveFailed] = useState(false)
 
   useEffect(() => {
+    if (initial) return
     let cancelled = false
     api
       .getPractitioner()
@@ -31,7 +32,7 @@ export function PractitionerSection() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [initial])
 
   if (failed) return <p className="text-secondary text-sm mb-10">We couldn't load your practitioner.</p>
   if (!data) return null
