@@ -28,6 +28,8 @@ function writeFilters(filters: { outcome: HistoryOutcomeFilter; q: string; page:
   return params
 }
 
+const CENTERED_STATE = 'max-w-2xl mx-auto text-center'
+
 export function HistoryPage() {
   const navigate = useNavigate()
   const { online } = useOnline()
@@ -73,14 +75,14 @@ export function HistoryPage() {
   return (
     <div className="paper-container py-8 md:py-12">
       <p className="paper-eyebrow mb-4">
-        <Link to="/dashboard" className="inline-flex items-center min-h-11 hover:text-primary transition-colors">
+        <Link to="/dashboard" className="inline-flex items-center min-h-11 text-accent-text hover:underline transition-colors">
           Dashboard
         </Link>{' '}
         / Kata history
       </p>
 
       <div className="flex items-end justify-between gap-4 mb-6 md:mb-8">
-        <h1 className="paper-heading">Kata history</h1>
+        <h1 className="paper-heading max-md:text-[32px] min-[360px]:max-md:text-[36px] max-md:leading-[1.06]">Kata history</h1>
         <RecordCount record={data} />
       </div>
 
@@ -100,7 +102,9 @@ export function HistoryPage() {
         </LoadState>
       )}
       {record === null && !!error && (
-        <LoadState status="error" eyebrow="Error · Kata history" title="We couldn't load your history." onRetry={reload} />
+        <div className={CENTERED_STATE}>
+          <LoadState status="error" flush eyebrow="Error · Kata history" title="We couldn't load your history." onRetry={reload} />
+        </div>
       )}
       {record?.recordTotal === 0 && <EmptyRecord onStart={() => navigate('/katas')} />}
       {record && record.recordTotal > 0 && (
@@ -123,32 +127,29 @@ export function HistoryPage() {
 }
 
 function RecordCount({ record }: Readonly<{ record: HistoryPageDTO | null }>) {
-  if (record?.recordTotal === 0) return null
-  const number = 'block font-mono text-2xl text-primary tabular-nums leading-none'
+  if (!record || record.recordTotal === 0) return null
+  const number = 'font-mono text-[28px] md:text-[32px] text-primary tabular-nums leading-none'
   return (
-    <div className="text-right shrink-0">
-      {record ? (
-        <span className={number}>{record.recordTotal}</span>
-      ) : (
-        <span className={number}>
-          <span aria-hidden>—</span>
-          <span className="sr-only">Not loaded</span>
-        </span>
-      )}
-      <span className="block text-secondary text-sm mt-1">{record?.recordTotal === 1 ? 'session' : 'sessions'}</span>
+    <div className="flex items-baseline gap-2 shrink-0">
+      <span className={number}>{record.recordTotal}</span>
+      <span className="paper-note">{record.recordTotal === 1 ? 'session' : 'sessions'}</span>
     </div>
   )
 }
 
 function EmptyRecord({ onStart }: Readonly<{ onStart: () => void }>) {
   return (
-    <section className="border-t border-border pt-10 pb-16 max-w-2xl">
-      <p className="paper-eyebrow">Empty · Kata history</p>
-      <h2 className="text-2xl font-bold text-primary mt-3 mb-4">No sessions yet. The dojo is patient.</h2>
-      <p className="text-secondary text-base">Your first kata is also the hardest one.</p>
-      <Button size="xl" className="mt-6 max-md:w-full" onClick={onStart}>
-        Enter the dojo →
-      </Button>
+    <section className="border-t border-border pt-7 pb-10 md:pt-10 md:pb-16">
+      <div className={CENTERED_STATE}>
+        <p className="paper-eyebrow">Empty · Kata history</p>
+        <h2 className="text-[28px] leading-[1.25] tracking-[-0.7px] font-bold text-primary mt-3 mb-4 max-w-[22ch] mx-auto">
+          No sessions yet. The dojo is patient.
+        </h2>
+        <p className="text-secondary text-base">Your first kata is also the hardest one.</p>
+        <Button size="xl" className="mt-6 max-md:w-full" onClick={onStart}>
+          Enter the dojo →
+        </Button>
+      </div>
     </section>
   )
 }
@@ -177,7 +178,7 @@ function Results({ record, filtered, loading, online, pageFailed, requestedPage,
           {loading ? 'Loading…' : countLabel(record, filtered)}
         </p>
         {filtered && (
-          <Button variant="subtle" size="lg" className="px-2" disabled={!online} onClick={onClearFilters}>
+          <Button variant="subtle" size="lg" className="px-0 text-[11px]! text-accent-text!" disabled={!online} onClick={onClearFilters}>
             Clear filters
           </Button>
         )}
@@ -185,9 +186,11 @@ function Results({ record, filtered, loading, online, pageFailed, requestedPage,
       </div>
 
       {record.total === 0 ? (
-        <section className="border-t border-border pt-5 pb-16 max-w-2xl">
-          <h2 className="text-2xl font-bold text-primary mb-4">No matching sessions.</h2>
-          <p className="text-secondary text-base">Try another title or clear the filters. Your history is still here.</p>
+        <section className="border-t border-border pt-5 pb-16">
+          <div className={CENTERED_STATE}>
+            <h2 className="text-2xl font-bold text-primary mb-4">No matching sessions.</h2>
+            <p className="text-secondary text-base">Try another title or clear the filters. Your history is still here.</p>
+          </div>
         </section>
       ) : (
         days.map((day, index) => (
@@ -196,7 +199,7 @@ function Results({ record, filtered, loading, online, pageFailed, requestedPage,
               id={`history-day-${day.key}`}
               ref={index === 0 ? firstDayRef : undefined}
               tabIndex={index === 0 ? -1 : undefined}
-              className="paper-eyebrow date-strip min-h-10"
+              className="paper-eyebrow flex items-center min-h-10"
             >
               <time dateTime={day.key}>{day.label}</time>
             </h2>

@@ -8,19 +8,20 @@ const LABEL_CLASSES = 'block font-medium text-base text-primary mb-2'
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
   hint?: string
+  labelClassName?: string
 }
 
-export function Input({ label, hint, className = '', id, ...props }: Readonly<InputProps>) {
+export function Input({ label, hint, labelClassName = LABEL_CLASSES, className = '', id, ...props }: Readonly<InputProps>) {
   const generatedId = useId()
   const fieldId = id ?? generatedId
   return (
     <div>
       {label && (
-        <label htmlFor={fieldId} className={LABEL_CLASSES}>
+        <label htmlFor={fieldId} className={labelClassName}>
           {label}
         </label>
       )}
-      <input id={fieldId} className={`${FIELD_CLASSES} min-h-12 py-2.5 font-mono ${className}`} {...props} />
+      <input id={fieldId} className={`${FIELD_CLASSES} min-h-12 py-2.5 font-sans ${className}`} {...props} />
       {hint && <p className="paper-note mt-1.5">{hint}</p>}
     </div>
   )
@@ -50,17 +51,18 @@ export function Textarea({ label, hint, className = '', id, ...props }: Readonly
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string
   hint?: string
+  labelClassName?: string
 }
 
-export function Select({ label, hint, className = '', id, children, ...props }: Readonly<SelectProps>) {
+export function Select({ label, hint, labelClassName = LABEL_CLASSES, className = '', id, children, ...props }: Readonly<SelectProps>) {
   const generatedId = useId()
   const fieldId = id ?? generatedId
   return (
     <div>
-      <label htmlFor={fieldId} className={LABEL_CLASSES}>
+      <label htmlFor={fieldId} className={labelClassName}>
         {label}
       </label>
-      <select id={fieldId} className={`${FIELD_CLASSES} min-h-12 py-2.5 font-mono cursor-pointer ${className}`} {...props}>
+      <select id={fieldId} className={`${FIELD_CLASSES} min-h-12 py-2.5 font-sans cursor-pointer ${className}`} {...props}>
         {children}
       </select>
       {hint && <p className="paper-note mt-1.5">{hint}</p>}

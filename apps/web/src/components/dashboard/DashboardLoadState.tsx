@@ -22,6 +22,7 @@ export function DashboardLoadState(props: Readonly<DashboardLoadStateProps>) {
       <LoadState
         status="error"
         pageTitle
+        flush
         eyebrow="Dashboard / error"
         title="Something broke."
         aside="The dojo is still here."

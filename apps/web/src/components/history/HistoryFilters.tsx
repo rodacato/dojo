@@ -13,6 +13,8 @@ export const HISTORY_OUTCOME_OPTIONS: ReadonlyArray<{ value: HistoryOutcomeFilte
 
 export const HISTORY_SEARCH_ID = 'history-query'
 const SEARCH_DELAY_MS = 250
+const FILTER_LABEL = 'block font-mono text-[11px] text-secondary mb-1.5'
+const FILTER_FIELD = 'bg-surface! md:text-sm!'
 
 interface HistoryFiltersProps {
   query: string
@@ -59,12 +61,13 @@ export function HistoryFilters({ query, outcome, disabled, onQueryChange, onOutc
           id={HISTORY_SEARCH_ID}
           type="search"
           label="Find a kata"
+          labelClassName={FILTER_LABEL}
           placeholder="Search titles"
           maxLength={120}
           value={draft}
           disabled={disabled}
           onChange={(event) => setDraft(event.target.value)}
-          className="pr-12 [&::-webkit-search-cancel-button]:hidden"
+          className={`pr-12 [&::-webkit-search-cancel-button]:hidden ${FILTER_FIELD}`}
         />
         {draft && (
           <button
@@ -80,6 +83,8 @@ export function HistoryFilters({ query, outcome, disabled, onQueryChange, onOutc
       </div>
       <Select
         label="Result"
+        labelClassName={FILTER_LABEL}
+        className={FILTER_FIELD}
         value={outcome}
         disabled={disabled}
         onChange={(event) => onOutcomeChange(event.target.value as HistoryOutcomeFilter)}

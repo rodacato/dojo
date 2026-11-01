@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
 import { LoadState } from '../components/ui/LoadState'
-import { SkeletonList } from '../components/ui/SkeletonLoader'
+import { Skeleton } from '../components/ui/SkeletonLoader'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { Choice } from '../components/ui/Choice'
 import { Input } from '../components/ui/Input'
@@ -221,21 +221,30 @@ export function SettingsPage() {
   if (prefsFailed && !prefs) {
     return (
       <SettingsShell>
-        <LoadState
-          status="error"
-          eyebrow="Preferences"
-          title="We couldn't load your settings."
-          onRetry={loadPrefs}
-        />
+        <div className="max-w-2xl mx-auto text-center">
+          <LoadState
+            status="error"
+            flush
+            eyebrow="Preferences"
+            title="We couldn't load your settings."
+            onRetry={loadPrefs}
+          />
+        </div>
       </SettingsShell>
     )
   }
   if (!user || !prefs || !accepted) {
     return (
       <SettingsShell>
-        <LoadState status="loading" eyebrow="Loading your settings">
-          <SkeletonList rows={4} />
-        </LoadState>
+        <div className="max-w-2xl mx-auto text-center">
+          <LoadState status="loading" eyebrow="Loading your settings">
+            <div className="grid gap-4 mt-5 max-w-110 mx-auto" aria-hidden>
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-3/5 mx-auto" />
+              <Skeleton className="h-3 w-full" />
+            </div>
+          </LoadState>
+        </div>
       </SettingsShell>
     )
   }
@@ -630,7 +639,7 @@ function ReminderFields({
       </div>
       <p className="paper-note mt-5">
         Sent at {hour}:00 UTC, {localHour(hour)} for you. Not before. Only if you haven&apos;t started
-        today&apos;s practice. Never on a UTC weekend if your goal is under 5 days a week.
+        today&apos;s practice. Never on a UTC weekend if your goal is under 5 kata a week.
       </p>
     </div>
   )

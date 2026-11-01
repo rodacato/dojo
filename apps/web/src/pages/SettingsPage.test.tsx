@@ -295,7 +295,7 @@ describe('SettingsPage', () => {
     it('keeps the weekend promise and says the days are UTC', async () => {
       await renderReminders()
 
-      expect(screen.getByText(/Never on a UTC weekend if your goal is under 5 days a week/)).toBeInTheDocument()
+      expect(screen.getByText(/Never on a UTC weekend if your goal is under 5 kata a week/)).toBeInTheDocument()
     })
 
     it('asks for an email while reminders are on without one, and still saves', async () => {

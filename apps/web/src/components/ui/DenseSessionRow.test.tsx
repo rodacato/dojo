@@ -59,7 +59,7 @@ describe('DenseSessionRow', () => {
     const row = screen.getByRole('button')
     expect(row).toHaveTextContent('Design a URL shortener')
     expect(row).toHaveTextContent('whiteboard')
-    expect(row).toHaveTextContent('HARD')
+    expect(row).toHaveTextContent('hard')
   })
 
   it('fires onClick when the row is activated', async () => {

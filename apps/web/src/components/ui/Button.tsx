@@ -32,7 +32,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost: 'bg-transparent text-primary border border-border hover:border-primary',
   subtle: 'bg-transparent text-secondary border border-transparent hover:text-primary',
   destructive: 'bg-transparent text-danger-text border border-transparent hover:bg-danger/10',
-  link: 'bg-transparent text-accent-text border border-transparent hover:underline underline-offset-4',
+  link: 'bg-transparent text-accent-text border border-transparent hover:underline underline-offset-4 text-[11px]!',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {

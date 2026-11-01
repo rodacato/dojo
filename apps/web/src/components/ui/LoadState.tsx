@@ -10,6 +10,7 @@ type LoadStateProps =
       aside?: string
       body?: string
       pageTitle?: boolean
+      flush?: boolean
       onRetry: () => void
       retryLabel?: string
     }
@@ -34,12 +35,12 @@ export function LoadState(props: Readonly<LoadStateProps>) {
     )
   }
 
-  const { eyebrow, title, aside, body, pageTitle = false, onRetry, retryLabel = 'Try again' } = props
+  const { eyebrow, title, aside, body, pageTitle = false, flush = false, onRetry, retryLabel = 'Try again' } = props
   const Title = pageTitle ? 'h1' : 'h2'
   return (
-    <section role="alert" className={pageTitle ? undefined : 'py-7 border-b border-border'}>
+    <section role="alert" className={flush ? undefined : 'py-7 border-b border-border'}>
       <p className="paper-eyebrow">{eyebrow}</p>
-      <Title className="paper-heading max-md:text-[32px] min-[360px]:max-md:text-[36px] max-md:leading-[1.06] mt-3 mb-5 wrap-anywhere">
+      <Title className={`${pageTitle ? 'paper-heading max-md:text-[32px] min-[360px]:max-md:text-[36px] max-md:leading-[1.06]' : 'text-2xl font-bold tracking-tight text-primary'} mt-3 mb-5 wrap-anywhere`}>
         {title}
         {aside && <span className="block mt-1.5 text-[0.88em] font-normal leading-tight text-secondary">{aside}</span>}
       </Title>
