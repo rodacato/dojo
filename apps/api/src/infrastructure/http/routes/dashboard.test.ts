@@ -69,7 +69,7 @@ vi.mock('../middleware/auth', () => ({
 }))
 
 // Import AFTER all mocks so the route grabs the mocked deps.
-import { dashboardRoutes } from './dashboard'
+import { dashboardRoutes, startOfWeek } from './dashboard'
 import { Hono } from 'hono'
 
 const WHITE_BELT: Belt = {
@@ -211,5 +211,16 @@ describe('GET /dashboard', () => {
     const body = (await res.json()) as { belt: Belt }
 
     expect(body.belt).toEqual(yellowBelt)
+  })
+})
+
+describe('startOfWeek', () => {
+  it('keeps a Sunday in the week that began the Monday before', () => {
+    expect(startOfWeek(new Date(2026, 10, 1, 15)).getDate()).toBe(26)
+  })
+
+  it('starts a Monday at its own midnight', () => {
+    const start = startOfWeek(new Date(2026, 9, 26, 15))
+    expect([start.getDate(), start.getHours()]).toEqual([26, 0])
   })
 })
