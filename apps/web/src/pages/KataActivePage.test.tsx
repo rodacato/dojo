@@ -269,7 +269,8 @@ describe('KataActivePage', () => {
     expect(screen.queryByText(/The timer keeps running/)).not.toBeInTheDocument()
   })
 
-  it('submits the answer by itself when time runs out', async () => {
+  it('holds a finished answer on screen when time runs out, until the learner sends it', async () => {
+    const user = userEvent.setup()
     const startedAt = new Date(Date.now() - 30 * 60 * 1000).toISOString()
     sessionStorage.setItem('dojo-draft-sess-1', 'nearly done')
     getSession.mockResolvedValue(makeSession({ startedAt }))
@@ -277,7 +278,12 @@ describe('KataActivePage', () => {
 
     renderPage('sess-1')
 
-    await waitFor(() => expect(submitAttempt).toHaveBeenCalledWith('sess-1', 'nearly done'), { timeout: 2000 })
+    const submitNow = await screen.findByRole('button', { name: 'Submit now' }, { timeout: 2000 })
+    expect(screen.getByText('Time expired. Your draft is here.')).toBeInTheDocument()
+    expect(submitAttempt).not.toHaveBeenCalled()
+
+    await user.click(submitNow)
+    expect(submitAttempt).toHaveBeenCalledWith('sess-1', 'nearly done')
   })
 
   it('clears the failure once the learner changes the answer', async () => {
