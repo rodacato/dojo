@@ -1,18 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import type { BeltDTO, MilestoneDTO, UserDTO } from '@dojo/shared'
+import type { BeltDTO, MilestoneDTO, PractitionerDTO, UserDTO } from '@dojo/shared'
 import { BeltsPage } from './BeltsPage'
 import { useAuth } from '../context/AuthContext'
-import { api } from '../lib/api'
+import { api, type DashboardData } from '../lib/api'
 
 vi.mock('../context/AuthContext', () => ({
   useAuth: vi.fn(),
 }))
 
+// The canvas it paints is not implemented by jsdom; it has its own tests.
+vi.mock('../components/recognition/PractitionerSection', () => ({ PractitionerSection: () => null }))
+
 vi.mock('../lib/api', () => ({
-  api: { getBelts: vi.fn(), getPractitioner: vi.fn(() => new Promise(() => {})) },
+  api: { getBelts: vi.fn(), getPractitioner: vi.fn(), getDashboard: vi.fn() },
 }))
 
 // BrushstrokeUnderline pulls GSAP + IntersectionObserver + SVGPath.getTotalLength,
@@ -25,6 +28,8 @@ vi.mock('../components/ui/BrushstrokeUnderline', () => ({
 
 const mockedUseAuth = vi.mocked(useAuth)
 const mockedGetBelts = vi.mocked(api.getBelts)
+const mockedGetPractitioner = vi.mocked(api.getPractitioner)
+const mockedGetDashboard = vi.mocked(api.getDashboard)
 
 const user: UserDTO = {
   id: 'u1',
@@ -32,6 +37,10 @@ const user: UserDTO = {
   avatarUrl: 'https://example.test/a.png',
   createdAt: '2026-01-01T00:00:00.000Z',
 }
+
+const earnedPiece = (id: string, earnedAt: string | null) => ({ id, earnedAt, progress: { current: 0, target: 1 } })
+const practitioner = (pieces: Array<ReturnType<typeof earnedPiece>>) =>
+  ({ look: {}, belt: 'green', pieces }) as unknown as PractitionerDTO
 
 const belt: BeltDTO = {
   rank: 'green',
@@ -53,6 +62,8 @@ function renderPage() {
 describe('BeltsPage', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockedGetPractitioner.mockResolvedValue(practitioner([]))
+    mockedGetDashboard.mockReturnValue(new Promise(() => {}))
   })
 
   it('shows the loading skeleton while the belts request is pending', () => {
@@ -61,10 +72,9 @@ describe('BeltsPage', () => {
 
     renderPage()
 
-    // Loading state: the plain "Belts" placeholder heading, not the rank header.
-    expect(screen.getByRole('heading', { name: 'Belts' })).toBeInTheDocument()
-    expect(screen.queryByText(/your rank/i)).not.toBeInTheDocument()
-    expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Loading your belt record')
+    expect(screen.getByRole('heading', { name: 'Your dojo' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /belt record/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('status', { busy: true })).toHaveTextContent('Opening your corner')
   })
 
   it('renders the rank header, factors, and milestone progress once data loads', async () => {
@@ -78,9 +88,8 @@ describe('BeltsPage', () => {
     renderPage()
 
     // Loaded header replaces the skeleton: rank surfaced + swatch labelled.
-    expect(await screen.findByRole('heading', { name: /green belt/i })).toBeInTheDocument()
-    expect(screen.getByText('Your rank')).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Belts' })).not.toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: 'View your green belt record' })).toBeInTheDocument()
+    expect(screen.getByText('Your practice, in one place.')).toBeInTheDocument()
 
     // Factors come straight from the DTO.
     const completed = screen.getByText('Kata completed').closest('div')!
@@ -217,7 +226,7 @@ describe('BeltsPage', () => {
     renderPage()
 
     expect(mockedGetBelts).not.toHaveBeenCalled()
-    expect(screen.getByRole('heading', { name: 'Belts' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Your dojo' })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: /green belt/i })).not.toBeInTheDocument()
   })
 
@@ -227,7 +236,7 @@ describe('BeltsPage', () => {
 
     renderPage()
 
-    expect(await screen.findByText('We couldn\'t load your belt progress.')).toBeInTheDocument()
+    expect(await screen.findByText('We couldn\'t load your dojo.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Try again' })).toBeInTheDocument()
     // The skeleton is gone and no stale rank leaked through.
     expect(screen.queryByText('Your rank')).not.toBeInTheDocument()
@@ -243,7 +252,129 @@ describe('BeltsPage', () => {
     const retry = await screen.findByRole('button', { name: 'Try again' })
     await userEvent.click(retry)
 
-    expect(await screen.findByText('Your rank')).toBeInTheDocument()
+    expect(await screen.findByText('Your practice, in one place.')).toBeInTheDocument()
     expect(mockedGetBelts).toHaveBeenCalledTimes(2)
+  })
+
+  describe('the room', () => {
+    const pieces = [
+      earnedPiece('happi', '2026-04-01T10:00:00.000Z'),
+      earnedPiece('hachimaki', '2026-01-05T10:00:00.000Z'),
+      earnedPiece('scarf', null),
+      earnedPiece('calavera', '2026-10-30T10:00:00.000Z'),
+    ]
+    const load = (rank: BeltDTO['rank']) => {
+      authed()
+      mockedGetBelts.mockResolvedValue({ belt: { ...belt, rank }, record: [], next: null, milestones: [] })
+    }
+
+    it('holds what the earned pieces gave, oldest moment first, and nothing unearned', async () => {
+      load('green')
+      mockedGetPractitioner.mockResolvedValue(practitioner(pieces))
+
+      renderPage()
+
+      const moments = within(await screen.findByRole('region', { name: 'Moments' })).getAllByRole('listitem')
+      expect(moments.map((row) => row.textContent)).toEqual([
+        expect.stringContaining('Cushion earned'),
+        expect.stringContaining('Bonsai earned'),
+      ])
+      expect(screen.getByText('2 in your room')).toBeInTheDocument()
+      expect(screen.getByRole('img', { name: /with your cushion, bonsai/ })).toBeInTheDocument()
+      expect(screen.queryByText('Tea set')).not.toBeInTheDocument()
+    })
+
+    it('shows the figure only on belts that have art', async () => {
+      load('green')
+      const { container, unmount } = renderPage()
+      await screen.findByRole('img', { name: /sits in a green belt/ })
+      expect(container.querySelector('img[src$="figure-green.webp"]')).not.toBeNull()
+      unmount()
+
+      load('brown')
+      const brown = renderPage()
+      await screen.findByRole('img', { name: /quiet room/ })
+      expect(brown.container.querySelector('img[src*="figure-"]')).toBeNull()
+    })
+
+    it('tells a new user there is nothing to catch up on', async () => {
+      load('white')
+
+      renderPage()
+
+      expect(await screen.findByText('Your first practice will leave the first mark.')).toBeInTheDocument()
+      expect(screen.getByText('0 in your room')).toBeInTheDocument()
+    })
+
+    it('opens a belonging with the story of its moment', async () => {
+      load('green')
+      mockedGetPractitioner.mockResolvedValue(practitioner(pieces))
+      const events = userEvent.setup()
+
+      renderPage()
+      await events.click(await screen.findByRole('button', { name: /Bonsai.*In your room/ }))
+
+      expect(screen.getByText('A record of returning after time away.')).toBeInTheDocument()
+      expect(screen.getByText('Earned Apr 1, 2026')).toBeInTheDocument()
+    })
+
+    it('replaces the room with a retry when its art fails', async () => {
+      load('green')
+      const { container } = renderPage()
+      await screen.findByRole('img', { name: /quiet room/ })
+
+      fireEvent.error(container.querySelector('img[src$="room.webp"]')!)
+
+      expect(screen.getByRole('alert')).toHaveTextContent("The room couldn't load.")
+      await userEvent.click(within(screen.getByRole('alert')).getByRole('button', { name: 'Try again' }))
+      expect(screen.getByRole('img', { name: /quiet room/ })).toBeInTheDocument()
+    })
+
+    it('fails as a page when the belongings cannot load', async () => {
+      load('green')
+      mockedGetPractitioner.mockRejectedValue(new Error('boom'))
+
+      renderPage()
+
+      expect(await screen.findByRole('button', { name: 'Try again' })).toBeInTheDocument()
+      expect(screen.queryByRole('region', { name: 'Moments' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('the daily action', () => {
+    const dashboard = (over: Partial<DashboardData>) =>
+      ({ activeSessionId: null, todayComplete: false, todaySession: null, dailyKataMinutes: 5, ...over }) as DashboardData
+
+    it('offers the practice, then the resume, then the results', async () => {
+      authed()
+      mockedGetBelts.mockResolvedValue({ belt, record: [], next: null, milestones: [] })
+
+      mockedGetDashboard.mockResolvedValue(dashboard({}))
+      const first = renderPage()
+      expect(await screen.findByRole('button', { name: 'Practice · 5 min' })).toBeInTheDocument()
+      first.unmount()
+
+      mockedGetDashboard.mockResolvedValue(dashboard({ activeSessionId: 's1' }))
+      const second = renderPage()
+      expect(await screen.findByRole('button', { name: 'Resume kata →' })).toBeInTheDocument()
+      second.unmount()
+
+      mockedGetDashboard.mockResolvedValue(
+        dashboard({ todayComplete: true, todaySession: { id: 's1', kataTitle: 'k', verdict: 'passed' } }),
+      )
+      renderPage()
+      expect(await screen.findByRole('button', { name: 'View results →' })).toBeInTheDocument()
+    })
+
+    it('leaves the page intact when the dashboard fails', async () => {
+      authed()
+      mockedGetBelts.mockResolvedValue({ belt, record: [], next: null, milestones: [] })
+      mockedGetDashboard.mockRejectedValue(new Error('boom'))
+
+      renderPage()
+
+      expect(await screen.findByRole('heading', { name: 'Your belts' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /Practice/ })).not.toBeInTheDocument()
+    })
   })
 })

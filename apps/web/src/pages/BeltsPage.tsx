@@ -1,11 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
+import { Button } from '../components/ui/Button'
 import { LoadState } from '../components/ui/LoadState'
 import { Skeleton } from '../components/ui/SkeletonLoader'
 import { useAuth } from '../context/AuthContext'
 import { BELT_COLOR } from '../lib/belt-colors'
+import { BeltRecord, formatDate } from '../components/recognition/BeltRecord'
+import { belongingsFrom } from '../components/recognition/belongings'
+import { DojoBelongings } from '../components/recognition/DojoBelongings'
+import { DojoRoom } from '../components/recognition/DojoRoom'
 import { PractitionerSection } from '../components/recognition/PractitionerSection'
-import type { BeltDTO, BeltPromotionDTO, BeltRank, MilestoneDTO, NextBeltDTO } from '@dojo/shared'
+import type { BeltDTO, BeltPromotionDTO, MilestoneDTO, NextBeltDTO, PractitionerDTO } from '@dojo/shared'
+import type { DashboardData } from '../lib/api'
 
 interface MilestoneView {
   slug: string
@@ -39,16 +46,7 @@ const ALL_MILESTONES: Array<{
 
 const CATEGORY_ORDER = ['practice', 'consistency', 'mastery', 'architect'] as const
 
-const RANKS: BeltRank[] = ['white', 'yellow', 'green', 'brown', 'black']
 
-const FACTORS = [
-  { key: 'completed', label: 'Kata completed' },
-  { key: 'distinctClusters', label: 'Topic clusters' },
-  { key: 'activeDays30', label: 'Active days (30)' },
-  { key: 'daysAtRank', label: 'Days at rank' },
-] as const
-
-const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
 
 export function BeltsPage() {
   const { user } = useAuth()
@@ -56,6 +54,8 @@ export function BeltsPage() {
   const [record, setRecord] = useState<BeltPromotionDTO[]>([])
   const [next, setNext] = useState<NextBeltDTO | null>(null)
   const [milestones, setMilestones] = useState<MilestoneDTO[]>([])
+  const [practitioner, setPractitioner] = useState<PractitionerDTO | null>(null)
+  const [daily, setDaily] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [retryTick, setRetryTick] = useState(0)
@@ -65,10 +65,11 @@ export function BeltsPage() {
     let cancelled = false
     setLoading(true)
     setError(false)
-    api
-      .getBelts()
-      .then((res) => {
+    api.getDashboard().then((res) => !cancelled && setDaily(res)).catch(() => undefined)
+    Promise.all([api.getBelts(), api.getPractitioner()])
+      .then(([res, practitionerRes]) => {
         if (cancelled) return
+        setPractitioner(practitionerRes)
         setBelt(res.belt)
         setRecord(res.record)
         setNext(res.next)
@@ -105,12 +106,12 @@ export function BeltsPage() {
     return (
       <div className="paper-container py-8 md:py-12">
         <div className="max-w-2xl mx-auto text-center">
-          <h1 className="paper-heading mb-6">Belts</h1>
+          <h1 className="paper-heading mb-6">Your dojo</h1>
           <LoadState
             status="error"
             flush
-            eyebrow="Error · Belts"
-            title="We couldn't load your belt progress."
+            eyebrow="Error · Your dojo"
+            title="We couldn't load your dojo."
             onRetry={() => setRetryTick((n) => n + 1)}
           />
         </div>
@@ -118,12 +119,12 @@ export function BeltsPage() {
     )
   }
 
-  if (loading || !belt) {
+  if (loading || !belt || !practitioner) {
     return (
       <div className="paper-container py-8 md:py-12">
         <div className="max-w-2xl mx-auto text-center">
-          <h1 className="paper-heading mb-6">Belts</h1>
-          <LoadState status="loading" eyebrow="Loading your belt record">
+          <h1 className="paper-heading mb-6">Your dojo</h1>
+          <LoadState status="loading" eyebrow="Opening your corner…">
             <div className="grid gap-4 mt-5 max-w-110 mx-auto" aria-hidden>
               <Skeleton className="h-3 w-full" />
               <Skeleton className="h-3 w-3/5 mx-auto" />
@@ -137,24 +138,26 @@ export function BeltsPage() {
 
   const earnedCount = views.filter((m) => m.earned).length
 
+  const belongings = belongingsFrom(practitioner.pieces)
+
   return (
     <div className="paper-container py-8 md:py-12">
-      <header className="mb-8 md:mb-10">
-        <p className="paper-eyebrow mb-2">Your rank</p>
-        <div className="flex items-center gap-3 md:gap-4">
-          <span
-            aria-hidden
-            className="inline-block size-6 md:size-8 rounded-full border border-secondary shrink-0"
-            style={{ backgroundColor: BELT_COLOR[belt.rank] }}
-          />
-          <h1 className="paper-heading">{belt.rank} belt</h1>
+      <header className="flex max-md:flex-col md:items-end justify-between gap-5 mb-6 md:mb-8">
+        <div>
+          <a href="#belt-journey" aria-label={`View your ${belt.rank} belt record`} className="paper-eyebrow capitalize flex items-center gap-2.5 mb-3">
+            <span aria-hidden className="w-6 h-1 border border-secondary" style={{ backgroundColor: BELT_COLOR[belt.rank] }} />
+            {belt.rank} belt ↘
+          </a>
+          <h1 className="paper-heading">Your dojo</h1>
+          <p className="paper-body mt-2">Your practice, in one place.</p>
         </div>
+        {daily && <DailyAction daily={daily} />}
       </header>
 
-      <BeltRecordSection current={belt.rank} record={record} />
-      <BeltCriteria belt={belt} next={next} />
-
-      <PractitionerSection />
+      <DojoRoom rank={belt.rank} belongings={belongings.map(({ id }) => id)} />
+      <BeltRecord belt={belt} record={record} next={next} />
+      <DojoBelongings belongings={belongings} />
+      <PractitionerSection initial={practitioner} />
 
       <section aria-labelledby="milestones-heading" className="border-t border-border pt-6 md:pt-8">
         <div className="flex items-baseline justify-between gap-4 mb-5">
@@ -192,73 +195,31 @@ export function BeltsPage() {
 
 const SECTION_TITLE = 'text-[22px] md:text-xl leading-[1.4] font-bold text-primary'
 
-function rankStatus(rank: BeltRank, current: BeltRank, reached: boolean): string {
-  if (rank === current) return 'Current belt'
-  if (reached) return 'Earned'
-  return RANKS.indexOf(rank) === RANKS.indexOf(current) + 1 ? 'Next belt' : 'Ahead'
+function dailyAction({ activeSessionId, todayComplete, todaySession, dailyKataMinutes }: DashboardData) {
+  if (activeSessionId) return { note: 'In progress', label: 'Resume kata →', to: `/katas/${activeSessionId}` }
+  if (todayComplete && todaySession) {
+    return { note: 'Done today', label: 'View results →', to: `/katas/${todaySession.id}/result` }
+  }
+  if (!dailyKataMinutes) return { note: 'Today', label: 'Practice', to: '/dashboard' }
+  return { note: `Today · ~${dailyKataMinutes} min`, label: `Practice · ${dailyKataMinutes} min`, to: '/dashboard' }
 }
 
-function BeltRecordSection({ current, record }: Readonly<{ current: BeltRank; record: BeltPromotionDTO[] }>) {
-  const reachedAt = new Map(record.map((p) => [p.rank, p.reachedAt]))
+function DailyAction({ daily }: Readonly<{ daily: DashboardData }>) {
+  const navigate = useNavigate()
+  const action = dailyAction(daily)
   return (
-    <section aria-labelledby="belts-heading" className="border-t border-border pt-6 md:pt-8 mb-8 md:mb-10">
-      <h2 id="belts-heading" className={SECTION_TITLE}>Your belts</h2>
-      <p className="paper-note mt-1 mb-5">The dates you reached each belt.</p>
-      <ol className="grid grid-cols-1 md:grid-cols-5 md:gap-2 max-md:border-t max-md:border-border">
-        {RANKS.map((rank) => {
-          const date = reachedAt.get(rank)
-          const isCurrent = rank === current
-          return (
-            <li
-              key={rank}
-              aria-current={isCurrent ? 'step' : undefined}
-              className={`max-md:flex max-md:items-center max-md:gap-3 max-md:min-h-14 max-md:border-b border-border px-1 md:p-3 md:border-b-2 ${
-                isCurrent ? 'bg-surface md:border-b-primary' : 'md:border-b-transparent'
-              }`}
-            >
-              <span
-                aria-hidden
-                className="block h-2 max-md:w-7 shrink-0 rounded-[2px] border border-secondary md:mb-3"
-                style={{ backgroundColor: BELT_COLOR[rank] }}
-              />
-              <span className="capitalize text-primary text-[15px] font-medium max-md:flex-1">{rank}</span>
-              <span className="paper-note md:block md:mt-1">{rankStatus(rank, current, !!date)}</span>
-              {date && <span className="paper-note md:block max-md:ml-3 tabular-nums">{DATE_FORMATTER.format(new Date(date))}</span>}
-            </li>
-          )
-        })}
-      </ol>
-    </section>
-  )
-}
-
-function BeltCriteria({ belt, next }: Readonly<{ belt: BeltDTO; next: NextBeltDTO | null }>) {
-  return (
-    <section aria-labelledby="criteria-heading" className="mb-10">
-      <h2 id="criteria-heading" className="paper-eyebrow pb-2.5">
-        {next ? `Next · ${next.rank} belt` : 'Your practice'}
-      </h2>
-      <dl className="border-t border-border">
-        {FACTORS.map(({ key, label }) => (
-          <div key={key} className="flex items-center justify-between gap-4 min-h-11 border-b border-border">
-            <dt className="text-sm text-secondary">{label}</dt>
-            <dd className="flex items-baseline gap-3">
-              <span className="font-mono text-primary tabular-nums">{belt.factors[key]}</span>
-              {next && <span className="paper-note tabular-nums min-w-22 text-right">Asks for {next.criteria[key]}</span>}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </section>
+    <div className="flex md:flex-col max-md:items-center max-md:justify-between gap-2 md:items-end">
+      <p className="paper-note">{action.note}</p>
+      <Button onClick={() => navigate(action.to)}>{action.label}</Button>
+    </div>
   )
 }
 
 function earnedLabel({ earnedAt, isLegacy }: MilestoneView): string {
   if (!earnedAt) return 'Not yet'
-  const earned = `Earned ${DATE_FORMATTER.format(new Date(earnedAt))}`
+  const earned = `Earned ${formatDate(earnedAt)}`
   return isLegacy ? `${earned} · Legacy` : earned
 }
-
 function MilestoneRow({ milestone }: Readonly<{ milestone: MilestoneView }>) {
   const { earned, name, description } = milestone
   return (
