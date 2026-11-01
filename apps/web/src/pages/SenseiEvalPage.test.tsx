@@ -144,6 +144,31 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByText('Reviewing')).toBeInTheDocument()
   })
 
+  it('keeps the submitted point answer in view while the sensei reviews it', async () => {
+    streamState = { status: 'streaming', tokens: 'Reading' }
+    sessionStorage.setItem('dojo-point-sess-1', '2')
+    sessionStorage.setItem('dojo-draft-sess-1', 'the bound is off by one')
+    getSession.mockResolvedValue(
+      makeSession({ kata: { ...makeSession().kata, type: 'review', starterCode: 'one\ntwo\nthree' } }),
+    )
+    renderPage()
+
+    expect(await screen.findByText('the bound is off by one')).toBeInTheDocument()
+    expect(screen.getByText('You pointed at line 2 · your why')).toBeInTheDocument()
+  })
+
+  it('shows no answer aside for a kata that was not answered by pointing', async () => {
+    streamState = { status: 'streaming', tokens: 'Reading' }
+    sessionStorage.setItem('dojo-draft-sess-1', 'free prose')
+    getSession.mockResolvedValue(
+      makeSession({ kata: { ...makeSession().kata, starterCode: 'one\ntwo' } }),
+    )
+    renderPage()
+
+    await screen.findByText('Reviewing')
+    expect(screen.queryByText('free prose')).not.toBeInTheDocument()
+  })
+
   it('turns into the result in place on a final evaluation, without leaving the screen (D60)', async () => {
     streamState = {
       status: 'complete',

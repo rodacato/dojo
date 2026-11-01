@@ -38,6 +38,8 @@ const EYEBROW: Partial<Record<ReviewStatus, string>> = {
   connecting: 'Reviewing',
   streaming: 'Reviewing',
   complete: 'Review complete',
+  incomplete: 'Incomplete',
+  unavailable: 'Unavailable',
 }
 
 export function reviewEyebrow(status: ReviewStatus): string | undefined {
@@ -80,16 +82,18 @@ interface ReviewShellProps {
   leading?: ReactNode
   scrollRef?: Ref<HTMLElement>
   footer?: ReactNode
+  /** No side column to balance the page: hold the single column in the middle. */
+  centered?: boolean
   children: ReactNode
 }
 
 /** One focused view from the wait to the stored result (D60): both routes render inside it. */
-export function ReviewShell({ status, leading, scrollRef, footer, children }: Readonly<ReviewShellProps>) {
+export function ReviewShell({ status, leading, scrollRef, footer, centered = false, children }: Readonly<ReviewShellProps>) {
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
       <FocusedHeader leading={leading} trailing={!EYEBROW[status] && <StatusChip status={status} />} />
       <main ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
-        <div className="max-w-280 mx-auto px-4 md:px-8 py-7 md:py-10">{children}</div>
+        <div className={`${centered ? 'max-w-200' : 'max-w-280'} mx-auto px-4 md:px-8 py-7 md:py-10`}>{children}</div>
       </main>
       {footer}
     </div>
@@ -121,7 +125,7 @@ interface ReviewGridProps {
 /** Reasoning on the left with the learner's own answer beside it; below the reasoning on a phone. */
 export function ReviewGrid({ aside, followthrough, children }: Readonly<ReviewGridProps>) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_15.625rem] lg:grid-cols-[minmax(0,1fr)_18.125rem] md:gap-x-7 lg:gap-x-12 items-start">
+    <div className={`grid grid-cols-1 md:gap-x-7 lg:gap-x-12 items-start ${aside ? 'md:grid-cols-[minmax(0,1fr)_15.625rem] lg:grid-cols-[minmax(0,1fr)_18.125rem]' : ''}`}>
       <article className="min-w-0 md:col-start-1">{children}</article>
       {aside && (
         <aside className="min-w-0 max-md:mt-7 max-md:border-b max-md:border-border md:col-start-2 md:row-start-1 md:row-span-2 md:sticky md:top-6">

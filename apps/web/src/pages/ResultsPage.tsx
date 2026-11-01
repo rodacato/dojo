@@ -30,8 +30,8 @@ export function ResultsPage() {
 
   if (loadError) {
     return (
-      <ReviewShell status="unavailable" leading={<ReturnLink />}>
-        <ReviewTitle title="Kata result" />
+      <ReviewShell status="unavailable" leading={<ReturnLink />} centered>
+        <ReviewTitle eyebrow="Result unavailable" title="Kata result" />
         <ReviewGrid>
           <section role="alert" className="border-t border-border pt-6">
             <h2 className="text-primary text-xl font-semibold tracking-tight mb-6">We couldn't load this kata result.</h2>
@@ -46,8 +46,8 @@ export function ResultsPage() {
 
   if (!session) {
     return (
-      <ReviewShell status="loading" leading={<ReturnLink />}>
-        <ReviewTitle title="Kata result" />
+      <ReviewShell status="loading" leading={<ReturnLink />} centered>
+        <ReviewTitle eyebrow="Result unavailable" title="Kata result" />
         <LoadState status="loading" eyebrow="Loading kata result">
           <div aria-hidden className="grid gap-4 max-w-120 mt-5">
             <SkeletonText />
@@ -70,8 +70,9 @@ export function ResultsPage() {
   // The server may still call an expired session active until the next dashboard load.
   if (!attempt) {
     return (
-      <ReviewShell status={session.status === 'completed' ? 'pending' : 'incomplete'} leading={<ReturnLink />}>
+      <ReviewShell status={session.status === 'completed' ? 'pending' : 'incomplete'} leading={<ReturnLink />} centered>
         <ReviewTitle
+          eyebrow={reviewEyebrow(session.status === 'completed' ? 'pending' : 'incomplete')}
           title={session.kata.title}
           meta={`${kataMeta(session.kata)} · started ${new Date(session.startedAt).toLocaleDateString()}`}
         />
@@ -85,7 +86,7 @@ export function ResultsPage() {
             </Button>
           </section>
           <div className="mt-6 pt-6 border-t border-border">
-            <Button variant="primary" size="xl" className="w-full" onClick={() => navigate('/dashboard', { replace: true })}>
+            <Button variant="primary" size="xl" className="max-md:w-full" onClick={() => navigate('/dashboard', { replace: true })}>
               Done
             </Button>
           </div>
@@ -99,8 +100,8 @@ export function ResultsPage() {
   const meta = [kataMeta(session.kata), completionTime && `completed in ${completionTime}`].filter(Boolean).join(' · ')
 
   return (
-    <ReviewShell status={verdict ? 'complete' : 'unavailable'} leading={<ReturnLink />}>
-      <ReviewTitle eyebrow={verdict ? reviewEyebrow('complete') : undefined} title={session.kata.title} meta={meta} />
+    <ReviewShell status={verdict ? 'complete' : 'unavailable'} leading={<ReturnLink />} centered={!pointed}>
+      <ReviewTitle eyebrow={verdict ? reviewEyebrow('complete') : 'Evaluation unavailable'} title={session.kata.title} meta={meta} />
       <ReviewGrid
         aside={code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} final={!!verdict} />}
         followthrough={
