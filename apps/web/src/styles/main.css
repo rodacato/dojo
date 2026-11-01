@@ -95,7 +95,7 @@
 /* Paper type scale for the public pages — kit 0.7.0 Text/* in design/ui-kit.lib.pen. */
 @layer components {
   .paper-container {
-    @apply mx-auto w-full max-w-[70rem] px-4 md:px-8;
+    @apply mx-auto w-full max-w-[70rem] px-4 min-[360px]:px-5 md:px-8;
   }
   .paper-display {
     @apply font-sans font-bold text-primary;
@@ -131,7 +131,7 @@
     @apply flex items-center justify-between gap-4 min-h-11 border-b border-border;
   }
   .date-strip {
-    @apply flex items-center gap-3 md:gap-6;
+    @apply flex items-center gap-3 md:gap-6 max-md:text-[10px] max-md:tracking-[0.04em];
   }
   .date-strip::after {
     content: '';
@@ -161,7 +161,7 @@
     @apply border-primary bg-page;
   }
   .nav-item-tab {
-    @apply relative flex-col justify-center gap-1 min-h-14;
+    @apply relative flex-col justify-center gap-1 min-h-14 text-[11px];
   }
   .nav-item-tab[aria-current='page'] {
     @apply font-medium;

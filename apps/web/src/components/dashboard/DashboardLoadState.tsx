@@ -10,7 +10,7 @@ export function DashboardLoadState(props: Readonly<DashboardLoadStateProps>) {
   if (props.status === 'loading') {
     return (
       <div className="pt-7 md:pt-7.5">
-        <LoadState status="loading" eyebrow="Opening the dojo">
+        <LoadState status="loading" eyebrow="Dashboard / loading" title="Opening the dojo">
           <Placeholders />
         </LoadState>
       </div>
@@ -18,15 +18,17 @@ export function DashboardLoadState(props: Readonly<DashboardLoadStateProps>) {
   }
 
   return (
-    <div className="md:grid md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 lg:gap-14 items-start">
+    <div className="md:grid md:grid-cols-[minmax(0,1fr)_15rem] md:gap-8 lg:gap-14 items-start pt-7.5 pb-9 border-b border-border">
       <LoadState
         status="error"
-        eyebrow="We couldn't load your dashboard."
+        pageTitle
+        eyebrow="Dashboard / error"
         title="Something broke."
         aside="The dojo is still here."
+        body="We couldn't load your dashboard."
         onRetry={props.onRetry}
       />
-      <aside aria-label="Unavailable dashboard data" className="mt-8 md:mt-7 border-y border-border py-4.5">
+      <aside aria-label="Unavailable dashboard data" className="mt-8 md:mt-5 border-y border-border py-4.5">
         <p className="paper-eyebrow">Dashboard</p>
         <dl className="my-3">
           {UNAVAILABLE.map((label) => (
@@ -50,7 +52,6 @@ function Placeholders() {
     <div aria-hidden>
       <div className="md:grid md:grid-cols-[minmax(0,1fr)_auto] items-center gap-6 lg:gap-10 pb-7.5 md:pb-8.5">
         <div>
-          <Skeleton className="h-12 w-2/3 mb-4" />
           <Skeleton className="h-3 w-4/5 max-w-130" />
         </div>
         <Skeleton className="h-12 w-full md:w-45 lg:w-50 mt-6 md:mt-0" />

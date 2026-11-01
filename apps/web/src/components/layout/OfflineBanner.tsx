@@ -31,7 +31,7 @@ export function OfflineBanner() {
           <button
             type="button"
             onClick={() => globalThis.location.reload()}
-            className="min-h-11 font-mono text-xs uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+            className="min-h-11 font-mono text-xs uppercase tracking-wider text-accent-text hover:underline transition-colors"
           >
             Retry now
           </button>

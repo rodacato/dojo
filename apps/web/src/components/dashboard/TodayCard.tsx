@@ -113,7 +113,7 @@ function HeroLayout({
     >
       <div>
         <p className="paper-eyebrow">{eyebrow}</p>
-        <h1 id="today-heading" className="paper-heading max-w-162.5 mt-3 mb-4 wrap-anywhere">
+        <h1 id="today-heading" className="paper-heading max-md:text-[32px] min-[360px]:max-md:text-[36px] max-md:leading-[1.06] max-w-162.5 mt-3 mb-4 wrap-anywhere">
           {headline}
         </h1>
         {verdict}
