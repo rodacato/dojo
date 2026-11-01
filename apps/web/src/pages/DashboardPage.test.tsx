@@ -93,7 +93,7 @@ describe('DashboardPage', () => {
 
       expect(await screen.findByRole('heading', { name: 'Current streak' })).toBeInTheDocument()
       expect(screen.getByText('7')).toBeInTheDocument()
-      expect(screen.getByText('2/5 this week')).toBeInTheDocument()
+      expect(screen.getByText('2/5 kata this week')).toBeInTheDocument()
       expect(screen.getByRole('heading', { name: 'green belt' })).toBeInTheDocument()
       // totalCompleted (4) >= 3 → practice patterns card present, avg formatted.
       expect(screen.getByText('Practice patterns')).toBeInTheDocument()

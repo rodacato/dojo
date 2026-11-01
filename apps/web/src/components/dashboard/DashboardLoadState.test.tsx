@@ -29,4 +29,9 @@ describe('DashboardLoadState', () => {
 
     expect(onRetry).toHaveBeenCalledOnce()
   })
+
+  it('titles the page when the dashboard fails, so the error keeps a top-level heading', () => {
+    render(<DashboardLoadState status="error" onRetry={() => {}} />)
+    expect(screen.getByRole('heading', { level: 1, name: /Something broke/ })).toBeInTheDocument()
+  })
 })

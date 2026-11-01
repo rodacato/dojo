@@ -100,7 +100,7 @@ export function DashboardPage() {
       <div
         className={`grid gap-7 md:gap-8 lg:gap-14 border-t border-border py-6 md:py-6.5 ${showPatterns ? 'md:grid-cols-2' : ''}`}
       >
-        <StreakCard streak={dashboard.streak} heatmapData={dashboard.heatmapData} weeklyGoal={dashboard.weeklyGoal} />
+        <StreakCard compact={showPatterns} streak={dashboard.streak} heatmapData={dashboard.heatmapData} weeklyGoal={dashboard.weeklyGoal} />
         {showPatterns && <PracticePatternsCard practicePatterns={dashboard.practicePatterns} />}
       </div>
 
@@ -166,10 +166,12 @@ function StreakCard({
   streak,
   heatmapData,
   weeklyGoal,
+  compact,
 }: Readonly<{
   streak: number
   heatmapData: DashboardData['heatmapData']
   weeklyGoal: DashboardData['weeklyGoal']
+  compact: boolean
 }>) {
   const week = useMemo(() => weekActivity(heatmapData), [heatmapData])
   return (
@@ -178,7 +180,7 @@ function StreakCard({
         <h2 className="paper-eyebrow" id="streak-heading">Current streak</h2>
         {weeklyGoal.target !== null && weeklyGoal.target > 0 && (
           <p className="paper-note tabular-nums">
-            {weeklyGoal.completed}/{weeklyGoal.target} this week
+            {weeklyGoal.completed}/{weeklyGoal.target} kata this week
           </p>
         )}
       </div>
@@ -186,14 +188,14 @@ function StreakCard({
         <span className="font-mono text-4xl md:text-5xl text-primary tracking-tight tabular-nums">{streak}</span>
         <span className="font-mono text-secondary text-sm">days</span>
       </p>
-      <div className="grid grid-cols-7 gap-2 mt-3.5 md:mt-4.5">
+      <div className={`grid grid-cols-7 gap-2 mt-3.5 md:mt-4.5 ${compact ? 'md:max-w-102.5' : ''}`}>
         {week.map((active, i) => (
           <div key={WEEKDAY_LABELS[i]} className="flex flex-col gap-1.5 text-center">
             <div
-              className={`h-2 rounded-sm border ${active ? 'bg-success border-success' : 'border-border'}`}
+              className={`h-2 rounded-[2px] border ${active ? 'bg-success border-success' : 'border-border'}`}
               aria-hidden
             />
-            <span className="text-secondary text-xs font-mono">
+            <span className="text-secondary text-[11px] font-mono">
               {WEEKDAY_LABELS[i]}
               <span className="sr-only">{active ? ': kata done' : ': no kata'}</span>
             </span>
@@ -265,9 +267,9 @@ function WeakAreasCard({ weakAreas }: Readonly<{ weakAreas: DashboardData['weakA
   return (
     <section aria-labelledby="weak-heading" className="flex flex-wrap items-baseline gap-3 md:gap-6 pt-6">
       <h2 className="paper-eyebrow" id="weak-heading">Weak areas</h2>
-      <div className="flex flex-wrap gap-3 md:gap-4.5">
+      <div className="flex flex-wrap gap-3 md:gap-4.5 md:flex-1 md:min-w-0">
         {weakAreas.map((a) => (
-          <span key={a.topic} className="font-mono text-xs text-secondary">
+          <span key={a.topic} className="font-mono text-[11px] text-secondary">
             {a.topic} <span className="text-warning-text">({a.frequency})</span>
           </span>
         ))}

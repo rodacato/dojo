@@ -42,7 +42,7 @@ export function Sidebar() {
             <Icon name={item.icon} />
             <span className="flex items-center gap-1">
               {item.label}
-              {item.soon && <span className="text-secondary">soon</span>}
+              {item.soon && <span className="text-[9px] leading-[1.4] text-secondary">soon</span>}
             </span>
           </NavLink>
         ))}

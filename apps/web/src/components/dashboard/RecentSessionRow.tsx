@@ -19,12 +19,12 @@ export function RecentSessionRow({ session, to }: Readonly<RecentSessionRowProps
       <span className="min-w-0 wrap-anywhere text-sm font-medium">{session.kataTitle}</span>
       <span className="max-md:row-start-2 flex items-center gap-2">
         <TypeRuleBadge type={session.kataType as KataType} />
-        <span className="font-mono text-xs uppercase text-secondary">{session.difficulty}</span>
+        <span className="font-mono text-[11px] uppercase text-secondary">{session.difficulty}</span>
       </span>
       {isVerdict(verdict) ? (
         <VerdictLabel verdict={verdict} className="max-md:row-start-2 max-md:col-start-2 md:min-w-31.5 text-right" />
       ) : (
-        <span className="max-md:hidden" />
+        <span className="max-md:hidden md:min-w-31.5" />
       )}
       <span className="max-md:row-start-1 max-md:col-start-2 self-start md:self-auto justify-self-end min-w-7 text-right font-mono text-xs text-secondary">
         {formatRelativeDate(new Date(session.startedAt))}
