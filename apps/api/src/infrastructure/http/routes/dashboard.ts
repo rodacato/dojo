@@ -18,6 +18,14 @@ export const dashboardRoutes = new Hono<AppEnv>()
 // GET /dashboard
 // ---------------------------------------------------------------------------
 
+/** Monday, like the week strip the count sits beside: a Sunday still belongs to its own week. */
+export function startOfWeek(date: Date): Date {
+  const start = new Date(date)
+  start.setDate(start.getDate() - ((start.getDay() + 6) % 7))
+  start.setHours(0, 0, 0, 0)
+  return start
+}
+
 dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
   const userId = user.id
@@ -26,9 +34,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-  const weekStart = new Date(today)
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-  weekStart.setHours(0, 0, 0, 0)
+  const weekStart = startOfWeek(today)
 
   // Expiring a session changes what every read below sees, so it finishes first.
   const activeSessionId = await useCases.resolveActiveSession.execute(UserId(userId))
