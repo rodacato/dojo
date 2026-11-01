@@ -24,7 +24,7 @@ describe('InviteRedeemPage', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Invitation')).toBeInTheDocument()
     expect(
-      screen.getByText(/Sign in with GitHub\. We don't email you\. We don't track you\./i),
+      screen.getByText(/Sign in with GitHub\. We don't send marketing email\. We don't track you\./i),
     ).toBeInTheDocument()
   })
 

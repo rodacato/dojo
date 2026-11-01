@@ -2,6 +2,7 @@ import { Button } from '../ui/Button'
 
 interface OnboardingOverlayProps {
   daily: boolean
+  creator: boolean
   startDisabled: boolean
   onStart: () => void
   onDismiss: () => void
@@ -22,7 +23,7 @@ const ADVANCED_STAGES = [
 ] as const
 
 /** First-visit welcome, in the page and in place of today's section. Only Skip, × or the start action end it. */
-export function OnboardingOverlay({ daily, startDisabled, onStart, onDismiss }: Readonly<OnboardingOverlayProps>) {
+export function OnboardingOverlay({ daily, creator, startDisabled, onStart, onDismiss }: Readonly<OnboardingOverlayProps>) {
   const stages = daily ? DAILY_STAGES : ADVANCED_STAGES
 
   function handleStart() {
@@ -34,7 +35,7 @@ export function OnboardingOverlay({ daily, startDisabled, onStart, onDismiss }: 
     <section aria-labelledby="onboarding-headline" className="mt-6.5 md:mt-7 pb-6 md:pb-7.5">
       <div className="flex items-start justify-between gap-3 md:gap-6">
         <div>
-          <p className="paper-eyebrow">Invited by the dojo</p>
+          <p className="paper-eyebrow">{creator ? 'Your dojo' : 'Invited by the dojo'}</p>
           <h1
             id="onboarding-headline"
             className="my-3 font-sans font-bold text-2xl leading-[1.1] tracking-tight text-primary"
@@ -52,8 +53,9 @@ export function OnboardingOverlay({ daily, startDisabled, onStart, onDismiss }: 
         </button>
       </div>
       <p className="paper-body max-w-165">
-        You&apos;ve been invited to a daily practice. There&apos;s no tour. There&apos;s no tutorial. You&apos;ll
-        start with one kata. The sensei will evaluate it. Then you&apos;ll know if this is for you or not.
+        {creator ? 'You run this dojo.' : "You've been invited to a daily practice."} There&apos;s no tour.
+        There&apos;s no tutorial. You&apos;ll start with one kata. The sensei will evaluate it. Then you&apos;ll
+        know {creator ? 'what the people you invite will get.' : 'if this is for you or not.'}
       </p>
 
       <ol className="grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-4 md:gap-6 py-4.5 my-5 border-y border-border">

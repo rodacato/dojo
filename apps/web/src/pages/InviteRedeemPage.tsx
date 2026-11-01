@@ -46,7 +46,7 @@ export function InviteRedeemPage() {
           </a>
 
           <p className="text-secondary text-xs text-center mt-3">
-            Sign in with GitHub. We don&apos;t email you. We don&apos;t track you.
+            Sign in with GitHub. We don&apos;t send marketing email. We don&apos;t track you.
           </p>
 
           <div className="border-t border-border mt-5 pt-4 flex flex-col gap-2">

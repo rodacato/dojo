@@ -11,6 +11,20 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-11-01',
+    phase: 'Recognition',
+    title: 'Your dojo',
+    description:
+      'Belts is now a room of your own. What you earned sits in it, your belts carry their dates, and the page shows what the next belt asks for.',
+  },
+  {
+    date: '2026-11-01',
+    phase: 'Identity',
+    title: 'One rail, every screen',
+    description:
+      'Signed-in screens share a new rail and bottom navigation. History gets search and outcome filters, and Settings saves each change on its own and keeps your choices when a save fails.',
+  },
+  {
     date: '2026-10-30',
     phase: 'Identity',
     title: 'The app, on paper',
