@@ -12,6 +12,17 @@ export interface Belt {
   factors: BeltFactors
 }
 
+export interface BeltPromotion {
+  rank: BeltRank
+  reachedAt: Date
+}
+
+/** The dated path so far, and what the next belt asks for. Null once at black. */
+export interface BeltRecord {
+  promotions: BeltPromotion[]
+  next: { rank: Exclude<BeltRank, 'white'>; criteria: BeltFactors } | null
+}
+
 export interface KataHistoryEntry {
   startedAt: Date
   topics: string[]
@@ -103,14 +114,33 @@ export function computeBeltFromHistory(
   history: readonly KataHistoryEntry[],
   now: Date,
 ): Belt {
+  return replayBelt(history, now).belt
+}
+
+export function beltRecordFromHistory(history: readonly KataHistoryEntry[], now: Date): Belt & BeltRecord {
+  const { belt, promotions } = replayBelt(history, now)
+  const nextRank = nextRankAbove(belt.rank)
+  return {
+    ...belt,
+    promotions,
+    next: nextRank ? { rank: nextRank, criteria: BELT_THRESHOLDS[nextRank] } : null,
+  }
+}
+
+function replayBelt(
+  history: readonly KataHistoryEntry[],
+  now: Date,
+): { belt: Belt; promotions: BeltPromotion[] } {
   let rank: BeltRank = 'white'
   let enteredRankAt: Date | null = null
 
   let completed = 0
   const clusters = new Set<string>()
   const dates: Date[] = []
+  const promotions: BeltPromotion[] = []
 
   for (const entry of history) {
+    if (promotions.length === 0) promotions.push({ rank, reachedAt: entry.startedAt })
     completed++
     for (const c of topicClustersFor(entry.topics)) clusters.add(c)
     dates.push(entry.startedAt)
@@ -129,16 +159,20 @@ export function computeBeltFromHistory(
     ) {
       rank = next
       enteredRankAt = entry.startedAt
+      promotions.push({ rank, reachedAt: entry.startedAt })
     }
   }
 
   return {
-    rank,
-    factors: {
-      completed,
-      distinctClusters: clusters.size,
-      activeDays30: countActiveDaysIn30(dates, now),
-      daysAtRank: enteredRankAt ? daysBetween(enteredRankAt, now) : 0,
+    belt: {
+      rank,
+      factors: {
+        completed,
+        distinctClusters: clusters.size,
+        activeDays30: countActiveDaysIn30(dates, now),
+        daysAtRank: enteredRankAt ? daysBetween(enteredRankAt, now) : 0,
+      },
     },
+    promotions,
   }
 }

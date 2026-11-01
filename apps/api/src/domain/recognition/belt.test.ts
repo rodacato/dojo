@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { TOPICS } from '@dojo/shared'
 import {
   BELT_THRESHOLDS,
+  beltRecordFromHistory,
   computeBeltFromHistory,
   countActiveDaysIn30,
   rankFromFactors,
@@ -186,5 +187,30 @@ describe('CalculateBelt — date semantics', () => {
     const later = new Date('2026-01-22T23:59:59.000Z') // exactly 21 days later
     const diff = Math.floor((later.getTime() - earlier.getTime()) / DAY_MS)
     expect(diff).toBe(21)
+  })
+})
+
+describe('beltRecordFromHistory', () => {
+  const day = (n: number) => new Date(Date.UTC(2026, 0, 1 + n, 10))
+  const dailyKata = (count: number) =>
+    Array.from({ length: count }, (_, i) => ({ startedAt: day(i), topics: ['sql-joins', 'async'] }))
+
+  it('has no record before the first kata, and asks for yellow', () => {
+    const record = beltRecordFromHistory([], day(0))
+    expect(record.promotions).toEqual([])
+    expect(record.next?.rank).toBe('yellow')
+  })
+
+  it('dates white at the first kata and each promotion at the kata that earned it', () => {
+    const history = dailyKata(12)
+    const record = beltRecordFromHistory(history, day(12))
+    expect(record.rank).toBe(record.promotions.at(-1)?.rank)
+    expect(record.promotions[0]).toEqual({ rank: 'white', reachedAt: day(0) })
+  })
+
+  it('never reads a verdict, so the record is the same as the rank it explains', () => {
+    const history = dailyKata(12)
+    const now = day(12)
+    expect(beltRecordFromHistory(history, now).rank).toBe(computeBeltFromHistory(history, now).rank)
   })
 })

@@ -122,6 +122,16 @@ export interface BeltDTO {
   factors: BeltFactors
 }
 
+export interface BeltPromotionDTO {
+  rank: BeltRank
+  reachedAt: string  // ISO
+}
+
+export interface NextBeltDTO {
+  rank: BeltRank
+  criteria: BeltFactors
+}
+
 export interface MilestoneDTO {
   id: string         // FIRST_KATA, POLYGLOT, CONSISTENT, 5_STREAK, SCROLL_* (preserved)
   earnedAt: string   // ISO

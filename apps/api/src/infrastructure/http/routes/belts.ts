@@ -10,13 +10,15 @@ beltsRoutes.get('/belts', requireAuth, async (c) => {
   const user = c.get('user')
   const userId = UserId(user.id)
 
-  const [belt, milestones] = await Promise.all([
-    useCases.calculateBelt.execute(userId),
+  const [{ promotions, next, ...belt }, milestones] = await Promise.all([
+    useCases.calculateBelt.withRecord(userId),
     useCases.listUserMilestones.execute(userId),
   ])
 
   return c.json({
     belt,
+    record: promotions.map((p) => ({ rank: p.rank, reachedAt: p.reachedAt.toISOString() })),
+    next,
     milestones: milestones.map((m) => ({
       id: m.milestoneId,
       earnedAt: m.earnedAt.toISOString(),

@@ -82,7 +82,7 @@ beforeEach(() => {
   mockedUpdatePreferences.mockReset()
   logout.mockClear()
   // Belt resolves by default; individual tests override when they care.
-  mockedGetBelts.mockResolvedValue({ belt, milestones: [] })
+  mockedGetBelts.mockResolvedValue({ belt, record: [], next: null, milestones: [] })
   mockedUpdatePreferences.mockResolvedValue({ ok: true })
   mockedUseAuth.mockReturnValue({ user, loading: false, logout })
 })
