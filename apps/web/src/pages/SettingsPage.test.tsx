@@ -282,7 +282,7 @@ describe('SettingsPage', () => {
       await u.clear(email)
       await u.type(email, 'new@')
       await u.tab()
-      await u.click(screen.getByRole('switch', { name: 'Daily reminder' }))
+      await u.click(screen.getByRole('checkbox', { name: 'Daily reminder' }))
 
       expect(mockedUpdatePreferences).toHaveBeenCalledWith({
         reminderEnabled: false,
@@ -477,7 +477,7 @@ describe('SettingsPage', () => {
         goalWeeklyTarget: 3,
       })
 
-      await u.click(screen.getByRole('switch', { name: 'Daily reminder' }))
+      await u.click(screen.getByRole('checkbox', { name: 'Daily reminder' }))
 
       expect(mockedUpdatePreferences).toHaveBeenLastCalledWith({
         reminderEnabled: false,
@@ -495,7 +495,7 @@ describe('SettingsPage', () => {
       await u.click(await screen.findByRole('button', { name: 'Senior' }))
       await section('Practice').findByRole('button', { name: 'Retry practice' })
 
-      await u.click(screen.getByRole('switch', { name: 'Daily reminder' }))
+      await u.click(screen.getByRole('checkbox', { name: 'Daily reminder' }))
 
       await section('Reminders').findByText('Saved')
       expect(mockedUpdatePreferences.mock.lastCall?.[0]).not.toHaveProperty('level')
@@ -508,7 +508,7 @@ describe('SettingsPage', () => {
       mockedGetPreferences.mockResolvedValue(basePrefs({ reminderEnabled: true, email: 'you@test.dev' }))
 
       renderSettings()
-      await u.click(await screen.findByRole('switch', { name: 'Daily reminder' }))
+      await u.click(await screen.findByRole('checkbox', { name: 'Daily reminder' }))
 
       expect(await screen.findByText('Reminders off · saved')).toBeInTheDocument()
     })
@@ -649,7 +649,7 @@ describe('SettingsPage', () => {
 
       renderSettings()
 
-      expect(await screen.findByRole('switch', { name: 'Make profile private' })).toBeDisabled()
+      expect(await screen.findByRole('checkbox', { name: 'Make profile private' })).toBeDisabled()
       expect(screen.getByText('Profile privacy is not available yet.')).toBeInTheDocument()
     })
   })
