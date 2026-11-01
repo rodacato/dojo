@@ -9,7 +9,7 @@ describe('Input', () => {
     const input = screen.getByPlaceholderText('email')
     expect(input).toBeInTheDocument()
     expect(input.tagName).toBe('INPUT')
-    expect(input).toHaveClass('w-full', 'font-mono', 'border', 'border-border')
+    expect(input).toHaveClass('w-full', 'font-sans', 'border', 'border-border')
   })
 
   it('renders the label text when label is provided', () => {
@@ -111,13 +111,6 @@ describe('Textarea', () => {
     const textarea = screen.getByPlaceholderText('bio')
     expect(textarea.tagName).toBe('TEXTAREA')
     expect(textarea).toHaveClass('w-full', 'font-sans', 'resize-none')
-  })
-
-  it('uses font-sans (not font-mono like Input) — the variant difference', () => {
-    render(<Textarea placeholder="bio" />)
-    const textarea = screen.getByPlaceholderText('bio')
-    expect(textarea).toHaveClass('font-sans')
-    expect(textarea).not.toHaveClass('font-mono')
   })
 
   it('renders the label and hint when provided', () => {

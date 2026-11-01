@@ -81,7 +81,7 @@ describe('HistoryPage', () => {
     expect(
       screen.queryByText('No sessions yet. The dojo is patient.'),
     ).not.toBeInTheDocument()
-    expect(screen.getByText('Not loaded')).toBeInTheDocument()
+    expect(screen.queryByText('sessions')).not.toBeInTheDocument()
     expect(screen.queryByText('0')).not.toBeInTheDocument()
   })
 

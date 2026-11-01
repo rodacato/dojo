@@ -42,12 +42,12 @@ export function DenseSessionRow({
   const className = `${ROW_CLASSES} ${highlightUser ? 'bg-elevated' : ''}`
   const contents = (
     <>
-      <span className="col-span-2 row-start-1 md:flex-1 min-w-0 text-primary text-base font-medium wrap-anywhere">
+      <span className="col-span-2 row-start-1 md:flex-1 min-w-0 text-primary text-sm md:text-[15px] font-medium wrap-anywhere">
         {title}
       </span>
-      <span className="col-start-1 row-start-2 md:w-36 shrink-0 flex items-center gap-2.5 font-mono text-xs text-secondary">
+      <span className="col-start-1 row-start-2 md:w-32.5 shrink-0 flex items-center gap-2.5 font-mono text-[10px] md:text-[11px] text-secondary">
         <TypeRuleBadge type={type} />
-        {difficulty.toUpperCase()}
+        {difficulty}
       </span>
       <span className="col-start-2 col-span-2 row-start-2 md:w-42 shrink-0 text-right">
         <OutcomeLabel outcome={outcome ?? verdict ?? (status === 'failed' ? 'expired' : null)} />
