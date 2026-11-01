@@ -4,12 +4,13 @@ import type { ScrollEntryDTO } from '@dojo/shared'
 import { api } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useAuth } from '../context/AuthContext'
-import { Button } from '../components/ui/Button'
 import { LoadState } from '../components/ui/LoadState'
 import { SkeletonCard } from '../components/ui/SkeletonLoader'
 import { pickLocalized, preferredLocale } from '../lib/scrollLocale'
 
 const LOAD_ERROR = 'The scrolls could not be loaded.'
+
+const STATUS = 'border-t border-border pt-7 text-center'
 
 function ScrollRow({ entry, locale }: Readonly<{ entry: ScrollEntryDTO; locale: string }>) {
   const { slug, visibility, manifest } = entry
@@ -22,7 +23,7 @@ function ScrollRow({ entry, locale }: Readonly<{ entry: ScrollEntryDTO; locale: 
       className="group ruled-row items-baseline gap-6 py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
     >
       <div className="min-w-0">
-        <h2 className="text-primary text-xl font-bold leading-[1.4] tracking-[-0.02em] wrap-anywhere group-hover:text-accent-text transition-colors">
+        <h2 className="text-primary text-[21px] md:text-xl font-bold leading-[1.4] tracking-[-0.02em] wrap-anywhere group-hover:text-accent-text transition-colors">
           {pickLocalized(manifest.title, manifest.locales, locale)}
         </h2>
         <p className="paper-body mt-2.5 max-w-[41.25rem] wrap-anywhere">
@@ -43,18 +44,6 @@ function ScrollRow({ entry, locale }: Readonly<{ entry: ScrollEntryDTO; locale: 
         →
       </span>
     </Link>
-  )
-}
-
-function AnonymousLoadError({ onRetry }: Readonly<{ onRetry: () => void }>) {
-  return (
-    <section role="alert" className="py-7 border-b border-border">
-      <p className="paper-eyebrow">Scrolls</p>
-      <h2 className="paper-heading mt-3 mb-5 wrap-anywhere">{LOAD_ERROR}</h2>
-      <Button variant="ghost" size="xl" className="max-md:w-full" onClick={onRetry}>
-        Try again
-      </Button>
-    </section>
   )
 }
 
@@ -91,26 +80,35 @@ export function ScrollsPage() {
   function renderCatalog() {
     if (loading || authLoading) {
       return (
-        <LoadState status="loading" eyebrow="Loading scrolls">
-          <SkeletonCard />
-        </LoadState>
+        <div className={STATUS}>
+          <LoadState status="loading" eyebrow="Loading scrolls">
+            <SkeletonCard />
+          </LoadState>
+        </div>
       )
     }
     if (error || !scrolls) {
-      return anonymous ? (
-        <AnonymousLoadError onRetry={retry} />
-      ) : (
-        <LoadState status="error" eyebrow="Scrolls" title={LOAD_ERROR} onRetry={retry} />
+      return (
+        <div className={STATUS}>
+          <LoadState
+            status="error"
+            flush
+            eyebrow="Scrolls"
+            title={LOAD_ERROR}
+            retryVariant={anonymous ? 'ghost' : 'primary'}
+            onRetry={retry}
+          />
+        </div>
       )
     }
     if (scrolls.length === 0) {
       return (
-        <section className="border-t border-border pt-7">
+        <section className={STATUS}>
           <p className="paper-eyebrow">Empty · Scrolls</p>
-          <h2 className="text-primary text-2xl font-bold leading-[1.4] mt-3">
+          <h2 className="text-primary text-[22px] md:text-xl font-bold leading-[1.4] mt-3">
             {anonymous ? 'No public scrolls are available here.' : 'No scrolls are published yet.'}
           </h2>
-          <p className="paper-body mt-4 max-w-[35rem]">
+          <p className="paper-body mt-4 max-w-[35rem] mx-auto">
             Scrolls are small apps the operator of this instance adds.
           </p>
         </section>

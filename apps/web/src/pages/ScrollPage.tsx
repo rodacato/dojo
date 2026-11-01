@@ -88,7 +88,7 @@ export function ScrollPage() {
 
   return (
     <div className="paper-container py-8 md:py-12">
-      <Link to="/scrolls" className="paper-eyebrow hover:text-primary transition-colors">
+      <Link to="/scrolls" className="paper-eyebrow inline-flex items-center min-h-11 text-accent-text hover:underline">
         ← Scrolls
       </Link>
       <header className="mt-4 mb-6">

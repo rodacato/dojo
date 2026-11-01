@@ -11,6 +11,7 @@ type LoadStateProps =
       body?: string
       pageTitle?: boolean
       flush?: boolean
+      retryVariant?: 'primary' | 'ghost'
       onRetry: () => void
       retryLabel?: string
     }
@@ -35,17 +36,17 @@ export function LoadState(props: Readonly<LoadStateProps>) {
     )
   }
 
-  const { eyebrow, title, aside, body, pageTitle = false, flush = false, onRetry, retryLabel = 'Try again' } = props
+  const { eyebrow, title, aside, body, pageTitle = false, flush = false, retryVariant = 'primary', onRetry, retryLabel = 'Try again' } = props
   const Title = pageTitle ? 'h1' : 'h2'
   return (
     <section role="alert" className={flush ? undefined : 'py-7 border-b border-border'}>
       <p className="paper-eyebrow">{eyebrow}</p>
-      <Title className={`${pageTitle ? 'paper-heading max-md:text-[32px] min-[360px]:max-md:text-[36px] max-md:leading-[1.06]' : 'text-2xl font-bold tracking-tight text-primary'} mt-3 mb-5 wrap-anywhere`}>
+      <Title className={`${pageTitle ? 'paper-heading max-md:text-[32px] min-[360px]:max-md:text-[36px] max-md:leading-[1.06]' : 'text-[22px] md:text-xl leading-[1.4] font-bold text-primary'} mt-3 mb-5 wrap-anywhere`}>
         {title}
         {aside && <span className="block mt-1.5 text-[0.88em] font-normal leading-tight text-secondary">{aside}</span>}
       </Title>
       {body && <p className="paper-body mb-6">{body}</p>}
-      <Button size="xl" className="max-md:w-full" onClick={onRetry}>
+      <Button variant={retryVariant} size="xl" className="max-md:w-full" onClick={onRetry}>
         {retryLabel}
       </Button>
     </section>
