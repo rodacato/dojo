@@ -188,7 +188,7 @@ function Results({ record, filtered, loading, online, pageFailed, requestedPage,
       {record.total === 0 ? (
         <section className="border-t border-border pt-5 pb-16">
           <div className={CENTERED_STATE}>
-            <h2 className="text-2xl font-bold text-primary mb-4">No matching sessions.</h2>
+            <h2 className="text-[22px] md:text-xl leading-[1.4] font-bold text-primary mb-4">No matching sessions.</h2>
             <p className="text-secondary text-base">Try another title or clear the filters. Your history is still here.</p>
           </div>
         </section>
