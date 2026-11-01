@@ -144,7 +144,7 @@ export function BeltsPage() {
     <div className="paper-container py-8 md:py-12">
       <header className="flex max-md:flex-col md:items-end justify-between gap-5 mb-6 md:mb-8">
         <div>
-          <a href="#belt-journey" aria-label={`View your ${belt.rank} belt record`} className="paper-eyebrow capitalize flex items-center gap-2.5 mb-3">
+          <a href="#belt-journey" aria-label={`View your ${belt.rank} belt record`} className="paper-eyebrow capitalize flex items-center gap-2.5 min-h-6 mb-3">
             <span aria-hidden className="w-6 h-1 border border-secondary" style={{ backgroundColor: BELT_COLOR[belt.rank] }} />
             {belt.rank} belt ↘
           </a>
