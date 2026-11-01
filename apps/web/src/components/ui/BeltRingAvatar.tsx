@@ -3,7 +3,8 @@ import { BELT_COLOR } from '../../lib/belt-colors'
 
 interface BeltRingAvatarProps {
   src: string
-  rank: BeltRank
+  rank?: BeltRank
+  monogram?: string
   size?: number
   alt?: string
   className?: string
@@ -20,22 +21,35 @@ interface BeltRingAvatarProps {
 export function BeltRingAvatar({
   src,
   rank,
+  monogram,
   size = 48,
   alt = '',
   className = '',
 }: Readonly<BeltRingAvatarProps>) {
   const isBlack = rank === 'black'
+  const shape = {
+    width: size,
+    height: size,
+    borderRadius: isBlack ? 2 : '50%',
+    boxShadow: rank ? `0 0 0 2px ${BELT_COLOR[rank]}` : undefined,
+  }
+  if (!src && monogram) {
+    return (
+      <span
+        aria-hidden
+        style={shape}
+        className={`inline-flex items-center justify-center bg-elevated text-primary font-mono text-xl lowercase shrink-0 ${className}`}
+      >
+        {monogram}
+      </span>
+    )
+  }
   return (
     <img
       src={src}
       alt={alt}
-      aria-label={`${rank} belt`}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: isBlack ? 2 : '50%',
-        boxShadow: `0 0 0 2px ${BELT_COLOR[rank]}`,
-      }}
+      aria-label={rank ? `${rank} belt` : undefined}
+      style={shape}
       className={`bg-elevated shrink-0 ${className}`}
     />
   )

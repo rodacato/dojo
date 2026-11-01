@@ -7,7 +7,6 @@ import { Skeleton } from '../components/ui/SkeletonLoader'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { Choice } from '../components/ui/Choice'
 import { Input } from '../components/ui/Input'
-import { Toggle } from '../components/ui/Toggle'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { BeltRingAvatar } from '../components/ui/BeltRingAvatar'
 import { useTheme } from '../hooks/useTheme'
@@ -273,16 +272,7 @@ export function SettingsPage() {
     <SettingsShell summary={saveSummary(statuses, reminderDetailsInvalid)}>
       <Section title="Account">
         <div className="flex items-start md:items-center gap-4 mb-5">
-          {belt ? (
-            <BeltRingAvatar src={user.avatarUrl} rank={belt.rank} size={64} alt="" />
-          ) : (
-            <img
-              src={user.avatarUrl}
-              alt=""
-              aria-hidden
-              className="w-16 h-16 rounded-full bg-elevated shrink-0"
-            />
-          )}
+          <BeltRingAvatar src={user.avatarUrl} rank={belt?.rank} monogram={user.username.charAt(0)} size={64} alt="" />
           <div className="min-w-0">
             <p className="text-primary text-lg font-semibold wrap-anywhere">{user.username}</p>
             <p className="paper-note wrap-anywhere">@{user.username}</p>
@@ -311,19 +301,8 @@ export function SettingsPage() {
             {globalThis.location.host}/u/{user.username}
           </Link>
         </p>
-        <div className="border-t border-border mt-5 pt-4 flex items-center justify-between gap-6 min-h-11">
-          <div>
-            <p className="paper-body text-primary font-medium">Make profile private</p>
-            <p className="paper-note mt-1">Profile privacy is not available yet.</p>
-          </div>
-          <Toggle
-            checked={false}
-            onChange={() => {
-              /* G-NNN — backend `is_public` flag not yet implemented. */
-            }}
-            ariaLabel="Make profile private"
-            disabled
-          />
+        <div className="border-t border-border mt-5 pt-4">
+          <CheckboxRow title="Make profile private" note="Profile privacy is not available yet." checked={false} disabled />
         </div>
       </Section>
 
@@ -435,17 +414,12 @@ export function SettingsPage() {
         headingRef={(el) => { headings.current.reminders = el }}
         footer={sectionStatus('reminders')}
       >
-        <div className="flex items-center justify-between gap-6 min-h-11">
-          <div>
-            <p className="paper-body text-primary font-medium">Daily reminder</p>
-            <p className="paper-note mt-1">A quiet nudge to come back to practice.</p>
-          </div>
-          <Toggle
-            ariaLabel="Daily reminder"
-            checked={prefs.reminderEnabled}
-            onChange={(v) => edit('reminders', { reminderEnabled: v })}
-          />
-        </div>
+        <CheckboxRow
+          title="Daily reminder"
+          note="A quiet nudge to come back to practice."
+          checked={prefs.reminderEnabled}
+          onChange={(reminderEnabled) => edit('reminders', { reminderEnabled })}
+        />
         {prefs.reminderEnabled && (
           <ReminderFields
             key={reminderFieldsVersion}
@@ -642,6 +616,38 @@ function ReminderFields({
         today&apos;s practice. Never on a UTC weekend if your goal is under 5 kata a week.
       </p>
     </div>
+  )
+}
+
+function CheckboxRow({
+  title,
+  note,
+  checked,
+  disabled,
+  onChange,
+}: Readonly<{
+  title: string
+  note: string
+  checked: boolean
+  disabled?: boolean
+  onChange?: (checked: boolean) => void
+}>) {
+  return (
+    <label className={`flex items-center justify-between gap-6 min-h-11 ${disabled ? '' : 'cursor-pointer'}`}>
+      <span>
+        <span className="paper-body block text-primary font-medium">{title}</span>
+        <span className="paper-note block mt-1">{note}</span>
+      </span>
+      <input
+        type="checkbox"
+        aria-label={title}
+        checked={checked}
+        disabled={disabled}
+        readOnly={!onChange}
+        onChange={(e) => onChange?.(e.target.checked)}
+        className="size-5.5 shrink-0 accent-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+      />
+    </label>
   )
 }
 

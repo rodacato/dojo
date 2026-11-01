@@ -19,6 +19,20 @@ describe('BeltRingAvatar', () => {
     expect(img).toHaveAttribute('src', SRC)
   })
 
+  it('falls back to the monogram when there is no image', () => {
+    const { container } = render(<BeltRingAvatar src="" rank="green" monogram="m" />)
+
+    expect(container.querySelector('img')).toBeNull()
+    expect(container).toHaveTextContent('m')
+  })
+
+  it('keeps the image and hides the monogram when there is a src', () => {
+    const { container } = render(<BeltRingAvatar src={SRC} rank="green" monogram="m" />)
+
+    expect(container.querySelector('img')).toHaveAttribute('src', SRC)
+    expect(container).not.toHaveTextContent('m')
+  })
+
   it('exposes the rank as the accessible name via aria-label', () => {
     render(<BeltRingAvatar src={SRC} rank="brown" />)
 

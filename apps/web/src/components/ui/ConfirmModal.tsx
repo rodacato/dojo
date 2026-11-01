@@ -129,7 +129,7 @@ export function ConfirmModal(props: ConfirmModalProps) {
           </div>
         )}
 
-        <div className="mt-6 flex max-md:flex-col-reverse md:items-center justify-end gap-3">
+        <div className="mt-6 flex max-md:flex-col md:items-center justify-end gap-3">
           <Button variant="ghost" size="lg" onClick={onCancel} disabled={busy}>
             {cancelLabel}
           </Button>
