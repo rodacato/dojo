@@ -49,7 +49,7 @@ export function BeltRecord({ belt, record, next }: Readonly<BeltRecordProps>) {
     <section id="belt-journey" aria-labelledby="belts-heading" className="scroll-mt-5 border-t border-border pt-6 md:pt-8 mb-8 md:mb-10">
       <div className="flex items-baseline justify-between gap-4">
         <h2 id="belts-heading" className="text-[22px] md:text-xl leading-[1.4] font-bold text-primary">Your belts</h2>
-        <Link to="/history" className="font-mono text-[11px] uppercase tracking-[0.08em] text-accent">Practice history ↗</Link>
+        <Link to="/history" className="inline-flex items-center min-h-6 font-mono text-[11px] uppercase tracking-[0.08em] text-accent-text">Practice history ↗</Link>
       </div>
       <p className="paper-note mt-2 mb-5">The dates you reached each belt.</p>
 
@@ -88,7 +88,7 @@ export function BeltRecord({ belt, record, next }: Readonly<BeltRecordProps>) {
       <BeltCriteria belt={belt} next={next} />
 
       <details className="border-b border-border py-4 group">
-        <summary className="font-mono text-[12px] text-primary cursor-pointer">How advancement works</summary>
+        <summary className="min-h-6 font-mono text-[12px] leading-6 text-primary cursor-pointer">How advancement works</summary>
         <div className="paper-body mt-3 grid gap-2 max-w-2xl">
           <p>A belt follows four things: kata completed, topic clusters, active days in the last 30, and days at your current belt.</p>
           <p>Any finished kata counts, Needs work included. The sensei's verdict never decides a belt.</p>

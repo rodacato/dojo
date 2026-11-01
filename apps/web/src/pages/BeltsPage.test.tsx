@@ -316,6 +316,9 @@ describe('BeltsPage', () => {
 
       expect(screen.getByText('A record of returning after time away.')).toBeInTheDocument()
       expect(screen.getByText('Earned Apr 1, 2026')).toBeInTheDocument()
+
+      await events.click(screen.getByRole('button', { name: 'Close' }))
+      expect(screen.queryByText('A record of returning after time away.')).not.toBeInTheDocument()
     })
 
     it('replaces the room with a retry when its art fails', async () => {

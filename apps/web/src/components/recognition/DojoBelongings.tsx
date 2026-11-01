@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Button } from '../ui/Button'
 import { Modal } from '../ui/Modal'
 import { artUrl, type Belonging } from './belongings'
 import { formatDate } from './BeltRecord'
@@ -14,7 +15,7 @@ export function DojoBelongings({ belongings }: Readonly<{ belongings: Belonging[
       <section aria-labelledby="moments-heading" className="mb-10">
         <div className="flex items-baseline justify-between gap-4 mb-4">
           <h2 id="moments-heading" className={SECTION_TITLE}>Moments</h2>
-          <Link to="/history" className="font-mono text-[11px] uppercase tracking-[0.08em] text-accent">History ↗</Link>
+          <Link to="/history" className="inline-flex items-center min-h-6 font-mono text-[11px] uppercase tracking-[0.08em] text-accent-text">History ↗</Link>
         </div>
         {belongings.length === 0 ? (
           <div className="border-t border-border pt-5">
@@ -33,7 +34,7 @@ export function DojoBelongings({ belongings }: Readonly<{ belongings: Belonging[
                     <time dateTime={belonging.earnedAt} className="paper-note block mt-1 md:hidden tabular-nums">{formatDate(belonging.earnedAt)}</time>
                   </span>
                   <time dateTime={belonging.earnedAt} className="paper-note max-md:hidden tabular-nums">{formatDate(belonging.earnedAt)}</time>
-                  <span aria-hidden className="text-accent">↗</span>
+                  <span aria-hidden className="text-accent-text">↗</span>
                 </button>
               </li>
             ))}
@@ -57,7 +58,7 @@ export function DojoBelongings({ belongings }: Readonly<{ belongings: Belonging[
                   <img src={artUrl(belonging.art)} alt="" className="mx-auto h-20 object-contain" />
                   <strong className="block mt-3 text-[15px] font-medium text-primary">{belonging.name}</strong>
                   <span className="paper-note block mt-1">In your room</span>
-                  <span className="paper-note block mt-2 text-accent">View <span aria-hidden>↗</span></span>
+                  <span className="paper-note block mt-2 text-accent-text">View <span aria-hidden>↗</span></span>
                 </button>
               </li>
             ))}
@@ -67,12 +68,13 @@ export function DojoBelongings({ belongings }: Readonly<{ belongings: Belonging[
 
       <Modal open={open !== null} onClose={() => setOpen(null)} label={open?.name}>
         {open && (
-          <div className="grid gap-2">
+          <div className="grid gap-2 p-5 md:p-6">
             <img src={artUrl(open.art)} alt="" className="mx-auto h-28 object-contain" />
             <h2 className={SECTION_TITLE}>{open.name}</h2>
             <p className="paper-eyebrow">{open.moment}</p>
             <p className="paper-body">{open.story}</p>
             <p className="paper-note">Earned {formatDate(open.earnedAt)}</p>
+            <Button variant="ghost" className="mt-3 justify-self-end" onClick={() => setOpen(null)}>Close</Button>
           </div>
         )}
       </Modal>
