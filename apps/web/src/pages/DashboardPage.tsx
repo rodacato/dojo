@@ -8,6 +8,7 @@ import { DashboardLoadState } from '../components/dashboard/DashboardLoadState'
 import { TodayCard } from '../components/dashboard/TodayCard'
 import { RecentSessionRow } from '../components/dashboard/RecentSessionRow'
 import { OnboardingOverlay } from '../components/onboarding/OnboardingOverlay'
+import { useAuth } from '../context/AuthContext'
 import { useFirstVisit } from '../hooks/useFirstVisit'
 import { useOnline } from '../hooks/useOnline'
 import { BELT_COLOR } from '../lib/belt-colors'
@@ -29,6 +30,7 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
 
 export function DashboardPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { online } = useOnline()
   const { data: dashboard, error, reload } = useAsync(() => api.getDashboard(), [])
 
@@ -74,6 +76,7 @@ export function DashboardPage() {
       {onboarding.isFirstVisit ? (
         <OnboardingOverlay
           daily={daily}
+          creator={user?.isCreator ?? false}
           startDisabled={startDisabled}
           onStart={startKata}
           onDismiss={() => {

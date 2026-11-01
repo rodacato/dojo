@@ -10,6 +10,10 @@ vi.mock('../lib/api', () => ({
   api: { getDashboard: vi.fn(), startDailyKata: vi.fn() },
 }))
 
+const auth = vi.hoisted(() => ({ user: null as { isCreator: boolean } | null }))
+
+vi.mock('../context/AuthContext', () => ({ useAuth: () => auth }))
+
 const mockedGetDashboard = vi.mocked(api.getDashboard)
 const mockedStartDailyKata = vi.mocked(api.startDailyKata)
 
@@ -56,6 +60,7 @@ function renderDashboard(initialEntry = '/dashboard') {
 beforeEach(() => {
   mockedGetDashboard.mockReset()
   mockedStartDailyKata.mockReset()
+  auth.user = null
   window.localStorage.clear()
 })
 
@@ -430,6 +435,28 @@ describe('DashboardPage', () => {
       expect(
         await screen.findByRole('heading', { name: 'Welcome to the dojo.' }),
       ).toBeInTheDocument()
+    })
+
+    it('tells an invited practitioner they were invited', async () => {
+      mockedGetDashboard.mockResolvedValue(freshUser())
+      auth.user = { isCreator: false }
+
+      renderDashboard()
+
+      expect(await screen.findByText('Invited by the dojo')).toBeInTheDocument()
+      expect(screen.getByText(/You've been invited to a daily practice\./)).toBeInTheDocument()
+    })
+
+    it('never tells the creator they were invited', async () => {
+      mockedGetDashboard.mockResolvedValue(freshUser())
+      auth.user = { isCreator: true }
+
+      renderDashboard()
+
+      expect(await screen.findByText('Your dojo')).toBeInTheDocument()
+      expect(screen.getByText(/You run this dojo\./)).toBeInTheDocument()
+      expect(screen.queryByText(/invited by/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/been invited/i)).not.toBeInTheDocument()
     })
 
     it('sits in the page, with the first kata section back once dismissed for good', async () => {
