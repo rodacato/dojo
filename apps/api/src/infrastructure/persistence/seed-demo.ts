@@ -407,7 +407,8 @@ async function seedPersona(
   }
 
   if (persona.today === 'done') {
-    addSession(pick(micro, random), new Date(now.getTime() - 40 * MINUTE_MS), 'passed')
+    const startOfToday = new Date(now).setUTCHours(0, 1, 0, 0)
+    addSession(pick(micro, random), new Date(Math.max(startOfToday, now.getTime() - 40 * MINUTE_MS)), 'passed')
   }
   if (persona.today === 'active') {
     const kata = micro[0]!
