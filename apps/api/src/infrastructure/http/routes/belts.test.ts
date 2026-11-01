@@ -9,7 +9,7 @@ const { calculateBelt, listUserMilestones, findFirst } = vi.hoisted(() => ({
 
 vi.mock('../../container', () => ({
   useCases: {
-    calculateBelt: { execute: calculateBelt },
+    calculateBelt: { withRecord: calculateBelt },
     listUserMilestones: { execute: listUserMilestones },
   },
   // router.ts pulls errorReporter from the container for onError
@@ -43,7 +43,7 @@ describe('GET /belts', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     findFirst.mockResolvedValue(authedSession())
-    calculateBelt.mockResolvedValue(WHITE_BELT)
+    calculateBelt.mockResolvedValue({ ...WHITE_BELT, promotions: [], next: null })
     listUserMilestones.mockResolvedValue([])
   })
 
@@ -92,6 +92,21 @@ describe('GET /belts', () => {
     expect(body.milestones).toEqual([])
   })
 
+  it('serialises the dated record and what the next belt asks for', async () => {
+    const reachedAt = new Date('2026-01-05T10:00:00.000Z')
+    const next = { rank: 'yellow', criteria: { completed: 10, distinctClusters: 2, activeDays30: 5, daysAtRank: 0 } }
+    calculateBelt.mockResolvedValue({ ...WHITE_BELT, promotions: [{ rank: 'white', reachedAt }], next })
+    const app = createRouter()
+    const res = await app.request('/belts', {
+      headers: { Authorization: 'Bearer 5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f' },
+    })
+
+    const body = (await res.json()) as { belt: unknown; record: unknown; next: unknown }
+    expect(body.belt).toEqual(WHITE_BELT)
+    expect(body.record).toEqual([{ rank: 'white', reachedAt: reachedAt.toISOString() }])
+    expect(body.next).toEqual(next)
+  })
+
   it('passes the authenticated user id to both use cases', async () => {
     const app = createRouter()
     await app.request('/belts', {
@@ -137,7 +152,7 @@ describe('GET /belts', () => {
       rank: 'yellow',
       factors: { completed: 12, distinctClusters: 2, activeDays30: 6, daysAtRank: 8 },
     }
-    calculateBelt.mockResolvedValue(yellowBelt)
+    calculateBelt.mockResolvedValue({ ...yellowBelt, promotions: [], next: null })
 
     const app = createRouter()
     const res = await app.request('/belts', {

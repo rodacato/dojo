@@ -1,13 +1,13 @@
 import { request } from './client'
 import type { PublicProfileData } from './types'
-import type { BeltDTO, MilestoneDTO, PractitionerDTO, PractitionerLook } from '@dojo/shared'
+import type { BeltDTO, BeltPromotionDTO, MilestoneDTO, NextBeltDTO, PractitionerDTO, PractitionerLook } from '@dojo/shared'
 
 export const profile = {
   getPublicProfile: (username: string) =>
     request<PublicProfileData>(`/u/${username}`),
 
   getBelts: () =>
-    request<{ belt: BeltDTO; milestones: MilestoneDTO[] }>('/belts'),
+    request<{ belt: BeltDTO; record: BeltPromotionDTO[]; next: NextBeltDTO | null; milestones: MilestoneDTO[] }>('/belts'),
 
   getPractitioner: () => request<PractitionerDTO>('/recognition/practitioner'),
 

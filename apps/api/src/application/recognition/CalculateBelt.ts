@@ -1,5 +1,5 @@
 import type { SessionRepositoryPort } from '../../domain/practice/ports'
-import { computeBeltFromHistory, type Belt } from '../../domain/recognition/belt'
+import { beltRecordFromHistory, computeBeltFromHistory, type Belt, type BeltRecord } from '../../domain/recognition/belt'
 import type { UserId } from '../../domain/shared/types'
 
 interface Deps {
@@ -22,5 +22,10 @@ export class CalculateBelt {
   async execute(userId: UserId): Promise<Belt> {
     const history = await this.deps.sessionRepo.listPracticeHistory(userId)
     return computeBeltFromHistory(history, this.now())
+  }
+
+  async withRecord(userId: UserId): Promise<Belt & BeltRecord> {
+    const history = await this.deps.sessionRepo.listPracticeHistory(userId)
+    return beltRecordFromHistory(history, this.now())
   }
 }
