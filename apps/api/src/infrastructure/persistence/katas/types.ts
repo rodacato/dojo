@@ -37,8 +37,8 @@ export interface SeedKata {
   topics: string[]
   testCode?: string // predefined tests for code execution (Piston)
   starterCode?: string // pre-filled code for fix-the-bug / scaffold katas
-  // Review-kata rubric (PRD 027). Only set when type === 'review'; hidden
-  // from the learner until they submit.
+  // Hidden rubric (PRD 027): what a review must catch, or for other types a
+  // reference answer and the points it covers.
   rubric?: Rubric
   variations: Array<{ ownerRole: string; ownerContext: string }>
 }

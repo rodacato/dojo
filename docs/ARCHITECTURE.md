@@ -245,3 +245,5 @@ System design and architecture, answered as a Mermaid diagram in the editor. The
 ### review
 Rubric-graded katas (PRD-027). The learner writes prose, and the sensei evaluates it against a structured `Rubric` rather than running a generic code evaluation. When a `rubric` is present, the `LLMPort.evaluate` adapter switches to the review prompt variant.
 
+**Every type may carry a hidden rubric.** For code, chat and whiteboard kata it reaches the sensei as `guide`, a reference answer plus the points it must cover; the generic prompt stays the same without one. Test results reach the sensei as `testResults`, apart from the learner's text, so an answer cannot forge them. One block of grading rules in `prompts/sensei.ts` is shared by every graded prompt ([research](research/KATA_TYPES.md#how-the-sensei-should-grade)).
+

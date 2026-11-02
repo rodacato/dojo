@@ -30,6 +30,7 @@ export const rubricSchema = z.object({
   expectedIssues: z.array(rubricIssueSchema).min(1),
   contextNotes: z.string().optional(),
   answer: pointAnswerKeySchema.optional(),
+  reference: z.string().min(1).optional(),
 })
 
 export const userDTOSchema = z.object({

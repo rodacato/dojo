@@ -397,6 +397,16 @@ async function runTests() {
 
 runTests();
 `,
+    rubric: {
+      reference:
+        'One timer and the latest arguments live in the closure. Each call clears the timer, stores the arguments and schedules a new timer. cancel clears the timer and the stored arguments. flush runs fn with the stored arguments only if a call is pending, then clears both, so the timer cannot fire it a second time.',
+      expectedIssues: [
+        { title: 'Clears the previous timer on every call', severity: 'high', why: 'without it every call fires after the wait' },
+        { title: 'flush only runs a pending call, and only once', severity: 'high', why: 'flush with nothing pending must do nothing, and a flushed call must not fire again from the timer' },
+        { title: 'Uses the most recent arguments', severity: 'medium', why: 'debounce must call fn with the last arguments, not the first' },
+        { title: 'cancel drops the pending arguments too', severity: 'low', why: 'a later flush would otherwise run a cancelled call' },
+      ],
+    },
     variations: [
       {
         ownerRole: 'Frontend architect who maintains a shared utility library used across 30+ microservices',

@@ -23,6 +23,10 @@ export interface LLMPort {
     // the review prompt variant and evaluate the learner's prose against
     // the rubric rather than running a generic code evaluation.
     rubric?: Rubric
+    // Code, chat and whiteboard kata: the hidden reference they are graded against.
+    guide?: Rubric
+    // Computed from running the learner's code; kept apart from their text so it cannot be forged.
+    testResults?: string
     point?: PointContext
   }): AsyncIterable<EvaluationToken>
 

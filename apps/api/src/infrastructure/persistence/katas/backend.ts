@@ -209,6 +209,16 @@ Explain exactly how 3 users could all succeed. Fix the code. Then explain what y
     languages: ['typescript', 'python'],
     tags: ['bug', 'concurrency', 'database'],
     topics: ['race-conditions', 'database-transactions', 'optimistic-locking', 'pessimistic-locking', 'concurrency', 'atomicity'],
+    rubric: {
+      reference:
+        'A check-then-act race: concurrent requests all read stock 1, all pass the check, and all write 0, because read and write are separate operations. The fix makes the decrement atomic in the database, a conditional UPDATE ... SET stock = stock - 1 WHERE id = ? AND stock > 0 that checks the affected row count, or a transaction with SELECT ... FOR UPDATE, with the reservation in the same transaction. An in-process mutex fails once there is more than one instance. To observe it: count rejected reservations, alert on negative stock or reservations above stock, and log the outcome per attempt.',
+      expectedIssues: [
+        { title: 'Explains the interleaving: read, check and write are not atomic', severity: 'high', why: 'without the interleaving the fix is a guess' },
+        { title: 'Fix is atomic at the database, not in the process', severity: 'high', why: 'a JavaScript lock breaks with two instances' },
+        { title: 'Reservation and decrement succeed or fail together', severity: 'medium', why: 'a decrement without a reservation loses stock' },
+        { title: 'Names a production signal that would show the race', severity: 'medium', why: 'the kata asks how the fix becomes observable' },
+      ],
+    },
     variations: [
       {
         ownerRole: 'Staff backend engineer who has designed inventory systems for flash sales with 50k concurrent users',

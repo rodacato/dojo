@@ -22,6 +22,8 @@ export interface BuildMessagesParams {
   history: ConversationTurn[]
   category?: string
   rubric?: Rubric
+  guide?: Rubric
+  testResults?: string
   point?: PointContext
 }
 
@@ -78,6 +80,8 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
         kataDescription: params.sessionBody,
         userResponse: params.userResponse,
         category: params.category,
+        guide: params.guide,
+        testResults: params.testResults,
       }),
     })
   } else {
@@ -93,6 +97,7 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
           kataDescription: params.sessionBody,
           userResponse: firstTurn.userResponse,
           category: params.category,
+          guide: params.guide,
         }),
       },
       { role: 'assistant', content: firstTurn.llmResponse },
@@ -100,6 +105,7 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
         role: 'user',
         content: buildFollowUpPrompt({
           followUpResponse: params.userResponse,
+          testResults: params.testResults,
           originalFollowUpQuestion: firstTurn.followUpQuestion ?? extractFollowUpQuestion(firstTurn.llmResponse),
         }),
       },

@@ -94,6 +94,15 @@ assert.deepStrictEqual(topN([1], 1), [1], 'single element')
 assert.deepStrictEqual(topN([2, 1], 5), [2, 1], 'n larger than array length returns all elements sorted')
 
 console.log('All tests passed')`,
+    rubric: {
+      reference:
+        'Array.prototype.sort sorts in place and returns the same array, so topN reorders the caller\'s array. Copy before sorting ([...arr] or arr.slice(), or toSorted where the runtime has it), then slice. The general rule: a function that returns a result should not change its inputs.',
+      expectedIssues: [
+        { title: 'Names in-place sort as the cause', severity: 'high', why: 'sort mutates and returns the same reference; slice afterwards does not undo it' },
+        { title: 'Copies before sorting, not after', severity: 'high', why: 'copying the result of sort still leaves the input reordered' },
+        { title: 'States the principle beyond this function', severity: 'low', why: 'the same bug recurs with reverse, splice and push on inputs' },
+      ],
+    },
     variations: [
       {
         ownerRole: 'TypeScript engineer who has spent years debugging mutation-related bugs in production',
