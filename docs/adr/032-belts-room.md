@@ -22,3 +22,6 @@
 - Yellow, brown and black show the room without a figure until art exists.
 - There is one figure, so the room does not reflect how a user looks; the practitioner does.
 - AI-generated images may carry weak or no copyright, so the MIT grant may give less than it does for the code.
+
+## Amendment, 2026-11-02
+`/belts` no longer has the practitioner editor or the pieces grid, which the room replaces. This supersedes "stays the editable identity": the look can no longer be edited. Earned pieces still feed the room, and the result receipt can still put a new piece on, including seasonal ones. Public profiles keep the saved look.

@@ -10,7 +10,6 @@ import { BeltRecord, formatDate } from '../components/recognition/BeltRecord'
 import { belongingsFrom } from '../components/recognition/belongings'
 import { DojoBelongings } from '../components/recognition/DojoBelongings'
 import { DojoRoom } from '../components/recognition/DojoRoom'
-import { PractitionerSection } from '../components/recognition/PractitionerSection'
 import type { BeltDTO, BeltPromotionDTO, MilestoneDTO, NextBeltDTO, PractitionerDTO } from '@dojo/shared'
 import type { DashboardData } from '../lib/api'
 
@@ -157,7 +156,6 @@ export function BeltsPage() {
       <DojoRoom rank={belt.rank} belongings={belongings.map(({ id }) => id)} />
       <BeltRecord belt={belt} record={record} next={next} />
       <DojoBelongings belongings={belongings} />
-      <PractitionerSection initial={practitioner} />
 
       <section aria-labelledby="milestones-heading" className="border-t border-border pt-6 md:pt-8">
         <div className="flex items-baseline justify-between gap-4 mb-5">
