@@ -2,25 +2,25 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { api, type KataFeedback } from '../../lib/api'
 import { useAsync } from '../../hooks/useAsync'
 import { Button } from './Button'
-import { Disclosure } from './Disclosure'
+import { Modal } from './Modal'
 
 type Vote = 'clarity' | 'timing' | 'evaluation'
 type Options = ReadonlyArray<{ value: string; label: string }>
 
 // D62: labels say exactly what is stored, since these votes measure the #193 trial.
-const TIMING = [
+export const TIMING = [
   { value: 'too_short', label: 'Too tight' },
   { value: 'about_right', label: 'About right' },
   { value: 'too_long', label: 'Too loose' },
 ] as const
 
-const EVALUATION = [
+export const EVALUATION = [
   { value: 'missed_the_point', label: 'Missed the point' },
   { value: 'too_generic', label: 'Too generic' },
   { value: 'fair_and_relevant', label: 'Spot on' },
 ] as const
 
-const CLARITY = [
+export const CLARITY = [
   { value: 'confusing', label: 'Confusing' },
   { value: 'somewhat_unclear', label: 'Somewhat unclear' },
   { value: 'clear', label: 'Clear' },
@@ -29,7 +29,7 @@ const CLARITY = [
 const SELECTED = 'border-primary ring-1 ring-inset ring-primary bg-elevated text-primary'
 const UNSELECTED = 'border-border text-secondary hover:border-secondary'
 
-const NOTE_LIMIT = 280
+const NOTE_LIMIT = 1000
 
 type SaveState = 'saving' | 'failed'
 type Saves = Partial<Record<Vote | 'note', SaveState>>
@@ -41,15 +41,17 @@ function saveStatus(saves: Saves, saved: boolean) {
   return saved ? 'Saved' : ''
 }
 
-// D62: the trial questions sit open above the exits and every tap saves on its own.
+// D62, after the #193 trial: one link opens the form, and every tap still saves on its own.
 export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) {
   const { data: saved, error: loadError } = useAsync(() => api.getFeedback(sessionId), [sessionId])
   const [votes, setVotes] = useState<Partial<KataFeedback>>({})
-  const [note, setNote] = useState('')
+  const [open, setOpen] = useState(false)
+  const [note, setNote] = useState<string | null>(null)
   const [noteSent, setNoteSent] = useState(false)
   const [saves, setSaves] = useState<Saves>({})
   const [anySaved, setAnySaved] = useState(false)
   const noteId = useId()
+  const counterId = useId()
   const received = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
@@ -59,6 +61,8 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
   if (!saved && !loadError) return null
 
   const current = (field: Vote) => (field in votes ? votes[field] : saved?.[field])
+  const noteText = note ?? saved?.note ?? ''
+  const rated = Boolean(saved?.submitted) || anySaved
 
   async function save(field: Vote | 'note', value: string) {
     setSaves((prev) => ({ ...prev, [field]: 'saving' }))
@@ -81,7 +85,7 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
 
   async function sendNote() {
     if (saves.note === 'saving') return
-    if (await save('note', note.trim())) setNoteSent(true)
+    if (await save('note', noteText.trim())) setNoteSent(true)
   }
 
   const question = (field: Vote, label: string, options: Options) => (
@@ -96,16 +100,17 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
   )
 
   return (
-    <section className="mt-7 md:mt-8 pt-6 md:pt-7 border-t border-border flex flex-col gap-5">
-      <div className="flex items-baseline justify-between gap-4">
-        <h2 className="paper-eyebrow">Quick feedback</h2>
-        <span className="paper-note">Optional</span>
-      </div>
-      {question('timing', 'Was the time limit right?', TIMING)}
-      {question('evaluation', "How was the sensei's review?", EVALUATION)}
+    <section className="mt-7 md:mt-8 pt-6 md:pt-7 border-t border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+      <Button variant="link" size="lg" onClick={() => setOpen(true)}>
+        {rated ? 'Edit your rating' : 'Rate this kata'}
+      </Button>
+      <span className="paper-note">{rated ? 'Rated' : 'Optional'}</span>
 
-      <Disclosure summary="More feedback">
-        <div className="flex flex-col gap-5 pt-2">
+      <Modal open={open} onClose={() => setOpen(false)} label="Rate this kata">
+        <div className="p-5 md:p-6 flex flex-col gap-5">
+          <h2 className="paper-eyebrow">Rate this kata</h2>
+          {question('timing', 'Was the time limit right?', TIMING)}
+          {question('evaluation', "How was the sensei's review?", EVALUATION)}
           {question('clarity', 'Was the description clear?', CLARITY)}
           <div className="flex flex-col gap-2">
             <label htmlFor={noteId} className="text-primary text-base font-medium">
@@ -113,23 +118,27 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
             </label>
             <textarea
               id={noteId}
-              value={note}
+              value={noteText}
+              maxLength={NOTE_LIMIT}
+              aria-describedby={counterId}
               onChange={(e) => {
                 setNote(e.target.value.slice(0, NOTE_LIMIT))
                 setNoteSent(false)
               }}
               placeholder="One thing you'd change, or something you noticed"
-              rows={3}
-              className="w-full min-h-28 bg-surface border border-border rounded-sm px-3 py-2 text-primary text-base font-sans placeholder:text-secondary focus:outline-none focus:border-accent transition-colors resize-y"
+              rows={4}
+              className="w-full min-h-32 bg-surface border border-border rounded-sm px-3 py-2 text-primary text-base font-sans placeholder:text-secondary focus:outline-none focus:border-accent transition-colors resize-y"
             />
             <div className="flex items-center justify-between gap-4">
-              <span className="paper-note tabular-nums">{note.length}/{NOTE_LIMIT}</span>
+              <span id={counterId} className={`paper-note tabular-nums ${NOTE_LIMIT - noteText.length <= 100 ? 'text-warning-text' : ''}`}>
+                {noteText.length}/{NOTE_LIMIT} · {NOTE_LIMIT - noteText.length} left
+              </span>
               {!noteSent && (
                 <Button
                   variant="ghost"
                   size="lg"
                   onClick={sendNote}
-                  disabled={!note.trim()}
+                  disabled={!noteText.trim()}
                   aria-busy={saves.note === 'saving'}
                 >
                   {saves.note === 'saving' ? 'Sending…' : 'Send note'}
@@ -143,10 +152,14 @@ export function FeedbackSection({ sessionId }: Readonly<{ sessionId: string }>) 
             )}
             {saves.note === 'failed' && <SaveFailure onRetry={sendNote} />}
           </div>
+          <div className="flex items-center justify-between gap-4">
+            <p role="status" className="paper-note min-h-4.5">{saveStatus(saves, anySaved)}</p>
+            <Button variant="ghost" size="lg" onClick={() => setOpen(false)}>
+              Close
+            </Button>
+          </div>
         </div>
-      </Disclosure>
-
-      <p role="status" className="paper-note min-h-4.5">{saveStatus(saves, anySaved)}</p>
+      </Modal>
     </section>
   )
 }

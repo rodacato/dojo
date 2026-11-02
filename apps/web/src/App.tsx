@@ -39,6 +39,7 @@ const AdminNewKataPage = lazyWithRetry(() => import('./pages/admin/AdminNewKataP
 const AdminEditKataPage = lazyWithRetry(() => import('./pages/admin/AdminEditKataPage').then(m => ({ default: m.AdminEditKataPage })))
 const AdminScrollsPage = lazyWithRetry(() => import('./pages/admin/AdminScrollsPage').then(m => ({ default: m.AdminScrollsPage })))
 const AdminInvitationsPage = lazyWithRetry(() => import('./pages/admin/AdminInvitationsPage').then(m => ({ default: m.AdminInvitationsPage })))
+const AdminFeedbackPage = lazyWithRetry(() => import('./pages/admin/AdminFeedbackPage').then(m => ({ default: m.AdminFeedbackPage })))
 const AdminErrorsPage = lazyWithRetry(() => import('./pages/admin/AdminErrorsPage').then(m => ({ default: m.AdminErrorsPage })))
 const AdminHealthPage = lazyWithRetry(() => import('./pages/admin/AdminHealthPage').then(m => ({ default: m.AdminHealthPage })))
 const SettingsPage = lazyWithRetry(() => import('./pages/SettingsPage').then(m => ({ default: m.SettingsPage })))
@@ -114,6 +115,7 @@ export function App() {
               <Route path="katas/:id/edit" element={<LazyRoute><AdminEditKataPage /></LazyRoute>} />
               <Route path="invitations" element={<LazyRoute><AdminInvitationsPage /></LazyRoute>} />
               <Route path="scrolls" element={<LazyRoute><AdminScrollsPage /></LazyRoute>} />
+              <Route path="feedback" element={<LazyRoute><AdminFeedbackPage /></LazyRoute>} />
               <Route path="errors" element={<LazyRoute><AdminErrorsPage /></LazyRoute>} />
               <Route path="health" element={<LazyRoute><AdminHealthPage /></LazyRoute>} />
             </Route>

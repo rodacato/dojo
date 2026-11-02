@@ -27,31 +27,53 @@ function question(name: string) {
   return within(screen.getByRole('group', { name }))
 }
 
+async function renderOpen(user = userEvent.setup()) {
+  render(<FeedbackSection sessionId="s1" />)
+  await user.click(await screen.findByRole('button', { name: /rate this kata|edit your rating/i }))
+  return user
+}
+
 describe('FeedbackSection', () => {
-  it('asks the two trial questions openly, each labelled by its question', async () => {
+  it('stays one link on the result until the learner opens it', async () => {
     render(<FeedbackSection sessionId="s1" />)
 
-    expect(await screen.findByRole('group', { name: 'Was the time limit right?' })).toBeInTheDocument()
-    expect(screen.getByRole('group', { name: "How was the sensei's review?" })).toBeInTheDocument()
-    expect(screen.getByRole('group', { name: 'Was the description clear?' }).closest('details')).not.toHaveAttribute('open')
+    expect(await screen.findByRole('button', { name: 'Rate this kata' })).toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: 'Was the time limit right?' })).not.toBeInTheDocument()
+  })
+
+  it('asks every question in the dialog, each labelled by its question', async () => {
+    await renderOpen()
+
+    const dialog = within(screen.getByRole('dialog', { name: 'Rate this kata' }))
+    expect(dialog.getByRole('group', { name: 'Was the time limit right?' })).toBeInTheDocument()
+    expect(dialog.getByRole('group', { name: "How was the sensei's review?" })).toBeInTheDocument()
+    expect(dialog.getByRole('group', { name: 'Was the description clear?' })).toBeInTheDocument()
+  })
+
+  it('says the kata is rated once a vote saves, and closes', async () => {
+    const user = await renderOpen()
+
+    await user.click(screen.getByRole('button', { name: 'About right' }))
+    await user.click(screen.getByRole('button', { name: 'Close' }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Edit your rating' })).toBeInTheDocument()
+    expect(screen.getByText('Rated')).toBeInTheDocument()
   })
 
   it('saves a vote the moment it is tapped, with nothing to send', async () => {
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByRole('button', { name: 'About right' }))
+    await user.click(screen.getByRole('button', { name: 'About right' }))
 
     expect(submitFeedback).toHaveBeenCalledWith('s1', { timing: 'about_right' })
     expect(question('Was the time limit right?').getByRole('button', { name: 'About right' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('stores what each label says (D62)', async () => {
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByRole('button', { name: 'Too generic' }))
-    await user.click(screen.getByText('More feedback'))
+    await user.click(screen.getByRole('button', { name: 'Too generic' }))
     await user.click(screen.getByRole('button', { name: 'Somewhat unclear' }))
 
     expect(submitFeedback).toHaveBeenCalledWith('s1', { evaluation: 'too_generic' })
@@ -59,18 +81,17 @@ describe('FeedbackSection', () => {
   })
 
   it('shows the votes already saved when the learner comes back', async () => {
-    getFeedback.mockResolvedValue({ submitted: true, timing: 'too_long', evaluation: 'fair_and_relevant', clarity: null, note: null })
-    render(<FeedbackSection sessionId="s1" />)
+    getFeedback.mockResolvedValue({ submitted: true, timing: 'too_long', evaluation: 'fair_and_relevant', clarity: null, note: 'kept' })
+    await renderOpen()
 
-    expect(await screen.findByRole('button', { name: 'Too loose' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByLabelText('Anything to add?')).toHaveValue('kept')
+    expect(screen.getByRole('button', { name: 'Too loose' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'Spot on' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('sends a trimmed note on its own, then thanks the learner', async () => {
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByText('More feedback'))
     const send = screen.getByRole('button', { name: 'Send note' })
     expect(send).toBeDisabled()
 
@@ -81,24 +102,22 @@ describe('FeedbackSection', () => {
     expect(await screen.findByText('feedback received — thank you.')).toBeInTheDocument()
   })
 
-  it('caps the note at 280 characters', async () => {
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+  it('caps the note at 1000 characters', async () => {
+    const user = await renderOpen()
 
-    await user.click(await screen.findByText('More feedback'))
     const box = screen.getByLabelText('Anything to add?')
     await user.click(box)
-    await user.paste('x'.repeat(300))
+    await user.paste('x'.repeat(1200))
 
-    expect(box).toHaveValue('x'.repeat(280))
+    expect(box).toHaveValue('x'.repeat(1000))
+    expect(screen.getByText('1000/1000 · 0 left')).toBeInTheDocument()
   })
 
   it('keeps a failed vote beside its own question and retries that vote', async () => {
     submitFeedback.mockRejectedValueOnce(new Error('500'))
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByRole('button', { name: 'Spot on' }))
+    await user.click(screen.getByRole('button', { name: 'Spot on' }))
 
     const evaluation = question("How was the sensei's review?")
     expect(await evaluation.findByRole('alert')).toHaveTextContent("Couldn't send your feedback. Try again.")
@@ -115,10 +134,9 @@ describe('FeedbackSection', () => {
 
   it('does not lose the failure on one question when another saves', async () => {
     submitFeedback.mockRejectedValueOnce(new Error('500'))
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByRole('button', { name: 'Spot on' }))
+    await user.click(screen.getByRole('button', { name: 'Spot on' }))
     await screen.findByRole('alert')
     await user.click(screen.getByRole('button', { name: 'About right' }))
 
@@ -128,10 +146,9 @@ describe('FeedbackSection', () => {
   it('ignores a second tap while that question is saving, and keeps the button focusable', async () => {
     let finish!: (value: { ok: boolean }) => void
     submitFeedback.mockReturnValueOnce(new Promise((resolve) => { finish = resolve }))
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    const tapped = await screen.findByRole('button', { name: 'About right' })
+    const tapped = screen.getByRole('button', { name: 'About right' })
     await user.click(tapped)
     expect(screen.getByText('Saving…')).toBeInTheDocument()
     expect(tapped).toHaveFocus()
@@ -145,13 +162,11 @@ describe('FeedbackSection', () => {
   })
 
   it('counts the note, and treats an edited note as unsent again', async () => {
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByText('More feedback'))
     const box = screen.getByLabelText('Anything to add?')
     await user.type(box, 'short')
-    expect(screen.getByText('5/280')).toBeInTheDocument()
+    expect(screen.getByText('5/1000 · 995 left')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Send note' }))
     expect(await screen.findByText('feedback received — thank you.')).toBeInTheDocument()
@@ -164,10 +179,8 @@ describe('FeedbackSection', () => {
 
   it('keeps a note that failed to send and offers it again', async () => {
     submitFeedback.mockRejectedValueOnce(new Error('500'))
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByText('More feedback'))
     await user.type(screen.getByLabelText('Anything to add?'), 'a note')
     await user.click(screen.getByRole('button', { name: 'Send note' }))
 
@@ -182,10 +195,9 @@ describe('FeedbackSection', () => {
 
   it('still lets the learner vote when the saved votes could not be loaded', async () => {
     getFeedback.mockRejectedValue(new Error('500'))
-    const user = userEvent.setup()
-    render(<FeedbackSection sessionId="s1" />)
+    const user = await renderOpen()
 
-    await user.click(await screen.findByRole('button', { name: 'About right' }))
+    await user.click(screen.getByRole('button', { name: 'About right' }))
 
     expect(submitFeedback).toHaveBeenCalledWith('s1', { timing: 'about_right' })
   })

@@ -7,13 +7,16 @@ import { useIsMobile } from '../../hooks/useIsMobile'
 interface NavItem {
   to: string
   label: string
+  /** Bottom-bar label on phones, where six labels share 320px. */
+  short?: string
   icon: (props: { className?: string }) => ReactElement
 }
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/admin/katas', label: 'Katas', icon: GridIcon },
   { to: '/admin/scrolls', label: 'Scrolls', icon: BookIcon },
-  { to: '/admin/invitations', label: 'Invitations', icon: MailIcon },
+  { to: '/admin/invitations', label: 'Invitations', short: 'Invites', icon: MailIcon },
+  { to: '/admin/feedback', label: 'Feedback', icon: NoteIcon },
   { to: '/admin/errors', label: 'Errors', icon: AlertIcon },
   { to: '/admin/health', label: 'Health', icon: HeartIcon },
 ]
@@ -42,18 +45,19 @@ export function AdminLayout() {
           className="fixed bottom-0 inset-x-0 z-40 bg-page border-t border-border pb-[env(safe-area-inset-bottom)]"
         >
           <div className="flex">
-            {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+            {NAV_ITEMS.map(({ to, label, short, icon: Icon }) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `flex-1 min-h-14 flex flex-col items-center justify-center gap-0.5 font-mono text-xs transition-colors ${
+                  `flex-1 min-w-0 min-h-14 flex flex-col items-center justify-center gap-0.5 font-mono text-xs max-[400px]:text-[10px] transition-colors ${
                     isActive ? 'text-primary font-semibold [&>svg]:text-accent-text' : 'text-secondary'
                   }`
                 }
               >
                 <Icon className="w-5 h-5" />
-                <span>{label.toLowerCase()}</span>
+                <span aria-hidden>{(short ?? label).toLowerCase()}</span>
+                <span className="sr-only">{label.toLowerCase()}</span>
               </NavLink>
             ))}
           </div>
@@ -177,6 +181,14 @@ function MailIcon({ className }: Readonly<{ className?: string }>) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <rect x="3" y="5" width="18" height="14" rx="1" />
       <path d="M3 7l9 6 9-6" />
+    </svg>
+  )
+}
+
+function NoteIcon({ className }: Readonly<{ className?: string }>) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M4 5h16v11H9l-5 4z" />
     </svg>
   )
 }
