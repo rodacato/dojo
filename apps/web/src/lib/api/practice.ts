@@ -66,6 +66,12 @@ export const practice = {
       body: JSON.stringify({ userResponse: why, predictedOutput }),
     }),
 
+  submitOrderAttempt: (sessionId: string, order: number[], why: string) =>
+    request<SubmitAttemptResponse>(`/sessions/${sessionId}/attempts`, {
+      method: 'POST',
+      body: JSON.stringify({ userResponse: why, order }),
+    }),
+
   retryEvaluation: (sessionId: string) =>
     request<SubmitAttemptResponse>(`/sessions/${sessionId}/retry-evaluation`, {
       method: 'POST',

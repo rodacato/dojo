@@ -7,6 +7,7 @@ import { KATAS, uuidv5 } from './katas'
 import type { SeedKata } from './katas'
 import { isLineInCode } from '../../domain/practice/point-answer'
 import { normalizeOutput } from '../../domain/practice/predict-answer'
+import { isValidOrder } from '../../domain/practice/order-answer'
 
 // ---------------------------------------------------------------------------
 // System user — required by katas.created_by FK
@@ -41,6 +42,9 @@ export function validateKatas(katas: SeedKata[]): void {
     }
     if (answer?.shape === 'predict' && (ex.type !== 'review' || !ex.starterCode?.trim() || !normalizeOutput(answer.output))) {
       errors.push(`${ex.id}: a predict kata must be a review kata with starter code and an expected output`)
+    }
+    if (answer?.shape === 'order' && (ex.type !== 'review' || !ex.starterCode || !answer.accepted.every((order) => isValidOrder(ex.starterCode!, order)))) {
+      errors.push(`${ex.id}: an order kata must be a review kata whose accepted orders are distinct lines of its starter code`)
     }
     for (const v of ex.variations) {
       if (!v.ownerRole.trim()) errors.push(`${ex.id}: empty ownerRole`)

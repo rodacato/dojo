@@ -32,7 +32,7 @@ Three verification families. **Short selection or value** grades deterministical
 |---|---|---|---|---|---|---|---|---|
 | 1 | Predict the output / trace | mental model of execution | 2–5 | exact match, normalized | low | excellent | C–B | answer shape `predict` |
 | 2 | Point | critical reading, finding bugs | 3–5 | line + LLM-graded why | low–med | excellent | C | exists; extend to spans and two defects |
-| 3 | Parsons with distractors | code structure | 3–7 | order, several accepted | low | good | B | answer shape `order` + drag UI |
+| 3 | Parsons with distractors | code structure | 3–7 | order, several accepted | low | good | B | answer shape `order` + tap-to-build UI |
 | 4 | Cloze / token bank | API and syntax recall | 2–5 | token match | low | good | C | answer shape `fill` |
 | 5 | Explain in plain English | relational understanding | 5–10 | LLM with a SOLO bar | low | medium | C–B | `chat` + prompt change |
 | 6 | Bug-fix, working but wrong | targeted debugging | 8–15 | hidden tests | medium | poor | D (industry) | broken starter code + tests as a gate |
@@ -104,7 +104,7 @@ The bias figures are from 2023 models and have not been replicated on current on
 | 1 | Reference answer + rubric for every type, deterministic facts, shared grading rules | sensei prompt + rubric data | better grading on every existing kata |
 | 2 | Answer shape `predict`, its output checked against Piston by an opt-in test | answer shape + integration test | predict in the 5-minute slot |
 | 3 | The learner's level on the session | session-body and grading prompts | junior, mid and senior versions of the same kata |
-| 4 | Answer shape `order` | answer shape + drag UI | Parsons |
+| 4 | Answer shape `order` | answer shape + tap-to-build UI | Parsons |
 | 5 | Broken starter code with tests as a gate | existing runtime + UI | bug-fix at 10 and 20 minutes |
 | 6 | Spaced return of missed concepts with a new surface | scheduler | mastery and spacing in the daily |
 | 7 | `point` over spans and artifacts | answer shape + rendering | incident and diagnosis kata |

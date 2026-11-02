@@ -3,6 +3,7 @@ import type { Session } from './session'
 import type { EvaluationToken } from './values'
 import type { PointContext } from './point-answer'
 import type { PredictContext } from './predict-answer'
+import type { OrderContext } from './order-answer'
 import type { Rubric } from '@dojo/shared'
 
 export interface ConversationTurn {
@@ -37,6 +38,7 @@ export interface LLMPort {
     testResults?: string
     point?: PointContext
     predict?: PredictContext
+    order?: OrderContext
     level?: LearnerLevel
   }): AsyncIterable<EvaluationToken>
 

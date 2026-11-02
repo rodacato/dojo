@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type * as RouterDom from 'react-router-dom'
@@ -28,6 +28,7 @@ const getSession = vi.fn()
 const submitAttempt = vi.fn()
 const submitPointAttempt = vi.fn()
 const submitPredictAttempt = vi.fn()
+const submitOrderAttempt = vi.fn()
 const streamSessionBody = vi.fn()
 
 vi.mock('../lib/api', async (importOriginal) => {
@@ -39,6 +40,7 @@ vi.mock('../lib/api', async (importOriginal) => {
       submitAttempt: (...args: unknown[]) => submitAttempt(...args),
       submitPointAttempt: (...args: unknown[]) => submitPointAttempt(...args),
       submitPredictAttempt: (...args: unknown[]) => submitPredictAttempt(...args),
+      submitOrderAttempt: (...args: unknown[]) => submitOrderAttempt(...args),
       streamSessionBody: (...args: unknown[]) => streamSessionBody(...args),
     },
   }
@@ -88,6 +90,7 @@ beforeEach(() => {
   submitAttempt.mockReset()
   submitPointAttempt.mockReset()
   submitPredictAttempt.mockReset()
+  submitOrderAttempt.mockReset()
   streamSessionBody.mockReset()
 })
 
@@ -654,6 +657,92 @@ describe('KataActivePage', () => {
       renderPage('sess-1')
 
       expect(await screen.findByLabelText('What does it print?')).toHaveValue('a\nb')
+    })
+  })
+
+  describe('order kata', () => {
+    function orderSession(): SessionWithKata {
+      const base = makeSession()
+      return makeSession({
+        body: 'Put it together.',
+        kata: {
+          ...base.kata,
+          title: 'Halve it right',
+          type: 'review',
+          language: ['typescript'],
+          starterCode: 'b()\na()\nz()\n',
+          answerShape: 'order',
+        },
+      })
+    }
+
+    function placed() {
+      const built = screen.getByRole('region', { name: 'Your code' })
+      return within(built).queryAllByRole('listitem').map((item) => item.querySelector('code')!.textContent)
+    }
+
+    it('builds the order by tapping, moving up and taking out, then submits it with the why', async () => {
+      const user = userEvent.setup()
+      getSession.mockResolvedValue(orderSession())
+      submitOrderAttempt.mockResolvedValue({ attemptId: 'att-9' })
+
+      renderPage('sess-1')
+
+      await screen.findByText('Tap the lines in the order they run.')
+      await user.click(screen.getByRole('button', { name: 'Add: b()' }))
+      await user.click(screen.getByRole('button', { name: 'Add: z()' }))
+      await user.click(screen.getByRole('button', { name: 'Add: a()' }))
+      expect(placed()).toEqual(['b()', 'z()', 'a()'])
+      expect(screen.getByText('Every line is placed.')).toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: 'Move up: a()' }))
+      await user.click(screen.getByRole('button', { name: 'Move up: a()' }))
+      await user.click(screen.getByRole('button', { name: 'Take out: z()' }))
+      expect(placed()).toEqual(['a()', 'b()'])
+      expect(screen.getByRole('button', { name: 'Move up: a()' })).toBeDisabled()
+      expect(screen.getByText('Now say why this order.')).toBeInTheDocument()
+
+      const submitButton = screen.getByRole('button', { name: 'Submit' })
+      expect(submitButton).toBeDisabled()
+      fireEvent.change(screen.getByLabelText('Why this order?'), { target: { value: 'a sets up b; z is a distractor.' } })
+      await waitFor(() => expect(submitButton).toBeEnabled())
+      await user.click(submitButton)
+
+      await waitFor(() => expect(submitOrderAttempt).toHaveBeenCalledWith('sess-1', [2, 1], 'a sets up b; z is a distractor.'))
+      expect(submitAttempt).not.toHaveBeenCalled()
+    })
+
+    it('keeps Submit disabled with a why but nothing placed', async () => {
+      getSession.mockResolvedValue(orderSession())
+
+      renderPage('sess-1')
+
+      fireEvent.change(await screen.findByLabelText('Why this order?'), { target: { value: 'a first' } })
+      expect(screen.getByText('Place the lines to continue.')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
+    })
+
+    it('restores the placed lines when the learner comes back', async () => {
+      sessionStorage.setItem('dojo-order-sess-1', '2,1')
+      getSession.mockResolvedValue(orderSession())
+
+      renderPage('sess-1')
+
+      await screen.findByRole('region', { name: 'Your code' })
+      expect(placed()).toEqual(['a()', 'b()'])
+      expect(screen.getByRole('button', { name: 'Add: z()' })).toBeInTheDocument()
+    })
+
+    it('locks the lines once time runs out', async () => {
+      sessionStorage.setItem('dojo-order-sess-1', '2')
+      const session = orderSession()
+      getSession.mockResolvedValue({ ...session, startedAt: new Date(Date.now() - 30 * 60 * 1000).toISOString() })
+
+      renderPage('sess-1')
+
+      expect(await screen.findByRole('button', { name: 'View result' }, { timeout: 2000 })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Add: b()' })).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'Take out: a()' })).toBeDisabled()
     })
   })
 })

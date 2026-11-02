@@ -17,6 +17,15 @@ describe('revealedAnswer', () => {
     })
   })
 
+  it('reveals the first accepted order of an order kata', () => {
+    expect(revealedAnswer({ expectedIssues: [issue], answer: { shape: 'order', accepted: [[2, 1, 3], [1, 2, 3]] } })).toEqual({
+      shape: 'order',
+      lines: [2, 1, 3],
+      title: 'order',
+      why: 'sync first',
+    })
+  })
+
   it('reveals nothing for a rubric without an answer key', () => {
     expect(revealedAnswer({ expectedIssues: [issue] })).toBeNull()
   })

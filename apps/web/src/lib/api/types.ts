@@ -33,11 +33,15 @@ export interface SessionWithKata {
   earnedPieces: PieceId[]
 }
 
-export type GivenAnswer = { shape: 'point'; line: number; why: string } | { shape: 'predict'; output: string; why: string }
+export type GivenAnswer =
+  | { shape: 'point'; line: number; why: string }
+  | { shape: 'predict'; output: string; why: string }
+  | { shape: 'order'; lines: number[]; why: string }
 
 export type RevealedAnswer =
   | { shape: 'point'; line: number; title: string; why: string }
   | { shape: 'predict'; output: string; title: string; why: string }
+  | { shape: 'order'; lines: number[]; title: string; why: string }
 
 export interface KataFeedback {
   clarity: 'clear' | 'somewhat_unclear' | 'confusing' | null

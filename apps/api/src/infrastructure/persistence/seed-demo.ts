@@ -12,6 +12,7 @@ import { KATAS, uuidv5 } from './katas'
 import type { SeedKata } from './katas'
 import { composePointAnswer } from '../../domain/practice/point-answer'
 import { composePredictAnswer } from '../../domain/practice/predict-answer'
+import { composeOrderAnswer } from '../../domain/practice/order-answer'
 
 const LOCAL_HOSTS = ['localhost', '127.0.0.1', 'db']
 const INSERT_BATCH = 200
@@ -283,6 +284,7 @@ function userResponseFor(kata: SeedKata): string {
   const why = kata.rubric?.expectedIssues[0]?.why
   if (kata.starterCode && answer?.shape === 'point' && why) return composePointAnswer(kata.starterCode, answer.line, why)
   if (answer?.shape === 'predict' && why) return composePredictAnswer(answer.output, why)
+  if (answer?.shape === 'order' && why) return composeOrderAnswer(answer.accepted[0]!, why)
   return FREE_ANSWER[kata.type]
 }
 

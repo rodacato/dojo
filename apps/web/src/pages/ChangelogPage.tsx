@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-02',
     phase: 'Practice',
+    title: 'Put the code in order',
+    description:
+      'A new kind of kata hands you the lines of a function, shuffled, with a near miss or two that do not belong. Tap the ones you need into order and say why. Whether the order works is checked exactly, and the sensei grades how you chose. The first one is a binary search.',
+  },
+  {
+    date: '2026-11-02',
+    phase: 'Practice',
     title: 'Katas at your level',
     description:
       'The level you set in Settings now shapes the kata itself, not only which ones you get. A junior kata spells out the constraints; a senior one leaves some out and hands you a trade-off to choose and defend. The sensei grades against the same bar.',

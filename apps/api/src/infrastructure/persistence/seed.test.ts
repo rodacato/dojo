@@ -23,4 +23,18 @@ describe('validateKatas', () => {
     const kata: SeedKata = { ...KATAS.find((k) => k.rubric?.answer?.shape === 'predict')!, ...over }
     expect(() => validateKatas([kata])).toThrow(/predict kata/)
   })
+
+  it.each([
+    ['with a line outside the starter code', { accepted: [[1, 99]] }],
+    ['with a line used twice', { accepted: [[1, 1]] }],
+  ])('rejects an order kata %s', (_label, answer) => {
+    const base = KATAS.find((k) => k.rubric?.answer?.shape === 'order')!
+    const kata: SeedKata = { ...base, rubric: { ...base.rubric!, answer: { shape: 'order', ...answer } } }
+    expect(() => validateKatas([kata])).toThrow(/order kata/)
+  })
+
+  it('rejects an order kata that is not a review kata', () => {
+    const kata: SeedKata = { ...KATAS.find((k) => k.rubric?.answer?.shape === 'order')!, type: 'code' }
+    expect(() => validateKatas([kata])).toThrow(/order kata/)
+  })
 })

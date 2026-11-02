@@ -683,6 +683,29 @@ describe('GET /sessions/:id', () => {
     expect(done.answer).toEqual({ shape: 'predict', output: 'SECRET-OUTPUT', title: 'order', why: 'sync first' })
   })
 
+  it('never sends the accepted order of an order kata before the final verdict', async () => {
+    authState.user = authedUser()
+    getSession.mockResolvedValue(sessionEntity())
+    getKataById.mockResolvedValue(
+      kataEntity({
+        type: 'review',
+        starterCode: 'b()\na()\n',
+        rubric: { expectedIssues: [{ title: 'setup first', severity: 'high', why: 'a sets up b' }], answer: { shape: 'order', accepted: [[2, 1]] } },
+      }),
+    )
+    const attempt = { id: 'a', userResponse: 'x', submittedAt: new Date('2026-06-01T10:05:00.000Z') }
+
+    selectResult.rows = [{ ...attempt, llmResponse: '{}', isFinalEvaluation: false }]
+    const pending = await (await get()).text()
+    expect(pending).not.toContain('accepted')
+    expect(JSON.parse(pending).answer).toBeNull()
+    expect(JSON.parse(pending).kata.answerShape).toBe('order')
+
+    selectResult.rows = [{ ...attempt, llmResponse: '{"verdict":"passed"}', isFinalEvaluation: true }]
+    const done = (await (await get()).json()) as { answer: unknown }
+    expect(done.answer).toEqual({ shape: 'order', lines: [2, 1], title: 'setup first', why: 'a sets up b' })
+  })
+
   it('parses the LLM JSON of the final attempt into verdict/analysis/topics', async () => {
     authState.user = authedUser()
     getSession.mockResolvedValue(sessionEntity())
@@ -1002,6 +1025,46 @@ describe('POST /sessions/:id/attempts', () => {
     it('rejects a prediction on a kata that is not a predict kata', async () => {
       getKataById.mockResolvedValue(kataEntity())
       const res = await submit({ userResponse: 'answer', predictedOutput: '1' })
+      expect(res.status).toBe(400)
+    })
+  })
+
+  describe('order kata', () => {
+    beforeEach(() => {
+      authState.user = authedUser()
+      getSession.mockResolvedValue(sessionEntity())
+      getKataById.mockResolvedValue(
+        kataEntity({
+          type: 'review',
+          starterCode: 'b()\na()\nc()\n',
+          rubric: { expectedIssues: [{ title: 't', severity: 'high', why: 'w' }], answer: { shape: 'order', accepted: [[2, 1]] } },
+        }),
+      )
+    })
+
+    it('stores the tapped lines ahead of the why', async () => {
+      const res = await submit({ userResponse: '  a sets up b.  ', order: [2, 1] })
+      expect(res.status).toBe(202)
+      const { attemptId } = (await res.json()) as { attemptId: string }
+      expect(pendingAttempts.get(attemptId)?.userResponse).toBe('Ordered lines: 2, 1\n\na sets up b.')
+    })
+
+    it.each([
+      ['no order', { userResponse: 'why' }],
+      ['an empty order', { userResponse: 'why', order: [] }],
+      ['a line twice', { userResponse: 'why', order: [1, 1] }],
+      ['a line outside the code', { userResponse: 'why', order: [1, 4] }],
+      ['a blank why', { userResponse: '   ', order: [2, 1] }],
+      ['a pointed line', { userResponse: 'why', order: [2, 1], pointedLine: 1 }],
+    ])('rejects %s', async (_label, body) => {
+      const res = await submit(body)
+      expect(res.status).toBe(400)
+      expect(pendingAttempts.size).toBe(0)
+    })
+
+    it('rejects an order on a kata that is not an order kata', async () => {
+      getKataById.mockResolvedValue(kataEntity())
+      const res = await submit({ userResponse: 'answer', order: [1] })
       expect(res.status).toBe(400)
     })
   })

@@ -33,10 +33,14 @@ export const predictAnswerKeySchema = z.object({
   shape: z.literal('predict'),
   output: z.string().min(1),
 })
+export const orderAnswerKeySchema = z.object({
+  shape: z.literal('order'),
+  accepted: z.array(z.array(z.number().int().positive()).min(1)).min(1),
+})
 export const rubricSchema = z.object({
   expectedIssues: z.array(rubricIssueSchema).min(1),
   contextNotes: z.string().optional(),
-  answer: z.discriminatedUnion('shape', [pointAnswerKeySchema, predictAnswerKeySchema]).optional(),
+  answer: z.discriminatedUnion('shape', [pointAnswerKeySchema, predictAnswerKeySchema, orderAnswerKeySchema]).optional(),
   reference: z.string().min(1).optional(),
 })
 
