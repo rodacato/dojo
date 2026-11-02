@@ -1,6 +1,6 @@
 import type { KataRepositoryPort } from '../../domain/content/ports'
 import type { LLMPort, SessionRepositoryPort } from '../../domain/practice/ports'
-import type { KataId, SessionId, VariationId } from '../../domain/shared/types'
+import type { KataId, LearnerLevel, SessionId, VariationId } from '../../domain/shared/types'
 import type { ErrorReporterPort } from '../../infrastructure/observability/ports'
 
 interface Deps {
@@ -17,6 +17,7 @@ export class GenerateSessionBody {
     sessionId: SessionId
     kataId: KataId
     variationId: VariationId
+    level?: LearnerLevel | null
   }): Promise<void> {
     // Failures in prep delete the session rather than mark it failed. A
     // half-born session has no body to read and no attempt to show — leaving
@@ -47,6 +48,7 @@ export class GenerateSessionBody {
         ownerRole: variation.ownerRole,
         ownerContext: variation.ownerContext,
         kataDescription: kata.description,
+        level: params.level ?? undefined,
       })
 
       await this.deps.sessionRepo.activate(params.sessionId, body)
@@ -65,6 +67,7 @@ export class GenerateSessionBody {
     sessionId: SessionId
     kataId: KataId
     variationId: VariationId
+    level?: LearnerLevel | null
   }): AsyncIterable<string> {
     try {
       const kata = await this.deps.kataRepo.findById(params.kataId)
@@ -90,6 +93,7 @@ export class GenerateSessionBody {
         ownerRole: variation.ownerRole,
         ownerContext: variation.ownerContext,
         kataDescription: kata.description,
+        level: params.level ?? undefined,
       })) {
         acc += chunk
         yield chunk

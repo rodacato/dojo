@@ -54,6 +54,7 @@ export class SubmitAttempt {
       testResults: params.executionContext,
       point: params.point,
       predict: params.predict,
+      level: session.level ?? undefined,
     })) {
       // Saved before the final token goes out: the client reads the session and posts feedback as soon as it lands.
       if (token.isFinal && token.result) {

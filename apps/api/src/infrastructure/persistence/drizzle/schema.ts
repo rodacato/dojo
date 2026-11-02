@@ -13,6 +13,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
+import type { LearnerLevel } from '../../../domain/shared/types'
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -75,6 +76,7 @@ export const sessions = pgTable('sessions', {
   body: text('body').notNull(),
   status: varchar('status', { length: 50 }).notNull().default('active'),
   isDaily: boolean('is_daily').notNull().default(false),
+  level: varchar('level', { length: 20 }).$type<LearnerLevel>(),
   startedAt: timestamp('started_at').defaultNow().notNull(),
   completedAt: timestamp('completed_at'),
 })

@@ -71,6 +71,26 @@ describe('GenerateSessionBody', () => {
     expect(sessionRepo.activate).toHaveBeenCalledWith(SessionId('session-1'), 'You are reviewing a PR that...')
   })
 
+  it("writes the body for the session's level", async () => {
+    const kata = makeKata()
+    const llm = {
+      evaluate: vi.fn(),
+      generateSessionBody: vi.fn().mockResolvedValue('An open scenario.'),
+      generateSessionBodyStream: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+
+    await new GenerateSessionBody({ kataRepo, sessionRepo: makeStubSessionRepo(), llm }).execute({
+      sessionId: SessionId('session-1'),
+      kataId: kata.id,
+      variationId: kata.variations[0]!.id,
+      level: 'senior',
+    })
+
+    expect(llm.generateSessionBody).toHaveBeenCalledWith(expect.objectContaining({ level: 'senior' }))
+  })
+
   it('deletes session when kata is not found', async () => {
     const sessionRepo = makeStubSessionRepo()
     const llm = { evaluate: vi.fn(), generateSessionBody: vi.fn(), generateSessionBodyStream: vi.fn(), askSensei: vi.fn() }

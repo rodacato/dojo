@@ -249,3 +249,5 @@ A review kata with starter code may carry an answer key in `rubric.answer`, whic
 
 **Every type may carry a hidden rubric.** For code, chat and whiteboard kata it reaches the sensei as `guide`, a reference answer plus the points it must cover; the generic prompt stays the same without one. Test results reach the sensei as `testResults`, apart from the learner's text, so an answer cannot forge them. One block of grading rules in `prompts/sensei.ts` is shared by every graded prompt ([research](research/KATA_TYPES.md#how-the-sensei-should-grade)).
 
+**The kata is leveled to the learner.** A session stores the learner's level (junior, mid, senior) from their preferences when it starts. The session-body prompt uses it to decide how much to specify — a senior body leaves out constraints and trade-offs to name and defend — and the generic grading prompt grades against that level's bar. A session with no level behaves as before. Review kata are unaffected: their body is the authored description.
+

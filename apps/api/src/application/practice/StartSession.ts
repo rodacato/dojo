@@ -3,12 +3,14 @@ import { KataNotFoundError } from '../../domain/shared/errors'
 import type { KataId, UserId, VariationId } from '../../domain/shared/types'
 import type { SessionRepositoryPort } from '../../domain/practice/ports'
 import type { EventBusPort } from '../../domain/shared/events'
+import type { UserPreferencesPort } from '../../domain/identity/ports'
 import { Session } from '../../domain/practice/session'
 
 interface Deps {
   kataRepo: KataRepositoryPort
   sessionRepo: SessionRepositoryPort
   eventBus: EventBusPort
+  preferencesRepo: UserPreferencesPort
 }
 
 export class StartSession {
@@ -26,11 +28,13 @@ export class StartSession {
     const variation = kata.variations.find((v) => v.id === params.variationId)
     if (!variation) throw new KataNotFoundError(params.variationId)
 
+    const prefs = await this.deps.preferencesRepo.findByUserId(params.userId)
     const session = Session.createPreparing({
       userId: params.userId,
       kataId: params.kataId,
       variationId: params.variationId,
       daily: params.daily,
+      level: prefs?.level,
     })
 
     await this.deps.sessionRepo.save(session)

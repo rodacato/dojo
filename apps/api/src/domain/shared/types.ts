@@ -6,6 +6,8 @@ export type KataId = Brand<string, 'KataId'>
 export type VariationId = Brand<string, 'VariationId'>
 export type AttemptId = Brand<string, 'AttemptId'>
 
+export type LearnerLevel = 'junior' | 'mid' | 'senior'
+
 export const SessionId = (id: string): SessionId => id as SessionId
 export const UserId = (id: string): UserId => id as UserId
 export const KataId = (id: string): KataId => id as KataId

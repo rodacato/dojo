@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-02',
     phase: 'Practice',
+    title: 'Katas at your level',
+    description:
+      'The level you set in Settings now shapes the kata itself, not only which ones you get. A junior kata spells out the constraints; a senior one leaves some out and hands you a trade-off to choose and defend. The sensei grades against the same bar.',
+  },
+  {
+    date: '2026-11-02',
+    phase: 'Practice',
     title: 'Predict the output',
     description:
       'A new kind of kata shows a short snippet and asks what it prints, and why. Whether your output matches is checked exactly, not guessed, and the sensei grades the reasoning behind it. The real output appears with the verdict. The first one is about who speaks first in the event loop.',

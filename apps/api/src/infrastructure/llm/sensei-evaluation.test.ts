@@ -80,6 +80,22 @@ describe('buildMessages for code, chat and whiteboard kata', () => {
     expect(messages[0]!.content).not.toContain('All tests passed.')
   })
 
+  it("grades at the session's level, in the first turn and the follow-up", () => {
+    const first = buildMessages({ ...generic, level: 'senior' })[0]!.content
+    expect(first).toContain("THE DEVELOPER'S LEVEL:\nGrade at a senior bar")
+
+    const followUp = buildMessages({
+      ...generic,
+      level: 'senior',
+      history: [{ userResponse: 'first', llmResponse: 'ok', followUpQuestion: 'Why?' }],
+    })
+    expect(followUp[0]!.content).toContain('Grade at a senior bar')
+  })
+
+  it('names no level when the session has none', () => {
+    expect(buildMessages(generic)[0]!.content).not.toContain("THE DEVELOPER'S LEVEL")
+  })
+
   it.each([
     ['generic', { ...generic }],
     ['review', { ...base, rubric: { expectedIssues: base.rubric!.expectedIssues } }],
