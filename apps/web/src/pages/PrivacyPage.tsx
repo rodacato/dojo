@@ -29,6 +29,9 @@ const SECTIONS: LegalSection[] = [
           <LegalListItem>
             Your streak and activity data (derived from sessions).
           </LegalListItem>
+          <LegalListItem>
+            Your reminder email and hour, if you turn reminders on.
+          </LegalListItem>
         </LegalList>
       </>
     ),
@@ -65,6 +68,9 @@ const SECTIONS: LegalSection[] = [
           <LegalListItem>
             Compute your belt and milestones, and publish a verdict only when you share it.
           </LegalListItem>
+          <LegalListItem>
+            Send you a welcome email when you join, and daily reminders only if you turn them on.
+          </LegalListItem>
         </LegalList>
         <p>
           Your submissions are sent for evaluation to the LLM provider the operator of this
@@ -73,7 +79,8 @@ const SECTIONS: LegalSection[] = [
         </p>
         <p>
           If the operator enables external error reporting (Sentry), error reports are sent
-          there as well.
+          there as well. If the operator enables email (Resend), your address is sent there to
+          deliver these emails.
         </p>
       </>
     ),
@@ -86,7 +93,8 @@ const SECTIONS: LegalSection[] = [
         <p>Dojo requests a single GitHub OAuth scope:</p>
         <LegalList>
           <LegalListItem>
-            <LegalCode>user:email</LegalCode> — your email address (for account identification).
+            <LegalCode>user:email</LegalCode> — your email address (for account identification and the
+            emails above).
             Your public profile (username, avatar) needs no extra scope.
           </LegalListItem>
         </LegalList>
@@ -146,5 +154,5 @@ const SECTIONS: LegalSection[] = [
 ]
 
 export function PrivacyPage() {
-  return <LegalPage title="Privacy Policy" lastUpdated="2026-09-28" sections={SECTIONS} />
+  return <LegalPage title="Privacy Policy" lastUpdated="2026-11-02" sections={SECTIONS} />
 }

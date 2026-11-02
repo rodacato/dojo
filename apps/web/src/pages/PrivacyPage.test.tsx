@@ -48,7 +48,7 @@ describe('PrivacyPage', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'Privacy Policy' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('Last updated 2026-09-28')).toBeInTheDocument()
+    expect(screen.getByText('Last updated 2026-11-02')).toBeInTheDocument()
   })
 
   it('lists every privacy section in the table of contents in order', () => {
