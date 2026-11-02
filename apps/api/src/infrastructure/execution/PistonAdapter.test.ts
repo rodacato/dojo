@@ -70,22 +70,30 @@ describe('PistonAdapter', () => {
     )
   })
 
-  it('does not rewrite non-Rust languages', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        run: { stdout: 'ok', stderr: '', code: 0, signal: null },
-      }),
-    })
+  it.each([
+    ['python', 'test.py', 'solution.py'],
+    ['ruby', 'test.rb', 'solution.rb'],
+  ])('sends a %s test and the solution as two files, the test first', async (language, testFile, solutionFile) => {
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ run: { stdout: 'ok', stderr: '', code: 0, signal: null } }) })
 
-    await adapter.execute({
-      language: 'python',
-      code: 'def f():\n    return 1',
-      testCode: 'assert f() == 1',
-    })
+    await adapter.execute({ language, code: 'the solution', testCode: 'the test' })
 
     const body = JSON.parse(mockFetch.mock.calls[0]?.[1]?.body as string)
-    expect(body.files[0].content).toBe('def f():\n    return 1\n\nassert f() == 1')
+    expect(body.files).toEqual([
+      { name: testFile, content: 'the test' },
+      { name: solutionFile, content: 'the solution' },
+    ])
+  })
+
+  it('names TypeScript files without an extension and lifts Piston\'s ES5 and missing Node types', async () => {
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ run: { stdout: 'ok', stderr: '', code: 0, signal: null } }) })
+
+    await adapter.execute({ language: 'typescript', code: 'module.exports = {}', testCode: "require('./solution')" })
+
+    const body = JSON.parse(mockFetch.mock.calls[0]?.[1]?.body as string)
+    expect(body.files.map((f: { name: string }) => f.name)).toEqual(['test', 'solution'])
+    for (const file of body.files) expect(file.content).toMatch(/^\/\/ @ts-nocheck\n\/\/\/ <reference lib="es2020" \/>\n/)
+    expect(body.files[1].content).toContain('module.exports = {}')
   })
 
   it('detects compilation failure', async () => {
