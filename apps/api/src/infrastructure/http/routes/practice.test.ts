@@ -461,6 +461,7 @@ describe('POST /sessions', () => {
       userId: 'user-1',
       kataId: KATA_UUID,
       variationId: 'var-1',
+      daily: false,
     })
     expect(generateSessionBodyExecute).toHaveBeenCalledWith({
       sessionId: SESSION_ID,
@@ -547,7 +548,7 @@ describe('POST /sessions/daily', () => {
     expect(res.status).toBe(201)
     expect(await res.json()).toEqual({ sessionId: SESSION_ID })
     expect(pickDailyKata).toHaveBeenCalledWith('user-1')
-    expect(startSession).toHaveBeenCalledWith({ userId: 'user-1', kataId: KATA_UUID, variationId: 'var-1' })
+    expect(startSession).toHaveBeenCalledWith({ userId: 'user-1', kataId: KATA_UUID, variationId: 'var-1', daily: true })
   })
 
   it('returns 404 and starts nothing when the instance has no micro kata', async () => {

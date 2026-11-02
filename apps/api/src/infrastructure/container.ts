@@ -135,7 +135,7 @@ export const useCases = {
   startSession: new StartSession({ kataRepo, sessionRepo, eventBus }),
   generateSessionBody: new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
-  getKataOptions: new GetKataOptions({ kataRepo, preferencesRepo }),
+  getKataOptions: new GetKataOptions({ kataRepo, dailyKatas: kataRepo, preferencesRepo }),
   pickDailyKata: new PickDailyKata({ dailyKatas: kataRepo, preferencesRepo }),
   resolveActiveSession: new ResolveActiveSession({ kataRepo, sessionRepo }),
   getKataById: new GetKataById({ kataRepo }),

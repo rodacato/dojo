@@ -1,0 +1,1 @@
+ALTER TABLE "sessions" ADD COLUMN "is_daily" boolean DEFAULT false NOT NULL;

@@ -114,6 +114,31 @@ describe('GET /dashboard', () => {
     expect(((await res.json()) as { dailyKataMinutes: unknown }).dailyKataMinutes).toBeNull()
   })
 
+  describe('done today (ADR-034)', () => {
+    const DAILY = { kataId: 'kata-micro', durationMinutes: 5, lastPracticedAt: null }
+
+    async function todayWith(row: { isDaily: boolean }) {
+      selectQueue[2] = [{ id: 'sess-today', kataTitle: 'Stuck at nine', verdict: 'PASSED', ...row }]
+      return (await (await makeApp().request('/dashboard')).json()) as { todayComplete: boolean; todaySession: { id: string } | null }
+    }
+
+    it('is not closed by a kata chosen in Choose a kata while a daily kata exists', async () => {
+      pickDailyKata.mockResolvedValue(DAILY)
+
+      expect(await todayWith({ isDaily: false })).toMatchObject({ todayComplete: false, todaySession: null })
+    })
+
+    it('is closed by the daily kata', async () => {
+      pickDailyKata.mockResolvedValue(DAILY)
+
+      expect(await todayWith({ isDaily: true })).toMatchObject({ todayComplete: true, todaySession: { id: 'sess-today' } })
+    })
+
+    it('is closed by any kata on an instance without micro kata', async () => {
+      expect(await todayWith({ isDaily: false })).toMatchObject({ todayComplete: true, todaySession: { id: 'sess-today' } })
+    })
+  })
+
   it('returns 200 with default-empty shape for a new user', async () => {
     const app = makeApp()
     const res = await app.request('/dashboard')

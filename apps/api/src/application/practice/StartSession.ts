@@ -18,6 +18,7 @@ export class StartSession {
     userId: UserId
     kataId: KataId
     variationId: VariationId
+    daily?: boolean
   }): Promise<Session> {
     const kata = await this.deps.kataRepo.findById(params.kataId)
     if (!kata) throw new KataNotFoundError(params.kataId)
@@ -29,6 +30,7 @@ export class StartSession {
       userId: params.userId,
       kataId: params.kataId,
       variationId: params.variationId,
+      daily: params.daily,
     })
 
     await this.deps.sessionRepo.save(session)

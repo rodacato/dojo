@@ -29,6 +29,7 @@ function sessionRow(over: Record<string, unknown> = {}) {
     variationId: 'var-1',
     body: 'the problem body',
     status: 'completed',
+    isDaily: false,
     startedAt: STARTED,
     completedAt: COMPLETED,
     attempts: [],
@@ -72,6 +73,15 @@ describe('PostgresSessionRepository.findById (toSession mapping)', () => {
     expect(session?.status).toBe('completed')
     expect(session?.startedAt).toBe(STARTED)
     expect(session?.completedAt).toBe(COMPLETED)
+    expect(session?.daily).toBe(false)
+  })
+
+  it('keeps that the session came from the daily entry', async () => {
+    const db = makeDb()
+    vi.mocked(db.query.sessions.findFirst).mockResolvedValue(sessionRow({ isDaily: true }))
+
+    const session = await new PostgresSessionRepository(db).findById('sess-1' as never)
+    expect(session?.daily).toBe(true)
   })
 
   it('coerces a null completedAt to null (not undefined)', async () => {

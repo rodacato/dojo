@@ -1,12 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { KataId, UserId } from '../shared/types'
-import { pickDailyKata, pickOneMore, pickTodaysKata, type DailyCandidate } from './daily-kata'
+import { pickDailyKata, pickOneMore, pickTodaysKata, todaysKataId, type DailyCandidate } from './daily-kata'
 
 const NOW = new Date(2026, 9, 19, 9, 30)
 const learner = UserId('11111111-1111-4111-8111-111111111111')
 
 function candidate(id: string, lastPracticedAt: Date | null = null, over: Partial<DailyCandidate> = {}): DailyCandidate {
-  return { kataId: KataId(id), durationMinutes: 5, category: 'debugging', difficulty: 'easy', lastPracticedAt, ...over }
+  return {
+    kataId: KataId(id),
+    durationMinutes: 5,
+    category: 'debugging',
+    difficulty: 'easy',
+    lastPracticedAt,
+    lastPracticedBeforeToday: lastPracticedAt,
+    ...over,
+  }
 }
 
 const catalog = ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => candidate(id))
@@ -25,7 +33,7 @@ describe('pickTodaysKata', () => {
 
   it('prefers kata the learner has not practiced in the last six months', () => {
     const lastWeek = new Date(2026, 9, 12)
-    const mostlyDone = catalog.map((c) => (c.kataId === 'e' ? c : { ...c, lastPracticedAt: lastWeek }))
+    const mostlyDone = catalog.map((c) => (c.kataId === 'e' ? c : { ...c, lastPracticedAt: lastWeek, lastPracticedBeforeToday: lastWeek }))
     expect(pickTodaysKata(mostlyDone, learner, NOW)?.kataId).toBe('e')
   })
 
@@ -49,12 +57,45 @@ describe('pickOneMore', () => {
 })
 
 describe('pickDailyKata', () => {
-  it('switches to one more once a micro kata was practiced today', () => {
-    const todays = pickTodaysKata(catalog, learner, NOW)!
-    const afterIt = catalog.map((c) => (c.kataId === todays.kataId ? { ...c, lastPracticedAt: new Date(2026, 9, 19, 8) } : c))
+  const thisMorning = new Date(2026, 9, 19, 8)
+  const todays = pickTodaysKata(catalog, learner, NOW)!
+
+  it('switches to one more once today\'s kata was started', () => {
+    const afterIt = catalog.map((c) => (c.kataId === todays.kataId ? { ...c, lastPracticedAt: thisMorning } : c))
     for (let i = 0; i < 20; i++) {
-      expect(pickDailyKata(afterIt, learner, NOW)?.kataId).not.toBe(todays.kataId)
+      expect(pickDailyKata({ candidates: afterIt, todaysDailyKataId: todays.kataId }, learner, NOW)?.kataId).not.toBe(todays.kataId)
     }
+  })
+
+  it('keeps today\'s kata when another micro kata was chosen today (ADR-034)', () => {
+    const chosen = catalog.find((c) => c.kataId !== todays.kataId)!
+    const afterChoosing = catalog.map((c) => (c.kataId === chosen.kataId ? { ...c, lastPracticedAt: thisMorning } : c))
+
+    expect(pickDailyKata({ candidates: afterChoosing, todaysDailyKataId: null }, learner, NOW)).toEqual(
+      afterChoosing.find((c) => c.kataId === todays.kataId),
+    )
+  })
+
+  it('does not move today\'s kata when the chosen one was not fresh before today', () => {
+    const lastWeek = new Date(2026, 9, 12)
+    const mostlyDone = catalog.map((c) => (c.kataId === 'e' ? c : { ...c, lastPracticedAt: lastWeek, lastPracticedBeforeToday: lastWeek }))
+    const eDoneToday = mostlyDone.map((c) => (c.kataId === 'e' ? { ...c, lastPracticedAt: thisMorning } : c))
+
+    expect(pickTodaysKata(eDoneToday, learner, NOW)?.kataId).toBe('e')
+  })
+})
+
+describe('todaysKataId', () => {
+  it('is the kata started from the daily entry once there is one', () => {
+    expect(todaysKataId({ candidates: catalog, todaysDailyKataId: KataId('z') }, learner, NOW)).toBe('z')
+  })
+
+  it('is today\'s pick before the learner opens it', () => {
+    expect(todaysKataId({ candidates: catalog, todaysDailyKataId: null }, learner, NOW)).toBe(pickTodaysKata(catalog, learner, NOW)!.kataId)
+  })
+
+  it('is nothing on an instance without micro kata', () => {
+    expect(todaysKataId({ candidates: [], todaysDailyKataId: null }, learner, NOW)).toBeNull()
   })
 })
 
@@ -86,7 +127,7 @@ describe('preferences (D57)', () => {
 
   it('does not let a fitting kata already practiced recently beat a fresh one', () => {
     const lastWeek = new Date(2026, 9, 12)
-    const sqlHardDone = mixed.map((c) => (c.kataId === 'sql-hard' ? { ...c, lastPracticedAt: lastWeek } : c))
+    const sqlHardDone = mixed.map((c) => (c.kataId === 'sql-hard' ? { ...c, lastPracticedAt: lastWeek, lastPracticedBeforeToday: lastWeek } : c))
     expect(pickTodaysKata(sqlHardDone, learner, NOW, focused)?.kataId).not.toBe('sql-hard')
   })
 

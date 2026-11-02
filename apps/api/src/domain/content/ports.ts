@@ -10,6 +10,7 @@ export interface KataFilters {
   userLevel?: 'junior' | 'mid' | 'senior'
   interests?: string[]
   randomness?: number // 0.0–1.0
+  excludeKataId?: KataId
 }
 
 export interface KataRepositoryPort {

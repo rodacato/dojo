@@ -1,13 +1,19 @@
-import { eq, sql } from 'drizzle-orm'
+import { and, asc, eq, gte, sql } from 'drizzle-orm'
 import { Kata } from '../../domain/content/kata'
 import type { Variation } from '../../domain/content/kata'
 import type { KataFilters, KataRepositoryPort } from '../../domain/content/ports'
-import { MICRO_KATA_MAX_MINUTES, type DailyCandidate, type DailyKataCandidatesPort } from '../../domain/practice/daily-kata'
+import { MICRO_KATA_MAX_MINUTES, type DailyKataCandidatesPort, type DailyPool } from '../../domain/practice/daily-kata'
 import type { Difficulty, KataStatus, KataType } from '../../domain/content/values'
 import { KataId, UserId, VariationId } from '../../domain/shared/types'
 import type { DB } from './drizzle/client'
-import { katas, variations } from './drizzle/schema'
+import { katas, sessions, variations } from './drizzle/schema'
 import type { Rubric } from '@dojo/shared'
+
+type RawTimestamp = Date | string | null
+
+function toDate(value: RawTimestamp): Date | null {
+  return value === null ? null : new Date(value)
+}
 
 type EligibleRow = {
   id: string
@@ -50,6 +56,10 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
   }
 
   async findEligible(userId: UserId, filters: KataFilters): Promise<Kata[]> {
+    return this.groupRowsToKatas(await this.findEligibleRows(userId, filters))
+  }
+
+  private async findEligibleRows(userId: UserId, filters: KataFilters): Promise<EligibleRow[]> {
     const maxDurationClause = filters.maxDuration
       ? sql`AND e.duration <= ${filters.maxDuration}`
       : sql``
@@ -57,6 +67,7 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
     const languageClause = filters.language
       ? sql`AND e.language @> ${JSON.stringify([filters.language])}::jsonb`
       : sql``
+    const excludeClause = filters.excludeKataId ? sql`AND e.id <> ${filters.excludeKataId}` : sql``
 
     // Interest-based ordering: weight katas matching user interests
     const randomness = filters.randomness ?? 1
@@ -85,9 +96,27 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
         })()
       : sql`0`
 
-    const orderClause = sql`(${interestClause} + ${levelClause}) DESC, RANDOM()`
+    // Kata not practiced in six months come first; repeats only fill the slots they leave.
+    const fresh = sql`e.id NOT IN (
+      SELECT exercise_id FROM sessions
+      WHERE user_id = ${userId}
+        AND started_at > NOW() - INTERVAL '6 months'
+    )`
 
-    const rows = await this.db.execute<EligibleRow>(sql`
+    // Three distinct kata first, then their variations: a limit on joined rows let one kata fill several slots.
+    return this.db.execute<EligibleRow>(sql`
+      WITH picked AS (
+        SELECT e.id, ${fresh} AS fresh, (${interestClause} + ${levelClause}) AS fit, RANDOM() AS roll
+        FROM exercises e
+        WHERE e.status = 'published'
+          AND EXISTS (SELECT 1 FROM variations pv WHERE pv.exercise_id = e.id)
+          ${maxDurationClause}
+          ${typeClause}
+          ${languageClause}
+          ${excludeClause}
+        ORDER BY fresh DESC, fit DESC, roll
+        LIMIT 3
+      )
       SELECT
         e.id, e.title, e.description, e.duration, e.difficulty,
         e.category, e.type, e.status, e.language, e.tags, e.topics,
@@ -96,56 +125,47 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
         e.updated_at,
         v.id as variation_id, v.owner_role as v_owner_role,
         v.owner_context as v_owner_context, v.created_at as v_created_at
-      FROM exercises e
+      FROM picked p
+      JOIN exercises e ON e.id = p.id
       JOIN variations v ON v.exercise_id = e.id
-      WHERE e.status = 'published'
-        AND e.id NOT IN (
-          SELECT exercise_id FROM sessions
-          WHERE user_id = ${userId}
-            AND started_at > NOW() - INTERVAL '6 months'
-        )
-        ${maxDurationClause}
-        ${typeClause}
-        ${languageClause}
-      ORDER BY ${orderClause}
-      LIMIT 3
+      ORDER BY p.fresh DESC, p.fit DESC, p.roll
     `)
-
-    // Fallback: if all katas exhausted within 6 months, allow repeats
-    if (rows.length === 0) {
-      const fallbackRows = await this.db.execute<EligibleRow>(sql`
-        SELECT
-          e.id, e.title, e.description, e.duration, e.difficulty,
-          e.category, e.type, e.status, e.language, e.tags, e.topics,
-          e.owner_role, e.owner_context, e.test_code, e.starter_code,
-          e.rubric, e.version, e.admin_notes, e.created_by, e.created_at,
-          e.updated_at,
-          v.id as variation_id, v.owner_role as v_owner_role,
-          v.owner_context as v_owner_context, v.created_at as v_created_at
-        FROM exercises e
-        JOIN variations v ON v.exercise_id = e.id
-        WHERE e.status = 'published'
-          ${maxDurationClause}
-          ${typeClause}
-          ${languageClause}
-        ORDER BY ${orderClause}
-        LIMIT 3
-      `)
-      return this.groupRowsToKatas(fallbackRows)
-    }
-
-    return this.groupRowsToKatas(rows)
   }
 
-  async findDailyCandidates(userId: UserId): Promise<DailyCandidate[]> {
-    const rows = await this.db.execute<{
+  async findDailyCandidates(userId: UserId, todayStart: Date): Promise<DailyPool> {
+    const [rows, [daily]] = await Promise.all([
+      this.findDailyCandidateRows(userId, todayStart),
+      this.db
+        .select({ kataId: sessions.kataId })
+        .from(sessions)
+        .where(and(eq(sessions.userId, userId), eq(sessions.isDaily, true), gte(sessions.startedAt, todayStart)))
+        .orderBy(asc(sessions.startedAt))
+        .limit(1),
+    ])
+    return {
+      todaysDailyKataId: daily ? KataId(daily.kataId) : null,
+      candidates: rows.map((r) => ({
+        kataId: KataId(r.id),
+        durationMinutes: r.duration,
+        category: r.category,
+        difficulty: r.difficulty,
+        lastPracticedAt: toDate(r.last_practiced_at),
+        lastPracticedBeforeToday: toDate(r.last_practiced_before_today),
+      })),
+    }
+  }
+
+  private findDailyCandidateRows(userId: UserId, todayStart: Date) {
+    return this.db.execute<{
       id: string
       duration: number
       category: string
       difficulty: Difficulty
-      last_practiced_at: Date | string | null
+      last_practiced_at: RawTimestamp
+      last_practiced_before_today: RawTimestamp
     }>(sql`
-      SELECT e.id, e.duration, e.category, e.difficulty, MAX(s.started_at) AS last_practiced_at
+      SELECT e.id, e.duration, e.category, e.difficulty, MAX(s.started_at) AS last_practiced_at,
+        MAX(s.started_at) FILTER (WHERE s.started_at < ${todayStart.toISOString()}::timestamp) AS last_practiced_before_today
       FROM exercises e
       LEFT JOIN sessions s ON s.exercise_id = e.id AND s.user_id = ${userId}
       WHERE e.status = 'published'
@@ -154,13 +174,6 @@ export class PostgresKataRepository implements KataRepositoryPort, DailyKataCand
       GROUP BY e.id, e.duration, e.category, e.difficulty
       ORDER BY e.id
     `)
-    return rows.map((r) => ({
-      kataId: KataId(r.id),
-      durationMinutes: r.duration,
-      category: r.category,
-      difficulty: r.difficulty,
-      lastPracticedAt: r.last_practiced_at === null ? null : new Date(r.last_practiced_at),
-    }))
   }
 
   async save(kata: Kata): Promise<void> {

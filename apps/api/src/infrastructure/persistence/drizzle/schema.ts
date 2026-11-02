@@ -74,6 +74,7 @@ export const sessions = pgTable('sessions', {
     .references(() => variations.id),
   body: text('body').notNull(),
   status: varchar('status', { length: 50 }).notNull().default('active'),
+  isDaily: boolean('is_daily').notNull().default(false),
   startedAt: timestamp('started_at').defaultNow().notNull(),
   completedAt: timestamp('completed_at'),
 })

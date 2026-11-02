@@ -1,5 +1,5 @@
 # ADR-031: One surprise kata a day, the picker under Advanced
-**Status:** accepted
+**Status:** Accepted (the Advanced picker is superseded by [ADR 034](034-choose-a-kata.md); the daily loop stands)
 **Date:** 2026-10-19
 
 ## Context
