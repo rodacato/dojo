@@ -10,6 +10,8 @@ import type { AppEnv } from '../app-env'
 
 export const feedbackRoutes = new Hono<AppEnv>()
 
+export const FEEDBACK_NOTE_LIMIT = 1000
+
 // ---------------------------------------------------------------------------
 // POST /sessions/:id/feedback — Save kata feedback, one vote at a time (D62)
 // ---------------------------------------------------------------------------
@@ -24,7 +26,7 @@ feedbackRoutes.post('/sessions/:id/feedback', requireAuth, uuidParam('id', { err
     clarity: z.enum(['clear', 'somewhat_unclear', 'confusing']).nullable().optional(),
     timing: z.enum(['too_short', 'about_right', 'too_long']).nullable().optional(),
     evaluation: z.enum(['fair_and_relevant', 'too_generic', 'missed_the_point']).nullable().optional(),
-    note: z.string().max(280).nullable().optional(),
+    note: z.string().max(FEEDBACK_NOTE_LIMIT).nullable().optional(),
   })
   const parsed = feedbackSchema.safeParse(body)
   if (!parsed.success) return c.json({ error: 'Invalid feedback', details: z.flattenError(parsed.error) }, 400)
