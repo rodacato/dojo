@@ -20,7 +20,7 @@ It's not about preparing for interviews. It's about staying technically alive in
 
 **One kata a day, about five minutes.** The dojo picks it, you don't see the topic until it opens, and it is small enough to answer on a phone: tap the line with the bug, then say why. The surprise is the exercise. Real work doesn't announce what it is about, and the reflex being trained is reaching for your own reasoning before you know what's coming. Today's kata stays the same all day; once it's done you can ask for one more.
 
-**Advanced is for specific practice.** When you want something longer or narrower, you set the type, the language and the time you have, and you get one kata inside them.
+**Choose a kata is for specific practice.** When you want something on your own terms, you set the time you have, the type and the language, and pick one of up to three kata. Today's kata is never among them.
 
 What it replaces is not another product. It is the prompt as the first reflex, five minutes a day at a time.
 

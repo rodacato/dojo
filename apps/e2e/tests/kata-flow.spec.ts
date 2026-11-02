@@ -43,8 +43,20 @@ const MOCK_PREFERENCES = {
   goalWeeklyTarget: 3,
 }
 
-test.describe('Kata flow (Advanced page)', () => {
-  test('Start waits for a duration; type and language default to Any', async ({ page }) => {
+const MOCK_KATAS = ['Off-by-one in pagination', 'Zero emails sent', 'Stuck at nine'].map((title, i) => ({
+  id: `k${i + 1}`,
+  title,
+  description: 'Pages are 1-based.',
+  duration: 5,
+  difficulty: 'easy',
+  type: 'review',
+  language: ['typescript'],
+  tags: [],
+}))
+
+test.describe('Kata flow (Choose a kata)', () => {
+  test('finds up to three katas with the first selected, and starts nothing before Start', async ({ page }) => {
+    let sessionsStarted = 0
     await page.route(`${API_BASE}/auth/me`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
     )
@@ -54,17 +66,28 @@ test.describe('Kata flow (Advanced page)', () => {
     await page.route(`${API_BASE}/preferences`, (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_PREFERENCES) }),
     )
+    await page.route(`${API_BASE}/katas?*`, (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(MOCK_KATAS) }),
+    )
+    await page.route(`${API_BASE}/sessions`, (route) => {
+      sessionsStarted++
+      return route.abort()
+    })
 
     await page.goto('/')
     await page.evaluate(() => localStorage.setItem('dojo_token', 'fake-token'))
     await page.goto('/katas')
 
-    const start = page.getByRole('button', { name: /start/i })
-    await expect(start).toBeDisabled()
-    await expect(page.getByRole('group', { name: 'Type' }).getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
-    await expect(page.getByRole('group', { name: 'Language' }).getByRole('button', { name: 'Any' })).toHaveAttribute('aria-pressed', 'true')
+    const find = page.getByRole('button', { name: 'Find katas →' })
+    await expect(find).toBeDisabled()
+    await expect(page.getByLabel('Type')).toHaveValue('')
+    await expect(page.getByLabel('Language')).toHaveValue('')
 
-    await page.getByRole('group', { name: 'How long?' }).getByRole('button', { name: '20m' }).click()
-    await expect(start).toBeEnabled()
+    await page.getByRole('group', { name: 'Maximum duration' }).getByRole('button', { name: '5m' }).click()
+    await find.click()
+
+    await expect(page.getByRole('radio')).toHaveCount(3)
+    await expect(page.getByRole('radio', { name: /Off-by-one/ })).toBeChecked()
+    expect(sessionsStarted).toBe(0)
   })
 })

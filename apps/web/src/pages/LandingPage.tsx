@@ -117,8 +117,8 @@ const OFFERINGS = [
     body: 'One surprise kata a day, about five minutes. You see the topic when it opens. Done early? Ask for one more.',
   },
   {
-    title: 'Advanced',
-    body: 'Longer katas, up to 45 minutes. Set the type, language and time, and you get one.',
+    title: 'Choose a kata',
+    body: 'Up to 20 minutes. Set the time, type and language, then pick one of up to three katas.',
   },
   {
     title: 'Belts',

@@ -17,7 +17,7 @@ const DAILY_STAGES = [
 
 const ADVANCED_STAGES = [
   { n: '01', label: 'Set the constraints' },
-  { n: '02', label: 'Get one kata' },
+  { n: '02', label: 'Choose a kata' },
   { n: '03', label: 'Work it' },
   { n: '04', label: 'Sensei evaluates' },
 ] as const

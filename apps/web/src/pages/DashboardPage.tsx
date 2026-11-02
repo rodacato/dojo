@@ -95,6 +95,7 @@ export function DashboardPage() {
           startDisabled={startDisabled}
           startError={startError}
           onStart={startKata}
+          onChoose={() => navigate('/katas')}
           onResume={(id) => navigate(`/katas/${id}`)}
           onViewResults={(id) => navigate(`/katas/${id}/result`)}
         />

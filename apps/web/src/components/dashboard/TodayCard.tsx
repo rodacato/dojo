@@ -14,6 +14,7 @@ interface TodayCardProps {
   startDisabled: boolean
   startError: string | null
   onStart: () => void
+  onChoose: () => void
   onResume: (id: string) => void
   onViewResults: (id: string) => void
 }
@@ -29,6 +30,7 @@ export function TodayCard({
   startDisabled,
   startError,
   onStart,
+  onChoose,
   onResume,
   onViewResults,
 }: Readonly<TodayCardProps>) {
@@ -71,7 +73,7 @@ export function TodayCard({
   const blind = dailyKataMinutes !== null
   let body = 'Your streak resets at midnight. The dojo opens again whether you show up or not.'
   if (blind) body = 'One kata, about five minutes. You see the topic when it opens.'
-  else if (isFirstVisit) body = 'Set the constraints. Get one kata. Work.'
+  else if (isFirstVisit) body = 'Set your limits, then choose from up to three katas.'
 
   let headline = 'The dojo was empty today.'
   if (isFirstVisit) headline = 'First kata. The hardest one is always the first.'
@@ -85,8 +87,13 @@ export function TodayCard({
       error={startError}
     >
       <Button size="xl" loading={starting} disabled={startDisabled} onClick={onStart}>
-        Enter the dojo →
+        {blind ? 'Enter the dojo →' : 'Choose a kata →'}
       </Button>
+      {blind && (
+        <Button variant="link" size="xl" onClick={onChoose}>
+          Choose a kata →
+        </Button>
+      )}
     </HeroLayout>
   )
 }

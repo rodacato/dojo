@@ -12,7 +12,7 @@ Dojo is self-hosted open source: a daily practice dojo plus a small learning hub
 
 ## What is built
 
-- **The daily loop:** one blind micro kata a day, about five minutes, then the sensei's review ([ADR 031](adr/031-surprise-daily-kata.md)). Longer kata sit under Advanced.
+- **The daily loop:** one blind micro kata a day, about five minutes, then the sensei's review ([ADR 031](adr/031-surprise-daily-kata.md)). Choose a kata offers up to three outside it, up to 20 minutes ([ADR 034](adr/034-choose-a-kata.md)).
 - **The sensei:** a streamed evaluation that grades reasoning, with a painted avatar beside the review that never reacts to the verdict ([ADR 033](adr/033-sensei-art.md)).
 - **Recognition:** belts derived from practice history, milestones, and `/belts` as an illustrated room of what you earned ([ADR 032](adr/032-belts-room.md)).
 - **Scrolls:** external apps embedded by iframe, with Dojo as a minimal host ([ADR 025](adr/025-external-embedded-scrolls.md) to [029](adr/029-scroll-conformance-suite.md)).
