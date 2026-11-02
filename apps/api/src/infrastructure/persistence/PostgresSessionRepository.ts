@@ -32,6 +32,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
       variationId: session.variationId,
       body: session.body,
       status: session.status,
+      isDaily: session.daily,
       startedAt: session.startedAt,
       completedAt: session.completedAt,
     }
@@ -148,6 +149,7 @@ export class PostgresSessionRepository implements SessionRepositoryPort {
       body: row.body,
       status: row.status as Session['status'],
       attempts: domainAttempts,
+      daily: row.isDaily,
       startedAt: row.startedAt,
       completedAt: row.completedAt ?? null,
     })

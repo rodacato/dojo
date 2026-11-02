@@ -14,6 +14,7 @@ export interface SessionProps {
   body: string
   status: SessionStatus
   attempts: Attempt[]
+  daily?: boolean
   startedAt: Date
   completedAt: Date | null
 }
@@ -29,6 +30,7 @@ export class Session {
   readonly body: string
   private _status: SessionStatus
   private readonly _attempts: Attempt[]
+  readonly daily: boolean
   readonly startedAt: Date
   private _completedAt: Date | null
   private _pendingEvents: DomainEvent[] = []
@@ -41,6 +43,7 @@ export class Session {
     this.body = props.body
     this._status = props.status
     this._attempts = [...props.attempts]
+    this.daily = props.daily ?? false
     this.startedAt = props.startedAt
     this._completedAt = props.completedAt
   }
@@ -75,6 +78,7 @@ export class Session {
     userId: UserId
     kataId: KataId
     variationId: VariationId
+    daily?: boolean
   }): Session {
     const session = new Session({
       id: SessionId(crypto.randomUUID()),
@@ -84,6 +88,7 @@ export class Session {
       body: '',
       status: 'preparing',
       attempts: [],
+      daily: params.daily,
       startedAt: new Date(),
       completedAt: null,
     })

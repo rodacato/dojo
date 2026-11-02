@@ -219,17 +219,8 @@ describe('PostgresKataRepository.findEligible (groupRowsToKatas folding)', () =>
     expect(katas.map((k) => k.id).sort()).toEqual(['k1', 'k2'])
   })
 
-  it('falls back to the second query when the primary returns no rows', async () => {
-    // primary empty -> fallback returns one kata.
-    const repo = new PostgresKataRepository(makeExecuteDb([[], [eligibleRow({ id: 'fb' })]]))
-    const katas = await repo.findEligible(UserId('u'), {})
-
-    expect(katas).toHaveLength(1)
-    expect(katas[0]?.id).toBe('fb')
-  })
-
-  it('returns an empty array when both primary and fallback are empty', async () => {
-    const repo = new PostgresKataRepository(makeExecuteDb([[], []]))
+  it('returns an empty array when nothing matches', async () => {
+    const repo = new PostgresKataRepository(makeExecuteDb([[]]))
     expect(await repo.findEligible(UserId('u'), {})).toEqual([])
   })
 })

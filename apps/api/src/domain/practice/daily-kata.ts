@@ -13,13 +13,20 @@ export interface DailyCandidate {
   category: string
   difficulty: Difficulty
   lastPracticedAt: Date | null
+  lastPracticedBeforeToday: Date | null
+}
+
+export interface DailyPool {
+  candidates: DailyCandidate[]
+  /** The first kata started from today's daily entry, which is today's kata once it exists. */
+  todaysDailyKataId: KataId | null
 }
 
 export interface DailyKataCandidatesPort {
-  findDailyCandidates(userId: UserId): Promise<DailyCandidate[]>
+  findDailyCandidates(userId: UserId, todayStart: Date): Promise<DailyPool>
 }
 
-function startOfDay(now: Date): Date {
+export function startOfDay(now: Date): Date {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate())
 }
 
@@ -31,9 +38,16 @@ function practicedSince(candidate: DailyCandidate, since: Date): boolean {
   return candidate.lastPracticedAt !== null && candidate.lastPracticedAt >= since
 }
 
-function preferFresh(candidates: DailyCandidate[], now: Date): DailyCandidate[] {
+function preferFresh(
+  candidates: DailyCandidate[],
+  now: Date,
+  lastPracticed: (c: DailyCandidate) => Date | null = (c) => c.lastPracticedAt,
+): DailyCandidate[] {
   const freshBefore = new Date(now.getTime() - FRESH_AFTER_DAYS * 24 * 60 * 60 * 1000)
-  const fresh = candidates.filter((c) => !practicedSince(c, freshBefore))
+  const fresh = candidates.filter((c) => {
+    const at = lastPracticed(c)
+    return at === null || at < freshBefore
+  })
   return fresh.length > 0 ? fresh : candidates
 }
 
@@ -58,13 +72,14 @@ function preferFitting(candidates: DailyCandidate[], prefs: UserPreferences | nu
 }
 
 // Same learner and day, same kata: the pick is fixed before the tap, so there is no reroll (D53).
+// It reads only practice before today, so a kata chosen today cannot move it.
 export function pickTodaysKata(
   candidates: DailyCandidate[],
   userId: UserId,
   now: Date,
   prefs: UserPreferences | null = null,
 ): DailyCandidate | null {
-  const pool = preferFitting(preferFresh(candidates, now), prefs)
+  const pool = preferFitting(preferFresh(candidates, now, (c) => c.lastPracticedBeforeToday), prefs)
   if (pool.length === 0) return null
   const hash = createHash('sha256').update(`${userId}:${dayKey(now)}`).digest()
   return pool[hash.readUInt32BE(0) % pool.length]!
@@ -83,12 +98,23 @@ export function pickOneMore(
   return pool[Math.floor(random() * pool.length)]!
 }
 
+// Only today's daily kata opens "one more"; a kata chosen in Choose a kata does not (ADR-034).
 export function pickDailyKata(
-  candidates: DailyCandidate[],
+  pool: DailyPool,
   userId: UserId,
   now: Date,
   prefs: UserPreferences | null = null,
 ): DailyCandidate | null {
-  const practicedToday = candidates.some((c) => practicedSince(c, startOfDay(now)))
-  return practicedToday ? pickOneMore(candidates, now, prefs) : pickTodaysKata(candidates, userId, now, prefs)
+  return pool.todaysDailyKataId
+    ? pickOneMore(pool.candidates, now, prefs)
+    : pickTodaysKata(pool.candidates, userId, now, prefs)
+}
+
+export function todaysKataId(
+  pool: DailyPool,
+  userId: UserId,
+  now: Date,
+  prefs: UserPreferences | null = null,
+): KataId | null {
+  return pool.todaysDailyKataId ?? pickTodaysKata(pool.candidates, userId, now, prefs)?.kataId ?? null
 }

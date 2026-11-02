@@ -212,7 +212,7 @@ Configured with the `LLM_*` variables described in the [README](../README.md#con
 **`body` lives in Session, not Variation.**
 The kata is the template. The session is the instance. The body is generated once at session creation and locked. Refreshing the page always shows the same kata.
 
-**Today's kata is fixed per learner and day, on the server** ([ADR 031](adr/031-surprise-daily-kata.md)). Advanced takes duration, type and language as transient filters, never saved.
+**Today's kata is fixed per learner and day, on the server** ([ADR 031](adr/031-surprise-daily-kata.md)). Only a session started from the daily entry (`sessions.is_daily`) makes or completes today's kata. Choose a kata ([ADR 034](adr/034-choose-a-kata.md)) remembers its last duration, type and language in the browser only, and never offers today's kata.
 
 **Hard attempt cap, enforced in the aggregate.**
 The sensei decides when it has enough to evaluate and can ask follow-up questions before giving a final verdict, mirroring real technical discussions — but the conversation is bounded by `MAX_ATTEMPTS`, a named constant in `Session`. The aggregate's `addAttempt` throws `AttemptLimitReachedError` once that many attempts have been recorded, so the cap is a domain invariant, not just prompt guidance.

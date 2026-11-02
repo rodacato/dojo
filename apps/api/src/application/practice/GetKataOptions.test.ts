@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { Kata } from '../../domain/content/kata'
-import { UserId } from '../../domain/shared/types'
+import { KataId, UserId } from '../../domain/shared/types'
+import { pickTodaysKata, type DailyPool } from '../../domain/practice/daily-kata'
 import { GetKataOptions } from './GetKataOptions'
 
 const makeKata = (title: string) =>
@@ -18,7 +19,16 @@ const makeKata = (title: string) =>
     variations: [{ ownerRole: 'Tech Lead', ownerContext: 'Startup context' }],
   })
 
-function makeDeps(overrides?: { prefs?: { level: 'junior' | 'mid' | 'senior'; interests: string[]; randomness: number } | null }) {
+const NOW = new Date(2026, 10, 2, 9)
+
+function micro(id: string) {
+  return { kataId: KataId(id), durationMinutes: 5, category: 'debugging', difficulty: 'easy' as const, lastPracticedAt: null, lastPracticedBeforeToday: null }
+}
+
+function makeDeps(overrides?: {
+  prefs?: { level: 'junior' | 'mid' | 'senior'; interests: string[]; randomness: number } | null
+  pool?: DailyPool
+}) {
   const kataRepo = {
     findEligible: vi.fn().mockResolvedValue([makeKata('Ex 1'), makeKata('Ex 2')]),
     findById: vi.fn(),
@@ -27,7 +37,10 @@ function makeDeps(overrides?: { prefs?: { level: 'junior' | 'mid' | 'senior'; in
   const preferencesRepo = {
     findByUserId: vi.fn().mockResolvedValue(overrides?.prefs ?? null),
   }
-  return { kataRepo, preferencesRepo }
+  const dailyKatas = {
+    findDailyCandidates: vi.fn().mockResolvedValue(overrides?.pool ?? { candidates: [], todaysDailyKataId: null }),
+  }
+  return { kataRepo, dailyKatas, preferencesRepo }
 }
 
 describe('GetKataOptions', () => {
@@ -92,5 +105,21 @@ describe('GetKataOptions', () => {
     })
 
     expect(result).toEqual([])
+  })
+
+  it('leaves out today\'s kata before the learner opens it', async () => {
+    const candidates = ['a', 'b', 'c'].map(micro)
+    const deps = makeDeps({ pool: { candidates, todaysDailyKataId: null } })
+    await new GetKataOptions(deps).execute({ userId: UserId('user-1'), filters: { maxDuration: 5 }, now: NOW })
+
+    const todays = pickTodaysKata(candidates, UserId('user-1'), NOW)!.kataId
+    expect(deps.kataRepo.findEligible).toHaveBeenCalledWith(UserId('user-1'), { maxDuration: 5, excludeKataId: todays })
+  })
+
+  it('leaves out the kata started from today\'s entry once there is one', async () => {
+    const deps = makeDeps({ pool: { candidates: ['a', 'b'].map(micro), todaysDailyKataId: KataId('started') } })
+    await new GetKataOptions(deps).execute({ userId: UserId('user-1'), filters: {}, now: NOW })
+
+    expect(deps.kataRepo.findEligible).toHaveBeenCalledWith(UserId('user-1'), { excludeKataId: 'started' })
   })
 })

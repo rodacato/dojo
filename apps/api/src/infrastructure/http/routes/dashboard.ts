@@ -81,6 +81,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
       .select({
         id: sessions.id,
         kataTitle: katas.title,
+        isDaily: sessions.isDaily,
         verdict: sql<string | null>`(
           SELECT ${attempts.llmResponse}::jsonb->>'verdict'
           FROM ${attempts}
@@ -95,7 +96,7 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
         sql`${sessions.status} IN ('completed', 'failed')`,
         gte(sessions.startedAt, todayStart),
       ))
-      .orderBy(desc(sessions.startedAt))
+      .orderBy(desc(sessions.isDaily), desc(sessions.startedAt))
       .limit(1),
     db
       .select({
@@ -113,7 +114,8 @@ dashboardRoutes.get('/dashboard', requireAuth, async (c) => {
 
   const streak = calculateStreak(practiceDays)
 
-  const todayRow = todayRows[0]
+  // With a daily kata, only it completes today; a kata chosen in Choose a kata does not (ADR-034).
+  const todayRow = todayRows[0]?.isDaily || !dailyKata ? todayRows[0] : undefined
   const todayComplete = !!todayRow
   const todaySession = todayRow
     ? { id: todayRow.id, kataTitle: todayRow.kataTitle, verdict: todayRow.verdict }

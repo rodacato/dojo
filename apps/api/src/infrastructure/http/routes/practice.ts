@@ -170,10 +170,10 @@ practiceRoutes.post('/sessions/daily', requireAuth, async (c) => {
   const user = c.get('user') as { id: string }
   const pick = await useCases.pickDailyKata.execute(UserId(user.id))
   if (!pick) return c.json({ error: 'No daily kata available' }, 404)
-  return startKataSession(c, user.id, pick.kataId)
+  return startKataSession(c, user.id, pick.kataId, true)
 })
 
-async function startKataSession(c: Context<AppEnv>, userId: string, kataId: KataId) {
+async function startKataSession(c: Context<AppEnv>, userId: string, kataId: KataId, daily = false) {
   // Fetch kata to pick a random variation
   const kata = await useCases.getKataById.execute(kataId)
   if (!kata) return c.json({ error: 'Kata not found' }, 404)
@@ -185,6 +185,7 @@ async function startKataSession(c: Context<AppEnv>, userId: string, kataId: Kata
     userId: UserId(userId),
     kataId,
     variationId: variation.id,
+    daily,
   })
 
   // Generate kata body in background — don't block the response. Errors
