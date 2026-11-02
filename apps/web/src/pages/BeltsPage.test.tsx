@@ -12,7 +12,6 @@ vi.mock('../context/AuthContext', () => ({
 }))
 
 // The canvas it paints is not implemented by jsdom; it has its own tests.
-vi.mock('../components/recognition/PractitionerSection', () => ({ PractitionerSection: () => null }))
 
 vi.mock('../lib/api', () => ({
   api: { getBelts: vi.fn(), getPractitioner: vi.fn(), getDashboard: vi.fn() },
