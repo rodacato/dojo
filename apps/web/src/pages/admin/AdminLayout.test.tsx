@@ -101,12 +101,12 @@ describe('AdminLayout', () => {
       window.innerWidth = desktopWidth
     })
 
-    it('swaps the sidebar for a top bar and a bottom bar with the five sections', () => {
+    it('swaps the sidebar for a top bar and a bottom bar with the six sections', () => {
       renderLayout('/admin/invitations')
 
       expect(screen.queryByRole('navigation', { name: 'Admin navigation' })).not.toBeInTheDocument()
       const bar = screen.getByRole('navigation', { name: 'Admin sections' })
-      expect(within(bar).getAllByRole('link')).toHaveLength(5)
+      expect(within(bar).getAllByRole('link')).toHaveLength(6)
       expect(within(bar).getByRole('link', { name: 'invitations' })).toHaveAttribute('aria-current', 'page')
       expect(screen.getByRole('link', { name: /Back to dojo/ })).toHaveAttribute('href', '/dashboard')
     })

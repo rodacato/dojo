@@ -335,9 +335,9 @@ describe('ResultsPage', () => {
       const verdict = await screen.findByRole('heading', { name: 'NEEDS WORK' })
       const answer = screen.getByRole('heading', { name: 'The answer · line 2' })
       const notes = screen.getByRole('heading', { name: 'Strengths' })
-      const timing = await screen.findByRole('group', { name: 'Was the time limit right?' })
+      const rate = await screen.findByRole('button', { name: 'Rate this kata' })
       const done = screen.getByRole('button', { name: 'Done' })
-      const inOrder = [verdict, answer, notes, timing, done]
+      const inOrder = [verdict, answer, notes, rate, done]
       inOrder.slice(1).forEach((el, i) => {
         expect(inOrder[i]!.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
       })

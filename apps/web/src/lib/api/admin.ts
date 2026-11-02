@@ -66,6 +66,23 @@ export const admin = {
       byVariation: Record<string, { total: number; clarity: Record<string, number>; timing: Record<string, number>; evaluation: Record<string, number> }>
     }>(`/admin/katas/${id}/feedback`),
 
+  getRecentFeedback: (days = 30) =>
+    request<{
+      days: number
+      items: Array<{
+        sessionId: string
+        kataId: string
+        kataTitle: string
+        kataType: string
+        username: string
+        clarity: string | null
+        timing: string | null
+        evaluation: string | null
+        note: string | null
+        submittedAt: string
+      }>
+    }>(`/admin/feedback?days=${days}`),
+
   createInvitation: (email?: string) =>
     request<{ id: string; token: string; url: string; expiresAt: string; emailSent: boolean }>('/admin/invitations', {
       method: 'POST',

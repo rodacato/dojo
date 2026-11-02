@@ -12,6 +12,13 @@ interface ChangelogEntry {
 const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-02',
+    phase: 'Practice',
+    title: 'Rating a kata, out of the way',
+    description:
+      'The questions after a kata moved behind one "Rate this kata" link, so the result stays the result. Each answer still saves when you tap it, and the note shows how many of its 1000 characters are left.',
+  },
+  {
+    date: '2026-11-02',
     phase: 'Identity',
     title: 'The sensei, on paper',
     description:

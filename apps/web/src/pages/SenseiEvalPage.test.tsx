@@ -236,13 +236,14 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByRole('button', { name: 'Share' })).toBeInTheDocument()
   })
 
-  it('asks the trial questions above Done, where the kata now ends (D62)', async () => {
+  it('offers the rating as one link above Done, where the kata now ends (D62)', async () => {
     streamState = { status: 'complete', tokens: 't', result: makeResult() }
     renderPage('sess-4')
 
-    const timing = await screen.findByRole('group', { name: 'Was the time limit right?' })
+    const rate = await screen.findByRole('button', { name: 'Rate this kata' })
     const done = screen.getByRole('button', { name: 'Done' })
-    expect(timing.compareDocumentPosition(done) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(rate.compareDocumentPosition(done) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(screen.queryByRole('group', { name: 'Was the time limit right?' })).not.toBeInTheDocument()
     expect(getFeedback).toHaveBeenCalledWith('sess-4')
   })
 
@@ -251,7 +252,7 @@ describe('SenseiEvalPage', () => {
     renderPage()
 
     await screen.findByText('Looking')
-    expect(screen.queryByRole('group', { name: 'Was the time limit right?' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Rate this kata' })).not.toBeInTheDocument()
     expect(getFeedback).not.toHaveBeenCalled()
   })
 
