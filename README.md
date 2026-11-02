@@ -96,11 +96,11 @@ The creator registers a scroll at `/admin/scrolls` by pasting its `scroll.json`.
 
 ## How it works
 
-Once a day the dojo serves you one kata, about five minutes, small enough to answer on a phone. You don't see the topic until it opens — that's the point: you practice the part where you don't know what's coming. Want something longer or more specific? **Advanced** asks for a type, a language and how long you have, and gives you one kata inside them. Either way, a sensei (an LLM with a specific role and 12 years of experience in whatever domain the kata covers) evaluates your work in real time. Not with praise, not with the answer — with honest, specific feedback on what you did and what you missed.
+Once a day the dojo serves you one kata, about five minutes, small enough to answer on a phone. You don't see the topic until it opens — that's the point: you practice the part where you don't know what's coming. Want something specific? **Choose a kata** asks how long you have (5, 10 or 20 minutes), a type and a language, and offers up to three kata to pick from. Either way, a sensei (an LLM with a specific role and 12 years of experience in whatever domain the kata covers) evaluates your work in real time. Not with praise, not with the answer — with honest, specific feedback on what you did and what you missed.
 
 ```
 Open today's kata (~5 min, topic hidden until it opens)
-  — or Advanced: type + language + time → one kata
+  — or Choose a kata: time + type + language → pick one of up to three
      ↓
 Work through it (timer running, no AI, no autocomplete)
      ↓

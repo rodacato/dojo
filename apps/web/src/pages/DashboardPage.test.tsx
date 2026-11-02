@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import type { DashboardData } from '../lib/api'
@@ -218,16 +218,29 @@ describe('DashboardPage', () => {
   })
 
   describe('today card states', () => {
-    it('offers "Enter the dojo" and navigates to /katas on click', async () => {
+    it('leads with Choose a kata when the instance has no daily kata', async () => {
       const user = userEvent.setup()
       mockedGetDashboard.mockResolvedValue(baseDashboard())
 
       renderDashboard()
 
-      const cta = await screen.findByRole('button', { name: /enter the dojo/i })
-      await user.click(cta)
+      await user.click(await screen.findByRole('button', { name: 'Choose a kata →' }))
 
       expect(screen.getByText('katas page')).toBeInTheDocument()
+    })
+
+    it('keeps today\'s kata first and Choose a kata one tap away beside it', async () => {
+      const user = userEvent.setup()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5 }))
+
+      renderDashboard()
+
+      const buttons = within(await screen.findByRole('region', { name: "Today's kata is waiting." })).getAllByRole('button')
+      expect(buttons.map((b) => b.textContent)).toEqual(['Enter the dojo →', 'Choose a kata →'])
+
+      await user.click(buttons[1]!)
+      expect(screen.getByText('katas page')).toBeInTheDocument()
+      expect(mockedStartDailyKata).not.toHaveBeenCalled()
     })
 
     it('explains the blind kata beside the start action, not the streak warning', async () => {
@@ -405,7 +418,16 @@ describe('DashboardPage', () => {
 
       renderDashboard()
 
-      expect(await screen.findByRole('button', { name: /enter the dojo/i })).toBeEnabled()
+      expect(await screen.findByRole('button', { name: 'Choose a kata →' })).toBeEnabled()
+    })
+
+    it('keeps Choose a kata reachable beside a disabled daily start', async () => {
+      goOffline()
+      mockedGetDashboard.mockResolvedValue(baseDashboard({ dailyKataMinutes: 5 }))
+
+      renderDashboard()
+
+      expect(await screen.findByRole('button', { name: 'Choose a kata →' })).toBeEnabled()
     })
   })
 

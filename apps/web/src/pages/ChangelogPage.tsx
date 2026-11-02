@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-02',
     phase: 'Practice',
+    title: 'Choose a kata',
+    description:
+      "Beside today's kata, Choose a kata asks how long you have, 5, 10 or 20 minutes, a type and a language, and offers up to three katas with the first one ready to start. It remembers what you asked last time, and today's kata is never among them, so the surprise stays a surprise. Doing one no longer closes today's kata.",
+  },
+  {
+    date: '2026-11-02',
+    phase: 'Practice',
     title: 'Rating a kata, out of the way',
     description:
       'The questions after a kata moved behind one "Rate this kata" link, so the result stays the result. Each answer still saves when you tap it, and the note shows how many of its 1000 characters are left.',
