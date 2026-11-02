@@ -27,15 +27,6 @@ export function OfflineBanner() {
         tone="danger"
         eyebrow={eyebrow}
         bottomBorder
-        action={
-          <button
-            type="button"
-            onClick={() => globalThis.location.reload()}
-            className="min-h-11 font-mono text-xs uppercase tracking-wider text-accent-text hover:underline transition-colors"
-          >
-            Retry now
-          </button>
-        }
       >
         We'll reconnect when your network returns. Reconnect to start a kata.
       </Banner>

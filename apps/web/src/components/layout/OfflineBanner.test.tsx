@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { OfflineBanner } from './OfflineBanner'
 import { useOnline } from '../../hooks/useOnline'
 
@@ -27,13 +26,13 @@ describe('OfflineBanner', () => {
     expect(container).toBeEmptyDOMElement()
   })
 
-  it('shows the offline banner with seconds-granularity age and a retry button', () => {
+  it('shows the offline banner with seconds-granularity age', () => {
     mockUseOnline.mockReturnValue({ online: false, offlineSince: NOW - 5_000 })
     render(<OfflineBanner />)
 
     expect(screen.getByText(/Last connected 5s ago/)).toBeInTheDocument()
     expect(screen.getByText(/We'll reconnect when your network returns/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /retry now/i })).toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
   })
 
   it('never claims a kata pauses, because the timer keeps running', () => {
@@ -52,20 +51,5 @@ describe('OfflineBanner', () => {
     mockUseOnline.mockReturnValue({ online: false, offlineSince: NOW - 7_200_000 })
     rerender(<OfflineBanner />)
     expect(screen.getByText(/Last connected 2h ago/)).toBeInTheDocument()
-  })
-
-  it('reloads the page when retry is clicked', async () => {
-    mockUseOnline.mockReturnValue({ online: false, offlineSince: NOW - 1_000 })
-    const reload = vi.fn()
-    Object.defineProperty(globalThis, 'location', {
-      configurable: true,
-      value: { ...globalThis.location, reload },
-    })
-
-    const user = userEvent.setup()
-    render(<OfflineBanner />)
-    await user.click(screen.getByRole('button', { name: /retry now/i }))
-
-    expect(reload).toHaveBeenCalledOnce()
   })
 })
