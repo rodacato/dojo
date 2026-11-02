@@ -140,6 +140,8 @@ TEST_DATABASE_URL=postgresql://dojo:dojo@db:5432/dojo_test pnpm test --filter=ap
 
 CI runs them against a Postgres service and fails, rather than skips, if the database is missing.
 
+`PistonAdapter.integration.test.ts` runs kata-shaped tests against a real Piston instead, and is skipped unless `PISTON_TEST_URL` is set; in the devcontainer it is `http://piston:2000`. CI has no Piston, so run it locally when you touch how code is sent to Piston.
+
 Tag a spec `{ tag: '@smoke' }` only when a broken PR must fail on it: the subset runs on every pull
 request and should stay at a few minutes. Everything else runs in the nightly full suite.
 

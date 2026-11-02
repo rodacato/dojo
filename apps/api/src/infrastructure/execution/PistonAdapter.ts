@@ -155,9 +155,7 @@ function failedResult(stderr: string, runTimeoutMs: number, executionTimeMs: num
   return { stdout: '', stderr, exitCode: 1, timedOut: false, outputExceeded: false, runTimeoutMs, executionTimeMs }
 }
 
-// Combine solution + test into one file so all symbols are in scope.
-// Two-file mode loses stdout in Piston's TypeScript runtime.
-// Rust: a learner-written `fn main` is renamed to `fn __learner_main` so
+// Rust and Go share one file with the test harness. Rust: a learner-written `fn main` is renamed to `fn __learner_main` so
 // the test harness owns the real entry point. Learner code stays at the
 // top level of the file (same-file items are accessible without `pub` —
 // a `mod` wrapper was tried first and failed on module privacy, validated
@@ -193,11 +191,31 @@ function runFileName(language: string): string {
   }
 }
 
+// Piston's tsc targets ES5 without Node types; the kata tests need Promise, require and module.
+const TS_PRELUDE = '// @ts-nocheck\n/// <reference lib="es2020" />\n'
+
+// TypeScript, Python and Ruby tests load the learner's code as a module of
+// its own (require('./solution'), from solution import, require_relative), so
+// it travels as a second file. Piston appends .ts to every TypeScript name:
+// "solution" compiles to solution.js, which require('./solution') resolves.
+function moduleFiles(language: string, code: string, testCode: string) {
+  switch (language.toLowerCase()) {
+    case 'typescript':
+      return [{ name: 'test', content: TS_PRELUDE + testCode }, { name: 'solution', content: TS_PRELUDE + code }]
+    case 'python':
+      return [{ name: 'test.py', content: testCode }, { name: 'solution.py', content: code }]
+    case 'ruby':
+      return [{ name: 'test.rb', content: testCode }, { name: 'solution.rb', content: code }]
+    default:
+      return null
+  }
+}
+
 function buildExecuteFiles(language: string, code: string, testCode: string, runFile: string) {
   if (language.toLowerCase() === 'sql') {
     return [{ name: 'query.sql', content: buildSqlScript(code, testCode) }]
   }
-  return [{ name: runFile, content: combineSources(language, code, testCode) }]
+  return moduleFiles(language, code, testCode) ?? [{ name: runFile, content: combineSources(language, code, testCode) }]
 }
 
 async function handlePistonResponse(
