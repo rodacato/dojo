@@ -1,6 +1,6 @@
 # PRD-035: Recognition — a visible practice history
 
-> **Status:** In progress under #224. Foundation (#225) and the practitioner (#226) have shipped.
+> **Status:** Superseded in part by [ADR-032](../adr/032-belts-room.md): `/belts` is the illustrated room and the practitioner editor was removed. #224 tracks what remains.
 > **Date:** 2026-10-19
 > **Context:** [PRD-031](031-belt-progression-rubric.md), [ADR-031](../adr/031-surprise-daily-kata.md), design [#189](https://github.com/rodacato/dojo/issues/189), daily pilot [#193](https://github.com/rodacato/dojo/issues/193).
 > **Visual proposal:** [recognition direction](../../design/brand/recognition.md), proposed bands in `design/flows/` (#224), D63–D66 in [DECISIONS](../../design/DECISIONS.md).

@@ -1,6 +1,6 @@
 # PRD-026: "Ask the sensei" in the course player
 
-> **Status:** advancing to spec
+> **Status:** superseded — the course player was removed with native scrolls ([ADR 025](../adr/025-external-embedded-scrolls.md)). Ask the sensei lives on Engawa.
 > **Date:** 2026-04-20
 > **Author:** Yemi Okafor (C4) — reviewed: Marta Kowalczyk (C5) abuse surface + PII, Soren Bachmann (C6) UI, Hiroshi Nakamura (S1) evaluation of hint quality
 

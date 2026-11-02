@@ -1,6 +1,6 @@
 # PRD 034 — Self-hosted hub pivot (program plan)
 
-> **Status:** Program plan · **Date:** 2026-09-13 · **Decision:** [ADR 024](../adr/024-self-hosted-hub-pivot.md) · **Tracking:** GitHub Project "Dojo" (private) + milestones M1/M2/M3
+> **Status:** Decided in ADR 024; the remaining program is tracked in milestones M1 and M2 · **Date:** 2026-09-13 · **Decision:** [ADR 024](../adr/024-self-hosted-hub-pivot.md) · **Tracking:** GitHub Project "Dojo" (private) + milestones M1/M2/M3
 
 This PRD is the *thinking* artifact; execution lives in GitHub Issues. It maps the pivot into milestones and epics, and records the sequencing rationale and open questions. Task-level breakdown happens in the linked epic issues, not here.
 
