@@ -9,6 +9,7 @@ import { Button } from '../components/ui/Button'
 import { StreamingText } from '../components/ui/StreamingText'
 import { SenseiBubble, UserBubble } from '../components/ui/ChatBubble'
 import { VerdictBlock } from '../components/ui/VerdictBlock'
+import { SenseiFigure } from '../components/eval/SenseiFigure'
 import { ExecutionResultCard } from '../components/eval/ExecutionResultCard'
 import { SkeletonText } from '../components/ui/SkeletonLoader'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
@@ -250,7 +251,10 @@ export function SenseiEvalPage() {
 function ReviewProgress({ message, prose, done }: Readonly<{ message: string; prose: string; done: boolean }>) {
   return (
     <section className="border-t border-border pt-6">
-      <h2 className="text-primary text-xl font-semibold tracking-tight">{message}</h2>
+      <div className="flex items-center justify-between gap-4 md:gap-6">
+        <h2 className="min-w-0 text-primary text-xl font-semibold tracking-tight">{message}</h2>
+        <SenseiFigure pose="review" className="shrink-0 w-24 h-21 md:w-28 md:h-24.5" />
+      </div>
       {prose ? (
         <StreamingText text={prose} done={done} className="mt-5 text-secondary text-base leading-relaxed" />
       ) : (

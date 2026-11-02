@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-11-02',
+    phase: 'Identity',
+    title: 'The sensei, on paper',
+    description:
+      'A paper sensei now sits with you while your work is reviewed and beside the verdict. It looks the same whatever the verdict, so it never gives the result away.',
+  },
+  {
     date: '2026-11-01',
     phase: 'Recognition',
     title: 'Your dojo',
