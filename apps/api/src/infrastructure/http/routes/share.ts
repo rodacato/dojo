@@ -15,21 +15,22 @@ import { isUuid, uuidParam } from '../middleware/uuidParam'
 
 export const shareRoutes = new Hono<AppEnv>()
 
-// Open Gate geometry from apps/web/src/brand/logo.json
-const OPEN_GATE_PATH = 'M15 25Q50 32 85 25M25 45H75M30 30V82M70 30V82'
+// Copy of apps/web/src/brand/logo.json, which the API's rootDir cannot import; share.test.ts keeps them equal.
+export const PAPER_GATE_PATHS = [
+  'M10 20Q50 28 90 20L85 31Q50 38 15 31Z',
+  'M22 42H78L75 50H25Z',
+  'M26 29H35L33 84H25Z',
+  'M65 29H74L75 84H67Z',
+]
 
-function openGateMark(size: number, color: string) {
+function paperGateMark(size: number, color: string) {
   return {
     type: 'svg',
     props: {
       width: size,
       height: size,
       viewBox: '0 0 100 100',
-      fill: 'none',
-      children: {
-        type: 'path',
-        props: { d: OPEN_GATE_PATH, stroke: color, strokeWidth: 8, fill: 'none' },
-      },
+      children: PAPER_GATE_PATHS.map((d) => ({ type: 'path', props: { d, fill: color } })),
     },
   }
 }
@@ -147,6 +148,7 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
     justifyContent: 'space-between',
     width: '1200px',
     height: '630px',
+    boxSizing: 'border-box',
     backgroundColor: SUMI.page,
     padding: '60px',
     fontFamily: 'JetBrains Mono',
@@ -155,7 +157,7 @@ shareRoutes.get('/share/:sessionId{[^/]+\\.png$}', async (c) => {
     // Top
     h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
       h('div', { display: 'flex', alignItems: 'center', gap: '14px' },
-        openGateMark(40, SUMI.accent),
+        paperGateMark(40, SUMI.accent),
         h('span', { fontSize: '28px', color: SUMI.primary, letterSpacing: '-0.05em' }, 'dojo_'),
       ),
       h('span', { fontSize: '18px', color: verdictColor, padding: '6px 16px', border: `2px solid ${verdictColor}`, borderRadius: '4px' }, verdictLabel),
