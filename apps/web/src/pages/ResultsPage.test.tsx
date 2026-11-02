@@ -16,16 +16,6 @@ vi.mock('../lib/api', () => ({
 
 const mockedApi = vi.mocked(api)
 
-// jsdom lacks IntersectionObserver; BrushstrokeUnderline constructs one on mount.
-class NoopIntersectionObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-  takeRecords() {
-    return []
-  }
-}
-vi.stubGlobal('IntersectionObserver', NoopIntersectionObserver)
 
 const kata: KataDTO = {
   id: 'k1',
