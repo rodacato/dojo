@@ -17,14 +17,6 @@ vi.mock('../lib/api', () => ({
   api: { getBelts: vi.fn(), getPractitioner: vi.fn(), getDashboard: vi.fn() },
 }))
 
-// BrushstrokeUnderline pulls GSAP + IntersectionObserver + SVGPath.getTotalLength,
-// none of which jsdom implements. Stub it to a marker so the page renders.
-vi.mock('../components/ui/BrushstrokeUnderline', () => ({
-  BrushstrokeUnderline: ({ seed }: { seed: string }) => (
-    <div data-testid="brushstroke" data-seed={seed} />
-  ),
-}))
-
 const mockedUseAuth = vi.mocked(useAuth)
 const mockedGetBelts = vi.mocked(api.getBelts)
 const mockedGetPractitioner = vi.mocked(api.getPractitioner)

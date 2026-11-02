@@ -68,7 +68,7 @@ Sizes come from the scale in `main.css`. Off-scale prototype sizes map onto it, 
 
 ## Motifs
 
-Brushstroke, enso (loader and section mark), hanko (square seal: milestone earned, verdict stamp) and belt colors. Implemented in `ui/`: `EnsoLoader`, `BrushstrokeUnderline`, `HankoBadge`, `BeltRingAvatar`.
+Brushstroke, enso (loader and section mark), hanko (square seal: milestone earned, verdict stamp) and belt colors. Implemented in `ui/`: `EnsoLoader`, `BeltRingAvatar`. Brushstroke and hanko have no component today.
 
 - Hanko text is the English slug in monospace caps (`FIRST KATA`): the hanko is Japanese in form, not in text.
 - Brushstrokes are never AI-generated or procedural; they fail the brand test.
@@ -80,7 +80,7 @@ CSS handles binary state, fades, hovers and simple transitions. **GSAP** (core, 
 | Surface | GSAP |
 |---|---|
 | Landing (`/`) | In use |
-| Brand primitives (`EnsoLoader`, `BrushstrokeUnderline`) | In use |
+| Brand primitive (`EnsoLoader`) | In use |
 | Dashboard and `/admin/*` | Never: CSS-only by brand contract |
 
 `prefers-reduced-motion: reduce` resolves every GSAP animation to its final state instantly. The 1Hz cursor blink stays. There is no shared hook for the check yet; see the project memory on animation scope before adding GSAP somewhere new.
