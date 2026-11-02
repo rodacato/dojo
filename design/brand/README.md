@@ -125,8 +125,8 @@ A single accent: **hanko vermillion** (the red of a Japanese name seal). If it i
 Four elements carry the identity. Each has a contract in [`DESIGN.md`](../../docs/DESIGN.md).
 
 - **Enso** — the incomplete zen circle. Loader, section mark.
-- **Hanko** — the square red seal. Milestone badge, verdict stamp.
-- **Brushstroke** — a single brush stroke. Underline under H1.
+- **Hanko** — the square red seal. A brand concept; no screen draws it today.
+- **Brushstroke** — a single brush stroke. A brand concept; no screen draws it today.
 - **Belt colors** — avatar ring and profile header band. The visual form of rank.
 
 ### Typography
@@ -143,7 +143,7 @@ Does not change between themes. **JetBrains Mono** for logo, numbers, verdicts, 
 
 ## Motion as signature
 
-Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "identity animation". No bouncing, no sparkles, no celebration. GSAP is reserved for timeline-shaped motion (the landing, the enso loader, the brushstroke underline); dashboard and `/admin/*` are CSS-only. The scope rule and its reasons are in [`DESIGN.md`](../../docs/DESIGN.md#motion).
+Functional CSS transitions of 150-200ms. The blinking `_` cursor is the only "identity animation". No bouncing, no sparkles, no celebration. GSAP is reserved for timeline-shaped motion (today, only the enso loader); dashboard and `/admin/*` are CSS-only. The scope rule and its reasons are in [`DESIGN.md`](../../docs/DESIGN.md#motion).
 
 **Forbidden in every theme:** confetti, celebration bursts, parallax, scroll-jacking, slide-ins from below, modal entries with bounce, visible FLIP rearrangements. **Failing is not dramatic, passing isn't either** — the principle that governs every animation in the product.
 

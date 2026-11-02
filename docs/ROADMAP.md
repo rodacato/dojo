@@ -1,205 +1,32 @@
 # Roadmap
 
-> **Status:** Canonical · **Last reviewed:** 2026-10-02
+> **Status:** Canonical · **Last reviewed:** 2026-11-02
 
-> **Direction:** [ADR 024](adr/024-self-hosted-hub-pivot.md) replaced the hosted plan. Phases 1 to 3 below were written for it (invited users, a leaderboard, user-proposed exercises) and the leaderboard no longer exists (ADR 020). Read them as history; what is current lives in GitHub issues and milestones ([Tracking Work](WORKFLOW.md#tracking-work)).
-
-This document is the project map: where it came from, where it is, and where it is going. No dates — this is a personal project. Each milestone is defined by what becomes possible, not by when.
-
-It holds direction and history, not work state. What is planned, in progress and done lives in GitHub issues and milestones — see [Tracking Work](WORKFLOW.md#tracking-work).
+Where dojo is going, what is built, and what it will not do. No dates: this is a personal project. Work state (planned, in progress, done) lives in GitHub issues, milestones and the project board, see [Tracking Work](WORKFLOW.md#tracking-work). Past decisions live in [`adr/`](adr/).
 
 ---
 
-## Milestones
+## Direction
 
-| Milestone | Goal | Phase |
-|---|---|---|
-| **MVP** | The creator can complete a kata end-to-end in production without technical friction | Phase 0 — complete |
-| **Alpha** | 3–5 invited users complete kata consistently and come back | Phase 1 |
-| **Beta** | Content scales beyond the creator — contributors propose exercises | Phase 3 |
-| **Opening decision** | Resolved by [ADR 024](adr/024-self-hosted-hub-pivot.md): no hosted service — dojo is self-hosted OSS | Phase 4 — decided |
+Dojo is self-hosted open source: a daily practice dojo plus a small learning hub, run by an operator for the people they invite ([ADR 024](adr/024-self-hosted-hub-pivot.md)). There is no hosted service to open. The original plan (invited users, a leaderboard, user-proposed exercises) is history; the leaderboard is gone ([ADR 020](adr/020-ubiquitous-language-pass.md)).
 
----
+## What is built
 
-## Phases
+- **The daily loop:** one blind micro kata a day, about five minutes, then the sensei's review ([ADR 031](adr/031-surprise-daily-kata.md)). Longer kata sit under Advanced.
+- **The sensei:** a streamed evaluation that grades reasoning, with a painted avatar beside the review that never reacts to the verdict ([ADR 033](adr/033-sensei-art.md)).
+- **Recognition:** belts derived from practice history, milestones, and `/belts` as an illustrated room of what you earned ([ADR 032](adr/032-belts-room.md)).
+- **Scrolls:** external apps embedded by iframe, with Dojo as a minimal host ([ADR 025](adr/025-external-embedded-scrolls.md) to [029](adr/029-scroll-conformance-suite.md)).
+- **The Paper UI:** every signed-in screen on one rail, bottom navigation and focused header, in Washi and Sumi.
 
-### Phase 0 — The Empty Dojo *(complete)*
-**Goal:** One user (the creator) completes the full kata loop without technical friction, in production.
+## Where it is going
 
-The core loop, nothing else. No social features, no leaderboard, no invitations. Pure dogfooding to validate that the practice itself is valuable before building anything around it.
+Each milestone is defined by what becomes possible:
 
-### Phase 1 — Open the Doors *(complete)*
-**Goal:** Invite friends. The dojo becomes social — profiles, invitations, share cards, first badges.
+- **M1 — Reposition:** practice becomes optional rather than the forced front door, and dojo installs as a PWA.
+- **M2 — Knowledge/Library hub:** long-form guides and bookmarks as their own bounded context.
+- **M4 — External scrolls:** the epic stays open until the host is closed out.
 
-Does not start until Phase 0 is in real daily use.
-
-### Phase 2 — The Scoreboard
-**Goal:** Light gamification that motivates without corrupting the practice — leaderboard, full badge system, weak areas dashboard.
-
-### Phase 3 — Feed the Dojo
-**Goal:** Content creation scales beyond the creator — users propose exercises with an LLM QA gate and human review.
-
-### Phase 4 — Evaluate Opening *(decided)*
-**Goal:** Decision — open to the public, waitlist, or stay invite-only? This phase is a decision, not a build.
-
-**Outcome:** none of the three. [ADR 024](adr/024-self-hosted-hub-pivot.md) repositions dojo as self-hosted open source: there is no hosted service to open, and each operator decides who gets into their own instance.
-
-### Scrolls — rebuilt as external apps *(in progress)*
-The native scroll system was removed; its implementation is archived at the tag `archive/scrolls-final`. Scrolls are being rebuilt as external apps embedded in Dojo by iframe over a versioned `postMessage` protocol, with Dojo as a minimal host. See [ADR 025](adr/025-external-embedded-scrolls.md) and epic [#116](https://github.com/rodacato/dojo/issues/116).
-
----
-
-## History — Sprints
-
-Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61](https://github.com/rodacato/dojo/issues/61)); sprint 034 is the last. This table is history and is not extended.
-
-| Sprint | Outcome | Status |
-|---|---|---|
-| [sprint-001 — Technical foundation](sprints/archive/sprint-001-fundacion-tecnica.md) | Backend DDD + hexagonal, auth, DB, CI | ✅ Closed |
-| [sprint-002 — Core loop](sprints/archive/sprint-002-core-loop.md) | HTTP routes, WebSocket, frontend screens, seed data | ✅ Closed |
-| [sprint-003 — Production deploy](sprints/archive/sprint-003-production-deploy.md) | First deploy, landing page, UX states, bearer auth | ✅ Closed |
-| [sprint-004 — Polish & branding](sprints/archive/sprint-004-polish-branding.md) | Logo, favicon, OG, landing polish, results permalink, dashboard stats | ✅ Closed |
-| [sprint-005 — Hardening + Phase 1](sprints/archive/sprint-005-hardening-phase1.md) | CSP, 404, invitations, admin edit, Resend, request access | ✅ Closed |
-| [sprint-006 — Phase 1 social](sprints/archive/sprint-006-phase1-social.md) | Profiles, invitations, share cards, badges | ✅ Closed |
-| [sprint-007 — Phase 2 scoreboard](sprints/archive/sprint-007-phase2-scoreboard.md) | Leaderboard, badge system, weak areas dashboard | ✅ Closed |
-| [sprint-008 — Production ready](sprints/archive/sprint-008-production-ready.md) | OG tags, reminders, components, Mermaid, LLM adapter layer, error recovery | ✅ Closed |
-| sprint-009 — Design alignment + QoL | Stitch alignment (6 screens), sidebar nav, 60+ exercises, responsive audit, component library | ✅ Closed |
-| sprint-010 — Feedback + Share + Admin | Kata feedback system, public share page, admin review with feedback aggregation, secondary screens Stitch | ✅ Closed |
-| sprint-011 — Refactoring + Landing + Execution + Interests + E2E | Route split, contrast fix, landing Stitch redesign, Piston code execution, interest-based selection, Playwright smoke tests | ✅ Closed |
-| sprint-012 — Alpha-Ready | 15 testCode exercises, post-kata insight screen, dashboard N+1 fix, weekly goals | ✅ Closed |
-| sprint-013 — Hardening + Courses Pre-work | Route/API split, WS tests, UX polish, courses DB schema, rate limiting, Piston Kamal | ✅ Closed |
-| [sprint-014 — Courses MVP](sprints/archive/sprint-014-courses-mvp.md) | Full vertical slice: repos, use cases, routes, seed course, frontend catalog + player, progress tracking | ✅ Closed |
-| [sprint-015 — iframe Sandbox + JS DOM Course](sprints/archive/sprint-015-iframe-dom-course.md) | iframe runner para ejercicios frontend, segundo curso JavaScript DOM Fundamentals, carry-forwards | ✅ Closed |
-| [sprint-016 — Surprise me + Fix-the-bug + SQL Advanced](sprints/archive/sprint-016-surprise-fix-sql.md) | Surprise me button, 5 fix-the-bug kata, 5 SQL advanced kata, SQL Deep Cuts course draft | ✅ Closed |
-| [sprint-017 — SQL Deep Cuts + Public Courses + Debugging Sensei](sprints/archive/sprint-017-sql-deep-cuts.md) | SQL Deep Cuts course en vivo (público), progreso anónimo + merge al loguearse, SQL katas reescritos a SQLite, sensei prompt con contexto `debugging` | ✅ Closed |
-| [sprint-018 — Course content quality v1](sprints/archive/sprint-018-course-content-quality.md) | Step type `exercise` reintroducido, `step.title` + `step.solution` en schema, reclasificación de los 29 steps, audits por curso (TS / JS DOM / SQL), solution reveal post-pass, validate:courses CI gate | ✅ Closed |
-| [sprint-019 — Course content quality v2](sprints/archive/sprint-019-course-quality-v2.md) | Semantic slots renderer, external references per course (framework §8), alternative approach post-pass, SQL L1.4 LAG/LEAD intro | ✅ Closed |
-| [sprint-020 — Phase 1 expansion](sprints/archive/sprint-020-phase1-expansion.md) | UX audit + 5 fixes, course acquisition loop (share card + badges + public courses), Ask the sensei MVP, Code Review kata POC, Python course skeleton, ErrorReporterPort observability pipeline, Piston prod recovery (ADR 018) | ✅ Closed |
-| [sprint-021 — Stability for the friends cohort](sprints/archive/sprint-021-stability.md) | Reactive bugfix week — kata-prep failure recovery, streak counts real practice only, lazy-route deploy survival, OAuth invite-email capture, FF_ rename, CSP fonts/Sentry | ✅ Closed |
-| [sprint-022 — Open the door](sprints/archive/sprint-022-playground-cohort.md) | Playground v0 (anon code execution + 4-layer abuse stack), Playground v1 ask-sensei (auth-only streaming Q&A + daily quota), streaming kata prep behind FF, smoke suite at six specs, errors retention cron, Piston liveness (ADR 019) | ✅ Closed |
-| [sprint-023 — Dojo language pass](sprints/archive/sprint-023-dojo-language-pass.md) | Ubiquitous-language rename across shared, domain, application, infrastructure, frontend, docs: Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object with PRD-031 rubric; routes /katas, /scrolls, /engawa, /belts; /kumite placeholder; /leaderboard deleted; ADR 020. Monorepo typecheck green. | ✅ Closed (calibration gate retired — see below) |
-| [sprint-024 — Maintenance + Sumi-e foundation](sprints/archive/sprint-024-maintenance-sumi-e.md) | Brand-honesty sweep (fake status, deceptive defaults, XSS in email), `/dashboard` parallelization, brand type scale formalized (411 arbitrary `text-[Npx]` migrated), Sumi-e dual-theme infra (`[data-theme]` overrides + toggle + OS auto-detect), motif components (Enso/Hanko/Brushstroke/BeltRingAvatar) shipped and integrated, editor themes follow brand via `useThemeTokens`, BRANDING split into voice-only with DESIGN owning the visual system, `stitch/` retired, `/dashboard` route covered by 5 unit tests, ADR 021. | ✅ Closed |
-| [sprint-025 — Crash-course pivot](sprints/archive/sprint-025-crash-course-pivot.md) | Repositioned the courses surface to crash courses for developers who already program; five-language anchored set; deep-dives deferred; ADR 022. | ✅ Closed |
-| [sprint-026 — Ruby crash scroll](sprints/archive/sprint-026-ruby-crash-course.md) | First crash scroll authored under the new shape (Ruby), polyglot-first; figures from the catalog; GSAP reversal for `/scrolls/*`. | ✅ Closed |
-| [sprint-027 — Python crash scroll + scroll hardening](sprints/archive/sprint-027-python-crash-scroll.md) | Python scroll end-to-end; 6 figure components shipped + `:figure` parser; XSS closed in the markdown renderer; player UX debt paid. | ✅ Closed |
-| [sprint-028 — Rust + TypeScript crash scrolls](sprints/archive/sprint-028-rust-typescript-crash-scrolls.md) | Two scrolls end-to-end at 2× cadence, each smoked against real Piston (rustc 1.68.2, TS 5.0.3); execution infra hardened (compiler-error `errorKind`, `fn main` rename, timeouts). Both `isPublic:false` pending the full-set smoke. | ✅ Closed |
-| [sprint-029 — Scroll format revision + publish all four](sprints/archive/sprint-029-scroll-format-revision.md) | Unplanned interlude (the Go scroll moved to S030). Broken→fix katas + tiered `hints` mechanism (ADR 023, `steps.hints` + migration 0023), piloted on Ruby (4 katas) then rolled to Rust/Python/TS (L0 contract, tiered hints; Python +3 broken→fix; Rust/TS write-from-scratch by design). **Published the four existing scrolls** (`status: published` + `isPublic: true`); ruby+rust joined the anonymous-execution whitelist. Jumped the S030 smoke gate — full-set Piston smoke + TS Piston config (`max_run_timeout`/`output_max_size`) now carry into S030. | ✅ Closed |
-| [sprint-030 — Scrolls presentation reshape](sprints/archive/sprint-030-scrolls-reshape.md) | Re-scoped mid-flight from the Go scroll: catalog/landing/player presentation reshape to Rustlings-style clarity (clear contract, time-on-card, binary progress + filters, orientation landing at `/scrolls/:slug`). Go moved to S031. | ✅ Closed |
-| [sprint-031 — Go crash scroll + the carried smoke](sprints/archive/sprint-031-go-scroll.md) | Go (the fifth scroll, Piston Go 1.16.2) authored + the carried full-set real-Piston smoke, which caught a dead kata in the published Ruby scroll on its first run. `PistonAdapter` `isGo` file-template branch + hand-rolled JSON (encoding/json crashes the 1.16.2 sandbox). Staged `published`+`isPublic`, live on next deploy+reseed. | ✅ Closed |
-| [sprint-032 — Ship the set, then close the reshape loop](sprints/archive/sprint-032-ship-and-reshape-loop.md) | Five-language set deployed + reseeded to prod (Go live, Ruby `parameters_of` fix carried); solo-authored Go prose got its fresh-eyes read as the deploy gate (2 real gaps fixed); reshape's deferred player/share layer landed; per-workspace Sonar split + coverage measurement groundwork. | ✅ Closed |
-| [sprint-033 — Maintenance: security & foundation](sprints/archive/sprint-033-maintenance-security-foundation.md) | Security/deps debt (`pnpm audit` crit+high → 0), honest coverage measured + gated across api/web/shared (api gate enforced at 80/72; web reached ~87% but its gate stayed unwired in CI — carried), knip dead-code baseline + unambiguous wins, Sonar/CodeQL triage into fix-now/S034/won't-fix. Over-delivered web coverage; the planned "web backbone" S034 premise was retired. | ✅ Closed |
-| [sprint-034 — Wire the web gate + architecture debt](sprints/archive/sprint-034-wire-web-gate-architecture-debt.md) | The cheap residual S033 surfaced (enforce the web/shared coverage gates in CI — they exist but never run) plus the deferred architecture debt (P-1..P-6, F-4..F-6, in-memory rate limiters, `TelemetrySinkPort`), scoped from S033's baselines and gated tests-before-refactor. | 🚧 Open — tracked by milestone S034 |
-
----
-
-## History — Specs
-
-| # | Spec | Description | Sprint |
-|---|---|---|---|
-| 000 | [Foundation overview](specs/000-foundation-overview.md) | Monorepo, Docker Compose dev, `/health`, logging, env validation | sprint-001 |
-| 001 | [Tooling](specs/001-tooling.md) | Turborepo, ESLint, Vitest, TypeScript config | sprint-001 |
-| 002 | [DDD scaffold](specs/002-ddd-scaffold.md) | Bounded contexts, aggregates, ports, domain events, MockLLMAdapter | sprint-001 |
-| 003 | [Database](specs/003-database.md) | Drizzle ORM, 5 tables, migrations, 3 repository adapters | sprint-001 |
-| 004 | [Docker production](specs/004-docker-production.md) | Multi-stage Dockerfiles, Nginx, production docker-compose.yml | sprint-001 |
-| 005 | [Security middleware](specs/005-security-middleware.md) | Rate limiting (hono-rate-limiter), Zod validation helper, error handler | sprint-001 |
-| 006 | [GitHub OAuth](specs/006-github-oauth.md) | arctic@2, server-side sessions, user_sessions in DB, requireAuth middleware | sprint-001 |
-| 007 | [CI](specs/007-ci.md) | GitHub Actions — lint → typecheck → test + E2E on every PR to main | sprint-001 |
-| 008 | [Shared package](specs/008-shared-package.md) | Annotated DTOs, Zod schemas, boundary rules documented | sprint-001 |
-| 009 | [HTTP routes](specs/009-http-routes.md) | REST endpoints — sessions, exercises, dashboard, admin CRUD | sprint-002 |
-| 010 | [WebSocket evaluation](specs/010-websocket-evaluation.md) | WS protocol for sensei streaming evaluation | sprint-002 |
-| 011 | [Anthropic streaming adapter](specs/011-anthropic-streaming-adapter.md) | Claude integration — streaming, prompt templates, token limits | sprint-002 |
-| 012 | [Seed data](specs/012-seed-data.md) | 16 hand-crafted kata with variations, seed script | sprint-002 |
-| 013 | [Frontend core screens](specs/013-frontend-core-screens.md) | 8 user-facing screens + Tailwind 4 + CodeMirror | sprint-002 |
-| 014 | [Admin UI](specs/014-admin-ui.md) | Exercise list, new exercise form, creator-only guard | sprint-002 |
-| 022 | [Sprint 016: Surprise me + Fix-the-bug + SQL Advanced](specs/022-sprint-016.md) | Surprise me button, fix-the-bug kata, SQL advanced kata, SQL Deep Cuts draft | sprint-016 |
-| 017 | [UX improvements](specs/017-ux-improvements.md) | Error states, empty states, timer expired, 401 redirect | sprint-003 |
-| 018 | [Landing page](specs/018-landing-page.md) | Static landing page with request access form (Phase 0) | sprint-003 |
-| 019 | [Bearer token auth](specs/019-bearer-token-auth.md) | Replace cross-domain cookies with Authorization Bearer header | sprint-003 |
-| 020 | Logo, favicon & OG image | SVG logo component, torii gate mark, OG meta tags (torii superseded by the Open Gate mark) | sprint-004 |
-| 021 | Landing page visual polish | Two-column hero, terminal demo, section layouts | sprint-004 |
-| 022 | Results permalink & kata history | API returns attempts, history page, dashboard links | sprint-004 |
-| 023 | Profile & dashboard improvements | Stat cards, totalCompleted, logout button | sprint-004 |
-| 024 | Security headers & error boundaries | CSP, HSTS, Permissions-Policy, beforeunload, ErrorBoundary | sprint-005 |
-| 025 | 404 page, sensei persona, reconnect UI | Custom 404, sensei initials badge, WS reconnect button | sprint-005 |
-| 026 | Invitation system | DB table, OAuth gate, redeem flow, admin UI, Resend emails | sprint-005 |
-| 027 | Admin edit exercise | GET/PUT endpoints, edit page, clickable table rows | sprint-005 |
-| 026 | [Sprint 021: Stability](specs/026-sprint-021-stability.md) | Friends audit, sensei calibration, smoke expansion, Piston liveness + reprovision, errors retention cron | sprint-021 |
-| 027 | [Sprint 022: Playground](specs/027-sprint-022-playground.md) | Playground v0 (anonymous run + abuse stack), ask-the-sensei, streaming kata prep | sprint-022 |
-| 028 | [Dojo language pass](specs/028-dojo-language-pass.md) | Per-layer identifier maps, file renames, route path changes, DB-to-domain mapping strategy in repository adapters, BeltCalculator + ListUserMilestones use cases, topicCluster helper, sensei calibration gate | sprint-023 |
-
----
-
-## History — PRDs
-
-| # | PRD | Description | Status |
-|---|---|---|---|
-| 000 | [Template](prd/000-template.md) | Template for exploratory PRDs | 📋 Template |
-| 001 | [Frontend features & data model](research/prd-archive/001-frontend-features-data-model.md) | Feature inventory from all screens, data model gaps by phase | 📦 Archived |
-| 002 | [API design](research/prd-archive/002-api-design.md) | Endpoints, auth flow, roles, request/response contracts, WS protocol | 📦 Archived |
-| 003 | [Implementation phasing](research/prd-archive/003-implementation-phasing.md) | Build order by value — critical path for first usable state | 📦 Archived |
-| 004 | [Local dev strategy](research/prd-archive/004-local-dev-strategy.md) | What to mock vs real, enhanced MockLLMAdapter, dev workflow | 📦 Archived |
-| 005 | [Expert panel review](research/prd-archive/005-expert-panel-review.md) | Full panel validation — gaps, adjustments, what was missed | 📦 Archived |
-| 006 | [Seed kata drafts](prd/006-seed-kata-drafts.md) | 8 hand-crafted kata (4 CODE, 3 CHAT, 1 WHITEBOARD), 2 variations each | ✅ Shipped |
-| 007 | [Sprint-002 readiness](prd/007-sprint-002-readiness.md) | Consolidated decisions, resolved questions, spec outline for sprint-002 | ✅ Shipped |
-| 008 | [Kata batch 2](research/prd-archive/008-kata-batch-2.md) | 12 kata — security, testing, database performance, API design | 📦 Archived |
-| 009 | [Kata batch 3](research/prd-archive/009-kata-batch-3.md) | 12 kata — communication, debugging, performance, architecture | 📦 Archived |
-| 010 | [Kata batch 4](research/prd-archive/010-kata-batch-4.md) | 12 kata — operations, frontend, team dynamics, refactoring | 📦 Archived |
-| 011 | [Kata feedback system](prd/011-kata-feedback-system.md) | Structured exercise quality signal — clarity, timing, evaluation fairness | ✅ Shipped |
-| 012 | [Sensei system prompts](prd/012-sensei-system-prompts.md) | 3 prompt variations for testing before wiring WebSocket | ♻️ Superseded by `sensei.ts` |
-| 013 | [UX/UI gap analysis](research/prd-archive/013-ux-gap-analysis.md) | Missing states, mobile layouts, edge cases — screen by screen | 📦 Archived |
-| 014 | [Landing page copy](prd/014-landing-page-copy.md) | Hero, problem statement, how it works, access section | ✅ Shipped |
-| 015 | [Bearer token auth](prd/015-bearer-token-auth.md) | Replace cross-domain cookies with Bearer tokens | ✅ Shipped |
-| 016 | [Sprint 004 planning](prd/016-sprint-004-planning.md) | Polish, branding & dogfooding sprint scope | ✅ Delivered |
-| 017 | [Sprint 005 planning](prd/017-sprint-005-planning.md) | Hardening + Phase 1 prep scope | ✅ Delivered |
-| 018 | [Sprint 005 addendum](prd/018-sprint-005-addendum.md) | Deploy config, request access form, backlog cleanup | ✅ Delivered |
-| 020 | [Sprint 016 planning](prd/020-sprint-016-planning.md) | Surprise me + Fix-the-bug + SQL Advanced + SQL Deep Cuts outline | ✅ Shipped |
-| 024 | [Sprint 020 planning](prd/024-sprint-020-planning.md) | Phase 1 expansion: UX fixes, Code Review kata, error reporting (course items removed with ADR 025) | ✅ Shipped |
-| 026 | [Ask the sensei](prd/026-ask-the-sensei.md) | Contextual hint button in the course player (the course player was removed with ADR 025) | ⚠️ Not shipped as designed |
-| 027 | [Code Review kata](prd/027-code-review-kata.md) | New kata format: review a seeded PR diff | ✅ Shipped |
-| 028 | [Sprint 021 planning](prd/028-sprint-021-planning.md) | Stability for the friends cohort | ✅ Shipped |
-| 029 | [Playground console](prd/029-playground-console.md) | Anonymous code execution with Turnstile, quotas and an ask-sensei layer | ✅ Shipped |
-| 030 | [Dojo terminology pass](prd/030-dojo-terminology-routes.md) | Routes (/katas, /scrolls, /engawa, /belts, /kumite); domain rename Exercise→Kata, Course→Scroll, Badge→Milestone; no backward compat (Phase 0 window) | ✅ Shipped |
-| 031 | [Belt progression rubric](prd/031-belt-progression-rubric.md) | Option C — volume + diversity + active days + cooldown; sensei verdicts excluded from advancement; English colors; global v1 (per-track marks v1.1) | ✅ Shipped |
-| 032 | [Sprint 023 plan](prd/032-sprint-023-planning.md) | Sprint plan with day-by-day critical path, scope cuts, calibration gate for sensei voice update | ✅ Shipped |
-| 033 | [Sprint 033 maintenance](prd/033-sprint-033-maintenance-planning.md) | Security debt, honest coverage gates, dead-code tooling | ✅ Closed |
-| 034 | [Self-hosted hub pivot](prd/034-self-hosted-hub-pivot.md) | Program plan for ADR 024: milestones M1-M3 | 🚧 In progress |
-
----
-
-## History — ADRs
-
-| # | ADR | Decision | Status |
-|---|---|---|---|
-| 001 | [WebSocket vs SSE](adr/001-websocket-vs-sse.md) | WebSocket for bidirectional evaluation streaming | ✅ Accepted |
-| 002 | [Server-side sessions](adr/002-server-side-sessions.md) | DB-backed sessions over stateless JWTs | ✅ Accepted |
-| 003 | [InMemoryEventBus](adr/003-inmemory-event-bus.md) | In-process event bus; upgrade to Redis when cross-process needed | ✅ Accepted |
-| 004 | [CodeMirror 6](adr/004-codemirror-6.md) | CodeMirror 6 over Monaco (too heavy) or plain textarea (too primitive) | ✅ Accepted |
-| 005 | [Creator auth env var](adr/005-creator-auth-env-var.md) | `CREATOR_GITHUB_ID` env var in Phase 0; DB column in Phase 1 (the env var stayed: it is the operator model, see ADR 024) | ✅ Accepted |
-| 006 | [Mood/duration not persisted](adr/006-mood-duration-not-persisted.md) | Transient query params only — no mood history tracking | ✅ Accepted |
-| 007 | [Bearer token over cookies](adr/007-bearer-token-over-cookies.md) | Bearer header replaces cross-domain cookies; server-side sessions unchanged | ✅ Accepted |
-| 007 | [Evaluation XML block format](adr/007-evaluation-xml-block-format.md) | `<evaluation>` XML block for structured LLM output (second ADR numbered 007) | ✅ Accepted |
-| 008 | [Pending attempts memory bridge](adr/008-pending-attempts-memory-bridge.md) | In-memory bridge for pending attempts during WS evaluation | ✅ Accepted |
-| 009 | [WebSocket stream cache reconnect](adr/009-websocket-stream-cache-reconnect.md) | Cache partial streams for WS reconnection | ✅ Accepted |
-| 010 | [No API versioning Phase 0](adr/010-no-api-versioning-phase0.md) | Skip API versioning until public opening | ✅ Accepted |
-| 011 | [Cloudflare Tunnel HTTPS](adr/011-cloudflare-tunnel-https.md) | Cloudflare Tunnel for HTTPS termination | ✅ Accepted |
-| 012 | [AppShell sidebar navigation](adr/012-appshell-sidebar-navigation.md) | Sidebar nav with AppShell layout | ✅ Accepted |
-| 013 | [Route file split](adr/013-route-file-split.md) | Split monolithic practice.ts into multiple route files | ✅ Accepted |
-| 014 | [Piston code execution](adr/014-piston-code-execution.md) | Piston sandbox for testCode exercises | ✅ Accepted |
-| 015 | [Courses bounded context](adr/015-courses-bounded-context.md) | Learning as separate bounded context from Practice | Superseded by [025](adr/025-external-embedded-scrolls.md) |
-| 016 | [iframe sandbox browser execution](adr/016-iframe-sandbox-browser-execution.md) | Browser-side execution for javascript-dom courses via iframe sandbox | Superseded by [025](adr/025-external-embedded-scrolls.md) |
-| 017 | [Error reporting port](adr/017-error-reporting-port.md) | `ErrorReporterPort` with Console / Postgres / Sentry / Composite adapters | ✅ Accepted |
-| 018 | [Piston cgroup namespace host](adr/018-piston-cgroupns-host.md) | `privileged: true` + `cgroupns: host` + named volume on Piston accessory after host kernel upgrade tightened cgroup v2 | ✅ Accepted |
-| 019 | [Piston liveness and reprovision](adr/019-piston-liveness-and-reprovision.md) | GHA liveness probe + idempotent reprovision script as the operational floor for an anonymous-traffic Piston surface | ✅ Accepted |
-| 020 | [Ubiquitous language pass](adr/020-ubiquitous-language-pass.md) | Exercise→Kata, Course→Scroll, Badge→Milestone; new Belt value object; schema.ts exports dojo-native names while DB tables/columns stay legacy via pgTable arg; /leaderboard deleted (not renamed to /kumite); /kumite reserved as future feature placeholder | ✅ Accepted (the Scroll renames are superseded by 025) |
-| 021 | [Sumi-e dual-theme architecture](adr/021-sumi-e-dual-theme-architecture.md) | Two complete palettes (Sumi/Washi shipped as the brand themes; Slate Indigo kept as an explicit legacy option) share the same `--color-*` token names; `[data-theme="sumi"\|"washi"]` selectors override `@theme` defaults; user picks via toggle with OS auto-detect default + `localStorage` persistence; no feature flag (single-user constraint, `'slate'` choice is the kill switch); editor-style libraries (CodeMirror, Mermaid) read tokens via `useThemeTokens` MutationObserver hook | ✅ Accepted |
-| 022 | [Crash-course pivot](adr/022-crash-course-pivot.md) | Scrolls repositioned as crash courses for developers who already program | Superseded by [025](adr/025-external-embedded-scrolls.md) |
-| 023 | [Progressive hint reveal](adr/023-progressive-hint-reveal.md) | Broken→fix katas and tiered `hints` inside scrolls | Superseded by [025](adr/025-external-embedded-scrolls.md) |
-| 024 | [Self-hosted hub pivot](adr/024-self-hosted-hub-pivot.md) | Dojo repositioned as a self-hosted OSS learning + practice hub; no multi-tenancy | ✅ Accepted |
-| 025 | [External embedded scrolls](adr/025-external-embedded-scrolls.md) | Scrolls become external apps embedded by iframe over a versioned postMessage protocol; native scrolls removed and archived; supersedes 015, 016, 022 | ✅ Accepted |
-| 026 | [Scroll protocol v0 and manifest](adr/026-scroll-protocol.md) | Versioned postMessage protocol with a nonce handshake, declared and granted capabilities, and the `scroll.json` manifest | ✅ Accepted |
-| 027 | [Security model for embedded scrolls](adr/027-scroll-iframe-security.md) | Sandbox attributes, exact origins, a scroll as an untrusted client | ✅ Accepted |
-| 028 | [Code execution for embedded scrolls](adr/028-scroll-code-execution.md) | Signed-in users only, a separate queue, raw output returned to the scroll | ✅ Accepted |
-| 029 | [Scroll conformance suite](adr/029-scroll-conformance-suite.md) | A private package: a pure trace validator plus a browser runner behind a driver interface, tested against deliberately broken scrolls | ✅ Accepted |
+Gated work from the Paper revamp (choosing a kata, the operator screens, designs for the other answer formats) waits for its own decision. It is tracked on the board, not here.
 
 ---
 
@@ -207,18 +34,18 @@ Sprint docs were retired on 2026-09-13 when work tracking moved to GitHub ([#61]
 
 Evaluated and discarded, recorded so the debate does not happen again.
 
-- **Dojocho** (a kata curation tool at scale) — complexity not justified at the current phase.
-- **Team dojos** (shared practice spaces for engineering teams) — contradicts individual practice.
-- **Native mobile** — the web app works in a mobile browser.
-- **AI-generated katas on demand** — quality is too variable to guarantee the sensei's standard.
-- **Timed competitions** — contradicts "practice over competition".
-- **Certificates or badges for employers** — not the purpose of the product.
+- **Dojocho** (a kata curation tool at scale): complexity not justified.
+- **Team dojos** (shared practice spaces for engineering teams): contradicts individual practice.
+- **A native mobile app:** the web app, installable as a PWA, covers the phone.
+- **AI-generated katas on demand:** quality is too variable to guarantee the sensei's standard. The daily kata picks from the published catalog.
+- **Timed competitions:** contradicts "practice over competition".
+- **Certificates or badges for employers:** not the purpose of the product.
 
 ---
 
 ## Principles That Guide Prioritization
 
-1. **Use it before building around it.** No feature is built until the previous phase is in real daily use.
+1. **Use it before building around it.** Nothing is built on top of a feature until that feature is in real daily use.
 2. **The loop comes first.** The kata → evaluation → analysis is the product. Everything else is context.
 3. **Complexity is the enemy.** If a feature requires the user to think about the product instead of the practice, it is probably wrong.
 4. **The sensei's honesty is sacred.** No feature that softens, gamifies, or incentivizes the evaluator to be kinder than it should be.

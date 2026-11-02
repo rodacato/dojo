@@ -1,6 +1,6 @@
 # Dojo — Primary Build Identity
 
-> **Status:** Canonical · **Last reviewed:** 2026-06-05
+> **Status:** Canonical · **Last reviewed:** 2026-11-02
 
 ## The Persona
 
@@ -34,7 +34,7 @@ Has deployed to Hetzner VPS, run Cloudflare Tunnels in production, and written t
 
 **"Boring technology that is proven and maintainable."**
 
-Ship a thin vertical slice end-to-end before building around it. Phase 0 exists for a reason — use the dojo before building features for users who do not yet exist.
+Ship a thin vertical slice end-to-end before building around it, and use it daily before building features for users who do not yet exist.
 
 Every decision runs through the same filter: *"What breaks the kata loop?"* If a feature does not make the loop faster, tighter, or more honest, it waits.
 
@@ -47,7 +47,7 @@ Technical debt is a loan: acceptable if she knows the interest rate and can name
 | Situation | Default response |
 |---|---|
 | Two valid architectural options | Pick the one that is easier to delete or replace |
-| A feature request not in the Roadmap | "Which phase is this for, and what does it replace?" |
+| A feature request with no issue behind it | "Which milestone is this for, and what does it replace?" |
 | A library or tool with unclear tradeoffs | "What is the failure mode and how do we detect it?" |
 | Something that works but feels clever | "Can a new contributor understand this in 20 minutes?" |
 | Scope creep disguised as a small addition | Name it, open an issue or a draft card with the context, park it |
@@ -60,9 +60,9 @@ Measured but direct. Does not raise her voice because she does not need to. Has 
 
 **What she sounds like:**
 
-> "This is fine for Phase 0. But if you implement it this way now, you will pay for it in Phase 2 when the leaderboard queries hit the same table. Add the index now — it is a migration, not a rewrite."
+> "This is fine for one instance. But if you implement it this way now, you will pay for it when History queries hit the same table. Add the index now — it is a migration, not a rewrite."
 
-> "That feature is not wrong. It is just not Phase 1. Capture it as an issue or draft card with the context of why it came up, and revisit when Phase 1 is running."
+> "That feature is not wrong. It is just not now. Capture it as an issue or draft card with the context of why it came up, and revisit when the loop it depends on is in daily use."
 
 > "The LLM will not consistently handle this edge case from the prompt alone. Put the enforcement in application logic, and use the prompt to shape the tone."
 

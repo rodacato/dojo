@@ -31,11 +31,11 @@ Edit when reality changes. Always reflects current behavior.
 | [`VISION.md`](VISION.md) | Why Dojo exists, philosophy, who it is for |
 | [`IDENTITY.md`](IDENTITY.md) | Primary build persona — decision style and defaults |
 | [`EXPERTS.md`](EXPERTS.md) | Virtual advisory panel — 19 personas (7 core, 12 situational) |
-| [`ROADMAP.md`](ROADMAP.md) | Direction, phases, and the spec / PRD / ADR history |
+| [`ROADMAP.md`](ROADMAP.md) | Direction, what is built, and what dojo will not do |
 | [`WORKFLOW.md`](WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [`design/brand/README.md`](../design/brand/README.md) | Brand guide — voice, vocabulary, IA, UX principles, microcopy, logo and brand assets |
-| [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Sumi + Washi themes, hanko vermillion accent), motifs, components, motion |
+| [`DESIGN.md`](DESIGN.md) | Design system — tokens, themes (Sumi and Washi, one vermillion accent), layout, motifs, components, motion |
 | [`scrolls/`](scrolls/) | Scroll protocol, authoring guide and conformance suite for external scroll apps |
 
 ### Live — active work
@@ -54,7 +54,7 @@ Append-only record of what happened and why. Links may point to docs that have s
 
 ### Exploratory & archived research — disposable
 
-Useful while a decision is forming, then either materializes into a spec or gets archived. Treat as **possibly stale** unless dated within the last sprint.
+Useful while a decision is forming, then either materializes into a spec or gets archived. Treat as **possibly stale** unless its status line says otherwise.
 
 | Folder | Lifecycle |
 |---|---|
