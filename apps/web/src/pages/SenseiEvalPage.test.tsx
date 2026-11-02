@@ -159,6 +159,19 @@ describe('SenseiEvalPage', () => {
     expect(screen.getByText('You pointed at line 2 · your why')).toBeInTheDocument()
   })
 
+  it('keeps the submitted prediction in view while the sensei reviews it', async () => {
+    streamState = { status: 'streaming', tokens: 'Reading' }
+    sessionStorage.setItem('dojo-predict-sess-1', 'b\na')
+    sessionStorage.setItem('dojo-draft-sess-1', 'the callback runs first')
+    getSession.mockResolvedValue(
+      makeSession({ kata: { ...makeSession().kata, type: 'review', starterCode: 'one\ntwo' } }),
+    )
+    renderPage()
+
+    expect(await screen.findByText('the callback runs first')).toBeInTheDocument()
+    expect(screen.getByText('You predicted · your why')).toBeInTheDocument()
+  })
+
   it('shows no answer aside for a kata that was not answered by pointing', async () => {
     streamState = { status: 'streaming', tokens: 'Reading' }
     sessionStorage.setItem('dojo-draft-sess-1', 'free prose')
@@ -205,7 +218,7 @@ describe('SenseiEvalPage', () => {
 
   it('never shows a verdict or an answer in partial text, whatever it says', async () => {
     streamState = { status: 'streaming', tokens: 'PASSED so far' }
-    getSession.mockResolvedValue(makeSession({ answer: { line: 1, title: 'The cause', why: 'because' } }))
+    getSession.mockResolvedValue(makeSession({ answer: { shape: 'point' as const, line: 1, title: 'The cause', why: 'because' } }))
     renderPage()
 
     await screen.findByText('PASSED so far')
@@ -284,7 +297,7 @@ describe('SenseiEvalPage', () => {
     })
 
     it('reveals the answer once the verdict is final', async () => {
-      getSession.mockResolvedValue(pointSession({ line: 2, title: 'start is a page late', why: 'page is 1-based.' }))
+      getSession.mockResolvedValue(pointSession({ shape: 'point' as const, line: 2, title: 'start is a page late', why: 'page is 1-based.' }))
       streamState = { status: 'complete', tokens: 'Close.', result: makeResult({ verdict: 'needs_work' }) }
       renderPage()
 

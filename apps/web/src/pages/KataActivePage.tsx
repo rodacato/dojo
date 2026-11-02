@@ -1,6 +1,7 @@
 import { Suspense, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
+import { PREDICTED_OUTPUT_MAX } from '@dojo/shared'
 import type { SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { ActiveKataActions, ANSWER_HINT_ID } from '../components/kata/ActiveKataActions'
@@ -31,6 +32,8 @@ export function KataActivePage() {
     changeResponse,
     pointedLine,
     pointAtLine,
+    predictedOutput,
+    changePrediction,
     submitting,
     submitFailed,
     online,
@@ -59,11 +62,35 @@ export function KataActivePage() {
 
   const { kata } = session
   const isPoint = kata.answerShape === 'point'
+  const isShaped = !!kata.answerShape
   const isCode = kata.type === 'code'
   // All formats land side-by-side on desktop — the chat panel mirrors the
   // code/whiteboard shell so the redesign reads as one product.
   const orientation = isMobile ? 'vertical' : 'horizontal'
   const showFailure = submitFailed && online && !submitting
+  const shapedAnswer = isPoint ? (
+    <PointAnswer
+      kata={kata}
+      pointedLine={pointedLine}
+      onPoint={pointAtLine}
+      why={userResponse}
+      onWhy={changeResponse}
+      onSubmit={handleSubmit}
+      submitting={submitting}
+      expired={timedOut}
+    />
+  ) : (
+    <PredictAnswer
+      kata={kata}
+      output={predictedOutput}
+      onOutput={changePrediction}
+      why={userResponse}
+      onWhy={changeResponse}
+      onSubmit={handleSubmit}
+      submitting={submitting}
+      expired={timedOut}
+    />
+  )
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
@@ -97,29 +124,20 @@ export function KataActivePage() {
         {lastSeconds && !timedOut ? 'Less than thirty seconds remain.' : ''}
       </p>
 
-      {isPoint && isMobile ? (
+      {isShaped && isMobile ? (
         <div className="flex-1 min-h-0 overflow-y-auto">
           <section className="bg-page border-b border-border px-5 py-6">
-            <PointProblem session={session} />
+            <ReviewProblem session={session} />
           </section>
-          <PointAnswer
-            kata={kata}
-            pointedLine={pointedLine}
-            onPoint={pointAtLine}
-            why={userResponse}
-            onWhy={changeResponse}
-            onSubmit={handleSubmit}
-            submitting={submitting}
-            expired={timedOut}
-          />
+          {shapedAnswer}
         </div>
       ) : (
         <PanelGroup orientation={orientation} className="flex-1 min-h-0 overflow-hidden">
           {/* Problem panel */}
-          <Panel defaultSize={problemPanelSize(isPoint, isCode)} minSize={25}>
-            {isPoint ? (
+          <Panel defaultSize={problemPanelSize(isShaped, isCode)} minSize={25}>
+            {isShaped ? (
               <div className="h-full overflow-y-auto bg-page px-8 py-9">
-                <PointProblem session={session} />
+                <ReviewProblem session={session} />
                 <p className="paper-note border-t border-border pt-6 mt-9 max-w-[40ch]">
                   Enter the dojo. Leave the AI outside.
                 </p>
@@ -143,18 +161,9 @@ export function KataActivePage() {
             ${orientation === 'horizontal' ? 'w-px cursor-col-resize' : 'h-px cursor-row-resize'}
           `} />
 
-          {isPoint ? (
+          {isShaped ? (
             <Panel defaultSize={62} minSize={20}>
-              <PointAnswer
-                kata={kata}
-                pointedLine={pointedLine}
-                onPoint={pointAtLine}
-                why={userResponse}
-                onWhy={changeResponse}
-                onSubmit={handleSubmit}
-                submitting={submitting}
-                expired={timedOut}
-              />
+              {shapedAnswer}
             </Panel>
           ) : (
             <ResponsePanel
@@ -177,12 +186,13 @@ export function KataActivePage() {
           online,
           failed: showFailure,
           hasDraft,
-          isPoint,
+          shape: kata.answerShape,
           pointedLine,
+          output: predictedOutput,
           why: userResponse,
         })}
         failed={showFailure}
-        note={draftNote(draftKept, isPoint && online && !timedOut)}
+        note={draftNote(draftKept, isShaped && online && !timedOut)}
         label={actionLabel(submitting, timedOut, expiredEmpty)}
         loading={submitting}
         disabled={submitting || (!answerReady && !timedOut) || (!online && !expiredEmpty)}
@@ -211,8 +221,8 @@ export function KataActivePage() {
   )
 }
 
-function problemPanelSize(isPoint: boolean, isCode: boolean): number {
-  if (isPoint) return 38
+function problemPanelSize(isShaped: boolean, isCode: boolean): number {
+  if (isShaped) return 38
   return isCode ? 40 : 50
 }
 
@@ -234,8 +244,9 @@ function answerHint({
   online,
   failed,
   hasDraft,
-  isPoint,
+  shape,
   pointedLine,
+  output,
   why,
 }: Readonly<{
   submitting: boolean
@@ -244,8 +255,9 @@ function answerHint({
   online: boolean
   failed: boolean
   hasDraft: boolean
-  isPoint: boolean
+  shape: SessionWithKata['kata']['answerShape']
   pointedLine: number | null
+  output: string
   why: string
 }>): string {
   if (submitting) return 'Submitting…'
@@ -253,7 +265,11 @@ function answerHint({
   if (!online) return hasDraft ? 'Reconnect to submit. Your answer is still here.' : 'Reconnect to submit.'
   if (failed) return "Your answer didn't go through. It's still here. Try again."
   if (expired) return 'Time expired. Your draft is here.'
-  if (!isPoint) return ''
+  if (shape === 'predict') {
+    if (!output.trim()) return why.trim() ? 'Write the output to continue.' : 'Write exactly what it prints.'
+    return why.trim() ? '' : 'Now say why it prints that.'
+  }
+  if (shape !== 'point') return ''
   if (pointedLine === null) return why.trim() ? 'Choose a line to continue.' : 'Tap the line with the bug.'
   return why.trim()
     ? `Line ${pointedLine} selected. Tap another line to change it.`
@@ -364,7 +380,7 @@ function ProblemContent({ session }: Readonly<{ session: SessionWithKata }>) {
   )
 }
 
-function PointProblem({ session }: Readonly<{ session: SessionWithKata }>) {
+function ReviewProblem({ session }: Readonly<{ session: SessionWithKata }>) {
   const { kata } = session
   return (
     <>
@@ -405,21 +421,11 @@ function PointAnswer({
   submitting: boolean
   expired: boolean
 }>) {
-  const language = resolveLanguage(kata.language)
-
-  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-      e.preventDefault()
-      onSubmit()
-    }
-  }
+  const handleKeyDown = submitOnModEnter(onSubmit)
 
   return (
     <div className="flex flex-col bg-page md:h-full md:overflow-y-auto">
-      <div className="min-h-11 md:min-h-12 shrink-0 border-b border-border bg-surface flex items-center justify-between gap-4 px-4 md:px-6 font-mono text-xs text-secondary">
-        <span>solution.{fileExtension(language)}</span>
-        <span>Read only</span>
-      </div>
+      <ReadOnlyFileBar kata={kata} />
       <div role="group" aria-label="Code lines" className="py-1 md:py-3">
         {toCodeLines(kata.starterCode ?? '').map((code, i) => (
           <CodeLine
@@ -449,9 +455,100 @@ function PointAnswer({
           disabled={submitting}
           readOnly={expired}
           aria-describedby={ANSWER_HINT_ID}
-          className="min-h-36 bg-page text-primary font-sans text-[16px] leading-relaxed border border-border rounded-sm px-3 py-2.5 resize-y placeholder:text-muted disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className={`min-h-36 font-sans ${ANSWER_FIELD}`}
         />
         <p className="paper-note">Two or three sentences. Explain your reasoning.</p>
+      </div>
+    </div>
+  )
+}
+
+const ANSWER_FIELD =
+  'bg-page text-primary text-[16px] leading-relaxed border border-border rounded-sm px-3 py-2.5 resize-y placeholder:text-muted disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent'
+
+function submitOnModEnter(onSubmit: () => void) {
+  return (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault()
+      onSubmit()
+    }
+  }
+}
+
+function ReadOnlyFileBar({ kata }: Readonly<{ kata: SessionWithKata['kata'] }>) {
+  return (
+    <div className="min-h-11 md:min-h-12 shrink-0 border-b border-border bg-surface flex items-center justify-between gap-4 px-4 md:px-6 font-mono text-xs text-secondary">
+      <span>solution.{fileExtension(resolveLanguage(kata.language))}</span>
+      <span>Read only</span>
+    </div>
+  )
+}
+
+function PredictAnswer({
+  kata,
+  output,
+  onOutput,
+  why,
+  onWhy,
+  onSubmit,
+  submitting,
+  expired,
+}: Readonly<{
+  kata: SessionWithKata['kata']
+  output: string
+  onOutput: (v: string) => void
+  why: string
+  onWhy: (v: string) => void
+  onSubmit: () => void
+  submitting: boolean
+  expired: boolean
+}>) {
+  const handleKeyDown = submitOnModEnter(onSubmit)
+
+  return (
+    <div className="flex flex-col bg-page md:h-full md:overflow-y-auto">
+      <ReadOnlyFileBar kata={kata} />
+      <div className="py-1 md:py-3">
+        {toCodeLines(kata.starterCode ?? '').map((code, i) => (
+          <CodeLine key={i} number={i + 1} code={code} selected={false} />
+        ))}
+      </div>
+      <div className="flex flex-col gap-3 px-4 py-5 md:p-6 bg-surface border-t border-border">
+        <label htmlFor="predict-output" className="font-mono text-xs tracking-[0.08em] uppercase text-primary">
+          What does it print?
+        </label>
+        <textarea
+          id="predict-output"
+          value={output}
+          onChange={(e) => onOutput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="One line per line of output."
+          rows={6}
+          maxLength={PREDICTED_OUTPUT_MAX}
+          spellCheck={false}
+          autoCapitalize="off"
+          autoCorrect="off"
+          disabled={submitting}
+          readOnly={expired}
+          aria-describedby={ANSWER_HINT_ID}
+          className={`min-h-28 font-mono ${ANSWER_FIELD}`}
+        />
+        <label htmlFor="predict-why" className="mt-3 font-mono text-xs tracking-[0.08em] uppercase text-primary">
+          Why that order?
+        </label>
+        <textarea
+          id="predict-why"
+          value={why}
+          onChange={(e) => onWhy(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Think out loud. The sensei reads everything."
+          rows={4}
+          disabled={submitting}
+          readOnly={expired}
+          aria-describedby={ANSWER_HINT_ID}
+          className={`min-h-36 font-sans ${ANSWER_FIELD}`}
+        />
+        <p className="paper-note">Name what decides it. A right guess with no reason is not a pass.</p>
       </div>
     </div>
   )

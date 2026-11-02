@@ -8,7 +8,7 @@ import { SkeletonText } from '../components/ui/SkeletonLoader'
 import { FeedbackSection } from '../components/ui/FeedbackSection'
 import { PieceReceipt } from '../components/recognition/PieceReceipt'
 import { stripInsightTags } from '../lib/parse-insight'
-import { KataContext, KataNotes, PostKataActions, ReviewVerdict, TheAnswer, YourPointAnswer, parsePointResponse } from '../components/eval/PostKata'
+import { KataContext, KataNotes, PostKataActions, ReviewVerdict, TheAnswer, YourAnswer, parseGivenAnswer } from '../components/eval/PostKata'
 import { ReturnLink, ReviewGrid, ReviewShell, ReviewTitle, kataMeta, reviewEyebrow, useReturnState } from '../components/eval/ReviewShell'
 
 export function ResultsPage() {
@@ -96,14 +96,14 @@ export function ResultsPage() {
   }
 
   const code = session.kata.starterCode
-  const pointed = code ? parsePointResponse(attempt.userResponse) : null
+  const given = code ? parseGivenAnswer(attempt.userResponse) : null
   const meta = [kataMeta(session.kata), completionTime && `completed in ${completionTime}`].filter(Boolean).join(' · ')
 
   return (
-    <ReviewShell status={verdict ? 'complete' : 'unavailable'} leading={<ReturnLink />} centered={!pointed}>
+    <ReviewShell status={verdict ? 'complete' : 'unavailable'} leading={<ReturnLink />} centered={!given}>
       <ReviewTitle eyebrow={verdict ? reviewEyebrow('complete') : 'Evaluation unavailable'} title={session.kata.title} meta={meta} />
       <ReviewGrid
-        aside={code && pointed && <YourPointAnswer code={code} line={pointed.line} why={pointed.why} final={!!verdict} />}
+        aside={code && given && <YourAnswer code={code} answer={given} final={!!verdict} />}
         followthrough={
           verdict &&
           sessionId && (
@@ -128,7 +128,7 @@ export function ResultsPage() {
 
         {code && session.answer && <TheAnswer code={code} answer={session.answer} />}
         {attempt.analysis && <KataNotes analysis={attempt.analysis} topics={attempt.topicsToReview ?? []} />}
-        <KataContext session={session} pointed={!!pointed} />
+        <KataContext session={session} answered={!!given} />
       </ReviewGrid>
     </ReviewShell>
   )

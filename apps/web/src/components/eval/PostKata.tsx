@@ -1,7 +1,7 @@
 import { useId, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Verdict } from '@dojo/shared'
-import { api, type RevealedAnswer, type SessionWithKata } from '../../lib/api'
+import { api, type GivenAnswer, type RevealedAnswer, type SessionWithKata } from '../../lib/api'
 import { parseInsight } from '../../lib/parse-insight'
 import { VERDICT_LABELS, VERDICT_STROKE, VERDICT_TEXT } from '../../lib/verdict'
 import { Button } from '../ui/Button'
@@ -13,11 +13,16 @@ import { SenseiFigure } from './SenseiFigure'
 const LABEL = 'paper-eyebrow'
 const SECTION = 'mt-7 md:mt-8 pt-6 md:pt-7 border-t border-border'
 const POINT_RESPONSE = /^Line (\d+): [^\n]*\n\n([\s\S]+)$/
+const PREDICT_RESPONSE = /^Predicted output:\n```\n([\s\S]*?)\n```\n\n([\s\S]+)$/
 
-export function parsePointResponse(response: string | undefined): { line: number; why: string } | null {
-  const match = response ? POINT_RESPONSE.exec(response) : null
-  if (!match) return null
-  return { line: Number(match[1]), why: match[2]!.trim() }
+/** The stored response of a point or predict kata, as the API composed it. */
+export function parseGivenAnswer(response: string | undefined): GivenAnswer | null {
+  if (!response) return null
+  const point = POINT_RESPONSE.exec(response)
+  if (point) return { shape: 'point', line: Number(point[1]), why: point[2]!.trim() }
+  const predict = PREDICT_RESPONSE.exec(response)
+  if (predict) return { shape: 'predict', output: predict[1]!, why: predict[2]!.trim() }
+  return null
 }
 
 function codeLines(code: string) {
@@ -54,19 +59,31 @@ export function ReviewVerdict({ verdict, children }: Readonly<{ verdict: Verdict
   )
 }
 
+function Output({ text }: Readonly<{ text: string }>) {
+  return (
+    <pre className="rounded-sm bg-surface px-4 py-3 font-mono text-sm leading-relaxed text-primary whitespace-pre-wrap wrap-anywhere">
+      {text}
+    </pre>
+  )
+}
+
 /** The answer stays open while the sensei works; on a phone the final result takes the screen first. */
-export function YourPointAnswer({
-  code,
-  line,
-  why,
-  final,
-}: Readonly<{ code: string; line: number; why: string; final: boolean }>) {
+export function YourAnswer({ code, answer, final }: Readonly<{ code: string; answer: GivenAnswer; final: boolean }>) {
   const wide = globalThis.matchMedia?.('(min-width: 768px)').matches ?? false
   return (
     <Disclosure summary="Your answer" defaultOpen={!final || wide}>
-      <h2 className={`${LABEL} mt-2 mb-4`}>You pointed at line {line} · your why</h2>
-      <CodeExcerpt code={code} line={line} />
-      <blockquote className="mt-4 text-secondary text-base leading-relaxed whitespace-pre-wrap wrap-anywhere">{why}</blockquote>
+      {answer.shape === 'point' ? (
+        <>
+          <h2 className={`${LABEL} mt-2 mb-4`}>You pointed at line {answer.line} · your why</h2>
+          <CodeExcerpt code={code} line={answer.line} />
+        </>
+      ) : (
+        <>
+          <h2 className={`${LABEL} mt-2 mb-4`}>You predicted · your why</h2>
+          <Output text={answer.output} />
+        </>
+      )}
+      <blockquote className="mt-4 text-secondary text-base leading-relaxed whitespace-pre-wrap wrap-anywhere">{answer.why}</blockquote>
     </Disclosure>
   )
 }
@@ -74,9 +91,9 @@ export function YourPointAnswer({
 export function TheAnswer({ code, answer }: Readonly<{ code: string; answer: RevealedAnswer }>) {
   return (
     <section className={SECTION}>
-      <h2 className={LABEL}>The answer · line {answer.line}</h2>
+      <h2 className={LABEL}>{answer.shape === 'point' ? `The answer · line ${answer.line}` : 'The answer · what it prints'}</h2>
       <h3 className="text-primary text-xl font-semibold tracking-tight mt-3 mb-5">{answer.title}</h3>
-      <CodeExcerpt code={code} line={answer.line} />
+      {answer.shape === 'point' ? <CodeExcerpt code={code} line={answer.line} /> : <Output text={answer.output} />}
       <p className="mt-5 text-secondary text-base leading-relaxed">{answer.why}</p>
     </section>
   )
@@ -125,10 +142,10 @@ function NoteList({ title, items }: Readonly<{ title: string; items: string[] }>
 }
 
 /** What a result reopened later needs in order to read without going back to the kata. */
-export function KataContext({ session, pointed }: Readonly<{ session: SessionWithKata; pointed: boolean }>) {
-  const code = pointed ? session.kata.starterCode : null
+export function KataContext({ session, answered }: Readonly<{ session: SessionWithKata; answered: boolean }>) {
+  const code = answered ? session.kata.starterCode : null
   const response = session.finalAttempt?.userResponse
-  if (!session.body && !code && (pointed || !response)) return null
+  if (!session.body && !code && (answered || !response)) return null
   return (
     <div className="mt-6">
       {(session.body || code) && (
@@ -143,7 +160,7 @@ export function KataContext({ session, pointed }: Readonly<{ session: SessionWit
           )}
         </Disclosure>
       )}
-      {!pointed && response && (
+      {!answered && response && (
         <Disclosure summary="Your response">
           <pre className="text-secondary text-sm leading-relaxed whitespace-pre-wrap font-mono max-h-96 overflow-y-auto">{response}</pre>
         </Disclosure>

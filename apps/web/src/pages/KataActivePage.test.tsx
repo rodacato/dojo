@@ -27,6 +27,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 const getSession = vi.fn()
 const submitAttempt = vi.fn()
 const submitPointAttempt = vi.fn()
+const submitPredictAttempt = vi.fn()
 const streamSessionBody = vi.fn()
 
 vi.mock('../lib/api', async (importOriginal) => {
@@ -37,6 +38,7 @@ vi.mock('../lib/api', async (importOriginal) => {
       getSession: (...args: unknown[]) => getSession(...args),
       submitAttempt: (...args: unknown[]) => submitAttempt(...args),
       submitPointAttempt: (...args: unknown[]) => submitPointAttempt(...args),
+      submitPredictAttempt: (...args: unknown[]) => submitPredictAttempt(...args),
       streamSessionBody: (...args: unknown[]) => streamSessionBody(...args),
     },
   }
@@ -85,6 +87,7 @@ beforeEach(() => {
   getSession.mockReset()
   submitAttempt.mockReset()
   submitPointAttempt.mockReset()
+  submitPredictAttempt.mockReset()
   streamSessionBody.mockReset()
 })
 
@@ -583,6 +586,74 @@ describe('KataActivePage', () => {
       renderPage('sess-1')
 
       expect(await screen.findByRole('button', { name: /const start/ })).toHaveAttribute('aria-pressed', 'true')
+    })
+  })
+
+  describe('predict kata', () => {
+    function predictSession(): SessionWithKata {
+      const base = makeSession()
+      return makeSession({
+        body: 'What does it print?',
+        kata: {
+          ...base.kata,
+          title: 'Who speaks first',
+          type: 'review',
+          language: ['typescript'],
+          starterCode: "console.log('a')\nsetTimeout(() => console.log('b'))\n",
+          answerShape: 'predict',
+        },
+      })
+    }
+
+    it('submits the predicted output and the why once both are given', async () => {
+      const user = userEvent.setup()
+      getSession.mockResolvedValue(predictSession())
+      submitPredictAttempt.mockResolvedValue({ attemptId: 'att-8' })
+
+      renderPage('sess-1')
+
+      await screen.findByText('Write exactly what it prints.')
+      const submitButton = screen.getByRole('button', { name: 'Submit' })
+      fireEvent.change(screen.getByLabelText('What does it print?'), { target: { value: 'a\nb' } })
+      expect(screen.getByText('Now say why it prints that.')).toBeInTheDocument()
+      expect(submitButton).toBeDisabled()
+
+      fireEvent.change(screen.getByLabelText('Why that order?'), { target: { value: 'the timer is a macrotask.' } })
+      await waitFor(() => expect(submitButton).toBeEnabled())
+      await user.click(submitButton)
+
+      await waitFor(() => expect(submitPredictAttempt).toHaveBeenCalledWith('sess-1', 'a\nb', 'the timer is a macrotask.'))
+      expect(submitAttempt).not.toHaveBeenCalled()
+      expect(navigate).toHaveBeenCalledWith('/katas/sess-1/eval')
+    })
+
+    it('keeps Submit disabled with a why but no output', async () => {
+      getSession.mockResolvedValue(predictSession())
+
+      renderPage('sess-1')
+
+      fireEvent.change(await screen.findByLabelText('Why that order?'), { target: { value: 'timers run last' } })
+      expect(screen.getByText('Write the output to continue.')).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
+    })
+
+    it('shows the code read-only, with nothing to tap', async () => {
+      getSession.mockResolvedValue(predictSession())
+
+      renderPage('sess-1')
+
+      expect(await screen.findByText("console.log('a')")).toBeInTheDocument()
+      expect(screen.queryByRole('button', { pressed: false })).not.toBeInTheDocument()
+      expect(screen.getByLabelText('Why that order?')).toHaveValue('')
+    })
+
+    it('restores the predicted output when the learner comes back', async () => {
+      sessionStorage.setItem('dojo-predict-sess-1', 'a\nb')
+      getSession.mockResolvedValue(predictSession())
+
+      renderPage('sess-1')
+
+      expect(await screen.findByLabelText('What does it print?')).toHaveValue('a\nb')
     })
   })
 })

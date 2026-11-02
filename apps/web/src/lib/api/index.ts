@@ -16,6 +16,7 @@ export type {
   DashboardData,
   SessionAttempt,
   SessionWithKata,
+  GivenAnswer,
   RevealedAnswer,
   KataFeedback,
   StartSessionResponse,

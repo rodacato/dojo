@@ -26,10 +26,17 @@ export const pointAnswerKeySchema = z.object({
   shape: z.literal('point'),
   line: z.number().int().positive(),
 })
+/** The longest predicted output a learner can send. */
+export const PREDICTED_OUTPUT_MAX = 2000
+
+export const predictAnswerKeySchema = z.object({
+  shape: z.literal('predict'),
+  output: z.string().min(1),
+})
 export const rubricSchema = z.object({
   expectedIssues: z.array(rubricIssueSchema).min(1),
   contextNotes: z.string().optional(),
-  answer: pointAnswerKeySchema.optional(),
+  answer: z.discriminatedUnion('shape', [pointAnswerKeySchema, predictAnswerKeySchema]).optional(),
   reference: z.string().min(1).optional(),
 })
 

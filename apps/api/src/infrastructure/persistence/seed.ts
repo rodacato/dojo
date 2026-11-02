@@ -6,6 +6,7 @@ import { katas as katasTable, variations as variationsTable, users as usersTable
 import { KATAS, uuidv5 } from './katas'
 import type { SeedKata } from './katas'
 import { isLineInCode } from '../../domain/practice/point-answer'
+import { normalizeOutput } from '../../domain/practice/predict-answer'
 
 // ---------------------------------------------------------------------------
 // System user — required by katas.created_by FK
@@ -35,8 +36,11 @@ export function validateKatas(katas: SeedKata[]): void {
     if (ex.duration <= 0) errors.push(`${ex.id}: invalid duration ${ex.duration}`)
     if (ex.variations.length < 1) errors.push(`${ex.id}: no variations`)
     const answer = ex.rubric?.answer
-    if (answer && (ex.type !== 'review' || !ex.starterCode || !isLineInCode(ex.starterCode, answer.line))) {
+    if (answer?.shape === 'point' && (ex.type !== 'review' || !ex.starterCode || !isLineInCode(ex.starterCode, answer.line))) {
       errors.push(`${ex.id}: point answer line ${answer.line} must be a line of the starter code of a review kata`)
+    }
+    if (answer?.shape === 'predict' && (ex.type !== 'review' || !ex.starterCode?.trim() || !normalizeOutput(answer.output))) {
+      errors.push(`${ex.id}: a predict kata must be a review kata with starter code and an expected output`)
     }
     for (const v of ex.variations) {
       if (!v.ownerRole.trim()) errors.push(`${ex.id}: empty ownerRole`)

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { api, ApiError, type SessionWithKata } from '../lib/api'
+import { api, ApiError, type GivenAnswer, type SessionWithKata } from '../lib/api'
 import { useOnline } from './useOnline'
 
 const PREPARING_MESSAGES = [
@@ -22,6 +22,7 @@ const LAST_SECONDS_MS = 30_000
 
 const draftKey = (sessionId: string) => `dojo-draft-${sessionId}`
 const pointKey = (sessionId: string) => `dojo-point-${sessionId}`
+const predictKey = (sessionId: string) => `dojo-predict-${sessionId}`
 
 function readStored(key: string): string | null {
   try {
@@ -31,12 +32,15 @@ function readStored(key: string): string | null {
   }
 }
 
-/** The point answer as last written here: the attempt only comes back once it is final. */
-export function storedPointAnswer(sessionId: string | undefined): { line: number; why: string } | null {
+/** The answer as last written here: the attempt only comes back once it is final. */
+export function storedAnswer(sessionId: string | undefined): GivenAnswer | null {
   if (!sessionId) return null
-  const line = Number(readStored(pointKey(sessionId)))
   const why = readStored(draftKey(sessionId))
-  return line > 0 && why ? { line, why } : null
+  if (!why) return null
+  const line = Number(readStored(pointKey(sessionId)))
+  if (line > 0) return { shape: 'point', line, why }
+  const output = readStored(predictKey(sessionId))
+  return output?.trim() ? { shape: 'predict', output, why } : null
 }
 
 function writeStored(key: string, value: string): boolean {
@@ -57,6 +61,7 @@ export function useKataSession(sessionId: string | undefined) {
   const [prepareSlow, setPrepareSlow] = useState(false)
   const [userResponse, setUserResponse] = useState('')
   const [pointedLine, setPointedLine] = useState<number | null>(null)
+  const [predictedOutput, setPredictedOutput] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitFailed, setSubmitFailed] = useState(false)
   const [draftKept, setDraftKept] = useState(true)
@@ -77,11 +82,12 @@ export function useKataSession(sessionId: string | undefined) {
       const draft = readStored(draftKey(s.id))
       if (draft) {
         setUserResponse(draft)
-      } else if (s.kata.starterCode && !isPoint) {
+      } else if (s.kata.starterCode && !s.kata.answerShape) {
         setUserResponse(s.kata.starterCode)
       }
       const storedLine = Number(readStored(pointKey(s.id)))
       if (isPoint && storedLine > 0) setPointedLine(storedLine)
+      if (s.kata.answerShape === 'predict') setPredictedOutput(readStored(predictKey(s.id)) ?? '')
     }
 
     // Resolve a not-active session: error UI when prep failed with no attempt,
@@ -193,6 +199,11 @@ export function useKataSession(sessionId: string | undefined) {
     setDraftKept(writeStored(pointKey(session.id), String(pointedLine)))
   }, [session, pointedLine])
 
+  useEffect(() => {
+    if (session?.kata.answerShape !== 'predict') return
+    setDraftKept(writeStored(predictKey(session.id), predictedOutput))
+  }, [session, predictedOutput])
+
   // Warn before closing tab during active kata
   useEffect(() => {
     if (!session) return
@@ -220,18 +231,18 @@ export function useKataSession(sessionId: string | undefined) {
   }, [session])
 
   const isPoint = session?.kata.answerShape === 'point'
-  const answerReady = userResponse.trim().length > 0 && (!isPoint || pointedLine !== null)
+  const isPredict = session?.kata.answerShape === 'predict'
+  const answerReady =
+    userResponse.trim().length > 0 && (!isPoint || pointedLine !== null) && (!isPredict || predictedOutput.trim().length > 0)
   const expiredEmpty = timedOut && !answerReady
-  const hasDraft = userResponse.trim().length > 0 || pointedLine !== null
+  const hasDraft = userResponse.trim().length > 0 || pointedLine !== null || predictedOutput.trim().length > 0
 
   async function handleSubmit() {
     if (!session || !sessionId || !answerReady || submitting || !online) return
     setSubmitting(true)
     setSubmitFailed(false)
     try {
-      const { attemptId } = isPoint && pointedLine !== null
-        ? await api.submitPointAttempt(sessionId, pointedLine, userResponse)
-        : await api.submitAttempt(sessionId, userResponse)
+      const { attemptId } = await submitAnswer(sessionId)
       sessionStorage.setItem(`dojo-attempt-${sessionId}`, attemptId)
       navigate(`/katas/${sessionId}/eval`)
     } catch (err) {
@@ -242,6 +253,17 @@ export function useKataSession(sessionId: string | undefined) {
         setSubmitFailed(true)
       }
     }
+  }
+
+  function submitAnswer(id: string) {
+    if (isPoint && pointedLine !== null) return api.submitPointAttempt(id, pointedLine, userResponse)
+    if (isPredict) return api.submitPredictAttempt(id, predictedOutput, userResponse)
+    return api.submitAttempt(id, userResponse)
+  }
+
+  function changePrediction(value: string) {
+    setSubmitFailed(false)
+    setPredictedOutput(value)
   }
 
   function changeResponse(value: string) {
@@ -268,6 +290,8 @@ export function useKataSession(sessionId: string | undefined) {
     changeResponse,
     pointedLine,
     pointAtLine,
+    predictedOutput,
+    changePrediction,
     submitting,
     submitFailed,
     online,

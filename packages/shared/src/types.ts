@@ -38,16 +38,25 @@ export interface PointAnswerKey {
   line: number
 }
 
+// What the fixed starter code prints. Checked against a real run in Piston;
+// compared after normalizing line endings and trailing whitespace.
+export interface PredictAnswerKey {
+  shape: 'predict'
+  output: string
+}
+
+export type AnswerKey = PointAnswerKey | PredictAnswerKey
+
 export interface Rubric {
   expectedIssues: RubricIssue[]
   contextNotes?: string
-  answer?: PointAnswerKey
+  answer?: AnswerKey
   // One strong answer, in prose. Code, chat and whiteboard kata use it with
   // expectedIssues as the points that answer must cover.
   reference?: string
 }
 
-export type AnswerShape = PointAnswerKey['shape']
+export type AnswerShape = AnswerKey['shape']
 
 export type ClaritySignal = 'clear' | 'somewhat_unclear' | 'confusing'
 export type TimingSignal = 'too_short' | 'about_right' | 'too_long'

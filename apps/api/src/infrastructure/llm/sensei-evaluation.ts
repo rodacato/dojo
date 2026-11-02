@@ -1,9 +1,10 @@
 import type { ConversationTurn } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { PointContext } from '../../domain/practice/point-answer'
+import type { PredictContext } from '../../domain/practice/predict-answer'
 import type { Rubric } from '@dojo/shared'
 import { EvaluationStreamParser } from './evaluation-parser'
-import { buildPrompt, buildFollowUpPrompt, buildPointPrompt, buildReviewPrompt } from '../../prompts/sensei'
+import { buildPrompt, buildFollowUpPrompt, buildPointPrompt, buildPredictPrompt, buildReviewPrompt } from '../../prompts/sensei'
 
 // Transport-agnostic chat message. Structurally a subtype of both the OpenAI
 // chat shape and Anthropic's MessageParam (content as a plain string), so the
@@ -25,6 +26,7 @@ export interface BuildMessagesParams {
   guide?: Rubric
   testResults?: string
   point?: PointContext
+  predict?: PredictContext
 }
 
 export class LLMParseError extends Error {
@@ -46,6 +48,21 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
         kataTitle: params.kataTitle,
         problem: params.sessionBody,
         point: params.point,
+        rubric: params.rubric,
+      }),
+    })
+    return messages
+  }
+
+  if (params.rubric && params.predict) {
+    messages.push({
+      role: 'user',
+      content: buildPredictPrompt({
+        ownerRole: params.ownerRole,
+        ownerContext: params.ownerContext,
+        kataTitle: params.kataTitle,
+        problem: params.sessionBody,
+        predict: params.predict,
         rubric: params.rubric,
       }),
     })

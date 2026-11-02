@@ -245,7 +245,7 @@ describe('ResultsPage', () => {
       makeSession({
         finalAttempt: makeAttempt({ verdict: null, analysis: '' }),
         kata: { ...kata, starterCode: 'a\nb\n' },
-        answer: { line: 1, title: 'The cause', why: 'because' },
+        answer: { shape: 'point' as const, line: 1, title: 'The cause', why: 'because' },
       }),
     )
 
@@ -325,7 +325,7 @@ describe('ResultsPage', () => {
     const pointSession = makeSession({
       kata: { ...kata, type: 'review', starterCode: 'one\ntwo\nthree\nfour\n' },
       finalAttempt: makeAttempt({ userResponse: 'Line 3: three\n\nIt is off by one.', verdict: 'needs_work' }),
-      answer: { line: 2, title: 'two is wrong', why: 'Because of two.' },
+      answer: { shape: 'point' as const, line: 2, title: 'two is wrong', why: 'Because of two.' },
     })
 
     it('orders verdict, answer, notes, receipt space and exits, and keeps the why beside them', async () => {
@@ -354,6 +354,28 @@ describe('ResultsPage', () => {
       expect(original).not.toHaveAttribute('open')
       expect(original).toHaveTextContent('four')
       expect(original).toHaveTextContent('Original kata body text.')
+    })
+  })
+
+  describe('predict kata', () => {
+    const predictSession = makeSession({
+      kata: { ...kata, type: 'review', starterCode: "log('a')\nlater(() => log('b'))\n" },
+      finalAttempt: makeAttempt({
+        userResponse: 'Predicted output:\n```\nb\na\n```\n\nThe callback runs first.',
+        verdict: 'needs_work',
+      }),
+      answer: { shape: 'predict' as const, output: 'a\nb', title: 'Timers wait for the stack', why: 'later queues a macrotask.' },
+    })
+
+    it('shows the prediction and the real output, never as a sent response', async () => {
+      mockedApi.getSession.mockResolvedValue(predictSession)
+      renderAt()
+
+      expect(await screen.findByRole('heading', { name: 'The answer · what it prints' })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: /You predicted/ })).toBeInTheDocument()
+      expect(screen.getByText('The callback runs first.')).toBeInTheDocument()
+      expect(screen.getByText('later queues a macrotask.')).toBeInTheDocument()
+      expect(screen.queryByText('Your response')).not.toBeInTheDocument()
     })
   })
 

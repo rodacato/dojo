@@ -14,4 +14,13 @@ describe('validateKatas', () => {
     }
     expect(() => validateKatas([kata])).toThrow(/point answer line/)
   })
+
+  it.each([
+    ['without starter code', { starterCode: undefined }],
+    ['without an expected output', { rubric: { expectedIssues: [{ title: 't', severity: 'high' as const, why: 'w' }], answer: { shape: 'predict' as const, output: ' \n' } } }],
+    ['that is not a review kata', { type: 'code' as const }],
+  ])('rejects a predict kata %s', (_label, over) => {
+    const kata: SeedKata = { ...KATAS.find((k) => k.rubric?.answer?.shape === 'predict')!, ...over }
+    expect(() => validateKatas([kata])).toThrow(/predict kata/)
+  })
 })
