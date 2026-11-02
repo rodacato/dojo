@@ -19,3 +19,7 @@ The Paper prototype puts a cut-paper sensei on the review screens. D71 kept post
 ## Consequences
 - A figure now appears after every kata, which D71 warned could wear thin.
 - The art carries the same rights uncertainty as the belts art ([PROVENANCE.md](../../PROVENANCE.md)).
+
+## Amendment, 2026-11-02
+- **An avatar, not a mascot.** The figure gives the sensei's voice some personality. It does not react, celebrate or appear outside these two placements. `docs/DESIGN.md` said "the sensei is a voice, never an avatar"; that line now reads as this decision.
+- **The art is painted,** not cut-paper as the context above says.
