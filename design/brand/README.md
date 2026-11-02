@@ -261,7 +261,7 @@ Milestones have no points or XP. They are collections — you have them or you d
 **Share cards and OG images:** the instance host in full monospace (`dojo.notdefined.dev` on the reference instance). The dot between `dojo` and `notdefined` acts as a natural visual separator.
 
 **Avoid:**
-- Literal martial-arts iconography (katanas, physical belts, wooden dojos). One exception: the signed-in `/belts` room and its belt specimens ([ADR-032](../../docs/adr/032-belts-room.md)). The mark, landing, share cards and every public surface stay under this rule.
+- Literal martial-arts iconography (katanas, physical belts, wooden dojos). Two exceptions: the signed-in `/belts` room and its belt specimens ([ADR-032](../../docs/adr/032-belts-room.md)), and the sensei on the review screens ([ADR-033](../../docs/adr/033-sensei-art.md)). The mark, landing, share cards and every public surface stay under this rule.
 - Generic code icons (brackets, `</>`)
 - Robot/AI/brain/lightbulb icons
 - Anything that looks like a 2019 startup

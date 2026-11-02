@@ -123,6 +123,8 @@ describe('SenseiEvalPage', () => {
 
     expect(screen.getByText('The sensei is reviewing your work...')).toBeInTheDocument()
     expect(await screen.findByText('Reviewing')).toBeInTheDocument()
+    expect(screen.getByTestId('sensei-review')).toBeInTheDocument()
+    expect(screen.queryByTestId('sensei-explain')).not.toBeInTheDocument()
     // No verdict and no answer box until the stream resolves.
     expect(screen.queryByRole('heading', { name: 'PASSED' })).not.toBeInTheDocument()
     expect(screen.queryByPlaceholderText('Your answer...')).not.toBeInTheDocument()

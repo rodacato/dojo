@@ -8,6 +8,7 @@ import { Button } from '../ui/Button'
 import { CodeLine } from '../ui/CodeLine'
 import { Disclosure } from '../ui/Disclosure'
 import { KataBody } from '../ui/KataBody'
+import { SenseiFigure } from './SenseiFigure'
 
 const LABEL = 'paper-eyebrow'
 const SECTION = 'mt-7 md:mt-8 pt-6 md:pt-7 border-t border-border'
@@ -40,6 +41,7 @@ export function ReviewVerdict({ verdict, children }: Readonly<{ verdict: Verdict
   const headingId = useId()
   return (
     <section aria-labelledby={headingId} className={`border-l-3 border-current py-1 pl-4.5 md:pl-6 ${VERDICT_STROKE[verdict]}`}>
+      <SenseiFigure pose="explain" className="float-right w-20 h-17.5 md:w-24 md:h-21 ml-3 md:ml-5 mb-2" />
       <p className={LABEL}>Sensei review</p>
       <h2
         id={headingId}
