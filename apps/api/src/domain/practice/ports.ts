@@ -2,6 +2,7 @@ import type { AttemptId, SessionId, UserId } from '../shared/types'
 import type { Session } from './session'
 import type { EvaluationToken } from './values'
 import type { PointContext } from './point-answer'
+import type { PredictContext } from './predict-answer'
 import type { Rubric } from '@dojo/shared'
 
 export interface ConversationTurn {
@@ -28,6 +29,7 @@ export interface LLMPort {
     // Computed from running the learner's code; kept apart from their text so it cannot be forged.
     testResults?: string
     point?: PointContext
+    predict?: PredictContext
   }): AsyncIterable<EvaluationToken>
 
   generateSessionBody(params: {

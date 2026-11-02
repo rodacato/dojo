@@ -1,7 +1,9 @@
 import { type SeedKata, uuidv5 } from './types'
 
-// Five-minute point kata (D52): tap the line with the bug, explain why.
-// The code lives in starterCode and rubric.answer.line is 1-based within it.
+// Five-minute kata on fixed code in starterCode. Point (D52): tap the line with
+// the bug, explain why; rubric.answer.line is 1-based within the code. Predict:
+// type what the code prints, explain why; rubric.answer.output is checked
+// against a real run in Piston (PistonAdapter.integration.test.ts).
 
 export const microKatas: SeedKata[] = [
   {
@@ -490,6 +492,47 @@ GROUP BY u.id, u.name
         ownerRole: 'Go engineer who reviews concurrent code',
         ownerContext:
           'Since Go 1.22 each iteration has its own i and u, so a why about loop variable capture is wrong. Credit only the Add/Wait ordering; line 5 with "Add must happen before the goroutine starts" is the same fix.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-014-predict-event-loop'),
+    title: 'Who speaks first',
+    description:
+      'This script logs six words. Write the order they appear in, one per line, then say in two or three sentences what decides that order.',
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'async',
+    languages: ['typescript'],
+    tags: ['micro', 'predict'],
+    topics: ['event-loop', 'microtasks', 'async-await'],
+    starterCode: `console.log('start')
+setTimeout(() => console.log('timeout'), 0)
+Promise.resolve().then(() => console.log('then'))
+async function load() {
+  console.log('load')
+  await null
+  console.log('loaded')
+}
+load()
+console.log('end')
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'Synchronous code first, then microtasks in order, then timers',
+          severity: 'high',
+          why: 'start, load and end run synchronously; an async function runs until its first await. The .then callback and the code after await are microtasks, queued in that order, and run before any timer. setTimeout with 0 is a macrotask and runs last.',
+        },
+      ],
+      answer: { shape: 'predict', output: 'start\nload\nend\nthen\nloaded\ntimeout' },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior Node.js engineer who has debugged ordering bugs between promises and timers in production',
+        ownerContext:
+          'Credit a why that separates synchronous code, the microtask queue and timers, and says that an async function runs synchronously until its first await. "Promises are async" alone does not explain why then comes before timeout.',
       },
     ],
   },

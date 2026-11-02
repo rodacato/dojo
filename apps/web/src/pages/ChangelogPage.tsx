@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-02',
     phase: 'Practice',
+    title: 'Predict the output',
+    description:
+      'A new kind of kata shows a short snippet and asks what it prints, and why. Whether your output matches is checked exactly, not guessed, and the sensei grades the reasoning behind it. The real output appears with the verdict. The first one is about who speaks first in the event loop.',
+  },
+  {
+    date: '2026-11-02',
+    phase: 'Practice',
     title: 'Choose a kata',
     description:
       "Beside today's kata, Choose a kata asks how long you have, 5, 10 or 20 minutes, a type and a language, and offers up to three katas with the first one ready to start. It remembers what you asked last time, and today's kata is never among them, so the surprise stays a surprise. Doing one no longer closes today's kata.",

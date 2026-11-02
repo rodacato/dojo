@@ -6,7 +6,9 @@ import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
 import { kataTypeSchema } from '@dojo/shared'
 import { config } from '../../../config'
-import { composePointAnswer, isLineInCode, revealedAnswer } from '../../../domain/practice/point-answer'
+import { composePointAnswer, isLineInCode } from '../../../domain/practice/point-answer'
+import { composePredictAnswer, isValidPrediction } from '../../../domain/practice/predict-answer'
+import { revealedAnswer } from '../../../domain/practice/revealed-answer'
 import { SessionExpiredError } from '../../../domain/shared/errors'
 import { KataId, SessionId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
@@ -395,6 +397,7 @@ practiceRoutes.get('/sessions/:id/body-stream', requireAuth, uuidParam('id', { e
 const submitAttemptSchema = z.object({
   userResponse: z.string().min(1),
   pointedLine: z.number().int().positive().optional(),
+  predictedOutput: z.string().optional(),
 })
 
 practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
@@ -418,15 +421,21 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { err
     throw new SessionExpiredError(sessionId)
   }
 
-  const { pointedLine } = parsed.data
+  const { pointedLine, predictedOutput } = parsed.data
   let userResponse = parsed.data.userResponse
-  if (kata.rubric?.answer?.shape === 'point') {
+  const shape = kata.rubric?.answer?.shape
+  if (shape === 'point') {
     const code = kata.starterCode
-    if (!code || pointedLine === undefined || !isLineInCode(code, pointedLine) || !userResponse.trim()) {
+    if (!code || pointedLine === undefined || predictedOutput !== undefined || !isLineInCode(code, pointedLine) || !userResponse.trim()) {
       return c.json({ error: 'Invalid request body' }, 400)
     }
     userResponse = composePointAnswer(code, pointedLine, userResponse)
-  } else if (pointedLine !== undefined) {
+  } else if (shape === 'predict') {
+    if (predictedOutput === undefined || pointedLine !== undefined || !isValidPrediction(predictedOutput) || !userResponse.trim()) {
+      return c.json({ error: 'Invalid request body' }, 400)
+    }
+    userResponse = composePredictAnswer(predictedOutput, userResponse)
+  } else if (pointedLine !== undefined || predictedOutput !== undefined) {
     return c.json({ error: 'Invalid request body' }, 400)
   }
 

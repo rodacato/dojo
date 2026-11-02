@@ -90,3 +90,26 @@ describe('buildMessages for code, chat and whiteboard kata', () => {
     expect(content).toContain('Grade substance, not length.')
   })
 })
+
+describe('buildMessages for a predict kata', () => {
+  const predictRubric = {
+    expectedIssues: [{ title: 'microtasks before timers', severity: 'high' as const, why: 'then runs before setTimeout' }],
+    answer: { shape: 'predict' as const, output: 'a\nb' },
+  }
+  const predict = { code: 'console.log("a")\n', expected: 'a\nb', predicted: 'b\na', matches: false, why: 'timers first' }
+
+  it('gives the real output and the match as computed facts', () => {
+    const content = buildMessages({ ...base, rubric: predictRubric, predict })[0]!.content
+
+    expect(content).toContain('REAL OUTPUT (from running the code; hidden from the developer):\na\nb')
+    expect(content).toContain('THE MATCH (computed, not a claim): The predicted output does not match the real output.')
+    expect(content).toContain('timers first')
+    expect(content).toContain('GRADING RULES:')
+  })
+
+  it('says so when the prediction matches', () => {
+    const content = buildMessages({ ...base, rubric: predictRubric, predict: { ...predict, predicted: 'a\nb', matches: true } })[0]!.content
+    expect(content).toContain('The predicted output matches the real output exactly.')
+  })
+})
+

@@ -33,17 +33,9 @@ export function pointContextFor(
   rubric: Rubric | null,
   stored: string,
 ): PointContext | undefined {
-  const correctLine = rubric?.answer?.line
+  const correctLine = rubric?.answer?.shape === 'point' ? rubric.answer.line : undefined
   if (!starterCode || !correctLine) return undefined
   const answer = parsePointAnswer(stored)
   if (!answer) return undefined
   return { code: starterCode, correctLine, pointedLine: answer.line, why: answer.why }
-}
-
-// Shown only once the sensei has delivered the final verdict, never while the kata can still be answered.
-export function revealedAnswer(rubric: Rubric | null | undefined): { line: number; title: string; why: string } | null {
-  const line = rubric?.answer?.line
-  const issue = rubric?.expectedIssues[0]
-  if (!line || !issue) return null
-  return { line, title: issue.title, why: issue.why }
 }

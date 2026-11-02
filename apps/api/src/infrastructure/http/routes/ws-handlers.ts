@@ -4,6 +4,7 @@ import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
 import { MAX_ATTEMPTS } from '../../../domain/practice/session'
 import { pointContextFor } from '../../../domain/practice/point-answer'
+import { predictContextFor } from '../../../domain/practice/predict-answer'
 import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { recordSenseiEvaluation } from '../../observability/prometheus'
@@ -82,6 +83,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
       guide: kata && kata.type !== 'review' ? kata.rubric ?? undefined : undefined,
       point: kata?.type === 'review' ? pointContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
+      predict: kata?.type === 'review' ? predictContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
     })) {
       streamToken(cache, token)
     }

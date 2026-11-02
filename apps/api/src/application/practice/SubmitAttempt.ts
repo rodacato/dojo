@@ -5,6 +5,7 @@ import type { ConversationTurn, LLMPort, SessionRepositoryPort } from '../../dom
 import type { EventBusPort } from '../../domain/shared/events'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { PointContext } from '../../domain/practice/point-answer'
+import type { PredictContext } from '../../domain/practice/predict-answer'
 import type { Rubric } from '@dojo/shared'
 
 interface Deps {
@@ -27,6 +28,7 @@ export class SubmitAttempt {
     rubric?: Rubric // review kata rubric — switches the adapter to the review prompt
     guide?: Rubric // code, chat and whiteboard kata: the hidden reference
     point?: PointContext // point kata: the line tapped vs the correct one
+    predict?: PredictContext // predict kata: the output typed vs the real one
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
     if (!session) throw new SessionNotFoundError(params.sessionId)
@@ -51,6 +53,7 @@ export class SubmitAttempt {
       guide: params.guide,
       testResults: params.executionContext,
       point: params.point,
+      predict: params.predict,
     })) {
       // Saved before the final token goes out: the client reads the session and posts feedback as soon as it lands.
       if (token.isFinal && token.result) {

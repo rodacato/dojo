@@ -102,7 +102,7 @@ The bias figures are from 2023 models and have not been replicated on current on
 | # | Mechanism | Change | Enables |
 |---|---|---|---|
 | 1 | Reference answer + rubric for every type, deterministic facts, shared grading rules | sensei prompt + rubric data | better grading on every existing kata |
-| 2 | Answer shape `predict`, output computed in Piston at seed validation | answer shape + seed check | predict in the 5-minute slot |
+| 2 | Answer shape `predict`, its output checked against Piston by an opt-in test | answer shape + integration test | predict in the 5-minute slot |
 | 3 | Seniority level on the variation | session-body prompt | mid, senior and staff versions of the same kata |
 | 4 | Answer shape `order` | answer shape + drag UI | Parsons |
 | 5 | Broken starter code with tests as a gate | existing runtime + UI | bug-fix at 10 and 20 minutes |
