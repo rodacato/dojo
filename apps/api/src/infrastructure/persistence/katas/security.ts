@@ -221,6 +221,16 @@ A security audit flagged this configuration. Explain: (1) what CORS is and why i
     languages: [],
     tags: ['security', 'cors', 'web-security'],
     topics: ['cors', 'same-origin-policy', 'preflight-requests', 'credentials', 'browser-security', 'csrf'],
+    rubric: {
+      reference:
+        'CORS relaxes the browser\'s same-origin policy for chosen origins; it is enforced by the browser and protects users, not the server. origin * with credentials: true is rejected by browsers, and the usual "fix" of reflecting any Origin with credentials lets any site make authenticated requests as the user. allowedHeaders * is too broad. The fix is an explicit allowlist with https://app.example.com, credentials only if cookies are used, and only the methods and headers the app needs. CORS is not a security feature against curl or servers, and not a replacement for authentication or CSRF protection.',
+      expectedIssues: [
+        { title: 'Wildcard origin with credentials is invalid, and reflecting the origin is dangerous', severity: 'high', why: 'reflection with credentials lets any site act as the logged-in user' },
+        { title: 'Explicit origin allowlist as the fix', severity: 'high', why: 'only app.example.com should be trusted' },
+        { title: 'CORS is enforced by the browser, not the server', severity: 'medium', why: 'it does not stop curl or server-to-server calls, so it is not access control' },
+        { title: 'Narrows methods and headers to what is used', severity: 'low', why: 'allowedHeaders * widens what a cross-origin page may send' },
+      ],
+    },
     variations: [
       {
         ownerRole: 'Security engineer who has exploited CORS misconfigurations in penetration tests and knows exactly how attackers abuse them',

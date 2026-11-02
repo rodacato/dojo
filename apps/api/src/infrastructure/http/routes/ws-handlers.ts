@@ -80,6 +80,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       executionContext,
       category: kata?.category,
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
+      guide: kata && kata.type !== 'review' ? kata.rubric ?? undefined : undefined,
       point: kata?.type === 'review' ? pointContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
     })) {
       streamToken(cache, token)

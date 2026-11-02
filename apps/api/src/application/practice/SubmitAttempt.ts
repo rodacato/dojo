@@ -25,6 +25,7 @@ export class SubmitAttempt {
     executionContext?: string // test results injected before LLM evaluation
     category?: string // kata.category — shapes sensei prompt (e.g. debugging)
     rubric?: Rubric // review kata rubric — switches the adapter to the review prompt
+    guide?: Rubric // code, chat and whiteboard kata: the hidden reference
     point?: PointContext // point kata: the line tapped vs the correct one
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
@@ -38,20 +39,17 @@ export class SubmitAttempt {
         followUpQuestion: a.evaluationResult?.followUpQuestion ?? null,
       }))
 
-    // Append execution results to user response so the sensei sees them
-    const userResponseWithContext = params.executionContext
-      ? `${params.userResponse}\n\n${params.executionContext}`
-      : params.userResponse
-
     for await (const token of this.deps.llm.evaluate({
       ownerRole: params.ownerRole,
       ownerContext: params.ownerContext,
       kataTitle: params.kataTitle,
       sessionBody: session.body,
-      userResponse: userResponseWithContext,
+      userResponse: params.userResponse,
       history,
       category: params.category,
       rubric: params.rubric,
+      guide: params.guide,
+      testResults: params.executionContext,
       point: params.point,
     })) {
       // Saved before the final token goes out: the client reads the session and posts feedback as soon as it lands.

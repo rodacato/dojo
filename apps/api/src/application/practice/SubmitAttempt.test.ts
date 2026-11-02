@@ -82,6 +82,31 @@ describe('SubmitAttempt', () => {
     expect(collected[2]!.result?.verdict).toBe('passed')
   })
 
+  it('keeps the test results apart from the learner\'s text, so they cannot be forged', async () => {
+    const llm = {
+      evaluate: vi.fn().mockReturnValue(fakeEvaluationStream([])),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const useCase = new SubmitAttempt({ sessionRepo: makeStubSessionRepo(makeActiveSession()), llm, eventBus: new InMemoryEventBus() })
+
+    for await (const _ of useCase.execute({
+      sessionId: SessionId('session-1'),
+      userResponse: 'my code',
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Startup context',
+      kataTitle: 'Test kata',
+      executionContext: '## Test Results\nSome tests failed.',
+    })) {
+      // drain
+    }
+
+    expect(llm.evaluate).toHaveBeenCalledWith(
+      expect.objectContaining({ userResponse: 'my code', testResults: '## Test Results\nSome tests failed.' }),
+    )
+  })
+
   it('saves attempt and publishes events after final token', async () => {
     const session = makeActiveSession()
     const sessionRepo = makeStubSessionRepo(session)

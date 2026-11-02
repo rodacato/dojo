@@ -27,8 +27,8 @@ export interface KataProps {
   topics: string[]
   testCode: string | null
   starterCode: string | null
-  // Hidden evaluation rubric for `type: 'review'` kata. Never exposed to
-  // the learner until completion (PRD 027).
+  // Hidden evaluation rubric (PRD 027). Review kata are graded against it;
+  // other types use it as a reference. Only a point answer is ever revealed.
   rubric: Rubric | null
   variations: Variation[]
   version: number

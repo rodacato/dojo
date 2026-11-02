@@ -242,6 +242,34 @@ describe('handleSubmit — streaming happy path', () => {
   })
 })
 
+describe('handleSubmit — the hidden rubric', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    pendingAttempts.clear()
+    streamCache.clear()
+  })
+
+  const rubric = { expectedIssues: [{ title: 'handles the empty list', severity: 'high', why: 'it crashes' }], reference: 'Guard first.' }
+
+  it('hands a code kata its rubric as a reference, not as a review rubric', async () => {
+    primeSubmit({ kata: { type: 'code', rubric } })
+    vi.mocked(useCases.submitAttempt.execute).mockReturnValue(stream() as never)
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(expect.objectContaining({ guide: rubric, rubric: undefined }))
+  })
+
+  it('keeps a review kata on its review rubric', async () => {
+    primeSubmit({ kata: { type: 'review', rubric } })
+    vi.mocked(useCases.submitAttempt.execute).mockReturnValue(stream() as never)
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(expect.objectContaining({ rubric, guide: undefined }))
+  })
+})
+
 describe('handleSubmit — code execution path', () => {
   beforeEach(() => {
     vi.clearAllMocks()

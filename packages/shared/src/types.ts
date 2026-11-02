@@ -42,6 +42,9 @@ export interface Rubric {
   expectedIssues: RubricIssue[]
   contextNotes?: string
   answer?: PointAnswerKey
+  // One strong answer, in prose. Code, chat and whiteboard kata use it with
+  // expectedIssues as the points that answer must cover.
+  reference?: string
 }
 
 export type AnswerShape = PointAnswerKey['shape']
