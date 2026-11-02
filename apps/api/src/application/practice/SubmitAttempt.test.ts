@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { Session } from '../../domain/practice/session'
+import { Session, type SessionProps } from '../../domain/practice/session'
 import { SessionNotFoundError } from '../../domain/shared/errors'
 import { KataId, SessionId, UserId, VariationId } from '../../domain/shared/types'
 import { InMemoryEventBus } from '../../infrastructure/events/InMemoryEventBus'
@@ -10,7 +10,7 @@ import { buildMessages } from '../../infrastructure/llm/sensei-evaluation'
 import { AttemptId } from '../../domain/shared/types'
 import { SubmitAttempt } from './SubmitAttempt'
 
-const makeActiveSession = () =>
+const makeActiveSession = (over: Partial<SessionProps> = {}) =>
   new Session({
     id: SessionId('session-1'),
     userId: UserId('user-1'),
@@ -21,6 +21,7 @@ const makeActiveSession = () =>
     attempts: [],
     startedAt: new Date(),
     completedAt: null,
+    ...over,
   })
 
 const makeStubSessionRepo = (session: Session | null = null) => ({
@@ -105,6 +106,29 @@ describe('SubmitAttempt', () => {
     expect(llm.evaluate).toHaveBeenCalledWith(
       expect.objectContaining({ userResponse: 'my code', testResults: '## Test Results\nSome tests failed.' }),
     )
+  })
+
+  it('grades at the level the session started at', async () => {
+    const llm = {
+      evaluate: vi.fn().mockReturnValue(fakeEvaluationStream([])),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const sessionRepo = makeStubSessionRepo(makeActiveSession({ level: 'senior' }))
+    const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus: new InMemoryEventBus() })
+
+    for await (const _ of useCase.execute({
+      sessionId: SessionId('session-1'),
+      userResponse: 'my design',
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Startup context',
+      kataTitle: 'Test kata',
+    })) {
+      // drain
+    }
+
+    expect(llm.evaluate).toHaveBeenCalledWith(expect.objectContaining({ level: 'senior' }))
   })
 
   it('saves attempt and publishes events after final token', async () => {

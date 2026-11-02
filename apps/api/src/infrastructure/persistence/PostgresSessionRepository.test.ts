@@ -30,6 +30,7 @@ function sessionRow(over: Record<string, unknown> = {}) {
     body: 'the problem body',
     status: 'completed',
     isDaily: false,
+    level: null,
     startedAt: STARTED,
     completedAt: COMPLETED,
     attempts: [],
@@ -82,6 +83,14 @@ describe('PostgresSessionRepository.findById (toSession mapping)', () => {
 
     const session = await new PostgresSessionRepository(db).findById('sess-1' as never)
     expect(session?.daily).toBe(true)
+  })
+
+  it('keeps the level the session started at', async () => {
+    const db = makeDb()
+    vi.mocked(db.query.sessions.findFirst).mockResolvedValue(sessionRow({ level: 'senior' }))
+
+    const session = await new PostgresSessionRepository(db).findById('sess-1' as never)
+    expect(session?.level).toBe('senior')
   })
 
   it('coerces a null completedAt to null (not undefined)', async () => {

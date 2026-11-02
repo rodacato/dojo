@@ -200,7 +200,7 @@ async function startKataSession(c: Context<AppEnv>, userId: string, kataId: Kata
   // background kick-off so we don't double-call the model.
   if (!config.FF_LLM_PREP_STREAMING_ENABLED) {
     void useCases.generateSessionBody
-      .execute({ sessionId: session.id, kataId: session.kataId, variationId: session.variationId })
+      .execute({ sessionId: session.id, kataId: session.kataId, variationId: session.variationId, level: session.level })
       .catch(() => {})
   }
 
@@ -368,6 +368,7 @@ practiceRoutes.get('/sessions/:id/body-stream', requireAuth, uuidParam('id', { e
           sessionId: SessionId(sessionId),
           kataId: session.kataId,
           variationId: session.variationId,
+          level: session.level,
         })) {
           if (chunk) await sse.writeSSE({ event: 'token', data: chunk })
         }

@@ -2,6 +2,7 @@ import type { ConversationTurn } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { PointContext } from '../../domain/practice/point-answer'
 import type { PredictContext } from '../../domain/practice/predict-answer'
+import type { LearnerLevel } from '../../domain/shared/types'
 import type { Rubric } from '@dojo/shared'
 import { EvaluationStreamParser } from './evaluation-parser'
 import { buildPrompt, buildFollowUpPrompt, buildPointPrompt, buildPredictPrompt, buildReviewPrompt } from '../../prompts/sensei'
@@ -27,6 +28,7 @@ export interface BuildMessagesParams {
   testResults?: string
   point?: PointContext
   predict?: PredictContext
+  level?: LearnerLevel
 }
 
 export class LLMParseError extends Error {
@@ -99,6 +101,7 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
         category: params.category,
         guide: params.guide,
         testResults: params.testResults,
+        level: params.level,
       }),
     })
   } else {
@@ -115,6 +118,7 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
           userResponse: firstTurn.userResponse,
           category: params.category,
           guide: params.guide,
+          level: params.level,
         }),
       },
       { role: 'assistant', content: firstTurn.llmResponse },

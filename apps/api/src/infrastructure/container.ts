@@ -132,7 +132,7 @@ const awardPractitionerPieces = new AwardPractitionerPieces({ sessionRepo, pract
 registerPractitionerPieceHandlers(eventBus, awardPractitionerPieces)
 
 export const useCases = {
-  startSession: new StartSession({ kataRepo, sessionRepo, eventBus }),
+  startSession: new StartSession({ kataRepo, sessionRepo, eventBus, preferencesRepo }),
   generateSessionBody: new GenerateSessionBody({ kataRepo, sessionRepo, llm, errorReporter }),
   submitAttempt: new SubmitAttempt({ sessionRepo, llm, eventBus }),
   getKataOptions: new GetKataOptions({ kataRepo, dailyKatas: kataRepo, preferencesRepo }),

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildPromptA, buildPromptB, buildPromptC, type PromptParams } from './sensei'
+import { buildPromptA, buildPromptB, buildPromptC, buildSessionBodyPrompt, type PromptParams } from './sensei'
 
 const baseParams: PromptParams = {
   ownerRole: 'Principal Engineer',
@@ -33,4 +33,22 @@ describe('sensei prompts — debugging context', () => {
       expect(prompt).not.toContain('DEBUGGING KATA')
     })
   }
+})
+
+describe('buildSessionBodyPrompt', () => {
+  const body = { ownerRole: 'Staff Engineer', ownerContext: 'Payments.', kataDescription: 'Design a rate limiter.' }
+
+  it('leaves decisions to a senior instead of specifying them', () => {
+    const prompt = buildSessionBodyPrompt({ ...body, level: 'senior' })
+    expect(prompt).toContain("THE DEVELOPER'S LEVEL:\nThe developer is senior.")
+    expect(prompt).toContain('incomplete specification')
+  })
+
+  it('spells out the constraints for a junior', () => {
+    expect(buildSessionBodyPrompt({ ...body, level: 'junior' })).toContain('Spell out the requirements and the constraints')
+  })
+
+  it('writes the body as before when the session has no level', () => {
+    expect(buildSessionBodyPrompt(body)).not.toContain("THE DEVELOPER'S LEVEL")
+  })
 })

@@ -328,7 +328,7 @@ export function SettingsPage() {
         <div className="flex flex-col gap-7">
           <p className="paper-note">Your standing preferences, across daily and optional practice.</p>
 
-          <Field label="Skill level" hint="Shapes kata difficulty and sensei tone.">
+          <Field label="Skill level" hint="Shapes kata difficulty, how much each kata spells out, and the bar the sensei grades against. Applies from your next kata.">
             <div className={CHOICES}>
               {LEVELS.map((l) => (
                 <Choice

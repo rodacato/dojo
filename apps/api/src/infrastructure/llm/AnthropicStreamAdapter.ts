@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { LLMPort } from '../../domain/practice/ports'
+import type { LLMPort, SessionBodyParams } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { EvaluationStreamParser } from './evaluation-parser'
 import { buildSessionBodyPrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
@@ -64,11 +64,7 @@ export class AnthropicStreamAdapter implements LLMPort {
     }
   }
 
-  async generateSessionBody(params: {
-    ownerRole: string
-    ownerContext: string
-    kataDescription: string
-  }): Promise<string> {
+  async generateSessionBody(params: SessionBodyParams): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
     const llmRequestId = crypto.randomUUID()
     const startedAt = Date.now()
@@ -115,11 +111,7 @@ export class AnthropicStreamAdapter implements LLMPort {
     }
   }
 
-  async *generateSessionBodyStream(params: {
-    ownerRole: string
-    ownerContext: string
-    kataDescription: string
-  }): AsyncIterable<string> {
+  async *generateSessionBodyStream(params: SessionBodyParams): AsyncIterable<string> {
     const prompt = buildSessionBodyPrompt(params)
     const llmRequestId = crypto.randomUUID()
     const startedAt = Date.now()

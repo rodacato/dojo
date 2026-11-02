@@ -1,7 +1,7 @@
 import { AttemptLimitReachedError, SessionAlreadyCompletedError } from '../shared/errors'
 import type { DomainEvent } from '../shared/events'
 import { SessionId } from '../shared/types'
-import type { KataId, UserId, VariationId } from '../shared/types'
+import type { KataId, LearnerLevel, UserId, VariationId } from '../shared/types'
 import type { Attempt } from './attempt'
 import type { AttemptSubmitted, SessionCompleted, SessionCreated, SessionFailed } from './events'
 import type { SessionStatus, Verdict } from './values'
@@ -15,6 +15,7 @@ export interface SessionProps {
   status: SessionStatus
   attempts: Attempt[]
   daily?: boolean
+  level?: LearnerLevel | null
   startedAt: Date
   completedAt: Date | null
 }
@@ -31,6 +32,8 @@ export class Session {
   private _status: SessionStatus
   private readonly _attempts: Attempt[]
   readonly daily: boolean
+  /** The learner's level when the session started; the body and the grading both use it. */
+  readonly level: LearnerLevel | null
   readonly startedAt: Date
   private _completedAt: Date | null
   private _pendingEvents: DomainEvent[] = []
@@ -44,6 +47,7 @@ export class Session {
     this._status = props.status
     this._attempts = [...props.attempts]
     this.daily = props.daily ?? false
+    this.level = props.level ?? null
     this.startedAt = props.startedAt
     this._completedAt = props.completedAt
   }
@@ -79,6 +83,7 @@ export class Session {
     kataId: KataId
     variationId: VariationId
     daily?: boolean
+    level?: LearnerLevel | null
   }): Session {
     const session = new Session({
       id: SessionId(crypto.randomUUID()),
@@ -89,6 +94,7 @@ export class Session {
       status: 'preparing',
       attempts: [],
       daily: params.daily,
+      level: params.level,
       startedAt: new Date(),
       completedAt: null,
     })

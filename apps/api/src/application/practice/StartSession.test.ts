@@ -30,6 +30,8 @@ const makeStubSessionRepo = () => ({
   listPracticeHistory: vi.fn().mockResolvedValue(null),
 })
 
+const noPreferences = { findByUserId: vi.fn().mockResolvedValue(null) }
+
 describe('StartSession', () => {
   it('creates a session and publishes SessionCreated', async () => {
     const kata = makeKata()
@@ -45,7 +47,7 @@ describe('StartSession', () => {
       published.push(e.type)
     })
 
-    const useCase = new StartSession({ kataRepo, sessionRepo, eventBus })
+    const useCase = new StartSession({ kataRepo, sessionRepo, eventBus, preferencesRepo: noPreferences })
     const variation = kata.variations[0]!
 
     const session = await useCase.execute({
@@ -57,6 +59,26 @@ describe('StartSession', () => {
     expect(session.status).toBe('preparing')
     expect(sessionRepo.save).toHaveBeenCalledWith(session)
     expect(published).toContain('SessionCreated')
+    expect(session.level).toBeNull()
+  })
+
+  it("stamps the learner's level on the session", async () => {
+    const kata = makeKata()
+    const kataRepo = { findEligible: vi.fn(), findById: vi.fn().mockResolvedValue(kata), save: vi.fn() }
+    const preferencesRepo = {
+      findByUserId: vi.fn().mockResolvedValue({ level: 'senior', interests: [], randomness: 0.3 }),
+    }
+    const useCase = new StartSession({
+      kataRepo,
+      sessionRepo: makeStubSessionRepo(),
+      eventBus: new InMemoryEventBus(),
+      preferencesRepo,
+    })
+
+    const session = await useCase.execute({ userId: UserId('user-1'), kataId: kata.id, variationId: kata.variations[0]!.id })
+
+    expect(session.level).toBe('senior')
+    expect(preferencesRepo.findByUserId).toHaveBeenCalledWith('user-1')
   })
 
   it('throws KataNotFoundError when kata does not exist', async () => {
@@ -69,6 +91,7 @@ describe('StartSession', () => {
       kataRepo,
       sessionRepo: makeStubSessionRepo(),
       eventBus: new InMemoryEventBus(),
+      preferencesRepo: noPreferences,
     })
 
     await expect(

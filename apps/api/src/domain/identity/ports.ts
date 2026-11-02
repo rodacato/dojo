@@ -1,8 +1,8 @@
-import type { UserId } from '../shared/types'
+import type { LearnerLevel, UserId } from '../shared/types'
 import type { User } from './user'
 
 export interface UserPreferences {
-  level: 'junior' | 'mid' | 'senior'
+  level: LearnerLevel
   interests: string[]
   randomness: number
 }

@@ -1,4 +1,4 @@
-import type { LLMPort } from '../../domain/practice/ports'
+import type { LLMPort, SessionBodyParams } from '../../domain/practice/ports'
 import type { EvaluationToken } from '../../domain/practice/values'
 import type { EvaluationStreamParser } from './evaluation-parser'
 import { buildSessionBodyPrompt, buildAskSenseiPrompt } from '../../prompts/sensei'
@@ -67,11 +67,7 @@ export class OpenAIStreamAdapter implements LLMPort {
     return response
   }
 
-  async generateSessionBody(params: {
-    ownerRole: string
-    ownerContext: string
-    kataDescription: string
-  }): Promise<string> {
+  async generateSessionBody(params: SessionBodyParams): Promise<string> {
     const prompt = buildSessionBodyPrompt(params)
 
     const response = await this.chatCompletion({
@@ -138,11 +134,7 @@ export class OpenAIStreamAdapter implements LLMPort {
     return { stream: generator(), usage }
   }
 
-  async *generateSessionBodyStream(params: {
-    ownerRole: string
-    ownerContext: string
-    kataDescription: string
-  }): AsyncIterable<string> {
+  async *generateSessionBodyStream(params: SessionBodyParams): AsyncIterable<string> {
     const prompt = buildSessionBodyPrompt(params)
 
     const response = await this.chatCompletion({

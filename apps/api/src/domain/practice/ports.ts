@@ -1,4 +1,4 @@
-import type { AttemptId, SessionId, UserId } from '../shared/types'
+import type { AttemptId, LearnerLevel, SessionId, UserId } from '../shared/types'
 import type { Session } from './session'
 import type { EvaluationToken } from './values'
 import type { PointContext } from './point-answer'
@@ -9,6 +9,13 @@ export interface ConversationTurn {
   userResponse: string
   llmResponse: string
   followUpQuestion?: string | null
+}
+
+export interface SessionBodyParams {
+  ownerRole: string
+  ownerContext: string
+  kataDescription: string
+  level?: LearnerLevel
 }
 
 export interface LLMPort {
@@ -30,23 +37,16 @@ export interface LLMPort {
     testResults?: string
     point?: PointContext
     predict?: PredictContext
+    level?: LearnerLevel
   }): AsyncIterable<EvaluationToken>
 
-  generateSessionBody(params: {
-    ownerRole: string
-    ownerContext: string
-    kataDescription: string
-  }): Promise<string>
+  generateSessionBody(params: SessionBodyParams): Promise<string>
 
   // Streaming variant of generateSessionBody (S022 Part 6). Yields text
   // deltas as the model produces them. Used by the SSE prep endpoint —
   // kept as a separate method so the blocking path stays available as a
   // feature-flag fallback.
-  generateSessionBodyStream(params: {
-    ownerRole: string
-    ownerContext: string
-    kataDescription: string
-  }): AsyncIterable<string>
+  generateSessionBodyStream(params: SessionBodyParams): AsyncIterable<string>
 
   // Ask-sensei free-form streaming Q&A (S022 Part 5). Streams the answer
   // token-by-token; the final element of the iterable carries usage
