@@ -174,7 +174,7 @@ Work state lives in GitHub, not in `docs/`. Docs keep direction and decisions (V
 - **Milestones** group issues by theme or time-box (`M1` to `M4`). Closing a milestone replaces closing a sprint. History lives in closed milestones, `CHANGELOG.md` and release tags.
 - **Ideas that are not ready to be public** stay as draft cards on the maintainer's private project board, with enough context to be understood cold. They become an issue when work on them starts. Anything with security impact never becomes an issue; see [`SECURITY.md`](../SECURITY.md).
 - **Labels** carry kind and area only. Priority and status live on the project board.
-- **Sprint docs are retired.** `docs/sprints/archive/` is history; no new sprint documents are written.
+- **Sprint docs are retired** and were deleted; git history keeps them.
 
 ### Golden rule
 

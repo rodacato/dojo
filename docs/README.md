@@ -14,7 +14,7 @@ This is the entry point for everything in `docs/`. Each document has a lifecycle
 | **A contributor** | [`../CONTRIBUTING.md`](../CONTRIBUTING.md) → [`WORKFLOW.md`](WORKFLOW.md) → [`ARCHITECTURE.md`](ARCHITECTURE.md) |
 | **An AI agent** | [`../AGENTS.md`](../AGENTS.md) → [`IDENTITY.md`](IDENTITY.md) → [`EXPERTS.md`](EXPERTS.md) |
 | **Picking up active work** | The repository's GitHub issues and open milestones — see [`WORKFLOW.md`](WORKFLOW.md#tracking-work) |
-| **Looking for *why* a past decision was made** | [`adr/`](adr/) → [`sprints/archive/`](sprints/archive/) → [`research/`](research/) |
+| **Looking for *why* a past decision was made** | [`adr/`](adr/) → [`research/`](research/) |
 
 ---
 
@@ -50,7 +50,6 @@ Append-only record of what happened and why. Links may point to docs that have s
 |---|---|
 | [`adr/`](adr/) | Architecture Decision Records — every architectural choice with its alternatives and consequences |
 | [`specs/`](specs/) | Sprint-tied implementation specs. Specs of features that were removed may be deleted; git keeps them |
-| [`sprints/archive/`](sprints/archive/) | Closed sprint blocks with retros. Sprint docs were retired in September 2026; sprint 034 is the last |
 
 ### Exploratory & archived research — disposable
 

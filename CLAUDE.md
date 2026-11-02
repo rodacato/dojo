@@ -23,7 +23,7 @@ pnpm build                  # Build all workspaces
 pnpm lint                   # Lint all workspaces
 pnpm typecheck              # Type-check all workspaces
 pnpm test --filter=api      # Run API unit tests
-pnpm test --filter=e2e      # Run E2E tests (when they exist)
+pnpm --filter=@dojo/e2e test:smoke  # Run the E2E smoke suite
 ```
 
 ---
