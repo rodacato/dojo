@@ -1,6 +1,6 @@
 # ADR-006: Mood and duration as transient query parameters, not persisted data
 
-**Status:** Accepted
+**Status:** Superseded in part by [ADR 031](031-surprise-daily-kata.md): the mood picker is gone. Duration stays a transient choice under Advanced.
 **Date:** 2026-03-21
 **Deciders:** Darius Osei (architecture), Priya Menon (product)
 

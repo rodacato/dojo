@@ -1,6 +1,6 @@
 # ADR 021: Sumi-e dual-theme architecture
 
-**Status:** Accepted
+**Status:** Accepted for the dual-theme token mechanism. The motif components it lists (`HankoBadge`, `BrushstrokeUnderline`) were removed after the Paper revamp; see [DESIGN.md](../DESIGN.md)
 **Date:** 2026-06-06
 **Context:** Sprint 024 — see [sprint write-up](../sprints/archive/sprint-024-maintenance-sumi-e.md), [DESIGN.md](../DESIGN.md), [BRANDING.md](../../design/brand/README.md)
 

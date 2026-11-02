@@ -1,6 +1,6 @@
 # ADR-012: AppShell layout + sidebar navigation strategy
 
-**Status:** Accepted (Phase 2)
+**Status:** Accepted. The Paper revamp (#268) restyled the sidebar as the rail and removed its collapse; the conditional sidebar still holds
 **Date:** 2026-03-24
 **Deciders:** Soren Bachmann (UX/UI), Tomás Ríos (infra/layout), Priya Menon (product scope)
 
