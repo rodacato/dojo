@@ -82,7 +82,9 @@ vi.mock('drizzle-orm', async (importOriginal) => {
 })
 
 import { eq } from 'drizzle-orm'
-import { shareRoutes } from './share'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { PAPER_GATE_PATHS, shareRoutes } from './share'
 
 const eqSpy = vi.mocked(eq)
 
@@ -180,7 +182,7 @@ describe('GET /share/:sessionId.png', () => {
     expect(tree).toContain('@rodacato')
     expect(tree).toContain('12min') // completionTime from startedAt→completedAt
     expect(tree).toContain('#0A0908') // sumi page background
-    expect(tree).toContain('M15 25Q50 32 85 25M25 45H75M30 30V82M70 30V82') // Open Gate mark
+    expect(tree).toContain(PAPER_GATE_PATHS[0])
     expect(tree).toContain('#B73A2F') // mark in accent
     expect(tree).not.toContain('#6366F1') // no Slate Indigo leftovers
     expect(tree).not.toContain('#0F172A')
@@ -328,5 +330,15 @@ describe('GET /share/:sessionId', () => {
     const res = await makeApp().request(`/share/${SESSION_ID}`)
     expect(res.status).toBe(500)
     expect(await res.json()).toEqual({ error: 'Internal server error' })
+  })
+})
+
+describe('share card mark', () => {
+  it('draws the same Paper Gate as the web logo', () => {
+    const logo = JSON.parse(readFileSync(join(__dirname, '../../../../../web/src/brand/logo.json'), 'utf8')) as {
+      paths: string[]
+    }
+
+    expect(PAPER_GATE_PATHS).toEqual(logo.paths)
   })
 })

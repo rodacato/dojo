@@ -99,7 +99,7 @@ Scrolls are external apps embedded by iframe (ADR 025), so their interior motion
 
 ## Share cards
 
-Share cards are PNGs rendered server-side in `apps/api/src/infrastructure/http/routes/share.ts`, using `@resvg/resvg-js`. The card uses the Sumi palette and still draws the superseded Open Gate mark (lockup: mark in accent, `dojo_` in primary), not the Paper Gate; the verdict color is a per-share input.
+Share cards are PNGs rendered server-side in `apps/api/src/infrastructure/http/routes/share.ts`, using `@resvg/resvg-js`. The card uses the Sumi palette and the Paper Gate mark (lockup: mark in accent, `dojo_` in primary), with the verdict color as a per-share input.
 
 ## Related
 
