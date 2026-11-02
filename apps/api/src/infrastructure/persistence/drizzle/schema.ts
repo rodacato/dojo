@@ -163,7 +163,7 @@ export const kataFeedback = pgTable('kata_feedback', {
   clarity: varchar('clarity', { length: 20 }),    // 'clear' | 'somewhat_unclear' | 'confusing' | null
   timing: varchar('timing', { length: 20 }),      // 'too_short' | 'about_right' | 'too_long' | null
   evaluation: varchar('evaluation', { length: 30 }), // 'fair_and_relevant' | 'too_generic' | 'missed_the_point' | null
-  note: text('note'),                              // max 280 chars, nullable
+  note: text('note'),                              // max 1000 chars, nullable
   submittedAt: timestamp('submitted_at').defaultNow().notNull(),
 })
 

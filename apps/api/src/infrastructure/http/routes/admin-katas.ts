@@ -1,4 +1,4 @@
-import { desc, eq, sql } from 'drizzle-orm'
+import { desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
 import { config } from '../../../config'
@@ -146,6 +146,42 @@ adminKatasRoutes.get('/katas/:id/feedback', uuidParam('id', { error: 'Kata not f
     evaluation: agg('evaluation'),
     notes,
     byVariation,
+  })
+})
+
+// ---------------------------------------------------------------------------
+// GET /feedback — Every rating in the last N days, newest first, for a monthly read
+// ---------------------------------------------------------------------------
+
+const recentFeedbackQuery = z.object({ days: z.coerce.number().int().min(1).max(365).default(30) })
+
+adminKatasRoutes.get('/feedback', async (c) => {
+  const parsed = recentFeedbackQuery.safeParse({ days: c.req.query('days') })
+  if (!parsed.success) return c.json({ error: 'Invalid days' }, 400)
+  const since = new Date(Date.now() - parsed.data.days * 86_400_000)
+
+  const rows = await db
+    .select({
+      sessionId: kataFeedback.sessionId,
+      kataId: kataFeedback.kataId,
+      kataTitle: katas.title,
+      kataType: katas.type,
+      username: users.username,
+      clarity: kataFeedback.clarity,
+      timing: kataFeedback.timing,
+      evaluation: kataFeedback.evaluation,
+      note: kataFeedback.note,
+      submittedAt: kataFeedback.submittedAt,
+    })
+    .from(kataFeedback)
+    .innerJoin(katas, eq(kataFeedback.kataId, katas.id))
+    .innerJoin(users, eq(kataFeedback.userId, users.id))
+    .where(gte(kataFeedback.submittedAt, since))
+    .orderBy(desc(kataFeedback.submittedAt))
+
+  return c.json({
+    days: parsed.data.days,
+    items: rows.map((row) => ({ ...row, submittedAt: row.submittedAt.toISOString() })),
   })
 })
 

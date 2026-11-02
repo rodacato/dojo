@@ -135,9 +135,15 @@ describe('POST /sessions/:id/feedback', () => {
     expect(db.query.sessions.findFirst).not.toHaveBeenCalled()
   })
 
-  it('returns 400 when note exceeds 280 chars', async () => {
+  it('accepts a note of exactly 1000 chars', async () => {
+    const res = await post(makeApp(), { note: 'x'.repeat(1000) })
+
+    expect(res.status).toBe(200)
+  })
+
+  it('returns 400 when note exceeds 1000 chars', async () => {
     const app = makeApp()
-    const res = await post(app, { note: 'x'.repeat(281) })
+    const res = await post(app, { note: 'x'.repeat(1001) })
 
     expect(res.status).toBe(400)
   })

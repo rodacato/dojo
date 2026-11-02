@@ -1,15 +1,15 @@
-import { eq } from 'drizzle-orm'
+import { eq, gte } from 'drizzle-orm'
 import type * as DrizzleOrm from 'drizzle-orm'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { AppEnv } from '../app-env'
 
 // Partial mock: delegate to the real eq/and so the route's WHERE conditions are
 // real operators, while spying on what they're built from (kataId, etc.).
 vi.mock('drizzle-orm', async (importOriginal) => {
   const actual = await importOriginal<typeof DrizzleOrm>()
-  return { ...actual, eq: vi.fn(actual.eq), and: vi.fn(actual.and) }
+  return { ...actual, eq: vi.fn(actual.eq), and: vi.fn(actual.and), gte: vi.fn(actual.gte) }
 })
 
 // vi.hoisted so the mock factories below can close over these bindings.
@@ -110,7 +110,7 @@ vi.mock('../../persistence/drizzle/schema', () => ({
   sessions: { id: 'sessions.id', kataId: 'sessions.kataId' },
   attempts: { id: 'attempts.id', sessionId: 'attempts.sessionId', isFinalEvaluation: 'attempts.isFinalEvaluation', llmResponse: 'attempts.llmResponse' },
   invitations: { id: 'invitations.id', token: 'invitations.token', usedBy: 'invitations.usedBy', expiresAt: 'invitations.expiresAt', createdAt: 'invitations.createdAt' },
-  kataFeedback: { kataId: 'kataFeedback.kataId', submittedAt: 'kataFeedback.submittedAt' },
+  kataFeedback: { kataId: 'kataFeedback.kataId', submittedAt: 'kataFeedback.submittedAt', userId: 'kataFeedback.userId' },
   users: { id: 'users.id', username: 'users.username' },
 }))
 
@@ -491,6 +491,56 @@ describe('GET /admin/katas/:id/feedback', () => {
     })
     const res = await makeApp().request('/admin/katas/11111111-1111-4111-8111-111111111111/feedback')
     expect(res.status).toBe(500)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// GET /feedback
+// ---------------------------------------------------------------------------
+
+describe('GET /admin/feedback', () => {
+  const NOW = new Date('2026-11-02T12:00:00.000Z')
+  const row = {
+    sessionId: 's-1', kataId: 'k-1', kataTitle: 'Off-by-one', kataType: 'review', username: 'adrian',
+    clarity: 'clear', timing: 'too_short', evaluation: 'too_generic', note: 'The hint gave it away', submittedAt: CREATED_AT,
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(NOW)
+  })
+  afterEach(() => vi.useRealTimers())
+
+  it('lists ratings from the last 30 days by default, with the note and kata', async () => {
+    selectQueue.push([row])
+
+    const res = await makeApp().request('/admin/feedback')
+
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ days: 30, items: [{ ...row, submittedAt: CREATED_AT.toISOString() }] })
+    expect(gte).toHaveBeenCalledWith(kataFeedback.submittedAt, new Date('2026-10-03T12:00:00.000Z'))
+  })
+
+  it('honours a custom window', async () => {
+    selectQueue.push([])
+
+    await makeApp().request('/admin/feedback?days=7')
+
+    expect(gte).toHaveBeenCalledWith(kataFeedback.submittedAt, new Date('2026-10-26T12:00:00.000Z'))
+  })
+
+  it.each(['0', '366', 'abc'])('rejects days=%s', async (days) => {
+    const res = await makeApp().request(`/admin/feedback?days=${days}`)
+
+    expect(res.status).toBe(400)
+  })
+
+  it('is creator only', async () => {
+    authState.mode = 'non-creator'
+
+    const res = await makeApp().request('/admin/feedback')
+
+    expect(res.status).toBe(403)
   })
 })
 
