@@ -40,7 +40,7 @@ function CodeExcerpt({ code, line }: Readonly<{ code: string; line: number }>) {
 export function ReviewVerdict({ verdict, children }: Readonly<{ verdict: Verdict; children?: ReactNode }>) {
   const headingId = useId()
   return (
-    <section aria-labelledby={headingId} className={`border-l-3 border-current py-1 pl-4.5 md:pl-6 ${VERDICT_STROKE[verdict]}`}>
+    <section aria-labelledby={headingId} className={`flow-root border-l-3 border-current py-1 pl-4.5 md:pl-6 ${VERDICT_STROKE[verdict]}`}>
       <SenseiFigure pose="explain" className="float-right w-20 h-17.5 md:w-24 md:h-21 ml-3 md:ml-5 mb-2" />
       <p className={LABEL}>Sensei review</p>
       <h2
