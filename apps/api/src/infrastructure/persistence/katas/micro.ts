@@ -3,7 +3,9 @@ import { type SeedKata, uuidv5 } from './types'
 // Five-minute kata on fixed code in starterCode. Point (D52): tap the line with
 // the bug, explain why; rubric.answer.line is 1-based within the code. Predict:
 // type what the code prints, explain why; rubric.answer.output is checked
-// against a real run in Piston (PistonAdapter.integration.test.ts).
+// against a real run in Piston (PistonAdapter.integration.test.ts). Order
+// (Parsons): starterCode holds the lines shuffled; rubric.answer.accepted lists
+// every correct order of them, and a line in none of them is a distractor.
 
 export const microKatas: SeedKata[] = [
   {
@@ -533,6 +535,56 @@ console.log('end')
         ownerRole: 'Senior Node.js engineer who has debugged ordering bugs between promises and timers in production',
         ownerContext:
           'Credit a why that separates synchronous code, the microtask queue and timers, and says that an async function runs synchronously until its first await. "Promises are async" alone does not explain why then comes before timeout.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-015-order-binary-search'),
+    title: 'Halve it right',
+    description:
+      'Put together `indexOf`: it returns the position of `target` in a sorted array, or -1. Two of the lines are near misses and do not belong. Tap the lines you need in order, then say in two or three sentences how you chose between each line and its near miss.',
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'algorithms',
+    languages: ['typescript'],
+    tags: ['micro', 'parsons'],
+    topics: ['binary-search', 'loop-invariants', 'off-by-one'],
+    starterCode: `  let hi = sorted.length - 1
+    else hi = mid
+function indexOf(sorted: number[], target: number): number {
+  return -1
+  while (lo < hi) {
+    if (sorted[mid] < target) lo = mid + 1
+  }
+    const mid = Math.floor((lo + hi) / 2)
+  let lo = 0
+    else hi = mid - 1
+  while (lo <= hi) {
+}
+    if (sorted[mid] === target) return mid
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'hi is inclusive, so the loop runs while lo <= hi and mid is excluded once checked',
+          severity: 'high',
+          why: 'hi starts at the last index, so the range is inclusive and a one-element range (lo === hi) still has a candidate: lo < hi skips it and misses the last element. Once sorted[mid] is checked, mid is out of the range: hi = mid keeps it in and, with lo <= hi, loops forever.',
+        },
+      ],
+      answer: {
+        shape: 'order',
+        accepted: [
+          [3, 9, 1, 11, 8, 13, 6, 10, 7, 4, 12],
+          [3, 1, 9, 11, 8, 13, 6, 10, 7, 4, 12],
+        ],
+      },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior engineer who reviews search and pagination code for off-by-one bugs',
+        ownerContext:
+          'Credit a why that ties the loop condition and the update of hi to one invariant: whether hi is inclusive. "Binary search halves the array" alone does not explain either choice.',
       },
     ],
   },

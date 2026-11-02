@@ -23,6 +23,7 @@ const LAST_SECONDS_MS = 30_000
 const draftKey = (sessionId: string) => `dojo-draft-${sessionId}`
 const pointKey = (sessionId: string) => `dojo-point-${sessionId}`
 const predictKey = (sessionId: string) => `dojo-predict-${sessionId}`
+const orderKey = (sessionId: string) => `dojo-order-${sessionId}`
 
 function readStored(key: string): string | null {
   try {
@@ -40,7 +41,14 @@ export function storedAnswer(sessionId: string | undefined): GivenAnswer | null 
   const line = Number(readStored(pointKey(sessionId)))
   if (line > 0) return { shape: 'point', line, why }
   const output = readStored(predictKey(sessionId))
-  return output?.trim() ? { shape: 'predict', output, why } : null
+  if (output?.trim()) return { shape: 'predict', output, why }
+  const order = storedOrder(sessionId)
+  return order.length ? { shape: 'order', lines: order, why } : null
+}
+
+function storedOrder(sessionId: string): number[] {
+  const stored = readStored(orderKey(sessionId))
+  return stored ? stored.split(',').map(Number).filter((line) => line > 0) : []
 }
 
 function writeStored(key: string, value: string): boolean {
@@ -62,6 +70,7 @@ export function useKataSession(sessionId: string | undefined) {
   const [userResponse, setUserResponse] = useState('')
   const [pointedLine, setPointedLine] = useState<number | null>(null)
   const [predictedOutput, setPredictedOutput] = useState('')
+  const [orderedLines, setOrderedLines] = useState<number[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [submitFailed, setSubmitFailed] = useState(false)
   const [draftKept, setDraftKept] = useState(true)
@@ -88,6 +97,7 @@ export function useKataSession(sessionId: string | undefined) {
       const storedLine = Number(readStored(pointKey(s.id)))
       if (isPoint && storedLine > 0) setPointedLine(storedLine)
       if (s.kata.answerShape === 'predict') setPredictedOutput(readStored(predictKey(s.id)) ?? '')
+      if (s.kata.answerShape === 'order') setOrderedLines(storedOrder(s.id))
     }
 
     // Resolve a not-active session: error UI when prep failed with no attempt,
@@ -204,6 +214,11 @@ export function useKataSession(sessionId: string | undefined) {
     setDraftKept(writeStored(predictKey(session.id), predictedOutput))
   }, [session, predictedOutput])
 
+  useEffect(() => {
+    if (session?.kata.answerShape !== 'order') return
+    setDraftKept(writeStored(orderKey(session.id), orderedLines.join(',')))
+  }, [session, orderedLines])
+
   // Warn before closing tab during active kata
   useEffect(() => {
     if (!session) return
@@ -232,10 +247,14 @@ export function useKataSession(sessionId: string | undefined) {
 
   const isPoint = session?.kata.answerShape === 'point'
   const isPredict = session?.kata.answerShape === 'predict'
+  const isOrder = session?.kata.answerShape === 'order'
   const answerReady =
-    userResponse.trim().length > 0 && (!isPoint || pointedLine !== null) && (!isPredict || predictedOutput.trim().length > 0)
+    userResponse.trim().length > 0 &&
+    (!isPoint || pointedLine !== null) &&
+    (!isPredict || predictedOutput.trim().length > 0) &&
+    (!isOrder || orderedLines.length > 0)
   const expiredEmpty = timedOut && !answerReady
-  const hasDraft = userResponse.trim().length > 0 || pointedLine !== null || predictedOutput.trim().length > 0
+  const hasDraft = userResponse.trim().length > 0 || pointedLine !== null || predictedOutput.trim().length > 0 || orderedLines.length > 0
 
   async function handleSubmit() {
     if (!session || !sessionId || !answerReady || submitting || !online) return
@@ -258,12 +277,18 @@ export function useKataSession(sessionId: string | undefined) {
   function submitAnswer(id: string) {
     if (isPoint && pointedLine !== null) return api.submitPointAttempt(id, pointedLine, userResponse)
     if (isPredict) return api.submitPredictAttempt(id, predictedOutput, userResponse)
+    if (isOrder) return api.submitOrderAttempt(id, orderedLines, userResponse)
     return api.submitAttempt(id, userResponse)
   }
 
   function changePrediction(value: string) {
     setSubmitFailed(false)
     setPredictedOutput(value)
+  }
+
+  function changeOrder(lines: number[]) {
+    setSubmitFailed(false)
+    setOrderedLines(lines)
   }
 
   function changeResponse(value: string) {
@@ -292,6 +317,8 @@ export function useKataSession(sessionId: string | undefined) {
     pointAtLine,
     predictedOutput,
     changePrediction,
+    orderedLines,
+    changeOrder,
     submitting,
     submitFailed,
     online,

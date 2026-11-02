@@ -14,14 +14,17 @@ const LABEL = 'paper-eyebrow'
 const SECTION = 'mt-7 md:mt-8 pt-6 md:pt-7 border-t border-border'
 const POINT_RESPONSE = /^Line (\d+): [^\n]*\n\n([\s\S]+)$/
 const PREDICT_RESPONSE = /^Predicted output:\n```\n([\s\S]*?)\n```\n\n([\s\S]+)$/
+const ORDER_RESPONSE = /^Ordered lines: ([\d, ]+)\n\n([\s\S]+)$/
 
-/** The stored response of a point or predict kata, as the API composed it. */
+/** The stored response of a point, predict or order kata, as the API composed it. */
 export function parseGivenAnswer(response: string | undefined): GivenAnswer | null {
   if (!response) return null
   const point = POINT_RESPONSE.exec(response)
   if (point) return { shape: 'point', line: Number(point[1]), why: point[2]!.trim() }
   const predict = PREDICT_RESPONSE.exec(response)
   if (predict) return { shape: 'predict', output: predict[1]!, why: predict[2]!.trim() }
+  const order = ORDER_RESPONSE.exec(response)
+  if (order) return { shape: 'order', lines: order[1]!.split(', ').map(Number), why: order[2]!.trim() }
   return null
 }
 
@@ -67,22 +70,52 @@ function Output({ text }: Readonly<{ text: string }>) {
   )
 }
 
+function OrderedCode({ code, lines }: Readonly<{ code: string; lines: number[] }>) {
+  const all = codeLines(code)
+  return (
+    <div className="rounded-sm bg-surface overflow-hidden">
+      {lines.map((line, i) => (
+        <CodeLine key={line} number={i + 1} code={all[line - 1] ?? ''} selected={false} />
+      ))}
+    </div>
+  )
+}
+
+function AnswerBody({ code, answer }: Readonly<{ code: string; answer: GivenAnswer | RevealedAnswer }>) {
+  if (answer.shape === 'point') return <CodeExcerpt code={code} line={answer.line} />
+  if (answer.shape === 'predict') return <Output text={answer.output} />
+  return <OrderedCode code={code} lines={answer.lines} />
+}
+
+function yourAnswerHeading(answer: GivenAnswer): string {
+  switch (answer.shape) {
+    case 'point':
+      return `You pointed at line ${answer.line} · your why`
+    case 'predict':
+      return 'You predicted · your why'
+    case 'order':
+      return 'Your order · your why'
+  }
+}
+
+function theAnswerHeading(answer: RevealedAnswer): string {
+  switch (answer.shape) {
+    case 'point':
+      return `The answer · line ${answer.line}`
+    case 'predict':
+      return 'The answer · what it prints'
+    case 'order':
+      return 'The answer · the order'
+  }
+}
+
 /** The answer stays open while the sensei works; on a phone the final result takes the screen first. */
 export function YourAnswer({ code, answer, final }: Readonly<{ code: string; answer: GivenAnswer; final: boolean }>) {
   const wide = globalThis.matchMedia?.('(min-width: 768px)').matches ?? false
   return (
     <Disclosure summary="Your answer" defaultOpen={!final || wide}>
-      {answer.shape === 'point' ? (
-        <>
-          <h2 className={`${LABEL} mt-2 mb-4`}>You pointed at line {answer.line} · your why</h2>
-          <CodeExcerpt code={code} line={answer.line} />
-        </>
-      ) : (
-        <>
-          <h2 className={`${LABEL} mt-2 mb-4`}>You predicted · your why</h2>
-          <Output text={answer.output} />
-        </>
-      )}
+      <h2 className={`${LABEL} mt-2 mb-4`}>{yourAnswerHeading(answer)}</h2>
+      <AnswerBody code={code} answer={answer} />
       <blockquote className="mt-4 text-secondary text-base leading-relaxed whitespace-pre-wrap wrap-anywhere">{answer.why}</blockquote>
     </Disclosure>
   )
@@ -91,9 +124,9 @@ export function YourAnswer({ code, answer, final }: Readonly<{ code: string; ans
 export function TheAnswer({ code, answer }: Readonly<{ code: string; answer: RevealedAnswer }>) {
   return (
     <section className={SECTION}>
-      <h2 className={LABEL}>{answer.shape === 'point' ? `The answer · line ${answer.line}` : 'The answer · what it prints'}</h2>
+      <h2 className={LABEL}>{theAnswerHeading(answer)}</h2>
       <h3 className="text-primary text-xl font-semibold tracking-tight mt-3 mb-5">{answer.title}</h3>
-      {answer.shape === 'point' ? <CodeExcerpt code={code} line={answer.line} /> : <Output text={answer.output} />}
+      <AnswerBody code={code} answer={answer} />
       <p className="mt-5 text-secondary text-base leading-relaxed">{answer.why}</p>
     </section>
   )

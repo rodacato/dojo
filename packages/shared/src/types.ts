@@ -45,7 +45,14 @@ export interface PredictAnswerKey {
   output: string
 }
 
-export type AnswerKey = PointAnswerKey | PredictAnswerKey
+// Every order of the starter code's lines that is correct, 1-based. The
+// author writes the lines shuffled; a line in no accepted order is a distractor.
+export interface OrderAnswerKey {
+  shape: 'order'
+  accepted: number[][]
+}
+
+export type AnswerKey = PointAnswerKey | PredictAnswerKey | OrderAnswerKey
 
 export interface Rubric {
   expectedIssues: RubricIssue[]

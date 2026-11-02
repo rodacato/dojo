@@ -34,6 +34,8 @@ export function KataActivePage() {
     pointAtLine,
     predictedOutput,
     changePrediction,
+    orderedLines,
+    changeOrder,
     submitting,
     submitFailed,
     online,
@@ -61,36 +63,18 @@ export function KataActivePage() {
   }
 
   const { kata } = session
-  const isPoint = kata.answerShape === 'point'
   const isShaped = !!kata.answerShape
   const isCode = kata.type === 'code'
   // All formats land side-by-side on desktop — the chat panel mirrors the
   // code/whiteboard shell so the redesign reads as one product.
   const orientation = isMobile ? 'vertical' : 'horizontal'
   const showFailure = submitFailed && online && !submitting
-  const shapedAnswer = isPoint ? (
-    <PointAnswer
-      kata={kata}
-      pointedLine={pointedLine}
-      onPoint={pointAtLine}
-      why={userResponse}
-      onWhy={changeResponse}
-      onSubmit={handleSubmit}
-      submitting={submitting}
-      expired={timedOut}
-    />
-  ) : (
-    <PredictAnswer
-      kata={kata}
-      output={predictedOutput}
-      onOutput={changePrediction}
-      why={userResponse}
-      onWhy={changeResponse}
-      onSubmit={handleSubmit}
-      submitting={submitting}
-      expired={timedOut}
-    />
-  )
+  const answerProps = { kata, why: userResponse, onWhy: changeResponse, onSubmit: handleSubmit, submitting, expired: timedOut }
+  const shapedAnswer = {
+    point: <PointAnswer {...answerProps} pointedLine={pointedLine} onPoint={pointAtLine} />,
+    predict: <PredictAnswer {...answerProps} output={predictedOutput} onOutput={changePrediction} />,
+    order: <OrderAnswer {...answerProps} order={orderedLines} onOrder={changeOrder} />,
+  }[kata.answerShape ?? 'point']
 
   return (
     <div className="h-dvh bg-page flex flex-col overflow-hidden">
@@ -189,6 +173,7 @@ export function KataActivePage() {
           shape: kata.answerShape,
           pointedLine,
           output: predictedOutput,
+          placed: orderedLines.length,
           why: userResponse,
         })}
         failed={showFailure}
@@ -247,6 +232,7 @@ function answerHint({
   shape,
   pointedLine,
   output,
+  placed,
   why,
 }: Readonly<{
   submitting: boolean
@@ -258,6 +244,7 @@ function answerHint({
   shape: SessionWithKata['kata']['answerShape']
   pointedLine: number | null
   output: string
+  placed: number
   why: string
 }>): string {
   if (submitting) return 'Submitting…'
@@ -268,6 +255,10 @@ function answerHint({
   if (shape === 'predict') {
     if (!output.trim()) return why.trim() ? 'Write the output to continue.' : 'Write exactly what it prints.'
     return why.trim() ? '' : 'Now say why it prints that.'
+  }
+  if (shape === 'order') {
+    if (placed === 0) return why.trim() ? 'Place the lines to continue.' : 'Tap the lines in the order they run.'
+    return why.trim() ? '' : 'Now say why this order.'
   }
   if (shape !== 'point') return ''
   if (pointedLine === null) return why.trim() ? 'Choose a line to continue.' : 'Tap the line with the bug.'
@@ -549,6 +540,118 @@ function PredictAnswer({
           className={`min-h-36 font-sans ${ANSWER_FIELD}`}
         />
         <p className="paper-note">Name what decides it. A right guess with no reason is not a pass.</p>
+      </div>
+    </div>
+  )
+}
+
+const ORDER_CONTROL =
+  'min-w-11 min-h-11 shrink-0 flex items-center justify-center font-mono text-sm text-secondary rounded-sm hover:bg-elevated hover:text-primary disabled:opacity-40 disabled:hover:bg-transparent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent'
+
+function OrderAnswer({
+  kata,
+  order,
+  onOrder,
+  why,
+  onWhy,
+  onSubmit,
+  submitting,
+  expired,
+}: Readonly<{
+  kata: SessionWithKata['kata']
+  order: number[]
+  onOrder: (lines: number[]) => void
+  why: string
+  onWhy: (v: string) => void
+  onSubmit: () => void
+  submitting: boolean
+  expired: boolean
+}>) {
+  const lines = toCodeLines(kata.starterCode ?? '')
+  const unplaced = lines.map((_, i) => i + 1).filter((line) => !order.includes(line))
+  const locked = submitting || expired
+
+  function moveUp(position: number) {
+    const next = [...order]
+    ;[next[position - 1], next[position]] = [next[position]!, next[position - 1]!]
+    onOrder(next)
+  }
+
+  return (
+    <div className="flex flex-col bg-page md:h-full md:overflow-y-auto">
+      <section aria-labelledby="order-built" className="py-1 md:py-3">
+        <h2 id="order-built" className="px-4 md:px-6 pt-3 pb-2 font-mono text-xs tracking-[0.08em] uppercase text-primary">
+          Your code
+        </h2>
+        {order.length === 0 ? (
+          <p className="px-4 md:px-6 pb-3 paper-note">Nothing placed yet.</p>
+        ) : (
+          <ol>
+            {order.map((line, position) => {
+              const text = lines[line - 1] ?? ''
+              return (
+                <li key={line} className="flex items-start gap-1 md:gap-2 pl-0 pr-1 md:pr-3 border-l-3 border-transparent">
+                  <span aria-hidden className="w-8 md:w-10 shrink-0 pt-2.5 text-center font-mono text-xs leading-6 tabular-nums text-secondary">
+                    {position + 1}
+                  </span>
+                  <code className="flex-1 min-w-0 py-2.5 font-mono text-xs md:text-sm leading-[22px] md:leading-6 text-primary whitespace-pre-wrap [overflow-wrap:anywhere] [tab-size:2]">
+                    {text}
+                  </code>
+                  <button type="button" className={ORDER_CONTROL} disabled={locked || position === 0} onClick={() => moveUp(position)} aria-label={`Move up: ${text.trim()}`}>
+                    ↑
+                  </button>
+                  <button type="button" className={ORDER_CONTROL} disabled={locked} onClick={() => onOrder(order.filter((l) => l !== line))} aria-label={`Take out: ${text.trim()}`}>
+                    ✕
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+        )}
+      </section>
+      <section aria-labelledby="order-lines" className="bg-surface border-y border-border py-1 md:py-3">
+        <h2 id="order-lines" className="px-4 md:px-6 pt-3 pb-2 font-mono text-xs tracking-[0.08em] uppercase text-primary">
+          Lines · tap to add
+        </h2>
+        {unplaced.length === 0 ? (
+          <p className="px-4 md:px-6 pb-3 paper-note">Every line is placed.</p>
+        ) : (
+          unplaced.map((line) => {
+            const text = lines[line - 1] ?? ''
+            return (
+              <button
+                key={line}
+                type="button"
+                disabled={locked}
+                onClick={() => onOrder([...order, line])}
+                aria-label={`Add: ${text.trim()}`}
+                className="w-full min-h-11 flex items-start py-2.5 pl-11 md:pl-13 pr-4 md:pr-6 text-left border-l-3 border-transparent hover:bg-page disabled:opacity-65 disabled:hover:bg-transparent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+              >
+                <code className="flex-1 min-w-0 font-mono text-xs md:text-sm leading-[22px] md:leading-6 text-primary whitespace-pre-wrap [overflow-wrap:anywhere] [tab-size:2]">
+                  {text}
+                </code>
+              </button>
+            )
+          })
+        )}
+      </section>
+      <div className="flex flex-col gap-3 px-4 py-5 md:p-6 bg-surface">
+        <label htmlFor="order-why" className="font-mono text-xs tracking-[0.08em] uppercase text-primary">
+          Why this order?
+        </label>
+        <textarea
+          id="order-why"
+          value={why}
+          onChange={(e) => onWhy(e.target.value)}
+          onKeyDown={submitOnModEnter(onSubmit)}
+          placeholder="Think out loud. The sensei reads everything."
+          rows={4}
+          disabled={submitting}
+          readOnly={expired}
+          aria-describedby={ANSWER_HINT_ID}
+          className={`min-h-36 font-sans ${ANSWER_FIELD}`}
+        />
+        <p className="paper-note">Say what decides the order, and why the lines you left out do not belong.</p>
       </div>
     </div>
   )

@@ -4,10 +4,11 @@ import { Hono, type Context } from 'hono'
 import { getCookie } from 'hono/cookie'
 import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
-import { kataTypeSchema } from '@dojo/shared'
+import { kataTypeSchema, type Rubric } from '@dojo/shared'
 import { config } from '../../../config'
 import { composePointAnswer, isLineInCode } from '../../../domain/practice/point-answer'
 import { composePredictAnswer, isValidPrediction } from '../../../domain/practice/predict-answer'
+import { composeOrderAnswer, isValidOrder } from '../../../domain/practice/order-answer'
 import { revealedAnswer } from '../../../domain/practice/revealed-answer'
 import { SessionExpiredError } from '../../../domain/shared/errors'
 import { KataId, SessionId, UserId } from '../../../domain/shared/types'
@@ -399,7 +400,30 @@ const submitAttemptSchema = z.object({
   userResponse: z.string().min(1),
   pointedLine: z.number().int().positive().optional(),
   predictedOutput: z.string().optional(),
+  order: z.array(z.number().int()).max(200).optional(),
 })
+
+type SubmitAttemptBody = z.infer<typeof submitAttemptSchema>
+
+// The answer as stored for a point, predict or order kata; null when the body does not fit the kata's shape.
+function shapedResponse(kata: { starterCode: string | null; rubric: Rubric | null }, body: SubmitAttemptBody): string | null {
+  const { userResponse, pointedLine, predictedOutput, order } = body
+  const given = [pointedLine, predictedOutput, order].filter((field) => field !== undefined).length
+  const code = kata.starterCode
+  switch (kata.rubric?.answer?.shape) {
+    case 'point':
+      if (!code || given !== 1 || pointedLine === undefined || !isLineInCode(code, pointedLine) || !userResponse.trim()) return null
+      return composePointAnswer(code, pointedLine, userResponse)
+    case 'predict':
+      if (given !== 1 || predictedOutput === undefined || !isValidPrediction(predictedOutput) || !userResponse.trim()) return null
+      return composePredictAnswer(predictedOutput, userResponse)
+    case 'order':
+      if (!code || given !== 1 || order === undefined || !isValidOrder(code, order) || !userResponse.trim()) return null
+      return composeOrderAnswer(order, userResponse)
+    default:
+      return given === 0 ? userResponse : null
+  }
+}
 
 practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }
@@ -422,23 +446,8 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { err
     throw new SessionExpiredError(sessionId)
   }
 
-  const { pointedLine, predictedOutput } = parsed.data
-  let userResponse = parsed.data.userResponse
-  const shape = kata.rubric?.answer?.shape
-  if (shape === 'point') {
-    const code = kata.starterCode
-    if (!code || pointedLine === undefined || predictedOutput !== undefined || !isLineInCode(code, pointedLine) || !userResponse.trim()) {
-      return c.json({ error: 'Invalid request body' }, 400)
-    }
-    userResponse = composePointAnswer(code, pointedLine, userResponse)
-  } else if (shape === 'predict') {
-    if (predictedOutput === undefined || pointedLine !== undefined || !isValidPrediction(predictedOutput) || !userResponse.trim()) {
-      return c.json({ error: 'Invalid request body' }, 400)
-    }
-    userResponse = composePredictAnswer(predictedOutput, userResponse)
-  } else if (pointedLine !== undefined || predictedOutput !== undefined) {
-    return c.json({ error: 'Invalid request body' }, 400)
-  }
+  const userResponse = shapedResponse(kata, parsed.data)
+  if (userResponse === null) return c.json({ error: 'Invalid request body' }, 400)
 
   // Store in pendingAttempts for the WebSocket handler (ADR-008)
   const attemptId = crypto.randomUUID()

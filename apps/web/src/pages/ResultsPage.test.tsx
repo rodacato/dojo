@@ -357,6 +357,25 @@ describe('ResultsPage', () => {
     })
   })
 
+  describe('order kata', () => {
+    const orderSession = makeSession({
+      kata: { ...kata, type: 'review', starterCode: 'b()\na()\nz()\n' },
+      finalAttempt: makeAttempt({ userResponse: 'Ordered lines: 3, 1\n\nz runs first.', verdict: 'needs_work' }),
+      answer: { shape: 'order' as const, lines: [2, 1], title: 'Setup first', why: 'a sets up b.' },
+    })
+
+    it('shows the learner order and the accepted one as code, never as a sent response', async () => {
+      mockedApi.getSession.mockResolvedValue(orderSession)
+      renderAt()
+
+      const answer = (await screen.findByRole('heading', { name: 'The answer · the order' })).closest('section')!
+      expect(answer).toHaveTextContent(/a\(\).*b\(\)/)
+      expect(screen.getByRole('heading', { name: /Your order/ })).toBeInTheDocument()
+      expect(screen.getByText('z runs first.')).toBeInTheDocument()
+      expect(screen.queryByText('Your response')).not.toBeInTheDocument()
+    })
+  })
+
   describe('predict kata', () => {
     const predictSession = makeSession({
       kata: { ...kata, type: 'review', starterCode: "log('a')\nlater(() => log('b'))\n" },

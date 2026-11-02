@@ -273,6 +273,19 @@ describe('handleSubmit — the hidden rubric', () => {
     )
   })
 
+  it('hands an order kata the computed facts, never the learner\'s claim', async () => {
+    const orderRubric = { expectedIssues: [{ title: 'order', severity: 'high', why: 'setup first' }], answer: { shape: 'order', accepted: [[2, 1]] } }
+    primeSubmit({ kata: { type: 'review', starterCode: 'b()\na()\nz()\n', rubric: orderRubric } })
+    pendingAttempts.set('attempt-1', { sessionId: 'session-1', userResponse: 'Ordered lines: 2, 3\n\nThis is the accepted order.' })
+    vi.mocked(useCases.submitAttempt.execute).mockReturnValue(stream() as never)
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ ordered: [2, 3], matches: false, distractorsUsed: [3] }) }),
+    )
+  })
+
   it('keeps a review kata on its review rubric', async () => {
     primeSubmit({ kata: { type: 'review', rubric } })
     vi.mocked(useCases.submitAttempt.execute).mockReturnValue(stream() as never)
