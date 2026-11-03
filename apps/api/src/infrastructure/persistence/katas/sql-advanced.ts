@@ -31,7 +31,7 @@ Order by \`month\` ASC.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['window-functions', 'running-total', 'cumulative-sum'],
-    topics: ['SUM-OVER', 'ROWS-UNBOUNDED-PRECEDING', 'cumulative-aggregates', 'window-functions'],
+    topics: ['window-functions', 'aggregation'],
     starterCode: `WITH monthly AS (
   SELECT strftime('%Y-%m', order_date) AS month,
          SUM(amount) AS monthly_revenue
@@ -106,7 +106,7 @@ Order by \`month\` ASC.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['window-functions', 'lag', 'month-over-month', 'growth-rate'],
-    topics: ['LAG', 'LEAD', 'period-comparison', 'percentage-change', 'window-functions'],
+    topics: ['window-functions'],
     starterCode: `WITH monthly AS (
   SELECT strftime('%Y-%m', sale_date) AS month,
          SUM(revenue) AS revenue
@@ -189,7 +189,7 @@ Order by \`quartile\` ASC.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['window-functions', 'ntile', 'percentiles', 'quartiles'],
-    topics: ['NTILE', 'percentile-functions', 'salary-analysis', 'aggregation-over-windows'],
+    topics: ['window-functions', 'aggregation'],
     starterCode: `WITH quartiled AS (
   -- TODO: assign each employee a quartile via NTILE(4) OVER (ORDER BY salary)
 )

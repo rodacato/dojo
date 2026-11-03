@@ -13,7 +13,7 @@ Design a CI/CD pipeline from scratch. Show: every stage from git push to product
     category: 'devops',
     languages: [],
     tags: ['devops', 'cicd', 'automation'],
-    topics: ['cicd', 'github-actions', 'deployment-pipeline', 'environment-management', 'rollback', 'monorepo'],
+    topics: ['ci-cd', 'rollback'],
     variations: [
       {
         ownerRole: 'Staff DevOps engineer who has built CI/CD pipelines for 5 different companies and has a zero-tolerance policy for manual deployment steps',
@@ -45,7 +45,7 @@ Your team has 2 backend developers and 0 dedicated DevOps engineers. Evaluate ea
     category: 'devops',
     languages: [],
     tags: ['devops', 'containers', 'orchestration'],
-    topics: ['kubernetes', 'ecs', 'docker-swarm', 'container-orchestration', 'auto-scaling', 'health-checks'],
+    topics: ['containers', 'scalability', 'trade-offs'],
     variations: [
       {
         ownerRole: 'Platform engineer who has operated both EKS and ECS in production and has strong opinions about when Kubernetes is and isn\'t appropriate',
@@ -72,7 +72,7 @@ Design a blue-green (or canary) deployment strategy. Show: (1) the infrastructur
     category: 'devops',
     languages: [],
     tags: ['devops', 'deployment', 'zero-downtime'],
-    topics: ['blue-green-deployment', 'canary-deployment', 'zero-downtime', 'database-migrations', 'load-balancing', 'rollback'],
+    topics: ['deployment-strategies', 'zero-downtime', 'database-migrations', 'rollback'],
     variations: [
       {
         ownerRole: 'Senior SRE who has implemented blue-green deployments for 4 different production systems and knows the database migration problem is the hardest part',
@@ -99,7 +99,7 @@ Design a monitoring and alerting system for your application (2 backend services
     category: 'devops',
     languages: [],
     tags: ['devops', 'monitoring', 'observability'],
-    topics: ['monitoring', 'alerting', 'observability', 'metrics', 'logging', 'on-call', 'sla'],
+    topics: ['observability', 'incident-response'],
     variations: [
       {
         ownerRole: 'Staff SRE who has built monitoring systems from scratch at 3 companies and believes that the first 5 alerts are the only ones that matter',

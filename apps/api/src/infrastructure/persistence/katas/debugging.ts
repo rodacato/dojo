@@ -22,7 +22,7 @@ Fix the bug and export the corrected function from \`solution.ts\`.
     category: 'debugging',
     languages: ['typescript'],
     tags: ['pagination', 'off-by-one', 'arrays'],
-    topics: ['index-arithmetic', 'pagination', 'off-by-one-errors'],
+    topics: ['off-by-one'],
     starterCode: `function paginate<T>(items: T[], page: number, limit: number): T[] {
   const start = page * limit
   return items.slice(start, start + limit)
@@ -80,7 +80,7 @@ Fix the bug so the original array is not modified. Export the corrected function
     category: 'debugging',
     languages: ['typescript'],
     tags: ['mutation', 'arrays', 'sort', 'side-effects'],
-    topics: ['immutability', 'array-mutation', 'defensive-copying'],
+    topics: ['mutability', 'defensive-programming'],
     starterCode: `function topN(arr: number[], n: number): number[] {
   return arr.sort((a, b) => b - a).slice(0, n)
 }
@@ -147,7 +147,7 @@ Fix the bug and export the corrected function from \`solution.ts\`.`,
     category: 'debugging',
     languages: ['typescript'],
     tags: ['closures', 'var', 'let', 'scope'],
-    topics: ['closure-capture', 'var-vs-let', 'loop-scope', 'javascript-gotchas'],
+    topics: ['closures', 'scoping'],
     starterCode: `function makeMultipliers(count: number): Array<(x: number) => number> {
   const multipliers = []
   for (var i = 0; i < count; i++) {
@@ -211,7 +211,7 @@ Fix the bug and export the corrected function from \`solution.ts\`.`,
     category: 'debugging',
     languages: ['typescript'],
     tags: ['modulo', 'negative-numbers', 'arithmetic'],
-    topics: ['remainder-vs-modulo', 'numeric-edge-cases', 'javascript-arithmetic'],
+    topics: ['numbers'],
     starterCode: `function isOdd(n: number): boolean {
   return n % 2 === 1
 }
@@ -269,7 +269,7 @@ Fix the bug and export the corrected function from \`solution.ts\`.
     category: 'debugging',
     languages: ['typescript'],
     tags: ['equality', 'objects', 'reference-vs-value'],
-    topics: ['reference-equality', 'value-equality', 'object-comparison', 'json-serialization'],
+    topics: ['equality'],
     starterCode: `function hasDuplicate(arr: object[]): boolean {
   for (let i = 0; i < arr.length; i++) {
     for (let j = i + 1; j < arr.length; j++) {

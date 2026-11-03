@@ -553,7 +553,7 @@ describe('PUT /admin/katas/:id', () => {
     const res = await jsonReq('/admin/katas/11111111-1111-4111-8111-111111111111', 'PUT', validKataBody({
       languages: ['python', 'go'],
       tags: ['a', 'b'],
-      topics: ['x'],
+      topics: ['indexes'],
       status: 'published',
       adminNotes: 'note',
       variations: [
@@ -571,7 +571,7 @@ describe('PUT /admin/katas/:id', () => {
     expect(setArg.title).toBe('Refactor the parser')
     expect(setArg.language).toBe(JSON.stringify(['python', 'go']))
     expect(setArg.tags).toBe(JSON.stringify(['a', 'b']))
-    expect(setArg.topics).toBe(JSON.stringify(['x']))
+    expect(setArg.topics).toBe(JSON.stringify(['indexes']))
     expect(setArg.status).toBe('published')
     expect(setArg.adminNotes).toBe('note')
     // WHERE on the kata id from the path param.
@@ -702,6 +702,12 @@ describe('POST /admin/katas', () => {
     const res = await jsonReq('/admin/katas', 'POST', validKataBody({ type: 'video' }))
     expect(res.status).toBe(400)
     expect(await res.json()).toEqual({ error: 'Invalid request body' })
+    expect(createKata).not.toHaveBeenCalled()
+  })
+
+  it('returns 400 on a topic outside the canonical vocabulary and never calls the use case', async () => {
+    const res = await jsonReq('/admin/katas', 'POST', validKataBody({ topics: ['recursion', 'partition-by'] }))
+    expect(res.status).toBe(400)
     expect(createKata).not.toHaveBeenCalled()
   })
 

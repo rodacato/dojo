@@ -90,7 +90,7 @@ Write your code review. Focus on correctness and what you would ask changed befo
     category: 'code-review',
     languages: ['typescript'],
     tags: ['review', 'concurrency', 'error-handling'],
-    topics: ['code-review', 'concurrency', 'error-handling', 'testing'],
+    topics: ['code-review', 'race-conditions', 'error-handling', 'testing'],
     rubric: {
       expectedIssues: [
         {

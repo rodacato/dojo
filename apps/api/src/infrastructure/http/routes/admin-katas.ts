@@ -1,6 +1,7 @@
 import { desc, eq, gte, sql } from 'drizzle-orm'
 import { Hono } from 'hono'
 import { z } from 'zod'
+import { isTopic } from '@dojo/shared'
 import { config } from '../../../config'
 import { KataId, UserId } from '../../../domain/shared/types'
 import { useCases } from '../../container'
@@ -10,6 +11,8 @@ import { requireAuth, requireCreator } from '../middleware/auth'
 import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
 import { log } from '../../observability/logger'
+
+const topicsSchema = z.array(z.string().refine(isTopic, { message: 'not a canonical topic' })).default([])
 
 export const adminKatasRoutes = new Hono<AppEnv>()
 
@@ -198,7 +201,7 @@ const updateKataSchema = z.object({
   status: z.enum(['draft', 'published', 'archived']).optional(),
   languages: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
-  topics: z.array(z.string()).default([]),
+  topics: topicsSchema,
   adminNotes: z.string().nullable().optional(),
   variations: z
     .array(z.object({ ownerRole: z.string().min(1), ownerContext: z.string().min(1) }))
@@ -271,7 +274,7 @@ const createKataSchema = z.object({
   type: z.enum(['code', 'chat', 'whiteboard']),
   languages: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
-  topics: z.array(z.string()).default([]),
+  topics: topicsSchema,
   variations: z
     .array(z.object({ ownerRole: z.string().min(1), ownerContext: z.string().min(1) }))
     .min(1),

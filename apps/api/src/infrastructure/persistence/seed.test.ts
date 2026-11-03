@@ -44,6 +44,16 @@ describe('validateKatas', () => {
     expect(() => validateKatas([kata])).toThrow(/order kata/)
   })
 
+  it('rejects a topic outside the canonical vocabulary', () => {
+    const kata: SeedKata = { ...KATAS[0]!, topics: ['window-functions', 'partition-by'] }
+    expect(() => validateKatas([kata])).toThrow(/topics not in TOPICS: partition-by/)
+  })
+
+  it('rejects a kata with no topics', () => {
+    const kata: SeedKata = { ...KATAS[0]!, topics: [] }
+    expect(() => validateKatas([kata])).toThrow(/no topics/)
+  })
+
   it('rejects a bug-fix kata without a reference fix', () => {
     const kata: SeedKata = { ...KATAS.find((k) => k.category === 'debugging' && k.testCode)!, fixCode: undefined }
     expect(() => validateKatas([kata])).toThrow(/reference fix/)

@@ -1,3 +1,4 @@
+import { isTopic } from '@dojo/shared'
 import { isNull } from 'drizzle-orm'
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
@@ -37,6 +38,9 @@ export function validateKatas(katas: SeedKata[]): void {
     if (!ex.description.trim()) errors.push(`${ex.id}: empty description`)
     if (ex.duration <= 0) errors.push(`${ex.id}: invalid duration ${ex.duration}`)
     if (ex.variations.length < 1) errors.push(`${ex.id}: no variations`)
+    if (ex.topics.length === 0) errors.push(`${ex.id}: no topics`)
+    const unknownTopics = ex.topics.filter((topic) => !isTopic(topic))
+    if (unknownTopics.length > 0) errors.push(`${ex.id}: topics not in TOPICS: ${unknownTopics.join(', ')}`)
     const answer = ex.rubric?.answer
     const pointLines = answer?.shape === 'point' ? [answer.line, ...(answer.also ?? [])] : []
     if (answer?.shape === 'point' && (ex.type !== 'review' || !ex.starterCode || !pointLines.every((line) => isLineInCode(ex.starterCode!, line)))) {

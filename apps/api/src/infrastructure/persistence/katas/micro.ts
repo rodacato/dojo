@@ -21,7 +21,7 @@ export const microKatas: SeedKata[] = [
     category: 'debugging',
     languages: ['typescript'],
     tags: ['micro', 'off-by-one'],
-    topics: ['debugging', 'edge-cases'],
+    topics: ['off-by-one'],
     starterCode: `function paginate<T>(items: T[], page: number, limit: number): T[] {
   if (page < 1 || limit < 1) return []
   const start = page * limit
@@ -58,7 +58,7 @@ export const microKatas: SeedKata[] = [
     category: 'debugging',
     languages: ['python'],
     tags: ['micro', 'python'],
-    topics: ['debugging', 'python'],
+    topics: ['mutability'],
     starterCode: `def add_tag(tag, tags=[]):
     if tag in tags:
         return tags
@@ -98,7 +98,7 @@ print(second)
     category: 'debugging',
     languages: ['typescript'],
     tags: ['micro', 'async'],
-    topics: ['debugging', 'concurrency'],
+    topics: ['async-await', 'event-loop'],
     starterCode: `async function notifyAll(userIds: string[]): Promise<number> {
   let sent = 0
   userIds.forEach(async (id) => {
@@ -137,7 +137,7 @@ print(second)
     category: 'sql',
     languages: ['sql'],
     tags: ['micro', 'null'],
-    topics: ['sql', 'null-semantics'],
+    topics: ['null-handling', 'sql-joins'],
     starterCode: `SELECT c.id, c.email
 FROM customers c
 WHERE c.id NOT IN (
@@ -174,7 +174,7 @@ WHERE c.id NOT IN (
     category: 'backend',
     languages: ['go'],
     tags: ['micro', 'go'],
-    topics: ['debugging', 'scoping'],
+    topics: ['scoping'],
     starterCode: `func loadConfig(path string) (*Config, error) {
 	cfg := defaultConfig()
 	if path != "" {
@@ -216,7 +216,7 @@ WHERE c.id NOT IN (
     category: 'security',
     languages: ['typescript'],
     tags: ['micro', 'redirect'],
-    topics: ['security', 'url-parsing'],
+    topics: ['input-validation', 'security'],
     starterCode: `function safeRedirect(next: string | null): string {
   if (!next) return '/dashboard'
   if (next.startsWith('/')) return next
@@ -251,7 +251,7 @@ WHERE c.id NOT IN (
     category: 'frontend',
     languages: ['typescript'],
     tags: ['micro', 'react'],
-    topics: ['frontend', 'closures'],
+    topics: ['closures', 'react'],
     starterCode: `function Countdown({ from }: { from: number }) {
   const [left, setLeft] = useState(from)
   useEffect(() => {
@@ -290,7 +290,7 @@ WHERE c.id NOT IN (
     category: 'backend',
     languages: ['ruby'],
     tags: ['micro', 'ruby'],
-    topics: ['debugging', 'memoization'],
+    topics: ['caching', 'equality'],
     starterCode: `class FeatureFlags
   def enabled?(name)
     @cache ||= {}
@@ -326,7 +326,7 @@ end
     category: 'backend',
     languages: ['typescript'],
     tags: ['micro', 'performance'],
-    topics: ['performance', 'databases'],
+    topics: ['n-plus-one-queries', 'orm'],
     starterCode: `async function openOrders(db: Db): Promise<Order[]> {
   const orders = await db.query('SELECT * FROM orders WHERE status = $1', ['open'])
   for (const order of orders) {
@@ -363,7 +363,7 @@ end
     category: 'reliability',
     languages: ['python'],
     tags: ['micro', 'race-condition'],
-    topics: ['reliability', 'concurrency'],
+    topics: ['race-conditions', 'locking', 'reliability'],
     starterCode: `def reserve_seat(db, seat_id, user_id):
     seat = db.query_one("SELECT taken FROM seats WHERE id = %s", seat_id)
     if seat["taken"]:
@@ -398,7 +398,7 @@ end
     category: 'debugging',
     languages: ['typescript'],
     tags: ['micro', 'sorting'],
-    topics: ['debugging', 'javascript'],
+    topics: ['numbers'],
     starterCode: `function topScores(scores: number[], n = 3): number[] {
   const sorted = [...scores].sort()
   return sorted.reverse().slice(0, n)
@@ -432,7 +432,7 @@ end
     category: 'sql',
     languages: ['sql'],
     tags: ['micro', 'joins'],
-    topics: ['sql', 'joins'],
+    topics: ['sql-joins', 'aggregation'],
     starterCode: `SELECT u.id, u.name, COUNT(o.id) AS orders
 FROM users u
 LEFT JOIN orders o ON o.user_id = u.id
@@ -466,7 +466,7 @@ GROUP BY u.id, u.name
     category: 'reliability',
     languages: ['go'],
     tags: ['micro', 'go', 'concurrency'],
-    topics: ['reliability', 'concurrency'],
+    topics: ['concurrency', 'race-conditions'],
     starterCode: `func fetchAll(urls []string) []Result {
 	var wg sync.WaitGroup
 	results := make([]Result, len(urls))
@@ -510,7 +510,7 @@ GROUP BY u.id, u.name
     category: 'async',
     languages: ['typescript'],
     tags: ['micro', 'predict'],
-    topics: ['event-loop', 'microtasks', 'async-await'],
+    topics: ['event-loop', 'async-await'],
     starterCode: `console.log('start')
 setTimeout(() => console.log('timeout'), 0)
 Promise.resolve().then(() => console.log('then'))
@@ -551,7 +551,7 @@ console.log('end')
     category: 'algorithms',
     languages: ['typescript'],
     tags: ['micro', 'parsons'],
-    topics: ['binary-search', 'loop-invariants', 'off-by-one'],
+    topics: ['binary-search', 'off-by-one', 'algorithms'],
     starterCode: `  let hi = sorted.length - 1
     else hi = mid
 function indexOf(sorted: number[], target: number): number {
@@ -838,7 +838,7 @@ SELECT COUNT(*) FROM users WHERE manager_id <> 1;
     category: 'error-handling',
     languages: ['typescript'],
     tags: ['micro', 'parsons'],
-    topics: ['promise-rejection', 'async-await', 'error-handling'],
+    topics: ['retries', 'promise-rejection', 'async-await', 'error-handling'],
     starterCode: `    } catch (err) {
       return fn()
 async function retry<T>(fn: () => Promise<T>, attempts: number): Promise<T> {

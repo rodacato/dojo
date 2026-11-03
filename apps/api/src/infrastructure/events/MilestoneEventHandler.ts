@@ -1,7 +1,7 @@
 import { and, count, eq, gte, sql } from 'drizzle-orm'
 import type { SessionCompleted, SessionFailed } from '../../domain/practice/events'
 import type { Verdict } from '../../domain/practice/values'
-import type { KataType } from '@dojo/shared'
+import { topicsInCluster, type KataType } from '@dojo/shared'
 import type { InMemoryEventBus } from './InMemoryEventBus'
 import { attempts, katas, sessions, userMilestones } from '../persistence/drizzle/schema'
 import type { DB } from '../persistence/drizzle/client'
@@ -87,6 +87,8 @@ async function finalVerdictCount(
   return Number(row?.count ?? 0) >= min
 }
 
+const databaseTopics = sql.join(topicsInCluster('database').map((topic) => sql`${topic}`), sql`, `)
+
 async function practicedSqlTopicCount(db: DB, userId: string, min: number): Promise<boolean> {
   const [row] = await db
     .select({ count: count() })
@@ -96,7 +98,7 @@ async function practicedSqlTopicCount(db: DB, userId: string, min: number): Prom
       and(
         eq(sessions.userId, userId),
         isEligiblePractice(),
-        sql`${katas.topics}::jsonb ?| ARRAY['sql', 'SQL', 'database', 'postgresql', 'postgres', 'mysql', 'queries']`,
+        sql`${katas.topics}::jsonb ?| ARRAY[${databaseTopics}]::text[]`,
       ),
     )
   return Number(row?.count ?? 0) >= min

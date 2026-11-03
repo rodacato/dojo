@@ -13,7 +13,7 @@ You have 3 developers and 2 weeks. You cannot test everything. Design a test str
     category: 'testing',
     languages: [],
     tags: ['testing', 'strategy', 'planning'],
-    topics: ['test-strategy', 'test-pyramid', 'risk-based-testing', 'code-coverage', 'prioritization'],
+    topics: ['test-strategy', 'prioritization'],
     variations: [
       {
         ownerRole: 'Staff QA engineer who has built test suites from scratch at 3 companies and believes coverage percentage is the wrong metric',
@@ -63,7 +63,7 @@ Write the test suite. For each dependency, decide: mock it, stub it, fake it, or
     category: 'testing',
     languages: ['typescript', 'python'],
     tags: ['testing', 'mocking', 'unit-testing'],
-    topics: ['mocking', 'test-doubles', 'integration-testing', 'test-isolation', 'dependency-injection', 'test-design'],
+    topics: ['test-doubles', 'integration-testing', 'dependency-injection'],
     variations: [
       {
         ownerRole: 'Senior developer who has written 5,000+ tests and has strong opinions about when mocking helps and when it creates false confidence',
@@ -96,7 +96,7 @@ The developer says "we need more unit tests." You say "we need integration tests
     category: 'testing',
     languages: [],
     tags: ['testing', 'integration', 'test-pyramid'],
-    topics: ['integration-testing', 'test-pyramid', 'contract-testing', 'end-to-end-testing', 'test-boundaries', 'parameter-mismatch'],
+    topics: ['integration-testing', 'test-strategy'],
     variations: [
       {
         ownerRole: 'Staff engineer who has seen test suites with 2,000 unit tests and zero integration tests catch zero real bugs in production',

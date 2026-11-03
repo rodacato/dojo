@@ -165,7 +165,7 @@ The server runs on UTC. Users sign up from all timezones. One server engineer sa
     category: 'backend',
     languages: ['typescript', 'python', 'javascript'],
     tags: ['bug', 'timezone', 'date-handling'],
-    topics: ['timezones', 'date-parsing', 'utc', 'javascript-dates', 'ecmascript-spec'],
+    topics: ['dates-and-timezones'],
     variations: [
       {
         ownerRole: 'Senior backend engineer who has fixed timezone-related billing bugs at a SaaS company with users in 80 countries',
@@ -208,7 +208,7 @@ Explain exactly how 3 users could all succeed. Fix the code. Then explain what y
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['bug', 'concurrency', 'database'],
-    topics: ['race-conditions', 'database-transactions', 'optimistic-locking', 'pessimistic-locking', 'concurrency', 'atomicity'],
+    topics: ['race-conditions', 'transactions', 'locking', 'concurrency'],
     rubric: {
       reference:
         'A check-then-act race: concurrent requests all read stock 1, all pass the check, and all write 0, because read and write are separate operations. The fix makes the decrement atomic in the database, a conditional UPDATE ... SET stock = stock - 1 WHERE id = ? AND stock > 0 that checks the affected row count, or a transaction with SELECT ... FOR UPDATE, with the reservation in the same transaction. An in-process mutex fails once there is more than one instance. To observe it: count rejected reservations, alert on negative stock or reservations above stock, and log the outcome per attempt.',
@@ -288,7 +288,7 @@ Refactor first. Then add the \`enterprise\` case.`,
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['refactoring', 'readability', 'clean-code'],
-    topics: ['refactoring', 'single-responsibility', 'extract-function', 'readability', 'maintainability'],
+    topics: ['refactoring', 'readability', 'solid-principles'],
     variations: [
       {
         ownerRole: 'Senior engineer who reviews PRs for a 6-person team and has a firm rule: every function should do one thing and fit on a screen',
@@ -350,7 +350,7 @@ Produce a refactored version. Write a short explanation of the main change you m
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['refactoring', 'readability', 'clean-code'],
-    topics: ['refactoring', 'guard-clauses', 'early-return', 'readability', 'cyclomatic-complexity'],
+    topics: ['refactoring', 'readability'],
     variations: [
       {
         ownerRole: 'Senior engineer with a strong opinion that deeply nested code is a code smell, not a style preference',
@@ -393,7 +393,7 @@ Fix the function. State the time complexity before and after. Explain how you wo
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['performance', 'algorithms', 'bug'],
-    topics: ['time-complexity', 'big-o', 'set', 'hashmap', 'data-structures', 'performance-optimization'],
+    topics: ['time-complexity', 'data-structures', 'hash-tables'],
     variations: [
       {
         ownerRole: 'Staff engineer who has optimized data pipelines at scale and can estimate runtime complexity without running the code',
@@ -435,7 +435,7 @@ Rewrite this using window functions. Add a rank column. Explain why window funct
     category: 'backend',
     languages: ['sql'],
     tags: ['sql', 'window-functions', 'analytics'],
-    topics: ['sql', 'window-functions', 'rank', 'partition-by', 'query-readability'],
+    topics: ['window-functions', 'readability'],
     variations: [
       {
         ownerRole: 'Senior data engineer with 10 years building analytics pipelines at a Fortune 500 retailer',
@@ -467,7 +467,7 @@ Your deployment pipeline runs migrations before the new code is deployed. The ne
     category: 'backend',
     languages: ['sql'],
     tags: ['sql', 'migrations', 'zero-downtime'],
-    topics: ['database-migrations', 'zero-downtime-deployments', 'backward-compatibility', 'postgresql', 'column-rename'],
+    topics: ['database-migrations', 'zero-downtime', 'backward-compatibility', 'postgresql'],
     variations: [
       {
         ownerRole: 'Senior DBA with 12 years at a fintech who has personally witnessed a column rename take down a production system for 45 minutes',
@@ -504,7 +504,7 @@ The table currently has a B-tree index on \`(id)\` and \`(email)\`. Design an in
     category: 'backend',
     languages: ['sql'],
     tags: ['sql', 'indexing', 'performance'],
-    topics: ['database-indexing', 'btree', 'gin', 'partial-indexes', 'composite-indexes', 'explain-analyze'],
+    topics: ['indexes', 'explain-analyze', 'query-performance'],
     variations: [
       {
         ownerRole: 'PostgreSQL performance consultant who has optimized databases for 30+ companies and can read EXPLAIN output in their sleep',
@@ -550,7 +550,7 @@ Explain why this deadlocks. Fix it. Explain how you would verify the fix works u
     category: 'backend',
     languages: ['typescript', 'python', 'sql'],
     tags: ['sql', 'deadlock', 'concurrency'],
-    topics: ['deadlocks', 'database-transactions', 'lock-ordering', 'concurrency', 'postgresql-locks'],
+    topics: ['deadlocks', 'transactions', 'locking', 'postgresql'],
     variations: [
       {
         ownerRole: 'Staff backend engineer who has debugged production deadlocks at a payment processing company handling 100k transactions per minute',
@@ -584,7 +584,7 @@ Design the schema. Show the tables, columns, types, and relationships. Explain y
     category: 'backend',
     languages: [],
     tags: ['sql', 'schema-design', 'multi-tenant'],
-    topics: ['schema-design', 'normalization', 'multi-tenancy', 'indexing', 'foreign-keys', 'data-modeling'],
+    topics: ['schema-design', 'indexes', 'domain-modeling'],
     variations: [
       {
         ownerRole: 'Principal engineer who has designed multi-tenant schemas for 3 different SaaS products and has strong opinions about tenant isolation',
@@ -627,7 +627,7 @@ The \`orders\` table has 25M rows. The \`customers\` table has 2M rows. Optimize
     category: 'backend',
     languages: ['sql'],
     tags: ['sql', 'performance', 'optimization'],
-    topics: ['query-optimization', 'explain-analyze', 'materialized-views', 'indexing', 'aggregation'],
+    topics: ['query-optimization', 'explain-analyze', 'indexes', 'aggregation'],
     variations: [
       {
         ownerRole: 'Senior DBA at an e-commerce company who reviews every slow query that crosses the 1-second threshold',
@@ -670,7 +670,7 @@ Identify the problem. Refactor the code to fix it while keeping the observer pat
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['design-patterns', 'observer', 'performance'],
-    topics: ['observer-pattern', 'async-patterns', 'error-handling', 'event-driven', 'promise-all'],
+    topics: ['design-patterns', 'error-handling', 'async-await'],
     variations: [
       {
         ownerRole: 'Senior architect who has implemented event systems at scale and has seen observer patterns both save and destroy systems',
@@ -719,7 +719,7 @@ Refactor this using the strategy pattern. Then add Apple Pay. Explain what makes
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['design-patterns', 'strategy', 'refactoring'],
-    topics: ['strategy-pattern', 'open-closed-principle', 'polymorphism', 'refactoring', 'type-safety'],
+    topics: ['design-patterns', 'solid-principles', 'refactoring', 'type-safety'],
     variations: [
       {
         ownerRole: 'Senior engineer who has refactored payment systems at two different companies and has opinions about when patterns help vs. when they add ceremony',
@@ -746,7 +746,7 @@ Design a factory (or abstract factory) that centralizes notification creation. S
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['design-patterns', 'factory', 'architecture'],
-    topics: ['factory-pattern', 'abstract-factory', 'dependency-injection', 'solid-principles', 'creational-patterns'],
+    topics: ['design-patterns', 'dependency-injection', 'solid-principles'],
     variations: [
       {
         ownerRole: 'Staff engineer who has refactored notification systems at three companies and prefers composition over inheritance in every case',
@@ -797,7 +797,7 @@ This same logging + retry + auth + rate-limit pattern is copy-pasted in 12 endpo
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['design-patterns', 'decorator', 'composition'],
-    topics: ['decorator-pattern', 'composition', 'middleware', 'separation-of-concerns', 'dry-principle'],
+    topics: ['design-patterns', 'readability'],
     variations: [
       {
         ownerRole: 'Senior engineer who has built HTTP client libraries used by 40+ microservices and understands the middleware/decorator pattern deeply',
@@ -838,7 +838,7 @@ Design a state machine that encapsulates all valid transitions, enforces them in
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['design-patterns', 'state-machine', 'domain-modeling'],
-    topics: ['state-machine', 'finite-automata', 'domain-modeling', 'side-effects', 'transition-guards'],
+    topics: ['state-machines', 'domain-modeling'],
     variations: [
       {
         ownerRole: 'Staff engineer who has implemented state machines for payment processing, order fulfillment, and insurance claims workflows',
@@ -865,7 +865,7 @@ Design the auth service. Show: (1) the API surface (endpoints), (2) the token st
     category: 'backend',
     languages: [],
     tags: ['auth', 'service-design', 'security'],
-    topics: ['authentication', 'authorization', 'jwt', 'oauth', 'token-refresh', 'rbac', 'service-extraction'],
+    topics: ['authentication', 'authorization', 'jwt', 'microservices'],
     variations: [
       {
         ownerRole: 'Security engineer who has designed auth systems for 3 companies and has seen every common mistake in token management',
@@ -892,7 +892,7 @@ Design a notification service that all teams use. Address: (1) channel routing (
     category: 'backend',
     languages: [],
     tags: ['service-design', 'notifications', 'architecture'],
-    topics: ['notification-service', 'channel-routing', 'user-preferences', 'template-engine', 'rate-limiting', 'delivery-guarantees'],
+    topics: ['system-design', 'rate-limiting', 'reliability'],
     variations: [
       {
         ownerRole: 'Staff engineer who built the notification platform at a company sending 50M notifications per day across all channels',
@@ -936,7 +936,7 @@ interface RateLimiter {
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['rate-limiting', 'distributed-systems', 'redis'],
-    topics: ['rate-limiting', 'token-bucket', 'sliding-window', 'redis', 'distributed-systems', 'load-balancing'],
+    topics: ['rate-limiting', 'distributed-systems', 'algorithms'],
     variations: [
       {
         ownerRole: 'Staff platform engineer who has implemented rate limiters for APIs serving 100k requests per second and knows the edge cases intimately',
@@ -963,7 +963,7 @@ Design a job queue system. Address: (1) job persistence and retry, (2) priority 
     category: 'backend',
     languages: [],
     tags: ['architecture', 'job-queue', 'background-processing'],
-    topics: ['job-queues', 'background-processing', 'bullmq', 'sidekiq', 'priority-queues', 'retry-strategies', 'dead-letter-queues'],
+    topics: ['background-jobs', 'message-queues', 'retries', 'dead-letter-queue'],
     variations: [
       {
         ownerRole: 'Staff engineer who has operated BullMQ, Sidekiq, and AWS SQS in production and knows the failure modes of each',
@@ -996,7 +996,7 @@ Design the search service. Choose a search engine, show the data flow from the p
     category: 'backend',
     languages: [],
     tags: ['search', 'elasticsearch', 'service-design'],
-    topics: ['full-text-search', 'elasticsearch', 'meilisearch', 'inverted-index', 'data-synchronization', 'relevance-ranking'],
+    topics: ['system-design', 'eventual-consistency'],
     variations: [
       {
         ownerRole: 'Staff engineer who has built and operated Elasticsearch clusters with 500M documents and knows the operational cost of running a search infrastructure',
@@ -1041,7 +1041,7 @@ Implement both cycle detection and topological sort. State the time and space co
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['algorithms', 'graphs', 'topological-sort'],
-    topics: ['graph-traversal', 'topological-sort', 'cycle-detection', 'dfs', 'dependency-resolution', 'directed-acyclic-graph'],
+    topics: ['graphs', 'algorithms'],
     variations: [
       {
         ownerRole: 'Staff engineer who has built custom build systems and package managers and knows that dependency resolution is deceptively complex',
@@ -1082,7 +1082,7 @@ Implement the LRU cache. Then explain: when would LRU be the wrong eviction stra
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['algorithms', 'caching', 'data-structures'],
-    topics: ['lru-cache', 'cache-eviction', 'doubly-linked-list', 'hashmap', 'time-complexity', 'memory-management'],
+    topics: ['caching', 'data-structures', 'hash-tables', 'time-complexity'],
     variations: [
       {
         ownerRole: 'Staff engineer who has implemented custom caches for high-throughput systems and knows the performance characteristics of every eviction strategy',
@@ -1120,7 +1120,7 @@ The external API allows 50 concurrent requests but will return 429 (rate limit) 
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['concurrency', 'rate-limiting', 'performance'],
-    topics: ['concurrency', 'semaphore', 'promise-pool', 'rate-limiting', 'backpressure', 'error-handling'],
+    topics: ['concurrency', 'backpressure', 'rate-limiting', 'error-handling'],
     variations: [
       {
         ownerRole: 'Staff engineer who has built high-throughput data pipelines and knows that naive Promise.all on 100k items will crash the process',
@@ -1166,7 +1166,7 @@ Implement: (1) a function to build the tree structure from the flat array, (2) a
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['algorithms', 'trees', 'data-structures'],
-    topics: ['tree-construction', 'parent-child-relationships', 'recursive-data', 'adjacency-list', 'depth-first-traversal'],
+    topics: ['trees', 'recursion', 'schema-design'],
     variations: [
       {
         ownerRole: 'Senior engineer who has built comment systems for two different social platforms and knows the performance implications of deep nesting',
@@ -1205,7 +1205,7 @@ Your implementation must: handle collisions, resize when the load factor exceeds
     category: 'backend',
     languages: ['typescript', 'python'],
     tags: ['algorithms', 'hash-table', 'data-structures'],
-    topics: ['hash-tables', 'hash-collisions', 'chaining', 'open-addressing', 'load-factor', 'resizing', 'time-complexity'],
+    topics: ['hash-tables', 'data-structures', 'time-complexity'],
     variations: [
       {
         ownerRole: 'Senior engineer who interviews 5+ candidates per month and uses this question to gauge fundamental CS knowledge',

@@ -13,7 +13,7 @@ What changes would you propose? Be specific: define the process, the expectation
     category: 'process',
     languages: [],
     tags: ['process', 'code-review', 'team-culture'],
-    topics: ['code-review', 'team-processes', 'engineering-culture', 'feedback', 'pull-requests', 'automation'],
+    topics: ['code-review', 'engineering-culture', 'communication'],
     variations: [
       {
         ownerRole: 'Engineering director who has transformed code review culture at two companies and believes reviews are the highest-leverage activity a team does',
@@ -54,7 +54,7 @@ How do you prioritize? Walk through your decision framework, then present your p
     category: 'process',
     languages: [],
     tags: ['process', 'technical-debt', 'prioritization'],
-    topics: ['technical-debt', 'prioritization', 'risk-assessment', 'stakeholder-communication', 'engineering-planning'],
+    topics: ['technical-debt', 'prioritization', 'communication', 'risk-management'],
     variations: [
       {
         ownerRole: 'Staff engineer who has negotiated technical debt budgets with PMs for 8 years and has a framework for scoring debt items by impact and urgency',
