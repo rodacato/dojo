@@ -38,6 +38,7 @@ export interface SeedKata {
   testCode?: string // predefined tests for code execution (Piston)
   starterCode?: string // pre-filled code for fix-the-bug / scaffold katas
   fixCode?: string // seed-only: a correct fix of a bug-fix kata, run against testCode in Piston
+  orderCheck?: string // seed-only: run after each accepted order of an order kata, in Piston
   // Hidden rubric (PRD 027): what a review must catch, or for other types a
   // reference answer and the points it covers.
   rubric?: Rubric

@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-03',
     phase: 'Practice',
+    title: 'More five-minute katas',
+    description:
+      'Nine new short katas for the days you have five minutes: predict what TypeScript and SQL print, put together a retry and a groupBy from shuffled lines, and find the cause in a Python traceback, a connection pool log and a slow page’s query log.',
+  },
+  {
+    date: '2026-11-03',
+    phase: 'Practice',
     title: 'Read the evidence',
     description:
       'Some short katas now hand you a stack trace or a query plan instead of code. Tap the line that shows the cause and say what it tells you. When more than one line points at the same cause, any of them counts.',
