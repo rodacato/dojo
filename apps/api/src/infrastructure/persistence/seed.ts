@@ -5,7 +5,7 @@ import * as schema from './drizzle/schema'
 import { katas as katasTable, variations as variationsTable, users as usersTable } from './drizzle/schema'
 import { KATAS, uuidv5 } from './katas'
 import type { SeedKata } from './katas'
-import { isLineInCode } from '../../domain/practice/point-answer'
+import { artifactOf, isLineInCode } from '../../domain/practice/point-answer'
 import { normalizeOutput } from '../../domain/practice/predict-answer'
 import { isValidOrder } from '../../domain/practice/order-answer'
 import { isBugFixKata } from '../../domain/practice/bug-fix'
@@ -38,8 +38,12 @@ export function validateKatas(katas: SeedKata[]): void {
     if (ex.duration <= 0) errors.push(`${ex.id}: invalid duration ${ex.duration}`)
     if (ex.variations.length < 1) errors.push(`${ex.id}: no variations`)
     const answer = ex.rubric?.answer
-    if (answer?.shape === 'point' && (ex.type !== 'review' || !ex.starterCode || !isLineInCode(ex.starterCode, answer.line))) {
-      errors.push(`${ex.id}: point answer line ${answer.line} must be a line of the starter code of a review kata`)
+    const pointLines = answer?.shape === 'point' ? [answer.line, ...(answer.also ?? [])] : []
+    if (answer?.shape === 'point' && (ex.type !== 'review' || !ex.starterCode || !pointLines.every((line) => isLineInCode(ex.starterCode!, line)))) {
+      errors.push(`${ex.id}: point answer lines ${pointLines.join(', ')} must be lines of the starter code of a review kata`)
+    }
+    if (artifactOf(ex.languages) && answer?.shape !== 'point') {
+      errors.push(`${ex.id}: a ${ex.languages[0]} is only answered by pointing at a line`)
     }
     if (answer?.shape === 'predict' && (ex.type !== 'review' || !ex.starterCode?.trim() || !normalizeOutput(answer.output))) {
       errors.push(`${ex.id}: a predict kata must be a review kata with starter code and an expected output`)

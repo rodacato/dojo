@@ -769,4 +769,41 @@ describe('KataActivePage', () => {
       expect(screen.queryByRole('button', { name: 'Run tests' })).not.toBeInTheDocument()
     })
   })
+
+  describe('artifact kata', () => {
+    function traceSession(): SessionWithKata {
+      const base = makeSession()
+      return makeSession({
+        body: 'Checkout fails.',
+        kata: {
+          ...base.kata,
+          title: 'Not the library',
+          type: 'review',
+          language: ['stacktrace'],
+          starterCode: "TypeError: Cannot read properties of undefined\n    at normalizeEmail (/app/node_modules/validator/x.js:1:1)\n    at buildRecipient (/app/src/mail/recipient.ts:14:19)\n",
+          answerShape: 'point',
+        },
+      })
+    }
+
+    it('shows the artifact as its own file and asks for the cause, never for a bug in code', async () => {
+      const user = userEvent.setup()
+      getSession.mockResolvedValue(traceSession())
+      submitPointAttempt.mockResolvedValue({ attemptId: 'att-1' })
+
+      renderPage('sess-1')
+
+      expect(await screen.findByText('Tap the line that shows the cause.')).toBeInTheDocument()
+      expect(screen.getByText('stacktrace.txt')).toBeInTheDocument()
+      expect(screen.getByText('review · medium · stack trace')).toBeInTheDocument()
+      expect(screen.queryByText(/solution\./)).not.toBeInTheDocument()
+
+      await user.click(screen.getByRole('button', { name: /at buildRecipient/ }))
+      expect(screen.getByText('Line 3 selected. Now say what it tells you.')).toBeInTheDocument()
+      fireEvent.change(screen.getByLabelText('What does it tell you?'), { target: { value: 'undefined came from our code.' } })
+      await user.click(screen.getByRole('button', { name: 'Submit' }))
+
+      await waitFor(() => expect(submitPointAttempt).toHaveBeenCalledWith('sess-1', 3, 'undefined came from our code.'))
+    })
+  })
 })

@@ -32,10 +32,12 @@ export interface RubricIssue {
 }
 
 // The line the bug is on, 1-based in the kata's starter code. Its presence
-// makes the kata a point kata (D52): tap a line, then explain why.
+// makes the kata a point kata (D52): tap a line, then explain why. `also`
+// lists other lines that are equally right, such as a plan node's filter line.
 export interface PointAnswerKey {
   shape: 'point'
   line: number
+  also?: number[]
 }
 
 // What the fixed starter code prints. Checked against a real run in Piston;

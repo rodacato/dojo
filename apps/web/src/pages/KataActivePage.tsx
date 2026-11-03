@@ -1,7 +1,7 @@
 import { Suspense, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Group as PanelGroup, Panel, Separator as PanelResizeHandle } from 'react-resizable-panels'
-import { PREDICTED_OUTPUT_MAX } from '@dojo/shared'
+import { artifactKindSchema, PREDICTED_OUTPUT_MAX, type ArtifactKind } from '@dojo/shared'
 import type { SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { ActiveKataActions, ANSWER_HINT_ID } from '../components/kata/ActiveKataActions'
@@ -174,6 +174,7 @@ export function KataActivePage() {
           failed: showFailure,
           hasDraft,
           shape: kata.answerShape,
+          artifact: !!artifactOf(kata),
           pointedLine,
           output: predictedOutput,
           placed: orderedLines.length,
@@ -233,6 +234,7 @@ function answerHint({
   failed,
   hasDraft,
   shape,
+  artifact,
   pointedLine,
   output,
   placed,
@@ -245,6 +247,7 @@ function answerHint({
   failed: boolean
   hasDraft: boolean
   shape: SessionWithKata['kata']['answerShape']
+  artifact: boolean
   pointedLine: number | null
   output: string
   placed: number
@@ -264,10 +267,12 @@ function answerHint({
     return why.trim() ? '' : 'Now say why this order.'
   }
   if (shape !== 'point') return ''
-  if (pointedLine === null) return why.trim() ? 'Choose a line to continue.' : 'Tap the line with the bug.'
-  return why.trim()
-    ? `Line ${pointedLine} selected. Tap another line to change it.`
-    : `Line ${pointedLine} selected. Now say why it's wrong.`
+  if (pointedLine === null) {
+    if (why.trim()) return 'Choose a line to continue.'
+    return artifact ? 'Tap the line that shows the cause.' : 'Tap the line with the bug.'
+  }
+  if (why.trim()) return `Line ${pointedLine} selected. Tap another line to change it.`
+  return `Line ${pointedLine} selected. Now say ${artifact ? 'what it tells you' : "why it's wrong"}.`
 }
 
 function ClockSlot({ children }: Readonly<{ children: ReactNode }>) {
@@ -383,7 +388,7 @@ function ReviewProblem({ session }: Readonly<{ session: SessionWithKata }>) {
         {kata.title}
       </h1>
       <p className="paper-note max-md:text-[10px] mb-4 md:mb-7">
-        {kata.type} · {kata.difficulty} · {resolveLanguage(kata.language)}
+        {kata.type} · {kata.difficulty} · {readsAs(kata)}
       </p>
       <div className="max-w-[44ch] [&_p]:text-primary [&_p]:text-[15px] [&_p]:leading-[1.6] md:[&_p]:text-[17px] md:[&_p]:leading-[1.7] [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-[0.9em]">
         <KataBody body={session.body} />
@@ -435,7 +440,7 @@ function PointAnswer({
       <div className="flex flex-col gap-3 px-4 py-5 md:p-6 bg-surface border-t border-border">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4">
           <label htmlFor="point-why" className="font-mono text-xs tracking-[0.08em] uppercase text-primary">
-            Why is it wrong?
+            {artifactOf(kata) ? 'What does it tell you?' : 'Why is it wrong?'}
           </label>
           <span className="paper-note">{pointedLine === null ? 'No line selected' : `Line ${pointedLine}`}</span>
         </div>
@@ -469,10 +474,27 @@ function submitOnModEnter(onSubmit: () => void) {
   }
 }
 
+const ARTIFACTS: Record<ArtifactKind, { file: string; label: string }> = {
+  stacktrace: { file: 'stacktrace.txt', label: 'stack trace' },
+  log: { file: 'app.log', label: 'log' },
+  'query-plan': { file: 'query-plan.txt', label: 'query plan' },
+}
+
+function artifactOf(kata: SessionWithKata['kata']): ArtifactKind | undefined {
+  const kind = artifactKindSchema.safeParse(kata.language[0])
+  return kind.success ? kind.data : undefined
+}
+
+function readsAs(kata: SessionWithKata['kata']): string {
+  const artifact = artifactOf(kata)
+  return artifact ? ARTIFACTS[artifact].label : resolveLanguage(kata.language)
+}
+
 function ReadOnlyFileBar({ kata }: Readonly<{ kata: SessionWithKata['kata'] }>) {
+  const artifact = artifactOf(kata)
   return (
     <div className="min-h-11 md:min-h-12 shrink-0 border-b border-border bg-surface flex items-center justify-between gap-4 px-4 md:px-6 font-mono text-xs text-secondary">
-      <span>solution.{fileExtension(resolveLanguage(kata.language))}</span>
+      <span>{artifact ? ARTIFACTS[artifact].file : `solution.${fileExtension(resolveLanguage(kata.language))}`}</span>
       <span>Read only</span>
     </div>
   )

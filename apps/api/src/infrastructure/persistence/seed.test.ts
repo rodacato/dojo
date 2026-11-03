@@ -12,7 +12,18 @@ describe('validateKatas', () => {
       ...KATAS.find((k) => k.rubric?.answer)!,
       starterCode: 'one line\n',
     }
-    expect(() => validateKatas([kata])).toThrow(/point answer line/)
+    expect(() => validateKatas([kata])).toThrow(/point answer lines/)
+  })
+
+  it('rejects an equally right line that is not in the starter code', () => {
+    const base = KATAS.find((k) => k.rubric?.answer?.shape === 'point')!
+    const kata: SeedKata = { ...base, rubric: { ...base.rubric!, answer: { shape: 'point', line: 1, also: [999] } } }
+    expect(() => validateKatas([kata])).toThrow(/point answer lines 1, 999/)
+  })
+
+  it('rejects an artifact kata that is not answered by pointing', () => {
+    const kata: SeedKata = { ...KATAS.find((k) => k.rubric?.answer?.shape === 'predict')!, languages: ['log'] }
+    expect(() => validateKatas([kata])).toThrow(/a log is only answered by pointing/)
   })
 
   it.each([
