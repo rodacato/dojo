@@ -278,6 +278,18 @@ describe('MilestoneEventHandler — SessionCompleted', () => {
     expect(awardedSlugs(db)).toEqual(['SQL_SURVIVOR'])
   })
 
+  it('counts SQL_SURVIVOR kata by the database cluster, not by a list of free-text slugs', async () => {
+    db.earnedSlugs = ['FIRST_KATA']
+    db.scriptSelects(NO_AWARDS)
+    await fireSessionCompleted(db)
+
+    const dialect = new PgDialect()
+    const query = db.conditions.map((condition) => dialect.sqlToQuery(condition)).find((q) => q.sql.includes('?|'))!
+
+    expect(query.params).toEqual(expect.arrayContaining(['window-functions', 'n-plus-one-queries', 'database']))
+    expect(query.params).not.toContain('sql')
+  })
+
   it('awards UNDEFINED_NO_MORE at 50 total completed kata', async () => {
     db.earnedSlugs = ['FIRST_KATA']
     db.scriptSelects([[], [], [], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 0 }], [{ count: 50 }]])

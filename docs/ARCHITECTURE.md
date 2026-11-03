@@ -95,7 +95,7 @@ A **Kata** is the template and a **Variation** gives it an LLM persona (`ownerRo
 Milestones react to events published by the Practice context, with no direct dependency on Practice code — only on the event contracts. Belts are computed from session history on read.
 
 - **Milestone** — awarded when specific patterns in a user's session history are met
-- **Belt** — rank derived from evaluated katas (any verdict), topics touched, active days and cooldown, with its dated record replayed on read and never demoted. `/belts` shows it as an illustrated room ([ADR 032](adr/032-belts-room.md)).
+- **Belt** — rank derived from evaluated katas (any verdict), topic clusters touched, active days and cooldown, with its dated record replayed on read and never demoted. `/belts` shows it as an illustrated room ([ADR 032](adr/032-belts-room.md)). A kata's topics come only from `TOPICS` in `packages/shared/src/topics.ts`, grouped by cluster; the seed and the admin API reject any other slug.
 - **Practitioner** — a pixel avatar with a saved look; its pieces are awarded from practice history after each evaluation, never from the verdict (D66). There is no editor: the look shows on public profiles and the result receipt, where a new piece can be put on. The catalog lives in `packages/shared/src/practitioner.ts`
 
 ---

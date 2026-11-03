@@ -99,7 +99,7 @@ Evaluate the current approach. Is it really chaos, or is it appropriate? When wo
     category: 'frontend',
     languages: [],
     tags: ['frontend', 'state-management', 'react'],
-    topics: ['state-management', 'react', 'redux', 'react-query', 'context-api', 'component-architecture'],
+    topics: ['state-management', 'react', 'trade-offs'],
     variations: [
       {
         ownerRole: 'Senior frontend architect who has worked on React apps ranging from 10 to 500 components and has strong opinions about state categorization',
@@ -150,7 +150,7 @@ Identify all the performance problems. Fix them. Explain each optimization and w
     category: 'frontend',
     languages: ['typescript'],
     tags: ['frontend', 'performance', 'react'],
-    topics: ['react-performance', 'useMemo', 'useCallback', 'virtualization', 're-rendering', 'memoization'],
+    topics: ['rendering-performance', 'react'],
     variations: [
       {
         ownerRole: 'Senior React developer who has optimized rendering performance on dashboards with 10k+ rows and uses the React Profiler weekly',
@@ -200,7 +200,7 @@ Identify every accessibility problem. Fix the component. Explain WCAG guidelines
     category: 'frontend',
     languages: ['typescript'],
     tags: ['frontend', 'accessibility', 'wcag'],
-    topics: ['accessibility', 'wcag', 'aria', 'semantic-html', 'screen-readers', 'keyboard-navigation'],
+    topics: ['accessibility'],
     variations: [
       {
         ownerRole: 'Accessibility specialist who has audited 50+ web applications and conducted usability testing with screen reader users',
@@ -241,7 +241,7 @@ Redesign the validation strategy. Show: (1) when each field validates (on blur, 
     category: 'frontend',
     languages: ['typescript'],
     tags: ['frontend', 'forms', 'validation'],
-    topics: ['form-validation', 'zod', 'react-hook-form', 'multi-step-forms', 'user-experience', 'schema-validation'],
+    topics: ['forms', 'input-validation', 'react'],
     variations: [
       {
         ownerRole: 'Senior frontend engineer who has built form-heavy enterprise applications and has strong opinions about validation UX',
@@ -273,7 +273,7 @@ Evaluate each option for this specific use case. Make a recommendation. Then add
     category: 'frontend',
     languages: [],
     tags: ['frontend', 'real-time', 'websockets'],
-    topics: ['real-time-updates', 'websockets', 'server-sent-events', 'polling', 'scalability', 'connection-management'],
+    topics: ['real-time-updates', 'scalability', 'trade-offs'],
     variations: [
       {
         ownerRole: 'Staff engineer who has implemented real-time features at a company with 100k concurrent WebSocket connections and knows the infrastructure implications',

@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-03',
     phase: 'Practice',
+    title: 'Every kata counts toward your belt',
+    description:
+      'Security, testing, devops, algorithms and most SQL katas counted toward no topic cluster, so they did nothing for your belt. Every kata now names its topics from one shared list, and the belt follows thirteen clusters instead of seven. Katas you already did count too.',
+  },
+  {
+    date: '2026-11-03',
+    phase: 'Practice',
     title: 'More five-minute katas',
     description:
       'Nine new short katas for the days you have five minutes: predict what TypeScript and SQL print, put together a retry and a groupBy from shuffled lines, and find the cause in a Python traceback, a connection pool log and a slow page’s query log.',

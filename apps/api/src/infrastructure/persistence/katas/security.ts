@@ -25,7 +25,7 @@ The mobile team lead says "it's signed so it's secure." A security-conscious eng
     category: 'security',
     languages: [],
     tags: ['security', 'jwt', 'authentication'],
-    topics: ['jwt', 'authentication', 'authorization', 'encryption-vs-signing', 'sensitive-data', 'token-design'],
+    topics: ['jwt', 'authentication', 'authorization'],
     variations: [
       {
         ownerRole: 'Security engineer who has reviewed hundreds of JWT implementations and written the company JWT standards document',
@@ -90,7 +90,7 @@ List every issue. Explain the severity and impact of each one.`,
     category: 'security',
     languages: ['typescript', 'javascript'],
     tags: ['security', 'code-review', 'dependencies'],
-    topics: ['dependency-management', 'secrets-management', 'supply-chain-security', 'gitignore', 'devdependencies'],
+    topics: ['supply-chain-security', 'secrets-management'],
     variations: [
       {
         ownerRole: 'Security engineer who does weekly dependency audits and has responded to two supply chain incidents in the past year',
@@ -142,7 +142,7 @@ List every vulnerability, its OWASP Top 10 category, the attack vector, and the 
     category: 'security',
     languages: ['typescript', 'javascript'],
     tags: ['security', 'owasp', 'code-review'],
-    topics: ['sql-injection', 'xss', 'open-redirect', 'owasp-top-10', 'input-validation', 'parameterized-queries'],
+    topics: ['injection', 'xss', 'input-validation', 'security'],
     variations: [
       {
         ownerRole: 'Application security engineer who has conducted 100+ code reviews and can identify vulnerabilities by pattern recognition',
@@ -184,7 +184,7 @@ Show the implementation. Explain: (1) why access tokens are short-lived, (2) why
     category: 'security',
     languages: ['typescript', 'python'],
     tags: ['security', 'jwt', 'authentication'],
-    topics: ['jwt', 'refresh-tokens', 'token-rotation', 'bcrypt', 'middleware', 'authentication-flow'],
+    topics: ['jwt', 'authentication'],
     variations: [
       {
         ownerRole: 'Security architect who has designed auth systems for banks and healthcare companies with strict compliance requirements',
@@ -220,7 +220,7 @@ A security audit flagged this configuration. Explain: (1) what CORS is and why i
     category: 'security',
     languages: [],
     tags: ['security', 'cors', 'web-security'],
-    topics: ['cors', 'same-origin-policy', 'preflight-requests', 'credentials', 'browser-security', 'csrf'],
+    topics: ['cors-csrf', 'security'],
     rubric: {
       reference:
         'CORS relaxes the browser\'s same-origin policy for chosen origins; it is enforced by the browser and protects users, not the server. origin * with credentials: true is rejected by browsers, and the usual "fix" of reflecting any Origin with credentials lets any site make authenticated requests as the user. allowedHeaders * is too broad. The fix is an explicit allowlist with https://app.example.com, credentials only if cookies are used, and only the methods and headers the app needs. CORS is not a security feature against curl or servers, and not a replacement for authentication or CSRF protection.',
@@ -269,7 +269,7 @@ This is a blocklist approach. Demonstrate why it fails (provide at least 3 bypas
     category: 'security',
     languages: ['typescript', 'javascript'],
     tags: ['security', 'xss', 'sanitization'],
-    topics: ['xss', 'html-sanitization', 'allowlist-vs-blocklist', 'dompurify', 'content-security-policy', 'defense-in-depth'],
+    topics: ['xss', 'input-validation'],
     variations: [
       {
         ownerRole: 'Penetration tester who has bypassed HTML sanitization filters in 30+ web applications and has a personal collection of XSS payloads',

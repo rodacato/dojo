@@ -28,7 +28,7 @@ Export your function from \`solution.ts\`.`,
     category: 'algorithms',
     languages: ['typescript'],
     tags: ['recursion', 'arrays', 'generics'],
-    topics: ['recursion', 'type-narrowing', 'array-manipulation'],
+    topics: ['recursion', 'type-narrowing', 'algorithms'],
     testCode: `const assert = require('assert');
 const { flatten } = require('./solution');
 
@@ -105,7 +105,7 @@ Export your function from \`solution.ts\`.`,
     category: 'async',
     languages: ['typescript'],
     tags: ['async', 'error-handling', 'resilience'],
-    topics: ['promises', 'exponential-backoff', 'retry-patterns', 'error-propagation'],
+    topics: ['retries', 'async-await', 'promise-rejection'],
     testCode: `const assert = require('assert');
 const { retry } = require('./solution');
 
@@ -223,7 +223,7 @@ Export your function from \`solution.ts\`.`,
     category: 'functional',
     languages: ['typescript'],
     tags: ['reduce', 'functional', 'higher-order-functions'],
-    topics: ['reduce', 'grouping', 'higher-order-functions', 'record-types'],
+    topics: ['data-structures', 'readability'],
     testCode: `const assert = require('assert');
 const { groupBy } = require('./solution');
 
@@ -314,7 +314,7 @@ Export your function from \`solution.ts\`.`,
     category: 'async',
     languages: ['typescript'],
     tags: ['closures', 'timers', 'utility'],
-    topics: ['debounce', 'closures', 'timer-management', 'function-composition'],
+    topics: ['closures', 'event-loop'],
     testCode: `const assert = require('assert');
 const { debounce } = require('./solution');
 
@@ -442,7 +442,7 @@ Define your method in \`solution.rb\`.`,
     category: 'creative-constraints',
     languages: ['ruby'],
     tags: ['creative', 'math', 'constraints'],
-    topics: ['hash-lookup', 'modular-arithmetic', 'creative-problem-solving'],
+    topics: ['algorithms', 'data-structures'],
     testCode: `require_relative 'solution'
 
 # 1. First 15 elements
@@ -535,7 +535,7 @@ Define your method in \`solution.rb\`.`,
     category: 'parsing',
     languages: ['ruby'],
     tags: ['parsing', 'strings', 'hash'],
-    topics: ['string-parsing', 'configuration', 'ini-format', 'state-machine'],
+    topics: ['parsing', 'state-machines'],
     testCode: `require_relative 'solution'
 
 # 1. Basic parsing
@@ -651,7 +651,7 @@ Define your function in \`solution.py\`.`,
     category: 'parsing',
     languages: ['python'],
     tags: ['parsing', 'strings', 'state-machine'],
-    topics: ['csv-parsing', 'state-machine', 'string-processing', 'edge-cases'],
+    topics: ['parsing', 'state-machines', 'defensive-programming'],
     testCode: `from solution import parse_csv
 
 # 1. Simple CSV
@@ -741,7 +741,7 @@ Define your function in \`solution.py\`.`,
     category: 'algorithms',
     languages: ['python'],
     tags: ['matrix', 'in-place', 'geometry'],
-    topics: ['matrix-rotation', 'in-place-algorithms', 'space-complexity', 'transposition'],
+    topics: ['algorithms', 'data-structures'],
     testCode: `from solution import rotate_matrix
 import copy
 
@@ -855,7 +855,7 @@ Write your implementation in \`solution.go\` (package main).`,
     category: 'concurrency',
     languages: ['go'],
     tags: ['goroutines', 'channels', 'concurrency'],
-    topics: ['worker-pool', 'goroutine-management', 'graceful-shutdown', 'channels', 'sync-primitives'],
+    topics: ['concurrency', 'backpressure'],
     testCode: `package main
 
 import (
@@ -1053,7 +1053,7 @@ Write your implementation in \`solution.go\` (package main).`,
     category: 'data-structures',
     languages: ['go'],
     tags: ['cache', 'linked-list', 'hashmap'],
-    topics: ['lru-cache', 'doubly-linked-list', 'hash-map', 'eviction-policy'],
+    topics: ['caching', 'data-structures', 'hash-tables'],
     testCode: `package main
 
 import (
@@ -1238,7 +1238,7 @@ Write your implementation in \`solution.go\` (package main).`,
     category: 'error-handling',
     languages: ['go'],
     tags: ['errors', 'interfaces', 'go-idioms'],
-    topics: ['custom-errors', 'error-wrapping', 'error-inspection', 'go-error-interface'],
+    topics: ['custom-errors', 'error-handling'],
     testCode: `package main
 
 import (
@@ -1386,7 +1386,7 @@ Write your query in the solution file.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['window-functions', 'rank', 'aggregation'],
-    topics: ['window-functions', 'RANK', 'PARTITION-BY', 'aggregate-comparison'],
+    topics: ['window-functions'],
     testCode: `-- @SCHEMA
 CREATE TABLE employees (
   id INTEGER PRIMARY KEY,
@@ -1458,7 +1458,7 @@ Write your query in the solution file.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['date-ranges', 'subqueries', 'churn-analysis'],
-    topics: ['date-filtering', 'NOT-EXISTS', 'churn-detection', 'user-analytics'],
+    topics: ['join-vs-subquery'],
     testCode: `-- @SCHEMA
 CREATE TABLE users (
   user_id INTEGER PRIMARY KEY,
@@ -1541,7 +1541,7 @@ Write your query in the solution file.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['recursive-cte', 'hierarchy', 'tree-traversal'],
-    topics: ['recursive-CTE', 'hierarchical-queries', 'org-chart', 'tree-traversal'],
+    topics: ['common-table-expressions', 'recursion', 'trees'],
     testCode: `-- @SCHEMA
 CREATE TABLE org (
   employee_id INTEGER PRIMARY KEY,
@@ -1633,7 +1633,7 @@ Write your query in the solution file.`,
     category: 'sql',
     languages: ['sql'],
     tags: ['cte', 'refactoring', 'readability'],
-    topics: ['CTE', 'query-refactoring', 'SQL-readability', 'subquery-elimination'],
+    topics: ['common-table-expressions', 'readability', 'join-vs-subquery'],
     testCode: `-- @SCHEMA
 CREATE TABLE departments (
   department_id INTEGER PRIMARY KEY,

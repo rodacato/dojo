@@ -1,187 +1,189 @@
-/**
- * Canonical topic slugs.
- *
- * Used in:
- * - Kata.topics[] (seed data and admin form)
- * - LLM evaluation output (topicsToReview[])
- *
- * Do not change existing slugs — they are stored in the DB and in session history.
- * Add new slugs at the end when introducing kata that cover new concepts.
- *
- * Each topic also belongs to a higher-level cluster used by the belt rubric's
- * diversity factor (see TOPIC_TO_CLUSTER below).
- */
-export const TOPICS = [
-  // Database
-  'database',
-  'orm',
-  'n-plus-one-queries',
-  'query-optimization',
-  'lazy-loading',
-  'eager-loading',
-  'postgresql',
-  'query-performance',
-  'indexes',
-  'explain-analyze',
-  'join-vs-subquery',
-  'null-handling',
-  'transaction-isolation',
+// Slugs are stored in kata and session history: add new ones, never rename.
+// A topic is a concept more than one kata can practice; its cluster feeds the belt's diversity factor.
+const TOPICS_BY_CLUSTER = {
+  database: [
+    'database',
+    'orm',
+    'n-plus-one-queries',
+    'query-optimization',
+    'lazy-loading',
+    'eager-loading',
+    'postgresql',
+    'query-performance',
+    'indexes',
+    'explain-analyze',
+    'join-vs-subquery',
+    'null-handling',
+    'transaction-isolation',
+    'sql-joins',
+    'window-functions',
+    'common-table-expressions',
+    'aggregation',
+    'schema-design',
+    'database-migrations',
+    'transactions',
+  ],
+  'api-design': [
+    'api-versioning',
+    'backward-compatibility',
+    'breaking-changes',
+    'consumer-communication',
+    'semantic-versioning',
+    'rest-api-design',
+    'http-status-codes',
+  ],
+  typescript: [
+    'typescript',
+    'type-safety',
+    'any-type',
+    'union-types',
+    'type-narrowing',
+    'runtime-vs-compile-time',
+    'discriminated-unions',
+  ],
+  'error-handling': [
+    'error-handling',
+    'async-await',
+    'defensive-programming',
+    'promise-rejection',
+    'observable-errors',
+    'retries',
+    'custom-errors',
+  ],
+  'system-design': [
+    'system-design',
+    'event-driven-architecture',
+    'message-queues',
+    'trade-offs',
+    'scalability',
+    'reliability',
+    'outbox-pattern',
+    'idempotency',
+    'dead-letter-queue',
+    'caching',
+    'microservices',
+    'eventual-consistency',
+    'cqrs',
+    'rate-limiting',
+    'background-jobs',
+    'distributed-systems',
+  ],
+  'incident-response': [
+    'incident-response',
+    'debugging-under-pressure',
+    'root-cause-analysis',
+    'communication',
+    'postmortem-thinking',
+    'observability',
+  ],
+  'code-quality': [
+    'code-review',
+    'readability',
+    'refactoring',
+    'technical-debt',
+    'feature-flags',
+    'risk-management',
+    'gradual-rollout',
+    'design-patterns',
+    'solid-principles',
+    'dependency-injection',
+    'domain-modeling',
+    'prioritization',
+    'engineering-culture',
+  ],
+  algorithms: [
+    'algorithms',
+    'time-complexity',
+    'data-structures',
+    'hash-tables',
+    'recursion',
+    'graphs',
+    'trees',
+    'binary-search',
+    'off-by-one',
+    'parsing',
+    'state-machines',
+  ],
+  concurrency: [
+    'concurrency',
+    'race-conditions',
+    'locking',
+    'deadlocks',
+    'event-loop',
+    'backpressure',
+  ],
+  security: [
+    'security',
+    'authentication',
+    'authorization',
+    'jwt',
+    'injection',
+    'xss',
+    'cors-csrf',
+    'input-validation',
+    'secrets-management',
+    'supply-chain-security',
+  ],
+  testing: [
+    'testing',
+    'test-strategy',
+    'test-doubles',
+    'integration-testing',
+  ],
+  frontend: [
+    'react',
+    'state-management',
+    'rendering-performance',
+    'accessibility',
+    'forms',
+    'real-time-updates',
+  ],
+  devops: [
+    'ci-cd',
+    'deployment-strategies',
+    'containers',
+    'rollback',
+    'zero-downtime',
+  ],
+  'language-fundamentals': [
+    'closures',
+    'scoping',
+    'equality',
+    'mutability',
+    'numbers',
+    'dates-and-timezones',
+  ],
+} as const
 
-  // API design
-  'api-versioning',
-  'backward-compatibility',
-  'breaking-changes',
-  'consumer-communication',
-  'semantic-versioning',
-  'rest-api-design',
-  'http-status-codes',
+export type TopicCluster = keyof typeof TOPICS_BY_CLUSTER
+export type Topic = (typeof TOPICS_BY_CLUSTER)[TopicCluster][number]
 
-  // TypeScript
-  'typescript',
-  'type-safety',
-  'any-type',
-  'union-types',
-  'type-narrowing',
-  'runtime-vs-compile-time',
-  'discriminated-unions',
+const CLUSTERS = Object.keys(TOPICS_BY_CLUSTER) as TopicCluster[]
 
-  // Error handling and reliability
-  'error-handling',
-  'async-await',
-  'defensive-programming',
-  'promise-rejection',
-  'observable-errors',
+export const TOPICS: readonly Topic[] = CLUSTERS.flatMap((cluster) => TOPICS_BY_CLUSTER[cluster])
 
-  // System design
-  'system-design',
-  'event-driven-architecture',
-  'message-queues',
-  'trade-offs',
-  'scalability',
-  'reliability',
-  'outbox-pattern',
-  'idempotency',
-  'dead-letter-queue',
+const TOPIC_TO_CLUSTER = new Map<string, TopicCluster>(
+  CLUSTERS.flatMap((cluster) => TOPICS_BY_CLUSTER[cluster].map((topic) => [topic, cluster] as const)),
+)
 
-  // Incident response
-  'incident-response',
-  'debugging-under-pressure',
-  'root-cause-analysis',
-  'communication',
-  'postmortem-thinking',
-  'observability',
-
-  // Code quality
-  'code-review',
-  'readability',
-  'refactoring',
-  'technical-debt',
-  'feature-flags',
-  'risk-management',
-  'gradual-rollout',
-] as const
-
-export type Topic = (typeof TOPICS)[number]
-
-/**
- * Higher-level groupings used by the belt rubric's diversity factor.
- * One slug per comment-section header above. Stable identifiers — adding a
- * new cluster requires extending this union and TOPIC_TO_CLUSTER together.
- */
-export type TopicCluster =
-  | 'database'
-  | 'api-design'
-  | 'typescript'
-  | 'error-handling'
-  | 'system-design'
-  | 'incident-response'
-  | 'code-quality'
-
-const TOPIC_TO_CLUSTER: Record<Topic, TopicCluster> = {
-  // Database
-  'database': 'database',
-  'orm': 'database',
-  'n-plus-one-queries': 'database',
-  'query-optimization': 'database',
-  'lazy-loading': 'database',
-  'eager-loading': 'database',
-  'postgresql': 'database',
-  'query-performance': 'database',
-  'indexes': 'database',
-  'explain-analyze': 'database',
-  'join-vs-subquery': 'database',
-  'null-handling': 'database',
-  'transaction-isolation': 'database',
-
-  // API design
-  'api-versioning': 'api-design',
-  'backward-compatibility': 'api-design',
-  'breaking-changes': 'api-design',
-  'consumer-communication': 'api-design',
-  'semantic-versioning': 'api-design',
-  'rest-api-design': 'api-design',
-  'http-status-codes': 'api-design',
-
-  // TypeScript
-  'typescript': 'typescript',
-  'type-safety': 'typescript',
-  'any-type': 'typescript',
-  'union-types': 'typescript',
-  'type-narrowing': 'typescript',
-  'runtime-vs-compile-time': 'typescript',
-  'discriminated-unions': 'typescript',
-
-  // Error handling and reliability
-  'error-handling': 'error-handling',
-  'async-await': 'error-handling',
-  'defensive-programming': 'error-handling',
-  'promise-rejection': 'error-handling',
-  'observable-errors': 'error-handling',
-
-  // System design
-  'system-design': 'system-design',
-  'event-driven-architecture': 'system-design',
-  'message-queues': 'system-design',
-  'trade-offs': 'system-design',
-  'scalability': 'system-design',
-  'reliability': 'system-design',
-  'outbox-pattern': 'system-design',
-  'idempotency': 'system-design',
-  'dead-letter-queue': 'system-design',
-
-  // Incident response
-  'incident-response': 'incident-response',
-  'debugging-under-pressure': 'incident-response',
-  'root-cause-analysis': 'incident-response',
-  'communication': 'incident-response',
-  'postmortem-thinking': 'incident-response',
-  'observability': 'incident-response',
-
-  // Code quality
-  'code-review': 'code-quality',
-  'readability': 'code-quality',
-  'refactoring': 'code-quality',
-  'technical-debt': 'code-quality',
-  'feature-flags': 'code-quality',
-  'risk-management': 'code-quality',
-  'gradual-rollout': 'code-quality',
+export function isTopic(slug: string): slug is Topic {
+  return TOPIC_TO_CLUSTER.has(slug)
 }
 
 export function topicCluster(topic: Topic): TopicCluster {
-  return TOPIC_TO_CLUSTER[topic]
+  return TOPIC_TO_CLUSTER.get(topic)!
 }
 
-/**
- * Tolerant of unknown topic slugs — silently skips them. Production data may
- * carry legacy slugs that were removed from `TOPICS`; the belt computation
- * should degrade gracefully (under-count clusters) rather than throw.
- */
+export function topicsInCluster(cluster: TopicCluster): readonly Topic[] {
+  return TOPICS_BY_CLUSTER[cluster]
+}
+
+// Unknown slugs are skipped: stored history may carry slugs that were never canonical.
 export function topicClustersFor(topics: readonly string[]): Set<TopicCluster> {
   const result = new Set<TopicCluster>()
   for (const t of topics) {
-    if (Object.prototype.hasOwnProperty.call(TOPIC_TO_CLUSTER, t)) {
-      result.add(TOPIC_TO_CLUSTER[t as Topic])
-    }
+    const cluster = TOPIC_TO_CLUSTER.get(t)
+    if (cluster) result.add(cluster)
   }
   return result
 }

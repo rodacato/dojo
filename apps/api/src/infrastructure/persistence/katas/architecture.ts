@@ -48,7 +48,7 @@ Your tech lead is asking you to decide. Which approach do you recommend, and why
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'caching', 'performance'],
-    topics: ['caching', 'redis', 'materialized-views', 'cdn', 'cache-invalidation', 'trade-offs', 'performance'],
+    topics: ['caching', 'trade-offs', 'query-performance'],
     variations: [
       {
         ownerRole: 'Staff engineer who has implemented all three caching strategies in production and has strong opinions about when each is appropriate',
@@ -77,7 +77,7 @@ Draw the current monolith's main modules, identify the service boundaries, and p
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'microservices', 'system-design'],
-    topics: ['microservices', 'monolith-decomposition', 'bounded-contexts', 'service-boundaries', 'strangler-fig-pattern'],
+    topics: ['microservices', 'domain-modeling', 'system-design'],
     variations: [
       {
         ownerRole: 'Principal architect who has led two monolith-to-microservices migrations and considers 60% of microservice migrations a mistake',
@@ -111,7 +111,7 @@ Redesign this flow using events. Show the event flow, the topics/queues, and exp
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'event-driven', 'resilience'],
-    topics: ['event-driven-architecture', 'message-queues', 'saga-pattern', 'eventual-consistency', 'failure-handling'],
+    topics: ['event-driven-architecture', 'message-queues', 'eventual-consistency', 'reliability'],
     variations: [
       {
         ownerRole: 'Staff engineer who designed the event-driven architecture for a food delivery platform processing 500k orders per day',
@@ -138,7 +138,7 @@ The team is considering CQRS (Command Query Responsibility Segregation). Design 
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'cqrs', 'system-design'],
-    topics: ['cqrs', 'event-sourcing', 'read-models', 'eventual-consistency', 'projection-rebuild'],
+    topics: ['cqrs', 'eventual-consistency', 'event-driven-architecture'],
     variations: [
       {
         ownerRole: 'Staff architect who has implemented CQRS at two companies — one successfully and one that was rolled back after 8 months of pain',
@@ -165,7 +165,7 @@ Design an API gateway. Show: what it does, how routing works, how authentication
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'api-gateway', 'microservices'],
-    topics: ['api-gateway', 'reverse-proxy', 'authentication', 'request-aggregation', 'single-point-of-failure'],
+    topics: ['system-design', 'authentication', 'reliability'],
     variations: [
       {
         ownerRole: 'Platform engineer who has built and operated API gateways at two different companies, one using Kong and one custom-built',
@@ -192,7 +192,7 @@ Your infrastructure lead proposes adding a service mesh (Istio). Your senior dev
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'service-mesh', 'infrastructure'],
-    topics: ['service-mesh', 'istio', 'envoy', 'mtls', 'distributed-tracing', 'sidecar-pattern'],
+    topics: ['distributed-systems', 'observability', 'trade-offs'],
     variations: [
       {
         ownerRole: 'Platform architect who evaluated and deployed Istio for a 40-service platform and has opinions about when the complexity is justified',
@@ -219,7 +219,7 @@ The VP of Engineering wants a plan to gradually decompose this monolith. You can
     category: 'architecture',
     languages: [],
     tags: ['architecture', 'migration', 'strangler-fig'],
-    topics: ['strangler-fig-pattern', 'monolith-decomposition', 'incremental-migration', 'database-splitting', 'feature-flags'],
+    topics: ['microservices', 'database-migrations', 'feature-flags', 'gradual-rollout'],
     variations: [
       {
         ownerRole: 'Principal engineer who has executed two multi-year monolith decomposition projects and considers the database split the hardest part',
