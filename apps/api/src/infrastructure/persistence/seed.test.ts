@@ -33,6 +33,11 @@ describe('validateKatas', () => {
     expect(() => validateKatas([kata])).toThrow(/order kata/)
   })
 
+  it('rejects a bug-fix kata without a reference fix', () => {
+    const kata: SeedKata = { ...KATAS.find((k) => k.category === 'debugging' && k.testCode)!, fixCode: undefined }
+    expect(() => validateKatas([kata])).toThrow(/reference fix/)
+  })
+
   it('rejects an order kata that is not a review kata', () => {
     const kata: SeedKata = { ...KATAS.find((k) => k.rubric?.answer?.shape === 'order')!, type: 'code' }
     expect(() => validateKatas([kata])).toThrow(/order kata/)

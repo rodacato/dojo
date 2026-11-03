@@ -21,6 +21,7 @@ const {
   getSession,
   generateSessionBodyExecute,
   generateSessionBodyStream,
+  executionEnqueue,
   errorReport,
   trackEvent,
   resendSend,
@@ -70,6 +71,7 @@ const {
     getSession: vi.fn(),
     generateSessionBodyExecute: vi.fn(),
     generateSessionBodyStream: vi.fn(),
+    executionEnqueue: vi.fn(),
     errorReport: vi.fn(),
     trackEvent: vi.fn(),
     resendSend: vi.fn(),
@@ -86,6 +88,7 @@ vi.mock('../../../config', () => ({ config: mockConfig }))
 
 vi.mock('../../container', () => ({
   errorReporter: { report: errorReport },
+  executionQueue: { enqueue: executionEnqueue },
   useCases: {
     getKataOptions: { execute: getKataOptions },
     getKataById: { execute: getKataById },
@@ -101,6 +104,11 @@ vi.mock('../../container', () => ({
 }))
 
 vi.mock('../../observability/metrics', () => ({ trackEvent }))
+
+// The per-user limit is hono-rate-limiter's job; these tests exercise the route behind it.
+vi.mock('../middleware/scroll-execution-limiter', () => ({
+  kataRunLimiter: async (_c: unknown, next: () => Promise<void>) => next(),
+}))
 
 vi.mock('../../persistence/drizzle/client', () => ({
   db: { select: dbSelect, delete: dbDelete, update: dbUpdate },
@@ -683,6 +691,18 @@ describe('GET /sessions/:id', () => {
     expect(done.answer).toEqual({ shape: 'predict', output: 'SECRET-OUTPUT', title: 'order', why: 'sync first' })
   })
 
+  it('says a bug-fix kata has tests and gates on them, without sending the tests', async () => {
+    authState.user = authedUser()
+    getSession.mockResolvedValue(sessionEntity())
+    getKataById.mockResolvedValue(kataEntity({ category: 'debugging', testCode: 'SECRET-TESTS' }))
+    selectResult.rows = []
+
+    const text = await (await get()).text()
+
+    expect(text).not.toContain('SECRET-TESTS')
+    expect(JSON.parse(text).kata).toMatchObject({ hasTests: true, testsGate: true })
+  })
+
   it('never sends the accepted order of an order kata before the final verdict', async () => {
     authState.user = authedUser()
     getSession.mockResolvedValue(sessionEntity())
@@ -1067,6 +1087,58 @@ describe('POST /sessions/:id/attempts', () => {
       const res = await submit({ userResponse: 'answer', order: [1] })
       expect(res.status).toBe(400)
     })
+  })
+})
+
+// ===========================================================================
+// POST /sessions/:id/run
+// ===========================================================================
+describe('POST /sessions/:id/run', () => {
+  const run = (body: unknown = { code: 'def f(): return 1' }, id = SESSION_ID) => post(`/sessions/${id}/run`, body)
+  const passing = { exitCode: 0, stdout: 'All tests passed', stderr: '', timedOut: false, executionTimeMs: 4 }
+
+  beforeEach(() => {
+    authState.user = authedUser()
+    getSession.mockResolvedValue(sessionEntity())
+    getKataById.mockResolvedValue(kataEntity({ testCode: 'assert f() == 1' }))
+    executionEnqueue.mockReset()
+  })
+
+  it('returns 401 when unauthenticated', async () => {
+    authState.user = null
+    expect((await run()).status).toBe(401)
+  })
+
+  it("runs the editor's code against the kata's tests", async () => {
+    executionEnqueue.mockResolvedValue(passing)
+
+    const res = await run({ code: 'def f(): return 1' })
+
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ passed: true, timedOut: false, unavailable: false, output: 'All tests passed' })
+    expect(executionEnqueue).toHaveBeenCalledWith({ language: 'python', code: 'def f(): return 1', testCode: 'assert f() == 1' })
+  })
+
+  it('reports a failing run with its output', async () => {
+    executionEnqueue.mockResolvedValue({ ...passing, exitCode: 1, stdout: '', stderr: 'AssertionError: page 1' })
+
+    expect(await (await run()).json()).toMatchObject({ passed: false, output: 'AssertionError: page 1' })
+  })
+
+  it.each([
+    ["another learner's session", () => getSession.mockResolvedValue(sessionEntity({ userId: 'someone-else' })), 403],
+    ['a session that is no longer active', () => getSession.mockResolvedValue(sessionEntity({ status: 'completed' })), 409],
+    ['a kata without tests', () => getKataById.mockResolvedValue(kataEntity()), 422],
+    ['a kata answered in prose', () => getKataById.mockResolvedValue(kataEntity({ type: 'chat', testCode: 'x' })), 422],
+  ] as const)('refuses %s without running anything', async (_label, arrange, status) => {
+    arrange()
+    expect((await run()).status).toBe(status)
+    expect(executionEnqueue).not.toHaveBeenCalled()
+  })
+
+  it('refuses an empty body', async () => {
+    expect((await run({ code: '' })).status).toBe(400)
+    expect(executionEnqueue).not.toHaveBeenCalled()
   })
 })
 

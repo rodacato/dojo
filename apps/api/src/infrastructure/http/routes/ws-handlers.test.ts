@@ -479,3 +479,52 @@ describe('handleReconnect', () => {
     expect(ws.close).toHaveBeenCalledWith(1000, 'Evaluation complete')
   })
 })
+
+describe('handleSubmit — bug-fix test gate', () => {
+  const bugFix = { category: 'debugging', testCode: 'assert(...)' }
+  const failing = { exitCode: 1, stdout: '', stderr: 'AssertionError', timedOut: false, executionTimeMs: 5 }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    pendingAttempts.clear()
+    streamCache.clear()
+    vi.mocked(useCases.submitAttempt.execute).mockReturnValue(stream() as never)
+  })
+
+  it('gates a bug-fix fix on its tests', async () => {
+    primeSubmit({ kata: bugFix })
+    vi.mocked(executionQueue.enqueue).mockResolvedValue(failing as never)
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(expect.objectContaining({ gate: { testsPassed: false } }))
+  })
+
+  it('does not gate a code kata that is not a bug fix', async () => {
+    primeSubmit({ kata: { testCode: 'assert(...)' } })
+    vi.mocked(executionQueue.enqueue).mockResolvedValue(failing as never)
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(expect.objectContaining({ gate: undefined }))
+  })
+
+  it('does not gate when the sandbox could not run the code', async () => {
+    primeSubmit({ kata: bugFix })
+    vi.mocked(executionQueue.enqueue).mockResolvedValue({ ...failing, failure: 'unavailable' } as never)
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(expect.objectContaining({ gate: undefined }))
+  })
+
+  it('never runs the tests on a follow-up, which answers in prose', async () => {
+    primeSubmit({ kata: bugFix })
+    vi.mocked(useCases.getSession.execute).mockResolvedValue(makeSession({ attempts: [{}] }))
+
+    await handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1')
+
+    expect(executionQueue.enqueue).not.toHaveBeenCalled()
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledWith(expect.objectContaining({ gate: undefined, executionContext: undefined }))
+  })
+})

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { and, count, desc, eq, gte, lt, sql } from 'drizzle-orm'
 import { Hono, type Context } from 'hono'
+import { bodyLimit } from 'hono/body-limit'
 import { getCookie } from 'hono/cookie'
 import { streamSSE } from 'hono/streaming'
 import { z } from 'zod'
@@ -10,13 +11,15 @@ import { composePointAnswer, isLineInCode } from '../../../domain/practice/point
 import { composePredictAnswer, isValidPrediction } from '../../../domain/practice/predict-answer'
 import { composeOrderAnswer, isValidOrder } from '../../../domain/practice/order-answer'
 import { revealedAnswer } from '../../../domain/practice/revealed-answer'
+import { isBugFixKata, testsPassed } from '../../../domain/practice/bug-fix'
 import { SessionExpiredError } from '../../../domain/shared/errors'
 import { KataId, SessionId, UserId } from '../../../domain/shared/types'
-import { useCases } from '../../container'
+import { executionQueue, useCases } from '../../container'
 import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
 import { attempts, errors, playgroundRuns, sessions, userPreferences, users } from '../../persistence/drizzle/schema'
 import { requireAuth } from '../middleware/auth'
+import { kataRunLimiter } from '../middleware/scroll-execution-limiter'
 import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
 import { SUMI } from '../sumi'
@@ -299,6 +302,8 @@ practiceRoutes.get('/sessions/:id', requireAuth, uuidParam('id', { error: 'Sessi
       tags: kata.tags,
       starterCode: kata.starterCode ?? null,
       answerShape: kata.rubric?.answer?.shape ?? null,
+      hasTests: kata.type === 'code' && !!kata.testCode,
+      testsGate: isBugFixKata(kata),
     },
     finalAttempt: finalAttempt
       ? {
@@ -455,6 +460,38 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { err
   setTimeout(() => pendingAttempts.delete(attemptId), 5 * 60 * 1000)
 
   return c.json({ attemptId }, 202)
+})
+
+// ---------------------------------------------------------------------------
+// POST /sessions/:id/run — the kata's tests against the editor's code, before submitting
+// ---------------------------------------------------------------------------
+
+const RUN_OUTPUT_MAX = 4000
+const runSchema = z.object({ code: z.string().min(1).max(64 * 1024) })
+
+const runBodyLimit = bodyLimit({ maxSize: 128 * 1024, onError: (c) => c.json({ error: 'payload_too_large' }, 413) })
+
+practiceRoutes.post('/sessions/:id/run', requireAuth, uuidParam('id', { error: 'Session not found' }), kataRunLimiter, runBodyLimit, async (c) => {
+  const user = c.get('user') as { id: string }
+  const parsed = runSchema.safeParse(await c.req.json().catch(() => null))
+  if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
+
+  const session = await useCases.getSession.execute(SessionId(c.req.param('id')!))
+  if (!session) return c.json({ error: 'Session not found' }, 404)
+  if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
+  if (session.status !== 'active') return c.json({ error: 'Session is no longer active' }, 409)
+
+  const kata = await useCases.getKataById.execute(session.kataId)
+  if (!kata?.testCode || kata.type !== 'code') return c.json({ error: 'This kata has no tests to run' }, 422)
+  if (session.isExpired(kata.durationMinutes)) throw new SessionExpiredError(session.id)
+
+  const result = await executionQueue.enqueue({ language: kata.languages[0] ?? 'javascript', code: parsed.data.code, testCode: kata.testCode })
+  return c.json({
+    passed: testsPassed(result),
+    timedOut: result.timedOut,
+    unavailable: result.failure === 'unavailable',
+    output: [result.stdout, result.stderr].filter(Boolean).join('\n').trim().slice(0, RUN_OUTPUT_MAX),
+  })
 })
 
 // ---------------------------------------------------------------------------

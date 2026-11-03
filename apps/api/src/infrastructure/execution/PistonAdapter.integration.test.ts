@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import type { PistonAdapter as Adapter } from './PistonAdapter'
 import { KATAS } from '../persistence/katas'
 import { normalizeOutput } from '../../domain/practice/predict-answer'
+import { isBugFixKata, testsPassed } from '../../domain/practice/bug-fix'
 
 // Runs real kata-shaped tests against Piston, which the unit tests mock.
 // Opt-in with PISTON_TEST_URL (the dev container's is http://piston:2000).
@@ -59,5 +60,21 @@ describe.skipIf(!url)('PistonAdapter.execute against Piston', () => {
       expect(normalizeOutput(result.stdout)).toBe(answer.shape === 'predict' ? normalizeOutput(answer.output) : null)
     },
   )
+
+  // A test gate is only fair if the tests can pass and the starter really is broken.
+  describe.each(KATAS.filter(isBugFixKata).map((k) => [k.title, k] as const))('bug-fix kata "%s"', (_title, kata) => {
+    const language = kata.languages[0]!
+
+    it('passes its tests with the reference fix', async () => {
+      const result = await adapter.execute({ language, code: kata.fixCode!, testCode: kata.testCode! })
+      expect(result.stderr).toBe('')
+      expect(testsPassed(result)).toBe(true)
+    })
+
+    it('fails its tests with the starter code', async () => {
+      const result = await adapter.execute({ language, code: kata.starterCode!, testCode: kata.testCode! })
+      expect(testsPassed(result)).toBe(false)
+    })
+  })
 })
 

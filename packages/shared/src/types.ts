@@ -88,6 +88,8 @@ export interface KataDTO {
   tags: string[]
   starterCode?: string | null
   answerShape?: AnswerShape | null
+  hasTests?: boolean // the learner can run the kata's tests before submitting
+  testsGate?: boolean // a bug-fix kata: a fix that fails the tests is needs_work
 }
 
 export interface VariationDTO {

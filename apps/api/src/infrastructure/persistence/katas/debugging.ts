@@ -24,7 +24,13 @@ Fix the bug and export the corrected function from \`solution.ts\`.
     tags: ['pagination', 'off-by-one', 'arrays'],
     topics: ['index-arithmetic', 'pagination', 'off-by-one-errors'],
     starterCode: `function paginate<T>(items: T[], page: number, limit: number): T[] {
-  const start = page * limit // BUG: should be (page - 1) * limit
+  const start = page * limit
+  return items.slice(start, start + limit)
+}
+
+module.exports = { paginate }`,
+    fixCode: `function paginate<T>(items: T[], page: number, limit: number): T[] {
+  const start = (page - 1) * limit
   return items.slice(start, start + limit)
 }
 
@@ -76,7 +82,12 @@ Fix the bug so the original array is not modified. Export the corrected function
     tags: ['mutation', 'arrays', 'sort', 'side-effects'],
     topics: ['immutability', 'array-mutation', 'defensive-copying'],
     starterCode: `function topN(arr: number[], n: number): number[] {
-  return arr.sort((a, b) => b - a).slice(0, n) // BUG: .sort() mutates arr in place
+  return arr.sort((a, b) => b - a).slice(0, n)
+}
+
+module.exports = { topN }`,
+    fixCode: `function topN(arr: number[], n: number): number[] {
+  return [...arr].sort((a, b) => b - a).slice(0, n)
 }
 
 module.exports = { topN }`,
@@ -139,7 +150,16 @@ Fix the bug and export the corrected function from \`solution.ts\`.`,
     topics: ['closure-capture', 'var-vs-let', 'loop-scope', 'javascript-gotchas'],
     starterCode: `function makeMultipliers(count: number): Array<(x: number) => number> {
   const multipliers = []
-  for (var i = 0; i < count; i++) { // BUG: var leaks out of loop scope
+  for (var i = 0; i < count; i++) {
+    multipliers.push((x: number) => x * (i + 1))
+  }
+  return multipliers
+}
+
+module.exports = { makeMultipliers }`,
+    fixCode: `function makeMultipliers(count: number): Array<(x: number) => number> {
+  const multipliers = []
+  for (let i = 0; i < count; i++) {
     multipliers.push((x: number) => x * (i + 1))
   }
   return multipliers
@@ -193,7 +213,12 @@ Fix the bug and export the corrected function from \`solution.ts\`.`,
     tags: ['modulo', 'negative-numbers', 'arithmetic'],
     topics: ['remainder-vs-modulo', 'numeric-edge-cases', 'javascript-arithmetic'],
     starterCode: `function isOdd(n: number): boolean {
-  return n % 2 === 1 // BUG: in JS, -3 % 2 === -1, not 1
+  return n % 2 === 1
+}
+
+module.exports = { isOdd }`,
+    fixCode: `function isOdd(n: number): boolean {
+  return n % 2 !== 0
 }
 
 module.exports = { isOdd }`,
@@ -248,8 +273,23 @@ Fix the bug and export the corrected function from \`solution.ts\`.
     starterCode: `function hasDuplicate(arr: object[]): boolean {
   for (let i = 0; i < arr.length; i++) {
     for (let j = i + 1; j < arr.length; j++) {
-      if (arr[i] === arr[j]) return true // BUG: === compares references, not content
+      if (arr[i] === arr[j]) return true
     }
+  }
+  return false
+}
+
+module.exports = { hasDuplicate }`,
+    fixCode: `function canonical(value: object): string {
+  return JSON.stringify(value, Object.keys(value).sort())
+}
+
+function hasDuplicate(arr: object[]): boolean {
+  const seen = new Set<string>()
+  for (const item of arr) {
+    const key = canonical(item)
+    if (seen.has(key)) return true
+    seen.add(key)
   }
   return false
 }

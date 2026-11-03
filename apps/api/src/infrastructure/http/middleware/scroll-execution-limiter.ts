@@ -6,7 +6,7 @@ const MINUTE_MS = 60 * 1000
 
 const userKey = (c: Context): string => (c.get('user') as { id?: string } | undefined)?.id ?? 'unknown'
 
-export function createScrollExecutionLimiter(limitPerMinute: number) {
+export function createUserMinuteLimiter(limitPerMinute: number) {
   return rateLimiter({
     windowMs: MINUTE_MS,
     limit: limitPerMinute,
@@ -15,4 +15,7 @@ export function createScrollExecutionLimiter(limitPerMinute: number) {
   })
 }
 
-export const scrollExecutionLimiter = createScrollExecutionLimiter(config.SCROLL_EXEC_USER_PER_MINUTE)
+export const scrollExecutionLimiter = createUserMinuteLimiter(config.SCROLL_EXEC_USER_PER_MINUTE)
+
+/** Run tests inside a kata: a learner fixing a bug runs them a few times, never in a loop. */
+export const kataRunLimiter = createUserMinuteLimiter(10)
