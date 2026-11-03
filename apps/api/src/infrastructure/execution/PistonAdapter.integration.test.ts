@@ -61,6 +61,24 @@ describe.skipIf(!url)('PistonAdapter.execute against Piston', () => {
     },
   )
 
+  // An accepted order has to be code that works, not just the order the author had in mind.
+  it.each(KATAS.filter((k) => k.orderCheck).map((k) => [k.title, k] as const))(
+    'order kata "%s" works in every accepted order',
+    async (_title, kata) => {
+      const lines = kata.starterCode!.split('\n')
+      const answer = kata.rubric!.answer!
+      const accepted = answer.shape === 'order' ? answer.accepted : []
+
+      expect(accepted.length).toBeGreaterThan(0)
+      for (const order of accepted) {
+        const code = order.map((n) => lines[n - 1]).join('\n')
+        const result = await adapter.execute({ language: kata.languages[0]!, code: '', testCode: `${code}\n${kata.orderCheck}` })
+        expect(result.stdout.trim()).toBe('order works')
+      }
+    },
+    30_000,
+  )
+
   // A test gate is only fair if the tests can pass and the starter really is broken.
   describe.each(KATAS.filter(isBugFixKata).map((k) => [k.title, k] as const))('bug-fix kata "%s"', (_title, kata) => {
     const language = kata.languages[0]!

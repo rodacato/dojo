@@ -582,6 +582,12 @@ function indexOf(sorted: number[], target: number): number {
         ],
       },
     },
+    orderCheck: `const cases: [number[], number, number][] = [[[1, 3, 5, 7, 9], 7, 3], [[1, 3, 5, 7, 9], 1, 0], [[1, 3, 5, 7, 9], 9, 4], [[4], 4, 0], [[1, 3], 2, -1], [[], 1, -1]]
+for (const [sorted, target, expected] of cases) {
+  const got = indexOf(sorted, target)
+  if (got !== expected) throw new Error(\`indexOf(\${JSON.stringify(sorted)}, \${target}) is \${got}, expected \${expected}\`)
+}
+console.log('order works')`,
     variations: [
       {
         ownerRole: 'Senior engineer who reviews search and pagination code for off-by-one bugs',
@@ -667,6 +673,376 @@ Execution Time: 412.910 ms
         ownerRole: 'Senior engineer who reads Postgres plans for a living',
         ownerContext:
           'Credit a why that reads actual time per node and Rows Removed by Filter, and proposes an index on the filtered column. "Add caching" or "the sort is slow" misreads the plan: the outer nodes include the scan\'s time.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-018-predict-finally'),
+    title: 'The last word',
+    description:
+      'This script logs three lines. Write them in order, one per line, then say in two or three sentences why that order.',
+    duration: 5,
+    difficulty: 'easy',
+    type: 'review',
+    category: 'error-handling',
+    languages: ['typescript'],
+    tags: ['micro', 'predict'],
+    topics: ['error-handling', 'defensive-programming'],
+    starterCode: `function save(): string {
+  try {
+    console.log('saving')
+    return 'saved'
+  } finally {
+    console.log('cleanup')
+  }
+}
+console.log(save())
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'finally runs before the function hands back its return value',
+          severity: 'high',
+          why: "return 'saved' decides the value, but the function only returns after finally has run, so cleanup prints before the caller logs saved. A return inside finally would replace the value.",
+        },
+      ],
+      answer: { shape: 'predict', output: 'saving\ncleanup\nsaved' },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior engineer who has chased cleanup code that ran at the wrong time',
+        ownerContext:
+          'Credit a why that separates deciding the return value from leaving the function, and places finally between the two. "finally always runs" alone does not explain why cleanup comes before saved.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-019-predict-foreach-async'),
+    title: 'Done before it starts',
+    description:
+      'This script saves three ids, then reports. Write what it prints, one line per line, then say in two or three sentences what decides that order.',
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'async',
+    languages: ['typescript'],
+    tags: ['micro', 'predict'],
+    topics: ['async-await', 'promise-rejection'],
+    starterCode: `const ids = [3, 1, 2]
+const seen: number[] = []
+ids.forEach(async (id) => {
+  await Promise.resolve()
+  seen.push(id)
+  console.log('saved', id)
+})
+console.log('done', seen.length)
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'forEach does not wait for an async callback',
+          severity: 'high',
+          why: 'forEach calls each callback and ignores the promise it returns. Each callback runs until its await and yields, so done 0 prints first; the saves resume afterwards as microtasks, in call order. A for...of with await, or Promise.all over map, would wait.',
+        },
+      ],
+      answer: { shape: 'predict', output: 'done 0\nsaved 3\nsaved 1\nsaved 2' },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior Node.js engineer who reviews batch jobs that report success too early',
+        ownerContext:
+          'Credit a why that says forEach discards the promises its callback returns, so nothing waits for them. Knowing the fix (for...of or Promise.all) without the reason is passed_with_notes at most.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-020-predict-typeof'),
+    title: 'What type is nothing',
+    description:
+      'This script logs four values. Write them in order, one per line, then say in two or three sentences which ones surprise people and why.',
+    duration: 5,
+    difficulty: 'easy',
+    type: 'review',
+    category: 'typescript',
+    languages: ['typescript'],
+    tags: ['micro', 'predict'],
+    topics: ['runtime-vs-compile-time', 'type-narrowing'],
+    starterCode: `console.log(typeof null)
+console.log(typeof [])
+console.log(Array.isArray([]))
+console.log(typeof NaN)
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'typeof reports runtime tags, not the types TypeScript checks',
+          severity: 'high',
+          why: "typeof null is 'object', a historical bug in JavaScript that was never fixed; arrays are objects too, so only Array.isArray tells them apart; NaN is a number. A narrowing check like typeof x === 'object' therefore lets null through.",
+        },
+      ],
+      answer: { shape: 'predict', output: 'object\nobject\ntrue\nnumber' },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior TypeScript engineer who reviews type guards',
+        ownerContext:
+          "Credit a why that ties at least one surprise to a narrowing bug: typeof x === 'object' does not exclude null, and does not tell an array from an object.",
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-021-predict-sql-null'),
+    title: 'Counting the unknown',
+    description:
+      'This SQLite script prints four counts. Write them in order, one per line, then say in two or three sentences why each NULL comparison counts what it counts.',
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'sql',
+    languages: ['sql'],
+    tags: ['micro', 'predict'],
+    topics: ['null-handling', 'database'],
+    starterCode: `CREATE TABLE users (id INTEGER, manager_id INTEGER);
+INSERT INTO users VALUES (1, NULL), (2, 1), (3, NULL);
+SELECT COUNT(*) FROM users WHERE manager_id = NULL;
+SELECT COUNT(*) FROM users WHERE manager_id IS NULL;
+SELECT COUNT(manager_id) FROM users;
+SELECT COUNT(*) FROM users WHERE manager_id <> 1;
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'A comparison with NULL is unknown, and WHERE keeps only true',
+          severity: 'high',
+          why: 'manager_id = NULL is never true, so it counts 0; IS NULL counts the 2 NULL rows; COUNT(column) skips NULLs, so 1; and NULL <> 1 is unknown too, so the two NULL rows drop out and the last count is 0, not 2.',
+        },
+      ],
+      answer: { shape: 'predict', output: '0\n2\n1\n0' },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior engineer who has fixed reports that silently dropped rows with NULLs',
+        ownerContext:
+          'Credit a why that names three-valued logic: a comparison with NULL is unknown, and WHERE keeps only true. The last count is the trap; getting it right with the reason is what separates a pass.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-022-order-retry'),
+    title: 'Try again, properly',
+    description:
+      'Put together `retry`: it calls `fn` up to `attempts` times and returns the first success, or throws the last error. Two of the lines are near misses and do not belong. Tap the lines you need in order, then say how you chose between each line and its near miss.',
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'error-handling',
+    languages: ['typescript'],
+    tags: ['micro', 'parsons'],
+    topics: ['promise-rejection', 'async-await', 'error-handling'],
+    starterCode: `    } catch (err) {
+      return fn()
+async function retry<T>(fn: () => Promise<T>, attempts: number): Promise<T> {
+  throw lastError
+      throw err
+  for (let i = 0; i < attempts; i++) {
+    }
+  let lastError: unknown
+      return await fn()
+    try {
+  }
+      lastError = err
+}
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'Await inside try, and keep the error instead of rethrowing it',
+          severity: 'high',
+          why: 'return fn() hands back the promise without awaiting it, so its rejection settles after the try has exited and the catch never sees it: the first failure escapes. Rethrowing in the catch stops the loop on the first failure. Storing the error and throwing it after the loop is what makes every attempt count.',
+        },
+      ],
+      answer: { shape: 'order', accepted: [[3, 8, 6, 10, 9, 1, 12, 7, 11, 4, 13]] },
+    },
+    orderCheck: `let calls = 0
+const flaky = async () => { calls++; if (calls < 3) throw new Error('down ' + calls); return 'ok' }
+retry(flaky, 3).then(async (value) => {
+  if (value !== 'ok' || calls !== 3) throw new Error('expected ok after 3 calls, got ' + value + ' after ' + calls)
+  let failed = ''
+  await retry(async () => { throw new Error('always') }, 2).catch((e) => { failed = e.message })
+  if (failed !== 'always') throw new Error('expected the last error, got ' + failed)
+  console.log('order works')
+}).catch((e) => { console.log(String(e)); process.exit(1) })`,
+    variations: [
+      {
+        ownerRole: 'Senior engineer who reviews retry and backoff code in payment services',
+        ownerContext:
+          'Credit a why that explains why return await matters inside try: without await, the rejection is not caught there. "Retries need a loop" alone does not choose between the lines.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-023-order-group-by'),
+    title: 'Sort them into piles',
+    description:
+      'Put together `groupBy`: it returns the items grouped under the key `key(item)` gives them, in their original order. Two of the lines are near misses and do not belong. Tap the lines you need in order, then say how you chose between each line and its near miss.',
+    duration: 5,
+    difficulty: 'easy',
+    type: 'review',
+    category: 'typescript',
+    languages: ['typescript'],
+    tags: ['micro', 'parsons'],
+    topics: ['typescript', 'readability'],
+    starterCode: `    groups[k] = [item]
+  return groups
+function groupBy<T>(items: T[], key: (item: T) => string): Record<string, T[]> {
+  for (const item in items) {
+    const k = key(item)
+  const groups: Record<string, T[]> = {}
+  }
+    groups[k] = groups[k] ?? []
+}
+  for (const item of items) {
+    groups[k].push(item)
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'for...of walks the values; a group is created once and then appended to',
+          severity: 'high',
+          why: 'for...in walks the keys of the array, the indexes as strings, so key() receives "0", "1", "2" instead of the items. groups[k] = [item] replaces the group on every item and keeps only the last one; ?? [] creates it once, and push appends.',
+        },
+      ],
+      answer: { shape: 'order', accepted: [[3, 6, 10, 5, 8, 11, 7, 2, 9]] },
+    },
+    orderCheck: `const byTeam = groupBy([{ n: 'a', t: 'x' }, { n: 'b', t: 'y' }, { n: 'c', t: 'x' }], (p: any) => p.t)
+const got = JSON.stringify(byTeam)
+if (got !== JSON.stringify({ x: [{ n: 'a', t: 'x' }, { n: 'c', t: 'x' }], y: [{ n: 'b', t: 'y' }] })) {
+  console.log('got ' + got)
+  process.exit(1)
+}
+console.log('order works')`,
+    variations: [
+      {
+        ownerRole: 'Senior TypeScript engineer who reviews data-shaping helpers',
+        ownerContext:
+          'Credit a why that says what for...in iterates over an array (its indexes) and why assigning [item] loses earlier items. Picking the right lines without saying why is passed_with_notes.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-024-artifact-python-traceback'),
+    title: 'Read it from the bottom',
+    description:
+      'A worker crashes on start with the traceback below. Tap the line of your own code that caused it, then say in two or three sentences how you found it and what is missing.',
+    duration: 5,
+    difficulty: 'easy',
+    type: 'review',
+    category: 'debugging',
+    languages: ['stacktrace'],
+    tags: ['micro', 'artifact', 'python'],
+    topics: ['root-cause-analysis', 'debugging-under-pressure'],
+    starterCode: `Traceback (most recent call last):
+  File "/app/worker.py", line 88, in <module>
+    main()
+  File "/app/worker.py", line 81, in main
+    process(load_settings())
+  File "/app/settings.py", line 22, in load_settings
+    "region": os.environ["AWS_REGION"],
+  File "/usr/lib/python3.12/os.py", line 714, in __getitem__
+    raise KeyError(key) from None
+KeyError: 'AWS_REGION'
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'Python prints the most recent call last: the cause is the last frame in your code',
+          severity: 'high',
+          why: 'The error is at the bottom, and the frame above it is os.py, the standard library raising for a missing key. The last frame in the application is settings.py reading os.environ["AWS_REGION"]: the variable is not set where the worker starts. worker.py at the top is only the entry point.',
+        },
+      ],
+      answer: { shape: 'point', line: 7, also: [6] },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior Python engineer who deploys workers to several environments',
+        ownerContext:
+          'Credit a why that reads the traceback bottom-up, skips the standard library frame and names the missing environment variable. Tapping worker.py, the first line, reads it the way a Node trace is read and is the common miss.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-025-artifact-pool-log'),
+    title: 'Who has the connections',
+    description:
+      'One request failed with a 500. Here is the log around it. Tap the line that shows the cause, not the symptom, then say in two or three sentences what you would do.',
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'reliability',
+    languages: ['log'],
+    tags: ['micro', 'artifact'],
+    topics: ['root-cause-analysis', 'incident-response', 'observability'],
+    starterCode: `12:00:01.120 INFO  http  GET /orders/4821 started
+12:00:01.121 DEBUG db    acquire connection (pool 10/10 in use, 14 waiting)
+12:00:06.122 WARN  db    acquire timed out after 5000ms
+12:00:06.123 ERROR http  GET /orders/4821 500 Internal Server Error (5003ms)
+12:00:06.140 INFO  jobs  report-export running since 11:52:10, holding 8 connections
+12:00:06.141 INFO  http  GET /health 200 (1ms)
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'A long-running job holds most of the pool; the timeout is only the symptom',
+          severity: 'high',
+          why: 'The 500 and the acquire timeout are what the request saw. The pool was full because report-export has held 8 of its 10 connections for eight minutes. Raising the timeout or the pool size treats the symptom; the export needs its own pool, a connection limit, or to release connections between batches.',
+        },
+      ],
+      answer: { shape: 'point', line: 5 },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior SRE who runs the incident review for a shared database',
+        ownerContext:
+          'Credit a why that separates symptom (timeout, 500, full pool) from cause (who holds the connections). Tapping the full-pool line with a why that names the export is close and gets passed_with_notes at most.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-026-artifact-n-plus-one'),
+    title: 'Twenty-one queries',
+    description:
+      'The posts page got slow after a refactor. Here is the query log for one request. Tap a line that shows the problem, then say in two or three sentences what the code is doing and how you would change it.',
+    duration: 5,
+    difficulty: 'easy',
+    type: 'review',
+    category: 'performance',
+    languages: ['log'],
+    tags: ['micro', 'artifact'],
+    topics: ['n-plus-one-queries', 'eager-loading', 'orm'],
+    starterCode: `12:00:01.000 http GET /posts started
+12:00:01.004 sql  SELECT * FROM posts ORDER BY created_at DESC LIMIT 20  (3ms)
+12:00:01.008 sql  SELECT * FROM users WHERE id = 17  (1ms)
+12:00:01.010 sql  SELECT * FROM users WHERE id = 4  (1ms)
+12:00:01.012 sql  SELECT * FROM users WHERE id = 17  (1ms)
+12:00:01.014 sql  SELECT * FROM users WHERE id = 9  (1ms)
+12:00:01.016 sql  ... 16 more SELECT * FROM users WHERE id = ?
+12:00:01.061 http GET /posts 200 (61ms, 21 queries)
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'One query for the posts, then one per post for its author',
+          severity: 'high',
+          why: 'The list loads 20 posts, then the code reads each post.author and the ORM fetches the users one at a time: 1 + 20 queries, some for the same user. Load the authors with the posts (an include or a join), or batch them with WHERE id IN (...).',
+        },
+      ],
+      answer: { shape: 'point', line: 3, also: [4, 5, 6, 7] },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior Rails engineer who reviews ORM-heavy pages',
+        ownerContext:
+          'Credit a why that names the N+1 pattern from the repeated per-id queries and proposes eager loading or batching. Tapping the posts query or the summary line and calling it slow misreads the log.',
       },
     ],
   },

@@ -51,6 +51,9 @@ export function validateKatas(katas: SeedKata[]): void {
     if (answer?.shape === 'order' && (ex.type !== 'review' || !ex.starterCode || !answer.accepted.every((order) => isValidOrder(ex.starterCode!, order)))) {
       errors.push(`${ex.id}: an order kata must be a review kata whose accepted orders are distinct lines of its starter code`)
     }
+    if (answer?.shape === 'order' && !ex.orderCheck?.trim()) {
+      errors.push(`${ex.id}: an order kata needs an orderCheck that proves its accepted orders run`)
+    }
     if (isBugFixKata(ex) && (!ex.starterCode || !ex.fixCode)) {
       errors.push(`${ex.id}: a bug-fix kata needs broken starter code and a reference fix`)
     }
