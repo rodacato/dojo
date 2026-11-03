@@ -1,4 +1,4 @@
-import type { Rubric } from '@dojo/shared'
+import type { ArtifactKind, Rubric } from '@dojo/shared'
 import type { SessionBodyParams } from '../domain/practice/ports'
 import { codeLines, type PointContext } from '../domain/practice/point-answer'
 import type { PredictContext } from '../domain/practice/predict-answer'
@@ -432,17 +432,33 @@ export interface PointPromptParams {
   rubric: Rubric
 }
 
+const ARTIFACT_LABELS: Record<ArtifactKind, string> = { stacktrace: 'stack trace', log: 'log', 'query-plan': 'query plan' }
+
+// The same tap on code finds a bug; on an artifact it finds the line that shows the cause.
+function pointSubject(artifact?: ArtifactKind) {
+  if (!artifact) {
+    return { noun: 'bug', on: 'is on', heading: 'CODE', kind: 'spot-the-bug kata', task: 'taps the line with the bug' }
+  }
+  const label = ARTIFACT_LABELS[artifact]
+  return { noun: 'cause', on: 'shows on', heading: label.toUpperCase(), kind: 'find-the-cause kata', task: `reads a ${label} and taps the line that shows the cause` }
+}
+
+function pointLines(lines: number[]): string {
+  return lines.length === 1 ? `line ${lines[0]}` : `lines ${lines.join(', ')}`
+}
+
 export function buildPointPrompt(p: PointPromptParams): string {
+  const subject = pointSubject(p.point.artifact)
   const numberedCode = codeLines(p.point.code)
     .map((line, i) => `${String(i + 1).padStart(3)} | ${line}`)
     .join('\n')
   const bug = p.rubric.expectedIssues
     .map((it) => `- ${it.title}\n  why: ${it.why}`)
     .join('\n')
-  const lineVerdict =
-    p.point.pointedLine === p.point.correctLine
-      ? `The developer tapped line ${p.point.pointedLine}. That is the correct line.`
-      : `The developer tapped line ${p.point.pointedLine}. The bug is on line ${p.point.correctLine}, so the tap is wrong.`
+  const article = p.point.acceptedLines.length === 1 ? 'the' : 'a'
+  const lineVerdict = p.point.acceptedLines.includes(p.point.pointedLine)
+    ? `The developer tapped line ${p.point.pointedLine}. That is ${article} correct line.`
+    : `The developer tapped line ${p.point.pointedLine}. The ${subject.noun} ${subject.on} ${pointLines(p.point.acceptedLines)}, so the tap is wrong.`
   const contextNotes = p.rubric.contextNotes ? `\n\nCONTEXT (hidden from the developer):\n${p.rubric.contextNotes}` : ''
 
   return `You are ${p.ownerRole}.
@@ -451,18 +467,18 @@ ${p.ownerContext}
 
 ---
 
-This is a five-minute spot-the-bug kata answered on a phone: the developer
-taps the line with the bug and writes two or three sentences on why.
+This is a five-minute ${subject.kind} answered on a phone: the developer
+${subject.task} and writes two or three sentences on why.
 
 KATA:
 ${p.kataTitle}
 
 ${p.problem}
 
-CODE:
+${subject.heading}:
 ${numberedCode}
 
-THE BUG (hidden from the developer):
+THE ${subject.noun.toUpperCase()} (hidden from the developer):
 ${bug}${contextNotes}
 
 ---
@@ -480,11 +496,11 @@ it breaks. Pick the verdict with these rules:
 - Correct line and a why that names the actual failure: "passed".
 - Correct line but the why is vague, partial or only restates the code:
   "passed_with_notes".
-- Wrong line but the why clearly describes the actual bug: "passed_with_notes"
+- Wrong line but the why clearly describes the actual ${subject.noun}: "passed_with_notes"
   at most. Say which line it is on.
-- Wrong line and a why that does not describe the actual bug: "needs_work".
+- Wrong line and a why that does not describe the actual ${subject.noun}: "needs_work".
 
-Always say which line the bug is on and explain it in one or two sentences, so
+Always say which line the ${subject.noun} is on and explain it in one or two sentences, so
 the developer learns from a miss. No code in the prose. Keep the prose under
 120 words: this is a five-minute kata, not a code review.
 

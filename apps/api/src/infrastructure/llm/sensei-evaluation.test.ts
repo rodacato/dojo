@@ -20,7 +20,7 @@ describe('buildMessages', () => {
   it('tells the sensei a wrong tap as a fact, with the numbered code and the why', () => {
     const [message] = buildMessages({
       ...base,
-      point: { code, correctLine: 3, pointedLine: 4, why: 'The end is wrong.' },
+      point: { code, correctLine: 3, acceptedLines: [3], pointedLine: 4, why: 'The end is wrong.' },
     })
     expect(message!.content).toContain('The developer tapped line 4. The bug is on line 3, so the tap is wrong.')
     expect(message!.content).toContain('  3 |   const start = page * limit')
@@ -30,9 +30,25 @@ describe('buildMessages', () => {
   it('tells the sensei a correct tap as a fact', () => {
     const [message] = buildMessages({
       ...base,
-      point: { code, correctLine: 3, pointedLine: 3, why: 'page 1 starts at limit.' },
+      point: { code, correctLine: 3, acceptedLines: [3], pointedLine: 3, why: 'page 1 starts at limit.' },
     })
     expect(message!.content).toContain('The developer tapped line 3. That is the correct line.')
+  })
+
+  it('reads an artifact as the cause, and takes any of its accepted lines', () => {
+    const plan = 'Sort\n  ->  Seq Scan on orders o\n        Filter: (customer_id = 4821)\n        Rows Removed by Filter: 1199995\n'
+    const artifact = { code: plan, correctLine: 2, acceptedLines: [2, 3, 4], why: 'no index on customer_id', artifact: 'query-plan' as const }
+
+    const hit = buildMessages({ ...base, point: { ...artifact, pointedLine: 4 } })[0]!.content
+    expect(hit).toContain('find-the-cause kata')
+    expect(hit).toContain('reads a query plan and taps the line that shows the cause')
+    expect(hit).toContain('QUERY PLAN:\n  1 | Sort')
+    expect(hit).toContain('THE CAUSE (hidden from the developer)')
+    expect(hit).toContain('The developer tapped line 4. That is a correct line.')
+    expect(hit).not.toContain('CODE:')
+
+    const miss = buildMessages({ ...base, point: { ...artifact, pointedLine: 1 } })[0]!.content
+    expect(miss).toContain('The developer tapped line 1. The cause shows on lines 2, 3, 4, so the tap is wrong.')
   })
 
   it('keeps the code review prompt for a review kata without a point', () => {
@@ -107,7 +123,7 @@ describe('buildMessages for code, chat and whiteboard kata', () => {
   it.each([
     ['generic', { ...generic }],
     ['review', { ...base, rubric: { expectedIssues: base.rubric!.expectedIssues } }],
-    ['point', { ...base, point: { code, correctLine: 3, pointedLine: 3, why: 'x' } }],
+    ['point', { ...base, point: { code, correctLine: 3, acceptedLines: [3], pointedLine: 3, why: 'x' } }],
   ])('applies the shared grading rules to the %s prompt', (_, params) => {
     const content = buildMessages(params as BuildMessagesParams)[0]!.content
     expect(content).toContain('GRADING RULES:')

@@ -25,7 +25,11 @@ export const rubricIssueSchema = z.object({
 export const pointAnswerKeySchema = z.object({
   shape: z.literal('point'),
   line: z.number().int().positive(),
+  also: z.array(z.number().int().positive()).optional(),
 })
+/** A point kata's starter code can be one of these instead of code, named by its language. */
+export const artifactKindSchema = z.enum(['stacktrace', 'log', 'query-plan'])
+export type ArtifactKind = z.infer<typeof artifactKindSchema>
 /** The longest predicted output a learner can send. */
 export const PREDICTED_OUTPUT_MAX = 2000
 

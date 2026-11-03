@@ -86,7 +86,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       category: kata?.category,
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
       guide: kata && kata.type !== 'review' ? kata.rubric ?? undefined : undefined,
-      point: kata?.type === 'review' ? pointContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
+      point: kata?.type === 'review' ? pointContextFor(kata.starterCode, kata.rubric, pending.userResponse, kata.languages) : undefined,
       predict: kata?.type === 'review' ? predictContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
       order: kata?.type === 'review' ? orderContextFor(kata.starterCode, kata.rubric, pending.userResponse) : undefined,
     })) {

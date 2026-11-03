@@ -13,6 +13,13 @@ const ENTRIES: ChangelogEntry[] = [
   {
     date: '2026-11-03',
     phase: 'Practice',
+    title: 'Read the evidence',
+    description:
+      'Some short katas now hand you a stack trace or a query plan instead of code. Tap the line that shows the cause and say what it tells you. When more than one line points at the same cause, any of them counts.',
+  },
+  {
+    date: '2026-11-03',
+    phase: 'Practice',
     title: 'A fix has to pass',
     description:
       'Bug-fix katas now have Run tests under the editor, so you can check your fix before you send it. And a fix that fails the tests is not a fix: it gets needs work, whatever the explanation. The broken code no longer comments on its own bug.',

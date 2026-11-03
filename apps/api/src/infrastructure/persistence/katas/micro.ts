@@ -6,6 +6,8 @@ import { type SeedKata, uuidv5 } from './types'
 // against a real run in Piston (PistonAdapter.integration.test.ts). Order
 // (Parsons): starterCode holds the lines shuffled; rubric.answer.accepted lists
 // every correct order of them, and a line in none of them is a distractor.
+// Artifact (point): starterCode is a stack trace, log or query plan, named by
+// its language; rubric.answer.also lists other lines that are equally right.
 
 export const microKatas: SeedKata[] = [
   {
@@ -585,6 +587,86 @@ function indexOf(sorted: number[], target: number): number {
         ownerRole: 'Senior engineer who reviews search and pagination code for off-by-one bugs',
         ownerContext:
           'Credit a why that ties the loop condition and the update of hi to one invariant: whether hi is inclusive. "Binary search halves the array" alone does not explain either choice.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-016-artifact-stack-trace'),
+    title: 'Not the library',
+    description:
+      'Checkout fails for some customers with the trace below. Tap the line where you would start reading code, then say in two or three sentences why there and what you expect to find.',
+    duration: 5,
+    difficulty: 'easy',
+    type: 'review',
+    category: 'debugging',
+    languages: ['stacktrace'],
+    tags: ['micro', 'artifact'],
+    topics: ['root-cause-analysis', 'incident-response', 'null-handling'],
+    starterCode: `TypeError: Cannot read properties of undefined (reading 'toLowerCase')
+    at normalizeEmail (/app/node_modules/validator/lib/normalizeEmail.js:122:28)
+    at buildRecipient (/app/src/mail/recipient.ts:14:19)
+    at sendReceipt (/app/src/billing/receipts.ts:41:21)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async chargeAndNotify (/app/src/billing/checkout.ts:88:5)
+    at async /app/src/http/routes/checkout.ts:27:20
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'The first frame in your own code, not the top frame',
+          severity: 'high',
+          why: 'The top frame is a library that received undefined; a widely used library is rarely the bug. buildRecipient is the first frame under /app/src: it is where undefined was passed in, so that is where to start, then follow where the email comes from (a customer without one).',
+        },
+      ],
+      answer: { shape: 'point', line: 3 },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior backend engineer who is on call for a payments service',
+        ownerContext:
+          'Credit a why that separates library frames from application frames and reads the error as "a value arrived undefined", not "validator is broken". Starting at sendReceipt is close but skips the frame that made the call.',
+      },
+    ],
+  },
+  {
+    id: uuidv5('kata-micro-017-artifact-query-plan'),
+    title: 'Where the 400 ms go',
+    description:
+      "A customer's order history takes 400 ms to load. It shows five orders. Here is the query plan. Tap the line that shows where the time goes, then say in two or three sentences what you would change.",
+    duration: 5,
+    difficulty: 'medium',
+    type: 'review',
+    category: 'performance',
+    languages: ['query-plan'],
+    tags: ['micro', 'artifact', 'postgres'],
+    topics: ['explain-analyze', 'indexes', 'query-performance'],
+    starterCode: `Sort  (cost=21571.42..21571.43 rows=5 width=48) (actual time=412.880..412.882 rows=5 loops=1)
+  Sort Key: o.created_at DESC
+  Sort Method: quicksort  Memory: 25kB
+  ->  Nested Loop  (cost=0.29..21571.36 rows=5 width=48) (actual time=0.041..412.851 rows=5 loops=1)
+        ->  Index Scan using customers_pkey on customers c  (cost=0.29..8.31 rows=1 width=16) (actual time=0.012..0.014 rows=1 loops=1)
+              Index Cond: (id = 4821)
+        ->  Seq Scan on orders o  (cost=0.00..21563.00 rows=5 width=40) (actual time=0.025..412.829 rows=5 loops=1)
+              Filter: (customer_id = 4821)
+              Rows Removed by Filter: 1199995
+Planning Time: 0.214 ms
+Execution Time: 412.910 ms
+`,
+    rubric: {
+      expectedIssues: [
+        {
+          title: 'A sequential scan of orders to keep five rows: customer_id has no index',
+          severity: 'high',
+          why: 'Nearly all 412 ms is the Seq Scan on orders, which reads 1.2 million rows and throws away all but five. An index on orders (customer_id), or (customer_id, created_at) so the sort comes free, turns it into an index scan. The Sort and the Nested Loop only look slow because their time includes the scan.',
+        },
+      ],
+      answer: { shape: 'point', line: 7, also: [8, 9] },
+    },
+    variations: [
+      {
+        ownerRole: 'Senior engineer who reads Postgres plans for a living',
+        ownerContext:
+          'Credit a why that reads actual time per node and Rows Removed by Filter, and proposes an index on the filtered column. "Add caching" or "the sort is slow" misreads the plan: the outer nodes include the scan\'s time.',
       },
     ],
   },

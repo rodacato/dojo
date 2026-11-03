@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { composePointAnswer, isLineInCode, parsePointAnswer, pointContextFor } from './point-answer'
+import { artifactOf, composePointAnswer, isLineInCode, parsePointAnswer, pointContextFor } from './point-answer'
 
 const CODE = 'def add_tag(tag, tags=[]):\n    tags.append(tag)\n    return tags\n'
 const RUBRIC = {
@@ -22,7 +22,22 @@ describe('point answers', () => {
 
   it('gives the sensei the tapped and the correct line for a point kata', () => {
     const stored = composePointAnswer(CODE, 2, 'why')
-    expect(pointContextFor(CODE, RUBRIC, stored)).toEqual({ code: CODE, correctLine: 1, pointedLine: 2, why: 'why' })
+    expect(pointContextFor(CODE, RUBRIC, stored)).toEqual({ code: CODE, correctLine: 1, acceptedLines: [1], pointedLine: 2, why: 'why', artifact: undefined })
+  })
+
+  it('accepts every equally right line and names the artifact the kata shows', () => {
+    const rubric = { ...RUBRIC, answer: { shape: 'point' as const, line: 1, also: [3] } }
+    expect(pointContextFor(CODE, rubric, composePointAnswer(CODE, 3, 'why'), ['stacktrace'])).toMatchObject({
+      correctLine: 1,
+      acceptedLines: [1, 3],
+      artifact: 'stacktrace',
+    })
+  })
+
+  it('reads an artifact only from a known kind, never from a programming language', () => {
+    expect(artifactOf(['query-plan'])).toBe('query-plan')
+    expect(artifactOf(['typescript'])).toBeUndefined()
+    expect(artifactOf([])).toBeUndefined()
   })
 
   it('gives no point context to a review kata without an answer key, or to free text', () => {
