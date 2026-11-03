@@ -92,6 +92,14 @@ describe('buildMessages for code, chat and whiteboard kata', () => {
     expect(followUp[0]!.content).toContain('Grade at a senior bar')
   })
 
+  it('tells the sensei a failing bug fix is gated, and says nothing when it passes', () => {
+    const failing = buildMessages({ ...generic, gate: { testsPassed: false } })[0]!.content
+    expect(failing).toContain("TEST GATE (computed, not a claim):\nThe developer's fix fails the kata's tests")
+    expect(failing).toContain('The verdict is "needs_work" and this evaluation is final')
+
+    expect(buildMessages({ ...generic, gate: { testsPassed: true } })[0]!.content).not.toContain('TEST GATE')
+  })
+
   it('names no level when the session has none', () => {
     expect(buildMessages(generic)[0]!.content).not.toContain("THE DEVELOPER'S LEVEL")
   })

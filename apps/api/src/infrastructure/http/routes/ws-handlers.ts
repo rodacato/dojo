@@ -6,6 +6,7 @@ import { MAX_ATTEMPTS } from '../../../domain/practice/session'
 import { pointContextFor } from '../../../domain/practice/point-answer'
 import { predictContextFor } from '../../../domain/practice/predict-answer'
 import { orderContextFor } from '../../../domain/practice/order-answer'
+import { isBugFixKata, testsPassed, type TestGate } from '../../../domain/practice/bug-fix'
 import type { EvaluationResult, EvaluationToken } from '../../../domain/practice/values'
 import type { ExecutionResult } from '../../../domain/practice/ports'
 import { recordSenseiEvaluation } from '../../observability/prometheus'
@@ -70,7 +71,8 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
 
   pendingAttempts.delete(attemptId)
 
-  const executionContext = await runTestCode(ws, kata, pending.userResponse)
+  // A follow-up answers the sensei's question in prose: only the first attempt is code to run.
+  const run = currentSession.attempts.length === 0 ? await runTestCode(ws, kata, pending.userResponse) : undefined
 
   try {
     for await (const token of useCases.submitAttempt.execute({
@@ -79,7 +81,8 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
       ownerRole: variation?.ownerRole ?? '',
       ownerContext: variation?.ownerContext ?? '',
       kataTitle: kata?.title ?? '',
-      executionContext,
+      executionContext: run && buildExecutionContext(run),
+      gate: kata && run ? testGateFor(kata, run) : undefined,
       category: kata?.category,
       rubric: kata?.type === 'review' ? kata.rubric ?? undefined : undefined,
       guide: kata && kata.type !== 'review' ? kata.rubric ?? undefined : undefined,
@@ -132,13 +135,13 @@ export function handleReconnect(ws: WSInstance, attemptId: string) {
 }
 
 // Runs the kata's testCode (if any) through the execution queue, emitting
-// `executing` + `execution_result`, and returns the sensei context string.
-// Returns undefined when there's no testCode, an empty response, or a failure.
+// `executing` + `execution_result`. Returns undefined when there's no testCode,
+// an empty response, or a failure.
 async function runTestCode(
   ws: WSInstance,
   kata: { testCode?: string | null; languages?: string[] | null } | null | undefined,
   userResponse: string,
-): Promise<string | undefined> {
+): Promise<ExecutionResult | undefined> {
   const testCode = kata?.testCode
   if (!testCode || !userResponse.trim()) return undefined
 
@@ -150,11 +153,17 @@ async function runTestCode(
       testCode,
     })
     send(ws, { type: 'execution_result', result: execResult })
-    return buildExecutionContext(execResult)
+    return execResult
   } catch (err) {
     log.warn('ws.code_execution_failed', { err })
     return undefined
   }
+}
+
+// A sandbox that could not run the code says nothing about the fix, so it never gates.
+function testGateFor(kata: { type: string; category: string; testCode: string | null }, run: ExecutionResult): TestGate | undefined {
+  if (!isBugFixKata(kata) || run.failure === 'unavailable') return undefined
+  return { testsPassed: testsPassed(run) }
 }
 
 function buildExecutionContext(r: ExecutionResult): string {

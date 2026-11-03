@@ -131,6 +131,40 @@ describe('SubmitAttempt', () => {
     expect(llm.evaluate).toHaveBeenCalledWith(expect.objectContaining({ level: 'senior' }))
   })
 
+  it('saves and sends a failing bug fix as a final needs_work, whatever the sensei said', async () => {
+    const session = makeActiveSession()
+    const sessionRepo = makeStubSessionRepo(session)
+    const lenient: EvaluationToken = {
+      chunk: 'Nice.',
+      isFinal: true,
+      result: { verdict: 'passed', analysis: 'Nice.', topicsToReview: [], followUpQuestion: 'Why?', isFinalEvaluation: false },
+    }
+    const llm = {
+      evaluate: vi.fn().mockReturnValue(fakeEvaluationStream([lenient])),
+      generateSessionBody: vi.fn(),
+      generateSessionBodyStream: vi.fn(),
+      askSensei: vi.fn(),
+    }
+    const useCase = new SubmitAttempt({ sessionRepo, llm, eventBus: new InMemoryEventBus() })
+
+    const sent: EvaluationToken[] = []
+    for await (const token of useCase.execute({
+      sessionId: SessionId('session-1'),
+      userResponse: 'my fix',
+      ownerRole: 'Tech Lead',
+      ownerContext: 'Context',
+      kataTitle: 'Fix: Off-by-one',
+      gate: { testsPassed: false },
+    })) {
+      sent.push(token)
+    }
+
+    expect(llm.evaluate).toHaveBeenCalledWith(expect.objectContaining({ gate: { testsPassed: false } }))
+    expect(sent[0]!.result).toMatchObject({ verdict: 'needs_work', isFinalEvaluation: true, followUpQuestion: null })
+    expect(session.attempts[0]!.evaluationResult).toMatchObject({ verdict: 'needs_work', isFinalEvaluation: true })
+    expect(session.status).toBe('failed')
+  })
+
   it('saves attempt and publishes events after final token', async () => {
     const session = makeActiveSession()
     const sessionRepo = makeStubSessionRepo(session)

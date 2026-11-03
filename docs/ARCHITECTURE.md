@@ -236,6 +236,8 @@ Simple, synchronous, in-process. No infrastructure dependency. Upgradeable to Re
 ### code
 Split-panel view. Left: context and requirements. Right: code editor (no autocomplete — honor code). The sensei reviews the submitted code.
 
+A code kata with tests offers **Run tests** (`POST /sessions/:id/run`, rate limited per user), which runs the editor's code against them in Piston before submitting. Only the first attempt is run: a follow-up answers the sensei in prose. A **bug-fix kata** (`category: 'debugging'` with tests) is gated by them: a fix that fails is a final `needs_work`, told to the sensei as a fact and enforced in `SubmitAttempt` (`domain/practice/bug-fix.ts`). A sandbox that cannot run never gates. Each bug-fix kata carries a seed-only `fixCode`, and `PistonAdapter.integration.test.ts` checks that it passes the tests and the starter fails them.
+
 ### chat
 Technical roleplay. The sensei takes a role (tech lead, PM with an ambiguous requirement, a junior asking for help) and the user responds as they would in real life. Evaluated on reasoning and communication.
 

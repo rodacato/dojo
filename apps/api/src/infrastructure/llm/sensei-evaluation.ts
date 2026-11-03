@@ -3,6 +3,7 @@ import type { EvaluationToken } from '../../domain/practice/values'
 import type { PointContext } from '../../domain/practice/point-answer'
 import type { PredictContext } from '../../domain/practice/predict-answer'
 import type { OrderContext } from '../../domain/practice/order-answer'
+import type { TestGate } from '../../domain/practice/bug-fix'
 import type { LearnerLevel } from '../../domain/shared/types'
 import type { Rubric } from '@dojo/shared'
 import { EvaluationStreamParser } from './evaluation-parser'
@@ -30,6 +31,7 @@ export interface BuildMessagesParams {
   point?: PointContext
   predict?: PredictContext
   order?: OrderContext
+  gate?: TestGate
   level?: LearnerLevel
 }
 
@@ -118,6 +120,7 @@ export function buildMessages(params: BuildMessagesParams): SenseiMessage[] {
         category: params.category,
         guide: params.guide,
         testResults: params.testResults,
+        gate: params.gate,
         level: params.level,
       }),
     })

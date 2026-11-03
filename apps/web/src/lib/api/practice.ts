@@ -3,7 +3,7 @@ import { API_URL } from '../config'
 import { getToken } from '../auth-token'
 import { request, ApiError } from './client'
 import { streamSseTokens } from './sse'
-import type { DashboardData, KataFeedback, SessionWithKata, StartSessionResponse, SubmitAttemptResponse } from './types'
+import type { DashboardData, KataFeedback, SessionWithKata, StartSessionResponse, SubmitAttemptResponse, TestRun } from './types'
 
 // SSE stream of the kata-prep body — S022 Part 6. Yields plain text
 // chunks as the model produces them, then resolves when the server
@@ -70,6 +70,12 @@ export const practice = {
     request<SubmitAttemptResponse>(`/sessions/${sessionId}/attempts`, {
       method: 'POST',
       body: JSON.stringify({ userResponse: why, order }),
+    }),
+
+  runTests: (sessionId: string, code: string) =>
+    request<TestRun>(`/sessions/${sessionId}/run`, {
+      method: 'POST',
+      body: JSON.stringify({ code }),
     }),
 
   retryEvaluation: (sessionId: string) =>

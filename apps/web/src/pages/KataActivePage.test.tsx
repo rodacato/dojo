@@ -745,4 +745,28 @@ describe('KataActivePage', () => {
       expect(screen.getByRole('button', { name: 'Take out: a()' })).toBeDisabled()
     })
   })
+
+  describe('bug-fix kata', () => {
+    it('offers Run tests under the editor and says the fix has to pass them', async () => {
+      const base = makeSession()
+      getSession.mockResolvedValue(
+        makeSession({ kata: { ...base.kata, type: 'code', language: ['typescript'], starterCode: 'broken()', hasTests: true, testsGate: true } }),
+      )
+
+      renderPage('sess-1')
+
+      expect(await screen.findByRole('button', { name: 'Run tests' })).toBeEnabled()
+      expect(screen.getByText('Your fix has to pass the tests.')).toBeInTheDocument()
+    })
+
+    it('offers no Run tests on a kata without tests', async () => {
+      const base = makeSession()
+      getSession.mockResolvedValue(makeSession({ kata: { ...base.kata, type: 'code', language: ['typescript'], starterCode: 'x()' } }))
+
+      renderPage('sess-1')
+
+      await screen.findByText('solution.ts')
+      expect(screen.queryByRole('button', { name: 'Run tests' })).not.toBeInTheDocument()
+    })
+  })
 })

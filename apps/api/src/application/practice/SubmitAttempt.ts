@@ -7,6 +7,7 @@ import type { EvaluationToken } from '../../domain/practice/values'
 import type { PointContext } from '../../domain/practice/point-answer'
 import type { PredictContext } from '../../domain/practice/predict-answer'
 import type { OrderContext } from '../../domain/practice/order-answer'
+import { gatedResult, type TestGate } from '../../domain/practice/bug-fix'
 import type { Rubric } from '@dojo/shared'
 
 interface Deps {
@@ -31,6 +32,7 @@ export class SubmitAttempt {
     point?: PointContext // point kata: the line tapped vs the correct one
     predict?: PredictContext // predict kata: the output typed vs the real one
     order?: OrderContext // order kata: the lines tapped into order vs the accepted orders
+    gate?: TestGate // bug-fix kata, first attempt: whether the submitted fix passes the kata's tests
   }): AsyncIterable<EvaluationToken> {
     const session = await this.deps.sessionRepo.findById(params.sessionId)
     if (!session) throw new SessionNotFoundError(params.sessionId)
@@ -43,7 +45,7 @@ export class SubmitAttempt {
         followUpQuestion: a.evaluationResult?.followUpQuestion ?? null,
       }))
 
-    for await (const token of this.deps.llm.evaluate({
+    for await (let token of this.deps.llm.evaluate({
       ownerRole: params.ownerRole,
       ownerContext: params.ownerContext,
       kataTitle: params.kataTitle,
@@ -57,8 +59,10 @@ export class SubmitAttempt {
       point: params.point,
       predict: params.predict,
       order: params.order,
+      gate: params.gate,
       level: session.level ?? undefined,
     })) {
+      token = token.result ? { ...token, result: gatedResult(token.result, params.gate) } : token
       // Saved before the final token goes out: the client reads the session and posts feedback as soon as it lands.
       if (token.isFinal && token.result) {
         const attempt = Attempt.create({

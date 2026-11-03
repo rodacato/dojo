@@ -5,6 +5,7 @@ import { PREDICTED_OUTPUT_MAX } from '@dojo/shared'
 import type { SessionWithKata } from '../lib/api'
 import { TypeBadge, DifficultyBadge } from '../components/ui/Badge'
 import { ActiveKataActions, ANSWER_HINT_ID } from '../components/kata/ActiveKataActions'
+import { TestRunner } from '../components/kata/TestRunner'
 import { Button, buttonClasses } from '../components/ui/Button'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { FocusedHeader } from '../components/layout/FocusedHeader'
@@ -151,6 +152,8 @@ export function KataActivePage() {
             </Panel>
           ) : (
             <ResponsePanel
+              sessionId={session.id}
+              locked={submitting || timedOut}
               kata={kata}
               value={userResponse}
               onChange={changeResponse}
@@ -658,6 +661,8 @@ function OrderAnswer({
 }
 
 function ResponsePanel({
+  sessionId,
+  locked,
   kata,
   value,
   onChange,
@@ -665,6 +670,8 @@ function ResponsePanel({
   onFontChange,
   onSubmit,
 }: Readonly<{
+  sessionId: string
+  locked: boolean
   kata: SessionWithKata['kata']
   value: string
   onChange: (v: string) => void
@@ -708,6 +715,7 @@ function ResponsePanel({
           onSubmit={onSubmit}
         />
       </div>
+      {kata.hasTests && <TestRunner sessionId={sessionId} code={value} gated={!!kata.testsGate} disabled={locked} />}
     </Panel>
   )
 }

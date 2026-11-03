@@ -58,6 +58,13 @@ export interface SubmitAttemptResponse {
   attemptId: string
 }
 
+export interface TestRun {
+  passed: boolean
+  timedOut: boolean
+  unavailable: boolean
+  output: string
+}
+
 export interface AdminKataDTO {
   id: string
   title: string

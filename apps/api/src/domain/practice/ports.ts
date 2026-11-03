@@ -4,6 +4,7 @@ import type { EvaluationToken } from './values'
 import type { PointContext } from './point-answer'
 import type { PredictContext } from './predict-answer'
 import type { OrderContext } from './order-answer'
+import type { TestGate } from './bug-fix'
 import type { Rubric } from '@dojo/shared'
 
 export interface ConversationTurn {
@@ -39,6 +40,7 @@ export interface LLMPort {
     point?: PointContext
     predict?: PredictContext
     order?: OrderContext
+    gate?: TestGate
     level?: LearnerLevel
   }): AsyncIterable<EvaluationToken>
 

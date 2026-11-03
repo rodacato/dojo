@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-11-03',
+    phase: 'Practice',
+    title: 'A fix has to pass',
+    description:
+      'Bug-fix katas now have Run tests under the editor, so you can check your fix before you send it. And a fix that fails the tests is not a fix: it gets needs work, whatever the explanation. The broken code no longer comments on its own bug.',
+  },
+  {
     date: '2026-11-02',
     phase: 'Practice',
     title: 'Put the code in order',
