@@ -240,6 +240,27 @@ describe('handleSubmit — streaming happy path', () => {
     await handleSubmit(ws2, 'attempt-1', 'session-1', 'user-1')
     expect(parsed(ws2)).toEqual([{ type: 'error', code: 'ATTEMPT_NOT_FOUND' }])
   })
+
+  it('evaluates once when the same attempt is submitted twice at the same time', async () => {
+    primeSubmit()
+    vi.mocked(useCases.submitAttempt.execute).mockImplementation(() => stream() as never)
+    const second = mockWs()
+
+    await Promise.all([handleSubmit(mockWs(), 'attempt-1', 'session-1', 'user-1'), handleSubmit(second, 'attempt-1', 'session-1', 'user-1')])
+
+    expect(useCases.submitAttempt.execute).toHaveBeenCalledTimes(1)
+    expect(parsed(second)).toEqual([{ type: 'error', code: 'ATTEMPT_NOT_FOUND' }])
+  })
+
+  it('refuses an attempt that belongs to another session than the socket’s', async () => {
+    primeSubmit()
+    const ws = mockWs()
+
+    await handleSubmit(ws, 'attempt-1', 'session-2', 'user-1')
+
+    expect(parsed(ws)).toEqual([{ type: 'error', code: 'ATTEMPT_NOT_FOUND' }])
+    expect(useCases.submitAttempt.execute).not.toHaveBeenCalled()
+  })
 })
 
 describe('handleSubmit — the hidden rubric', () => {

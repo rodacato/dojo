@@ -41,12 +41,14 @@ export function send(ws: WSInstance, msg: ServerMessage): void {
 }
 
 // ── Handle submit ─────────────────────────────────────────────────────────────
-export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string, _userId: string) {
+export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId: string, userId: string) {
   const pending = pendingAttempts.get(attemptId)
-  if (!pending) {
+  if (!pending || pending.sessionId !== sessionId) {
     send(ws, { type: 'error', code: 'ATTEMPT_NOT_FOUND' })
     return
   }
+  // Claimed before the first await, so a concurrent duplicate submit finds nothing.
+  pendingAttempts.delete(attemptId)
 
   // Refresh session to get current attempt count
   const currentSession = await useCases.getSession.execute(SessionId(sessionId))
@@ -68,8 +70,6 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
   // Initialize stream cache for reconnect support (ADR-009)
   const cache: StreamCache = { ws, tokens: [], result: null, complete: false, isFinal: false }
   streamCache.set(attemptId, cache)
-
-  pendingAttempts.delete(attemptId)
 
   // A follow-up answers the sensei's question in prose: only the first attempt is code to run.
   const run = currentSession.attempts.length === 0 ? await runTestCode(ws, kata, pending.userResponse) : undefined
@@ -94,7 +94,7 @@ export async function handleSubmit(ws: WSInstance, attemptId: string, sessionId:
     }
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : 'Unknown LLM error'
-    log.error('ws.llm_stream_failed', { userId: _userId, sessionId: pending.sessionId, attemptId, err })
+    log.error('ws.llm_stream_failed', { userId, sessionId: pending.sessionId, attemptId, err })
     await useCases.submitAttempt.recordIncompleteAttempt({
       attemptId,
       sessionId: pending.sessionId,
