@@ -239,20 +239,24 @@ export function EngawaPage() {
             Ask the sensei
           </button>
         )}
-        <button
-          type="button"
-          onClick={handleRun}
-          disabled={runDisabled}
-          className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-on-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-5 md:px-3 h-11 md:h-7 inline-flex items-center gap-1.5 rounded-sm"
-        >
-          {run.status === 'running' ? (
-            <>
-              Running{' '}<span className="animate-cursor leading-none" aria-hidden>_</span>
-            </>
-          ) : (
-            <>▶ Run</>
-          )}
-        </button>
+        {user ? (
+          <button
+            type="button"
+            onClick={handleRun}
+            disabled={runDisabled}
+            className="font-mono text-xs tracking-[0.04em] uppercase bg-accent text-on-accent hover:bg-accent/90 disabled:opacity-40 disabled:cursor-not-allowed transition-colors px-5 md:px-3 h-11 md:h-7 inline-flex items-center gap-1.5 rounded-sm"
+          >
+            {run.status === 'running' ? (
+              <>
+                Running{' '}<span className="animate-cursor leading-none" aria-hidden>_</span>
+              </>
+            ) : (
+              <>▶ Run</>
+            )}
+          </button>
+        ) : (
+          <span className="font-mono text-xs text-secondary">sign in to run code</span>
+        )}
       </div>
     </>
   )
@@ -371,7 +375,7 @@ export function EngawaPage() {
           No-op when VITE_TURNSTILE_SITE_KEY is empty; the API middleware
           must also be disabled in that case. Kept in a slim slot above
           the footer so the challenge UI is reachable when it appears. */}
-      {TURNSTILE_SITE_KEY && (
+      {user && TURNSTILE_SITE_KEY && (
         <div className="shrink-0 px-4 py-1 empty:hidden">
           <TurnstileWidget
             ref={turnstileRef}
@@ -569,6 +573,7 @@ function describeAskError(err: unknown): string {
 }
 
 function describeApiError(err: ApiError): string {
+  if (err.status === 401) return 'Your session ended. Sign in again to run code.'
   switch (err.message) {
     case 'rate_limited':
       return 'You are running code too quickly. Wait a moment and try again.'

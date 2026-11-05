@@ -70,7 +70,7 @@ To run the sensei on your own Claude or ChatGPT subscription instead of API cred
 
 Sign-up is by invitation, and the invitations belong to whoever runs the instance — not to the dojo project. That operator sets `CREATOR_GITHUB_ID` to their own numeric GitHub id: that account signs in without an invitation, is the only one with `/admin`, and issues invitation links from `/admin/invitations`. Everyone else needs one of those links; once in, returning users are always allowed.
 
-Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up. Anonymous visitors can still use the Engawa playground.
+Leave `CREATOR_GITHUB_ID` empty and nobody new can sign up.
 
 ### Scrolls
 
@@ -148,7 +148,7 @@ If you cheat yourself here, you cheat yourself everywhere.
 | **Milestones** | One-time recognitions earned at specific moments — first kata, polyglot, consistency streaks. Surfaced alongside the belt on `/belts`. Sensei Approved is retired: it rewarded a favorable verdict, so it is no longer earned and shows as Legacy only to those who have it |
 | **Practitioner** | A pixel avatar on public profiles and the result receipt, dressed with pieces earned by showing up: practice days, a return after time away, seasons. Any verdict counts. `GET /recognition/practitioner` returns the look, rank and every piece with its progress; `PUT /recognition/practitioner/look` saves a look and rejects a piece not yet earned. Both require sign-in. The public profile (`GET /u/:username`) shows the practitioner with its earned pieces, never progress toward the rest |
 | **Settings** | Standing preferences at `/settings`. `GET /preferences` returns them and `PUT /preferences` writes only the fields present in the body, so `email: null` clears the address and an omitted field stays as it was. Both require sign-in |
-| **Engawa** | Anonymous code playground at `/engawa` — the porch between inside and outside. Try a snippet without signing in |
+| **Engawa** | Code playground at `/engawa` — the porch between inside and outside. Run a snippet outside a kata; signed in only, since the sandbox is privileged ([ADR 035](docs/adr/035-playground-requires-sign-in.md)) |
 | **Kumite** _(soon)_ | Reserved route for the planned 1v1 sparring feature. Today it renders an honest "coming soon" panel |
 | **Error view** | Every unhandled error lands in Postgres and is visible at `/admin/errors` — no external tracker required. Sentry is opt-in ([ADR 017](docs/adr/017-error-reporting-port.md)) |
 

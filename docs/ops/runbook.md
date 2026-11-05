@@ -75,7 +75,7 @@ secret in the GitHub Environment, then run the Deploy workflow ([deploy.md](depl
 
 | Secret | What happens when it changes |
 |---|---|
-| `SESSION_SECRET` | Used to hash anonymous playground session ids for rate-limit buckets and quota counting. Rotating it resets those counters. Signed-in sessions are database rows and stay valid |
+| `SESSION_SECRET` | Peppers the IP and browser-session hashes in the playground run log, which also links a playground visit to a later kata start. Rotating it breaks that link for older rows. Signed-in sessions are database rows and stay valid |
 | `GITHUB_CLIENT_SECRET` | Generate a new one on the GitHub OAuth app first. Sign-in fails between the old one being revoked and the deploy finishing |
 | `LLM_API_KEY` | Evaluations fail until the new key is deployed |
 | `CRON_SECRET`, `METRICS_TOKEN` | Whatever calls `/cron/*` or scrapes `/metrics` has to be updated at the same time |

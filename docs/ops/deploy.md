@@ -56,7 +56,7 @@ Settings → Environments → `production`. Every name below is read by the depl
 | `METRICS_ENABLED` | var | no | See [Metrics](observability.md#metrics-prometheus) |
 | `METRICS_TOKEN` | secret | no | Bearer for `/metrics` |
 | `SMOKE_AUTH_TOKEN` | secret | no | Session token for the signed-in specs of the nightly smoke (`cd-smoke.yml`). Sessions last 30 days, so it has to be reissued monthly; unset skips those specs |
-| `SMOKE_PUBLIC_USERNAME`, `SMOKE_USE_MOCK_LLM`, `SMOKE_PLAYGROUND_ENABLED` | var | no | Opt-in smoke specs. The smoke reads `APP_HOST` and `API_HOST` for its targets |
+| `SMOKE_PUBLIC_USERNAME`, `SMOKE_USE_MOCK_LLM` | var | no | Opt-in smoke specs. The smoke reads `APP_HOST` and `API_HOST` for its targets |
 
 Boolean variables take `true`/`1` or `false`/`0`. Any other value stops the API at boot, so the
 deploy fails instead of shipping a flag that picked a side on its own.

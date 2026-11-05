@@ -80,10 +80,10 @@ The API serves JSON only and sets none of these; they matter for the web origin.
 
 Rate limiting is not optional — every API request potentially triggers an LLM call that costs money. An unprotected endpoint is a financial attack surface, not just a DoS concern.
 
-What exists today ([apps/api/src/infrastructure/http/middleware/rateLimiter.ts](apps/api/src/infrastructure/http/middleware/rateLimiter.ts)), all per client IP:
-- every route: 200 per 15 minutes
-- `/auth/*`: 10 per 15 minutes
-- scroll code execution (`SCROLL_EXEC_USER_PER_MINUTE`) and the public playground (`PLAYGROUND_RATE_LIMIT_*`): per-minute and per-day buckets, tunable by env var
+What exists today:
+- every route: 200 per 15 minutes per client IP ([rateLimiter.ts](apps/api/src/infrastructure/http/middleware/rateLimiter.ts))
+- `/auth/*`: 10 per 15 minutes per client IP
+- scroll code execution (`SCROLL_EXEC_USER_PER_MINUTE`) and playground runs (`PLAYGROUND_RATE_LIMIT_AUTHED_*`): per signed-in user, per-minute and per-day buckets, tunable by env var. Neither runs code for anonymous visitors ([ADR 035](docs/adr/035-playground-requires-sign-in.md))
 - scroll progress writes and error reports: fixed per-minute limits
 
 A session accepts at most 2 attempts (`MAX_ATTEMPTS` in the session aggregate), which bounds the sensei calls a single kata can cost. Playground ask-sensei has a per-user daily quota (`PLAYGROUND_ASK_SENSEI_DAILY_QUOTA`).

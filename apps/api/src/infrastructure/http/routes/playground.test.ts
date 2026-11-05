@@ -6,7 +6,7 @@ import type { AppEnv } from '../app-env'
 
 // ---------------------------------------------------------------------------
 // Hoisted bindings — the mock factories below close over these so the route
-// grabs the mocked deps. authState drives the optionalAuth/requireAuth gate;
+// grabs the mocked deps. authState drives the requireAuth gate;
 // the rest stand in for the container use cases, drizzle client, config and
 // metrics emitter.
 // ---------------------------------------------------------------------------
@@ -74,15 +74,8 @@ vi.mock('drizzle-orm', async (importOriginal) => {
   return { ...actual, eq: vi.fn(actual.eq), and: vi.fn(actual.and), gte: vi.fn(actual.gte) }
 })
 
-// Auth boundary. optionalAuth sets c.get('user') only when authed; requireAuth
-// throws the same 401 HTTPException the real middleware does so onError maps it.
+// Throws the same 401 HTTPException as the real middleware, so onError maps it.
 vi.mock('../middleware/auth', () => ({
-  optionalAuth: async (c: { set: (k: string, v: unknown) => void }, next: () => Promise<void>) => {
-    if (authState.mode === 'authed') {
-      c.set('user', { id: 'user-1' } as AppEnv['Variables']['user'])
-    }
-    await next()
-  },
   requireAuth: async (c: { set: (k: string, v: unknown) => void }, next: () => Promise<void>) => {
     if (authState.mode !== 'authed') {
       throw new HTTPException(401, { message: 'Authentication required' })
@@ -96,10 +89,6 @@ vi.mock('../middleware/auth', () => ({
 // real config at module load and call external limiters / network — pass them
 // through so the run handler's own logic is what we test, in isolation.
 vi.mock('../middleware/playground-rate-limiters', () => ({
-  playgroundAnonIpMinuteLimiter: passthrough,
-  playgroundAnonIpDayLimiter: passthrough,
-  playgroundSessionMinuteLimiter: passthrough,
-  playgroundSessionDayLimiter: passthrough,
   playgroundAuthedUserMinuteLimiter: passthrough,
   playgroundAuthedUserDayLimiter: passthrough,
 }))
@@ -169,6 +158,17 @@ beforeEach(() => {
 // POST /engawa/run
 // ===========================================================================
 describe('POST /engawa/run', () => {
+  beforeEach(() => {
+    authState.mode = 'authed'
+  })
+
+  it('returns 401 for an anonymous request and never reaches the sandbox', async () => {
+    authState.mode = 'anon'
+    const res = await post('/engawa/run', VALID_RUN)
+    expect(res.status).toBe(401)
+    expect(enqueueRun).not.toHaveBeenCalled()
+  })
+
   it('returns the execution result shape on a valid python run', async () => {
     const res = await post('/engawa/run', VALID_RUN)
     expect(res.status).toBe(200)
@@ -239,7 +239,7 @@ describe('POST /engawa/run', () => {
     expect(first.ipHash).toBe(second.ipHash)
   })
 
-  it('emits a playground_run metric with authed=false for anonymous traffic', async () => {
+  it('emits a playground_run metric with the execution result', async () => {
     await post('/engawa/run', VALID_RUN)
     expect(trackEvent).toHaveBeenCalledWith('playground_run', expect.objectContaining({
       language: 'python',
@@ -247,14 +247,8 @@ describe('POST /engawa/run', () => {
       exitCode: 0,
       runtimeMs: 42,
       timedOut: false,
-      authed: false,
+      authed: true,
     }))
-  })
-
-  it('emits authed=true in the metric when the request is authenticated', async () => {
-    authState.mode = 'authed'
-    await post('/engawa/run', VALID_RUN)
-    expect(trackEvent).toHaveBeenCalledWith('playground_run', expect.objectContaining({ authed: true }))
   })
 
   it('returns 404 when the console feature flag is disabled', async () => {
