@@ -166,6 +166,13 @@ describe('EngawaPage', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('never offers an anonymous visitor a way to run code', () => {
+    renderAt('/engawa/python')
+
+    expect(screen.queryByRole('button', { name: /Run/ })).not.toBeInTheDocument()
+    expect(screen.getByText('sign in to run code')).toBeInTheDocument()
+  })
+
   it('shows authed chrome instead: no sign-in, kata CTA points at /katas, sensei button present', () => {
     asUser()
     renderAt('/engawa')
@@ -189,6 +196,7 @@ describe('EngawaPage', () => {
       }),
     )
 
+    asUser()
     renderAt('/engawa/python')
 
     // Idle pane copy before any run (rendered in both panes).
@@ -220,6 +228,7 @@ describe('EngawaPage', () => {
     const u = userEvent.setup()
     mockedRun.mockRejectedValue(new ApiError(429, 'rate_limited'))
 
+    asUser()
     renderAt('/engawa')
 
     await u.click(screen.getByRole('button', { name: /Run/ }))
@@ -241,6 +250,7 @@ describe('EngawaPage', () => {
     const u = userEvent.setup()
     mockedRun.mockResolvedValue(runResult({ stderr: 'boom', exitCode: 2 }))
 
+    asUser()
     renderAt('/engawa')
 
     await u.click(screen.getByRole('button', { name: /Run/ }))
@@ -252,6 +262,7 @@ describe('EngawaPage', () => {
     const u = userEvent.setup()
     mockedRun.mockResolvedValue(runResult({ stdout: 'x', exitCode: 0 }))
 
+    asUser()
     renderAt('/engawa/typescript')
     expect(editor()).toHaveValue(
       'const greeting: string = "dojo_"\nconsole.log(greeting)\n',

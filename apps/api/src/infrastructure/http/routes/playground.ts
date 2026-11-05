@@ -9,29 +9,20 @@ import { llm, executionQueue } from '../../container'
 import { trackEvent } from '../../observability/metrics'
 import { db } from '../../persistence/drizzle/client'
 import { llmRequestsLog, playgroundRuns } from '../../persistence/drizzle/schema'
-import { optionalAuth, requireAuth } from '../middleware/auth'
+import { requireAuth } from '../middleware/auth'
 import { playgroundGlobalQuotaMiddleware } from '../middleware/playground-quota'
-import {
-  playgroundAnonIpDayLimiter,
-  playgroundAnonIpMinuteLimiter,
-  playgroundAuthedUserDayLimiter,
-  playgroundAuthedUserMinuteLimiter,
-  playgroundSessionDayLimiter,
-  playgroundSessionMinuteLimiter,
-} from '../middleware/playground-rate-limiters'
+import { playgroundAuthedUserDayLimiter, playgroundAuthedUserMinuteLimiter } from '../middleware/playground-rate-limiters'
 import { playgroundTurnstileMiddleware } from '../middleware/playground-turnstile'
 import type { AppEnv } from '../app-env'
 import { log } from '../../observability/logger'
 
-// Every Piston language we want anonymous visitors to be able to run.
+// Every Piston language the playground runs.
 // Narrower than the full adapter LANGUAGE_MAP — javascript (vanilla)
 // and the dom-iframe paths do not belong here.
 const PLAYGROUND_LANGUAGE_WHITELIST = new Set(['python', 'typescript', 'go', 'ruby', 'rust', 'sql'])
 
-// Browser-session cookie (NOT auth). Anonymous identifier, regenerated
-// per browser, used by the per-session rate limiter + burst detection.
-// Signed is unnecessary — we hash the value before persisting and we
-// only use it to correlate requests from the same browser.
+// Browser-session cookie (NOT auth): correlates a browser's runs in
+// playground_runs and its later kata start. Hashed before persisting.
 const SESSION_COOKIE = 'dojo_playground_session'
 const SESSION_COOKIE_MAX_AGE_SECONDS = 24 * 60 * 60
 
@@ -72,27 +63,9 @@ async function ensurePlaygroundSession(c: Context<AppEnv>, next: Next): Promise<
   c.set('playgroundSessionId', sessionId)
   await next()
 }
-// Abuse-stack chain (spec 027 §4.5 — all four layers in place):
-//   Layer 2 (per-IP RL)   — playgroundAnonIp*Limiter (anon only)
-//                            + playgroundAuthedUser*Limiter (authed only)
-//   Layer 3 (per-session) — playgroundSession*Limiter (anon only)
-//   Layer 1 (Turnstile)   — playgroundTurnstileMiddleware (no-op until
-//                            TURNSTILE_SECRET_KEY is set)
-//   Layer 4 (global)      — playgroundGlobalQuotaMiddleware (all traffic)
-//
-// Order deviates from the spec-numbered layers for cost efficiency:
-// rate limiters first (fast, in-memory) drop scrapers before we pay a
-// Turnstile siteverify network call; Turnstile then drops invalid
-// tokens before we pay a DB query for the global quota.
-//
-// Mounted with separate .use() calls because Hono's .post() overloads
-// cap out around 8 arguments and the chain is deeper than that.
+// Signed-in only (ADR 035); the rest runs cheapest first: in-memory limits, Turnstile, the quota's DB query.
 playgroundRoutes.use('/engawa/run', ensurePlaygroundSession)
-playgroundRoutes.use('/engawa/run', optionalAuth)
-playgroundRoutes.use('/engawa/run', playgroundAnonIpMinuteLimiter)
-playgroundRoutes.use('/engawa/run', playgroundAnonIpDayLimiter)
-playgroundRoutes.use('/engawa/run', playgroundSessionMinuteLimiter)
-playgroundRoutes.use('/engawa/run', playgroundSessionDayLimiter)
+playgroundRoutes.use('/engawa/run', requireAuth)
 playgroundRoutes.use('/engawa/run', playgroundAuthedUserMinuteLimiter)
 playgroundRoutes.use('/engawa/run', playgroundAuthedUserDayLimiter)
 playgroundRoutes.use('/engawa/run', playgroundTurnstileMiddleware)

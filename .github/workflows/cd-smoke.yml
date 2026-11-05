@@ -69,8 +69,6 @@ jobs:
           SMOKE_PUBLIC_USERNAME: ${{ vars.SMOKE_PUBLIC_USERNAME }}
           # '1' only on a target whose API runs LLM_ADAPTER_FORMAT=mock.
           SMOKE_USE_MOCK_LLM: ${{ vars.SMOKE_USE_MOCK_LLM }}
-          # '1' only where Turnstile uses Cloudflare's always-passes test key; prod must leave it unset.
-          SMOKE_PLAYGROUND_ENABLED: ${{ vars.SMOKE_PLAYGROUND_ENABLED }}
 
       - name: Upload traces on failure
         if: failure()

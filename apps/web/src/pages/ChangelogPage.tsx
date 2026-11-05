@@ -11,6 +11,13 @@ interface ChangelogEntry {
 
 const ENTRIES: ChangelogEntry[] = [
   {
+    date: '2026-11-05',
+    phase: 'Self-hosted',
+    title: 'The playground runs code for members only',
+    description:
+      'Engawa used to run code for anyone, signed in or not, on a sandbox that shares its host with your data. Running a snippet now needs a sign-in. Visitors still see the editor.',
+  },
+  {
     date: '2026-11-03',
     phase: 'Practice',
     title: 'Every kata counts toward your belt',

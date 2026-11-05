@@ -10,6 +10,15 @@ const CORS = {
   'access-control-allow-methods': 'GET, POST, OPTIONS',
 }
 
+const MOCK_USER = {
+  id: 'user-1',
+  username: 'testdev',
+  email: 'test@example.com',
+  avatarUrl: 'https://example.com/avatar.png',
+  role: 'user',
+  createdAt: '2025-01-01T00:00:00.000Z',
+}
+
 // Mirrors RUNTIMES in EngawaPage.tsx: the language the picker offers and the version it pins.
 const LANGUAGES = [
   { language: 'typescript', version: '5.0.3' },
@@ -24,7 +33,7 @@ test.describe('Engawa playground — every language', () => {
   for (const { language, version } of LANGUAGES) {
     test(`${language}: picker updates the URL and Run reaches /engawa/run with ${version}`, async ({ page }) => {
       await page.route(`${API_BASE}/auth/me`, (route) =>
-        route.fulfill({ status: 401, headers: CORS, contentType: 'application/json', body: '{"error":"Unauthorized"}' }),
+        route.fulfill({ status: 200, headers: CORS, contentType: 'application/json', body: JSON.stringify(MOCK_USER) }),
       )
 
       const runBodies: Array<{ language: string; version: string }> = []
@@ -42,6 +51,7 @@ test.describe('Engawa playground — every language', () => {
         })
       })
 
+      await page.addInitScript(() => localStorage.setItem('dojo_token', 'fake-token'))
       await page.goto('/engawa')
       await page.getByLabel('Language').selectOption(language)
 

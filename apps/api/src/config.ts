@@ -53,11 +53,6 @@ export const envSchema = z.object({
   SENTRY_ENVIRONMENT: z.string().default(''), // defaults to NODE_ENV after parse
   SENTRY_TRACES_SAMPLE_RATE: z.coerce.number().min(0).max(1).default(0),
   SENTRY_RELEASE: z.string().default(''),
-  // Public playground console — PRD 029, spec 027 Part 4. Off by default.
-  // When on, exposes anonymous code execution at POST /playground/run.
-  // The four-layer abuse stack (Turnstile + per-IP RL + per-session RL
-  // + global daily quota) arrives in subsequent commits — do not flip
-  // this flag in prod before they all land.
   FF_PLAYGROUND_CONSOLE_ENABLED: envFlag(false),
   // Stream the kata-prep body via SSE instead of the 2s polling path
   // (S022 Part 6). When on, POST /sessions stops kicking off the
@@ -74,16 +69,9 @@ export const envSchema = z.object({
   // Daily ceiling for ask-sensei requests per authenticated user. Hard
   // cap, server-side. Counted against the `llm_requests_log` table.
   PLAYGROUND_ASK_SENSEI_DAILY_QUOTA: z.coerce.number().int().min(1).default(30),
-  // Playground rate-limit ceilings (spec 027 §4.5). Anonymous traffic is
-  // bounded by per-IP + per-session buckets; authenticated users bypass
-  // the IP bucket (signed in, accountable) and are bounded per-user.
-  PLAYGROUND_RATE_LIMIT_ANON_PER_MIN: z.coerce.number().int().min(1).default(10),
-  PLAYGROUND_RATE_LIMIT_ANON_PER_DAY: z.coerce.number().int().min(1).default(100),
   PLAYGROUND_RATE_LIMIT_AUTHED_PER_MIN: z.coerce.number().int().min(1).default(60),
   PLAYGROUND_RATE_LIMIT_AUTHED_PER_DAY: z.coerce.number().int().min(1).default(1000),
-  // Global ceiling across all playground traffic (anon + authed). Separate
-  // bucket from kata — hitting it returns 503 from /playground/run
-  // only. Reset at UTC midnight.
+  // Playground-only bucket, apart from kata runs; resets at UTC midnight.
   PLAYGROUND_DAILY_QUOTA_GLOBAL: z.coerce.number().int().min(1).default(5000),
   // Cloudflare Turnstile — Layer 1 of the playground abuse stack. When
   // empty the middleware is a no-op (dev mode). Set both values in prod
