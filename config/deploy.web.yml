@@ -51,9 +51,10 @@ builder:
     VITE_SENTRY_ENVIRONMENT: "<%= ENV.fetch("VITE_SENTRY_ENVIRONMENT", "production") %>"
     VITE_SENTRY_RELEASE: "<%= ENV.fetch("VITE_SENTRY_RELEASE", "") %>"
     VITE_TURNSTILE_SITE_KEY: "<%= ENV.fetch("TURNSTILE_SITE_KEY", "") %>"
-    SENTRY_AUTH_TOKEN: "<%= ENV.fetch("SENTRY_AUTH_TOKEN", "") %>"
     SENTRY_ORG: "<%= ENV.fetch("SENTRY_ORG", "") %>"
     SENTRY_PROJECT: "<%= ENV.fetch("SENTRY_PROJECT", "") %>"
+  secrets:
+    - SENTRY_AUTH_TOKEN
   cache:
     type: gha
 
