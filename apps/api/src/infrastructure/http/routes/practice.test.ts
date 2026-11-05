@@ -913,6 +913,21 @@ describe('POST /sessions/:id/attempts', () => {
     expect(await res.json()).toEqual({ error: 'Invalid request body' })
   })
 
+  it('returns 400 for an answer over the 64 KB cap, before reading the session', async () => {
+    authState.user = authedUser()
+    const res = await submit({ userResponse: 'x'.repeat(64 * 1024 + 1) })
+    expect(res.status).toBe(400)
+    expect(getSession).not.toHaveBeenCalled()
+  })
+
+  it('returns 413 for a body over 128 KB, before reading the session', async () => {
+    authState.user = authedUser()
+    const res = await submit({ userResponse: 'x'.repeat(128 * 1024 + 1) })
+    expect(res.status).toBe(413)
+    expect(await res.json()).toEqual({ error: 'payload_too_large' })
+    expect(getSession).not.toHaveBeenCalled()
+  })
+
   it('returns 404 when the session is missing', async () => {
     authState.user = authedUser()
     getSession.mockResolvedValue(null)
