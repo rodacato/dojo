@@ -401,8 +401,12 @@ practiceRoutes.get('/sessions/:id/body-stream', requireAuth, uuidParam('id', { e
 // POST /sessions/:id/attempts
 // ---------------------------------------------------------------------------
 
+// A first attempt is the code that /run executes, so both share one size cap.
+const CODE_MAX = 64 * 1024
+const answerBodyLimit = bodyLimit({ maxSize: 128 * 1024, onError: (c) => c.json({ error: 'payload_too_large' }, 413) })
+
 const submitAttemptSchema = z.object({
-  userResponse: z.string().min(1),
+  userResponse: z.string().min(1).max(CODE_MAX),
   pointedLine: z.number().int().positive().optional(),
   predictedOutput: z.string().optional(),
   order: z.array(z.number().int()).max(200).optional(),
@@ -430,7 +434,7 @@ function shapedResponse(kata: { starterCode: string | null; rubric: Rubric | nul
   }
 }
 
-practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
+practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { error: 'Session not found' }), answerBodyLimit, async (c) => {
   const user = c.get('user') as { id: string }
   const sessionId = c.req.param('id')!
 
@@ -467,11 +471,9 @@ practiceRoutes.post('/sessions/:id/attempts', requireAuth, uuidParam('id', { err
 // ---------------------------------------------------------------------------
 
 const RUN_OUTPUT_MAX = 4000
-const runSchema = z.object({ code: z.string().min(1).max(64 * 1024) })
+const runSchema = z.object({ code: z.string().min(1).max(CODE_MAX) })
 
-const runBodyLimit = bodyLimit({ maxSize: 128 * 1024, onError: (c) => c.json({ error: 'payload_too_large' }, 413) })
-
-practiceRoutes.post('/sessions/:id/run', requireAuth, uuidParam('id', { error: 'Session not found' }), kataRunLimiter, runBodyLimit, async (c) => {
+practiceRoutes.post('/sessions/:id/run', requireAuth, uuidParam('id', { error: 'Session not found' }), kataRunLimiter, answerBodyLimit, async (c) => {
   const user = c.get('user') as { id: string }
   const parsed = runSchema.safeParse(await c.req.json().catch(() => null))
   if (!parsed.success) return c.json({ error: 'Invalid request body' }, 400)
