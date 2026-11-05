@@ -34,6 +34,7 @@ jobs:
     name: Deployed smoke (${{ inputs.environment || 'prod' }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    environment: ${{ inputs.environment == 'staging' && 'staging' || 'production' }}
 
     steps:
       - name: Checkout
@@ -62,20 +63,14 @@ jobs:
         run: pnpm --filter=@dojo/e2e test:deployed
         env:
           CI: 'true'
-          SMOKE_BASE_URL: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_BASE_URL || secrets.SMOKE_STAGING_BASE_URL }}
-          SMOKE_API_URL: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_API_URL || secrets.SMOKE_STAGING_API_URL }}
-          SMOKE_AUTH_TOKEN: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_AUTH_TOKEN || secrets.SMOKE_STAGING_AUTH_TOKEN }}
-          SMOKE_PUBLIC_USERNAME: ${{ (inputs.environment || 'prod') == 'prod' && secrets.SMOKE_PROD_PUBLIC_USERNAME || secrets.SMOKE_STAGING_PUBLIC_USERNAME }}
-          # Set to '1' on a target whose API runs LLM_ADAPTER_FORMAT=mock,
-          # so the complete-kata smoke can run without burning tokens or
-          # depending on a real model's latency. Off by default.
-          SMOKE_USE_MOCK_LLM: ${{ (inputs.environment || 'prod') == 'prod' && vars.SMOKE_PROD_USE_MOCK_LLM || vars.SMOKE_STAGING_USE_MOCK_LLM }}
-          # Set to '1' on a target whose Turnstile is configured with the
-          # Cloudflare dummy "always-passes" secret key, so the playground
-          # anon-run smoke can submit the dummy response token without
-          # being blocked by Layer 1. Off by default — prod with a real
-          # Turnstile secret key MUST leave this unset.
-          SMOKE_PLAYGROUND_ENABLED: ${{ (inputs.environment || 'prod') == 'prod' && vars.SMOKE_PROD_PLAYGROUND_ENABLED || vars.SMOKE_STAGING_PLAYGROUND_ENABLED }}
+          SMOKE_BASE_URL: https://${{ vars.APP_HOST }}
+          SMOKE_API_URL: https://${{ vars.API_HOST }}
+          SMOKE_AUTH_TOKEN: ${{ secrets.SMOKE_AUTH_TOKEN }}
+          SMOKE_PUBLIC_USERNAME: ${{ vars.SMOKE_PUBLIC_USERNAME }}
+          # '1' only on a target whose API runs LLM_ADAPTER_FORMAT=mock.
+          SMOKE_USE_MOCK_LLM: ${{ vars.SMOKE_USE_MOCK_LLM }}
+          # '1' only where Turnstile uses Cloudflare's always-passes test key; prod must leave it unset.
+          SMOKE_PLAYGROUND_ENABLED: ${{ vars.SMOKE_PLAYGROUND_ENABLED }}
 
       - name: Upload traces on failure
         if: failure()
