@@ -55,7 +55,7 @@ Expert panel output must end with: **recommended option, key risks, fallback/rol
 | Source | Purpose |
 |---|---|
 | [docs/README.md](docs/README.md) | Documentation map — entry point, lifecycle organization |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Direction, phases, and the spec / PRD / ADR history |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Direction, what is built, and what dojo will not do |
 | [GitHub issues and milestones](https://github.com/rodacato/dojo/issues) | Work state — what is planned, in progress and done. See [Tracking Work](docs/WORKFLOW.md#tracking-work) |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | DDD model, bounded contexts, ports, events |
 | [docs/WORKFLOW.md](docs/WORKFLOW.md) | Workflow conventions, playbooks, doc sync rules |
