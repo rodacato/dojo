@@ -16,7 +16,7 @@ Make the dojo language coherent end-to-end — routes, nav, code, brand voice, v
 
 - [PRD-030](030-dojo-terminology-routes.md) — language pass, Option A locked
 - [PRD-031](031-belt-progression-rubric.md) — belt rubric, Option C locked
-- Hard carry-forwards from [sprints/current.md](../sprints/current.md):
+- Hard carry-forwards from [sprints/current.md](../../sprints/current.md):
   - First friend invite dispatch (humans-only; no sprint code blocker)
   - Smoke-suite staging environment
 
@@ -134,7 +134,7 @@ If running long after day 7, **cut visual polish before cutting the code rename 
 - [ ] All five route renames live (old routes 404)
 - [ ] All domain code renames merged; `grep -r "Exercise\|Course\|Badge" apps/api/src/domain apps/api/src/application` returns zero matches outside DB mapping layers
 - [ ] `/belts` page shows the user's real current belt computed from session history
-- [ ] Topic cluster helper covers every topic in [packages/shared/src/topics.ts](../../packages/shared/src/topics.ts) (test enforced)
+- [ ] Topic cluster helper covers every topic in [packages/shared/src/topics.ts](../../../packages/shared/src/topics.ts) (test enforced)
 - [ ] Sensei calibration test passes (verdict-distribution drift ≤ ±10 points per difficulty bucket)
 - [ ] `/kumite` placeholder renders, links from nowhere except direct URL access for now
 - [ ] `BRANDING.md` glossary published
@@ -149,5 +149,5 @@ If running long after day 7, **cut visual polish before cutting the code rename 
 
 - [ ] Adrian approves sprint scope (or asks for cuts)
 - [ ] Spec drafted: `docs/specs/NNN-dojo-language-pass.md` — implementation-level detail on the code rename (file inventory, repository adapter mapping strategy, test-fixture rename plan)
-- [ ] Move sprint pointer: [sprints/current.md](../sprints/current.md) updated to reference this PRD
+- [ ] Move sprint pointer: [sprints/current.md](../../sprints/current.md) updated to reference this PRD
 - [ ] Kickoff: day 1 starts with code rename, not with routes

@@ -46,7 +46,7 @@ Each kata type keeps a stable color across themes so the user learns the code: `
 
 ### Belt rank colors
 
-White, yellow, green, brown and black. Same in every theme. They are used for the avatar ring (`BeltRingAvatar`) and the share-card belt variant. The rubric is [`prd/031-belt-progression-rubric.md`](prd/031-belt-progression-rubric.md); values are in code.
+White, yellow, green, brown and black. Same in every theme. They are used for the avatar ring (`BeltRingAvatar`) and the share-card belt variant. The rubric is [`research/prd-archive/031-belt-progression-rubric.md`](research/prd-archive/031-belt-progression-rubric.md); values are in code.
 
 ## Typography
 

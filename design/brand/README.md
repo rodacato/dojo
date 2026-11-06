@@ -227,7 +227,7 @@ How the product sounds at key moments:
 
 ## Belts & Milestones
 
-Two orthogonal concepts, both on `/belts`. The rubric is [PRD-031](../../docs/prd/031-belt-progression-rubric.md) and the thresholds are `BELT_THRESHOLDS` in `apps/api/src/domain/recognition/belt.ts`; this section is the voice.
+Two orthogonal concepts, both on `/belts`. The rubric is [PRD-031](../../docs/research/prd-archive/031-belt-progression-rubric.md) and the thresholds are `BELT_THRESHOLDS` in `apps/api/src/domain/recognition/belt.ts`; this section is the voice.
 
 ### Belts — the rank
 
@@ -323,5 +323,5 @@ gets the same families from `@fontsource-variable/*`; upgrade both when a font c
 
 - [`DESIGN.md`](../../docs/DESIGN.md) — tokens, themes, motifs, components, motion.
 - [`VISION.md`](../../docs/VISION.md) — product strategy.
-- [`prd/031-belt-progression-rubric.md`](../../docs/prd/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
+- [`prd/031-belt-progression-rubric.md`](../../docs/research/prd-archive/031-belt-progression-rubric.md) — belt rank rubric (this file documents the voice; the PRD documents the math).
 - [`adr/020-ubiquitous-language-pass.md`](../../docs/adr/020-ubiquitous-language-pass.md) — the rename that introduced `scroll / kata / belt / milestone` as the visible vocabulary.

@@ -234,7 +234,7 @@ Rust indicator: defer to v1.1. Ship lossless, no indicator in v1.
 | Belt naming | **English colors** (kyū terms cross the cosplay line) |
 | Scope v1 | **Global belt only**; per-track marks deferred to v1.1 |
 | Rust / decay | **Lossless**, no rust indicator in v1; rust indicator deferred to v1.1 |
-| Diversity unit | **Topic clusters** — derived from the existing comment-section headers in [packages/shared/src/topics.ts](../../packages/shared/src/topics.ts) (Database, API design, TypeScript, …). Raw topic slugs are too granular ("Database" alone has 13 topics). Sprint adds a `topicCluster` mapping function in shared. |
+| Diversity unit | **Topic clusters** — derived from the existing comment-section headers in [packages/shared/src/topics.ts](../../../packages/shared/src/topics.ts) (Database, API design, TypeScript, …). Raw topic slugs are too granular ("Database" alone has 13 topics). Sprint adds a `topicCluster` mapping function in shared. |
 | Active days timezone | **UTC** for v1 (simplicity; revisit when timezone-aware features arrive) |
 | Belt visual | Soren executes in sprint — provisional direction: solid color ring on sidebar avatar + chip on profile + variant on share card |
 

@@ -3,7 +3,7 @@
 > **Status note (2026-10):** Implemented in sprint 023. Its Learning-context maps (courses, native scroll player, `COURSE_` badges, `learn.ts`, `/learn` routes) describe code removed afterwards (ADR 025, migration `0026_drop_native_scrolls.sql`); scrolls are now a registry of external apps (`application/scrolls/*`, `scrolls` table). The kata, session, belt and milestone renames still hold.
 
 > **Status:** implemented
-> **Depends on:** [PRD-030](../prd/030-dojo-terminology-routes.md), [PRD-031](../prd/031-belt-progression-rubric.md), [PRD-032](../prd/032-sprint-023-planning.md)
+> **Depends on:** [PRD-030](../research/prd-archive/030-dojo-terminology-routes.md), [PRD-031](../research/prd-archive/031-belt-progression-rubric.md), [PRD-032](../research/prd-archive/032-sprint-023-planning.md)
 > **Sprint:** 023
 > **Inventoried files:** ~188 (~110 code, ~78 docs)
 
@@ -11,7 +11,7 @@
 
 ## Overview
 
-Single big-bang rename across five layers, no backward compatibility, zero users. Sprint plan in [PRD-032](../prd/032-sprint-023-planning.md). This spec is the implementation contract: every identifier mapping, file rename, DB-to-domain mapping at the adapter layer, and the order of operations.
+Single big-bang rename across five layers, no backward compatibility, zero users. Sprint plan in [PRD-032](../research/prd-archive/032-sprint-023-planning.md). This spec is the implementation contract: every identifier mapping, file rename, DB-to-domain mapping at the adapter layer, and the order of operations.
 
 ```
 Day 1-2:  Shared + Domain rename (foundation; everything else depends on it)
@@ -32,7 +32,7 @@ Day 10:   Dogfooding buffer
 PRD-030 listed `Badge → Belt` with a TBD note. Resolved here:
 
 - **`Badge` is renamed to `Milestone`.** Current Badge records (FIRST_KATA, POLYGLOT, CONSISTENT, 5_STREAK, COURSE_*) are achievement events, not rank. "Milestone" captures their semantics honestly.
-- **`Belt` is a new value object** computed on read from session/attempt history per [PRD-031](../prd/031-belt-progression-rubric.md). Orthogonal to Milestones.
+- **`Belt` is a new value object** computed on read from session/attempt history per [PRD-031](../research/prd-archive/031-belt-progression-rubric.md). Orthogonal to Milestones.
 - **`/belts` page surface:** headline = current belt rank; secondary section = milestones earned.
 - **DB tables:** `user_badges` stays. Mapping in `PostgresMilestoneRepository` adapter (see Part 4).
 - **Existing milestone IDs** (`FIRST_KATA`, `POLYGLOT`, etc.) stay as stored strings — no migration.
@@ -323,7 +323,7 @@ Belt is computed. No new tables.
 
 Uses `CalculateBelt` + `ListUserMilestones` use cases.
 
-### 5.3 v1 threshold values (from [PRD-031](../prd/031-belt-progression-rubric.md))
+### 5.3 v1 threshold values (from [PRD-031](../research/prd-archive/031-belt-progression-rubric.md))
 
 Hardcoded in `domain/recognition/belt.ts` constants — easy to revise without migrations:
 
@@ -448,7 +448,7 @@ Single page, on-brand copy explaining what kumite will be (1v1 sparring), no sig
 
 ---
 
-## Definition of done (from [PRD-032](../prd/032-sprint-023-planning.md))
+## Definition of done (from [PRD-032](../research/prd-archive/032-sprint-023-planning.md))
 
 - [ ] All five route renames live; old routes return 404
 - [ ] `grep -r "Exercise\|Course\|Badge" apps/api/src/domain apps/api/src/application` returns zero matches (excluding `schema.ts` alias imports in adapters)
