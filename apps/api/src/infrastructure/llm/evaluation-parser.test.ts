@@ -63,7 +63,7 @@ describe('EvaluationStreamParser', () => {
     it('rejects an unknown verdict', () => {
       const { result, error } = parseWhole(wrapStream('', { ...wellFormed, verdict: 'PASSED' }))
       expect(result).toBeNull()
-      expect(error).toContain('Invalid verdict: PASSED')
+      expect(error).toContain('→ at verdict')
     })
   })
 
@@ -118,7 +118,7 @@ describe('EvaluationStreamParser', () => {
       const { verdict: _v, analysis: _a, ...rest } = wellFormed
       const { result, error } = parseWhole(wrapStream('', { verdict: 'passed', ...rest }))
       expect(result).toBeNull()
-      expect(error).toContain('Missing or empty analysis')
+      expect(error).toContain('→ at analysis')
     })
 
     it('rejects an empty/whitespace analysis', () => {
@@ -132,13 +132,13 @@ describe('EvaluationStreamParser', () => {
         wrapStream('', { ...wellFormed, topicsToReview: 'indexing' }),
       )
       expect(result).toBeNull()
-      expect(error).toContain('topicsToReview must be an array')
+      expect(error).toContain('→ at topicsToReview')
     })
 
     it('rejects a numeric followUpQuestion', () => {
       const { result, error } = parseWhole(wrapStream('', { ...wellFormed, followUpQuestion: 7 }))
       expect(result).toBeNull()
-      expect(error).toContain('followUpQuestion must be a string or null')
+      expect(error).toContain('→ at followUpQuestion')
     })
 
     it('rejects a non-boolean isFinalEvaluation', () => {
@@ -146,7 +146,7 @@ describe('EvaluationStreamParser', () => {
         wrapStream('', { ...wellFormed, isFinalEvaluation: 'yes' }),
       )
       expect(result).toBeNull()
-      expect(error).toContain('isFinalEvaluation must be a boolean')
+      expect(error).toContain('→ at isFinalEvaluation')
     })
   })
 
