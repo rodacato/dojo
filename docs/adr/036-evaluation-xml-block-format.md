@@ -1,7 +1,8 @@
-# ADR-007: `<evaluation>` XML block for structured LLM output
+# ADR-036: `<evaluation>` XML block for structured LLM output
 
 **Status:** Accepted
 **Date:** 2026-03-21
+**Numbering:** filed as a second ADR-007 and renumbered on 2026-11-06; ADR-007 is the bearer-token decision.
 **Deciders:** Yemi Okafor (LLM architecture), Tomás Ríos (WebSocket)
 
 ---
