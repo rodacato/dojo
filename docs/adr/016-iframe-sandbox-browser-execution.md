@@ -54,7 +54,7 @@ The `testCode` field in the DB contains the test assertions. The iframe runner i
 1. Use a mini test runner (no dependencies) identical in structure to the Piston runner
 2. Call `window.parent.postMessage({ type: 'test-results', log: string[], failed: boolean }, '*')` at the end
 
-Full pattern documented in [`docs/courses/testcode-pattern.md`](../courses/testcode-pattern.md).
+Full pattern documented in `docs/courses/testcode-pattern.md`.
 
 ## Backend changes
 

@@ -10,7 +10,7 @@
 
 Two changes to how kata steps inside scrolls teach, both scoped to the **course (Piston pass/fail) surface** — the sensei stays the kata-side evaluator and is deliberately kept out of this loop (cost, and a clean two-mode product: courses = compiler-as-teacher, katas = sensei).
 
-1. **Broken→fix katas.** A `code`/`kata` step may ship plausible-but-wrong `starterCode` for the learner to debug, instead of a blank scaffold. It is a *usage pattern* of the existing step type — no new type, no ADR-worthy schema beyond (2). Adopt it only where the planted bug embodies the misconception the kata targets *and* the fix teaches the intended idiom; otherwise keep write-from-scratch. Do not homogenize a scroll to one shape. (Spec: [INTERACTIVITY-PATTERNS.md](../courses/INTERACTIVITY-PATTERNS.md) §"Broken→fix katas".)
+1. **Broken→fix katas.** A `code`/`kata` step may ship plausible-but-wrong `starterCode` for the learner to debug, instead of a blank scaffold. It is a *usage pattern* of the existing step type — no new type, no ADR-worthy schema beyond (2). Adopt it only where the planted bug embodies the misconception the kata targets *and* the fix teaches the intended idiom; otherwise keep write-from-scratch. Do not homogenize a scroll to one shape. (Spec: INTERACTIVITY-PATTERNS.md §"Broken→fix katas".)
 
 2. **Progressive hint reveal.** Kata steps may carry `hints: string[]` (tier-ordered). The player reveals tier 1 on the first failed run and tier 2 on the second, driven by an **ephemeral client-side failure count**. The reference `solution` stays gated behind the existing post-pass `403` — escalating hints, not the answer.
 
@@ -29,7 +29,7 @@ First applied to the Ruby scroll: `repeat`, `lookup`, `safe_call`, `classify` co
 
 - The failure count resets on step change and on reload — a learner who reloads loses tier-2 until they fail again. Accepted: the buffer is for the current attempt, not a durable record.
 - Iframe-sandbox languages (`javascript-dom`) run client-side; the failure-count logic lives in the same component and works for them too, but broken→fix authoring guidance here is written against the Piston scrolls. No divergence today.
-- Doc-sync: [INTERACTIVITY-PATTERNS.md](../courses/INTERACTIVITY-PATTERNS.md), [AUTHORING.md](../courses/AUTHORING.md), and the per-language hint discipline (`curricula/*/*.md`) carry the authoring rules; CHANGELOG records the feature.
+- Doc-sync: INTERACTIVITY-PATTERNS.md, AUTHORING.md, and the per-language hint discipline (`curricula/*/*.md`) carry the authoring rules; CHANGELOG records the feature.
 
 ## Panel input (synthesized)
 
