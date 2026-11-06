@@ -9,7 +9,7 @@ import {
   handleReconnect,
   send,
   type WSInstance,
-  type ClientMessage,
+  parseClientMessage,
 } from './ws-handlers'
 import { redeemWsTicket } from './ws-tickets'
 
@@ -55,17 +55,8 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
         },
 
         async onMessage(event: { data: unknown }, ws: WSInstance) {
-          let msg: ClientMessage
-          try {
-            msg = JSON.parse(String(event.data)) as ClientMessage
-          } catch {
-            send(ws, { type: 'error', code: 'INVALID_MESSAGE' })
-            return
-          }
-
-          // JSON.parse also yields null, numbers and strings; an unguarded
-          // property read would reject the async handler with nobody awaiting it.
-          if (typeof msg !== 'object' || msg === null) {
+          const msg = parseClientMessage(event.data)
+          if (!msg) {
             send(ws, { type: 'error', code: 'INVALID_MESSAGE' })
             return
           }
@@ -73,10 +64,7 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
           try {
             if (msg.type === 'reconnect') {
               handleReconnect(ws, msg.attemptId)
-              return
-            }
-
-            if (msg.type === 'submit') {
+            } else {
               await handleSubmit(ws, msg.attemptId, session.id, userId)
             }
           } catch (err) {

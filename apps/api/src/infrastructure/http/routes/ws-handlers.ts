@@ -1,4 +1,5 @@
 import type { EvaluationClientMessage, EvaluationServerMessage } from '@dojo/shared'
+import { z } from 'zod'
 import { useCases, executionQueue } from '../../container'
 import { pendingAttempts } from './pending-attempts'
 import { SessionId } from '../../../domain/shared/types'
@@ -21,6 +22,23 @@ export interface WSInstance {
 // ── Message types ─────────────────────────────────────────────────────────────
 export type ClientMessage = EvaluationClientMessage
 export type ServerMessage = EvaluationServerMessage
+
+const attemptIdSchema = z.string().min(1).max(64)
+const clientMessageSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('submit'), attemptId: attemptIdSchema }),
+  z.object({ type: z.literal('reconnect'), attemptId: attemptIdSchema }),
+]) satisfies z.ZodType<ClientMessage>
+
+export function parseClientMessage(data: unknown): ClientMessage | undefined {
+  let json: unknown
+  try {
+    json = JSON.parse(String(data))
+  } catch {
+    return undefined
+  }
+  const parsed = clientMessageSchema.safeParse(json)
+  return parsed.success ? parsed.data : undefined
+}
 
 // ── Reconnect cache ───────────────────────────────────────────────────────────
 export interface StreamCache {
