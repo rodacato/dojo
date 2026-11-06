@@ -1,6 +1,6 @@
 # PRD-033: Sprint 033 — Maintenance: Security & Foundation
 
-> **Status:** Closed 2026-06-27. See the [S033 retro](../../sprints/archive/sprint-033-maintenance-security-foundation.md).
+> **Status:** Closed 2026-06-27. See the S033 retro (`docs/sprints/archive/sprint-033-maintenance-security-foundation.md`, since removed).
 > **Reframe at close:** the "web testing backbone deferred to S034" assumption did not survive the sprint — the web backbone got built *and* coverage hit ~87% inside S033, retiring S034's planned premise. The real residual (the web/shared gates are defined but never run in CI) plus the architecture debt now both land in S034. See the retro's honest findings.
 > **Scope discipline:** This was the *focused* cut of a 2–3 sprint maintenance block. The architecture debt was deferred (now pulled into S034); the web testing backbone was *not* deferred in the end — it landed here.
 
@@ -45,7 +45,7 @@ This is the gate for the whole sprint. You cannot scope "fix Sonar/CodeQL findin
 ### 2. Coverage — measure everything, gate honestly
 
 - **api:** add `src/scripts/**` to the coverage `exclude` so the dev CLIs stop dragging the number. Re-measure the real business-logic coverage (application + domain). Then decide the gate: either raise tests to clear 80%, or **lower the gate to the honest current number and turn it back ON** in CI. A gate set to 80 and disabled is worse than a gate set to 65 and enforced — the second one ratchets.
-- **web:** add `vitest.config.ts` + `test:coverage` + lcov reporter, wire its `lcov.info` into [sonar-project.properties](../../../sonar-project.properties) (currently api-only). Do **not** chase a coverage number here — that's S034. Goal: the number becomes *visible*.
+- **web:** add `vitest.config.ts` + `test:coverage` + lcov reporter, wire its `lcov.info` into sonar-project.properties (currently api-only). Do **not** chase a coverage number here — that's S034. Goal: the number becomes *visible*.
 - **shared:** add vitest config + a smoke test per Zod schema export so the validation contract has a regression net. Small surface, high leverage.
 
 ### 3. Dead-code & findings tooling

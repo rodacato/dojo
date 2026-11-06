@@ -16,7 +16,7 @@ Make the dojo language coherent end-to-end — routes, nav, code, brand voice, v
 
 - [PRD-030](030-dojo-terminology-routes.md) — language pass, Option A locked
 - [PRD-031](031-belt-progression-rubric.md) — belt rubric, Option C locked
-- Hard carry-forwards from [sprints/current.md](../../sprints/current.md):
+- Hard carry-forwards from sprints/current.md:
   - First friend invite dispatch (humans-only; no sprint code blocker)
   - Smoke-suite staging environment
 
@@ -149,5 +149,5 @@ If running long after day 7, **cut visual polish before cutting the code rename 
 
 - [ ] Adrian approves sprint scope (or asks for cuts)
 - [ ] Spec drafted: `docs/specs/NNN-dojo-language-pass.md` — implementation-level detail on the code rename (file inventory, repository adapter mapping strategy, test-fixture rename plan)
-- [ ] Move sprint pointer: [sprints/current.md](../../sprints/current.md) updated to reference this PRD
+- [ ] Move sprint pointer: sprints/current.md updated to reference this PRD
 - [ ] Kickoff: day 1 starts with code rename, not with routes

@@ -2,7 +2,7 @@
 
 **Status:** Accepted for the dual-theme token mechanism. The motif components it lists (`HankoBadge`, `BrushstrokeUnderline`) were removed after the Paper revamp; see [DESIGN.md](../DESIGN.md)
 **Date:** 2026-06-06
-**Context:** Sprint 024 — see [sprint write-up](../sprints/archive/sprint-024-maintenance-sumi-e.md), [DESIGN.md](../DESIGN.md), [BRANDING.md](../../design/brand/README.md)
+**Context:** Sprint 024 — see sprint write-up (`docs/sprints/archive/sprint-024-maintenance-sumi-e.md`, since removed), [DESIGN.md](../DESIGN.md), [BRANDING.md](../../design/brand/README.md)
 
 ## Decision
 
@@ -54,4 +54,4 @@ This worked because the toggle gave per-user reversibility: the partial integrat
 
 - [DESIGN.md](../DESIGN.md) §Two themes one system, §Color tokens, §Brand motifs, §Motion, §Migration path
 - [BRANDING.md](../../design/brand/README.md) §Tema y dirección visual, §Motion como firma
-- [sprints/archive/sprint-024-maintenance-sumi-e.md](../sprints/archive/sprint-024-maintenance-sumi-e.md) — the sprint write-up that delivered this
+- sprints/archive/sprint-024-maintenance-sumi-e.md — the sprint write-up that delivered this
