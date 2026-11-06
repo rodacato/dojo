@@ -29,7 +29,7 @@ export interface KataHistoryEntry {
 }
 
 /**
- * Advancement thresholds per [PRD-031](docs/prd/031-belt-progression-rubric.md).
+ * Advancement thresholds per [PRD-031](docs/research/prd-archive/031-belt-progression-rubric.md).
  * Values are provisional v1 — recalculable from existing session history, no
  * migration required to revise. Each row is what a user must satisfy to be at
  * (or above) that belt.

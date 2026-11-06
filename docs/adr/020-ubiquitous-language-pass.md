@@ -2,7 +2,7 @@
 
 **Status:** Accepted (the Scroll renames are superseded by [ADR 025](025-external-embedded-scrolls.md); the kata and belt vocabulary stands)
 **Date:** 2026-06-05
-**Context:** Sprint 023 — see [PRD-030](../prd/030-dojo-terminology-routes.md), [PRD-031](../prd/031-belt-progression-rubric.md), [PRD-032](../prd/032-sprint-023-planning.md), [Spec 028](../specs/028-dojo-language-pass.md)
+**Context:** Sprint 023 — see [PRD-030](../research/prd-archive/030-dojo-terminology-routes.md), [PRD-031](../research/prd-archive/031-belt-progression-rubric.md), [PRD-032](../research/prd-archive/032-sprint-023-planning.md), [Spec 028](../specs/028-dojo-language-pass.md)
 
 ## Decision
 
@@ -40,7 +40,7 @@ The original PRD-030 listed `Badge → Belt` with a TBD note. The rename invento
 
 Resolved in [Spec 028 Part 0](../specs/028-dojo-language-pass.md#part-0--correction-to-prd-030-badge-mapping):
 - `Badge` → `Milestone` — same domain semantics, honest name.
-- `Belt` is a new value object computed on read from session history per [PRD-031](../prd/031-belt-progression-rubric.md).
+- `Belt` is a new value object computed on read from session history per [PRD-031](../research/prd-archive/031-belt-progression-rubric.md).
 - `/belts` page surfaces both: belt rank as headline + milestones as a section below.
 
 ## Why `/leaderboard` was deleted, not renamed to `/kumite`
@@ -60,7 +60,7 @@ Kumite means *sparring* — 1v1, paired evaluation, shared kata. A leaderboard i
 - One vocabulary across product, codebase, and docs.
 - Future contributors inherit the new vocabulary without a translation layer.
 - The kumite feature has a reserved URL and a clear placeholder of intent.
-- The belt system is a real product change (not reskinned badges) — advancement is deterministic, factor-based, and explicitly does not consume sensei verdicts (per [PRD-031 hard constraint](../prd/031-belt-progression-rubric.md#the-hard-constraint)).
+- The belt system is a real product change (not reskinned badges) — advancement is deterministic, factor-based, and explicitly does not consume sensei verdicts (per [PRD-031 hard constraint](../research/prd-archive/031-belt-progression-rubric.md#the-hard-constraint)).
 - Schema.ts is now the canonical mapping point between legacy DB names and ubiquitous code names — touching it requires care, but the rest of the codebase is clean.
 
 ## What this enables
@@ -71,8 +71,8 @@ Kumite means *sparring* — 1v1, paired evaluation, shared kata. A leaderboard i
 
 ## Related
 
-- [PRD-030 — Dojo terminology pass](../prd/030-dojo-terminology-routes.md)
-- [PRD-031 — Belt progression rubric](../prd/031-belt-progression-rubric.md)
-- [PRD-032 — Sprint 023 plan](../prd/032-sprint-023-planning.md)
+- [PRD-030 — Dojo terminology pass](../research/prd-archive/030-dojo-terminology-routes.md)
+- [PRD-031 — Belt progression rubric](../research/prd-archive/031-belt-progression-rubric.md)
+- [PRD-032 — Sprint 023 plan](../research/prd-archive/032-sprint-023-planning.md)
 - [Spec 028 — Implementation contract](../specs/028-dojo-language-pass.md)
 - [ADR 015 — Learning bounded context](015-courses-bounded-context.md) — the bounded context retains the name "Learning" internally; "Scroll" is the aggregate, "Learning" is the context.

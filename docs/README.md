@@ -59,7 +59,7 @@ Useful while a decision is forming, then either materializes into a spec or gets
 |---|---|
 | [`prd/`](prd/) | Active exploratory PRDs. Each should end with status: `Materialized in spec-NNN` / `Discarded` / `Archived to research/`. |
 | [`research/`](research/) | Background research and plans that informed a past decision and are kept for traceability |
-| [`research/prd-archive/`](research/prd-archive/) | PRDs that served their purpose during Phase 0 planning |
+| [`research/prd-archive/`](research/prd-archive/) | Closed PRDs — shipped, superseded or discarded — including the sprint plans from before work moved to GitHub issues |
 
 ---
 
