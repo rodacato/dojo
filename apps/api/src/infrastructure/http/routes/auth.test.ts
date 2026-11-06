@@ -134,8 +134,7 @@ function freshIp(): string {
   return `10.0.${Math.floor(ipCounter / 250)}.${ipCounter % 250}`
 }
 async function authRequest(path: string, init: RequestInit = {}): Promise<Response> {
-  const headers = { 'x-forwarded-for': freshIp(), ...(init.headers as Record<string, string>) }
-  return createRouter().request(path, { ...init, headers })
+  return createRouter().request(path, init, { incoming: { socket: { remoteAddress: freshIp() } } })
 }
 
 const STATE = 'csrf-state-123'

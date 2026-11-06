@@ -36,6 +36,8 @@ env:
   clear:
     NODE_ENV: production
     PORT: '3001'
+    # The host takes traffic only through the Cloudflare Tunnel (ADR 011), and Cloudflare overwrites this header.
+    CLIENT_IP_SOURCE: cloudflare
     WEB_URL: "https://<%= app_host %>"
     SENTRY_ENVIRONMENT: "<%= ENV.fetch("SENTRY_ENVIRONMENT", "production") %>"
     SENTRY_TRACES_SAMPLE_RATE: "<%= ENV.fetch("SENTRY_TRACES_SAMPLE_RATE", "0") %>"

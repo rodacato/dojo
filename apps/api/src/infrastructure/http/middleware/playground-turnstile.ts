@@ -2,6 +2,7 @@ import type { MiddlewareHandler } from 'hono'
 import { config } from '../../../config'
 import { log } from '../../observability/logger'
 import type { AppEnv } from '../app-env'
+import { clientIp } from '../client-ip'
 
 // Layer 1 of spec 027 §4.5 — Cloudflare Turnstile bot gate.
 //
@@ -46,7 +47,7 @@ export const playgroundTurnstileMiddleware: MiddlewareHandler<AppEnv> = async (c
     return c.json({ error: 'turnstile_required' }, 403)
   }
 
-  const verification = await verifyTurnstile(token, extractClientIp(c))
+  const verification = await verifyTurnstile(token, knownClientIp(c))
   if (!verification.success) {
     return c.json(
       {
@@ -87,15 +88,7 @@ async function verifyTurnstile(token: string, clientIp: string | null): Promise<
   }
 }
 
-function extractClientIp(c: Parameters<MiddlewareHandler>[0]): string | null {
-  const cf = c.req.header('cf-connecting-ip')
-  if (cf) return cf
-  const xff = c.req.header('x-forwarded-for')
-  if (xff) {
-    const first = xff.split(',')[0]?.trim()
-    if (first) return first
-  }
-  const xr = c.req.header('x-real-ip')
-  if (xr) return xr.trim()
-  return null
+function knownClientIp(c: Parameters<MiddlewareHandler>[0]): string | null {
+  const ip = clientIp(c)
+  return ip === 'unknown' ? null : ip
 }

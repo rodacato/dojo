@@ -61,3 +61,27 @@ describe('SCROLL_FRAME_ORIGINS', () => {
     expect(written.join('')).toContain('SCROLL_FRAME_ORIGINS')
   })
 })
+
+describe('CLIENT_IP_SOURCE', () => {
+  beforeEach(() => {
+    written.length = 0
+    vi.spyOn(process, 'exit').mockImplementation(() => {
+      throw new ExitCalled()
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+    vi.restoreAllMocks()
+  })
+
+  it('defaults to the socket when empty', async () => {
+    const config = await loadConfig({ CLIENT_IP_SOURCE: '' })
+    expect(config.CLIENT_IP_SOURCE).toBe('socket')
+  })
+
+  it('refuses to boot on a misspelled source and names the variable', async () => {
+    await expect(loadConfig({ CLIENT_IP_SOURCE: 'cf-conecting-ip' })).rejects.toThrow(ExitCalled)
+    expect(written.join('')).toContain('CLIENT_IP_SOURCE')
+  })
+})
