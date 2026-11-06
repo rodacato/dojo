@@ -1,6 +1,6 @@
 # Documentation Map
 
-> **Status:** Canonical · **Last reviewed:** 2026-10-02
+> **Status:** Canonical · **Last reviewed:** 2026-11-06
 
 This is the entry point for everything in `docs/`. Each document has a lifecycle — knowing which is which is the difference between reading the source of truth and reading a fossil.
 
@@ -49,15 +49,15 @@ Append-only record of what happened and why. Links may point to docs that have s
 | Folder | What lives here |
 |---|---|
 | [`adr/`](adr/) | Architecture Decision Records — every architectural choice with its alternatives and consequences |
-| [`specs/`](specs/) | Sprint-tied implementation specs. Specs of features that were removed may be deleted; git keeps them |
+| [`specs/`](specs/) | Implementation specs up to sprint 023. Retired: an issue and its pull request now carry what a change builds. Specs of features that were removed may be deleted; git keeps them |
 
 ### Exploratory & archived research — disposable
 
-Useful while a decision is forming, then either materializes into a spec or gets archived. Treat as **possibly stale** unless its status line says otherwise.
+Useful while a decision is forming, then either becomes an issue (and an ADR, when architectural) or gets archived. Treat as **possibly stale** unless its status line says otherwise.
 
 | Folder | Lifecycle |
 |---|---|
-| [`prd/`](prd/) | Active exploratory PRDs. Each should end with status: `Materialized in spec-NNN` / `Discarded` / `Archived to research/`. |
+| [`prd/`](prd/) | Active exploratory PRDs. Each ends with a status — `Decided in ADR NNN`, `Shipped` or `Discarded` — and moves to `research/prd-archive/` once no open issue depends on it. |
 | [`research/`](research/) | Background research and plans that informed a past decision and are kept for traceability |
 | [`research/prd-archive/`](research/prd-archive/) | Closed PRDs — shipped, superseded or discarded — including the sprint plans from before work moved to GitHub issues |
 
@@ -66,7 +66,7 @@ Useful while a decision is forming, then either materializes into a spec or gets
 ## Conventions
 
 - **Adding canonical doc?** Update this map.
-- **Closing a PRD?** Mark its status at the top and decide: materialize into a spec, discard, or move to `research/prd-archive/`.
+- **Closing a PRD?** Follow the [Close a PRD](WORKFLOW.md#playbook-close-a-prd) playbook.
 - **Making an architectural decision?** Write an ADR in [`adr/`](adr/). Never delete an ADR — supersede it.
 - **Tracking work?** Open a GitHub issue. Never a document in `docs/`.
 - **Found a doc that does not fit any folder above?** It probably should not exist, or this map needs a new category. Ask first.

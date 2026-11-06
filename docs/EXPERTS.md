@@ -375,7 +375,7 @@ Consulted less frequently — at specific phases or for specific decisions. Not 
 *Idea exploration:*
 - Multi-perspective PRDs: before deciding what to build, understand how the user, the administrator, the contributor, and the product each experience it. The tensions between perspectives are where the important decisions live.
 - "What do you want to know after this?": her favorite question before starting an exploration. Define the output before starting the process.
-- Disposable ideas: not every PRD advances to a spec. Archiving without shame is part of the system.
+- Disposable ideas: not every PRD advances to an issue or an ADR. Archiving without shame is part of the system.
 
 *Indie execution:*
 - Knows the creator is simultaneously the PM, the dev, the tester, and the user. The work system must assume this, not pretend there is a team.

@@ -9,10 +9,12 @@ Documentation is the foundation, not an afterthought. Before writing a line of c
 The build cycle is:
 
 ```
-Idea → Issue → [Triage] → PRD (optional) → Spec (optional) → Implement → Test → Release
-                                                                     ↓
-                                                           ADR (when an architectural decision is involved)
+Idea → Draft card or issue → PRD (when it needs exploring) → Implement in a PR → Release
+                                        ↓
+                             ADR (when a decision is architectural)
 ```
+
+An ADR can close a PRD or come straight from the work when the decision is already clear.
 
 ---
 
@@ -44,18 +46,17 @@ apps/api/src/
 ## Build Cycle in Detail
 
 ### 1. Idea
-Something new or something broken. Capture it as a GitHub issue — see [Tracking Work](#tracking-work). A change of direction goes to `docs/ROADMAP.md`, which holds direction, not tasks.
+Something new or something broken. Capture it as a draft card on the project board, or as a GitHub issue once work starts — see [Tracking Work](#tracking-work). A change of direction goes to `docs/ROADMAP.md`, which holds direction, not tasks.
 
-### 2. Spec (for non-trivial features)
-A short spec lives in `docs/specs/` as a Markdown file. It answers:
-- What is being built and why?
-- What does "done" look like?
-- What is explicitly out of scope for this version?
+### 2. PRD (when an idea needs exploring)
+See [PRDs](#prds--exploratory-documents). A well-defined change skips it and goes straight to an issue.
 
-No spec template required — keep it as short as it needs to be and no shorter.
+Specs are retired. What a change builds, what is out of scope and how it was verified go in its issue and its pull request description. `docs/specs/` keeps the specs written up to sprint 023 as history.
 
 ### 3. ADR (for architectural decisions)
-Any decision that changes how the system is structured — database schema, a new package, switching a library, a new port or adapter, choosing a deployment strategy — gets an ADR. ADRs are never deleted. Superseded ones are marked as such.
+Any decision that changes how the system is structured — database schema, a new package, switching a library, a new port or adapter, choosing a deployment strategy, a security boundary — gets an ADR. ADRs are never deleted. Superseded ones are marked as such.
+
+When a PRD explored the decision, the ADR links it: the PRD keeps the reasoning and the options, the ADR keeps the decision and its consequences.
 
 **ADR format:**
 
@@ -121,17 +122,15 @@ Concrete step-by-step checklists for recurring operations. When the user asks to
 
 ---
 
-### Playbook: Convert a PRD to spec(s)
+### Playbook: Close a PRD
 
-Triggered by: "convierte este PRD en spec" / "avancemos a spec"
+Triggered by: "cerremos el PRD" / "avancemos con el PRD"
 
 1. **Read the PRD** — identify the chosen option from the "Provisional conclusion" section
-2. **Determine scope** — decide if this is one spec or multiple (one spec per coherent deliverable)
-3. **Create spec file(s)** at `docs/specs/NNN-title.md` — use the next sequential number(s)
-4. **Write each spec** answering: what is being built and why? what does "done" look like? what is explicitly out of scope?
-5. **Update the PRD** — change status to "advancing to spec" and add a link to the spec(s) in the "Next step" section
-6. **Link the spec from its issue** — the issue that tracks the work gets the spec link in its body
-7. **Confirm** — show links to the new spec(s)
+2. **Record the decision** — if it is architectural, write an ADR that links the PRD
+3. **Open the work** — create or promote the issue(s), each linking the PRD
+4. **Update the PRD status** — `Decided in ADR NNN`, `Shipped` or `Discarded`, with links
+5. **Archive it** — once no open issue depends on it, `git mv` it to `docs/research/prd-archive/` and fix the links that pointed at it
 
 ---
 
@@ -153,11 +152,11 @@ A PRD in this project is a thinking tool, not a formal planning artifact. It liv
 **What they are for:**
 - Exploring an idea from multiple perspectives before committing to build it
 - Identifying tensions and trade-offs that are not obvious upfront
-- Deciding whether something advances to a spec, needs more exploration, or gets discarded
+- Deciding whether something becomes an issue (and an ADR, when architectural), needs more exploration, or gets discarded
 
-**When to write a PRD vs. going straight to a spec:**
+**When to write a PRD vs. going straight to an issue:**
 - New idea with UX, architecture, or product direction implications → PRD first
-- Small, well-defined feature with no obvious tensions → spec directly
+- Small, well-defined feature with no obvious tensions → issue directly
 - Something that seems simple but involves multiple user perspectives → PRD
 
 **Format:** see `docs/prd/000-template.md`. Required sections: idea in one sentence, at least two perspectives, and next step.
@@ -171,7 +170,7 @@ A PRD in this project is a thinking tool, not a formal planning artifact. It liv
 Work state lives in GitHub, not in `docs/`. Docs keep direction and decisions (VISION, ARCHITECTURE, ROADMAP, ADRs, specs); GitHub keeps what is planned, in progress and done.
 
 - **Issues** are the unit of work, including epics. A pull request that resolves one carries `Closes #N` in its body.
-- **Milestones** group issues by theme or time-box (`M1` to `M4`). Closing a milestone replaces closing a sprint. History lives in closed milestones, `CHANGELOG.md` and release tags.
+- **Milestones** group issues by theme or time-box (`M1`, `M2`, …). Closing a milestone replaces closing a sprint. History lives in closed milestones, `CHANGELOG.md` and release tags.
 - **Ideas that are not ready to be public** stay as draft cards on the maintainer's private project board, with enough context to be understood cold. They become an issue when work on them starts. Anything with security impact never becomes an issue; see [`SECURITY.md`](../SECURITY.md).
 - **Labels** carry kind and area only. Priority and status live on the project board.
 - **Sprint docs are retired** and were deleted; git history keeps them.

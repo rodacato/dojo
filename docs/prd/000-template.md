@@ -1,10 +1,10 @@
 # PRD-NNN: [Title]
 
-> **Status:** draft | exploring | archived | advancing to spec
+> **Status:** draft | exploring | decided in ADR NNN | shipped | discarded
 > **Date:** YYYY-MM-DD
 > **Author:** [name / Claude]
 
-PRDs are exploratory documents, not commitments. If something advances, it generates one or more specs. If it does not fit, it gets archived without shame. They are disposable by design.
+PRDs are exploratory documents, not commitments. If something advances, it becomes one or more issues, and an ADR when the decision is architectural. If it does not fit, it gets archived without shame. They are disposable by design.
 
 ---
 
@@ -70,6 +70,7 @@ _Where does this point? Which option seems most promising and why? Not a commitm
 ## Next step
 
 - [ ] Leave in backlog to triage later
-- [ ] Convert to spec: `docs/specs/NNN-title.md`
+- [ ] Open the work: issue #NNN
+- [ ] Record the decision: `docs/adr/NNN-title.md` (when architectural)
 - [ ] Needs more exploration: [what remains to be answered]
 - [ ] Archive: [reason]
