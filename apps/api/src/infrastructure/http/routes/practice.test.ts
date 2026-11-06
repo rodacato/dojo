@@ -169,6 +169,7 @@ vi.mock('drizzle-orm', async (importOriginal) => {
 import { eq, gte, lt } from 'drizzle-orm'
 import { practiceRoutes } from './practice'
 import { pendingAttempts } from './pending-attempts'
+import { redeemWsTicket } from './ws-tickets'
 
 const eqSpy = vi.mocked(eq)
 const gteSpy = vi.mocked(gte)
@@ -567,6 +568,34 @@ describe('POST /sessions/daily', () => {
 
     expect(res.status).toBe(404)
     expect(startSession).not.toHaveBeenCalled()
+  })
+})
+
+describe('POST /sessions/:id/ws-ticket', () => {
+  function issue() {
+    return post(`/sessions/${SESSION_ID}/ws-ticket`, {})
+  }
+
+  it('returns 401 when unauthenticated', async () => {
+    const res = await issue()
+    expect(res.status).toBe(401)
+  })
+
+  it('returns 403 for another user’s session, without issuing a ticket', async () => {
+    authState.user = authedUser({ id: 'user-1' })
+    getSession.mockResolvedValue(sessionEntity({ userId: 'user-2' }))
+    const res = await issue()
+    expect(res.status).toBe(403)
+    expect(await res.json()).not.toHaveProperty('ticket')
+  })
+
+  it('issues a ticket that opens this session’s socket for this user', async () => {
+    authState.user = authedUser({ id: 'user-1' })
+    getSession.mockResolvedValue(sessionEntity({ userId: 'user-1' }))
+    const res = await issue()
+    expect(res.status).toBe(200)
+    const { ticket } = (await res.json()) as { ticket: string }
+    expect(redeemWsTicket(ticket, SESSION_ID)).toBe('user-1')
   })
 })
 

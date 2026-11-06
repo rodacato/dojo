@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-import { findActiveSession } from '../middleware/auth'
 import { useCases } from '../../container'
 import { SessionId } from '../../../domain/shared/types'
 import type { upgradeWebSocket as nodeUpgradeWebSocket } from '@hono/node-server'
@@ -12,6 +11,7 @@ import {
   type WSInstance,
   type ClientMessage,
 } from './ws-handlers'
+import { redeemWsTicket } from './ws-tickets'
 
 // An evicted socket closes after its replacement registered; it must not
 // unregister the replacement.
@@ -28,36 +28,29 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
     '/ws/sessions/:id',
     upgradeWebSocket(async (c) => {
       // ── Auth on upgrade (runs before handshake completes) ─────────────────
-      const url = new URL(c.req.url)
-      const token = url.searchParams.get('token')
-      if (!token) {
-        return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4001, 'Unauthorized') }
-      }
-
-      const userSession = await findActiveSession(token)
-
-      if (!userSession) {
-        return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4001, 'Unauthorized') }
-      }
-
-      const user = userSession.user
       const sessionId = c.req.param('id')!
+      const ticket = new URL(c.req.url).searchParams.get('ticket')
+      const userId = ticket ? redeemWsTicket(ticket, sessionId) : undefined
+      if (!userId) {
+        // 4401, not 4001: bundles from before ADR 037 sign the learner out on a 4001.
+        return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4401, 'Unauthorized') }
+      }
 
       // Verify session ownership
       const session = await useCases.getSession.execute(SessionId(sessionId))
       if (!session) {
         return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4004, 'Session not found') }
       }
-      if (session.userId !== user.id) {
+      if (session.userId !== userId) {
         return { onOpen: (_evt: unknown, ws: WSInstance) => ws.close(4003, 'Forbidden') }
       }
 
       // ── Handlers ──────────────────────────────────────────────────────────
       return {
         onOpen(_evt: unknown, ws: WSInstance) {
-          const existing = activeConnections.get(user.id)
+          const existing = activeConnections.get(userId)
           if (existing) existing.close(4008, 'Policy Violation: another connection is active')
-          activeConnections.set(user.id, ws)
+          activeConnections.set(userId, ws)
           send(ws, { type: 'ready' })
         },
 
@@ -84,22 +77,22 @@ export function createWsRoutes(upgradeWebSocket: UpgradeWebSocket): Hono {
             }
 
             if (msg.type === 'submit') {
-              await handleSubmit(ws, msg.attemptId, session.id, user.id)
+              await handleSubmit(ws, msg.attemptId, session.id, userId)
             }
           } catch (err) {
-            log.error('ws.handler_failed', { userId: user.id, sessionId: session.id, err })
+            log.error('ws.handler_failed', { userId, sessionId: session.id, err })
             send(ws, { type: 'error', code: 'INTERNAL_ERROR' })
           }
         },
 
         onClose(_evt: unknown, ws: WSInstance) {
-          releaseConnection(user.id, ws)
+          releaseConnection(userId, ws)
         },
 
         onError(evt: unknown, ws: WSInstance) {
           const err = (evt as { error?: unknown } | null)?.error ?? evt
-          log.error('ws.socket_error', { userId: user.id, sessionId: session.id, err })
-          releaseConnection(user.id, ws)
+          log.error('ws.socket_error', { userId, sessionId: session.id, err })
+          releaseConnection(userId, ws)
           ws.close(1011, 'Internal error')
         },
       }

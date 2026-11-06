@@ -1,14 +1,12 @@
 import type { Context } from 'hono'
-import type * as DrizzleOrm from 'drizzle-orm'
 import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import type { UpgradeWebSocket } from './ws'
 import type { WSInstance, ClientMessage } from './ws-handlers'
 import type * as WsHandlers from './ws-handlers'
 
 // ── Hoisted spies for the boundaries the route touches ────────────────────────
-const { findFirst, getSessionExecute, handleSubmit, handleReconnect, send, logError } = vi.hoisted(() => ({
+const { getSessionExecute, handleSubmit, handleReconnect, send, logError } = vi.hoisted(() => ({
   logError: vi.fn(),
-  findFirst: vi.fn(),
   getSessionExecute: vi.fn(),
   handleSubmit: vi.fn(),
   handleReconnect: vi.fn(),
@@ -24,23 +22,6 @@ vi.mock('../../container', () => ({
   errorReporter: { report: vi.fn() },
 }))
 
-vi.mock('../../persistence/drizzle/client', () => ({
-  db: { query: { userSessions: { findFirst } } },
-}))
-
-// Plain table refs — the route only feeds these into eq()/gt().
-vi.mock('../../persistence/drizzle/schema', () => ({
-  userSessions: { tokenHash: 'userSessions.tokenHash', expiresAt: 'userSessions.expiresAt' },
-}))
-
-// Partial-mock so eq/and/gt are real operators but observable. The route's
-// `where` is the only place these compose, so the spy args prove the filter
-// is built from the token + an expiry guard.
-vi.mock('drizzle-orm', async (importOriginal) => {
-  const actual = await importOriginal<typeof DrizzleOrm>()
-  return { ...actual, eq: vi.fn(actual.eq), and: vi.fn(actual.and), gt: vi.fn(actual.gt) }
-})
-
 // activeConnections stays the REAL Map so the dedup/register/delete logic is
 // exercised end to end; only the leaf functions are spied.
 vi.mock('./ws-handlers', async (importOriginal) => {
@@ -48,10 +29,9 @@ vi.mock('./ws-handlers', async (importOriginal) => {
   return { ...actual, send, handleSubmit, handleReconnect }
 })
 
-import { and, eq, gt } from 'drizzle-orm'
 import { activeConnections } from './ws-handlers'
 import { createWsRoutes } from './ws'
-import { hashSessionToken } from '../../auth/session-token'
+import { issueWsTicket } from './ws-tickets'
 
 type WSEvents = {
   onOpen?: (evt: unknown, ws: WSInstance) => void
@@ -79,9 +59,9 @@ function captureFactory(): { upgrade: UpgradeWebSocket; get: () => HandlerFactor
   }
 }
 
-function makeContext(sessionId: string, token: string | null): Context {
+function makeContext(sessionId: string, ticket: string | null, query = ticket === null ? '' : `ticket=${ticket}`): Context {
   const base = 'ws://localhost:3001/ws/sessions/' + sessionId
-  const url = token === null ? base : `${base}?token=${token}`
+  const url = query ? `${base}?${query}` : base
   return {
     req: {
       url,
@@ -95,7 +75,6 @@ function makeSocket(): WSInstance & { close: Mock; send: Mock } {
 }
 
 const VALID_USER = { id: 'user-1', githubId: 'gh-1' }
-const TOKEN = '5b1f0c9e-3a2d-4c8b-9e7f-1a2b3c4d5e6f'
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -106,64 +85,49 @@ afterEach(() => {
   activeConnections.clear()
 })
 
-async function buildEvents(sessionId: string, token: string | null): Promise<WSEvents> {
+async function buildEvents(sessionId: string, ticket: string | null, query?: string): Promise<WSEvents> {
   const cap = captureFactory()
   createWsRoutes(cap.upgrade)
-  return cap.get()(makeContext(sessionId, token))
+  return cap.get()(makeContext(sessionId, ticket, query))
 }
 
 describe('createWsRoutes — auth on upgrade', () => {
-  it('closes 4001 when no token query param is present (no DB hit)', async () => {
-    const events = await buildEvents('sess-1', null)
+  function expectRefused(events: WSEvents): void {
     const ws = makeSocket()
     events.onOpen?.(null, ws)
-
-    expect(ws.close).toHaveBeenCalledWith(4001, 'Unauthorized')
-    expect(findFirst).not.toHaveBeenCalled()
+    expect(ws.close).toHaveBeenCalledWith(4401, 'Unauthorized')
     expect(getSessionExecute).not.toHaveBeenCalled()
-    // Auth-fail path returns onOpen only.
     expect(events.onMessage).toBeUndefined()
+  }
+
+  it('closes 4401 when no ticket is present', async () => {
+    expectRefused(await buildEvents('sess-1', null))
   })
 
-  it('closes 4001 for an oversized token without querying the DB', async () => {
-    const events = await buildEvents('sess-1', 'x'.repeat(65))
-    const ws = makeSocket()
-    events.onOpen?.(null, ws)
-
-    expect(ws.close).toHaveBeenCalledWith(4001, 'Unauthorized')
-    expect(findFirst).not.toHaveBeenCalled()
+  it('closes 4401 for a bearer token in the URL, which is no longer accepted', async () => {
+    expectRefused(await buildEvents('sess-1', null, `token=${'x'.repeat(43)}`))
   })
 
-  it('closes 4001 when the token resolves to no session', async () => {
-    findFirst.mockResolvedValue(undefined)
-    const events = await buildEvents('sess-1', TOKEN)
-    const ws = makeSocket()
-    events.onOpen?.(null, ws)
-
-    expect(findFirst).toHaveBeenCalledTimes(1)
-    expect(ws.close).toHaveBeenCalledWith(4001, 'Unauthorized')
-    expect(getSessionExecute).not.toHaveBeenCalled()
+  it('closes 4401 for a ticket it never issued', async () => {
+    expectRefused(await buildEvents('sess-1', 'forged-ticket'))
   })
 
-  it('builds the WHERE from the token hash, never the raw token, AND an expiry guard', async () => {
-    findFirst.mockResolvedValue(undefined)
-    await buildEvents('sess-1', TOKEN)
+  it('closes 4401 for a ticket issued for another session', async () => {
+    expectRefused(await buildEvents('sess-1', issueWsTicket(VALID_USER.id, 'sess-2')))
+  })
 
-    expect(eq).toHaveBeenCalledWith('userSessions.tokenHash', hashSessionToken(TOKEN))
-    // The expiry guard: gt(expiresAt, <now>) — second arg is a Date.
-    const gtCall = vi.mocked(gt).mock.calls[0]
-    expect(gtCall[0]).toBe('userSessions.expiresAt')
-    expect(gtCall[1]).toBeInstanceOf(Date)
-    // and() composes exactly the two conditions above.
-    expect(and).toHaveBeenCalledTimes(1)
-    const findArg = findFirst.mock.calls[0][0] as { with: { user: boolean } }
-    expect(findArg.with).toEqual({ user: true })
+  it('closes 4401 when a ticket is used a second time', async () => {
+    getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
+    const ticket = issueWsTicket(VALID_USER.id, 'sess-1')
+    await buildEvents('sess-1', ticket)
+    vi.clearAllMocks()
+
+    expectRefused(await buildEvents('sess-1', ticket))
   })
 
   it('closes 4004 when the session does not exist', async () => {
-    findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue(null)
-    const events = await buildEvents('sess-missing', TOKEN)
+    const events = await buildEvents('sess-missing', issueWsTicket(VALID_USER.id, 'sess-missing'))
     const ws = makeSocket()
     events.onOpen?.(null, ws)
 
@@ -172,23 +136,20 @@ describe('createWsRoutes — auth on upgrade', () => {
   })
 
   it('closes 4003 when the session belongs to another user', async () => {
-    findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: 'someone-else' })
-    const events = await buildEvents('sess-1', TOKEN)
+    const events = await buildEvents('sess-1', issueWsTicket(VALID_USER.id, 'sess-1'))
     const ws = makeSocket()
     events.onOpen?.(null, ws)
 
     expect(ws.close).toHaveBeenCalledWith(4003, 'Forbidden')
-    // Ownership-fail path returns onOpen only — no message handler wired.
     expect(events.onMessage).toBeUndefined()
   })
 })
 
 describe('createWsRoutes — onOpen for an owned session', () => {
   async function ownedEvents() {
-    findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
-    return buildEvents('sess-1', TOKEN)
+    return buildEvents('sess-1', issueWsTicket(VALID_USER.id, 'sess-1'))
   }
 
   it('registers the connection and sends {type:ready}', async () => {
@@ -215,9 +176,8 @@ describe('createWsRoutes — onOpen for an owned session', () => {
 
 describe('createWsRoutes — onMessage', () => {
   async function ownedEvents() {
-    findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
-    return buildEvents('sess-1', TOKEN)
+    return buildEvents('sess-1', issueWsTicket(VALID_USER.id, 'sess-1'))
   }
 
   it('sends INVALID_MESSAGE on non-JSON payloads', async () => {
@@ -286,9 +246,8 @@ describe('createWsRoutes — onMessage', () => {
 
 describe('createWsRoutes — onClose / onError', () => {
   async function ownedEventsConnected(ws: WSInstance) {
-    findFirst.mockResolvedValue({ user: VALID_USER })
     getSessionExecute.mockResolvedValue({ id: 'sess-1', userId: VALID_USER.id })
-    const events = await buildEvents('sess-1', TOKEN)
+    const events = await buildEvents('sess-1', issueWsTicket(VALID_USER.id, 'sess-1'))
     events.onOpen?.(null, ws)
     return events
   }
