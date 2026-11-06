@@ -103,9 +103,9 @@ authRoutes.get('/auth/github/callback', async (c) => {
   const { token, tokenHash } = issueSessionToken()
   await db.insert(userSessions).values({ userId: user.id, tokenHash, expiresAt: sessionExpiresAt })
 
-  // Clear state cookie and redirect with token (ADR-007)
+  // In the fragment, the token never reaches a server log or a Referer header (ADR 037).
   deleteCookie(c, 'oauth_state')
-  return c.redirect(`${config.WEB_URL}/auth/callback?token=${token}`)
+  return c.redirect(`${config.WEB_URL}/auth/callback#token=${token}`)
 })
 
 // Redeem invitation — validates token and starts OAuth flow

@@ -28,11 +28,18 @@ describe('AuthCallbackPage', () => {
   })
 
   it('persists the token and redirects to the dashboard when the callback carries a credential', () => {
-    renderAt('/auth/callback?token=ghp_secret_abc')
+    renderAt('/auth/callback#token=ghp_secret_abc')
 
     expect(getToken()).toBe('ghp_secret_abc')
     expect(screen.getByText('dashboard screen')).toBeInTheDocument()
     expect(screen.queryByText('Auth_Failed: no credential received.')).not.toBeInTheDocument()
+  })
+
+  it('ignores a token in the query string, where servers would log it', () => {
+    renderAt('/auth/callback?token=ghp_secret_abc')
+
+    expect(getToken()).toBeNull()
+    expect(screen.getByText('Auth_Failed: no credential received.')).toBeInTheDocument()
   })
 
   it('shows the failure state (not the loading state) when no token is present', () => {

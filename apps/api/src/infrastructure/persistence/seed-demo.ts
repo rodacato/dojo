@@ -489,7 +489,7 @@ export async function seedDemo(): Promise<void> {
     for (const persona of PERSONAS) {
       const { token, sessions } = await seedPersona(db, persona, milestoneSlugs, variationByKata, now)
       console.log(`${persona.username} · ${sessions} sessions · ${persona.shows}`)
-      console.log(`  ${webUrl}/auth/callback?token=${token}\n`)
+      console.log(`  ${webUrl}/auth/callback#token=${token}\n`)
     }
   } finally {
     await client.end()
