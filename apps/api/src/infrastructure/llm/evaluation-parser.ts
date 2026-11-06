@@ -1,4 +1,6 @@
-import type { EvaluationResult, Verdict } from '../../domain/practice/values'
+import { verdictSchema } from '@dojo/shared'
+import { z } from 'zod'
+import type { EvaluationResult } from '../../domain/practice/values'
 
 const EVALUATION_OPEN = '<evaluation>'
 const EVALUATION_CLOSE = '</evaluation>'
@@ -76,8 +78,7 @@ export class EvaluationStreamParser {
     const jsonStr = this.evalBuffer.slice(0, closeIdx).trim()
 
     try {
-      const raw = JSON.parse(jsonStr) as Record<string, unknown>
-      return { result: validateEvaluationResult(raw), error: null }
+      return { result: validateEvaluationResult(JSON.parse(jsonStr)), error: null }
     } catch (e) {
       return {
         result: null,
@@ -87,39 +88,16 @@ export class EvaluationStreamParser {
   }
 }
 
-const VALID_VERDICTS = new Set<Verdict>(['passed', 'passed_with_notes', 'needs_work'])
+const evaluationSchema = z.object({
+  verdict: verdictSchema,
+  analysis: z.string().refine((text) => text.trim().length > 0, 'Missing or empty analysis'),
+  topicsToReview: z.array(z.unknown()).transform((topics) => topics.filter((t): t is string => typeof t === 'string')),
+  followUpQuestion: z.string().nullable(),
+  isFinalEvaluation: z.boolean(),
+})
 
-function validateEvaluationResult(raw: Record<string, unknown>): EvaluationResult {
-  const verdict = raw['verdict']
-  if (!VALID_VERDICTS.has(verdict as Verdict)) {
-    throw new Error(`Invalid verdict: ${String(verdict)}`)
-  }
-
-  const analysis = raw['analysis']
-  if (typeof analysis !== 'string' || !analysis.trim()) {
-    throw new Error('Missing or empty analysis')
-  }
-
-  const topicsToReview = raw['topicsToReview']
-  if (!Array.isArray(topicsToReview)) {
-    throw new TypeError('topicsToReview must be an array')
-  }
-
-  const followUpQuestion = raw['followUpQuestion']
-  if (followUpQuestion !== null && typeof followUpQuestion !== 'string') {
-    throw new Error('followUpQuestion must be a string or null')
-  }
-
-  const isFinalEvaluation = raw['isFinalEvaluation']
-  if (typeof isFinalEvaluation !== 'boolean') {
-    throw new TypeError('isFinalEvaluation must be a boolean')
-  }
-
-  return {
-    verdict: verdict as Verdict,
-    analysis,
-    topicsToReview: topicsToReview.filter((t): t is string => typeof t === 'string'),
-    followUpQuestion: typeof followUpQuestion === 'string' ? followUpQuestion : null,
-    isFinalEvaluation,
-  }
+function validateEvaluationResult(raw: unknown): EvaluationResult {
+  const parsed = evaluationSchema.safeParse(raw)
+  if (!parsed.success) throw new Error(z.prettifyError(parsed.error))
+  return parsed.data
 }
