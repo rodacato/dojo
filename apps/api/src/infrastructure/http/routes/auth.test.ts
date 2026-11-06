@@ -249,7 +249,7 @@ describe('GET /auth/github/callback — invite gate for new users', () => {
 
 // The browser gets a random token; the database keeps only its hash.
 function expectStoredAsHash(res: Response): void {
-  const token = new URL(res.headers.get('location')!).searchParams.get('token')!
+  const token = new URLSearchParams(new URL(res.headers.get('location')!).hash.slice(1)).get('token')!
   expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/)
   expect(sessionInsertValues).toHaveBeenCalledWith(expect.objectContaining({ tokenHash: hashSessionToken(token) }))
   expect(JSON.stringify(sessionInsertValues.mock.calls)).not.toContain(token)
@@ -260,7 +260,7 @@ describe('GET /auth/github/callback — success paths', () => {
     findFirstUser.mockResolvedValue({ id: 'user-1', githubId: '4242' })
     const res = await callback()
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toMatch(/^http:\/\/localhost:5173\/auth\/callback\?token=/)
+    expect(res.headers.get('location')).toMatch(/^http:\/\/localhost:5173\/auth\/callback#token=[^&?]+$/)
     expectStoredAsHash(res)
     expect(upsertUser).toHaveBeenCalledWith({
       githubId: '4242',

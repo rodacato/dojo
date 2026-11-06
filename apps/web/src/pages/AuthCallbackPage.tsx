@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { setToken } from '../lib/auth-token'
 import { LogoMark } from '../components/Logo'
 import { Button } from '../components/ui/Button'
 
 export function AuthCallbackPage() {
   const navigate = useNavigate()
-  const [params] = useSearchParams()
+  const { hash } = useLocation()
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
-    const token = params.get('token')
+    const token = new URLSearchParams(hash.slice(1)).get('token')
     if (token) {
       setToken(token)
       navigate('/dashboard', { replace: true })
       return
     }
     setFailed(true)
-  }, [params, navigate])
+  }, [hash, navigate])
 
   return (
     <div className="relative min-h-screen bg-page flex flex-col items-center justify-center px-6 py-12">
