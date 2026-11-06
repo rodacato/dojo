@@ -8,6 +8,7 @@ import {
   type ScrollManifest,
 } from '@dojo/shared'
 import * as schema from './drizzle/schema'
+import { issueSessionToken } from '../auth/session-token'
 import { KATAS, uuidv5 } from './katas'
 import type { SeedKata } from './katas'
 import { composePointAnswer } from '../../domain/practice/point-answer'
@@ -451,12 +452,10 @@ async function seedPersona(
     )
   }
 
-  const [login] = await db
-    .insert(schema.userSessions)
-    .values({ userId, expiresAt: new Date(now.getTime() + 30 * DAY_MS) })
-    .returning({ id: schema.userSessions.id })
+  const { token, tokenHash } = issueSessionToken()
+  await db.insert(schema.userSessions).values({ userId, tokenHash, expiresAt: new Date(now.getTime() + 30 * DAY_MS) })
 
-  return { token: login!.id, sessions: sessionRows.length }
+  return { token, sessions: sessionRows.length }
 }
 
 export async function seedDemo(): Promise<void> {

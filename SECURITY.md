@@ -97,7 +97,7 @@ There are no per-user limits on starting katas. If your instance is open to peop
 ### Session Security
 
 How it works today:
-- Signing in creates a row in `user_sessions`; its id is the bearer token. The API redirects the browser to `/auth/callback?token=<id>` and the web app keeps the token in `localStorage` ([auth-token.ts](apps/web/src/lib/auth-token.ts)), sending it as `Authorization: Bearer`. It is not a cookie, so `HttpOnly` and `SameSite` do not apply to it: any script running on the web origin can read it, which is why the CSP above matters.
+- Signing in issues a random 32-byte bearer token and stores only its SHA-256 in `user_sessions.token_hash`, so a copy of the database holds no usable session. The API redirects the browser to `/auth/callback?token=<token>` and the web app keeps the token in `localStorage` ([auth-token.ts](apps/web/src/lib/auth-token.ts)), sending it as `Authorization: Bearer`. It is not a cookie, so `HttpOnly` and `SameSite` do not apply to it: any script running on the web origin can read it, which is why the CSP above matters.
 - A session lasts 30 days from sign-in. There is no inactivity timeout and no renewal.
 - Logout deletes the session row, so a token stops working server-side, not only in the browser.
 - Only the short-lived OAuth state and invitation cookies are cookies: `HttpOnly`, `SameSite=Lax` (Strict would be dropped on the GitHub redirect), and `Secure` when `NODE_ENV=production`.
