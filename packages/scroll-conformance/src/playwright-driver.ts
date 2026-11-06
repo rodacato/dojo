@@ -83,7 +83,7 @@ export class PlaywrightDriver implements BrowserDriver {
       messages.push({ ...message, at: now() })
     })
     await page.addInitScript(() => {
-      window.addEventListener('message', (event) => {
+      window.addEventListener('message', (event) => { // Records every sender's origin; checking it is the suite's job. nosemgrep: javascript.browser.security.insufficient-postmessage-origin-validation.insufficient-postmessage-origin-validation
         ;(window as unknown as { __scRecord(message: unknown): void }).__scRecord({ origin: event.origin, data: event.data })
       })
     })

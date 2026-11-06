@@ -6,7 +6,7 @@ import { createRequire } from 'node:module'
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 export function themeTokens(css, theme) {
-  const block = css.match(new RegExp(`\\[data-theme='${theme}'\\] \\{([^}]+)`))?.[1]
+  const block = css.match(new RegExp(`\\[data-theme='${theme}'\\] \\{([^}]+)`))?.[1] // theme is washi or sumi. nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
   if (!block) throw new Error(`Missing ${theme} theme`)
   const tokens = Object.fromEntries(
     [...block.matchAll(/(--color-[\w-]+):\s*(#[\da-fA-F]{6})/g)].map((match) => [

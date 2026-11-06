@@ -1,6 +1,5 @@
-# Trivy config — auto-loaded from the repo root. Keeps the (report-only)
-# security scan in ci-quality.yml as signal by skipping known/accepted findings.
-# Verified 2026-06-21 (S033 security pass). See docs/audits/2026-06-github-security-findings.md.
+# Auto-loaded by the blocking Trivy scans in ci-quality.yml. Each skip below says why
+# the finding is accepted, so a new one fails the check instead of hiding among them.
 secret:
   skip-paths:
     # Teaching fixtures in the "spot the hardcoded secret" code-review kata
@@ -10,3 +9,7 @@ secret:
     - "apps/api/src/infrastructure/persistence/seed.ts"
     # curl authenticates with the $SONAR_TOKEN env var, never a literal.
     - "scripts/sonar-dump.sh"
+scan:
+  skip-files:
+    # The devcontainer image is for local development and never deployed, so its root user is not shipped.
+    - ".devcontainer/Dockerfile"

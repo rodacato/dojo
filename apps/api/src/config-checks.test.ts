@@ -12,7 +12,7 @@ describe('insecureProductionSettings', () => {
   })
 
   it('accepts a generated session secret in production', () => {
-    const secret = 'f3a9c1d27be84a6091d5e2c7b8a4f60e1d93b7c25a8e4f1067d2c9b3a5e8f410'
+    const secret = 'f3a9c1d27be84a6091d5e2c7b8a4f60e1d93b7c25a8e4f1067d2c9b3a5e8f410' // A test fixture. gitleaks:allow nosemgrep: generic.secrets.security.detected-generic-secret.detected-generic-secret
 
     expect(insecureProductionSettings({ NODE_ENV: 'production', SESSION_SECRET: secret })).toEqual([])
   })
