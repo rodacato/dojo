@@ -48,7 +48,7 @@ test.describe('smoke: the CSP lets the web reach its API', () => {
     const result = await page.evaluate(
       (apiUrl) =>
         new Promise<{ opened: boolean; code?: number }>((resolve) => {
-          const ws = new WebSocket(`${apiUrl.replace(/^http/, 'ws')}/ws/sessions/00000000-0000-0000-0000-000000000000?token=smoke`)
+          const ws = new WebSocket(`${apiUrl.replace(/^http/, 'ws')}/ws/sessions/00000000-0000-0000-0000-000000000000?ticket=smoke`)
           const timer = setTimeout(() => resolve({ opened: false }), 8_000)
           let opened = false
           ws.onopen = () => {
@@ -66,7 +66,7 @@ test.describe('smoke: the CSP lets the web reach its API', () => {
       API_URL,
     )
 
-    // A bad token is rejected after the handshake (4001), so reaching onopen
+    // A bad ticket is rejected after the handshake (4401), so reaching onopen
     // proves the CSP and the proxy allow the upgrade.
     expect(result.opened, 'the WebSocket was blocked before it opened').toBe(true)
   })

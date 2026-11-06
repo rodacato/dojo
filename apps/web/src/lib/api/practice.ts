@@ -46,6 +46,8 @@ export const practice = {
 
   getSession: (id: string) => request<SessionWithKata>(`/sessions/${id}`),
 
+  getWsTicket: (sessionId: string) => request<{ ticket: string }>(`/sessions/${sessionId}/ws-ticket`, { method: 'POST' }),
+
   streamSessionBody,
 
   submitAttempt: (sessionId: string, userResponse: string) =>

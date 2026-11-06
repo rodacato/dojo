@@ -75,12 +75,25 @@ function setup() {
   return renderHook(() => useEvaluationStream(SESSION))
 }
 
+const fetchMock = vi.fn()
+
+function ticketResponse(status = 200): Response {
+  return new Response(JSON.stringify(status === 200 ? { ticket: 'tkt-1' } : { error: 'boom' }), { status })
+}
+
+async function connectSocket(result: { current: ReturnType<typeof useEvaluationStream> }): Promise<void> {
+  act(() => result.current.connect())
+  await act(() => vi.waitFor(() => FakeWebSocket.last()))
+}
+
 describe('useEvaluationStream', () => {
   beforeEach(() => {
     FakeWebSocket.instances.length = 0
     navigateMock.mockClear()
     localStorage.clear()
     vi.stubGlobal('WebSocket', FakeWebSocket as unknown as typeof WebSocket)
+    fetchMock.mockReset().mockImplementation(async () => ticketResponse())
+    vi.stubGlobal('fetch', fetchMock)
   })
 
   afterEach(() => {
@@ -88,40 +101,53 @@ describe('useEvaluationStream', () => {
     vi.unstubAllGlobals()
   })
 
-  it('starts idle and opens a token-bearing socket on connect', () => {
+  it('asks for a ticket with the bearer token, then opens the socket with the ticket only', async () => {
     localStorage.setItem('dojo_token', 'jwt-abc')
     const { result } = setup()
 
     expect(result.current.state).toEqual({ status: 'idle' })
 
-    act(() => result.current.connect())
+    await connectSocket(result)
 
     expect(result.current.state).toEqual({ status: 'connecting' })
-    expect(FakeWebSocket.last().url).toContain(`/ws/sessions/${SESSION}`)
-    expect(FakeWebSocket.last().url).toContain('token=jwt-abc')
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(url).toContain(`/sessions/${SESSION}/ws-ticket`)
+    expect((init.headers as Record<string, string>)['Authorization']).toBe('Bearer jwt-abc')
+    expect(FakeWebSocket.last().url).toContain(`/ws/sessions/${SESSION}?ticket=tkt-1`)
+    expect(FakeWebSocket.last().url).not.toContain('jwt-abc')
   })
 
-  it('moves to ready on a ready message', () => {
+  it('surfaces an error and opens no socket when the ticket request fails', async () => {
+    fetchMock.mockImplementation(async () => ticketResponse(500))
     const { result } = setup()
+
     act(() => result.current.connect())
+
+    await vi.waitFor(() => expect(result.current.state).toMatchObject({ status: 'error', code: 'WS_ERROR' }))
+    expect(FakeWebSocket.instances).toHaveLength(0)
+  })
+
+  it('moves to ready on a ready message', async () => {
+    const { result } = setup()
+    await connectSocket(result)
 
     act(() => FakeWebSocket.last().emit({ type: 'ready' }))
 
     expect(result.current.state).toEqual({ status: 'ready' })
   })
 
-  it('moves to executing on an executing message', () => {
+  it('moves to executing on an executing message', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
 
     act(() => FakeWebSocket.last().emit({ type: 'executing' }))
 
     expect(result.current.state).toEqual({ status: 'executing' })
   })
 
-  it('accumulates streamed token chunks into a single tokens string', () => {
+  it('accumulates streamed token chunks into a single tokens string', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
 
     act(() => ws.emit({ type: 'token', content: 'Looks ' }))
@@ -133,9 +159,9 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('carries the execution result through to the streaming state', () => {
+  it('carries the execution result through to the streaming state', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
 
     act(() => ws.emit({ type: 'execution_result', result: execResult }))
@@ -152,9 +178,9 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('reaches complete carrying the evaluation result and accumulated tokens', () => {
+  it('reaches complete carrying the evaluation result and accumulated tokens', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
 
     act(() => ws.emit({ type: 'token', content: 'verdict: ' }))
@@ -168,9 +194,9 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('completes from a batched evaluation+complete via the stored latest result', () => {
+  it('completes from a batched evaluation+complete via the stored latest result', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
 
     // The hook stashes the evaluation result in a ref so a complete frame that
@@ -186,10 +212,10 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('stays on the screen after a completion, final or not (D60)', () => {
+  it('stays on the screen after a completion, final or not (D60)', async () => {
     vi.useFakeTimers()
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
 
     act(() => ws.emit({ type: 'evaluation', result: passingResult }))
@@ -202,9 +228,9 @@ describe('useEvaluationStream', () => {
     expect(result.current.state).toMatchObject({ status: 'complete', result: finalResult })
   })
 
-  it('surfaces an error message from the server', () => {
+  it('surfaces an error message from the server', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
 
     act(() =>
       FakeWebSocket.last().emit({
@@ -221,9 +247,9 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('surfaces a transport error from ws.onerror', () => {
+  it('surfaces a transport error from ws.onerror', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
 
     act(() => FakeWebSocket.last().onerror?.())
 
@@ -235,9 +261,9 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('treats an unexpected close as an error', () => {
+  it('treats an unexpected close as an error', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     act(() => FakeWebSocket.last().emit({ type: 'ready' }))
 
     act(() => FakeWebSocket.last().onclose?.({ code: 1006 }))
@@ -250,9 +276,9 @@ describe('useEvaluationStream', () => {
     })
   })
 
-  it('keeps what the sensei had written when the stream fails', () => {
+  it('keeps what the sensei had written when the stream fails', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     act(() => FakeWebSocket.last().emit({ type: 'token', content: 'Half a thou' }))
 
     act(() => FakeWebSocket.last().emit({ type: 'error', code: 'LLM_STREAM_ERROR' }))
@@ -260,9 +286,9 @@ describe('useEvaluationStream', () => {
     expect(result.current.state).toMatchObject({ status: 'error', tokens: 'Half a thou' })
   })
 
-  it('keeps what the sensei had written when the connection drops', () => {
+  it('keeps what the sensei had written when the connection drops', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     act(() => FakeWebSocket.last().emit({ type: 'token', content: 'Half a thou' }))
 
     act(() => FakeWebSocket.last().onclose?.({ code: 1006 }))
@@ -270,9 +296,9 @@ describe('useEvaluationStream', () => {
     expect(result.current.state).toMatchObject({ status: 'error', tokens: 'Half a thou' })
   })
 
-  it('leaves a completed state untouched on a clean close', () => {
+  it('leaves a completed state untouched on a clean close', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
     act(() => ws.emit({ type: 'evaluation', result: passingResult }))
     act(() => ws.emit({ type: 'complete' }))
@@ -282,39 +308,20 @@ describe('useEvaluationStream', () => {
     expect(result.current.state).toMatchObject({ status: 'complete' })
   })
 
-  it('clears the token and redirects when the session expires (close 4001)', () => {
+  it('treats a refused ticket (close 4401) as a dropped connection, not a sign-out', async () => {
     localStorage.setItem('dojo_token', 'jwt-abc')
-    const originalLocation = window.location
-    const assignedHrefs: string[] = []
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        ...originalLocation,
-        set href(value: string) {
-          assignedHrefs.push(value)
-        },
-      },
-    })
+    const { result } = setup()
+    await connectSocket(result)
 
-    try {
-      const { result } = setup()
-      act(() => result.current.connect())
+    act(() => FakeWebSocket.last().onclose?.({ code: 4401 }))
 
-      act(() => FakeWebSocket.last().onclose?.({ code: 4001 }))
-
-      expect(localStorage.getItem('dojo_token')).toBeNull()
-      expect(assignedHrefs).toContain('/?error=session_expired')
-    } finally {
-      Object.defineProperty(window, 'location', {
-        configurable: true,
-        value: originalLocation,
-      })
-    }
+    expect(localStorage.getItem('dojo_token')).toBe('jwt-abc')
+    expect(result.current.state).toMatchObject({ status: 'error', code: 'WS_CLOSED_4401' })
   })
 
-  it('sends a submit frame and resets to empty streaming', () => {
+  it('sends a submit frame and resets to empty streaming', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
     act(() => ws.emit({ type: 'execution_result', result: execResult }))
 
@@ -324,9 +331,9 @@ describe('useEvaluationStream', () => {
     expect(result.current.state).toEqual({ status: 'streaming', tokens: '' })
   })
 
-  it('sends a reconnect frame and resets to empty streaming', () => {
+  it('sends a reconnect frame and resets to empty streaming', async () => {
     const { result } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
 
     act(() => result.current.reconnect('attempt-9'))
@@ -335,9 +342,9 @@ describe('useEvaluationStream', () => {
     expect(result.current.state).toEqual({ status: 'streaming', tokens: '' })
   })
 
-  it('closes the socket on unmount', () => {
+  it('closes the socket on unmount', async () => {
     const { result, unmount } = setup()
-    act(() => result.current.connect())
+    await connectSocket(result)
     const ws = FakeWebSocket.last()
     expect(ws.closed).toBe(false)
 

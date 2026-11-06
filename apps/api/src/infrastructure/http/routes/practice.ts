@@ -24,6 +24,7 @@ import { uuidParam } from '../middleware/uuidParam'
 import type { AppEnv } from '../app-env'
 import { SUMI } from '../sumi'
 import { pendingAttempts } from './pending-attempts'
+import { issueWsTicket } from './ws-tickets'
 import { log } from '../../observability/logger'
 
 export const practiceRoutes = new Hono<AppEnv>()
@@ -259,6 +260,17 @@ async function trackPlaygroundConversion(
 // ---------------------------------------------------------------------------
 // GET /sessions/:id
 // ---------------------------------------------------------------------------
+
+practiceRoutes.post('/sessions/:id/ws-ticket', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
+  const user = c.get('user') as { id: string }
+  const sessionId = c.req.param('id')!
+
+  const session = await useCases.getSession.execute(SessionId(sessionId))
+  if (!session) return c.json({ error: 'Session not found' }, 404)
+  if (session.userId !== user.id) return c.json({ error: 'Forbidden' }, 403)
+
+  return c.json({ ticket: issueWsTicket(user.id, sessionId) })
+})
 
 practiceRoutes.get('/sessions/:id', requireAuth, uuidParam('id', { error: 'Session not found' }), async (c) => {
   const user = c.get('user') as { id: string }

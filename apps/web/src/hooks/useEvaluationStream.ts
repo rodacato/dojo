@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { WS_URL } from '../lib/config'
-import { getToken, clearToken } from '../lib/auth-token'
+import { api } from '../lib/api'
 import type {
   EvaluationClientMessage,
   EvaluationErrorCode,
@@ -42,11 +42,11 @@ export function useEvaluationStream(sessionId: string) {
   const latestResult = useRef<EvaluationResult | null>(null)
   const latestExecResult = useRef<ExecutionResult | undefined>(undefined)
 
-  const connect = useCallback(() => {
-    setState({ status: 'connecting' })
+  const unmounted = useRef(false)
 
-    const token = getToken()
-    const ws = new WebSocket(`${WS_URL}/ws/sessions/${sessionId}?token=${token}`)
+  const openSocket = useCallback((ticket: string) => {
+    if (unmounted.current) return
+    const ws = new WebSocket(`${WS_URL}/ws/sessions/${sessionId}?ticket=${encodeURIComponent(ticket)}`)
     wsRef.current = ws
 
     ws.onmessage = (event) => {
@@ -117,11 +117,6 @@ export function useEvaluationStream(sessionId: string) {
         tokens: partialTokens(prev),
       }))
     ws.onclose = (e) => {
-      if (e.code === 4001) {
-        clearToken()
-        globalThis.location.href = '/?error=session_expired'
-        return
-      }
       // 1000 is a clean close initiated by either peer after we're done (complete/error).
       // Anything else while we still expected tokens is an unexpected drop — surface it.
       if (e.code === 1000) return
@@ -136,6 +131,21 @@ export function useEvaluationStream(sessionId: string) {
       })
     }
   }, [sessionId])
+
+  // An expired sign-in surfaces here, as a 401 on the ticket that request() already handles.
+  const connect = useCallback(() => {
+    setState({ status: 'connecting' })
+    api.getWsTicket(sessionId).then(
+      ({ ticket }) => openSocket(ticket),
+      () =>
+        setState({
+          status: 'error',
+          code: 'WS_ERROR',
+          message: 'Could not open the connection. You can reconnect.',
+          tokens: '',
+        }),
+    )
+  }, [sessionId, openSocket])
 
   const sendMessage = useCallback((message: EvaluationClientMessage) => {
     wsRef.current?.send(JSON.stringify(message))
@@ -156,7 +166,9 @@ export function useEvaluationStream(sessionId: string) {
   )
 
   useEffect(() => {
+    unmounted.current = false
     return () => {
+      unmounted.current = true
       wsRef.current?.close()
     }
   }, [])
