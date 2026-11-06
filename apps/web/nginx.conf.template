@@ -42,8 +42,9 @@ server {
   # Turnstile needs script-src + frame-src to challenges.cloudflare.com
   # (api.js loader + the invisible challenge iframe). Siteverify runs
   # server-to-server so it does not appear in connect-src.
-  # The WebSocket needs explicit wss:// and ws:// entries: browsers do not match a scheme-less host to ws(s), Chromium included.
-  add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com data:; connect-src 'self' ${API_HOST} wss://${API_HOST} ws://${API_HOST} https://*.ingest.us.sentry.io; frame-src 'self' https://challenges.cloudflare.com ${SCROLL_FRAME_ORIGINS}; font-src 'self' data:;";
+  # The WebSocket needs both socket schemes listed: browsers do not match a scheme-less host to them, Chromium included.
+  # The plain one only serves instances without TLS.
+  add_header Content-Security-Policy "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://avatars.githubusercontent.com data:; connect-src 'self' ${API_HOST} wss://${API_HOST} ws://${API_HOST} https://*.ingest.us.sentry.io; frame-src 'self' https://challenges.cloudflare.com ${SCROLL_FRAME_ORIGINS}; font-src 'self' data:;"; # nosemgrep: javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
 
   gzip on;
   gzip_types text/plain text/css application/json application/javascript text/xml;

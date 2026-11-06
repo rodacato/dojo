@@ -14,9 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Report-only: findings show in the job log without failing the check.
-  # Set to "true" to make Semgrep, Trivy and Gitleaks block a merge.
-  SECURITY_BLOCKING: "false"
+  # Findings fail the check. "false" turns every scan back into a report.
+  SECURITY_BLOCKING: "true"
 
 jobs:
   semgrep:
@@ -104,7 +103,8 @@ jobs:
 
       - name: Scan
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' }}
+        # Piston is upstream, published only as :latest and unpatched; ADR 035 bounds what it can reach.
+        continue-on-error: ${{ env.SECURITY_BLOCKING != 'true' || matrix.image == 'piston' }}
         with:
           scan-type: image
           image-ref: ${{ steps.ref.outputs.ref }}
