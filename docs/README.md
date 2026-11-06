@@ -57,8 +57,8 @@ Useful while a decision is forming, then either becomes an issue (and an ADR, wh
 
 | Folder | Lifecycle |
 |---|---|
-| [`prd/`](prd/) | Active exploratory PRDs. Each ends with a status — `Decided in ADR NNN`, `Shipped` or `Discarded` — and moves to `research/prd-archive/` once no open issue depends on it. |
-| [`research/`](research/) | Background research and plans that informed a past decision and are kept for traceability |
+| [`prd/`](prd/) | Active exploratory PRDs. Each ends with a status — `Decided in ADR NNN`, `Decided in part in ADR NNN`, `Shipped` or `Discarded` — and moves to `research/prd-archive/` once no open issue depends on it. |
+| [`research/`](research/) | Research that compares mechanisms, the market or prior art, with no product perspectives. Live while it feeds a decision; closes in a PRD, an ADR or a "Reference only" note |
 | [`research/prd-archive/`](research/prd-archive/) | Closed PRDs — shipped, superseded or discarded — including the sprint plans from before work moved to GitHub issues |
 
 ---
@@ -67,6 +67,6 @@ Useful while a decision is forming, then either becomes an issue (and an ADR, wh
 
 - **Adding canonical doc?** Update this map.
 - **Closing a PRD?** Follow the [Close a PRD](WORKFLOW.md#playbook-close-a-prd) playbook.
-- **Making an architectural decision?** Write an ADR in [`adr/`](adr/). Never delete an ADR — supersede it.
-- **Tracking work?** Open a GitHub issue. Never a document in `docs/`.
+- **Making an architectural decision?** Write an ADR in [`adr/`](adr/). Never delete an ADR — amend it for a refinement, or supersede it (in part) with a new one; see [WORKFLOW](WORKFLOW.md#3-adr-for-architectural-decisions).
+- **Tracking work?** A draft card or a GitHub issue — see [Two lanes](WORKFLOW.md#two-lanes). Never a document in `docs/`.
 - **Found a doc that does not fit any folder above?** It probably should not exist, or this map needs a new category. Ask first.
