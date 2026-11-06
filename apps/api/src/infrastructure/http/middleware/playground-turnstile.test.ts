@@ -7,7 +7,7 @@ import type { AppEnv } from '../app-env'
 // real, mounted on a throwaway Hono app whose handler echoes a 200 so we can
 // tell "passed the gate" from "blocked by the gate".
 const { mockConfig } = vi.hoisted(() => ({
-  mockConfig: { TURNSTILE_SECRET_KEY: '' as string },
+  mockConfig: { TURNSTILE_SECRET_KEY: '' as string, CLIENT_IP_SOURCE: 'socket' as string },
 }))
 
 vi.mock('../../../config', () => ({ config: mockConfig }))
@@ -51,6 +51,7 @@ function stubSiteverify(opts: { ok?: boolean; success?: boolean; errorCodes?: st
 
 beforeEach(() => {
   mockConfig.TURNSTILE_SECRET_KEY = ''
+  mockConfig.CLIENT_IP_SOURCE = 'socket'
   stubSiteverify()
 })
 
@@ -131,10 +132,10 @@ describe('playgroundTurnstileMiddleware — enforced (secret set)', () => {
     expect(await res.json()).toEqual({ error: 'turnstile_failed', codes: [] })
   })
 
-  it('falls back to x-real-ip when cf-connecting-ip and x-forwarded-for are absent', async () => {
-    await post({ turnstileToken: 'good-token' }, { 'x-real-ip': '192.0.2.44' })
+  it('does not forward a client-ip header when the source is the socket', async () => {
+    await post({ turnstileToken: 'good-token' }, { 'cf-connecting-ip': '203.0.113.5', 'x-forwarded-for': '198.51.100.9' })
     const params = new URLSearchParams(lastFetch?.body ?? '')
-    expect(params.get('remoteip')).toBe('192.0.2.44')
+    expect(params.has('remoteip')).toBe(false)
   })
 
   it('sends the secret + response token to cloudflare siteverify', async () => {
@@ -145,16 +146,18 @@ describe('playgroundTurnstileMiddleware — enforced (secret set)', () => {
     expect(params.get('response')).toBe('good-token')
   })
 
-  it('forwards the cf-connecting-ip as remoteip when present', async () => {
+  it('forwards cf-connecting-ip as remoteip when the source is cloudflare', async () => {
+    mockConfig.CLIENT_IP_SOURCE = 'cloudflare'
     await post({ turnstileToken: 'good-token' }, { 'cf-connecting-ip': '203.0.113.5' })
     const params = new URLSearchParams(lastFetch?.body ?? '')
     expect(params.get('remoteip')).toBe('203.0.113.5')
   })
 
-  it('uses the first x-forwarded-for hop when cf-connecting-ip is absent', async () => {
+  it('takes the last x-forwarded-for hop, the one the operator\'s proxy appended', async () => {
+    mockConfig.CLIENT_IP_SOURCE = 'x-forwarded-for'
     await post({ turnstileToken: 'good-token' }, { 'x-forwarded-for': '198.51.100.9, 10.0.0.1' })
     const params = new URLSearchParams(lastFetch?.body ?? '')
-    expect(params.get('remoteip')).toBe('198.51.100.9')
+    expect(params.get('remoteip')).toBe('10.0.0.1')
   })
 
   it('omits remoteip when no client-ip header is present', async () => {

@@ -1,13 +1,8 @@
-import type { Context } from 'hono'
 import { rateLimiter } from 'hono-rate-limiter'
 import { config } from '../../../config'
+import { clientIp } from '../client-ip'
 
-// Key extractor: uses Cloudflare real IP when behind Cloudflare Tunnel,
-// falls back to X-Forwarded-For, then the direct connection IP.
-const keyGenerator = (c: Context): string =>
-  c.req.header('cf-connecting-ip') ??
-  c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ??
-  'unknown'
+const keyGenerator = clientIp
 
 // 200 requests per 15 minutes per IP — applied to all routes
 export const globalLimiter = rateLimiter({

@@ -66,6 +66,8 @@ To run the sensei on your own Claude or ChatGPT subscription instead of API cred
 
 **`AUTH_RATE_LIMIT_MAX`** caps requests per 15 minutes per IP on `/auth/*`. Default 1000, because `GET /auth/me` runs on every page load.
 
+**`CLIENT_IP_SOURCE`** says where the client's address comes from, for per-IP rate limits: `socket` (the default) trusts no header; `cloudflare` reads `cf-connecting-ip`; `x-forwarded-for` reads the last entry, the one your proxy appended. Behind a proxy, `socket` puts everyone in one bucket, so pick the source your proxy writes, and never one it does not overwrite: a client can send any header it likes. Any other value stops the API at boot.
+
 ### Who can sign in
 
 Sign-up is by invitation, and the invitations belong to whoever runs the instance — not to the dojo project. That operator sets `CREATOR_GITHUB_ID` to their own numeric GitHub id: that account signs in without an invitation, is the only one with `/admin`, and issues invitation links from `/admin/invitations`. Everyone else needs one of those links; once in, returning users are always allowed.

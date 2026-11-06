@@ -14,6 +14,7 @@ import { playgroundGlobalQuotaMiddleware } from '../middleware/playground-quota'
 import { playgroundAuthedUserDayLimiter, playgroundAuthedUserMinuteLimiter } from '../middleware/playground-rate-limiters'
 import { playgroundTurnstileMiddleware } from '../middleware/playground-turnstile'
 import type { AppEnv } from '../app-env'
+import { clientIp } from '../client-ip'
 import { log } from '../../observability/logger'
 
 // Every Piston language the playground runs.
@@ -98,7 +99,7 @@ playgroundRoutes.post(
     }
 
     const sessionId = c.get('playgroundSessionId')
-    const ip = extractClientIp(c)
+    const ip = clientIp(c)
 
     const result = await executionQueue.enqueueRun({ language, version, code })
 
@@ -232,21 +233,6 @@ playgroundRoutes.post('/engawa/ask', requireAuth, async (c) => {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-
-function extractClientIp(c: Context<AppEnv>): string {
-  // Kamal sits behind Traefik; x-forwarded-for is the authoritative
-  // source. Fall back to x-real-ip, then to "unknown" (in dev requests
-  // from localhost will also hit "unknown" and that's fine — the limiter
-  // collapses them into one bucket, exactly what we want for a dev box).
-  const xff = c.req.header('x-forwarded-for')
-  if (xff) {
-    const first = xff.split(',')[0]?.trim()
-    if (first) return first
-  }
-  const xRealIp = c.req.header('x-real-ip')
-  if (xRealIp) return xRealIp.trim()
-  return 'unknown'
-}
 
 // Hash ip + session with the server's SESSION_SECRET as pepper so a DB
 // dump does not leak the underlying values. SESSION_SECRET already

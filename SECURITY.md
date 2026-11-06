@@ -82,7 +82,8 @@ Rate limiting is not optional — every API request potentially triggers an LLM 
 
 What exists today:
 - every route: 200 per 15 minutes per client IP ([rateLimiter.ts](apps/api/src/infrastructure/http/middleware/rateLimiter.ts))
-- `/auth/*`: 10 per 15 minutes per client IP
+- `/auth/*`: `AUTH_RATE_LIMIT_MAX` per 15 minutes per client IP, default 1000
+- the client IP comes from the socket, or from the one header that `CLIENT_IP_SOURCE` names (`cloudflare` or `x-forwarded-for`) ([client-ip.ts](apps/api/src/infrastructure/http/client-ip.ts)). Any other forwarding header is ignored, since a client can send any header it likes
 - scroll code execution (`SCROLL_EXEC_USER_PER_MINUTE`) and playground runs (`PLAYGROUND_RATE_LIMIT_AUTHED_*`): per signed-in user, per-minute and per-day buckets, tunable by env var. Neither runs code for anonymous visitors ([ADR 035](docs/adr/035-playground-requires-sign-in.md))
 - scroll progress writes and error reports: fixed per-minute limits
 

@@ -36,6 +36,7 @@ const {
       LLM_MODEL: 'claude-test-model',
       SESSION_SECRET: 'x'.repeat(32),
       NODE_ENV: 'test' as 'test' | 'production' | 'development',
+      CLIENT_IP_SOURCE: 'socket',
     },
     authState: { mode: 'anon' as 'anon' | 'authed' },
     enqueueRun: vi.fn(),
@@ -148,6 +149,7 @@ beforeEach(() => {
   mockConfig.FF_PLAYGROUND_ASK_SENSEI_ENABLED = true
   mockConfig.PLAYGROUND_ASK_SENSEI_DAILY_QUOTA = 30
   mockConfig.NODE_ENV = 'test'
+  mockConfig.CLIENT_IP_SOURCE = 'socket'
   enqueueRun.mockResolvedValue(runResult())
   insertValues.mockReturnValue(Promise.resolve(undefined))
   // db.select(...).from(...).where(...) resolves to the usage-count rows.
@@ -230,13 +232,19 @@ describe('POST /engawa/run', () => {
     expect(logged.ipHash).not.toBe('203.0.113.7')
   })
 
-  it('derives the ip hash from x-forwarded-for first hop, not x-real-ip', async () => {
-    await post('/engawa/run', VALID_RUN, { 'x-forwarded-for': '1.1.1.1', 'x-real-ip': '2.2.2.2' })
-    const first = insertValues.mock.calls[0]?.[0] as Record<string, unknown>
-    await post('/engawa/run', VALID_RUN, { 'x-real-ip': '1.1.1.1' })
-    const second = insertValues.mock.calls[0]?.[0] as Record<string, unknown>
-    // Same underlying ip (1.1.1.1) via different headers => identical hash.
-    expect(first.ipHash).toBe(second.ipHash)
+  it('ignores a client-supplied x-forwarded-for when deriving the ip hash', async () => {
+    await post('/engawa/run', VALID_RUN, { 'x-forwarded-for': '1.1.1.1' })
+    await post('/engawa/run', VALID_RUN, { 'x-forwarded-for': '2.2.2.2' })
+    const [first, second] = insertValues.mock.calls.map((call) => call[0] as Record<string, unknown>)
+    expect(first?.ipHash).toBe(second?.ipHash)
+  })
+
+  it('derives the ip hash from cf-connecting-ip when the source is cloudflare', async () => {
+    mockConfig.CLIENT_IP_SOURCE = 'cloudflare'
+    await post('/engawa/run', VALID_RUN, { 'cf-connecting-ip': '1.1.1.1' })
+    await post('/engawa/run', VALID_RUN, { 'cf-connecting-ip': '2.2.2.2' })
+    const [first, second] = insertValues.mock.calls.map((call) => call[0] as Record<string, unknown>)
+    expect(first?.ipHash).not.toBe(second?.ipHash)
   })
 
   it('emits a playground_run metric with the execution result', async () => {

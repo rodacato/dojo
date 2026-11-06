@@ -78,6 +78,11 @@ export const envSchema = z.object({
   // from a Turnstile site (cloudflare.com → Turnstile → Add site). The
   // site key is ALSO required by the web app as VITE_TURNSTILE_SITE_KEY.
   TURNSTILE_SECRET_KEY: z.string().default(''),
+  // Where the client's address comes from: the socket, or the header the proxy in front of the API writes.
+  CLIENT_IP_SOURCE: z.preprocess(
+    (value) => (typeof value === 'string' ? value.trim().toLowerCase() || undefined : value),
+    z.enum(['socket', 'cloudflare', 'x-forwarded-for']).default('socket'),
+  ),
   TURNSTILE_SITE_KEY: z.string().default(''),
   // Prometheus metrics at GET /metrics. Opt-in: OFF mounts nothing (zero
   // overhead). The token alone enables nothing — METRICS_ENABLED is the gate.

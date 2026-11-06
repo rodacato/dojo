@@ -13,7 +13,10 @@ accessories), then `config/deploy.web.yml`. Both run from [`.github/workflows/cd
    you will store as `SSH_PRIVATE_KEY`. Kamal connects as `deploy`.
 2. Public traffic reaches kamal-proxy on the host's port 80 through a Cloudflare Tunnel, so the
    host exposes no HTTP ports ([ADR 011](../adr/011-cloudflare-tunnel-https.md)). Route both
-   `APP_HOST` and `API_HOST` to `http://localhost:80`.
+   `APP_HOST` and `API_HOST` to `http://localhost:80`. The API keys its rate limits on the
+   `cf-connecting-ip` header that Cloudflare writes (`CLIENT_IP_SOURCE: cloudflare` in
+   `config/deploy.api.yml`). Without the tunnel in front, a client could set that header itself,
+   so change it to match your proxy.
 3. The runners open SSH to the host, so port 22 must be reachable from GitHub Actions. Keep it
    key-only.
 
