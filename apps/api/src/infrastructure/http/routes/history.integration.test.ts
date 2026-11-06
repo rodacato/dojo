@@ -7,6 +7,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 import type { HistoryOutcomeFilter, HistoryPageDTO } from '@dojo/shared'
 import * as schema from '../../persistence/drizzle/schema'
+import { issueSessionToken } from '../../auth/session-token'
 import type { dashboardRoutes } from './dashboard'
 
 const url = process.env['TEST_DATABASE_URL']
@@ -24,7 +25,7 @@ describe.skipIf(!url)('GET /history against Postgres', () => {
 
   const learner = randomUUID()
   const stranger = randomUUID()
-  const token = randomUUID()
+  const { token, tokenHash } = issueSessionToken()
   const variationId = randomUUID()
   const cacheKata = randomUUID()
   const literalKata = randomUUID()
@@ -47,7 +48,7 @@ describe.skipIf(!url)('GET /history against Postgres', () => {
     await db.insert(users).values([learner, stranger].map((id) => ({
       id, githubId: `integration-${id}`, username: `history-${id.slice(0, 8)}`, avatarUrl: 'https://example.test/a.png',
     })))
-    await db.insert(userSessions).values({ id: token, userId: learner, expiresAt: new Date(Date.now() + 3_600_000) })
+    await db.insert(userSessions).values({ tokenHash, userId: learner, expiresAt: new Date(Date.now() + 3_600_000) })
     const kata = (id: string, title: string) => ({
       id, title, description: 'fixture', duration: 5, difficulty: 'easy', category: 'backend',
       type: 'review', status: 'published', ownerRole: 'role', ownerContext: 'context', createdBy: learner,
@@ -90,7 +91,7 @@ describe.skipIf(!url)('GET /history against Postgres', () => {
     await db.delete(sessions).where(inArray(sessions.id, sessionIds))
     await db.delete(variations).where(eq(variations.id, variationId))
     await db.delete(katas).where(inArray(katas.id, kataIds))
-    await db.delete(userSessions).where(eq(userSessions.id, token))
+    await db.delete(userSessions).where(eq(userSessions.tokenHash, tokenHash))
     await db.delete(users).where(inArray(users.id, [learner, stranger]))
     await client.end()
   })

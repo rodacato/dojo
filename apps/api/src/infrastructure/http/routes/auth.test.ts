@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRouter } from '../router'
 import { db } from '../../persistence/drizzle/client'
+import { hashSessionToken } from '../../auth/session-token'
 
 // ---------------------------------------------------------------------------
 // Hoisted state the mock factories close over. The real boundaries we control:
@@ -19,7 +20,7 @@ const {
   upsertUser,
   findFirstUser,
   findFirstInvitation,
-  sessionInsertReturning,
+  sessionInsertValues,
   invitationsUpdateWhere,
   usersUpdateWhere,
   reportError,
@@ -39,7 +40,7 @@ const {
   upsertUser: vi.fn(),
   findFirstUser: vi.fn(),
   findFirstInvitation: vi.fn(),
-  sessionInsertReturning: vi.fn(),
+  sessionInsertValues: vi.fn(),
   invitationsUpdateWhere: vi.fn(),
   usersUpdateWhere: vi.fn(),
   reportError: vi.fn().mockResolvedValue(undefined),
@@ -75,7 +76,7 @@ vi.mock('../../persistence/drizzle/client', () => ({
       invitations: { findFirst: findFirstInvitation },
     },
     insert: vi.fn(() => ({
-      values: vi.fn(() => ({ returning: sessionInsertReturning })),
+      values: sessionInsertValues,
     })),
     update: vi.fn(() => ({
       set: vi.fn((patch: Record<string, unknown>) => ({
@@ -155,7 +156,7 @@ beforeEach(() => {
   findFirstUser.mockResolvedValue(undefined)
   findFirstInvitation.mockResolvedValue(undefined)
   upsertUser.mockResolvedValue({ id: 'user-1' })
-  sessionInsertReturning.mockResolvedValue([{ id: 'session-abc' }])
+  sessionInsertValues.mockResolvedValue(undefined)
 })
 
 afterEach(() => {
@@ -246,12 +247,21 @@ describe('GET /auth/github/callback — invite gate for new users', () => {
   })
 })
 
+// The browser gets a random token; the database keeps only its hash.
+function expectStoredAsHash(res: Response): void {
+  const token = new URL(res.headers.get('location')!).searchParams.get('token')!
+  expect(token).toMatch(/^[A-Za-z0-9_-]{43}$/)
+  expect(sessionInsertValues).toHaveBeenCalledWith(expect.objectContaining({ tokenHash: hashSessionToken(token) }))
+  expect(JSON.stringify(sessionInsertValues.mock.calls)).not.toContain(token)
+}
+
 describe('GET /auth/github/callback — success paths', () => {
   it('a returning user logs in without an invite and redirects with the session token', async () => {
     findFirstUser.mockResolvedValue({ id: 'user-1', githubId: '4242' })
     const res = await callback()
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toBe('http://localhost:5173/auth/callback?token=session-abc')
+    expect(res.headers.get('location')).toMatch(/^http:\/\/localhost:5173\/auth\/callback\?token=/)
+    expectStoredAsHash(res)
     expect(upsertUser).toHaveBeenCalledWith({
       githubId: '4242',
       username: 'octocat',
@@ -264,7 +274,7 @@ describe('GET /auth/github/callback — success paths', () => {
     findFirstUser.mockResolvedValue(undefined)
     const res = await callback()
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toContain('/auth/callback?token=session-abc')
+    expectStoredAsHash(res)
     expect(findFirstInvitation).not.toHaveBeenCalled()
     expect(upsertUser).toHaveBeenCalledTimes(1)
   })
@@ -274,7 +284,7 @@ describe('GET /auth/github/callback — success paths', () => {
     findFirstInvitation.mockResolvedValue({ token: 'good-token', usedBy: null })
     const res = await callback('oauth_invite=good-token')
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toContain('/auth/callback?token=session-abc')
+    expectStoredAsHash(res)
     // invitation marked used (the non-email update branch)
     expect(invitationsUpdateWhere).toHaveBeenCalledTimes(1)
   })
@@ -297,7 +307,7 @@ describe('GET /auth/github/callback — success paths', () => {
     mockGithubFetch({ emailsOk: false })
     const res = await callback()
     expect(res.status).toBe(302)
-    expect(res.headers.get('location')).toContain('/auth/callback?token=session-abc')
+    expectStoredAsHash(res)
     expect(usersUpdateWhere).not.toHaveBeenCalled()
   })
 
@@ -352,10 +362,10 @@ describe('DELETE /auth/session', () => {
     expect(db.delete).toHaveBeenCalledTimes(1)
   })
 
-  it('returns 200 without touching the DB for a malformed token', async () => {
+  it('returns 200 without touching the DB for an oversized token', async () => {
     const res = await authRequest('/auth/session', {
       method: 'DELETE',
-      headers: { Authorization: 'Bearer not-a-uuid' },
+      headers: { Authorization: `Bearer ${'x'.repeat(65)}` },
     })
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })

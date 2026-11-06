@@ -7,6 +7,7 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import postgres from 'postgres'
 import { DEFAULT_PRACTITIONER_LOOK, type PractitionerDTO } from '@dojo/shared'
 import * as schema from '../../persistence/drizzle/schema'
+import { issueSessionToken } from '../../auth/session-token'
 import { PostgresSessionRepository } from '../../persistence/PostgresSessionRepository'
 import { PostgresPractitionerRepository } from '../../persistence/PostgresPractitionerRepository'
 import { AwardPractitionerPieces } from '../../../application/recognition/AwardPractitionerPieces'
@@ -32,7 +33,7 @@ describe.skipIf(!url)('practitioner pieces against Postgres', () => {
 
   const learner = randomUUID()
   const idle = randomUUID()
-  const token = randomUUID()
+  const { token, tokenHash } = issueSessionToken()
   const kataId = randomUUID()
   const variationId = randomUUID()
   const needsWork = randomUUID()
@@ -45,7 +46,7 @@ describe.skipIf(!url)('practitioner pieces against Postgres', () => {
     await db.insert(users).values(userIds.map((id) => ({
       id, githubId: `integration-${id}`, username: `pieces-${id.slice(0, 8)}`, avatarUrl: 'https://example.test/a.png',
     })))
-    await db.insert(userSessions).values({ id: token, userId: learner, expiresAt: new Date(Date.now() + 3_600_000) })
+    await db.insert(userSessions).values({ tokenHash, userId: learner, expiresAt: new Date(Date.now() + 3_600_000) })
     await db.insert(katas).values({
       id: kataId, title: 'integration kata', description: 'fixture', duration: 5, difficulty: 'easy', category: 'backend',
       type: 'review', status: 'published', ownerRole: 'role', ownerContext: 'context', createdBy: learner,
@@ -68,7 +69,7 @@ describe.skipIf(!url)('practitioner pieces against Postgres', () => {
     await db.delete(sessions).where(inArray(sessions.id, sessionIds))
     await db.delete(variations).where(eq(variations.id, variationId))
     await db.delete(katas).where(eq(katas.id, kataId))
-    await db.delete(userSessions).where(eq(userSessions.id, token))
+    await db.delete(userSessions).where(eq(userSessions.tokenHash, tokenHash))
     await db.delete(users).where(inArray(users.id, userIds))
     await client.end()
   })

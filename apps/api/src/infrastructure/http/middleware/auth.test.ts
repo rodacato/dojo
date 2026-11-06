@@ -56,12 +56,12 @@ describe('requireAuth middleware', () => {
     expect(res.status).toBe(401)
   })
 
-  it('returns 401 for a malformed token without querying the DB', async () => {
+  it('returns 401 for an oversized token without querying the DB', async () => {
     mockFindFirst.mockClear()
 
     const app = createTestApp()
     const res = await app.request('/protected/resource', {
-      headers: { Authorization: 'Bearer not-a-uuid' },
+      headers: { Authorization: `Bearer ${'x'.repeat(65)}` },
     })
 
     expect(res.status).toBe(401)
@@ -120,11 +120,11 @@ describe('optionalAuth middleware', () => {
     return app
   }
 
-  it('treats a malformed token as anonymous without querying the DB', async () => {
+  it('treats an oversized token as anonymous without querying the DB', async () => {
     mockFindFirst.mockClear()
 
     const res = await createOptionalApp().request('/public/resource', {
-      headers: { Authorization: 'Bearer not-a-uuid' },
+      headers: { Authorization: `Bearer ${'x'.repeat(65)}` },
     })
 
     expect(res.status).toBe(200)

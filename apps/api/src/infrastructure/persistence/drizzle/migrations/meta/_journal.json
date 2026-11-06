@@ -225,6 +225,13 @@
       "when": 1793662087839,
       "tag": "0031_session_level",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1793924647570,
+      "tag": "0032_session_token_hash",
+      "breakpoints": true
     }
   ]
 }

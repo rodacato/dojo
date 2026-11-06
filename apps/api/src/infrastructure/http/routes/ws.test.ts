@@ -30,7 +30,7 @@ vi.mock('../../persistence/drizzle/client', () => ({
 
 // Plain table refs — the route only feeds these into eq()/gt().
 vi.mock('../../persistence/drizzle/schema', () => ({
-  userSessions: { id: 'userSessions.id', expiresAt: 'userSessions.expiresAt' },
+  userSessions: { tokenHash: 'userSessions.tokenHash', expiresAt: 'userSessions.expiresAt' },
 }))
 
 // Partial-mock so eq/and/gt are real operators but observable. The route's
@@ -51,6 +51,7 @@ vi.mock('./ws-handlers', async (importOriginal) => {
 import { and, eq, gt } from 'drizzle-orm'
 import { activeConnections } from './ws-handlers'
 import { createWsRoutes } from './ws'
+import { hashSessionToken } from '../../auth/session-token'
 
 type WSEvents = {
   onOpen?: (evt: unknown, ws: WSInstance) => void
@@ -124,8 +125,8 @@ describe('createWsRoutes — auth on upgrade', () => {
     expect(events.onMessage).toBeUndefined()
   })
 
-  it('closes 4001 for a malformed token without querying the DB', async () => {
-    const events = await buildEvents('sess-1', 'not-a-uuid')
+  it('closes 4001 for an oversized token without querying the DB', async () => {
+    const events = await buildEvents('sess-1', 'x'.repeat(65))
     const ws = makeSocket()
     events.onOpen?.(null, ws)
 
@@ -144,11 +145,11 @@ describe('createWsRoutes — auth on upgrade', () => {
     expect(getSessionExecute).not.toHaveBeenCalled()
   })
 
-  it('builds the WHERE from the token id AND an expiry guard', async () => {
+  it('builds the WHERE from the token hash, never the raw token, AND an expiry guard', async () => {
     findFirst.mockResolvedValue(undefined)
     await buildEvents('sess-1', TOKEN)
 
-    expect(eq).toHaveBeenCalledWith('userSessions.id', TOKEN)
+    expect(eq).toHaveBeenCalledWith('userSessions.tokenHash', hashSessionToken(TOKEN))
     // The expiry guard: gt(expiresAt, <now>) — second arg is a Date.
     const gtCall = vi.mocked(gt).mock.calls[0]
     expect(gtCall[0]).toBe('userSessions.expiresAt')

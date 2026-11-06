@@ -7,7 +7,7 @@ import { config } from '../../../config'
 import { errorReporter, useCases } from '../../container'
 import { db } from '../../persistence/drizzle/client'
 import { invitations, userSessions, users } from '../../persistence/drizzle/schema'
-import { isSessionId } from '../middleware/auth'
+import { hashSessionToken, isSessionTokenShape, issueSessionToken } from '../../auth/session-token'
 
 export const authRoutes = new Hono()
 
@@ -100,14 +100,12 @@ authRoutes.get('/auth/github/callback', async (c) => {
   // Create a server-side session (30 days)
   const sessionExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
 
-  const [session] = await db
-    .insert(userSessions)
-    .values({ userId: user.id, expiresAt: sessionExpiresAt })
-    .returning()
+  const { token, tokenHash } = issueSessionToken()
+  await db.insert(userSessions).values({ userId: user.id, tokenHash, expiresAt: sessionExpiresAt })
 
   // Clear state cookie and redirect with token (ADR-007)
   deleteCookie(c, 'oauth_state')
-  return c.redirect(`${config.WEB_URL}/auth/callback?token=${session.id}`)
+  return c.redirect(`${config.WEB_URL}/auth/callback?token=${token}`)
 })
 
 // Redeem invitation — validates token and starts OAuth flow
@@ -152,14 +150,14 @@ authRoutes.get('/auth/invite/:token', async (c) => {
 // Logout
 authRoutes.delete('/auth/session', async (c) => {
   const authHeader = c.req.header('Authorization')
-  const sessionId = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
 
-  if (!sessionId) {
+  if (!token) {
     throw new HTTPException(401, { message: 'Authentication required' })
   }
 
-  if (isSessionId(sessionId)) {
-    await db.delete(userSessions).where(and(eq(userSessions.id, sessionId), gt(userSessions.expiresAt, new Date())))
+  if (isSessionTokenShape(token)) {
+    await db.delete(userSessions).where(and(eq(userSessions.tokenHash, hashSessionToken(token)), gt(userSessions.expiresAt, new Date())))
   }
   return c.json({ ok: true })
 })
