@@ -38,5 +38,5 @@ When making changes that affect behavior, update docs in the same commit:
 | New/changed env var | `README.md` + `.env.example` |
 | New/changed deploy secret or variable (GitHub Environment) | `docs/ops/deploy.md` |
 | New feature shipped | `apps/web/src/pages/ChangelogPage.tsx` (public, curated user-facing entry). `CHANGELOG.md` is generated at release from conventional commits — see `RELEASING.md` |
-| Completed roadmap item | `docs/ROADMAP.md` |
+| Shipped capability or change of direction | `docs/ROADMAP.md` |
 | Architectural decision | `docs/adr/NNN-title.md` |

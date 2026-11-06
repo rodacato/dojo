@@ -1,20 +1,20 @@
 # Dojo — Workflow & Documentation Guide
 
-> **Status:** Canonical · **Last reviewed:** 2026-11-02
+> **Status:** Canonical · **Last reviewed:** 2026-11-06
 
 ## Philosophy
 
-Documentation is the foundation, not an afterthought. Before writing a line of code, the intention lives in a document. Before merging, the docs reflect the reality. This is not bureaucracy — it is the difference between a project that grows coherently and one that accumulates confusion.
+Documentation is the foundation, not an afterthought. Before writing a line of code, the intention is written down: in an issue, a PRD or the pull request description. Before merging, the docs reflect the reality. This is not bureaucracy — it is the difference between a project that grows coherently and one that accumulates confusion.
 
 The build cycle is:
 
 ```
-Idea → Draft card or issue → PRD (when it needs exploring) → Implement in a PR → Release
-                                        ↓
-                             ADR (when a decision is architectural)
+Idea → Draft card → [Research] → [PRD] → Issue → Implement + Test in a PR → Release
+                                   ↓                       ↓
+                                  ADR                     ADR
 ```
 
-An ADR can close a PRD or come straight from the work when the decision is already clear.
+Brackets mark optional steps. An ADR can close a PRD, or come straight from the work in the same pull request as the code. Maintenance skips most of this; see [Two lanes](#two-lanes).
 
 ---
 
@@ -48,21 +48,25 @@ apps/api/src/
 ### 1. Idea
 Something new or something broken. Capture it as a draft card on the project board, or as a GitHub issue once work starts — see [Tracking Work](#tracking-work). A change of direction goes to `docs/ROADMAP.md`, which holds direction, not tasks.
 
-### 2. PRD (when an idea needs exploring)
-See [PRDs](#prds--exploratory-documents). A well-defined change skips it and goes straight to an issue.
+### 2. Research and PRD (when an idea needs exploring)
+When the problem itself is open — which mechanism, what the market does, what prior art exists — research it first in `docs/research/`. Research compares mechanisms and evidence; it has no product perspectives. It stays live while it feeds a decision and closes in a PRD, an ADR or a "Reference only" note. Example: [`research/KATA_TYPES.md`](research/KATA_TYPES.md) feeds epic #291.
+
+When there are options to weigh, write a PRD — see [PRDs](#prds--exploratory-documents). A well-defined change skips both and goes straight to an issue.
 
 Specs are retired. What a change builds, what is out of scope and how it was verified go in its issue and its pull request description. `docs/specs/` keeps the specs written up to sprint 023 as history.
 
 ### 3. ADR (for architectural decisions)
 Any decision that changes how the system is structured — database schema, a new package, switching a library, a new port or adapter, choosing a deployment strategy, a security boundary — gets an ADR. ADRs are never deleted. Superseded ones are marked as such.
 
-When a PRD explored the decision, the ADR links it: the PRD keeps the reasoning and the options, the ADR keeps the decision and its consequences.
+When a PRD explored the decision, the ADR links it: the PRD keeps the reasoning and the options, the ADR keeps the decision and its consequences. An ADR that comes out of the work lands in the same pull request as the code (precedent: ADR 037).
+
+**Amend or write a new ADR.** A refinement of an existing decision goes into that ADR as a `## Amendment, YYYY-MM-DD` section (precedent: ADR 032 and 033). A new or reversed decision gets a new ADR, and the old one is marked `superseded by ADR NNN`, or `superseded in part by ADR NNN` when part of it stands (ADR 006, 020, 021 and 031).
 
 **ADR format:**
 
 ```markdown
 # ADR-NNN: Title
-**Status:** accepted | superseded | deprecated
+**Status:** accepted | superseded by ADR NNN | superseded in part by ADR NNN | deprecated
 **Date:** YYYY-MM-DD
 
 ## Context
@@ -128,8 +132,8 @@ Triggered by: "cerremos el PRD" / "avancemos con el PRD"
 
 1. **Read the PRD** — identify the chosen option from the "Provisional conclusion" section
 2. **Record the decision** — if it is architectural, write an ADR that links the PRD
-3. **Open the work** — create or promote the issue(s), each linking the PRD
-4. **Update the PRD status** — `Decided in ADR NNN`, `Shipped` or `Discarded`, with links
+3. **Open the work** — convert the draft card(s) to issues, each linking the PRD
+4. **Update the PRD status** — `Decided in ADR NNN`, `Decided in part in ADR NNN` (what remains lives in issues), `Shipped` or `Discarded`, with links
 5. **Archive it** — once no open issue depends on it, `git mv` it to `docs/research/prd-archive/` and fix the links that pointed at it
 
 ---
@@ -167,17 +171,18 @@ A PRD in this project is a thinking tool, not a formal planning artifact. It liv
 
 ## Tracking Work
 
-Work state lives in GitHub, not in `docs/`. Docs keep direction and decisions (VISION, ARCHITECTURE, ROADMAP, ADRs, specs); GitHub keeps what is planned, in progress and done.
+Work state lives in GitHub, not in `docs/`. Docs keep direction and decisions (VISION, ARCHITECTURE, ROADMAP, ADRs; `specs/` is history); GitHub keeps what is planned, in progress and done.
 
 - **Issues** are the unit of work, including epics. A pull request that resolves one carries `Closes #N` in its body.
 - **Milestones** group issues by theme or time-box (`M1`, `M2`, …). Closing a milestone replaces closing a sprint. History lives in closed milestones, `CHANGELOG.md` and release tags.
-- **Ideas that are not ready to be public** stay as draft cards on the maintainer's private project board, with enough context to be understood cold. They become an issue when work on them starts. Anything with security impact never becomes an issue; see [`SECURITY.md`](../SECURITY.md).
+- **Ideas that are not ready to be public** stay as draft cards on the maintainer's private project board, with enough context to be understood cold. When work on one starts, it is converted with "Convert to issue" on the board, never re-opened as a separate issue. Anything with security impact never becomes an issue; see [`SECURITY.md`](../SECURITY.md).
 - **Labels** carry kind and area only. Priority and status live on the project board.
 - **Sprint docs are retired** and were deleted; git history keeps them.
 
-### Golden rule
+### Two lanes
 
-**If it is not an issue, it is not tracked.** The git log says what happened; the issue and its milestone say what is planned and what is done.
+- **Planned work** — features, ideas, large debt: draft card → [research, if the problem is open] → [PRD, if there are options to weigh] → issue → pull request with `Closes #N` → [ADR in the same pull request, if a decision was made]. The issue and its milestone say what is planned and what is done.
+- **Maintenance** — `fix`, `chore`, `docs`, `ci`, dependencies: the pull request may stand alone, with no card or issue. Its description is then the record, and says what changed, why, and how it was verified.
 
 ---
 
@@ -237,5 +242,5 @@ A task is done when:
 - [ ] Lint passes (`pnpm lint`)
 - [ ] Docs updated if behavior changed
 - [ ] No known auth or security regression
-- [ ] Port interfaces unchanged (or a new ADR documents the change)
+- [ ] Port interfaces unchanged (or a new or amended ADR documents the change)
 - [ ] Next task captured in a GitHub Issue if applicable

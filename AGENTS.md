@@ -71,7 +71,7 @@ Keep scope aligned to the current phase. Avoid overengineering — build for one
 ## Working Rules
 
 - Default to shipping thin vertical slices end-to-end
-- Work state lives in GitHub issues and milestones, never in markdown. There are no sprint docs and no backlog file; anything non-trivial gets an issue first
+- Work state lives in GitHub issues and milestones, never in markdown. There are no sprint docs and no backlog file. Planned work starts as a draft card and becomes an issue; maintenance may go straight to a pull request whose description is the record (see [Two lanes](docs/WORKFLOW.md#two-lanes))
 - Keep code changes small, reviewable, and reversible
 - Every change must include basic validation steps
 - Auth and security checks required on every API route and WebSocket connection
@@ -92,7 +92,7 @@ Keep scope aligned to the current phase. Avoid overengineering — build for one
 - [ ] Relevant tests pass
 - [ ] Docs updated when behavior changes
 - [ ] No known auth or security regression introduced
-- [ ] Roadmap item marked as done if applicable
+- [ ] `docs/ROADMAP.md` updated if what is built or the direction changed
 - [ ] Next task captured in Issues if applicable
 
 ---
@@ -107,7 +107,7 @@ When making changes that affect behavior, update docs in the same commit. Full r
 | New/changed env var | `README.md` + `.env.example` |
 | New/changed deploy secret or variable (GitHub Environment) | `docs/ops/deploy.md` |
 | New feature shipped | `apps/web/src/pages/ChangelogPage.tsx` (public, curated user-facing entry). `CHANGELOG.md` is generated at release from conventional commits — see [RELEASING.md](RELEASING.md) |
-| Completed roadmap item | `docs/ROADMAP.md` |
+| Shipped capability or change of direction | `docs/ROADMAP.md` |
 | Architectural decision | `docs/adr/NNN-title.md` |
 | New kata type | `README.md` kata types table |
 

@@ -1,6 +1,6 @@
 # PRD-NNN: [Title]
 
-> **Status:** draft | exploring | decided in ADR NNN | shipped | discarded
+> **Status:** Draft | Exploring | Decided in ADR NNN | Decided in part in ADR NNN | Shipped | Discarded
 > **Date:** YYYY-MM-DD
 > **Author:** [name / Claude]
 
@@ -69,8 +69,7 @@ _Where does this point? Which option seems most promising and why? Not a commitm
 
 ## Next step
 
-- [ ] Leave in backlog to triage later
-- [ ] Open the work: issue #NNN
+- [ ] Leave as a draft card
+- [ ] Open the work: convert the draft card to issue #NNN
 - [ ] Record the decision: `docs/adr/NNN-title.md` (when architectural)
 - [ ] Needs more exploration: [what remains to be answered]
-- [ ] Archive: [reason]
