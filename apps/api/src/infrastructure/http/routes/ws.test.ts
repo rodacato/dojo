@@ -233,14 +233,19 @@ describe('createWsRoutes — onMessage', () => {
     expect(handleReconnect).not.toHaveBeenCalled()
   })
 
-  it('ignores a well-formed message with an unknown type', async () => {
+  it.each([
+    ['an unknown type', { type: 'ping', attemptId: 'x' }],
+    ['a submit with no attemptId', { type: 'submit' }],
+    ['a reconnect whose attemptId is not a string', { type: 'reconnect', attemptId: 7 }],
+    ['an attemptId too long to be one', { type: 'submit', attemptId: 'x'.repeat(65) }],
+  ])('answers INVALID_MESSAGE to %s, without calling a handler', async (_case, frame) => {
     const events = await ownedEvents()
     const ws = makeSocket()
-    await events.onMessage?.({ data: JSON.stringify({ type: 'ping', attemptId: 'x' }) }, ws)
+    await events.onMessage?.({ data: JSON.stringify(frame) }, ws)
 
+    expect(send).toHaveBeenCalledWith(ws, { type: 'error', code: 'INVALID_MESSAGE' })
     expect(handleSubmit).not.toHaveBeenCalled()
     expect(handleReconnect).not.toHaveBeenCalled()
-    expect(send).not.toHaveBeenCalled()
   })
 })
 
