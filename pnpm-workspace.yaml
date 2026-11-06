@@ -1,3 +1,9 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# Supply-chain guards: a release must be a week old, a package may not lose the trust
+# evidence its earlier versions had, and no transitive dependency may come from git or a tarball URL.
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+blockExoticSubdeps: true

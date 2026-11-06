@@ -1,13 +1,18 @@
 version: 2
+# A new release waits a week before Dependabot proposes it; security updates skip the wait.
 updates:
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
   - package-ecosystem: npm
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     groups:
       minor-and-patch:
         update-types: [minor, patch]
@@ -15,6 +20,8 @@ updates:
     directory: "/apps/api"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     ignore:
       # Node major is a deliberate LTS decision, not an auto-bump.
       - dependency-name: "node"
@@ -23,6 +30,8 @@ updates:
     directory: "/apps/web"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
     ignore:
       - dependency-name: "node"
         update-types: ["version-update:semver-major"]
@@ -30,3 +39,5 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
+    cooldown:
+      default-days: 7
