@@ -36,7 +36,7 @@ jobs:
         with: # zizmor: ignore[artipacked] this job pushes, so it keeps the token
           fetch-depth: 0 # the changelog is generated from the commits since the last tag
 
-      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           version: 10.34.9 # must match packageManager in root package.json
 
