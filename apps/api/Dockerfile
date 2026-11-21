@@ -1,5 +1,5 @@
 # Stage 1: base with pnpm
-FROM node:24.22.1-alpine AS base
+FROM node:24.22.3-alpine AS base
 RUN npm install -g pnpm@10.34.9
 WORKDIR /app
 
@@ -26,7 +26,7 @@ COPY packages/shared/package.json ./packages/shared/
 RUN pnpm install --frozen-lockfile --prod
 
 # Stage 5: production runtime (no source, no dev tools, no package managers)
-FROM node:24.22.1-alpine AS runner
+FROM node:24.22.3-alpine AS runner
 RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
     /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 WORKDIR /app
